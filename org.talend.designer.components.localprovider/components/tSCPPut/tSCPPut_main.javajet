@@ -1,0 +1,51 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+"
+%>
+
+<%
+        CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+        INode node = (INode)codeGenArgument.getArgument();
+        String cid = node.getUniqueName();      
+
+        String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+%>
+	try{
+        if(sourceFileNames_<%=cid%>!=null && sourceFileNames_<%=cid%>.length!=0){
+           	for (int i_<%=cid%> = 0; i_<%=cid%> < sourceFileNames_<%=cid%>.length; i_<%=cid%>++) {
+       			java.io.File file_<%=cid%> = new java.io.File(sourceFileNames_<%=cid%>[i_<%=cid%>]);
+       			long sendSize_<%=cid%> = file_<%=cid%>.length();
+       			String remoteName_<%=cid%> = file_<%=cid%>.getName();
+       			java.io.OutputStream out_<%=cid%> = null;
+       			java.io.InputStream is_<%=cid%> = null;
+				byte[] buffer_<%=cid%> = new byte[8192];
+				int receive_<%=cid%> = -1;
+				try {
+					out_<%=cid%> = scp_<%=cid%>.put(remoteName_<%=cid%>, sendSize_<%=cid%>, <%=remotedir %>, "0644");
+					is_<%=cid%> = new java.io.FileInputStream(file_<%=cid%>);
+					
+    				while((receive_<%=cid%> = is_<%=cid%>.read(buffer_<%=cid%>))!=-1) {
+						out_<%=cid %>.write(buffer_<%=cid%>, 0, receive_<%=cid%>);
+    				}
+				} finally {
+                	if(out_<%=cid %> != null){
+            			out_<%=cid %>.close();
+                	}
+                	
+                	if(is_<%=cid%> != null) {
+            			is_<%=cid%>.close();
+                	}
+				}
+           	}
+            nb_file_<%=cid %> = sourceFileNames_<%=cid %>.length;
+            globalMap.put("<%=cid %>_STATUS", "File put OK.");
+        }else{
+        	globalMap.put("<%=cid %>_STATUS", "No file transfered.");
+        }
+    }catch(java.lang.Exception e_<%=cid%>){
+    		e_<%=cid%>.printStackTrace();
+    		globalMap.put("<%=cid %>_STATUS", "File put fail.");
+    }

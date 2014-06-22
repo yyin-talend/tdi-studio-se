@@ -1,0 +1,378 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMDMBulkLoad</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-mdm.html" title="Chapitre&nbsp;21.&nbsp;Composants Talend MDM"><link rel="prev" href="ch-mdm.html" title="Chapitre&nbsp;21.&nbsp;Composants Talend MDM"><link rel="next" href="tMDMClose.html" title="tMDMClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMDMBulkLoad</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch-mdm.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;21.&nbsp;Composants Talend MDM</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMDMClose.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tMDMBulkLoad"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMDMBulkLoad"></a>tMDMBulkLoad</h2></div></div></div><div class="mediaobject"><img src="../images/tMDMBulkLoad.png"></div><a name="Xaa3585314"></a><div class="section" title="Propri&eacute;t&eacute;s du tMDMBulkLoad"><div class="titlepage"><div><div><h3 class="title"><a name="Raa99110"></a>Propri&eacute;t&eacute;s du tMDMBulkLoad</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Talend MDM</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tMDMBulkLoad</strong></span> &eacute;crit
+								en masse des donn&eacute;es ma&icirc;tre structur&eacute;es XML dans le hub MDM.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant utilise le mode bulk pour &eacute;crire des donn&eacute;es, de
+								fa&ccedil;on &agrave; ce que de gros lots de donn&eacute;es ou des donn&eacute;es tr&egrave;s complexes
+								puissent &ecirc;tre charg&eacute;(e)s rapidement sur le serveur MDM.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local
+								(built-in) soit distant dans le <span class="emphasis"><strong>Repository</strong></span>.</p>
+							<p lang="fr">Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+							<p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Si vous modifiez le sch&eacute;ma, il redevient automatiquement
+									built-in.</p></div>
+							<p>Cliquez sur le bouton <span class="emphasis"><strong>Sync
+									columns</strong></span> afin de r&eacute;cup&eacute;rer le sch&eacute;ma du composant
+								pr&eacute;c&eacute;dent.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce
+								composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+									utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+								dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>XML Field</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le nom de la colonne dans laquelle vous souhaitez
+								&eacute;crire les donn&eacute;es XML.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez l&#8217;URL d&#8217;acc&egrave;s au serveur MDM.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification de l&#8217;utilisateur du serveur
+								MDM.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de la Version des donn&eacute;es ma&icirc;tre &agrave; laquelle vous
+								souhaitez vous connecter, en fonction de vos droits
+								utilisateur.</p>
+							<p>Laissez ce champ vide pour afficher la Version par d&eacute;faut des
+								donn&eacute;es ma&icirc;tre.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data model</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom du mod&egrave;le de donn&eacute;es par rapport auquel vous
+								souhaitez valider les donn&eacute;es &agrave; &eacute;crire.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data Container</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom du conteneur de donn&eacute;es contenant les donn&eacute;es que
+								vous souhaitez &eacute;crire.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Entity</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de l&#8217;entit&eacute; contenant les donn&eacute;es que vous
+								souhaitez effacer.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Validate</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case afin de valider les donn&eacute;es que vous souhaitez
+								&eacute;crire sur le serveur MDM, par rapport &agrave; des r&egrave;gles de validation
+								d&eacute;finies pour le mod&egrave;le de donn&eacute;es courant.</p>
+							<p>Pour plus d&#8217;informations concernant la d&eacute;finition des r&egrave;gles de validation,
+								consultez&nbsp;le <span class="emphasis"><em>Guide administrateur
+									de</em></span>
+								<span class="emphasis"><em>Talend MDM Studio</em></span>.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Si vous pr&eacute;f&eacute;rez un chargement plus rapide, ne cochez pas cette case. </p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Generate ID</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour g&eacute;n&eacute;rer un identifiant aux donn&eacute;es
+								&eacute;crites.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Si vous pr&eacute;f&eacute;rez un chargement plus rapide, ne cochez pas cette case. </p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Commit size</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nombre de lignes de chaque lot &agrave; &eacute;crire sur le
+								serveur MDM.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Enable parallel execution</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case permet de traiter plusieurs flux de donn&eacute;es
+								simultan&eacute;ment. Cela permet de traiter les donn&eacute;es plus
+								rapidement.</p>
+							<p>Pour plus d&#8217;informations, consultez le <span class="emphasis"><em>Guide utilisateur
+									de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Liens de sortie (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+							<p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main.</p>
+							<p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: Run If, OnComponentOk,
+								OnComponentError, OnSubjobOk, OnSubjobError.</p>
+							<p> </p>
+							<p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+							<p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main.</p>
+							<p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: Run If, OnComponentOk,
+								OnComponentError, OnSubjobOk, OnSubjobError.</p>
+							<p> </p>
+							<p>Pour plus d&#8217;informations concernant les connexions, consultez&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant n&eacute;cessite toujours un flux d&#8217;entr&eacute;e afin de
+								structurer des donn&eacute;es en XML. Si vos donn&eacute;es ne sont pas encore
+								structur&eacute;es XML, vous devez utiliser des composants tels que le
+									<span class="emphasis"><strong>tWriteXMLField</strong></span> afin de
+								transformer ces donn&eacute;es en XML. Pour plus d&#8217;informations concernant
+								le <span class="emphasis"><strong>tWriteXMLField</strong></span>, consultez&nbsp;<a class="xref" href="tWriteXMLField.html" title="tWriteXMLField">la section intitul&eacute;e &laquo;&nbsp;tWriteXMLField&nbsp;&raquo;</a>.</p>
+						</td></tr></tbody></table></div><div class="section" title="Am&eacute;liorer les chargements de donn&eacute;es MDM de masse"><div class="titlepage"><div><div><h4 class="title"><a name="Raa80398"></a>Am&eacute;liorer les chargements de donn&eacute;es MDM de masse</h4></div></div></div><p>Les informations ci-dessous concernent uniquement MDM utilis&eacute; avec eXist.</p><p>L&#8217;analyse XML est un processus qui consomme beaucoup de ressources du processeur
+				et de m&eacute;moire et qui n&#8217;est pas vraiment compatible avec des ensembles de donn&eacute;es
+				particuli&egrave;rement volumineux. Dans <a class="xref" href="tMDMBulkLoad.html#Raa13139" title="Sc&eacute;nario&nbsp;: Charger des enregistrements dans une entit&eacute; m&eacute;tier">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Charger des enregistrements dans une entit&eacute; m&eacute;tier&nbsp;&raquo;</a>, le sc&eacute;nario donn&eacute; en
+				exemple pour le composant <span class="emphasis"><strong>tMDMBulkLoad </strong></span>poss&egrave;de des
+				limitations parce qu&#8217;il ne fonctionne pas avec un ensemble de donn&eacute;es tr&egrave;s
+				volumineux, pour le moment au moins. </p><p>Un sc&eacute;nario alternatif dans lequel vous pouvez traiter l&#8217;ensemble de donn&eacute;es par
+				it&eacute;rations de chargement de masse peut &ecirc;tre cr&eacute;&eacute; comme suit&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/MDM_Data_Import.jpg" align="middle"></div><p>Dans un tel sc&eacute;nario, le composant <span class="emphasis"><strong>tMDMBulkLoad</strong></span>
+				attend des donn&eacute;es XML en entr&eacute;e. Vous devez formater manuellement ces donn&eacute;es
+				entrantes afin de les faire correspondre au sch&eacute;ma de l&#8217;entit&eacute; d&eacute;fini dans MDM
+				Studio. La plupart du temps, les donn&eacute;es que vous souhaitez importer sont au format
+				plat et vous devez les transformer en XML.</p><p>Puisque l&#8217;analyse XML consomme beaucoup de m&eacute;moire, vous pouvez r&eacute;gler ce probl&egrave;me
+				en s&eacute;parant votre fichier source en plusieurs fichiers utilisant le composant
+					<span class="emphasis"><strong>tAdvancedFileOutputXML</strong></span>. Pour ce faire,
+				s&eacute;lectionnez l&#8217;option <span class="emphasis"><strong>Split output in several files</strong></span>
+				dans la vue <span class="emphasis"><strong>Advanced settings</strong></span> du composant puis
+				configurez les lignes dans chaque fichier de sortie via une variable de contexte
+					(<span class="emphasis"><em>context.chunkSize</em></span>), par exemple. </p><div class="mediaobject" align="center"><img src="../images/MDM_Data_Import1.png" align="middle"></div><p>Le sch&eacute;ma XML que vous devez d&eacute;finir dans l&#8217;&eacute;diteur XML du composant doit &ecirc;tre une
+				correspondance exacte de l&#8217;entit&eacute; m&eacute;tier d&eacute;finie dans le Studio MDM. Le sch&eacute;ma XML
+				dans l&#8217;&eacute;diteur doit repr&eacute;senter un seul &eacute;l&eacute;ment racine <code class="code">&lt;root&gt;</code> qui
+				contient tous les autres &eacute;l&eacute;ments, afin que vous puissiez effectuer une boucle sur
+				chaque &eacute;l&eacute;ment. Le chemin d&#8217;acc&egrave;s au fichier doit &ecirc;tre d&eacute;fini dans un dossier
+				temporaire.</p><p>Utilisez un composant <span class="emphasis"><strong>tFileList</strong></span> pour lire tous
+				les fichiers XML ayant &eacute;t&eacute; cr&eacute;&eacute;s. Ce composant vous permet de parall&eacute;liser le
+				processus. Connectez-le &agrave; un composant <span class="emphasis"><strong>tFileInputXML</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Iterate</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/MDM_Data_Import2.png" align="middle"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Pour le lien <span class="emphasis"><strong>Iterate</strong></span>, il est recommand&eacute; de
+					configurer autant de threads qu&#8217;il y a de c&#339;urs physiques &agrave; votre ordinateur.
+					Vous pouvez faire ceci en utilisant
+						<code class="code">Runtime.getRuntime().availableProcessors()</code></p></div><p>Le composant <span class="emphasis"><strong>tFileInputXML</strong></span> va lire les donn&eacute;es
+				des fichiers XML que vous avez cr&eacute;&eacute;s, en d&eacute;finissant une boucle sur les &eacute;l&eacute;ments et
+				en r&eacute;cup&eacute;rant tous les n&#339;uds d&eacute;j&agrave; format&eacute;s en XML. Vous devez ensuite cocher la case
+					<span class="emphasis"><strong>Get Nodes</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/MDM_Data_Import3.png" align="middle"></div><p>Enfin, vous devez configurer le composant <span class="emphasis"><strong>tMDMBulkLoad
+				</strong></span>comme suit&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/MDM_Data_Import4.png" align="middle"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Soyez s&ucirc;r d&#8217;avoir configur&eacute; la taille de commit avec la m&ecirc;me valeur que celle
+					d&eacute;finie dans le composant <span class="emphasis"><strong>tAdvancedfileOutputXML</strong></span>, la variable de
+						contexte&nbsp;<span class="emphasis"><em>context.chunkSize</em></span>.</p></div><p>Le composant <span class="emphasis"><strong>tFileDelete </strong></span>dans ce sc&eacute;nario va
+				supprimer toutes les donn&eacute;es temporaires &agrave; la fin du Job.</p></div><div class="section" title="Astuces pour une meilleure performance lors de commits de masse avec la base de donn&eacute;es XML Talend"><div class="titlepage"><div><div><h4 class="title"><a name="Raa57966"></a>Astuces pour une meilleure performance lors de commits de masse avec la base de
+				donn&eacute;es XML Talend</h4></div></div></div><p>Les tableaux ci-dessous vous permettent de d&eacute;cider quelle taille de lots utiliser
+				dans le composant <span class="emphasis"><strong>tMDMBulkLoad</strong></span> ainsi que le temps
+				de chargement de masse attendu pour chaque choix.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Les informations ci-dessous concernent uniquement le MDM utilis&eacute; avec la base
+					de donn&eacute;es XML Talend.</p></div><p>Le tableau ci-dessous liste les tailles de lots recommand&eacute;es selon la taille de la
+				base de donn&eacute;es et le temps attendu de chargement de masse.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+								<p>Taille de la base de donn&eacute;es (documents XML)</p>
+							</td><td valign="top">
+								<p>Taille optimale des lots (documents XML)</p>
+							</td><td valign="top">
+								<p>Temps attendu de chargement de masse</p>
+							</td></tr><tr><td valign="top">
+								<p>5000 000</p>
+							</td><td valign="top">
+								<p>20 000</p>
+							</td><td valign="top">
+								<p>42 min</p>
+							</td></tr><tr><td valign="top">
+								<p>10 000 000</p>
+							</td><td valign="top">
+								<p>40 000</p>
+							</td><td valign="top">
+								<p>1 h 30 min</p>
+							</td></tr><tr><td valign="top">
+								<p>15 000 000</p>
+							</td><td valign="top">
+								<p>59 000</p>
+							</td><td valign="top">
+								<p>2 h 20 min</p>
+							</td></tr><tr><td valign="top">
+								<p>50 000 000</p>
+							</td><td valign="top">
+								<p>200 000</p>
+							</td><td valign="top">
+								<p>10 h</p>
+							</td></tr></tbody></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>La taille des lots d&eacute;pend uniquement de la taille de la base de donn&eacute;es et non
+					de la taille du document XML.</p></div><p>Les temps de chargement de masse ont &eacute;t&eacute; observ&eacute;s dans les environnements
+				suivants&nbsp;:</p><p> -Intel Xeon X3430 @2.40 Ghz</p><p> -8 Go de RAM</p><p> -Windows Server 2008 64 bits SP1</p><p> Les pr&eacute;requis pour une performance optimale du chargement de masse dans un
+				serveur MDM sont (par ordre ascendant d&#8217;importance)&nbsp;:</p><p> -Vitesse d&#8217;entr&eacute;e/sortie (I/O)</p><p> -Vitesse du processeur</p><p> -Total de la RAM</p><p>Pour une performance optimale, vous devez effectuer un chargement de masse MDM
+				avec deux threads (chaque thread avec une taille de lot optimale) et sans validation
+				XML. La case <span class="emphasis"><strong>Validate</strong></span> de la vue <span class="emphasis"><strong>Basic settings</strong></span> du composant <span class="emphasis"><strong>tMDMBulkLoad</strong></span> doit &ecirc;tre d&eacute;coch&eacute;e&nbsp;;&nbsp;pour plus d&#8217;informations,
+					consultez&nbsp;<a class="xref" href="tMDMBulkLoad.html#Raa99110" title="Propri&eacute;t&eacute;s du tMDMBulkLoad">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tMDMBulkLoad&nbsp;&raquo;</a>. </p><p>Pour l&#8217;utilisation du disque, il est recommand&eacute; d&#8217;avoir un espace disponible trois
+				fois sup&eacute;rieur &agrave; la taille de la base de donn&eacute;es apr&egrave;s le chargement de masse. Par
+				exemple, pour des documents XML de&nbsp;1.5 Ko, la taille de la base de donn&eacute;es apr&egrave;s
+				chargement de masse doit &ecirc;tre de&nbsp;:</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><tbody><tr><td valign="top">
+								<p>Taille de la base de donn&eacute;es (documents XML)</p>
+							</td><td valign="top">
+								<p>Taille de la base de donn&eacute;es sur le disque</p>
+							</td></tr><tr><td valign="top">
+								<p>5000 000</p>
+							</td><td valign="top">
+								<p>10 Go</p>
+							</td></tr><tr><td valign="top">
+								<p>10 000 000</p>
+							</td><td valign="top">
+								<p>20 Go</p>
+							</td></tr><tr><td valign="top">
+								<p>15 000 000</p>
+							</td><td valign="top">
+								<p>30 Go</p>
+							</td></tr><tr><td valign="top">
+								<p>50 000 000</p>
+							</td><td valign="top">
+								<p>100 Go</p>
+							</td></tr></tbody></table></div><p>Par exemple, pour une base de donn&eacute;es contenant&nbsp;5 millions de documents XML,
+				de&nbsp;1.5 Ko chacun, il est recommand&eacute; d&#8217;avoir&nbsp;30 Go d&#8217;espace disponible sur le
+				disque.</p></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Charger des enregistrements dans une entit&eacute; m&eacute;tier"><div class="titlepage"><div><div><h3 class="title"><a name="Raa13139"></a>Sc&eacute;nario&nbsp;: Charger des enregistrements dans une entit&eacute; m&eacute;tier</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job qui charge des enregistrements dans l&#8217;entit&eacute;
+				m&eacute;tier&nbsp;<span class="emphasis"><em>ProductFamily </em></span>d&eacute;finie par un mod&egrave;le de donn&eacute;es
+			sp&eacute;cifique dans le hub MDM.</p><p>Pr&eacute;requis pour ce Job&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Le conteneur de donn&eacute;es&nbsp;<span class="emphasis"><em>Product</em></span>&nbsp;: ce conteneur de donn&eacute;es
+					est utilis&eacute; pour s&eacute;parer le domaine de donn&eacute;es ma&icirc;tre des produits des autres
+					domaines de donn&eacute;es ma&icirc;tre.</p></li><li class="listitem"><p>Le mod&egrave;le de donn&eacute;es&nbsp;<span class="emphasis"><em>Product</em></span>&nbsp;: ce mod&egrave;le de donn&eacute;es est
+					utilis&eacute; pour d&eacute;finir les attributs, les r&egrave;gles de validation, les droits d&#8217;acc&egrave;s
+					des utilisateurs et les relations des entit&eacute;s en rapport. Il d&eacute;finit les
+					attributs de l&#8217;entit&eacute; m&eacute;tier&nbsp;<span class="emphasis"><em>ProductFamily</em></span>.</p></li><li class="listitem"><p>L&#8217;entit&eacute; m&eacute;tier&nbsp;<span class="emphasis"><em>ProductFamily</em></span>&nbsp;: cette entit&eacute; m&eacute;tier
+					contient les attributs&nbsp;<span class="emphasis"><em>Id </em></span>et<span class="emphasis"><em> Name</em></span>,
+					d&eacute;finis dans le mod&egrave;le de donn&eacute;es&nbsp;<span class="emphasis"><em>Product</em></span>.</p></li></ul></div><p>Pour plus d&#8217;informations concernant la cr&eacute;ation d&#8217;un conteneur de donn&eacute;es, d&#8217;un mod&egrave;le
+			de donn&eacute;es et d&#8217;une entit&eacute; m&eacute;tier ainsi que de ses attributs, consultez le <span class="emphasis"><strong>Guide Administrateur</strong></span> de <span class="emphasis"><em>Talend MDM Studio</em></span>.</p><p>Le Job dans ce sc&eacute;nario utilise trois composants.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad1.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Un <span class="emphasis"><strong>tFixedFlowInput&nbsp;</strong></span>: ce composant g&eacute;n&egrave;re les
+					enregistrements &agrave; charger dans l&#8217;entit&eacute;
+						m&eacute;tier&nbsp;<span class="emphasis"><em>ProductFamily</em></span>. G&eacute;n&eacute;ralement, les enregistrements
+					&agrave; charger sont volumineux et stock&eacute;s dans un fichier sp&eacute;cifique, cependant, pour
+					faciliter la reproduction de ce sc&eacute;nario, ce Job utilise un <span class="emphasis"><strong>tFixedFlowInput</strong></span> afin de g&eacute;n&eacute;rer quatre exemples
+					d&#8217;enregistrements.</p></li><li class="listitem"><p>Un <span class="emphasis"><strong>tWriteXMLField</strong></span>&nbsp;: ce composant transforme
+					les donn&eacute;es d&#8217;entr&eacute;e pour leur donner une structure XML.</p></li><li class="listitem"><p>Un <span class="emphasis"><strong>tMDMBulkLoad</strong></span>&nbsp;: ce composant &eacute;crit en masse
+					les donn&eacute;es d&#8217;entr&eacute;e dans l&#8217;entit&eacute; m&eacute;tier&nbsp;<span class="emphasis"><em>ProductFamily</em></span> et
+					g&eacute;n&egrave;re une valeur d&#8217;ID pour chaque donn&eacute;e de l&#8217;enregistrement.</p></li></ul></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme suit&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;posez un <span class="emphasis"><strong>tFixedFlowInput</strong></span>, un<span class="emphasis"><strong> tWriteXMLField</strong></span> et un <span class="emphasis"><strong>tMDMBulkLoad</strong></span> de la <span class="emphasis"><strong>Palette</strong></span> dans
+					l&#8217;espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>Cliquez-droit sur le <span class="emphasis"><strong>tFixedFlowInput</strong></span> afin
+					d&#8217;ouvrir son menu contextuel.</p></li><li class="listitem"><p>S&eacute;lectionnez <span class="emphasis"><strong>Row &gt; Main</strong></span> pour relier le
+						<span class="emphasis"><strong>tFixedFlowInput</strong></span> au composant suivant &agrave;
+					l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez l&#8217;op&eacute;ration pour lier les autres composants.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="emphasis"><strong>tFixedFlowInput</strong></span> afin
+					d&#8217;ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad2.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+						<span class="emphasis"><strong>Edit schema</strong></span> pour ouvrir l&#8217;&eacute;diteur du
+					sch&eacute;ma.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad3.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;&eacute;diteur du sch&eacute;ma, cliquez sur le bouton<span class="emphasis"><strong>
+						[+]</strong></span> pour ajouter une ligne. </p></li><li class="listitem"><p>Cliquez sur la nouvelle et saisissez son nom&nbsp;:
+					<span class="emphasis"><em>family</em></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span>.</p></li><li class="listitem"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span> de la vue <span class="emphasis"><strong>Basic settings</strong></span>, s&eacute;lectionnez l&#8217;option <span class="emphasis"><strong>Use inline table</strong></span>.</p></li><li class="listitem"><p>Sous le tableau, cliquez sur le bouton <span class="emphasis"><strong>[+]
+					</strong></span>quatre fois afin d&#8217;ajouter quatre lignes au tableau.</p></li><li class="listitem"><p>Dans le tableau, cliquez sur chacune des lignes ajout&eacute;es et saisissez leur
+					nom, entre guillemets&nbsp;: <span class="emphasis"><em>Shirts</em></span>, <span class="emphasis"><em>Hats</em></span>,
+						<span class="emphasis"><em>Pets</em></span>, <span class="emphasis"><em>Mugs</em></span> (Chemises, chapeaux,
+					v&ecirc;tements pour animaux, tasses).</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tWriteXMLField</strong></span> afin d&#8217;ouvrir sa vue <span class="emphasis"><strong>Basic
+						settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad4.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+						<span class="emphasis"><strong>Edit schema</strong></span> afin d&#8217;ouvrir l&#8217;&eacute;diteur du
+					sch&eacute;ma, dans lequel vous pouvez ajouter une ligne en cliquant sur le bouton
+						<span class="emphasis"><strong>[+]</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad5.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur la nouvelle ligne, dans la partie droite de l&#8217;&eacute;diteur du sch&eacute;ma et
+					saisissez le nom de la colonne de sortie dans laquelle vous souhaitez &eacute;crire le
+					contenu XML. Dans cet exemple, saisissez&nbsp;<span class="emphasis"><em>xmlRecord</em></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider le sch&eacute;ma de
+					sortie et fermer l&#8217;&eacute;diteur du sch&eacute;ma.</p></li><li class="listitem"><p>Dans la bo&icirc;te de dialogue qui s&#8217;ouvre, cliquez sur <span class="emphasis"><strong>OK</strong></span> afin de propager le sch&eacute;ma au composant suivant.</p></li><li class="listitem"><p>Dans la vue <span class="emphasis"><strong>Basic settings</strong></span>, cliquez sur le
+					bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Configure Xml Tree</strong></span> pour ouvrir l&#8217;interface permettant
+					de cr&eacute;er la structure XML.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad6.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la zone <span class="emphasis"><strong>Link Target</strong></span>, cliquez
+						sur&nbsp;<span class="emphasis"><em>rootTag</em></span> et renommez le
+						champ&nbsp;<span class="emphasis"><em>ProductFamily</em></span>, qui est le nom de l&#8217;entit&eacute; m&eacute;tier
+					utilis&eacute;e dans ce sc&eacute;nario.</p></li><li class="listitem"><p>De la zone <span class="emphasis"><strong>Linker source</strong></span>,
+						glissez-d&eacute;posez&nbsp;<span class="emphasis"><em>family</em></span>
+						dans&nbsp;<span class="emphasis"><em>ProductFamily</em></span>, dans la zone <span class="emphasis"><strong>Link target</strong></span>.</p><p>Une bo&icirc;te de dialogue s&#8217;affiche et vous demande quel type d&#8217;op&eacute;ration vous
+					souhaitez effectuer.</p></li><li class="listitem"><p>S&eacute;lectionnez <span class="emphasis"><strong>Create as sub-element of target
+						node</strong></span> afin de cr&eacute;er un sous-&eacute;l&eacute;ment du
+						noeud&nbsp;<span class="emphasis"><em>ProductFamily</em></span>.
+						L&#8217;&eacute;l&eacute;ment&nbsp;<span class="emphasis"><em>family</em></span> appara&icirc;t sous le
+						noeud&nbsp;<span class="emphasis"><em>ProductFamily</em></span>.</p></li><li class="listitem"><p>Dans la zone <span class="emphasis"><strong>Link target</strong></span>, cliquez sur le
+						noeud&nbsp;<span class="emphasis"><em>family</em></span> et renommez-le&nbsp;<span class="emphasis"><em>Name</em></span>,
+					qui est l&#8217;un des attributs de l&#8217;entit&eacute;
+					m&eacute;tier&nbsp;<span class="emphasis"><em>ProductFamily</em></span>.</p></li><li class="listitem"><p>Cliquez-droit sur le n&#339;ud <span class="emphasis"><em>Name</em></span> et s&eacute;lectionnez <span class="emphasis"><strong>Set As Loop Element</strong></span> dans le menu contextuel.</p></li><li class="listitem"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> afin de valider la structure
+					XML que vous avez d&eacute;finie.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="emphasis"><strong>tMDMBulkLoad</strong></span> afin
+					d&#8217;ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad7.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="emphasis"><strong>XML Field</strong></span>,
+						s&eacute;lectionnez&nbsp;<span class="emphasis"><em>xmlRecord</em></span>.</p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>URL</strong></span>, saisissez l'URL d&eacute;di&eacute;e au
+					chargement de masse, entre guillemets&nbsp;: par exemple,
+						<span class="emphasis"><em>http://localhost:8080/datamanager/loadServlet</em></span>.</p></li><li class="listitem"><p>Dans les champs <span class="emphasis"><strong>Username</strong></span> et <span class="emphasis"><strong>Password</strong></span>, saisissez respectivement votre identifiant
+					et votre mot de passe de connexion au serveur MDM.</p></li><li class="listitem"><p>Dans les champs <span class="emphasis"><strong>Data Model</strong></span> et <span class="emphasis"><strong>Data Container</strong></span>, saisissez les noms correspondants au
+					mod&egrave;le de donn&eacute;es et au conteneur de donn&eacute;es que vous souhaitez utiliser,
+						<span class="emphasis"><em>Product</em></span> pour les deux champs, dans ce sc&eacute;nario.</p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Entity</strong></span>, saisissez le nom de
+					l&#8217;entit&eacute; m&eacute;tier dont les enregistrements doivent &ecirc;tre charg&eacute;s. Dans cet exemple,
+						saisissez&nbsp;<span class="emphasis"><em>ProductFamily</em></span>.</p></li><li class="listitem"><p>Cochez la case <span class="emphasis"><strong>Generate ID</strong></span> afin de g&eacute;n&eacute;rer
+					des valeurs d&#8217;ID pour les enregistrements &agrave; charger.</p></li><li class="listitem"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour ex&eacute;cuter le Job.</p></li><li class="listitem"><p>Connectez-vous &agrave; l&#8217;interface Web de <span class="emphasis"><em>Talend MDM Studio</em></span> pour v&eacute;rifier les nouveaux
+					enregistrements de l&#8217;entit&eacute; m&eacute;tier&nbsp;<span class="emphasis"><em>ProductFamily</em></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad8.png" align="middle"></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch-mdm.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-mdm.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMDMClose.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;21.&nbsp;Composants Talend MDM&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tMDMClose</td></tr></table></div></body></html>

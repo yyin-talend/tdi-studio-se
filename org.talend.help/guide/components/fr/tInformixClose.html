@@ -1,0 +1,75 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tInformixClose</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-databases-traditional.html" title="Chapitre&nbsp;7.&nbsp;Databases - Composants traditionnels"><link rel="prev" href="tInformixBulkExec.html" title="tInformixBulkExec"><link rel="next" href="tInformixCommit.html" title="tInformixCommit"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tInformixClose</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tInformixBulkExec.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;7.&nbsp;Databases - Composants traditionnels</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tInformixCommit.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tInformixClose"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tInformixClose"></a>tInformixClose</h2></div></div></div><div class="mediaobject"><img src="../images/tInformixClose_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tInformixClose"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e74485"></a>Propri&eacute;t&eacute;s du tInformixClose</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Databases/Informix</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tInformixClose</strong></span> ferme
+                                la connexion &agrave; une base de donn&eacute;es connect&eacute;e.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant permet de fermer une connexion &agrave; la base de donn&eacute;es
+                                Informix.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Component list</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&#8217;il y a plus d&#8217;une connexion dans le Job en cours, s&eacute;lectionnez
+                                le composant <span class="emphasis"><strong>tInformixConnection</strong></span>
+                                dans la liste.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Dynamic settings</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p lang="fr">Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ligne &agrave; la table.
+		Dans le champ <span class="emphasis"><strong>Code</strong></span>, saisissez une variable de contexte afin
+		de s&eacute;lectionner dynamiquement votre connexion &agrave; la base de donn&eacute;es parmi celles pr&eacute;vues dans
+		votre Job. Cette fonctionnalit&eacute; est utile si vous devez acc&eacute;der &agrave; plusieurs tables de bases
+		de donn&eacute;es ayant la m&ecirc;me structure mais se trouvant dans diff&eacute;rentes bases de donn&eacute;es, en
+		particulier lorsque vous travaillez dans un environnement dans lequel vous ne pouvez pas
+		changer les param&egrave;tres de votre Job, par exemple lorsque votre Job doit &ecirc;tre d&eacute;ploy&eacute; et
+		ex&eacute;cut&eacute; dans un Studio <span class="emphasis"><strong>Talend</strong></span> ind&eacute;pendant.</p>
+                            <p lang="fr">La table <span class="emphasis"><strong>Dynamic settings</strong></span> n'est disponible que si la case
+			<span class="emphasis"><strong>Use an existing connection</strong></span> est coch&eacute;e dans la vue
+			<span class="emphasis"><strong>Basic settings</strong></span>. Lorsqu'un param&egrave;tre dynamique est
+		configur&eacute;, la liste <span class="emphasis"><strong>Component List</strong></span> devient inaccessible
+		dans la vue <span class="emphasis"><strong>Basic settings</strong></span>. </p>
+                            <p lang="fr">Pour plus d'informations concernant les <span class="emphasis"><strong>Dynamic settings</strong></span>
+		et les variables de contexte, consultez le <span class="emphasis"><em>Guide utilisateur Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; comme composant de d&eacute;but. Il
+                                n&eacute;cessite un composant de sortie.</p>
+                        </td></tr></tbody></table></div><p>&nbsp;</p></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e74653"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="emphasis"><strong>tInformixConnection</strong></span> et <span class="emphasis"><strong>tInformixRollback</strong></span>. Ils sont g&eacute;n&eacute;ralement utilis&eacute;s avec un composant
+                <span class="emphasis"><strong>tInformixConnection</strong></span> car il permet d&#8217;ouvrir une
+            connexion pour la transaction en cours.</p><p>Pour un sc&eacute;nario associ&eacute; au composant <span class="emphasis"><strong>tInformixClose</strong></span>, consultez <a class="xref" href="tMysqlConnection.html" title="tMysqlConnection">la section intitul&eacute;e &laquo;&nbsp;tMysqlConnection&nbsp;&raquo;</a></p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tInformixBulkExec.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tInformixCommit.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tInformixBulkExec&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tInformixCommit</td></tr></table></div></body></html>

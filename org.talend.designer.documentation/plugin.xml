@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.talend.core.repositoryContextualsActions">
+         
+         <Action
+            class="org.talend.repository.ui.actions.documentation.CreateDocumentationAction"
+            id="org.talend.repository.actions.createdocumentation"
+            level="10"
+            name="Add documentation"/>
+      	<Action
+            class="org.talend.repository.ui.actions.documentation.OpenDocumentationAction"
+            id="org.talend.repository.actions.opendocumentation"
+            isReadAction="true"
+            level="11"
+            name="Open documentation"/>
+      	<Action
+            class="org.talend.repository.ui.actions.documentation.ExtractDocumentationAction"
+            id="org.talend.repository.actions.extractdocumentation"
+            isReadAction="true"
+            level="12"
+            name="Extract documentation"/>
+      	<Action
+            class="org.talend.repository.ui.actions.documentation.UpdateDocumentationAction"
+            id="org.talend.repository.actions.updatedocumentation"
+            isEditAction="true"
+            level="10"
+            name="Update documentation"/>
+       <Action
+             class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
+             id="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
+             isEditAction="true"
+             isReadAction="true"
+             name="Generate Doc As HTML">
+       </Action>
+         
+   </extension>
+
+</plugin>

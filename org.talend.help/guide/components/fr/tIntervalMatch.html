@@ -1,0 +1,148 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tIntervalMatch</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-dataquality.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tFuzzyMatch.html" title="tFuzzyMatch"><link rel="next" href="tReplaceList.html" title="tReplaceList"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tIntervalMatch</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFuzzyMatch.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;6.&nbsp;Composants Data Quality</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tReplaceList.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tIntervalMatch"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tIntervalMatch"></a>tIntervalMatch</h2></div></div></div><div class="mediaobject"><img src="../images/tIntervalMatch_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tIntervalMatch"><div class="titlepage"><div><div><h3 class="title"><a name="Xaa1732420"></a>Propri&eacute;t&eacute;s du tIntervalMatch</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant<span class="emphasis"><strong> tIntervalMatch</strong></span>
+								permet d&#8217;&eacute;tablir une jointure entre un flux principal et un flux de
+								r&eacute;f&eacute;rence. Il classe une valeur sp&eacute;cifi&eacute;e du flux principal dans la
+								fourchette de valeurs correspondante d&eacute;finie dans le flux de
+								r&eacute;f&eacute;rence et retourne les informations correspondantes.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Il aide &agrave; retourner une valeur &agrave; l&#8217;aide d&#8217;une jointure.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local
+									(<span class="emphasis"><strong>Built-in</strong></span>) soit distant dans le
+									<span class="emphasis"><strong>Repository</strong></span>. </p>
+							<p lang="fr">Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+							<p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma. Notez que si vous effectuez des modifications,
+								le sch&eacute;ma passera automatiquement en Built-in.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+								&eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+									utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Search Column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la colonne du flux principal contenant les valeurs
+								qui doivent &ecirc;tre mises en correspondance avec l&#8217;intervalle de
+								valeurs.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Column (LOOKUP)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la colonne du flux lookup contenant les valeurs qui
+								doivent &ecirc;tre retourn&eacute;es quand la jointure est ok.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Lookup Column (min) / Include the bound
+								(min)</em></span></p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la colonne contenant la valeur minimale de
+								l&#8217;intervalle. Cochez la case pour inclure la valeur maximale de
+								l'intervalle.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Lookup Column (max) / Include the bound
+								(max)</em></span></p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la colonne contenant la valeur maximale de
+								l&#8217;intervalle. Cochez la case pour inclure la valeur maximale de
+								l'intervalle.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+								Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant manipule un flux de donn&eacute;es, il requiert donc un
+								Input et un Output, et n&eacute;cessite la d&eacute;finition d&#8217;une &eacute;tape
+								interm&eacute;diaire.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Identifier l'emplacement de serveurs &agrave; partir de leur IP"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e56470"></a>Sc&eacute;nario&nbsp;: Identifier l'emplacement de serveurs &agrave; partir de leur IP</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; quatre composants v&eacute;rifiant les adresses IP de serveur,
+			list&eacute;es dans le fichier d'entr&eacute;e principal, par rapport &agrave; une liste d'intervalles d'IPs
+			dans le fichier de r&eacute;f&eacute;rence, afin d'identifier le pays d'h&eacute;bergement de chaque
+			serveur.</p><div class="mediaobject"><img src="../images/Use_Case_tIntervalMatch1.png"></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e56478"></a>Construire le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans l&#8217;espace de mod&eacute;lisation, glissez deux composants <span class="emphasis"><strong>tFileInputDelimited</strong></span>, un <span class="emphasis"><strong>tIntervalMatch</strong></span> et un <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez les composants &agrave; l'aide de liens <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p><p>La connexion du second <span class="emphasis"><strong>tFileInputDelimited</strong></span> au <span class="emphasis"><strong>tIntervalMatch</strong></span> appara&icirc;t comme <span class="emphasis"><strong>Lookup</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e56514"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le premier <span class="emphasis"><strong>tFileInputDelimited</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Component</strong></span> et configurer ses propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_tIntervalMatch3.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Parcourez votre syst&egrave;me jusqu'au fichier d'entr&eacute;e principal, contenant une
+						liste des serveurs et de leur adresse
+						IP.</p><pre class="programlisting">Server;IP
+Server1;057.010.010.010
+Server2;001.010.010.100
+Server3;057.030.030.030
+Server4;053.010.010.100</pre></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="emphasis"><strong>Edit schema</strong></span> pour ouvrir la bo&icirc;te de
+						dialogue <span class="emphasis"><strong>[Schema]</strong></span> et configurer le sch&eacute;ma
+						d'entr&eacute;e. Selon la structure du fichier d'entr&eacute;e, le sch&eacute;ma se compose de
+						deux colonnes, <span class="emphasis"><em>Server</em></span> et <span class="emphasis"><em>IP</em></span>, de type <span class="emphasis"><strong>String</strong></span>. Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour
+						fermer la bo&icirc;te de dialogue.</p><div class="mediaobject"><img src="../images/Use_Case_tIntervalMatch3_bis.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Header</strong></span>, saisissez le nombre
+						de lignes d'en-t&ecirc;te &agrave; ignorer et laissez les autres champs tels qu'ils
+						sont.</p></li><li class="step" title="&Eacute;tape 5"><p>Configurez de la m&ecirc;me mani&egrave;re les propri&eacute;t&eacute;s du second <span class="emphasis"><strong>tFileInputDelimited</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tIntervalMatch6.png"></div><p>Le fichier &agrave; utiliser en entr&eacute;e pour le flux de r&eacute;f&eacute;rence liste, dans cet
+						exemple, des intervalles d'adresses IP et le pays
+						correspondant.</p><pre class="programlisting">StartIP;EndIP;Country
+001.000.000.000;001.255.255.255;USA
+002.006.190.056;002.006.190.063;UK
+011.000.000.000;011.255.255.255;USA
+057.000.000.000;057.255.255.255;France
+012.063.178.060;012.063.178.063;Canada
+053.000.000.000;053.255.255.255;Germany</pre><p>Le sch&eacute;ma du flux de r&eacute;f&eacute;rence doit poss&eacute;der la structure suivante :</p><div class="mediaobject"><img src="../images/Use_Case_tIntervalMatch4.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tIntervalMatch</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tIntervalMatch5.png"></div></li><li class="step" title="&Eacute;tape 7"><p>Dans la liste <span class="emphasis"><strong>Search Column</strong></span>, s&eacute;lectionnez
+						le flux d'entr&eacute;e principal contenant les valeurs &agrave; mettre en correspondance
+						avec les intervalles de valeurs. Dans cet exemple, les adresses IP des
+						serveurs doivent correspondre aux intervalles de valeurs du flux de
+						r&eacute;f&eacute;rence.</p></li><li class="step" title="&Eacute;tape 8"><p>Dans la liste <span class="emphasis"><strong>Column (LOOKUP)</strong></span>,
+						s&eacute;lectionnez la colonne de r&eacute;f&eacute;rence contenant les valeurs &agrave; retourner. Dans
+						cet exemple, il s'agit du nom des pays o&ugrave; se trouvent les serveurs. </p></li><li class="step" title="&Eacute;tape 9"><p>Configurez les colonnes de r&eacute;f&eacute;rence minimale et maximale correspondant
+						aux limites de l'intervalle d&eacute;fini dans le sch&eacute;ma de r&eacute;f&eacute;rence, <span class="emphasis"><em>StartIP</em></span> et <span class="emphasis"><em>EndIP</em></span>, respectivement.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e56619"></a>Ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span> pour sauvegarder votre
+							Job et appuyez sur <span class="emphasis"><strong>F6</strong></span> pour
+							l'ex&eacute;cuter.</p><p>Le nom du pays o&ugrave; est h&eacute;berg&eacute; chaque serveur s'affiche &agrave; c&ocirc;t&eacute; de l'adresse IP
+							correspondante, dans la console.</p><div class="mediaobject"><img src="../images/use_case-tintervalmatch8and9.png"></div></li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFuzzyMatch.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tReplaceList.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFuzzyMatch&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tReplaceList</td></tr></table></div></body></html>

@@ -1,0 +1,60 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tWarn</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-logsanderrors.html" title="Chapitre&nbsp;15.&nbsp;Composants Logs &amp; Errors"><link rel="prev" href="tStatCatcher.html" title="tStatCatcher"><link rel="next" href="ch-misc.html" title="Chapitre&nbsp;16.&nbsp;Composants Misc"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tWarn</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tStatCatcher.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;15.&nbsp;Composants Logs &amp; Errors</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch-misc.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tWarn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tWarn"></a>tWarn</h2></div></div></div><div class="mediaobject"><img src="../images/tWarn.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tWarn"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e252336"></a>Propri&eacute;t&eacute;s du tWarn</h3></div></div></div><p>Les composants <span class="emphasis"><strong>tDie</strong></span> et <span class="emphasis"><strong>tWarn</strong></span> sont &eacute;troitement li&eacute;s au composant <span class="emphasis"><strong>tLogCatcher</strong></span>. Ils sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble afin que les
+            donn&eacute;es de log collect&eacute;es par le <span class="emphasis"><strong>tLogCatcher</strong></span> soient
+            rassembl&eacute;es et envoy&eacute;es vers la sortie d&eacute;finie.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Logs &amp; Errors </p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tWarn</strong></span> envoie un
+                                message d&#8217;avertissement au composant suivant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant d&eacute;clenche un avertissement souvent pris comme donn&eacute;es
+                                de log exhaustives par le composant <span class="emphasis"><strong>tLogCatcher</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Warn message</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez votre message d&#8217;avertissement.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Code</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez le niveau de code.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Priority</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez le niveau de priorit&eacute;.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant ne peut &ecirc;tre utilis&eacute; comme composant de d&eacute;but. Ainsi,
+                                s&#8217;il est connect&eacute; &agrave; un composant de sortie, il doit aussi &ecirc;tre
+                                connect&eacute; &agrave; un composant d&#8217;entr&eacute;e.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e252481"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour des exemples d&#8217;utilisation du <span class="emphasis"><strong>tWarn</strong></span>, consultez
+            les sc&eacute;narios du composant <span class="emphasis"><strong>tLogCatcher</strong></span>&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+                    <a class="xref" href="tLogCatcher.html#Raa67637" title="Sc&eacute;nario&nbsp;1&nbsp;: Avertissement &amp; log lors de la cr&eacute;ation d&#8217;entr&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Avertissement &amp; log lors de la cr&eacute;ation d&#8217;entr&eacute;es&nbsp;&raquo;</a>. </p></li><li class="listitem"><p>
+                    <a class="xref" href="tLogCatcher.html#Raa74583" title="Sc&eacute;nario&nbsp;2&nbsp;: Monitorer &amp; arr&ecirc;ter un Job">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Monitorer &amp; arr&ecirc;ter un Job&nbsp;&raquo;</a>. </p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tStatCatcher.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-logsanderrors.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch-misc.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tStatCatcher&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;16.&nbsp;Composants Misc</td></tr></table></div></body></html>

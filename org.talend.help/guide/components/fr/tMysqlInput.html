@@ -1,0 +1,466 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMysqlInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-databases-traditional.html" title="Chapitre&nbsp;7.&nbsp;Databases - Composants traditionnels"><link rel="prev" href="tMysqlConnection.html" title="tMysqlConnection"><link rel="next" href="tMysqlLastInsertId.html" title="tMysqlLastInsertId"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMysqlInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMysqlConnection.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;7.&nbsp;Databases - Composants traditionnels</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMysqlLastInsertId.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tMysqlInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMysqlInput"></a>tMysqlInput</h2></div></div></div><div class="mediaobject"><img src="../images/tMysqlInput_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tMysqlInput"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e149849"></a>Propri&eacute;t&eacute;s du tMysqlInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/MySQL</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tMysqlInput</strong></span> lit une
+								base de donn&eacute;es et en extrait des champs &agrave; l&#8217;aide de
+								requ&ecirc;tes.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="emphasis"><strong>tMysqlInput</strong></span> ex&eacute;cute une
+								requ&ecirc;te en base de donn&eacute;es selon un ordre strict qui doit
+								correspondre &agrave; celui d&eacute;fini dans le sch&eacute;ma. La liste des champs
+								r&eacute;cup&eacute;r&eacute;e est ensuite transmise au composant suivant via une
+								connexion de flux (Main row). </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top"><span>Peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou <span class="emphasis"><strong>Repository</strong></span></span>.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<div class="mediaobject"><img src="../images/Save_Icon.png"></div>
+						</td><td valign="top">
+							<p>Cliquez sur cette ic&ocirc;ne pour ouvrir l&#8217;assistant de configuration
+								de connexion &agrave; la base de donn&eacute;es et enregistrer les param&egrave;tres de
+								connexion que vous avez d&eacute;finis dans la vue <span class="emphasis"><strong>Basic settings </strong></span>du composant. </p>
+							<p> Pour plus d&#8217;informations sur comment d&eacute;finir et stocker des
+								param&egrave;tres de connexion de base de donn&eacute;es, consultez le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case et s&eacute;lectionnez le composant de connexion ad&eacute;quat &agrave; partir de la liste
+			<span class="emphasis"><strong>Component list</strong></span> pour r&eacute;utiliser les param&egrave;tres d&#8217;une
+		connexion que vous avez d&eacute;j&agrave; d&eacute;finie.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, si vous souhaitez utiliser une
+			connexion existant entre les deux niveaux, par exemple pour partager la connexion cr&eacute;&eacute;e
+			par le Job parent avec le Job enfant, vous devez :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Au niveau parent, enregistrer la connexion &agrave; la base de donn&eacute;es &agrave;
+						partager, dans la vue <span class="emphasis"><strong>Basic settings</strong></span> du
+						composant de connexion cr&eacute;ant cette connexion.</p></li><li class="listitem"><p>Au niveau enfant, utiliser un composant d&eacute;di&eacute; &agrave; la cr&eacute;ation de connexion,
+						afin de lire la connexion enregistr&eacute;e.</p></li></ol></div><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion &agrave; travers diff&eacute;rents
+			niveaux de Jobs, consultez le <span class="emphasis"><em>Guide utilisateur de</em></span>
+			<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou distant dans le <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Ce composant offre la fonction de sch&eacute;ma dynamique. Cela vous
+									permet de r&eacute;cup&eacute;rer des colonnes inconnues de fichiers source ou
+									de copier des lots de colonnes d&#8217;une source sans avoir &agrave; mapper
+									chaque colonne individuellement. Pour plus d&#8217;informations
+									concernant les sch&eacute;mas dynamiques, consultez&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+									<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma sera cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le<span class="emphasis"><em> Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+									utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la table &agrave; lire.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Query type </em></span>et
+								<span class="emphasis"><em>Query</em></span></p>
+						</td><td valign="top">
+							<p>Saisissez votre requ&ecirc;te de base de donn&eacute;es en faisant attention &agrave;
+								ce que l&#8217;ordre des champs corresponde &agrave; celui d&eacute;fini dans le
+								sch&eacute;ma.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Si vous utilisez la fonction de sch&eacute;ma dynamique, la requ&ecirc;te SELECT doit inclure le
+									caract&egrave;re *, afin de r&eacute;cup&eacute;rer toutes les colonnes de la table
+									s&eacute;lectionn&eacute;e. </p></div>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Specify a data source alias</em></span>
+						</td><td valign="top">
+							<p>Cochez cette case et sp&eacute;cifiez l'alias de la source de donn&eacute;es cr&eacute;&eacute;e dans <span class="emphasis"><strong>Talend</strong></span>
+		Runtime pour utiliser le pool de connexions partag&eacute;es d&eacute;fini dans la configuration des
+		donn&eacute;es source. Cette option fonctionne lorsque vous d&eacute;ployez et ex&eacute;cutez votre Job dans
+			<span class="emphasis"><strong>Talend</strong></span> Runtime. </p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Si vous utilisez la configuration de la base de donn&eacute;es du composant, la connexion &agrave; votre
+			source de donn&eacute;es se ferme &agrave; la fin du composant. Pour emp&ecirc;cher la fermeture de la
+			connexion, utilisez une connexion partag&eacute;e &agrave; la base de donn&eacute;es, avec l'alias de la
+			source de donn&eacute;es sp&eacute;cifi&eacute;.</p></div>
+							<p>Cette option est indisponible lorsque la case <span class="emphasis"><strong>Use an existing
+			connection</strong></span> est coch&eacute;e.</p>
+						</td></tr><tr><td valign="top">
+							<p><a name="Xaa3857813"></a>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez des informations suppl&eacute;mentaires de connexion &agrave; la base
+								de donn&eacute;es cr&eacute;&eacute;e. Cette option est disponible lorsque la case
+									<span class="emphasis"><strong>Use an existing connection</strong></span> est
+								d&eacute;coch&eacute;e dans les <span class="emphasis"><strong>Basic
+								settings</strong></span>.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous devez traiter des donn&eacute;es au format date/heure
+										<span class="emphasis"><em>0000-00-00 00:00:00</em></span> utilisant ce
+									composant, d&eacute;finissez les param&egrave;tres comme suit&nbsp;:</p><p>
+									<code class="code">noDatetimeStringSync=true&amp;zero&shy;DateTimeBehavior=convertToNull</code>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Enable stream</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour d&eacute;terminer avec quelles lignes vous
+								souhaitez travailler. Cette option permet d&#8217;am&eacute;liorer les
+								performances.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+								champ dans toutes les colonnes contenant des cha&icirc;nes de
+								caract&egrave;res.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Supprimez les espaces en d&eacute;but et en fin de champ dans les
+								colonnes s&eacute;lectionn&eacute;es.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>D&eacute;cochez <span class="emphasis"><strong>Trim all the String/Char
+										columns</strong></span> pour activer le tableau <span class="emphasis"><strong>Trim column</strong></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ligne &agrave; la table.
+		Dans le champ <span class="emphasis"><strong>Code</strong></span>, saisissez une variable de contexte afin
+		de s&eacute;lectionner dynamiquement votre connexion &agrave; la base de donn&eacute;es parmi celles pr&eacute;vues dans
+		votre Job. Cette fonctionnalit&eacute; est utile si vous devez acc&eacute;der &agrave; plusieurs tables de bases
+		de donn&eacute;es ayant la m&ecirc;me structure mais se trouvant dans diff&eacute;rentes bases de donn&eacute;es, en
+		particulier lorsque vous travaillez dans un environnement dans lequel vous ne pouvez pas
+		changer les param&egrave;tres de votre Job, par exemple lorsque votre Job doit &ecirc;tre d&eacute;ploy&eacute; et
+		ex&eacute;cut&eacute; dans un Studio <span class="emphasis"><strong>Talend</strong></span> ind&eacute;pendant.</p>
+							<p>La table <span class="emphasis"><strong>Dynamic settings</strong></span> n'est disponible que si la case
+			<span class="emphasis"><strong>Use an existing connection</strong></span> est coch&eacute;e dans la vue
+			<span class="emphasis"><strong>Basic settings</strong></span>. Lorsqu'un param&egrave;tre dynamique est
+		configur&eacute;, la liste <span class="emphasis"><strong>Component List</strong></span> devient inaccessible
+		dans la vue <span class="emphasis"><strong>Basic settings</strong></span>. </p>
+							<p>Pour plus d'informations concernant les <span class="emphasis"><strong>Dynamic settings</strong></span>
+		et les variables de contexte, consultez le <span class="emphasis"><em>Guide utilisateur Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant couvre toutes les possibilit&eacute;s de requ&ecirc;te SQL dans
+								les bases de donn&eacute;es MySQL.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Ecrire des colonnes d&#8217;une base de donn&eacute;es MySQL dans un fichier de sortie"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111010-databases-writing_output"></a>Sc&eacute;nario&nbsp;: Ecrire des colonnes d&#8217;une base de donn&eacute;es MySQL dans un fichier de
+			sortie</h3></div></div></div><p>Dans ce sc&eacute;nario, vous allez lire des colonnes d&#8217;une base de donn&eacute;es MySQL puis les
+			&eacute;crire dans une table d&#8217;un fichier local de sortie.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e150475"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez un composant <span class="emphasis"><strong>tMysqlInput</strong></span> et un
+							<span class="emphasis"><strong>tFileOutputDelimited</strong></span> de la <span class="emphasis"><strong>Palette</strong></span> dans l&#8217;espace de mod&eacute;lisation
+						graphique.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez le <span class="emphasis"><strong>tMysqlInput</strong></span> au <span class="emphasis"><strong>tFileOutputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Row &gt; Main</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_1.png"></div></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e150506"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tMysqlInput</strong></span> afin d&#8217;ouvrir l&#8217;onglet <span class="emphasis"><strong>Basic settings</strong></span> de la vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_2.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Dans <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, les options <span class="emphasis"><strong>Property type</strong></span>, <span class="emphasis"><strong>Schema</strong></span> et
+				<span class="emphasis"><strong>Query Type</strong></span> des composants sont toujours en mode
+				<span class="emphasis"><strong>Built-in</strong></span>. Pour plus d'informations concernant
+			l'&eacute;dition d'un sch&eacute;ma Built-in, consultez le <span class="emphasis"><em>Guide utilisateur
+				de</em></span>
+			<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div></li><li class="step" title="&Eacute;tape 2"><p>Dans la liste <span class="emphasis"><strong>Property Type</strong></span>, s&eacute;lectionnez
+							<span class="emphasis"><strong>Repository</strong></span>, si vous avez d&eacute;j&agrave; stock&eacute; la
+						connexion &agrave; la base de donn&eacute;es dans le n&#339;ud <span class="emphasis"><strong>Metadata</strong></span> du <span class="emphasis"><strong>Repository</strong></span>. Les
+						informations de connexion sont alors automatiquement renseign&eacute;es. </p><p>Pour plus d&#8217;informations concernant le stockage des m&eacute;tadonn&eacute;es dans le
+							<span class="emphasis"><strong>Repository</strong></span>, consultez le <span class="emphasis"><strong>Guide utilisateur </strong></span>de <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p><p>Si vous n&#8217;avez pas stock&eacute; localement la connexion dans le <span class="emphasis"><strong>Repository</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Built-In</strong></span> dans la liste <span class="emphasis"><strong>Property
+							Type</strong></span> puis renseignez manuellement les informations</p></li><li class="step" title="&Eacute;tape 3"><p><span>Dans la liste <span class="emphasis"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Built-In</strong></span>. </span>Cliquez sur <span class="emphasis"><strong>Edit schema</strong></span> pour configurer le sch&eacute;ma.</p><p>L&#8217;&eacute;diteur du sch&eacute;ma s&#8217;ouvre&nbsp;:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_3.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Cliquez quatre fois sur le bouton <span class="inlinemediaobject"><img src="../images/plus_button.png"></span> pour ajouter quatre lignes au sch&eacute;ma.</p><p>Dans les colonnes <span class="emphasis"><strong>Column</strong></span> et<span class="emphasis"><strong> Db Column</strong></span>, cliquez dans les champs afin de
+						saisir le nom des colonnes
+							correspondantes,&nbsp;<span class="emphasis"><em>id</em></span>,&nbsp;<span class="emphasis"><em>first_name</em></span>,&nbsp;<span class="emphasis"><em>city</em></span>
+							et&nbsp;<span class="emphasis"><em>salary</em></span>, respectivement.</p><p>Cliquez sur les champs de la colonne <span class="emphasis"><strong>Type</strong></span>
+						pour d&eacute;finir le type de donn&eacute;es.</p><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer l&#8217;&eacute;diteur du
+						sch&eacute;ma.</p></li><li class="step" title="&Eacute;tape 5"><p>A c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Table Name</strong></span>, cliquez sur
+						le bouton<span class="emphasis"><strong> [...]</strong></span> pour s&eacute;lectionner la table
+						de la base de donn&eacute;es souhait&eacute;e.</p><p>Une bo&icirc;te de dialogue affiche une arborescence de toutes les tables dans
+						la base de donn&eacute;es s&eacute;lectionn&eacute;e&nbsp;:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_4.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur la table qui vous int&eacute;resse puis sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de dialogue.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans la liste<span class="emphasis"><strong> Query Type</strong></span>, s&eacute;lectionnez
+							<span class="emphasis"><strong>Built-In</strong></span>. </p></li><li class="step" title="&Eacute;tape 8"><p>Dans le champ <span class="emphasis"><strong>Query</strong></span>, saisissez la requ&ecirc;te
+						permettant de r&eacute;cup&eacute;rer les colonnes souhait&eacute;es de la table.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_5.png"></div></li><li class="step" title="&Eacute;tape 9"><p>Double-cliquez sur le <span class="emphasis"><strong>tFileOutputDelimited</strong></span> afin d&#8217;afficher sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_6.png"></div></li><li class="step" title="&Eacute;tape 10"><p>A c&ocirc;t&eacute; du champ <span class="emphasis"><strong>File Name</strong></span>, cliquez sur le
+						bouton <span class="emphasis"><strong>[...]</strong></span> afin de parcourir votre
+						syst&egrave;me jusqu&#8217;&agrave; l&#8217;emplacement o&ugrave; vous souhaitez sauvegarder le fichier de
+						sortie, puis saisissez un nom pour le fichier.</p><p>Cochez la case <span class="emphasis"><strong>Include Header</strong></span> afin de
+						r&eacute;cup&eacute;rer le nom des colonnes du sch&eacute;ma ainsi que les donn&eacute;es.</p></li><li class="step" title="&Eacute;tape 11"><p>Sauvegardez le Job en appuyant sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span>. </p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e150712"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour ex&eacute;cuter votre Job.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_7.png"></div><p>Dans le fichier de sortie est &eacute;crit le nom des colonnes souhait&eacute;es et les donn&eacute;es
+				correspondantes, r&eacute;cup&eacute;r&eacute;s de la base de donn&eacute;es&nbsp;:</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Le Job peut &eacute;galement &ecirc;tre ex&eacute;cut&eacute; en mode <span class="emphasis"><strong>Traces
+						Debug</strong></span>, ce qui vous permet de voir les lignes pendant leur
+					&eacute;criture dans le fichier de sortie, dans l&#8217;espace de mod&eacute;lisation
+					graphique.</p></div></div></div><div class="section" title="Sc&eacute;nario 2 : Utiliser des param&egrave;tres de contexte lors de la lecture d'une table d'une base de donn&eacute;es MySQL"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e150731"></a>Sc&eacute;nario 2 : Utiliser des param&egrave;tres de contexte lors de la lecture d'une table d'une
+			base de donn&eacute;es MySQL </h3></div></div></div><p>Dans ce sc&eacute;nario, une table d'une base de donn&eacute;es MySQL est lue, &agrave; l'aide un param&egrave;tre
+			de contexte r&eacute;f&eacute;rant au nom de la table.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e150736"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez un composant <span class="emphasis"><strong>tMysqlInput</strong></span> et un
+							<span class="emphasis"><strong>tLogRow</strong></span> de la <span class="emphasis"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez le <span class="emphasis"><strong>tMysqlInput</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row &gt; Main</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_1.png"></div></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e150767"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tMysqlInput</strong></span> pour
+						ouvrir la vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_2.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Dans <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, les options <span class="emphasis"><strong>Property type</strong></span>, <span class="emphasis"><strong>Schema</strong></span> et
+				<span class="emphasis"><strong>Query Type</strong></span> des composants sont toujours en mode
+				<span class="emphasis"><strong>Built-in</strong></span>. Pour plus d'informations concernant
+			l'&eacute;dition d'un sch&eacute;ma Built-in, consultez le <span class="emphasis"><em>Guide utilisateur
+				de</em></span>
+			<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div></li><li class="step" title="&Eacute;tape 2"><p>Dans la liste <span class="emphasis"><strong>Property Type</strong></span>, s&eacute;lectionnez
+							<span class="emphasis"><strong>Repository</strong></span> si vous avez d&eacute;j&agrave; stock&eacute; la
+						connexion &agrave; la base de donn&eacute;es dans le n&#339;ud <span class="emphasis"><strong>Metadata</strong></span> du <span class="emphasis"><strong>Repository</strong></span>. Les
+						champs des propri&eacute;t&eacute;s sont automatiquement renseign&eacute;s.</p><p>Pour plus d'informations concernant le stockage d'une connexion &agrave; une base
+						de donn&eacute;es, consultez le <span class="emphasis"><strong>Guide utilisateur</strong></span>
+						de <span class="emphasis"><em>Talend Data Integration Studio</em></span>. </p><p>Si vous n'avez pas configur&eacute; de connexion &agrave; une base de donn&eacute;es dans le
+							<span class="emphasis"><strong>Repository</strong></span>, renseignez manuellement les
+						informations apr&egrave;s avoir s&eacute;lectionn&eacute; <span class="emphasis"><strong>Built-in</strong></span> dans la liste <span class="emphasis"><strong>Property
+							Type</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p><span>Configurez le <span class="emphasis"><strong>Schema</strong></span> en <span class="emphasis"><strong>Built-In</strong></span>.
+						</span>Cliquez sur <span class="emphasis"><strong>Edit schema</strong></span> pour
+						d&eacute;finir le sch&eacute;ma comme vous le souhaitez.</p><p> L'&eacute;diteur du sch&eacute;ma s'ouvre :</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_3.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/plus_button.png"></span> pour ajouter les sept colonnes &agrave; utiliser pour
+						configurer le sch&eacute;ma et renommez-les respectivement :
+							<span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>first_name</em></span>, <span class="emphasis"><em>last_name</em></span>, <span class="emphasis"><em>city</em></span>, <span class="emphasis"><em>state</em></span>, <span class="emphasis"><em>date_of_birth</em></span> et <span class="emphasis"><em>salary</em></span>.</p><p>Cliquez sur les lignes de la colonne <span class="emphasis"><strong>Type</strong></span>
+						pour d&eacute;finir le type des donn&eacute;es.</p><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer l'&eacute;diteur du
+						sch&eacute;ma.</p></li><li class="step" title="&Eacute;tape 5"><p>Placez votre souris sur le champ <span class="emphasis"><strong>Table
+							Name</strong></span> et appuyez sur <span class="emphasis"><strong>F5</strong></span> pour
+						configurer les param&egrave;tres de contexte. </p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_4.png"></div><p>Pour plus d'informations concernant les param&egrave;tres de contexte, consultez
+						le <span class="emphasis"><strong>Guide utilisateur</strong></span> de <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Laissez les param&egrave;tres par d&eacute;faut dans le champ <span class="emphasis"><strong>Name</strong></span> et saisissez le nom de la table de la base de donn&eacute;es
+						dans le champ <span class="emphasis"><strong>Default value</strong></span>, <span class="emphasis"><em>employees</em></span> dans ce cas. </p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur <span class="emphasis"><strong>Finish</strong></span> pour valider. </p><p>Le param&egrave;tre de contexte <span class="emphasis"><em>context.TABLE</em></span>
+						appara&icirc;t automatiquement dans le champ <span class="emphasis"><strong>Table
+							Name</strong></span>.</p></li><li class="step" title="&Eacute;tape 8"><p><span>Dans la liste <span class="emphasis"><strong>Query
+								type</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Built-In</strong></span>. </span>Cliquez sur <span class="emphasis"><strong>Guess Query</strong></span> pour obtenir l'instruction de la requ&ecirc;te. </p><p>Dans ce sc&eacute;nario, lisez les enregistrements contenant un salaire sup&eacute;rieur
+						&agrave; 8000. Ajoutez une clause <code class="code">Where</code>. L'instruction finale
+						s'affiche comme suit :</p><pre class="programlisting">"SELECT 
+  "+context.TABLE+".`id`, 
+  "+context.TABLE+".`first_name`, 
+  "+context.TABLE+".`last_name`, 
+  "+context.TABLE+".`city`, 
+  "+context.TABLE+".`state`, 
+  "+context.TABLE+".`date_of_birth`, 
+  "+context.TABLE+".`salary`
+FROM "+context.TABLE+"
+WHERE
+  "+context.TABLE+".`salary` &gt; 8000"</pre></li><li class="step" title="&Eacute;tape 9"><p> Double-cliquez sur le <span class="emphasis"><strong>tLogRow</strong></span> pour
+						configurer ses propri&eacute;t&eacute;s de base dans l'onglet <span class="emphasis"><strong>Basic
+							settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_5.png"></div></li><li class="step" title="&Eacute;tape 10"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Table (print values in cells of a table)</strong></span> pour un
+						meilleur affichage des r&eacute;sultats.</p></li><li class="step" title="&Eacute;tape 11"><p>Sauvegardez le Job.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e150989"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour ex&eacute;cuter votre Job. Les
+				r&eacute;sultats s'affichent dans la console.</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_6.png"></div><p>Comme vous pouvez le constater ci-dessus, les enregistrements comportant un
+				salaire sup&eacute;rieur &agrave; 8000 sont r&eacute;cup&eacute;r&eacute;s.</p></div></div><div class="section" title="Sc&eacute;nario 3 : Lire des donn&eacute;es dans des bases de donn&eacute;es MySQL &agrave; l'aide de connexions dynamiques bas&eacute;es sur les variables de contexte"><div class="titlepage"><div><div><h3 class="title"><a name="jzhang-20130629-dynamic_db_connection"></a>Sc&eacute;nario 3 : Lire des donn&eacute;es dans des bases de donn&eacute;es MySQL &agrave; l'aide de connexions
+			dynamiques bas&eacute;es sur les variables de contexte</h3></div></div></div><p>Dans ce sc&eacute;nario, vous allez lire des donn&eacute;es depuis des tables de bases de donn&eacute;es ayant la
+			m&ecirc;me structure mais se trouvant dans deux diff&eacute;rentes bases de donn&eacute;es MySQL nomm&eacute;es
+			respectivement <span class="emphasis"><em>project_q1</em></span> et <span class="emphasis"><em>project_q2</em></span>. Vous allez sp&eacute;cifier dynamiquement les connexions &agrave; ces
+			bases de donn&eacute;es au moment de l'ex&eacute;cution, sans modifier le Job.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e151013"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez deux composants <span class="emphasis"><strong>tMysqlConnection</strong></span>, un <span class="emphasis"><strong>tMysqlInput</strong></span>, un <span class="emphasis"><strong>tLogRow</strong></span> et un <span class="emphasis"><strong>tMysqlClose</strong></span>
+						dans l'espace de mod&eacute;lisation graphique.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez le premier <span class="emphasis"><strong>tMysqlConnection</strong></span> au second <span class="emphasis"><strong>tMysqlConnection</strong></span> et le second <span class="emphasis"><strong>tMysqlConnection</strong></span> au <span class="emphasis"><strong>tMysqlInput</strong></span> &agrave; l'aide de liens <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>On Subjob
+						Ok</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Reliez le <span class="emphasis"><strong>tMysqlInput</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Reliez le <span class="emphasis"><strong>tMysqlInput</strong></span> au <span class="emphasis"><strong>tMysqlClose</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>On Subjob
+						Ok</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-1.png"></div></li></ol></div></div><div class="section" title="Cr&eacute;er une variable de contexte"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e151086"></a>Cr&eacute;er une variable de contexte</h4></div></div></div><p>Afin de pouvoir choisir dynamiquement une connexion &agrave; la base de donn&eacute;es au moment de
+				l'ex&eacute;cution, vous devez d&eacute;finir une variable de contexte. Cette derni&egrave;re est
+				configur&eacute;e dans les param&egrave;tres <span class="emphasis"><strong>Dynamic settings</strong></span> du
+				composant d'entr&eacute;e de la base de donn&eacute;es.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="emphasis"><strong>Contexts</strong></span>, s&eacute;lectionnez l'onglet <span class="emphasis"><strong>Variables</strong></span>. Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> afin d'ajouter une ligne &agrave; la table et
+						nommez-la, par exemple, <span class="emphasis"><em>myConnection</em></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-context1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez l'onglet <span class="emphasis"><strong>Values as tree</strong></span> puis d&eacute;veloppez le
+						n&#339;ud <span class="emphasis"><strong>myConnection</strong></span>. Dans le champ <span class="emphasis"><strong>Prompt</strong></span>, saisissez le message que vous souhaitez
+						afficher &agrave; l'ex&eacute;cution et cochez la case situ&eacute;e &agrave; c&ocirc;t&eacute; du message que vous
+						venez de saisir.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-context2.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Value</strong></span>, saisissez le nom unique du
+						composant que vous souhaitez utiliser en tant que composant de connexion par
+						d&eacute;faut, le <span class="emphasis"><em>tMysqlConnection_1</em></span> dans cet
+						exemple.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e151137"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le premier composant <span class="emphasis"><strong>tMysqlConnection</strong></span>
+						afin d'afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et
+						saisissez les informations de connexion. Pour plus d'informations concernant
+						la configuration du <span class="emphasis"><strong>tMysqlConnection</strong></span>,
+						consultez <a class="xref" href="tMysqlConnection.html" title="tMysqlConnection">la section intitul&eacute;e &laquo;&nbsp;tMysqlConnection&nbsp;&raquo;</a>.</p><p>Notez que ce composant sert &agrave; ouvrir une connexion &agrave; une base de donn&eacute;es MySQL nomm&eacute;e
+							<span class="emphasis"><em>project_q1</em></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Configurez le second composant <span class="emphasis"><strong>tMysqlConnection</strong></span> de la
+						m&ecirc;me fa&ccedil;on mais en saisissant <span class="emphasis"><em>project_q2</em></span>
+						dans le champ <span class="emphasis"><strong>Database</strong></span>. En effet, ce
+						composant sert &agrave; ouvrir une connexion &agrave; une autre base de donn&eacute;es MySQL,
+							<span class="emphasis"><em>project_q2</em></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-3.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Double-cliquez sur le <span class="emphasis"><strong>tMysqlInput</strong></span> afin d'ouvrir sa vue
+							<span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-4.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Cochez la case <span class="emphasis"><strong>Use an existing connection</strong></span> et laissez la
+						case <span class="emphasis"><strong>Component List</strong></span> comme elle est.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> situ&eacute; &agrave; c&ocirc;t&eacute; du champ
+							<span class="emphasis"><strong>Edit schema</strong></span> afin d'ouvrir la bo&icirc;te de
+						dialogue <span class="emphasis"><strong>[Schema]</strong></span>. D&eacute;finissez la structure
+						de la table de la base de donn&eacute;es &agrave; partir de laquelle les donn&eacute;es sont
+						lues.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-5.png"></div><p>Dans cet exemple, la structure de la table de la base de donn&eacute;es est compos&eacute;e de quatre
+						colonnes : <span class="emphasis"><em>id</em></span> (de type <span class="emphasis"><strong>Integer</strong></span> et d'une longueur de 2 caract&egrave;res),
+							<span class="emphasis"><em>firstName</em></span> (de type <span class="emphasis"><strong>String</strong></span> et d'une longueur de 15 caract&egrave;res),
+							<span class="emphasis"><em>lastName</em></span> (de type <span class="emphasis"><strong>String</strong></span> et d'une longueur de 15 caract&egrave;res) et
+							<span class="emphasis"><em>city</em></span> (de type <span class="emphasis"><strong>String</strong></span> et d'une longueur de 15 caract&egrave;res). Cliquez sur
+							<span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de dialogue et
+						propager le sch&eacute;ma au composant suivant.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans le champ <span class="emphasis"><strong>Table</strong></span>, saisissez le nom de la table de la
+						base de donn&eacute;es, <span class="emphasis"><em>customers</em></span> dans cet
+						exemple. Cliquez sur <span class="emphasis"><strong>Guess Query</strong></span> afin de
+						g&eacute;n&eacute;rer l'instruction de la requ&ecirc;te correspondant au sch&eacute;ma de votre table
+						dans le champ <span class="emphasis"><strong>Query</strong></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans la vue <span class="emphasis"><strong>Dynamic settings</strong></span>, cliquez sur le bouton
+							<span class="emphasis"><strong>[+]</strong></span> afin d'ajouter une ligne &agrave; votre
+						table. Dans le champ <span class="emphasis"><strong>Code</strong></span>, saisissez le
+						code du script de la variable de contexte que vous venez de cr&eacute;er, <code class="code">" +
+							context.myConnection + "</code> dans cet exemple.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-6.png"></div></li><li class="step" title="&Eacute;tape 8"><p>Dans la vue <span class="emphasis"><strong>Basic settings</strong></span> du <span class="emphasis"><strong>tLogRow</strong></span>, s&eacute;lectionnez l'option <span class="emphasis"><strong>Table</strong></span> pour un meilleur affichage des r&eacute;sultats d'ex&eacute;cution
+						du Job.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-7.png"></div></li><li class="step" title="&Eacute;tape 9"><p>Dans la vue <span class="emphasis"><strong>Dynamic settings</strong></span> du <span class="emphasis"><strong>tMysqlClose</strong></span>, proc&eacute;dez de la m&ecirc;me mani&egrave;re que dans la vue
+							<span class="emphasis"><strong>Dynamic settings</strong></span> du <span class="emphasis"><strong>tMysqlInput</strong></span>.</p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e151309"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur <span class="emphasis"><strong>Ctrl+S</strong></span> pour sauvegarder votre Job. Appuyez
+						sur <span class="emphasis"><strong>F6</strong></span> ou cliquez sur <span class="emphasis"><strong>Run</strong></span> afin de l'ex&eacute;cuter.</p><p>Une bo&icirc;te de dialogue s'affiche vous demander de sp&eacute;cifier le composant de connexion que
+						vous souhaitez utiliser.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-8.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Afin d'utiliser le composant par d&eacute;faut, cliquez sur <span class="emphasis"><strong>OK</strong></span>. </p><p>Les donn&eacute;es lues depuis la base de donn&eacute;es <span class="emphasis"><em>project_q1</em></span>
+						s'affichent dans la console <span class="emphasis"><strong>Run</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-9.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> ou cliquez sur <span class="emphasis"><strong>Run</strong></span> afin d'ex&eacute;cuter le Job &agrave; nouveau. Quand la bo&icirc;te de
+						dialogue s'affiche, saisissez le nom de l'autre composant de connexion, &agrave;
+						savoir <span class="emphasis"><strong>tMysqlConnection_2</strong></span>, afin de lire les
+						donn&eacute;es depuis l'autre base de donn&eacute;es, <span class="emphasis"><em>project_q2</em></span>.</p><p>Les donn&eacute;es lues depuis la base de donn&eacute;es <span class="emphasis"><em>project_q2</em></span>
+						s'affichent dans la console <span class="emphasis"><strong>Run</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-10.png"></div></li></ol></div></div></div><div class="section" title="Sc&eacute;nario&nbsp;4&nbsp;: Ecrire des colonnes dynamiques d&#8217;une base de donn&eacute;es MySQL vers un fichier de sortie"><div class="titlepage"><div><div><h3 class="title"><a name="Raa75399"></a>Sc&eacute;nario&nbsp;4&nbsp;: Ecrire des colonnes dynamiques d&#8217;une base de donn&eacute;es MySQL vers un fichier de
+			sortie</h3></div></div></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>
+				<span class="emphasis"><em>Ce sc&eacute;nario utilise la fonctionnalit&eacute; de sch&eacute;ma dynamique, disponible
+					uniquement pour les utilisateurs ayant souscrit &agrave; l'une des solutions
+					<span class="emphasis"><strong>Talend</strong></span>.</em></span>
+			</p></div><p>Dans ce sc&eacute;nario, vous allez lire des colonnes dynamiques d&#8217;une base de donn&eacute;es MySQL,
+			les mapper puis les &eacute;crire dans une table, dans un fichier de sortie local. En
+			d&eacute;finissant une colonne dynamique et les noms connus des colonnes, vous pouvez retrouver
+			toutes les colonnes de la table de la base de donn&eacute;es, y compris les colonnes
+			inconnues.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;posez un composant <span class="emphasis"><strong>tMysqlInput</strong></span>, un
+					composant <span class="emphasis"><strong>tMap</strong></span> et un composant <span class="emphasis"><strong>tFileOutputDelimited</strong></span> dans l&#8217;espace de mod&eacute;lisation
+					graphique.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Reliez le <span class="emphasis"><strong>tMysqlInput</strong></span> au <span class="emphasis"><strong>tMap</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Reliez le <span class="emphasis"><strong>tMap</strong></span> au <span class="emphasis"><strong>tFileOutputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>*New Output*
+					(Main)</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="emphasis"><strong>tMysqlInput</strong></span> afin
+					d&#8217;ouvrir sa vue <span class="emphasis"><strong>Basic Settings</strong></span> dans l&#8217;onglet
+						<span class="emphasis"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_2.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>
+				<span class="emphasis"><em>La fonction de sch&eacute;ma dynamique n&#8217;est support&eacute;e qu&#8217;en mode </em></span>
+				<span class="emphasis"><strong>Built-In</strong></span>
+				<span class="emphasis"><em>.</em></span>
+			</p></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="emphasis"><strong>Property Type</strong></span>, s&eacute;lectionnez
+						<span class="emphasis"><strong>Built-in</strong></span>.</p></li><li class="listitem"><p>Dans la liste <span class="emphasis"><strong>DB Version</strong></span>, s&eacute;lectionnez la
+					version de la base de donn&eacute;es que vous utilisez.</p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Host</strong></span>, saisissez l&#8217;adresse IP du
+					serveur de la base de donn&eacute;es.</p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Port</strong></span>, saisissez le num&eacute;ro du
+					port d&#8217;&eacute;coute du serveur de la base de donn&eacute;es.</p></li><li class="listitem"><p>Dans les champs <span class="emphasis"><strong>Username</strong></span> et <span class="emphasis"><strong>Password</strong></span>, saisissez respectivement votre identifiant
+					et votre mot de passe de connexion au serveur de la base de donn&eacute;es.</p></li><li class="listitem"><p>Dans la liste <span class="emphasis"><strong>Schema type</strong></span>,
+						s&eacute;lectionnez<span class="emphasis"><strong> Built-in</strong></span> puis cliquez sur
+						<span class="emphasis"><strong>Edit schema</strong></span> afin de d&eacute;finir le sch&eacute;ma
+					dynamique.</p><p>L&#8217;&eacute;diteur du sch&eacute;ma s&#8217;ouvre&nbsp;:</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/plus_button.png"></span> pour ajouter une ligne au sch&eacute;ma.</p></li><li class="listitem"><p>Dans les colonnes <span class="emphasis"><strong>Column</strong></span> et<span class="emphasis"><strong> Db Column</strong></span>, cliquez dans les champs afin de saisir le
+					nom des colonnes correspondantes. </p></li><li class="listitem"><p>Cliquez sur la liste <span class="emphasis"><strong>Type</strong></span> pour d&eacute;finir le
+					type des donn&eacute;es.</p><p>Cliquez sur la fl&egrave;che et s&eacute;lectionnez <span class="emphasis"><strong>Dynamic</strong></span>
+					dans la liste.</p></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>
+				<span class="emphasis"><em>Dans la liste </em></span>
+				<span class="emphasis"><strong>Type</strong></span>
+				<span class="emphasis"><em>, le type de la colonne dynamique doit &ecirc;tre d&eacute;fini comme </em></span>
+				<span class="emphasis"><strong>Dynamic</strong></span>
+				<span class="emphasis"><em>.</em></span>
+			</p></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer l&#8217;&eacute;diteur du
+					sch&eacute;ma.</p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Table Name</strong></span>, cliquez sur le
+						bouton<span class="emphasis"><strong> [...]</strong></span> afin de s&eacute;lectionner la table
+					souhait&eacute;e de la base de donn&eacute;es.</p><p> Une bo&icirc;te de dialogue affiche une arborescence de toutes les tables de la
+					base de donn&eacute;es s&eacute;lectionn&eacute;e&nbsp;:</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_4.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur la table souhait&eacute;e, puis cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de dialogue.</p></li><li class="listitem"><p>D&eacute;finissez le type de requ&ecirc;te, dans la liste<span class="emphasis"><strong> Query
+						Type</strong></span>, comme <span class="emphasis"><strong>Built-In</strong></span>. </p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Query</strong></span>, saisissez la requ&ecirc;te
+					permettant de r&eacute;cup&eacute;rer toutes les colonnes de la table.</p></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>
+				<span class="emphasis"><em>Dans l&#8217;instruction SELECT, il est n&eacute;cessaire d&#8217;utiliser le caract&egrave;re *,
+					pour r&eacute;cup&eacute;rer toutes les colonnes de la table s&eacute;lectionn&eacute;e.</em></span>
+			</p></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_5.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le <span class="emphasis"><strong>tMap</strong></span> afin d&#8217;ouvrir sa vue
+						<span class="emphasis"><strong>Basic Settings</strong></span> dans l&#8217;onglet <span class="emphasis"><strong>Component</strong></span>. </p></li><li class="listitem"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+						<span class="emphasis"><strong>Map Editor</strong></span> pour mapper la colonne du
+					fichier source.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_6.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;posez la colonne d&eacute;finie comme dynamique du sch&eacute;ma d&#8217;entr&eacute;e, &agrave; gauche, dans
+					le sch&eacute;ma de sortie, &agrave; droite.</p><p>La colonne d&eacute;pos&eacute;e dans le sch&eacute;ma de sortie contient ses valeurs
+					d&#8217;origine.</p></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>
+				<span class="emphasis"><em>La colonne dynamique doit &ecirc;tre mapp&eacute;e seule et ne peut subir de
+					transformation. Elle ne peut &ecirc;tre utilis&eacute;e dans une expression de filtre ou dans
+					des variables. Elle ne peut &ecirc;tre renomm&eacute;e dans la table de sortie et ne peut
+					&ecirc;tre utilis&eacute;e comme condition de jointure.</em></span>
+			</p></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_7.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer l&#8217;&eacute;diteur
+						<span class="emphasis"><strong>Map Editor</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tFileOutputDelimited</strong></span> afin de d&eacute;finir ses <span class="emphasis"><strong>Basic Settings</strong></span> dans l&#8217;onglet <span class="emphasis"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_8.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A c&ocirc;t&eacute; du champ <span class="emphasis"><strong>File Name</strong></span>, cliquez sur le
+					bouton <span class="emphasis"><strong>[...]</strong></span> afin de parcourir votre r&eacute;pertoire
+					jusqu&#8217;&agrave; l&#8217;endroit o&ugrave; vous souhaitez sauvegarder votre fichier de sortie, puis
+					saisissez un nom pour le fichier.</p></li><li class="listitem"><p>Cochez la case <span class="emphasis"><strong>Include Header</strong></span> pour r&eacute;cup&eacute;rer
+					le nom des colonnes ainsi que les donn&eacute;es.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="emphasis"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter.</p><p>Le fichier de sortie contient le nom de toutes les colonnes et les donn&eacute;es
+					correspondantes, r&eacute;cup&eacute;r&eacute;s de la base de donn&eacute;es via le sch&eacute;ma
+					dynamique&nbsp;:</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_9.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Le Job peut &eacute;galement &ecirc;tre ex&eacute;cut&eacute; en mode <span class="emphasis"><strong>Traces
+					Debug</strong></span>, qui vous permet de voir les lignes telles qu&#8217;elles sont
+				&eacute;crites dans le fichier de sortie, dans l&#8217;espace de mod&eacute;lisation graphique.</p></div><p>Pour plus d&#8217;informations concernant la d&eacute;finition et le mapping des sch&eacute;mas
+			dynamiques, consultez le <span class="emphasis"><strong>Guide utilisateur</strong></span> de <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p><p>Pour des sc&eacute;narios associ&eacute;s, consultez&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tContextLoad.html#Raa15947" title="Sc&eacute;nario&nbsp;: Utiliser un contexte dynamique lors d&#8217;un insert dans une base de donn&eacute;es MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Utiliser un contexte dynamique lors d&#8217;un insert dans une base de donn&eacute;es
+            MySQL&nbsp;&raquo;</a>.</p></li><li class="listitem"><p><a class="xref" href="tDBInput.html#Raa63072" title="Sc&eacute;nario&nbsp;1&nbsp;: Afficher les donn&eacute;es s&eacute;lectionn&eacute;es &agrave; partir d&#8217;une table">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Afficher les donn&eacute;es s&eacute;lectionn&eacute;es &agrave; partir d&#8217;une table&nbsp;&raquo;</a>.</p></li><li class="listitem"><p><a class="xref" href="tDBInput.html#Raa91088" title="Sc&eacute;nario&nbsp;2&nbsp;: Utiliser la variable StoreSQLQuery">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Utiliser la variable StoreSQLQuery&nbsp;&raquo;</a>.</p></li><li class="listitem"><p><a class="xref" href="tMysqlOutput.html#Raa52976" title="Sc&eacute;nario 4&nbsp;: Ecrire des colonnes dynamiques d&#8217;un fichier source vers une base de donn&eacute;es MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario 4&nbsp;: Ecrire des colonnes dynamiques d&#8217;un fichier source vers une base de
+			donn&eacute;es MySQL&nbsp;&raquo;</a>.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMysqlConnection.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMysqlLastInsertId.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tMysqlConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tMysqlLastInsertId</td></tr></table></div></body></html>

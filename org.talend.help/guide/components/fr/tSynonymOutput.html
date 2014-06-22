@@ -1,0 +1,312 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSynonymOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-dataquality.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tSurviveFields.html" title="tSurviveFields"><link rel="next" href="tSynonymSearch.html" title="tSynonymSearch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSynonymOutput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSurviveFields.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;6.&nbsp;Composants Data Quality</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSynonymSearch.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tSynonymOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSynonymOutput"></a>tSynonymOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tSynonymOutput_icon32.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du studio si
+			vous avez souscrit &agrave; l'un des produits <span class="emphasis"><em>Talend Platform</em></span>.</p></div><div class="section" title="Propri&eacute;t&eacute;s du tSynonymOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e112817"></a>Propri&eacute;t&eacute;s du tSynonymOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Data Quality</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tSynonymOutput</strong></span> cr&eacute;e
+                                un index de Lucene et le remplit avec les entr&eacute;es et les synonymes
+                                qu&#8217;il re&ccedil;oit.</p>
+                            <p>Pour plus d'informations concernant l'acc&egrave;s et la gestion des mots
+                                et des entr&eacute;es de r&eacute;f&eacute;rence (documents) d'un synonyme existant, &agrave;
+                                l'aide de l'&eacute;diteur d'index de synonymes, consultez le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Quality</em></span>.</p>
+                            <p>Pour plus d'informations concernant les index de synonymes
+                                disponibles, consultez l'annexe concernant les dictionnaires des
+                                synonymes de donn&eacute;es dans le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Quality</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Le calcul de similarit&eacute; des synonymes est am&eacute;lior&eacute; en
+                                        version 5.1 du Studio. Si vos index ont &eacute;t&eacute; cr&eacute;&eacute;s avec une
+                                        version 5.0 ou ant&eacute;rieure et si vous devez les g&eacute;rer &agrave;
+                                        l'aide de cette m&eacute;thode de calcul am&eacute;lior&eacute;e, vous devez
+                                        mettre &agrave; jour ces index en ex&eacute;cutant le fichier <span class="emphasis"><em>IndexMigrator.jar</em></span>
+                                        t&eacute;l&eacute;chargeable &agrave; l'adresse : <a class="link" href="http://talendforge.org/svn/top/trunk/org.talend.dataquality.standardization.migration/dist/IndexMigrator.jar" target="_top">http://talendforge.org/svn/top/trunk/org.talend.dataquality.standardization.migration/dist/IndexMigrator.jar</a>.
+                                        La commande &agrave; utiliser pour ex&eacute;cuter ce fichier jar est
+                                        </p><pre class="programlisting"><code class="code">java -jar IndexMigrator.jar &lt;inputPath&gt; &lt;outputPath(optional)&gt; </code></pre><p>(o&ugrave; <code class="code">inputPath</code> est le chemin d'entr&eacute;e des jars
+                                        &agrave; migrer et <code class="code">outputPath(optional)</code> est
+                                        l'emplacement de sortie facultatif des jars migr&eacute;s).</p></div>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tSynonymOutput</strong></span> cr&eacute;e des index
+                                de synonymes auxquels certains composants comme le <span class="emphasis"><strong>tStandardizeRow</strong></span> ou le <span class="emphasis"><strong>tSynonymSearch</strong></span> peuvent renvoyer lors du
+                                traitement des donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma
+                                est soit local (built-in) soit distant dans le <span class="emphasis"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; ponctuellement pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Index path</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez le chemin d&#8217;acc&egrave;s, ou parcourez votre syst&egrave;me et
+                                s&eacute;lectionnez l&#8217;emplacement o&ugrave; vous souhaitez cr&eacute;er et stocker
+                                l&#8217;index de synonymes. Si le r&eacute;pertoire sp&eacute;cifi&eacute; n'existe pas, le
+                                composant va le cr&eacute;er.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Operations</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;op&eacute;ration d'index &agrave; effectuer dans le dossier
+                                sp&eacute;cifi&eacute; dans le champ <span class="emphasis"><strong>Index
+                                path</strong></span>.</p>
+                            <p><span class="emphasis"><strong>(Delete and) initialize an index</strong></span>
+                                : cette op&eacute;ration cr&eacute;e un nouvel index et le remplit avec les
+                                entr&eacute;es et les synonymes correspondants. Si un index existe d&eacute;j&agrave;,
+                                supprimez-le avant d'en cr&eacute;er un nouveau.</p>
+                            <p><span class="emphasis"><strong>Insert new documents&nbsp;</strong></span>: cette
+                                op&eacute;ration ins&egrave;re les nouvelles entr&eacute;es dans l&#8217;index existant. Les
+                                synonymes en doublon n&#8217;y sont pas ins&eacute;r&eacute;s.</p>
+                            <p><span class="emphasis"><strong>Update existing documents and insert if not
+                                    existing&nbsp;</strong></span>: cette op&eacute;ration met &agrave; jour les synonymes
+                                existants et ajoute les nouveaux synonymes dans l&#8217;index.</p>
+                            <p><span class="emphasis"><strong>Delete existing documents&nbsp;</strong></span>: cette
+                                op&eacute;ration supprime les documents existants dans l&#8217;index.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Entry</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez la colonne que vous souhaitez ins&eacute;rer pour cr&eacute;er les
+                                entr&eacute;es de l&#8217;index.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Synonyms</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez la colonne que vous souhaitez ins&eacute;rer pour cr&eacute;er les
+                                synonymes correspondants aux diff&eacute;rentes entr&eacute;es d&#8217;index.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Synonym separator</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Renseignez le s&eacute;parateur &agrave; utiliser pour s&eacute;parer les synonymes de
+                                chaque entr&eacute;e d&#8217;index. Par d&eacute;faut, ce s&eacute;parateur est<code class="code">
+                                |</code>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+                                Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Connections</strong></span>
+                            </p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Liens de sortie (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Row&nbsp;</strong></span>: Main; Reject</p>
+                            <p><span class="emphasis"><strong>Trigger&nbsp;</strong></span>: Run if; On Component
+                                Ok; On Component Error.</p>
+                            <p> </p>
+                            <p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Row&nbsp;</strong></span>: Main; Reject </p>
+                            <p> </p>
+                            <p>Pour plus d&#8217;informations concernant les connexions, consultez
+                                    <span class="emphasis"><em>le Guide utilisateur
+                                    </em></span><span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant requiert des donn&eacute;es d&#8217;entr&eacute;e provenant du composant
+                                pr&eacute;c&eacute;dent pour cr&eacute;er ou mettre &agrave; jour des index.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;1&nbsp;: Cr&eacute;er un index des synonymes de noms de villes"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e113201"></a>Sc&eacute;nario&nbsp;1&nbsp;: Cr&eacute;er un index des synonymes de noms de villes</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; trois composants permettant de cr&eacute;er un index des noms de
+            villes standardis&eacute;s, capable de fournir les r&eacute;f&eacute;rences des synonymes des villes utilis&eacute;s
+            dans les donn&eacute;es clients d&#8217;une entreprise.</p><p>Afin de cr&eacute;er cet index, un fichier source est n&eacute;cessaire pour fournir le nom des
+            villes et leurs synonymes associ&eacute;s. Pour ce sc&eacute;nario, utilisez un
+                fichier&nbsp;<span class="emphasis"><em>.csv</em></span> comme suit&nbsp;:</p><pre class="programlisting">CityName;Synonyms
+North Reading;Redding|North Reading|N. Reading|N Reading|N Redding|NR
+Young America;YA|Young America
+Dedham;Dedham|dedham|deadham
+New York;NY|New York</pre><p>Ce fichier contient deux colonnes&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>la colonne de gauche est la colonne&nbsp;<span class="emphasis"><em>CityName</em></span> qui contient
+                    le nom des villes standardis&eacute;s comme donn&eacute;es de r&eacute;f&eacute;rence.</p></li><li class="listitem"><p>la colonne de droite est la colonne&nbsp;<span class="emphasis"><em>Synonyms</em></span> qui contient
+                    plusieurs synonymes provenant des donn&eacute;es clients de cette entreprise.</p></li></ul></div><p>Les trois composants utilis&eacute;s pour ce sc&eacute;nario sont&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>le <span class="emphasis"><strong>tFileInputDelimited</strong></span>&nbsp;: ce composant charge
+                    des donn&eacute;es &agrave; partir d&#8217;un fichier source et les entre dans le <span class="emphasis"><strong>tSynonymOutput</strong></span>.</p></li><li class="listitem"><p>le <span class="emphasis"><strong>tSynonymOutput&nbsp;</strong></span>: ce composant cr&eacute;e l&#8217;index
+                    utilis&eacute; pour ce sc&eacute;nario et le remplit avec les synonymes d&eacute;finis dans le
+                    fichier source.</p></li><li class="listitem"><p>le <span class="emphasis"><strong>tLogRow</strong></span>&nbsp;: ce composant liste les donn&eacute;es
+                    qui ont &eacute;t&eacute; ins&eacute;r&eacute;es dans l&#8217;index nouvellement cr&eacute;&eacute;.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput2.png"></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e113255"></a>Construire le Job</h4></div></div></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme suit&nbsp;:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>A partir de la <span class="emphasis"><strong>Palette, </strong></span>d&eacute;posez les
+                        composants suivants dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: un <span class="emphasis"><strong>tFileInputDelimited</strong></span>, un <span class="emphasis"><strong>tSynonymOutput</strong></span> et un <span class="emphasis"><strong>tLogRow</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Au besoin, vous pouvez changer le nom affich&eacute; de chaque composant,
+                                comme cela a &eacute;t&eacute; fait dans ce sc&eacute;nario pour le composant <span class="emphasis"><strong>tFileInputDelimited</strong></span>,
+                                    renomm&eacute;&nbsp;<span class="emphasis"><em>CityNames</em></span>. Pour plus
+                                d&#8217;informations, consultez le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez-droit sur le composant <span class="emphasis"><strong>tFileInputDelimited</strong></span> (<span class="emphasis"><em>CityNames</em></span>) pour
+                        ouvrir le menu contextuel.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans ce menu, s&eacute;lectionnez <span class="emphasis"><strong>Row</strong></span> &gt;
+                            <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur le <span class="emphasis"><strong>tSynonymOutput</strong></span> pour cr&eacute;er
+                        une connexion entre ces deux composants.</p></li><li class="step" title="&Eacute;tape 5"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour connecter le <span class="emphasis"><strong>tSynonymOutput</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e113324"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tFileInputDelimited</strong></span> (<span class="emphasis"><em>CityNames</em></span>) pour
+                        ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput3.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>File name/Stream</strong></span>, sp&eacute;cifiez
+                        le chemin d&#8217;acc&egrave;s au fichier d'entr&eacute;e.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="emphasis"><strong>Edit schema</strong></span> pour ouvrir la bo&icirc;te de
+                        dialogue <span class="emphasis"><strong>[Schema]</strong></span>, cliquez deux fois sur le
+                        bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter deux colonnes et
+                        nommez-les respectivement <span class="emphasis"><em>CityName</em></span> et
+                            <span class="emphasis"><em>Synonyms</em></span>, selon la structure du
+                        fichier d'entr&eacute;e correspondant.</p><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                        dialogue et propager la configuration du sch&eacute;ma au composant suivant.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput4.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Vous pouvez &eacute;galement ajouter ce <span class="emphasis"><strong>tFileInputDelimited</strong></span> via les m&eacute;tadonn&eacute;es stock&eacute;es
+                                dans le <span class="emphasis"><strong>Repository</strong></span>. Cela vous
+                                permet d'utiliser automatiquement la configuration de la m&eacute;tadonn&eacute;e
+                                correspondante. Pour plus d'informations concernant la cr&eacute;ation et
+                                l'utilisation des m&eacute;tadonn&eacute;es, consultez le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div></li><li class="step" title="&Eacute;tape 4"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tSynonymOutput</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput5.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Dans le champ <span class="emphasis"><strong>Index path</strong></span>, saisissez le
+                        chemin d&#8217;acc&egrave;s, ou parcourez votre r&eacute;pertoire et s&eacute;lectionnez l&#8217;emplacement
+                        o&ugrave; vous souhaitez cr&eacute;er l&#8217;index.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans le champ <span class="emphasis"><strong>Operation</strong></span>, s&eacute;lectionnez l&#8217;op&eacute;ration &agrave;
+                        effectuer sur l&#8217;index cr&eacute;&eacute; ainsi que sur les synonymes associ&eacute;s. Pour ce
+                        sc&eacute;nario, s&eacute;lectionnez&nbsp;<span class="emphasis"><em>(Delete and) initialize an
+                        index</em></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans le champ <span class="emphasis"><strong>Entry</strong></span>, s&eacute;lectionnez la
+                        colonne &agrave; utiliser pour recevoir et stocker les donn&eacute;es de r&eacute;f&eacute;rence
+                        standardis&eacute;es. Dans le fichier source utilis&eacute; pour ce sc&eacute;nario, s&eacute;lectionnez
+                        la colonne&nbsp;<span class="emphasis"><em>CityName</em></span> qui contient les noms de villes
+                        standards.</p></li><li class="step" title="&Eacute;tape 8"><p>Dans le champ <span class="emphasis"><strong>Synonyms</strong></span>, s&eacute;lectionnez la
+                        colonne &agrave; utiliser pour recevoir et stocker les synonymes. Pour ce sc&eacute;nario,
+                            s&eacute;lectionnez&nbsp;<span class="emphasis"><em>Synonyms</em></span>.</p></li><li class="step" title="&Eacute;tape 9"><p>Dans la vue <span class="emphasis"><strong>Basic settings</strong></span> du composant
+                            <span class="emphasis"><strong>tLogRow</strong></span>, s&eacute;lectionnez l'option
+                            <span class="emphasis"><strong>Table</strong></span> pour un affichage optimal des
+                        r&eacute;sultats d'ex&eacute;cution du Job.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e113450"></a>Ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour ex&eacute;cuter ce
+                        Job.</p></li></ul></div><p>Un index est cr&eacute;&eacute; dans le r&eacute;pertoire sp&eacute;cifi&eacute; et le nom des villes standardis&eacute;s
+                ainsi que leurs synonymes sont ins&eacute;r&eacute;s dans l&#8217;index. Ces entr&eacute;es, avec leur statut,
+                sont affich&eacute;s dans la console de la vue <span class="emphasis"><strong>Run</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutputResult.png"></div></div></div><div class="section" title="Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un index des synonymes de noms de personnes en utilisant un tMap"><div class="titlepage"><div><div><h3 class="title"><a name="Raa34613"></a>Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un index des synonymes de noms de personnes en utilisant un
+            tMap</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; quatre composants permettant de cr&eacute;er un index contenant
+            des noms de personnes et les surnoms correspondants.</p><p>Les donn&eacute;es source utilis&eacute;es pour ce sc&eacute;nario sont stock&eacute;es dans un
+                fichier&nbsp;<span class="emphasis"><em>.csv</em></span> et se pr&eacute;sentent comme suit&nbsp;:</p><pre class="programlisting">Country;FirstName;Nickname1;Nickname2;Nickname3;Nickname4
+France;Anne;Ninon;Annie;Ninette;Ann
+France;Bernadette;Nad;Netty;Dadette
+France;Albert;Al
+France;Alexandre;Alex
+France;Alfred-Hubert;Alu
+France;Andr&eacute;;Andy
+France;Didier;D&eacute;d&eacute;
+France;Anthony;Anton;Tony;Tonio
+France;Artus;Artie
+France;Benoit;Ben
+France;Catherine;Cate;Katherine;Kathryn
+France;Charles;Charlie;Charlot;Chuck
+France;Christophe;Christian;Chris;Kris;Kristof
+France;Christian;Chris</pre><p>Les donn&eacute;es d&eacute;crivent le pays d&#8217;origine des personnes (qui ne doivent pas &ecirc;tre
+            ins&eacute;r&eacute;es dans l&#8217;index), leur pr&eacute;nom (entr&eacute;es de r&eacute;f&eacute;rence) et les surnoms fr&eacute;quemment
+            utilis&eacute;s (synonymes).</p><p>Les quatre composants utilis&eacute;s pour ce Job sont&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>le <span class="emphasis"><strong>tFileInputDelimied&nbsp;</strong></span>: ce composant lit les
+                    donn&eacute;es source et les int&egrave;gre au <span class="emphasis"><strong>tSynonymOutput</strong></span>.</p></li><li class="listitem"><p>le <span class="emphasis"><strong>tMap&nbsp;</strong></span>: ce composant est utilis&eacute; pour
+                    transformer les donn&eacute;es source en deux colonnes s&eacute;par&eacute;es repr&eacute;sentant les
+                    pr&eacute;noms et les surnoms tout en ignorant les donn&eacute;es relatives aux pays
+                    d&#8217;origine.</p></li><li class="listitem"><p>le <span class="emphasis"><strong>tSynonymOutput</strong></span>&nbsp;: ce composant cr&eacute;e l&#8217;index
+                    utilis&eacute; pour ce sc&eacute;nario et le peuple avec les synonymes donn&eacute;es dans le fichier
+                    source.</p></li><li class="listitem"><p>le <span class="emphasis"><strong>tLogRow&nbsp;</strong></span>: ce composant liste les donn&eacute;es
+                    ins&eacute;r&eacute;es dans l&#8217;index nouvellement cr&eacute;&eacute;.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput_1.png"></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e113515"></a>Construire le Job</h4></div></div></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme suit&nbsp;:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>A partir de la <span class="emphasis"><strong>Palette</strong></span>, d&eacute;posez les
+                        composants suivants dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: un <span class="emphasis"><strong>tFileInputDelimited</strong></span>, un <span class="emphasis"><strong>tMap</strong></span>, un <span class="emphasis"><strong>tSynonymOutput</strong></span> et
+                        un <span class="emphasis"><strong>tLogRow</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Vous pouvez modifier le nom affich&eacute; de chaque composant. Pour plus
+                                d&#8217;informations, consultez le<span class="emphasis"><em> Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez-droit sur le composant <span class="emphasis"><strong>tFileInputDelimited</strong></span> pour ouvrir le menu contextuel, et
+                        connectez-le au composant <span class="emphasis"><strong>tMap</strong></span> &agrave; l&#8217;aide
+                        d&#8217;un lien <span class="emphasis"><strong>Row &gt; Main.</strong></span></p></li><li class="step" title="&Eacute;tape 3"><p>De la m&ecirc;me fa&ccedil;on, connectez le <span class="emphasis"><strong>tMap</strong></span> au
+                            <span class="emphasis"><strong>tSynonymOutput</strong></span> en utilisant une
+                        connexion de type <span class="emphasis"><strong>Row &gt; Main</strong></span>.</p><p>Une bo&icirc;te de dialogue s&#8217;affiche, vous invitant &agrave; nommer le lien que vous
+                        cr&eacute;ez. </p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput_2.png"></div><p>Saisissez&nbsp;<span class="emphasis"><em>synonyms</em></span>, par exemple, puis cliquez sur
+                            <span class="emphasis"><strong>OK</strong></span> pour valider et fermer cette bo&icirc;te
+                        de dialogue.</p></li><li class="step" title="&Eacute;tape 4"><p>Connectez le <span class="emphasis"><strong>tSynonymOutput</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span> en utilisant une connexion de type
+                            <span class="emphasis"><strong>Row &gt; Main</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e113596"></a>Configurer les composants</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;6.12.&nbsp;Configurer les donn&eacute;es d'entr&eacute;e"><a name="d55688e113599"></a><p class="title"><b>Proc&eacute;dure&nbsp;6.12.&nbsp;Configurer les donn&eacute;es d'entr&eacute;e</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tFileInputDelimited</strong></span>
+                        pour ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput_4.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>File name/Stream</strong></span>, sp&eacute;cifiez le chemin d'acc&egrave;s
+                        au fichier d'entr&eacute;e.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="emphasis"><strong>Edit schema</strong></span> pour ouvrir la bo&icirc;te de
+                        dialogue <span class="emphasis"><strong>[Schema]</strong></span>. Cliquez six fois sur le
+                        bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter six colonnes et
+                        nommez-les respectivement <span class="emphasis"><em>Country</em></span>,
+                            <span class="emphasis"><em>FirstName</em></span>, <span class="emphasis"><em>Nickname1</em></span>, <span class="emphasis"><em>Nickname2</em></span>,
+                            <span class="emphasis"><em>Nickname3</em></span> et <span class="emphasis"><em>Nickname4</em></span>, selon la structure du fichier d'entr&eacute;e.</p><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                        dialogue et propager le sch&eacute;ma au composant suivant.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput_3.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Vous pouvez &eacute;galement ajouter ce <span class="emphasis"><strong>tFileInputDelimited</strong></span> via les m&eacute;tadonn&eacute;es stock&eacute;es
+                                dans le <span class="emphasis"><strong>Repository</strong></span>. Cela vous
+                                permet d'utiliser automatiquement la configuration de la m&eacute;tadonn&eacute;e
+                                correspondante. Pour plus d'informations concernant la cr&eacute;ation et
+                                l'utilisation des m&eacute;tadonn&eacute;es, consultez le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;6.13.&nbsp;Configurer la transformation de la structure des donn&eacute;es"><a name="d55688e113676"></a><p class="title"><b>Proc&eacute;dure&nbsp;6.13.&nbsp;Configurer la transformation de la structure des donn&eacute;es</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tMap</strong></span> pour ouvrir
+                        l'&eacute;diteur de mapping.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput_5.png"></div></li><li class="step" title="&Eacute;tape 2"><p>En bas &agrave; droite (<span class="emphasis"><em>synonyms</em></span>) de l&#8217;&eacute;diteur, cliquez deux
+                        fois sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter deux
+                        lignes. Nommez-les <span class="emphasis"><em>FirstNames</em></span> et
+                            <span class="emphasis"><em>Nicknames</em></span>. Ces deux colonnes
+                        apparaissent dans le table <span class="emphasis"><em>synonyms</em></span>, du
+                        c&ocirc;t&eacute; droit de l'&eacute;diteur.</p></li><li class="step" title="&Eacute;tape 3"><p>En haut &agrave; gauche (du c&ocirc;t&eacute; entr&eacute;e), s&eacute;lectionnez la colonne&nbsp;<span class="emphasis"><em>FirstName</em></span> et
+                        d&eacute;posez-la dans la colonne&nbsp;<span class="emphasis"><em>FirstName</em></span> du c&ocirc;t&eacute; sortie
+                        (droite).</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Expression</strong></span> de la colonne <span class="emphasis"><em>Nicknames</em></span>, du c&ocirc;t&eacute; sortie (droite),
+                            saisissez&nbsp;<code class="code">DqStringHandling.safeConcat('|',)</code>.</p></li><li class="step" title="&Eacute;tape 5"><p>En haut &agrave; gauche (du c&ocirc;t&eacute; entr&eacute;e), s&eacute;lectionnez les lignes
+                            de&nbsp;<span class="emphasis"><em>Nickname1</em></span> &agrave;&nbsp;<span class="emphasis"><em>Nickname4</em></span> et
+                        d&eacute;posez-les dans les colonnes&nbsp;<span class="emphasis"><em>Nicknames</em></span>. Editez
+                        l'expression dans le champ <span class="emphasis"><strong>Expression</strong></span> afin
+                        d'obtenir&nbsp;: <code class="code">DqStringHandling.safeConcat('|', row1.Nickname1,
+                            row1.Nickname2, row1.Nickname3, row1.Nickname4)</code>.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider ces
+                        modifications et acceptez la propagation que vous propose la bo&icirc;te de
+                        dialogue qui s&#8217;affiche.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;6.14.&nbsp;Configurer la cr&eacute;ation d'index et la sortie dans la console"><a name="d55688e113751"></a><p class="title"><b>Proc&eacute;dure&nbsp;6.14.&nbsp;Configurer la cr&eacute;ation d'index et la sortie dans la console</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tSynonymOutput</strong></span> pour
+                        ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput_6.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>Index path</strong></span>,
+                        saisissez le chemin d&#8217;acc&egrave;s, ou parcourez votre syst&egrave;me jusqu&#8217;&agrave;
+                        l&#8217;emplacement o&ugrave; vous souhaitez cr&eacute;er l&#8217;index.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Operation</strong></span>,
+                        s&eacute;lectionnez l&#8217;op&eacute;ration que vous souhaitez effectuer sur l&#8217;index cr&eacute;&eacute; ainsi
+                        que sur les synonymes correspondants. Pour cet exemple,
+                            s&eacute;lectionnez&nbsp;<span class="emphasis"><strong>(Delete and) initialize an
+                            index</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Entry</strong></span>, s&eacute;lectionnez
+                                la colonne qui recevra et stockera les entr&eacute;es de r&eacute;f&eacute;rence. Pour ce
+                                sc&eacute;nario, il s&#8217;agit de la
+                                colonne&nbsp;<span class="emphasis"><em>FirstName</em></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans le champ <span class="emphasis"><strong>Synonyms</strong></span>,
+                        s&eacute;lectionnez la colonne qui recevra et stockera les synonymes. Pour ce
+                        sc&eacute;nario, il s&#8217;agit de la colonne&nbsp;<span class="emphasis"><em>Nicknames</em></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans la vue <span class="emphasis"><strong>Basic settings</strong></span> du composant
+                            <span class="emphasis"><strong>tLogRow</strong></span>, s&eacute;lectionnez l'option
+                            <span class="emphasis"><strong>Table</strong></span> pour un affichage optimal des
+                        r&eacute;sultats d'ex&eacute;cution du Job.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e113811"></a>Ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour ex&eacute;cutez ce
+                        Job.</p></li></ul></div><p>L&#8217;index est cr&eacute;&eacute; et vous pouvez visualiser son contenu dans la <span class="emphasis"><strong>Console</strong></span> de la vue <span class="emphasis"><strong>Run</strong></span>,
+                ainsi que le statut des entr&eacute;es.</p><div class="mediaobject"><img src="../images/Use_Case_tSynonymOutput_7.png"></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSurviveFields.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSynonymSearch.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tSurviveFields&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tSynonymSearch</td></tr></table></div></body></html>

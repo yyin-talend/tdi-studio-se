@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Demonstration">
+  <intro>
+    <description>This tutorial guides you through the creation of metadata on Repository.</description>
+  </intro>
+  <item title="Create a Metadata Db Connection">
+	<description> Create a Metadata Db Connection on Repository. USe the following link to see the demonstration.
+	</description>
+    <command serialization="org.eclipse.ui.browser.openBrowser(url=http://www.talend.com/beta/training/turoriels/prepareRepository.html)"/>
+  </item>
+</cheatsheet>

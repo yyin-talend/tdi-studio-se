@@ -1,0 +1,89 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tDenormalizeSortedRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-processing.html" title="Chapitre&nbsp;18.&nbsp;Composants Processing"><link rel="prev" href="tDenormalize.html" title="tDenormalize"><link rel="next" href="tExternalSortRow.html" title="tExternalSortRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tDenormalizeSortedRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tDenormalize.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;18.&nbsp;Composants Processing</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tExternalSortRow.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tDenormalizeSortedRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDenormalizeSortedRow"></a>tDenormalizeSortedRow</h2></div></div></div><div class="mediaobject"><img src="../images/tDenormalizeSortedRow_icon32_white.png"></div><a name="Xaa4553790"></a><div class="section" title="Propri&eacute;t&eacute;s du tDenormalizeSortedRow"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e263040"></a>Propri&eacute;t&eacute;s du tDenormalizeSortedRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Processing/Fields</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tDenormalizeSortedRow </strong></span>rassemble dans un
+                                groupe toutes les lignes d&#8217;entr&eacute;e d&eacute;normalis&eacute;es tri&eacute;es ainsi que
+                                leurs valeurs distinctes, associ&eacute;es par des s&eacute;parateurs de champ.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="emphasis"><strong>tDenormalizeSortedRow </strong></span>permet de synth&eacute;tiser les
+                                lignes d&#8217;entr&eacute;e tri&eacute;es afin de faire des &eacute;conomies de m&eacute;moire.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans le
+                                        <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. <span>Notez que si vous
+                                    effectuez des modifications, le sch&eacute;ma devient automatiquement
+                                    built-in.</span></p><p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du
+                                composant pr&eacute;c&eacute;dent.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant
+                                seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Input rows count</em></span></p>
+                        </td><td valign="top"><p>Renseignez le nombre de lignes d&#8217;entr&eacute;e. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>To denormalize</em></span></p>
+                        </td><td valign="top"><p>Renseignez le nom de la colonne &agrave; d&eacute;normaliser.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant traite des
+                                flux de donn&eacute;es, il n&eacute;cessite donc un composant d&#8217;entr&eacute;e et un
+                                composant de sortie. </p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Regrouper des lignes tri&eacute;es"><div class="titlepage"><div><div><h3 class="title"><a name="tSortRow-dup-3"></a>Sc&eacute;nario&nbsp;: Regrouper des lignes tri&eacute;es</h3></div></div></div><p>Ce sc&eacute;nario Java d&eacute;crit un Job &agrave; quatre composants. Il permet de lire un fichier
+            d&eacute;limit&eacute; donn&eacute; ligne par ligne, de trier les donn&eacute;es d&#8217;entr&eacute;es en fonction de leur type
+            et de leur ordre, de d&eacute;normaliser toutes les lignes d&#8217;entr&eacute;es tri&eacute;es et enfin d&#8217;afficher
+            le r&eacute;sultat dans la console de la vue <span class="emphasis"><strong>Run</strong></span>. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="emphasis"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;&eacute;diteur graphique&nbsp;: le <span class="emphasis"><strong>tFileInputDelimited</strong></span>, le <span class="emphasis"><strong>tSortRow</strong></span>, le <span class="emphasis"><strong>tDenormalizeSortedRow</strong></span> et le <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connectez les quatre composants &agrave; l&#8217;aide de liens de type <span class="emphasis"><strong>Row Main</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tDenormalizeSortedRow.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="emphasis"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="emphasis"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="emphasis"><strong>Basic settings</strong></span>) du
+                        <span class="emphasis"><strong>tFileInputDelimited</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tDenormalizeSortedRow1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;finissez le champ <span class="emphasis"><strong>Property Type</strong></span> en mode
+                        <span class="emphasis"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Renseignez le chemin d&#8217;acc&egrave;s au fichier &agrave; traiter dans le champ <span class="emphasis"><strong>File Name</strong></span>. Dans cet exemple, on utilise le fichier
+                        <span class="emphasis"><em>name_list</em></span>, qui comporte deux colonnes,
+                        <span class="emphasis"><em>id</em></span> et <span class="emphasis"><em>first name</em></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tDenormalizeSortedRow2.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;finissez si n&eacute;cessaire les s&eacute;parateurs de lignes et de champs, l&#8217;en-t&ecirc;te et
+                    le pied-de-page, ainsi que le nombre de lignes trait&eacute;es. </p></li><li class="listitem"><p>D&eacute;finissez le champ <span class="emphasis"><strong>Schema</strong></span> en mode <span class="emphasis"><strong>Built in</strong></span> puis cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Edit
+                        Schema </strong></span>pour d&eacute;finir les donn&eacute;es &agrave; passer au composant suivant.
+                    Dans cet exemple, le sch&eacute;ma est constitu&eacute; de deux colonnes,
+                        <span class="emphasis"><em>id</em></span> et <span class="emphasis"><em>name.</em></span></p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tDenormalizeSortedRow3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;espace graphique, s&eacute;lectionnez le composant <span class="emphasis"><strong>tSortRow</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="emphasis"><strong>Component</strong></span> pour en d&eacute;finir
+                    la configuration de base (<span class="emphasis"><strong>Basic settings</strong></span>) du
+                        <span class="emphasis"><strong>tSortRow</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tDenormalizeSortedRow4.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;finissez le champ <span class="emphasis"><strong>Schema Type</strong></span> en mode
+                        <span class="emphasis"><strong>Built-In</strong></span> puis cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma &agrave; partir du
+                    composant <span class="emphasis"><strong>tFileInputDelimited</strong></span>. </p></li><li class="listitem"><p>Dans le panneau <span class="emphasis"><strong>Criteria</strong></span>, cliquez sur le
+                    bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ligne puis
+                    d&eacute;finissez les param&egrave;tres de tri pour la colonne du sch&eacute;ma &agrave; traiter. Dans cet
+                    exemple, on veut trier la colonne <span class="emphasis"><em>id</em></span> dans l&#8217;ordre
+                    croissant. </p></li><li class="listitem"><p>Dans l&#8217;espace graphique, s&eacute;lectionnez le composant <span class="emphasis"><strong>tDenormalizeSortedRow</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="emphasis"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="emphasis"><strong>Basic settings</strong></span>) du
+                        <span class="emphasis"><strong>tDenormalizeSortedRow</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tDenormalizeSortedRow5.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;finissez le champ <span class="emphasis"><strong>Schema</strong></span> en mode <span class="emphasis"><strong>Built-In</strong></span> puis cliquez sur <span class="emphasis"><strong>Sync
+                        columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma &agrave; partir du sch&eacute;ma du composant
+                        <span class="emphasis"><strong>tSortRow</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Input rows count</strong></span>, saisissez le
+                    nombre de lignes d&#8217;entr&eacute;e &agrave; traiter ou cliquez simultan&eacute;ment sur <span class="emphasis"><strong>Ctrl+Espace </strong></span>pour acc&eacute;der &agrave; la liste des variables de
+                    contexte puis s&eacute;lectionnez la variable&nbsp;:
+                        <code class="code">tFileInputDelimited_1_NB_LINE</code>
+                </p></li><li class="listitem"><p>Dans le panneau <span class="emphasis"><strong>To denormalize</strong></span>, cliquez sur
+                    le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ligne puis
+                    d&eacute;finissez les param&egrave;tres de la colonne &agrave; d&eacute;normaliser. Dans cet exemple, on
+                    veut d&eacute;normaliser la colonne <span class="emphasis"><em>name</em></span>.</p></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="emphasis"><strong>tLogRow</strong></span> puis cliquez sur la vue <span class="emphasis"><strong>Component</strong></span> pour en d&eacute;finir la configuration de base (<span class="emphasis"><strong>Basic settings</strong></span>). Pour plus d&#8217;informations sur le
+                        <span class="emphasis"><strong>tLogRow</strong></span>, consultez&nbsp;<a class="xref" href="tLogRow.html" title="tLogRow">la section intitul&eacute;e &laquo;&nbsp;tLogRow&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>Enregistrez votre Job puis appuyez sur <span class="emphasis"><strong>F6</strong></span>
+                    pour l&#8217;ex&eacute;cuter. </p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tDenormalizeSortedRow6.png"></div><p>Le r&eacute;sultat affich&eacute; sur la console montre la fa&ccedil;on dont la colonne
+                <span class="emphasis"><em>name</em></span> a &eacute;t&eacute; d&eacute;normalis&eacute;e. </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tDenormalize.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tExternalSortRow.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tDenormalize&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tExternalSortRow</td></tr></table></div></body></html>

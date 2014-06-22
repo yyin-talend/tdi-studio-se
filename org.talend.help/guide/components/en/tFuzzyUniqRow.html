@@ -1,0 +1,145 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFuzzyUniqRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tFuzzyMatch.html" title="tFuzzyMatch"><link rel="next" href="tGenKey.html" title="tGenKey"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFuzzyUniqRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFuzzyMatch.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tGenKey.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFuzzyUniqRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFuzzyUniqRow"></a>tFuzzyUniqRow</h2></div></div></div><div class="mediaobject"><img src="../images/tFuzzyUniqRow_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of
+			the studio on the condition that you have subscribed to any <span class="emphasis"><em>Talend Platform</em></span> product.</p></div><div class="section" title="tFuzzyUniqRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e90630"></a>tFuzzyUniqRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+              <p><span class="emphasis"><strong>Component family</strong></span></p>
+            </td><td valign="top">
+              <p>Data Quality</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Function</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p><span class="emphasis"><strong>tFuzzyUniqRow </strong></span>compares columns in the input
+                flow by using a defined matching method and collects the encountered
+                duplicates.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Purpose</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>Helps ensuring the data quality of any source data.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit schema</em></span></p>
+            </td><td valign="top">
+              <p>A schema is a row description, i.e., it defines the number of fields that will
+                be processed and passed on to the next component. The schema is either built-in or
+                remote in the Repository.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in</strong></span>: You create and store the schema
+                locally for this component only. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User
+                  Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository</strong></span>: You have already created the schema
+                and stored it in the Repository. Thus, you can reuse it in various projects and job
+                designs. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Column</em></span></p>
+            </td><td valign="top">
+              <p>List of all columns in the input flow.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Key attribute</em></span></p>
+            </td><td valign="top">
+              <p>Select the check boxes next to the columns you want to check.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Matching type</em></span></p>
+            </td><td valign="top">
+              <p>Select the relevant matching algorithm from the list:</p>
+              <p>
+                <span class="emphasis"><strong>Exact Match</strong></span>: matches each processed entry to all
+                possible reference entries with exactly the same value.</p>
+              <p>
+                <span class="emphasis"><strong>Levenshtein</strong></span>: Based on the edit distance theory. It
+                calculates the number of insertion, deletion or substitution required for an entry
+                to match the reference entry. </p>
+              <p>
+                <span class="emphasis"><strong>Metaphone</strong></span>: Based on a phonetic algorithm for
+                indexing entries by their pronunciation. It first loads the phonetics of all entries
+                of the lookup reference and checks all entries of the main flow against the entries
+                of the reference flow.</p>
+              <p>
+                <span class="emphasis"><strong>Double Metaphone</strong></span>: a new version of the Metaphone
+                phonetic algorithm that produces more accurate results than the original algorithm.
+                It can return both a primary and a secondary code for a string. This accounts for
+                some ambiguous cases as well as for multiple variants of surnames with common
+                ancestry.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Min. Distance</em></span></p>
+            </td><td valign="top">
+              <p>Only for <span class="emphasis"><strong>Levenshtein</strong></span>. Set the minimum number of
+                changes allowed to match the reference. If set to 0, only perfect matches(<span class="emphasis"><strong>Exact Match</strong></span>) are returned.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Max. Distance</em></span></p>
+            </td><td valign="top">
+              <p>Only for <span class="emphasis"><strong>Levenshtein</strong></span>. Set the maximum number of
+                changes allowed to match the reference.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher</em></span>
+                <span class="emphasis"><em>Statistics</em></span></p>
+            </td><td valign="top">
+              <p>Select this check box to collect log data at the component level.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Usage</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>This component is not startable (green background) and it requires an input
+                component and two output components.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Limitation/prerequisite</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>n/a</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Scenario: Comparing four columns using different matching methods and collecting encountered duplicates"><div class="titlepage"><div><div><h3 class="title"><a name="d0e90906"></a>Scenario: Comparing four columns using different matching methods and collecting
+      encountered duplicates</h3></div></div></div><p>This scenario describes a four-component job aiming at collecting in two separate files
+      all unique entries and all duplicate entries from few defined processed columns based on the
+      Levenshtein and Double Metaphone matching types.</p><p>The input file in this example looks like the following:</p><pre class="programlisting">ID;Status;FirstName;Email;City;Initial;ZipCode
+1;married;Paul;pnewman@comp.com;New York;P.N.;55677
+2;single;Raul;rnewman@comp.com;New Ork;R.N.;55677
+3;single;Mary;mnewman@comp.com;Chicago;M.N;66898</pre><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e90915"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop <span class="emphasis"><strong>tFileInputDelimited</strong></span>, <span class="emphasis"><strong>tFuzzyUniqRow</strong></span>, and two <span class="emphasis"><strong>tFileOutputExcel</strong></span>
+            components from the <span class="emphasis"><strong>Palette</strong></span> onto the design
+            workspace.</p></li><li class="step" title="Step 2"><p>Connect <span class="emphasis"><strong>tFileInputDelimited</strong></span> to <span class="emphasis"><strong>tFuzzyUniqRow</strong></span> using the <span class="emphasis"><strong>Main</strong></span>
+            link, <span class="emphasis"><strong>tFuzzyUniqRow</strong></span> to the <span class="emphasis"><strong>tFileOutputExcel</strong></span> components using the <span class="emphasis"><strong>Uniques</strong></span> link with one and the <span class="emphasis"><strong>Duplicates</strong></span>
+            link with the other. </p><div class="mediaobject"><img src="../images/Use_Case_tFuzzyUniqRow.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e90961"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tFileInputDelimited</strong></span> to open its
+              <span class="emphasis"><strong>Basic settings</strong></span> view and define its properties.</p><div class="mediaobject"><img src="../images/Use_Case_tFuzzyUniqRow1.png"></div></li><li class="step" title="Step 2"><p>Click the three-dot button next to the <span class="emphasis"><strong>File Name</strong></span>
+            field to browse to the file holding the input data.</p></li><li class="step" title="Step 3"><p>If needed, set <span class="emphasis"><strong>Header</strong></span>, <span class="emphasis"><strong>Footer</strong></span>, and <span class="emphasis"><strong>Limit</strong></span>.</p><p> For this scenario, set <span class="emphasis"><strong>Header</strong></span> to 1. Footer and
+            limit for the number of processed rows are not set. </p></li><li class="step" title="Step 4"><p>Click <span class="emphasis"><strong>Edit schema</strong></span> to open a dialog box where you
+            can describe the data structure of the source delimited file.</p><div class="mediaobject"><img src="../images/Use_Case_tFuzzyUniqRow2.png"></div><p>In this scenario, the source schema is made of the following columns: <span class="emphasis"><em>ID</em></span>, <span class="emphasis"><em>Status</em></span>, <span class="emphasis"><em>FirstName</em></span>, <span class="emphasis"><em>Email</em></span>,
+              <span class="emphasis"><em>City</em></span>, <span class="emphasis"><em>Initial</em></span>,
+            and <span class="emphasis"><em>ZipCode</em></span>.</p></li><li class="step" title="Step 5"><p>Double click <span class="emphasis"><strong>tFuzzyUniqRow</strong></span> to display its <span class="emphasis"><strong>Basic settings</strong></span> view and define its properties.</p></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>Key Attribute</strong></span> column, select the check boxes
+            next to the columns you want to check using the defined matching method,
+              <span class="emphasis"><em>Firstname</em></span>, <span class="emphasis"><em>Email</em></span>, <span class="emphasis"><em>City</em></span>,
+            and <span class="emphasis"><em>ZipCode</em></span> in this example.</p><div class="mediaobject"><img src="../images/Use_Case_tFuzzyUniqRow3.png"></div></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Matching Type</strong></span> column, set the matching
+            methods you want to use on each of the selected columns.</p><p> In this example, <span class="emphasis"><em>Leveshtein</em></span> is to be used as the matching
+            method for the <span class="emphasis"><em>FirstName</em></span>, <span class="emphasis"><em>Email</em></span>, and
+              <span class="emphasis"><em>ZipCode</em></span> columns, <span class="emphasis"><em>Double Metaphone</em></span> is to be
+            used as the matching method for the <span class="emphasis"><em>City</em></span> column.</p><p>Then set the minimum and maximum distances for the <span class="emphasis"><em>Levenshtein</em></span>
+            method. In this method, the distance is the number of character changes (insertion,
+            deletion or substitution) that needs to be carried out in order for the entry to fully
+            match the reference. In this example, we want the min. distance to be 0 and the max.
+            distance to be 2. This will output all entries in the <span class="emphasis"><em>FirstName</em></span>,
+              <span class="emphasis"><em>Email</em></span>, and <span class="emphasis"><em>ZipCode</em></span> columns that exactly
+            match or that have maximum two character changes. There is no minimum nor maximum
+            distance to set for <span class="emphasis"><em>Double Metaphone</em></span> because this matching method
+            is based on phonetic discrepancies in the input data.</p></li><li class="step" title="Step 8"><p>Double click the first <span class="emphasis"><strong>tFileOutputExcel</strong></span> to display
+            its <span class="emphasis"><strong>Basic settings</strong></span> view and define its
+            properties.</p><div class="mediaobject"><img src="../images/Use_Case_tFuzzyUniqRow5.png"></div></li><li class="step" title="Step 9"><p>Set the destination file name as well as the Sheet name and select the <span class="emphasis"><strong>Include header</strong></span> check box.</p></li><li class="step" title="Step 10"><p>Do the same for the second <span class="emphasis"><strong>tFileOutputExcel</strong></span>.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e91129"></a>Executing the Job</h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="Step 1"><p>Save your Job and click <span class="emphasis"><strong>F6</strong></span> to execute it.</p></li></ul></div><p><span class="emphasis"><strong>tFuzzyUniqRow</strong></span> uses the <span class="emphasis"><em>Levenshtein</em></span>
+        method to compare each of the three defined columns separately, it uses the <span class="emphasis"><em>Double
+          Metaphone</em></span> method to compare data in the <span class="emphasis"><em>City</em></span> column, and
+        finally passes the unique and duplicate rows to the defined output files. In our example,
+        the first two rows match, hence the second row will go in the &#8220;duplicates&#8221; output. </p><div class="mediaobject"><img src="../images/Use_Case_tFuzzyUniqRow6.png"></div><p>The third row is unique and will go in the &#8220;uniques&#8221; output.</p><div class="mediaobject"><img src="../images/Use_Case_tFuzzyUniqRow7.png"></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFuzzyMatch.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tGenKey.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFuzzyMatch&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tGenKey</td></tr></table></div></body></html>

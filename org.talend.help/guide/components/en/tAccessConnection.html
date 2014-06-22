@@ -1,0 +1,155 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAccessConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-databases-traditional.html" title="Chapter&nbsp;7.&nbsp;Databases - traditional components"><link rel="prev" href="tAccessCommit.html" title="tAccessCommit"><link rel="next" href="tAccessInput.html" title="tAccessInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tAccessConnection</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tAccessCommit.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;7.&nbsp;Databases - traditional components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tAccessInput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tAccessConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAccessConnection"></a>tAccessConnection</h2></div></div></div><div class="mediaobject"><img src="../images/tAccessConnection_icon32_white.png"></div><div class="section" title="tAccessConnection Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e64532"></a>tAccessConnection Properties</h3></div></div></div><p>This component is closely related to <span class="emphasis"><strong>tAccessCommit</strong></span>,
+                <span class="emphasis"><strong>tAccessInput</strong></span> and <span class="emphasis"><strong>tAccessOutput</strong></span>. It usually does not make much sense to use one of these
+            without using a <span class="emphasis"><strong>tAccessConnection</strong></span> component to open a
+            connection for the current transaction.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Databases/Access</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Opens a connection to the database for a current
+                                transaction.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component allows you to commit all of the Job data to an
+                                output database in just a single transaction, once the data has been
+                                validated.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+                                file in which the properties are stored. The fields that follow are
+                                completed automatically using the data retrieved.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>DB Version</em></span></p>
+                        </td><td valign="top">
+                            <p>Access 2003 or later versions.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Database</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the database.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>DB user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use or register a shared DB Connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to share your connection or fetch a
+                                connection shared by a parent or child Job. This allows you to share
+                                one single DB connection among several DB connection components from
+                                different Job levels that can be either parent or child. </p>
+                            <div lang="" class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This option is incompatible with the <span class="emphasis"><strong>Use dynamic job</strong></span>
+            and <span class="emphasis"><strong>Use an independent process to run subjob</strong></span> options of
+            the <span class="emphasis"><strong>tRunJob</strong></span> component. Using a shared database
+            connection together with a <span class="emphasis"><strong>tRunJob</strong></span> component with
+            either of these two options enabled will cause your Job to fail.</p></div>
+                            <p>
+                                <span class="emphasis"><strong>Shared DB Connection Name:</strong></span> set or
+                                type in the shared connection name.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Additional JDBC parameters</em></span></p>
+                        </td><td valign="top">
+                            <p>Specify additional connection properties for the DB connection you
+                                are creating. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is to be used along with Access components,
+                                especially with <span class="emphasis"><strong>tAccessCommit</strong></span> and
+                                    <span class="emphasis"><strong>tAccessOutput</strong></span>
+                                components.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Inserting data in parent/child tables"><div class="titlepage"><div><div><h3 class="title"><a name="d0e64794"></a>Scenario: Inserting data in parent/child tables</h3></div></div></div><p>The following Job is dedicated to advanced database users, who want to carry out
+            multiple table insertions using a parent table <span class="emphasis"><em>Table1</em></span> to generate
+            two child tables: <span class="emphasis"><em>Name</em></span> and <span class="emphasis"><em>Birthday</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In Access 2007, create an Access database named
+                        <span class="emphasis"><em>Database1</em></span>.</p></li><li class="listitem"><p> Once the Access database is created, create a table named
+                        <span class="emphasis"><em>Table1</em></span> with two column headings:
+                        <span class="emphasis"><em>Name</em></span> and <span class="emphasis"><em>Birthday</em></span>. </p></li></ul></div><p>Back into <span class="emphasis"><em>Talend Open Studio</em></span>, the Job requires twelve components including
+                <span class="emphasis"><strong>tAccessConnection</strong></span>, <span class="emphasis"><strong>tAccessCommit</strong></span>, <span class="emphasis"><strong>tAccessInput</strong></span>, <span class="emphasis"><strong>tAccessOutput</strong></span> and<span class="emphasis"><strong>
+                tAccessClose</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tAccessConnection1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> to the design workspace: <span class="emphasis"><strong>tFileList</strong></span>, <span class="emphasis"><strong>tFileInputDelimited</strong></span>,
+                        <span class="emphasis"><strong>tMap</strong></span>, <span class="emphasis"><strong>tAccessOutput</strong></span> (x2), <span class="emphasis"><strong>tAccessInput</strong></span> (x2), <span class="emphasis"><strong>tAccessCommit</strong></span>, <span class="emphasis"><strong>tAccessClose</strong></span> and
+                        <span class="emphasis"><strong>tLogRow</strong></span> (x2).</p></li><li class="listitem"><p> Connect the <span class="emphasis"><strong>tFileList</strong></span> component to the input
+                    file component using an <span class="emphasis"><strong>Iterate</strong></span> link. Thus, the
+                    name of the file to be processed will be dynamically filled in from the
+                        <span class="emphasis"><strong>tFileList</strong></span> directory using a global
+                    variable. </p></li><li class="listitem"><p> Connect the <span class="emphasis"><strong>tFileInputDelimited</strong></span> component to
+                    the <span class="emphasis"><strong>tMap</strong></span> component and dispatch the flow
+                    between the two output Access components. Use a <span class="emphasis"><strong>Row</strong></span> link for each of these connections representing the main
+                    data flow.</p></li><li class="listitem"><p> Set the <span class="emphasis"><strong>tFileList</strong></span> component properties, such
+                    as the directory where files will be fetched from.</p></li><li class="listitem"><p> Add a <span class="emphasis"><strong>tAccessConnection</strong></span> component and
+                    connect it to the starter component of this Job. In this example, the <span class="emphasis"><strong>tFileList</strong></span> component uses an <span class="emphasis"><strong>OnComponentOk</strong></span> link to define the execution order.</p></li><li class="listitem"><p> In the <span class="emphasis"><strong>tAccessConnection</strong></span> Component view, set
+                    the connection details<span> manually or fetch them
+                        from the <span class="emphasis"><strong>Repository</strong></span> if you centrally store
+                        them as a Metadata DB connection entry. For more information about Metadata,
+                        see <span class="emphasis"><em>Talend Open Studio User Guide</em></span></span>.</p></li><li class="listitem"><p> In the <span class="emphasis"><strong>tFileInputDelimited</strong></span> component&#8217;s
+                        <span class="emphasis"><strong>Basic settings</strong></span> view, press <span class="emphasis"><strong>Ctrl+Space</strong></span> bar to access the variable list. Set the
+                        <span class="emphasis"><strong>File Name</strong></span> field to the global variable:
+                        <span class="emphasis"><em>tFileList_1.CURRENT_FILEPATH</em></span>. For more information
+                    about using variables, see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tAccessConnection2.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set the rest of the fields as usual, defining the row and field separators
+                    according to your file structure.</p></li><li class="listitem"><p> Then set the schema manually through the<span class="emphasis"><strong> Edit
+                        schema</strong></span> dialog box<span> or select the
+                        schema from the <span class="emphasis"><strong>Repository</strong></span></span>. Make
+                    sure the data type is correctly set, in accordance with the nature of the data
+                    processed.</p></li><li class="listitem"><p> In the <span class="emphasis"><strong>tMap</strong></span> Output area, add two output
+                    tables, one called <span class="emphasis"><em>Name</em></span> for the <span class="emphasis"><em>Name</em></span>
+                    table, the second called <span class="emphasis"><em>Birthday</em></span>, for the
+                        <span class="emphasis"><em>Birthday</em></span> table. For more information about the
+                        <span class="emphasis"><strong>tMap</strong></span> component, see <span class="emphasis"><em>Talend Open Studio User
+                        Guide</em></span>.</p></li><li class="listitem"><p> Drag the <span class="emphasis"><em>Name</em></span> column from the <span class="emphasis"><strong>Input</strong></span> area, and drop it to the <span class="emphasis"><em>Name</em></span>
+                    table.</p></li><li class="listitem"><p> Drag the <span class="emphasis"><em>Birthday</em></span> column from the <span class="emphasis"><strong>Input</strong></span> area, and drop it to the <span class="emphasis"><em>Birthday</em></span>
+                    table.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tAccessConnection3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Then connect the output row links to distribute the flow correctly to the
+                    relevant DB output components.</p></li><li class="listitem"><p> In each of the <span class="emphasis"><strong>tAccessOutput</strong></span> components&#8217;
+                        <span class="emphasis"><strong>Basic settings</strong></span> view, select the <span class="emphasis"><strong>Use an existing connection</strong></span> check box to retrieve the
+                        <span class="emphasis"><strong>tAccessConnection</strong></span> details. </p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tAccessConnection4.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set the <span class="emphasis"><strong>Table</strong></span> name making sure it
+                    corresponds to the correct table, in this example either
+                        <span class="emphasis"><em>Name</em></span> or <span class="emphasis"><em>Birthday</em></span>.</p></li><li class="listitem"><p> There is no action on the table as they are already created.</p></li><li class="listitem"><p> Select <span class="emphasis"><strong>Insert</strong></span> as <span class="emphasis"><strong>Action on data</strong></span> for both output components.</p></li><li class="listitem"><p> Click on <span class="emphasis"><strong>Sync columns</strong></span> to retrieve the schema
+                    set in the <span class="emphasis"><strong>tMap</strong></span>.</p></li><li class="listitem"><p> Then connect the first <span class="emphasis"><strong>tAccessOutput</strong></span>
+                    component to the first <span class="emphasis"><strong>tAccessInput</strong></span> component
+                    using an <span class="emphasis"><strong>OnComponentOk</strong></span> link.</p></li><li class="listitem"><p> In each of the <span class="emphasis"><strong>tAccessInput</strong></span> components&#8217;
+                        <span class="emphasis"><strong>Basic settings</strong></span> view, select the <span class="emphasis"><strong>Use an existing connection</strong></span> check box to retrieve the
+                    distributed data flow. Then set the schema manually through <span class="emphasis"><strong>Edit schema</strong></span> dialog box. </p></li><li class="listitem"><p> Then set the <span class="emphasis"><strong>Table Name </strong></span>accordingly. In
+                        <span class="emphasis"><strong>tAccessInput_1</strong></span>, this will be
+                        <span class="emphasis"><em>Name</em></span>. </p></li><li class="listitem"><p> Click on the <span class="emphasis"><strong>Guess Query</strong></span>.</p></li><li class="listitem"><p> Connect each <span class="emphasis"><strong>tAccessInput</strong></span> component to
+                        <span class="emphasis"><strong>tLogRow</strong></span> component with a<span class="emphasis"><strong> Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> link.
+                    In each of the <span class="emphasis"><strong>tLogRow</strong></span> components&#8217; <span class="emphasis"><strong>basic settings</strong></span> view, select <span class="emphasis"><strong>Table</strong></span> in the <span class="emphasis"><strong>Mode</strong></span> field.</p></li><li class="listitem"><p> Add the <span class="emphasis"><strong>tAccessCommit</strong></span> component below the
+                        <span class="emphasis"><strong>tFileList</strong></span> component in the design workspace
+                    and connect them together using an <span class="emphasis"><strong>OnComponentOk</strong></span> link in order to terminate the Job with the
+                    transaction commit. </p></li><li class="listitem"><p> In the <span class="emphasis"><strong>basic settings</strong></span> view of <span class="emphasis"><strong>tAccessCommit</strong></span> component and from the <span class="emphasis"><strong>Component list</strong></span>, select the connection to be used,
+                        <span class="emphasis"><strong>tAccessConnection_1</strong></span> in this
+                    scenario.</p></li><li class="listitem"><p> Save your Job and press <span class="emphasis"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tAccessConnection5.png"></div><p>The parent table <span class="emphasis"><em>Table1</em></span> is reused to generate the
+                <span class="emphasis"><em>Name</em></span> table and <span class="emphasis"><em>Birthday</em></span> table.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tAccessCommit.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tAccessInput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tAccessCommit&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tAccessInput</td></tr></table></div></body></html>

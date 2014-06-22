@@ -1,0 +1,128 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tEXistList</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-databases-other.html" title="Chapter&nbsp;9.&nbsp;Databases - other components"><link rel="prev" href="tEXistGet.html" title="tEXistGet"><link rel="next" href="tEXistPut.html" title="tEXistPut"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tEXistList</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tEXistGet.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;9.&nbsp;Databases - other components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tEXistPut.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tEXistList"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tEXistList"></a>tEXistList</h2></div></div></div><div class="mediaobject"><img src="../images/tEXistList_icon32_white.png"></div><div class="section" title="tEXistList properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e159175"></a>tEXistList properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/eXist</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component lists the resources stored on a remote DB
+								server.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tEXistList</strong></span> lists the resources
+								stored on a remote database server.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection/Component List</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, <span class="emphasis"><strong>Component
+				list</strong></span> presents only the connection components in the same Job level.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>URI of the database you want to connect to.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Collection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the path to the collection of interest on the database
+								server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Driver</em></span>
+							</p>
+						</td><td valign="top">
+							<p>This field is automatically populated with the standard
+								driver.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Users can enter a different driver, depending on their
+									needs.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Server authentication information.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Files</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click the plus button to add the lines you want to use as
+								filters:.</p>
+							<p>
+								<span class="emphasis"><strong>Filemask</strong></span>: enter the filename or
+								filemask using wildcharacters (*) or regular expressions.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Target Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either <span class="emphasis"><strong>Resource</strong></span>, <span class="emphasis"><strong>Collection</strong></span> or <span class="emphasis"><strong>All
+									contents</strong></span>:</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the job processing metadata at a
+								job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is typically used along with a <span class="emphasis"><strong>tEXistGet</strong></span>component to retrieve the files
+								listed, for example. </p>
+							<p>eXist-db is an open source database management system built using
+								XML technology. It stores XML data according to the XML data model
+								and features efficient, index-based XQuery processing.</p>
+							<p>For further information about XQuery, see<a class="link" href="http://exist-db.org/exist/apps/doc/documentation.xml" target="_top">
+									XQuery</a>.</p>
+							<p>For further information about the XQuery update extension,
+									see<a class="link" href="http://exist-db.org/exist/apps/doc/update_ext.xml" target="_top">
+									XQuery update extension</a>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>
+								<span>n/a</span>
+							</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e159466"></a>Related scenario</h3></div></div></div><p>
+			No scenario is available for this component yet.
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tEXistGet.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-other.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tEXistPut.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tEXistGet&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tEXistPut</td></tr></table></div></body></html>

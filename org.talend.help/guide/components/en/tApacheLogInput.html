@@ -1,0 +1,123 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tApacheLogInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="next" href="tCreateTemporaryFile.html" title="tCreateTemporaryFile"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tApacheLogInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch-file.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tCreateTemporaryFile.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tApacheLogInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tApacheLogInput"></a>tApacheLogInput</h2></div></div></div><div class="mediaobject"><img src="../images/tApacheLogInput_icon32_white.png"></div><div class="section" title="tApacheLogInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e211232"></a>tApacheLogInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tApacheLogInput </strong></span>reads the
+                                access-log file for an Apache HTTP server.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tApachLogInput </strong></span>helps to
+                                effectively manage the Apache HTTP Server,. It is necessary to get
+                                feedback about the activity and performance of the server as well as
+                                any problems that may be occurring.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+                                file where the properties are stored. The fields that follow are
+                                completed automatically using the data retrieved.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component. </p>
+                            <p> In the context of <span class="emphasis"><strong>tApacheLogInput</strong></span> usage, the schema is
+                                    read-only<span class="emphasis"><strong>.</strong></span></p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>: You can create the
+                                schema and store it locally for this component. Related topic: see
+                                    <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><em>User Guide</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>: You have already
+                                created and stored the schema in the Repository. You can reuse it in
+                                various projects and Job flowcharts. Related topic: see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><em>User Guide</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the file and/or the variable to be processed. </p>
+                            <p> </p>
+                            <p> Related topic: see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><em>User Guide</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to stop the execution of the Job when an
+                                error occurs. Clear the check box to skip the row on error and
+                                complete the process for error-free rows. If needed, you can collect
+                                the rows on error using a <span class="emphasis"><strong>Row</strong></span> &gt;
+                                    <span class="emphasis"><strong>Reject</strong></span> link.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+                                is compulsory for DB data handling.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the processing metadata at the Job
+                                level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tApacheLogInput</strong></span><span class="emphasis"><strong> </strong></span>can be used with other components or as
+                                a standalone component. It allows you to create a data flow using a
+                                    <span class="emphasis"><strong>Row &gt; Main </strong></span>connection, or to
+                                create a reject flow to filter specified data using a <span class="emphasis"><strong>Row &gt; Reject</strong></span> connection. For an
+                                example of how to use these two links, see <a class="xref" href="tExtractXMLField.html#Raa91776" title="Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file">the section called &#8220;Scenario 2: Extracting correct and erroneous data from an XML field in a delimited
+            file&#8221;</a>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Reading an Apache access-log file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e211545"></a>Scenario: Reading an Apache access-log file</h3></div></div></div><p>The following scenario creates a two-component Job, which aims at reading the
+            access-log file for an Apache HTTP server and displaying the output in the <span class="emphasis"><strong>Run</strong></span> log console.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop a <span class="emphasis"><strong>tApacheLogInput</strong></span> component and a
+                        <span class="emphasis"><strong>tLogRow</strong></span> component from the <span class="emphasis"><strong>Palette</strong></span> onto the design workspace.</p></li><li class="step" title="Step 2"><p>Right-click on the <span class="emphasis"><strong>tApacheLogInput</strong></span> component
+                    and connect it to the <span class="emphasis"><strong>tLogRow</strong></span> component using a
+                        <span class="emphasis"><strong>Main Row</strong></span> link.</p><div class="mediaobject"><img src="../images/Use_Case_tApacheLogInput.png"></div></li><li class="step" title="Step 3"><p>In the design workspace, select <span class="emphasis"><strong>tApacheLogInput</strong></span>.</p></li><li class="step" title="Step 4"><p>Click the <span class="emphasis"><strong>Component</strong></span> tab to define the basic
+                    settings for <span class="emphasis"><strong>tApacheLogInput</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tApacheLogInput1.png"></div></li><li class="step" title="Step 5"><p>If desired, click the <span class="emphasis"><strong>Edit schema</strong></span> button to
+                    see the read-only columns.</p></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>File Name </strong></span>field, enter the file path
+                    or browse to the access-log file you want to read.</p></li><li class="step" title="Step 7"><p>In the design workspace, select <span class="emphasis"><strong>tLogRow</strong></span> and
+                    click the <span class="emphasis"><strong>Component</strong></span> tab to define its basic
+                    settings. For more information, see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a></p></li><li class="step" title="Step 8"><p>Press <span class="emphasis"><strong>F6</strong></span> to execute the Job.</p><div class="mediaobject"><img src="../images/Use_Case_tApacheLogInput2.png"></div></li></ol></div><p>The log lines of the defined file are displayed on the console.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch-file.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tCreateTemporaryFile.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;13.&nbsp;File components&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tCreateTemporaryFile</td></tr></table></div></body></html>

@@ -1,0 +1,103 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUnite</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-orchestration.html" title="Chapitre&nbsp;17.&nbsp;Composants Orchestration"><link rel="prev" href="tReplicate.html" title="tReplicate"><link rel="next" href="tSleep.html" title="tSleep"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tUnite</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tReplicate.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;17.&nbsp;Composants Orchestration</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSleep.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tUnite"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUnite"></a>tUnite</h2></div></div></div><div class="mediaobject"><img src="../images/tUnite_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tUnite"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e258962"></a>Propri&eacute;t&eacute;s du tUnite</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Orchestration</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tUnite</strong></span> fusionne des donn&eacute;es de diverses sources,
+                                bas&eacute;es sur un m&ecirc;me sch&eacute;ma.</p><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Le <span class="emphasis"><strong>tUnite</strong></span> ne peut exister
+                                        dans une boucle de flux de donn&eacute;es. Par exemple, si un flux
+                                        de donn&eacute;es passe par plusieurs composants <span class="emphasis"><strong>tMap</strong></span> afin de g&eacute;n&eacute;rer deux flux,
+                                        ils ne peuvent &ecirc;tre regroup&eacute;s dans un <span class="emphasis"><strong>tUnite</strong></span>.</p></div>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant centralise
+                                des donn&eacute;es provenant de sources diverses et h&eacute;t&eacute;rog&egrave;nes.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant.</p>
+                            
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. <span>Notez que si vous
+                                    modifiez le sch&eacute;ma, il devient automatiquement
+                                    built-in.</span></p>
+                            <p><span>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> pour
+                                r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent dans le Job.</span>
+                                </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant uniquement. Voir
+                                &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                r&eacute;utilisable dans divers projets et Job designs. Voir
+                                    &eacute;galement&nbsp;<span class="emphasis"><em>le Guide utilisateur de
+                                    </em></span><span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant n&#8217;est pas un
+                                composant de d&eacute;but; il requiert un ou plusieurs composants en entr&eacute;e
+                                et un composant de sortie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Number of lines</strong></span>&nbsp;:
+                                indique le nombre de lignes trait&eacute;es. Disponible comme variable
+                                    <span class="emphasis"><strong>After</strong></span>.</p><p>Retourne un
+                                entier.</p><p> </p><p>Pour plus d&#8217;informations
+                                concernant les variables, consultez le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;:
+                                Main.</p><p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: Run if,
+                                OnComponentOk, OnComponentError.</p><p> </p><p>Liens
+                                d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main, Reject.</p><p> </p><p>Pour plus d&#8217;informations concernant les liens,
+                                consultez&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: It&eacute;ration sur des fichiers et fusion de contenu"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e259192"></a>Sc&eacute;nario&nbsp;: It&eacute;ration sur des fichiers et fusion de contenu</h3></div></div></div><p>Le Job suivant effectue une it&eacute;ration sur une liste de fichiers puis fusionne leur
+            contenu et affiche le contenu final des deux colonnes dans la console.</p><div class="mediaobject"><img src="../images/Use_Case_tUnite1.png"></div><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e259200"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Cliquez et d&eacute;posez les composants suivants dans l&#8217;espace de mod&eacute;lisation&nbsp;:
+                        <span class="emphasis"><strong>tFileList</strong></span>, <span class="emphasis"><strong>tFileInputDelimited</strong></span>, <span class="emphasis"><strong>tUnite</strong></span> et
+                        <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez le composant <span class="emphasis"><strong>tFileList</strong></span> au <span class="emphasis"><strong>tFileInputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Iterate</strong></span> et connectez les autres composants &agrave; l&#8217;aide
+                    de liens <span class="emphasis"><strong>Row main</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e259234"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans l&#8217;onglet <span class="emphasis"><strong>Basic settings</strong></span> du composant
+                        <span class="emphasis"><strong>tFileList</strong></span>, s&eacute;lectionnez le r&eacute;pertoire dans
+                    lequel les fichiers &agrave; fusionner sont stock&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_tUnite2.png"></div><p>Les fichiers sont tr&egrave;s basiques et contiennent une liste de pays et leur score
+                    respectif.</p><div class="mediaobject"><img src="../images/Use_Case_tUnite5.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans la liste <span class="emphasis"><strong>Case Sensitive</strong></span>,
+                        s&eacute;lectionnez <span class="emphasis"><strong>Yes</strong></span> afin de prendre la casse
+                        en compte. </p></li><li class="step" title="&Eacute;tape 3"><p>S&eacute;lectionnez le composant <span class="emphasis"><strong>tFileInputDelimited</strong></span>
+                    et affichez son onglet <span class="emphasis"><strong>Basic settings.</strong></span></p><div class="mediaobject"><img src="../images/Use_Case_tUnite3.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Pour renseigner le champ <span class="emphasis"><strong>File Name/Steam</strong></span>,
+                        appuyez sur <span class="emphasis"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la
+                        liste des variables. Pour traiter tous les fichiers du r&eacute;pertoire d&eacute;fini
+                        dans le composant <span class="emphasis"><strong>tFileList</strong></span>, s&eacute;lectionnez
+                            <code class="code">tFileList.CURRENT_FILEPATH</code> dans la liste des variables
+                        globales.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur le bouton <span class="emphasis"><strong>Edit Schema</strong></span> et
+                    d&eacute;finissez manuellement le sch&eacute;ma &agrave; deux colonnes pour qu&#8217;il corresponde au
+                    contenu des fichiers d&#8217;entr&eacute;e.</p><div class="mediaobject"><img src="../images/Use_Case_tUnite4.png"></div><p>Pour cet exemple, les deux colonnes sont <span class="emphasis"><em>Country</em></span> et
+                            <span class="emphasis"><em>Points</em></span>. Elles peuvent toutes les deux prendre une
+                        valeur nulle, ainsi cochez les cases de la colonne <span class="emphasis"><strong>Nullable</strong></span>. La colonne <span class="emphasis"><em>Country</em></span> sera de
+                        type <span class="emphasis"><strong>String</strong></span>, et la colonne
+                            <span class="emphasis"><em>Points</em></span> sera de type <span class="emphasis"><strong>Integer</strong></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider les param&egrave;tres,
+                    puis acceptez la propagation du sch&eacute;ma dans le reste du Job.</p></li><li class="step" title="&Eacute;tape 7"><p>Puis s&eacute;lectionnez le composant <span class="emphasis"><strong>tUnite</strong></span> et
+                    affichez la vue <span class="emphasis"><strong>Component</strong></span>. Notez que le sch&eacute;ma
+                    de sortie refl&egrave;te exactement celui d&#8217;entr&eacute;e et qu&#8217;il est en lecture
+                    seule.</p></li><li class="step" title="&Eacute;tape 8"><p>Dans la vue <span class="emphasis"><strong>Component</strong></span> du composant <span class="emphasis"><strong>tLogRow</strong></span>, s&eacute;lectionnez l'option <span class="emphasis"><strong>Table (Print values in cells of a table)</strong></span> pour
+                        afficher correctement les valeurs de sortie.</p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e259349"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Enregistrez le Job en appuyant sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Appuyez sur la touche <span class="emphasis"><strong>F6</strong></span> ou cliquez sur
+                        le bouton <span class="emphasis"><strong>Run</strong></span>, dans la vue <span class="emphasis"><strong>Run</strong></span>, afin d'ex&eacute;cuter le Job.</p><p>La console affiche les donn&eacute;es des diff&eacute;rents fichiers, fusionn&eacute;es dans
+                        une seule table.</p><div class="mediaobject"><img src="../images/Use_Case_tUnite6.png"></div></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tReplicate.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-orchestration.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSleep.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tReplicate&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tSleep</td></tr></table></div></body></html>

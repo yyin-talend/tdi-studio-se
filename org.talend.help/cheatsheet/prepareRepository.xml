@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Prepare the Repository">
+
+  <intro>
+    <description>
+		      This tutorial guides you through the organization of the Repository.
+    </description>
+  </intro>
+
+  <item title="Show the perspective Talend OpenStudio">
+	  <action pluginId="org.talend.help"
+		  class="org.talend.help.cheatsheet.actions.OpenTalendOpenStudioPerspective"/>
+	  <description>
+	  	On the Window Menu, click on Perspective and choice Talend OpenStudio.
+	  </description>
+  </item>
+
+  <item title="Organize the Repository">
+	  <action pluginId="org.talend.help"
+		  class="org.talend.help.cheatsheet.actions.metadata.OpenMetadataNode"/>
+	  <description>
+	    The Repository is used to manage all elements of the current project. To access the metadata types, open the node Metadata.
+	  </description>
+  </item>
+
+  <item title="Create a folder" skip="true">
+	  <action pluginId="org.talend.help"
+		  class="org.talend.help.cheatsheet.actions.CreateNewFolder"/>
+	  <description>
+	  	For an optimal management, you can organize the 3 subfolders of the “Metadata” by new folders. On each elements of this tree, use the right click -> create folder.
+	  </description>
+  </item>
+
+  <item title="Conclusion">
+	  <description>
+	    Congratulation, you can now access and organize Repository.
+	  	<br /><br />The tree structure of files could be modified thereafter. You will be able to as move the metadatas as you will create to improve this organization later on.
+	  	<br /><br />You can create as many folders as you want and when the organization of the tree satisfies you, use "Click to Complete".
+	  </description>
+  </item>
+
+</cheatsheet>

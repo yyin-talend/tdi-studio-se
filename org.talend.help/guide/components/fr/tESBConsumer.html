@@ -1,0 +1,361 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tESBConsumer</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-esb.html" title="Chapitre&nbsp;12.&nbsp;Composants ESB"><link rel="prev" href="ch-esb.html" title="Chapitre&nbsp;12.&nbsp;Composants ESB"><link rel="next" href="tESBProviderFault.html" title="tESBProviderFault"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tESBConsumer</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch-esb.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;12.&nbsp;Composants ESB</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tESBProviderFault.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tESBConsumer"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tESBConsumer"></a>tESBConsumer</h2></div></div></div><div class="mediaobject"><img src="../images/tESBConsumer_icon32_white.png"></div><a name="Xaa4085019"></a><div class="section" title="Propri&eacute;t&eacute;s du tESBConsumer"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e199255"></a>Propri&eacute;t&eacute;s du tESBConsumer</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>ESB/Web Services</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Appelle la m&eacute;thode d&eacute;finie du Service Web invoqu&eacute; et retourne la
+								classe, selon les param&egrave;tres sp&eacute;cifi&eacute;s.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Invoque une m&eacute;thode via un Service Web.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Aucun fichier WSDL
+								n'est configur&eacute; pour le Job. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+								fichier de service Web souhait&eacute; depuis le <span class="emphasis"><strong>Repository</strong></span> pour s&eacute;lectionner les param&egrave;tres
+								(granularit&eacute;) du nom du port et de l'op&eacute;ration.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Service Configuration</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Description des bindings et de la configuration du Service Web. Le
+								champ <span class="emphasis"><strong>Endpoint</strong></span> est automatiquement
+								rempli apr&egrave;s compl&eacute;tion de la configuration du service.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Connection time out (second)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Configurez une valeur en secondes avant interruption de la
+								connexion au Service Web.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Receive time out (second)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Configurez une valeur en secondes pour la r&eacute;ception de la
+								r&eacute;ponse.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Input schema</em></span> et <span class="emphasis"><em>Edit
+									schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local
+								(built-in) soit distant dans le <span class="emphasis"><strong>Repository</strong></span>. </p>
+							<p>Cliquez sur<span class="emphasis"><strong> Edit Schema</strong></span> pour
+								effectuer des changements sur le sch&eacute;ma. Notez que le sch&eacute;ma devient
+								automatiquement local (Built-in) lorsque vous effectuez des
+								changements. </p>
+							<p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> afin de
+								r&eacute;cup&eacute;rer automatiquement les colonnes du composant
+								pr&eacute;c&eacute;dent.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+								dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Response schema</em></span> et <span class="emphasis"><em>Edit
+									schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans le
+										<span class="emphasis"><strong>Repository</strong></span></span>.</p>
+							<p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma. <span>Notez que si vous
+									effectuez des modifications, le sch&eacute;ma devient automatiquement
+									built-in.</span></p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute;
+								dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute; dans divers
+								projets et Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+									utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Fault Schema</em></span> et <span class="emphasis"><em>Edit
+									Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span> , soit distant dans le
+										<span class="emphasis"><strong>Repository</strong></span></span>.</p>
+							<p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma. <span>Notez que si vous
+									effectuez des modifications, le sch&eacute;ma devient automatiquement
+									built-in.</span></p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+								dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>ESB Service Settings</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Use Service Locator</strong></span>&nbsp;: Maintient
+								la disponibilit&eacute; du service pour r&eacute;pondre aux demandes et aux
+								accords de niveau de service (Service Level Agreements).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Use Service Activity Monitor</strong></span>&nbsp;:
+								Capture les &eacute;v&eacute;nements et stocke les informations pour permettre des
+								analyses en profondeur de l&#8217;activit&eacute; du service et un suivi des
+								messages &agrave; travers une transaction m&eacute;tier. Cette option peut &ecirc;tre
+								utilis&eacute;e, entre autres, pour analyser le temps de r&eacute;ponse du
+								service, identifier les mod&egrave;les de trafic ou effectuer une analyse
+								de cause racine.</p>
+						</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td valign="top"><span class="emphasis"><strong>Use
+								Authentication</strong></span> : Cochez cette case pour activer l'option
+							d'authentification. Choisissez entre <span class="emphasis"><strong>Basic
+								HTTP</strong></span>, <span class="emphasis"><strong>SAML Token (ESB
+								runtime only)</strong></span> et <span class="emphasis"><strong>Username
+								Token</strong></span>. Saisissez un identifiant et un mot de passe dans
+							les champs correspondants. L'authentification par l'identifiant
+							fonctionne dans le Studio et &agrave; l'ex&eacute;cution. L'authentification par SAML
+							fonctionne uniquement lors de l'ex&eacute;cution.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Use http Proxy/Proxy host</em></span>, <span class="emphasis"><em>Proxy
+									port</em></span>, <span class="emphasis"><em>Proxy user</em></span>, et
+									<span class="emphasis"><em>Proxy password</em></span></p>
+						</td><td valign="top">
+							<p>Cochez cette case si vous utilisez un serveur proxy et renseignez
+								les informations n&eacute;cessaires.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trust Server with SSL</em></span>/<span class="emphasis"><em>TrustStore
+									file</em></span> et <span class="emphasis"><em>TrustStore
+									password</em></span></p>
+						</td><td valign="top">
+							<p>Cochez cette case pour authentifier le serveur aupr&egrave;s du client
+								via un protocole s&eacute;curis&eacute; SSL et renseignez les champs
+								suivants&nbsp;:</p>
+							<p><span class="emphasis"><strong>TrustStore file&nbsp;</strong></span>: saisissez le
+								chemin d&#8217;acc&egrave;s et le nom du fichier TrustStore contenant la liste
+								des certificats approuv&eacute;s par le client.</p>
+							<p><span class="emphasis"><strong>TrustStore password&nbsp;</strong></span>: saisissez
+								le mot de passe utilis&eacute; pour v&eacute;rifier l&#8217;int&eacute;grit&eacute; des donn&eacute;es
+								TrustStore. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Mapping link display as</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Auto&nbsp;</strong></span>: Par d&eacute;faut, les liens
+								entre les sch&eacute;mas d&#8217;entr&eacute;e, de sortie et les param&egrave;tres du Service
+								Web sont en forme de courbes.</p>
+							<p><span class="emphasis"><strong>Curves</strong></span>&nbsp;: Les liens entre le
+								sch&eacute;ma et les param&egrave;tres du Service Web sont en forme de
+								courbes.</p>
+							<p><span class="emphasis"><strong>Lines&nbsp;</strong></span>: Les liens entre le sch&eacute;ma
+								et les param&egrave;tres du Service Web sont en forme de lignes droites. </p>
+							<p>Cette option optimise l&eacute;g&egrave;rement les performances.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case si vous souhaitez arr&ecirc;ter le Job en cas
+								d&#8217;erreur.</p>
+						</td></tr><tr><td>
+							<span class="emphasis"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<span class="emphasis"><em>Service Locator Custom
+								Properties</em></span>
+						</td><td valign="top">Cette table appara&icirc;t lorsque la case <span class="emphasis"><strong>Use Service Locator</strong></span> est coch&eacute;e. Vous pouvez
+							ajouter autant de lignes que n&eacute;cessaire afin de personnaliser les
+							propri&eacute;t&eacute;s correspondantes. Saisissez entre guillemets le nom et la
+							valeur de chaque propri&eacute;t&eacute; dans le champ <span class="emphasis"><strong>Property
+								Name</strong></span> et <span class="emphasis"><strong>Property Value</strong></span>
+							respectivement.</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em> Service Activity Custom
+								Properties</em></span>
+						</td><td valign="top">Cette table appara&icirc;t lorsque la case <span class="emphasis"><strong>Use Service Activity Monitor</strong></span> est coch&eacute;e. Vous
+							pouvez ajouter autant de lignes que n&eacute;cessaire afin de personnaliser les
+							propri&eacute;t&eacute;s correspondantes. Saisissez entre guillemets le nom et la
+							valeur de chaque propri&eacute;t&eacute; dans le champ <span class="emphasis"><strong>Property
+								Name</strong></span> et <span class="emphasis"><strong>Property Value</strong></span>
+							respectivement.</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Temporary folder (for wsdl2java)</em></span>
+						</td><td valign="top">D&eacute;finissez le chemin d'acc&egrave;s ou parcourez votre syst&egrave;me
+							jusqu'au dossier temporaire configur&eacute; pour stocker les fichiers
+							WSDL.</td></tr><tr><td valign="top">
+							<p> </p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log, aussi bien au
+								niveau du Job qu&#8217;au niveau de chaque composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant peut &ecirc;tre utilis&eacute; comme composant interm&eacute;diaire. Il
+								n&eacute;cessite un composant d&#8217;entr&eacute;e et un composant de sortie.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Une JDK est requise pour que ce composant puisse
+								fonctionner.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Retourner une adresse e-mail valide"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e199950"></a>Sc&eacute;nario&nbsp;: Retourner une adresse e-mail valide</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job utilisant un composant <span class="emphasis"><strong>tESBConsumer</strong></span> afin de r&eacute;cup&eacute;rer une adresse e-mail valide.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer1.png" align="middle"></div><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e199961"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants de la <span class="emphasis"><strong>Palette</strong></span> dans
+						l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="emphasis"><strong>tFixedFlowInput</strong></span>, <span class="emphasis"><strong>tXMLMap</strong></span>,
+						un <span class="emphasis"><strong>tESBConsumer</strong></span> et deux <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Cliquez-droit sur le <span class="emphasis"><strong>tFixedFlowInput</strong></span>,
+						s&eacute;lectionnez <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> dans le menu contextuel puis cliquez sur le <span class="emphasis"><strong>tXMLMap</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez-droit sur le composant <span class="emphasis"><strong>tXMLMap</strong></span>,
+						s&eacute;lectionnez <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>*New Output* (Main)</strong></span> dans le menu contextuel puis cliquez sur
+						le <span class="emphasis"><strong>tESBConsumer</strong></span>. Saisissez <span class="emphasis"><em>payload</em></span> dans la bo&icirc;te de dialogue qui s'ouvre
+						afin de renommer le lien et acceptez de r&eacute;cup&eacute;rer le sch&eacute;ma du <span class="emphasis"><strong>tESBConsumer</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez-droit sur le <span class="emphasis"><strong>tESBConsumer</strong></span>,
+						s&eacute;lectionnez <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Response</strong></span> dans le menu contextuel et cliquez sur le composant
+							<span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez-droit &agrave; nouveau sur le <span class="emphasis"><strong>tESBConsumer</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Fault</strong></span> dans le menu
+						contextuel et cliquez sur le second <span class="emphasis"><strong>tLogRow</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e200049"></a>Configurer les composants</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;12.1.&nbsp;Configurer le composant tFixedFlowInput"><a name="d43281e200052"></a><p class="title"><b>Proc&eacute;dure&nbsp;12.1.&nbsp;Configurer le composant tFixedFlowInput</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tFixedFlowInput</strong></span> afin d&#8217;afficher sa vue <span class="emphasis"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s de base (<span class="emphasis"><strong>Basic settings</strong></span>).</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer3.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="emphasis"><strong>Edit Schema</strong></span>. Dans la bo&icirc;te de
+						dialogue, cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour
+						ajouter une ligne de type <span class="emphasis"><strong>String</strong></span> et
+						nommez-la <span class="emphasis"><em>payloadString</em></span>. Cliquez sur
+							<span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+						dialogue.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer2.png" align="middle"></div></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Number of rows</strong></span>, configurez
+						le nombre de lignes &agrave;&nbsp;<span class="emphasis"><em>1</em></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Use Single Table</strong></span> et saisissez la requ&ecirc;te suivante
+						entre guillemets dans le champ<span class="emphasis"><strong>
+						Value</strong></span>&nbsp;:</p><p>
+						<code class="code">nomatter@gmail.com</code>
+					</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;12.2.&nbsp;Configurer le composant tXMLMap"><a name="d43281e200120"></a><p class="title"><b>Proc&eacute;dure&nbsp;12.2.&nbsp;Configurer le composant tXMLMap</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le <span class="emphasis"><strong>tXMLMap</strong></span> afin d&#8217;ouvrir le <span class="emphasis"><strong>Map Editor</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Dans la table de sortie, cliquez-droit sur le n&#339;ud racine et s&eacute;lectionnez
+							<span class="emphasis"><strong>Rename</strong></span> dans le menu contextuel.
+						Saisissez <span class="emphasis"><em>isValidEmail</em></span> dans la bo&icirc;te de
+						dialogue qui appara&icirc;t.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez-droit sur le n&#339;ud <span class="emphasis"><em>isValidEmail</em></span>
+						et s&eacute;lectionnez <span class="emphasis"><strong>Set A Namespace</strong></span> dans le
+						menu contextuel. Saisissez <span class="emphasis"><em>http://www.webservicex.net</em></span> dans la bo&icirc;te de dialogue qui
+						appara&icirc;t.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez-droit &agrave; nouveau sur le n&#339;ud <span class="emphasis"><em>isValidEmail</em></span> et s&eacute;lectionnez <span class="emphasis"><strong>Create
+							Sub-Element</strong></span> dans le menu contextuel. Saisissez <span class="emphasis"><em>Email</em></span> dans la bo&icirc;te de dialogue qui
+						appara&icirc;t.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez-droit sur le n&#339;ud&nbsp;<span class="emphasis"><em>Email</em></span> et s&eacute;lectionnez
+							<span class="emphasis"><strong>As loop element</strong></span> dans le menu
+						contextuel.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur le n&#339;ud&nbsp;<span class="emphasis"><em>payloadstring</em></span> dans la table
+						d&#8217;entr&eacute;e et d&eacute;posez-le dans la colonne <span class="emphasis"><strong>Expression</strong></span> de la ligne du n&#339;ud&nbsp;<span class="emphasis"><em>Email</em></span>
+						dans la table de sortie.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer4.png" align="middle"></div></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider le mapping et
+						fermer le <span class="emphasis"><strong>Map Editor</strong></span>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;12.3.&nbsp;Configurer le composant tESBConsumer"><a name="d43281e200198"></a><p class="title"><b>Proc&eacute;dure&nbsp;12.3.&nbsp;Configurer le composant tESBConsumer</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+							<span class="emphasis"><strong>tESBConsumer</strong></span> pour afficher sa vue
+							<span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer5.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="emphasis"><strong>Service Configuration</strong></span> afin d&#8217;ouvrir
+						l&#8217;&eacute;diteur.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer6.png" align="middle"></div></li><li class="step" title="&Eacute;tape 3"><p>Dans la bo&icirc;te de dialogue qui appara&icirc;t, saisissez&nbsp;:
+							<span class="emphasis"><em>http://www.webservicex.net/ValidateEmail.asmx?WSDL</em></span>
+						dans le champ <span class="emphasis"><strong>WSDL</strong></span> puis cliquez sur
+							<span class="emphasis"><strong>Refresh</strong></span> pour r&eacute;cup&eacute;rer le nom du port
+						et de l&#8217;op&eacute;ration. Dans la liste <span class="emphasis"><strong>Port Name</strong></span>,
+						s&eacute;lectionnez le port que vous souhaitez
+							utiliser,&nbsp;<span class="emphasis"><em>ValidateEmailSoap</em></span> dans cet exemple.
+						Cliquez sur <span class="emphasis"><strong>OK</strong></span> afin de valider vos
+						param&egrave;tres et fermer la bo&icirc;te de dialogue.</p></li><li class="step" title="&Eacute;tape 4"><p>Configurez le sch&eacute;ma d&#8217;entr&eacute;e <span class="emphasis"><strong>Input
+							Schema</strong></span> comme suit&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer7.png" align="middle"></div></li><li class="step" title="&Eacute;tape 5"><p>Configurez le <span class="emphasis"><strong>Response Schema</strong></span> comme
+						suit&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer8.png" align="middle"></div></li><li class="step" title="&Eacute;tape 6"><p>Configurez le <span class="emphasis"><strong>Fault Schema</strong></span> comme
+						suit&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer9.png" align="middle"></div></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;12.4.&nbsp;Configurer les composants tLogRow"><a name="d43281e200273"></a><p class="title"><b>Proc&eacute;dure&nbsp;12.4.&nbsp;Configurer les composants tLogRow</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans le Job, double-cliquez sur le composant <span class="emphasis"><strong>tLogRow_1</strong></span> monitorant le message Fault afin d&#8217;afficher sa vue
+							<span class="emphasis"><strong>Component</strong></span> et d&eacute;finir ses <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer10.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="emphasis"><strong>Edit Schema</strong></span> et configurez le sch&eacute;ma
+						comme suit&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer11.png" align="middle"></div></li><li class="step" title="&Eacute;tape 3"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+							<span class="emphasis"><strong>tLogRow_2</strong></span> monitorant le message de
+						r&eacute;ponse afin d&#8217;afficher sa vue <span class="emphasis"><strong>Component</strong></span> et
+						d&eacute;finir ses <span class="emphasis"><strong>Basic settings</strong></span></p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer12.png" align="middle"></div></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur le bouton<span class="emphasis"><strong> [...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="emphasis"><strong>Edit Schema</strong></span> et configurez le sch&eacute;ma
+						comme suit&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBConsumer13.png" align="middle"></div></li><li class="step" title="&Eacute;tape 5"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span> pour
+						sauvegarder votre Job.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e200335"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Cliquez sur la vue <span class="emphasis"><strong>Run</strong></span> pour l'afficher et cliquez
+				sur le bouton <span class="emphasis"><strong>Run</strong></span> afin de lancer l'ex&eacute;cution de
+				votre Route. Vous pouvez &eacute;galement appuyer sur <span class="emphasis"><strong>F6</strong></span>
+				pour l'ex&eacute;cuter. Dans le log d&#8217;ex&eacute;cution, vous pouvez voir&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/use_case_tesbconsumer14.png" align="middle"></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch-esb.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-esb.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tESBProviderFault.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;12.&nbsp;Composants ESB&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tESBProviderFault</td></tr></table></div></body></html>

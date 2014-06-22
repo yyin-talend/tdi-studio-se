@@ -1,0 +1,110 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUniservRTMailBulk</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tUniservRTConvertName.html" title="tUniservRTConvertName"><link rel="next" href="tUniservRTMailOutput.html" title="tUniservRTMailOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tUniservRTMailBulk</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tUniservRTConvertName.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tUniservRTMailOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tUniservRTMailBulk"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservRTMailBulk"></a>tUniservRTMailBulk</h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservrtmailbulk_icon.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+			<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of Data Quality Service Hub Studio.</em></span>
+		</p></div><div class="section" title="tUniservRTMailBulk properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e61785"></a>tUniservRTMailBulk properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tUniservRTMailBulk</strong></span> creates an
+								index pool for <span class="emphasis"><em>mailRetrieval</em></span>
+								with predefined input data.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tUniservRTMailBulk</strong></span> prepares the
+								index pool for duplicate search.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e. it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host name</em></span>
+							</p>
+						</td><td valign="top">Server host name between double quotation marks.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">Listening port number of the server between double
+							quotation marks.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Service</em></span>
+							</p>
+						</td><td>
+							<p>The service name is <code class="code">"mail"</code> by default. Enter a new
+								name if necessary (e.g. due to service suffix), between double
+								quotation marks. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Uniserv Parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>For detailed information, please refer to the Uniserv user manual
+									<span class="emphasis"><em>mailRetrieval</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td>Select this check box to collect log data at the Job and the
+							component levels.</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tUniservRTMailBulk</strong></span> prepares the
+								index pool for duplicate search.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>To use <span class="emphasis"><strong>tUniservRTMailBulk</strong></span>, the
+								Uniserv software <span class="emphasis"><em>mailRetrieval</em></span>
+								must be installed.</p>
+							<p>An input component and a map are needed to read the address from
+								the database or a file. The component does not have an output
+								connection.</p>
+						</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Scenario: Creating an index pool"><div class="titlepage"><div><div><h3 class="title"><a name="d0e62006"></a>Scenario: Creating an index pool</h3></div></div></div><p>This scenario describes a batch job that loads the address list of an SQL database
+			into the index pool.</p><p>The database for this scenario is already saved in the <span class="emphasis"><strong>Repository</strong></span>, so that all schema metadata is available.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the <span class="emphasis"><strong>Repository</strong></span> view, expand the <span class="emphasis"><strong>Metadata</strong></span> node and the directory in which the database
+					is saved. Then drag this database into the design workspace. </p><p>The dialog box below appears.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_1.png"></div></li><li class="step" title="Step 2"><p>Select <span class="emphasis"><strong>tMysqlInput</strong></span> and then click <span class="emphasis"><strong>OK</strong></span> to close the dialog box. </p><p>The component is then displayed in the workspace. </p></li><li class="step" title="Step 3"><p>Drag the following components from the <span class="emphasis"><strong>Palette</strong></span> into the design workspace: <span class="emphasis"><strong>tMap</strong></span> and <span class="emphasis"><strong>tUniservRTMailBulk</strong></span>.</p></li><li class="step" title="Step 4"><p>Connect the components via <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_2.png"></div><p>During the process, accept the schema from <span class="emphasis"><strong>tUniservRTMailBulk</strong></span> by clicking <span class="emphasis"><strong>Yes</strong></span> in the validation window.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_3.png"></div></li><li class="step" title="Step 5"><p>Double-click <span class="emphasis"><strong>tMap_1</strong></span> to open the schema
+					mapping window. On the left is the schema of the database file and on the right
+					is the schema of <span class="emphasis"><strong>tUniservRTMailBulk</strong></span>. At the
+					bottom is displayed the <span class="emphasis"><strong>Schema Editor</strong></span>, where
+					you can find the attributes of the individual columns and edit them. </p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_3.png"></div></li><li class="step" title="Step 6"><p>Assign the columns of the input source to the respective columns of <span class="emphasis"><strong>tUniservRTMailBulk</strong></span>. For this purpose, select a column
+					of the input source and drag it onto the appropriate column on the right side.
+					The meaning of the individual arguments is described in the Uniserv user manual
+						<span class="emphasis"><em>mailRetrieval</em></span>.</p></li><li class="step" title="Step 7"><p>Click <span class="emphasis"><strong>OK</strong></span> to close the window.</p></li><li class="step" title="Step 8"><p>Double-click <span class="emphasis"><strong>tUniservRTMailBulk</strong></span> to open its
+						<span class="emphasis"><strong>Basic Settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_4.png"></div></li><li class="step" title="Step 9"><p>Fill in the server information and specify the service.</p></li><li class="step" title="Step 10"><p>Select <span class="emphasis"><strong>Advanced Settings</strong></span> to adapt the server
+					parameters.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_5.png"></div></li></ol></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tUniservRTConvertName.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tUniservRTMailOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tUniservRTConvertName&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tUniservRTMailOutput</td></tr></table></div></body></html>

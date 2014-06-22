@@ -1,0 +1,201 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tVtigerCRMOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-business.html" title="Chapter&nbsp;2.&nbsp;Business components"><link rel="prev" href="tVtigerCRMInput.html" title="tVtigerCRMInput"><link rel="next" href="ch-businessintelligence.html" title="Chapter&nbsp;3.&nbsp;Business Intelligence components"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tVtigerCRMOutput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tVtigerCRMInput.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;2.&nbsp;Business components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch-businessintelligence.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tVtigerCRMOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tVtigerCRMOutput"></a>tVtigerCRMOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tVtigerCRMOutput_icon32_white.png"></div><div class="section" title="tVtigerCRMOutput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e22709"></a>tVtigerCRMOutput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Business/VtigerCRM</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Writes data into a module of a VtigerCRM database.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Allows to write data from a VtigerCRM DB.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Vtiger Version</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Select the version of the Vtiger Web Services you want to use
+								(either <span class="emphasis"><strong>Vtiger 5.0</strong></span> or <span class="emphasis"><strong>Vtiger 5.1</strong></span>)</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Vtiger 5.0</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Server Address</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the IP address of the VtigerCRM server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the Port number to access the server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Vtiger Path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the path to access the server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Type in the user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the version of VtigerCRM you are using.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Module</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the relevant module in the list</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Method</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the relevant method in the list. The method specifies the
+								action you can carry out on the VtigerCRM module selected.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+									<span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+							<p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+								changes to the schema. <span>Note that if
+									you make changes, the schema automatically becomes <span class="emphasis"><strong>Built-in</strong></span>.</span></p>
+							<p> In this component the schema is related to the Module
+								selected.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Vtiger 5.1</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Endpoint</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the URL address of the invoked Web server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Username</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the user name to log in to the VtigerCRM..</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Access key</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the access key for the user name.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action </em></span>
+							</p>
+						</td><td valign="top">
+							<p>Insert or Update the data in the SugarCRM module.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Module</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the relevant module in the list</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+									<span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+							<p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+								changes to the schema. <span>Note that if
+									you make changes, the schema automatically becomes <span class="emphasis"><strong>Built-in</strong></span>.</span></p>
+							<p> In this component the schema is related to the Module
+								selected.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>This check box is clear by default to skip the row on error and
+								complete the process for error-free rows.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Used as an output component. An Input component is required.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e23188"></a>Related Scenario</h3></div></div></div><p>
+			No scenario is available for this component yet.
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tVtigerCRMInput.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-business.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch-businessintelligence.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tVtigerCRMInput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;3.&nbsp;Business Intelligence components</td></tr></table></div></body></html>

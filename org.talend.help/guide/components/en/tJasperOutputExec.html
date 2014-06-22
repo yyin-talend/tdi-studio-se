@@ -1,0 +1,120 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tJasperOutputExec</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-businessintelligence.html" title="Chapter&nbsp;3.&nbsp;Business Intelligence components"><link rel="prev" href="tJasperOutput.html" title="tJasperOutput"><link rel="next" href="tLineChart.html" title="tLineChart"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tJasperOutputExec</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tJasperOutput.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;3.&nbsp;Business Intelligence components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tLineChart.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tJasperOutputExec"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tJasperOutputExec"></a>tJasperOutputExec</h2></div></div></div><div class="mediaobject"><img src="../images/tJasperOutputExec_icon32_white.png"></div><div class="section" title="tJasperOutputExec Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e27616"></a>tJasperOutputExec Properties</h3></div></div></div><p>This component is closely related to Jaspersoft's report designer -- iReport. It reads
+            and processes data from a source file to create a report against a .jrxml report
+            template defined via iReport. This component offers a performance gain as it functions
+            as a combination of an input component and a <span class="emphasis"><strong>tJasperOutput</strong></span> component. The advantage of using two separate components
+            is that data can be transformed before being used to generate a report and the input
+            sources can be various and rich. </p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Business Intelligence/Jasper</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Reads and processes data from a source file to create a report
+                                against a .jrxml report template defined via iReport.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component allows you to use Jaspersoft's iReport to create a
+                                report in rich formats. It offers a performance gain as it functions
+                                as a combination of an input component and a <span class="emphasis"><strong>tJasperOutput</strong></span> component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Jrxml file</em></span></p>
+                        </td><td valign="top">
+                            <p>Report template file created via iReport. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p><span class="emphasis"><em>Source file</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the source file. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Record delimiter</em></span></p>
+                        </td><td valign="top">
+                            <p>Delimiter of the records.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p><span class="emphasis"><em>Destination path</em></span></p>
+                        </td><td valign="top">
+                            <p>Path of the final report file.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Use Default Output Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to use the default name for the report
+                                generated, which takes the source file's name. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Output Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the final report.</p>
+                            <p>
+                                </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This field does not appear if the <span class="emphasis"><strong>Use Default Output Name</strong></span> box has been
+                                        selected.</p></div><p>
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Report type</em></span></p>
+                        </td><td valign="top">
+                            <p>File type of the final report.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>iReport</em></span></p>
+                        </td><td valign="top">
+                            <p>Edit the command to provide the path of iReport's execution file,
+                                e.g. replacing <span class="emphasis"><em>__IREPORT_PATH__\</em></span>
+                                with <span class="emphasis"><em>E:\Program
+                                    Files\Jaspersoft\iReport-4.1.1\bin\</em></span>, or giving the
+                                full path of the execution file such as <span class="emphasis"><em>"E:\Program
+                                    Files\Jaspersoft\iReport-4.1.1\bin\iReport.exe"</em></span>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Launch</em></span></p>
+                        </td><td valign="top">
+                            <p>Click to run iReport.</p>
+                        </td></tr><tr><td>
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect log data at the component
+                                level.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Specify Locale</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to choose a locale from the <span class="emphasis"><strong>Report Locale</strong></span> list.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The first line of the <span class="emphasis"><strong>Report
+                                        Locale</strong></span> list is empty. You can click it to
+                                    customize a locale.</p></div>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Encoding</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select an encoding mode from this list. You can select <span class="emphasis"><strong>Custom</strong></span> from the list to enter an encoding
+                                method in the field that appears.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is closely related to Jaspersoft's report designer
+                                -- iReport. It reads and processes data from a source file to create
+                                a report against a .jrxml report template defined via
+                                iReport.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e27924"></a>Related Scenario</h3></div></div></div><p>For related scenarios, see <a class="xref" href="tJasperOutput.html#businessingelligence_tjasperoutput_scenario-report" title="Scenario: Generating a report against a .jrxml template">the section called &#8220;Scenario: Generating a report against a .jrxml template&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tJasperOutput.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-businessintelligence.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tLineChart.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tJasperOutput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tLineChart</td></tr></table></div></body></html>

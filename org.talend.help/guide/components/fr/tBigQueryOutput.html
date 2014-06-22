@@ -1,0 +1,293 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBigQueryOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-bigdata.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tBigQueryInput.html" title="tBigQueryInput"><link rel="next" href="tBigQueryOutputBulk.html" title="tBigQueryOutputBulk"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tBigQueryOutput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tBigQueryInput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;1.&nbsp;Composants Big Data</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tBigQueryOutputBulk.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tBigQueryOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBigQueryOutput"></a>tBigQueryOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tBigQueryOutput_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du Studio si
+			vous avez souscrit &agrave; l'&eacute;dition correspondante de <span class="emphasis"><em>Talend Big Data Studio</em></span>. </p></div><div class="section" title="Propri&eacute;t&eacute;s du tBigQueryOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e1178"></a>Propri&eacute;t&eacute;s du tBigQueryOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Google BigQuery</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="emphasis"><strong>tBigQueryOutput</strong></span> &eacute;crit les
+								donn&eacute;es qu'il re&ccedil;oit dans un r&eacute;pertoire sp&eacute;cifi&eacute; par l'utilisateur
+								et transf&egrave;re les donn&eacute;es dans Google BigQuery via Google Cloud
+								Storage.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant transf&egrave;re les donn&eacute;es fournies par le composant
+								pr&eacute;c&eacute;dent dans Google BigQuery.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+		pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local
+				(<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans le <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+							<p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span> : Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; ponctuellement
+		pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+			de</em></span>
+		<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span> : Le sch&eacute;ma existe d&eacute;j&agrave; et il est stock&eacute; dans le
+			<span class="emphasis"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir
+		&eacute;galement le <span class="emphasis"><em>Guide utilisateur de</em></span>
+		<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+							<p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Local filename</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez votre syst&egrave;me ou saisissez le chemin d'acc&egrave;s au fichier
+								dans lequel vous souhaitez &eacute;crire les donn&eacute;es re&ccedil;ues.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Append</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour ajouter des lignes aux donn&eacute;es existant
+								dans le fichier sp&eacute;cifi&eacute; dans le champ <span class="emphasis"><strong>Local
+									filename</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><em>Connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Client ID</em></span> et <span class="emphasis"><em>Client
+									secret</em></span></p>
+						</td><td valign="top">
+							<p>Collez l'ID du client et son mot de passe ("secret") cr&eacute;&eacute;s et visibles dans l'onglet API
+		Access du projet h&eacute;bergeant les services BigQuery et Cloud Storage &agrave; utiliser.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Project ID</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Collez l'ID du projet h&eacute;bergeant le service BigQuery &agrave; utiliser.</p>
+							<p>L'ID par d&eacute;faut de ce projet se trouve dans l'URL de la console d'API Google. Vous pouvez
+		&eacute;galement l'obtenir en passant votre curseur sur le nom du projet dans l'outil BigQuery
+		Browser.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Authorization code</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Collez le code d'autorisation fourni par Google pour l'acc&egrave;s en cours de construction.</p>
+							<p>Pour obtenir le code d'autorisation, vous devez ex&eacute;cuter le Job utilisant ce composant.
+		Lorsque l'ex&eacute;cution du Job est en pause pour afficher une URL, vous devez vous rendre &agrave;
+		l'URL donn&eacute;e afin de copier le code d'autorisation.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Dataset</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de l'ensemble de donn&eacute;es dans lequel vous
+								souhaitez transf&eacute;rer des donn&eacute;es.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de la table dans laquelle vous devez transf&eacute;rer
+								les donn&eacute;es.</p>
+							<p>Si la table n'existe pas, cochez la case <span class="emphasis"><strong>Create the table if it doesn't exist</strong></span>.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l'action &agrave; effectuer dans la liste d&eacute;roulante lors du
+								transfert des donn&eacute;es dans la table cible. Les actions disponibles
+								sont : </p>
+							<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>Truncate</strong></span> : vide le
+										contenu de la table et la repeuple avec les donn&eacute;es
+										transf&eacute;r&eacute;es.</p></li><li class="listitem"><p><span class="emphasis"><strong>Append</strong></span> : ajoute des
+										lignes aux donn&eacute;es existant dans la table.</p></li><li class="listitem"><p><span class="emphasis"><strong>Empty</strong></span> : peuple une table
+										vide.</p></li></ul></div>
+						</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><em> Google storage configuration </em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Access key</em></span> et <span class="emphasis"><em>Access secret</em></span></p>
+						</td><td valign="top">
+							<p>Collez les informations d'authentification obtenues de Google pour envoyer des requ&ecirc;tes &agrave;
+		Google Cloud Storage.</p>
+							<p>Ces cl&eacute;s peuvent &ecirc;tre consult&eacute;es dans la vue Interoperable Access, sous l'onglet Google Cloud
+		Storage du projet.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bucket</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom du bucket, le conteneur Google Cloud Storage contenant les donn&eacute;es &agrave;
+		transf&eacute;rer &agrave; Google BigQuery.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le chemin d'acc&egrave;s au r&eacute;pertoire des donn&eacute;es stock&eacute;es dans Google Cloud Storage
+		devant &ecirc;tre transf&eacute;r&eacute;es &agrave; BigQuery.</p>
+							<p>Si les donn&eacute;es ne sont pas dans Google Cloud Storage, ce r&eacute;pertoire est utilis&eacute; comme
+		destination interm&eacute;diaire avant le transfert des donn&eacute;es &agrave; BigQuery.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Header</em></span>
+						</td><td valign="top">
+							<p>Configurez la valeur pour ignorer l'en-t&ecirc;te des donn&eacute;es
+								transf&eacute;r&eacute;es. Par exemple, saisissez <span class="emphasis"><em>0</em></span> afin de n'ignorer aucune ligne, si vos donn&eacute;es ne
+								contiennent pas d'en-t&ecirc;te.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette case est d&eacute;coch&eacute;e par d&eacute;faut, afin d'ignorer les lignes en
+								erreur et de terminer le traitement avec les lignes sans
+								erreur.</p>
+						</td></tr><tr><td>
+							<span class="emphasis"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<p>
+		<span class="emphasis"><em>token properties File Name</em></span>
+	</p>
+						</td><td valign="top">
+							<p>Saisissez le chemin d'acc&egrave;s ou parcourez votre syst&egrave;me jusqu'au fichier de jeton &agrave; utiliser. </p>
+							<p>Lors de la premi&egrave;re ex&eacute;cution du Job avec le code <span class="emphasis"><strong>Authorization
+			code</strong></span> de Google BigQuery, vous devez saisir dans ce champ le r&eacute;pertoire et le
+		nom du fichier contenant le nouveau jeton (refresh token) &agrave; cr&eacute;er et &agrave; utiliser. Si ce
+		fichier de jeton a &eacute;t&eacute; cr&eacute;&eacute; et que vous devez le r&eacute;utiliser, vous devez sp&eacute;cifier son
+		r&eacute;pertoire ainsi que le nom du fichier dans ce champ.</p>
+							<p>Si vous saisissez uniquement le nom du fichier de jeton, le studio consid&egrave;re que le
+		r&eacute;pertoire de ce fichier est la racine du dossier du studio.</p>
+							<p>Pour plus d'informations concernant le refresh token, consultez le manuel de Google
+		BigQuery.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field Separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez un caract&egrave;re, une cha&icirc;ne de caract&egrave;res ou une expression r&eacute;guli&egrave;re pour s&eacute;parer les
+		champs des donn&eacute;es transf&eacute;r&eacute;es.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Create directory if not exists</em></span>
+						</td><td valign="top">
+							<p>Cochez cette case pour cr&eacute;er le r&eacute;pertoire que vous avez d&eacute;fini dans le champ <span class="emphasis"><strong>File</strong></span> pour Google Cloud Storage, s'il n'existe pas.</p>
+						</td></tr><tr><td valign="top">
+							<p> </p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Custom the flush buffer size</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nombre de lignes &agrave; traiter avant de lib&eacute;rer la m&eacute;moire.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Check disk space</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour retourner une exception durant l'ex&eacute;cution si le disque est
+								plein.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+		<span class="emphasis"><strong>Custom</strong></span> et d&eacute;finissez-le
+		manuellement.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log, aussi bien au
+								niveau du Job qu&#8217;au niveau de chaque composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant de sortie. Il re&ccedil;oit les donn&eacute;es du
+								composant pr&eacute;c&eacute;dent, comme le <span class="emphasis"><strong>tFileInputDelimited</strong></span>, le <span class="emphasis"><strong>tMap</strong></span> ou le <span class="emphasis"><strong>tMysqlInput</strong></span>. </p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Ecrire des donn&eacute;es dans BigQuery"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20120801-tbigqueryoutput-scenario"></a>Sc&eacute;nario : Ecrire des donn&eacute;es dans BigQuery</h3></div></div></div><p>Ce sc&eacute;nario utilise deux composants pour &eacute;crire des donn&eacute;es dans Google
+			BigQuery.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryoutput1.png" align="middle"></div><div class="section" title="Relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e1744"></a>Relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la perspective <span class="emphasis"><strong>Integration</strong></span> du
+						Studio, cr&eacute;ez un Job vide, nomm&eacute; par exemple <span class="emphasis"><em>WriteBigQuery</em></span>, depuis le n&#339;ud <span class="emphasis"><strong> Job
+							Designs</strong></span> de la vue <span class="emphasis"><strong>Repository</strong></span>.</p><p>Pour plus d'informations concernant la cr&eacute;ation d'un Job, consultez le
+						Guide utilisateur de votre Studio d'int&eacute;gration.</p></li><li class="step" title="&Eacute;tape 2"><p>D&eacute;posez un <span class="emphasis"><strong>tRowGenerator</strong></span> et un <span class="emphasis"><strong>tBigQueryOutput</strong></span> dans l'espace de mod&eacute;lisation
+						graphique.</p><p>Le composant <span class="emphasis"><strong>tRowGenerator</strong></span> g&eacute;n&egrave;re les
+						donn&eacute;es &agrave; transf&eacute;rer dans Google BigQuery, dans ce sc&eacute;nario. Dans un cas
+						d'utilisation r&eacute;elle, vous pouvez utiliser d'autres composants, comme le
+							<span class="emphasis"><strong>tMysqlInput</strong></span> ou le <span class="emphasis"><strong>tMap</strong></span> &agrave; la place du <span class="emphasis"><strong>tRowGenerator</strong></span>, afin de cr&eacute;er un processus plus complexe pour
+						pr&eacute;parer vos donn&eacute;es &agrave; transf&eacute;rer.</p></li><li class="step" title="&Eacute;tape 3"><p>Connectez les composants &agrave; l'aide d'un lien <span class="emphasis"><strong>Row &gt;
+							Main</strong></span>.</p></li></ol></div></div><div class="section" title="Pr&eacute;parer les donn&eacute;es &agrave; transf&eacute;rer"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e1794"></a>Pr&eacute;parer les donn&eacute;es &agrave; transf&eacute;rer</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tRowGenerator</strong></span> pour
+						ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryoutput2.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur <span class="emphasis"><strong>RowGenerator Editor</strong></span> pour
+						ouvrir l'&eacute;diteur.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez trois fois sur le bouton <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> pour ajouter trois lignes &agrave; la table <span class="emphasis"><strong>Schema</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la colonne <span class="emphasis"><strong>Column</strong></span>, saisissez le nom
+						de votre choix pour chacune des lignes. Par exemple, nommez les lignes
+							<span class="emphasis"><em>fname</em></span>, <span class="emphasis"><em>lname</em></span> et <span class="emphasis"><em>States</em></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la colonne <span class="emphasis"><strong>Functions</strong></span>, s&eacute;lectionnez
+							<span class="emphasis"><em>TalendDataGenerator.getFirstName</em></span> pour
+						la ligne <span class="emphasis"><em>fname</em></span>, <span class="emphasis"><em>TalendDataGenerator.getLastName</em></span> pour <span class="emphasis"><em>lname</em></span> et <span class="emphasis"><em>TalendDataGenerator.getUsState</em></span> pour la ligne <span class="emphasis"><em>States</em></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans le champ <span class="emphasis"><strong>Number of Rows for
+							RowGenerator</strong></span>, saisissez, <span class="emphasis"><em>100</em></span>, par exemple, afin de d&eacute;finir le nombre de lignes &agrave;
+						g&eacute;n&eacute;rer.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider les
+						modifications.</p></li></ol></div></div><div class="section" title="Configurer l'acc&egrave;s &agrave; BigQuery et Cloud Storage"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e1880"></a>Configurer l'acc&egrave;s &agrave; BigQuery et Cloud Storage</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.4.&nbsp;Cr&eacute;er l'acc&egrave;s &agrave; BigQuery"><a name="d55688e1883"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.4.&nbsp;Cr&eacute;er l'acc&egrave;s &agrave; BigQuery</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tBigQueryOutput</strong></span>
+						pour ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryoutput3.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> afin de
+						r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Local filename</strong></span>, saisissez
+						le chemin d'acc&egrave;s au r&eacute;pertoire dans lequel vous souhaitez cr&eacute;er le fichier
+						&agrave; transf&eacute;rer dans BigQuery.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans votre navigateur Web, rendez-vous sur la page de la console Google
+						APIs afin d'acc&eacute;der au projet Google h&eacute;bergeant les services BigQuery et
+						Cloud Storage &agrave; utiliser.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur l'onglet API Access pour ouvrir la vue correspondante.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans la vue <span class="emphasis"><strong>Component</strong></span> du Studio, collez,
+						dans les champs correspondants, l'ID Client, le mot de passe Client et l'ID
+						du projet, disponibles dans la vue API Access.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans le champ <span class="emphasis"><strong>Dataset</strong></span>, saisissez le nom
+						de l'ensemble de donn&eacute;es dans lequel vous souhaitez transf&eacute;rer des donn&eacute;es.
+						Dans ce sc&eacute;nario, il est nomm&eacute; <span class="emphasis"><em>documentation</em></span>.</p><p>L'ensemble de donn&eacute;es doit exister dans BigQuery. La capture d'&eacute;cran
+						suivante pr&eacute;sente l'ensemble de donn&eacute;es utilis&eacute; dans ce sc&eacute;nario.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryoutput4.png" align="middle"></div></li><li class="step" title="&Eacute;tape 8"><p>Dans le champ <span class="emphasis"><strong>Table</strong></span>, saisissez le nom de
+						la table dans laquelle vous souhaitez &eacute;crire les donn&eacute;es, par exemple,
+							<span class="emphasis"><em>UScustomer</em></span>.</p><p>Si la table n'existe pas dans votre BigQuery, s&eacute;lectionnez <span class="emphasis"><strong>Create the table if it doesn't exist</strong></span>.</p></li><li class="step" title="&Eacute;tape 9"><p>Dans le champ <span class="emphasis"><strong>Action on data</strong></span>,
+						s&eacute;lectionnez l'action. Dans cet exemple, s&eacute;lectionnez <span class="emphasis"><strong>Truncate</strong></span> afin de vider le contenu, s'il y en a un, de la
+						table cible et de la peupler &agrave; nouveau avec les donn&eacute;es transf&eacute;r&eacute;es.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.5.&nbsp;Cr&eacute;er l'acc&egrave;s &agrave; Cloud Storage"><a name="d55688e1959"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.5.&nbsp;Cr&eacute;er l'acc&egrave;s &agrave; Cloud Storage</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans votre navigateur Web, rendez-vous sur la page de la console Google
+						APIs afin d'acc&eacute;der au projet Google h&eacute;bergeant les services BigQuery et
+						Cloud Storage &agrave; utiliser.</p></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur <span class="emphasis"><strong>Google Cloud Storage</strong></span> &gt;
+							<span class="emphasis"><strong>Interoperable Access</strong></span> pour ouvrir la vue
+						correspondante.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la vue <span class="emphasis"><strong>Component</strong></span> du Studio, collez,
+						dans les champs correspondants, la cl&eacute; Access, le mot de passe Access,
+						disponibles dans la vue Interoperable Access.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Bucket</strong></span>, saisissez le chemin
+						d'acc&egrave;s au bucket dans lequel stocker les donn&eacute;es transf&eacute;r&eacute;es. Dans cet
+						exemple, le bucket se nomme <span class="emphasis"><em>talend/documentation</em></span>
+					</p><p>Il doit exister dans le r&eacute;pertoire de Cloud Storage.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryoutput5.png" align="middle"></div></li><li class="step" title="&Eacute;tape 5"><p>Dans le champ <span class="emphasis"><strong>File</strong></span>, saisissez le chemin
+						d'acc&egrave;s au r&eacute;pertoire de Google Clould Storage dans lequel recevoir et cr&eacute;er
+						le fichier &agrave; transf&eacute;rer dans BigQuery. Dans ce sc&eacute;nario, saisissez <span class="emphasis"><em>gs://talend/documentation/biquery_UScustomer.csv</em></span>. Le nom du
+						fichier doit &ecirc;tre le m&ecirc;me que celui d&eacute;fini dans le champ <span class="emphasis"><strong>Local filename</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>D&eacute;pannage : si vous rencontrez des probl&egrave;mes comme <span class="emphasis"><em>Unable to read source URI</em></span> concernant le
+								fichier stock&eacute; dans Google Cloud Storage, v&eacute;rifiez que le nom du
+								fichier est bien le m&ecirc;me dans les deux champs.</p></div></li><li class="step" title="&Eacute;tape 6"><p>Saisissez <span class="emphasis"><em>0</em></span> dans le champ <span class="emphasis"><strong>Header</strong></span> afin de prendre toutes les lignes en
+						compte dans les donn&eacute;es transf&eacute;r&eacute;es.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.6.&nbsp;Obtenir le code d'autorisation"><a name="d55688e2021"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.6.&nbsp;Obtenir le code d'autorisation</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="emphasis"><strong>Run</strong></span> du Studio, cliquez sur
+							<span class="emphasis"><strong>Run</strong></span> pour ex&eacute;cuter le Job. L'ex&eacute;cution
+						se met en pause &agrave; un moment, pour afficher dans la console l'URL &agrave; utiliser
+						pour obtenir le code d'autorisation.</p></li><li class="step" title="&Eacute;tape 2"><p>Rendez-vous &agrave; l'URL, dans votre navigateur Web et copiez le code
+						d'autorisation affich&eacute;.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la vue <span class="emphasis"><strong>Component</strong></span> du composant
+							<span class="emphasis"><strong>tBigQueryOutput</strong></span>, collez le code dans le
+						champ <span class="emphasis"><strong>Authorization Code</strong></span>.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e2048"></a>Ex&eacute;cuter le Job </h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour ex&eacute;cuter le
+						Job.</p></li></ul></div><p>La vue <span class="emphasis"><strong>Run</strong></span> s'ouvre automatiquement et vous pouvez
+				visualiser les r&eacute;sultats de l'ex&eacute;cution..</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryoutput-result.png" align="middle"></div><p>Les donn&eacute;es sont transf&eacute;r&eacute;es dans Google BigQuery.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryoutput-result2.png" align="middle"></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tBigQueryInput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tBigQueryOutputBulk.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tBigQueryInput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tBigQueryOutputBulk</td></tr></table></div></body></html>

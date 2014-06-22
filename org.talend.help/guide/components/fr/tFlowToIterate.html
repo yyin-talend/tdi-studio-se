@@ -1,0 +1,147 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFlowToIterate</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-orchestration.html" title="Chapitre&nbsp;17.&nbsp;Composants Orchestration"><link rel="prev" href="ch-orchestration.html" title="Chapitre&nbsp;17.&nbsp;Composants Orchestration"><link rel="next" href="tForeach.html" title="tForeach"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFlowToIterate</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch-orchestration.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;17.&nbsp;Composants Orchestration</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tForeach.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFlowToIterate"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFlowToIterate"></a>tFlowToIterate</h2></div></div></div><div class="mediaobject"><img src="../images/tFlowToIterate_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tFlowToIterate"><div class="titlepage"><div><div><h3 class="title"><a name="Raa10470"></a>Propri&eacute;t&eacute;s du tFlowToIterate</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Orchestration</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tFlowToIterate</strong></span>
+                                effectue une it&eacute;ration sur les donn&eacute;es d'entr&eacute;e et g&eacute;n&egrave;re des
+                                variables globales. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tFlowToIterate</strong></span> est utilis&eacute;
+                                afin de lire des donn&eacute;es ligne par ligne et de stocker les entr&eacute;es
+                                des donn&eacute;es dans des variables globales it&eacute;ratives. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use the default (key, value) in global
+                                    variables</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Lorsque cette case est coch&eacute;e, le syst&egrave;me utilise la valeur par
+                                d&eacute;faut de la variable globale utilis&eacute;e dans le Job. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Customize</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>key&nbsp;</strong></span>: Entrez le nom de la
+                                nouvelle variable globale. Appuyez sur <span class="emphasis"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; l&#8217;ensemble des variables
+                                disponibles, qu&#8217;elles soient globales ou d&eacute;finies par l&#8217;utilisateur.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>value&nbsp;</strong></span>: Cliquez dans la cellule
+                                pour acc&eacute;der &agrave; la liste des colonnes rattach&eacute;es &agrave; la variable
+                                globale d&eacute;finie. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tFlowToIterate </strong></span>n&#8217;est pas un
+                                composant de d&eacute;but, et il requiert un composant de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Global Variables</strong></span>
+                            </p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Number of Lines</strong></span>&nbsp;: indique le
+                                nombre de lignes trait&eacute;es. Disponible comme variable <span class="emphasis"><strong>After</strong></span>.</p>
+                            <p>Retourne un entier.</p>
+                            <p><span class="emphasis"><strong>Current iteration</strong></span> : Indique le
+                                nombre d'it&eacute;rations. Disponible comme variable <span class="emphasis"><strong>Flow</strong></span>.</p>
+                            <p>Retourne un entier. </p>
+                            <p>Pour plus d&#8217;informations concernant les variables, consultez le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Connections</strong></span>
+                            </p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Liens de sortie (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Iterate.</p>
+                            <p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: Run if, OnComponentOk,
+                                OnComponentError.</p>
+                            <p> </p>
+                            <p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main.</p>
+                            <p> </p>
+                            <p>Pour plus d&#8217;informations concernant les liens, consultez&nbsp;le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Transformer un flux de donn&eacute;es en liste"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e256800"></a>Sc&eacute;nario&nbsp;: Transformer un flux de donn&eacute;es en liste</h3></div></div></div><p>Le sc&eacute;nario suivant d&eacute;crit un Job permettant de lire une liste de fichiers &agrave; partir
+            d&#8217;un fichier d&#8217;entr&eacute;e donn&eacute;. Il effectue &eacute;galement une it&eacute;ration sur chacun des fichiers
+            et affiche leur contenu ligne par ligne dans la console de log <span class="emphasis"><strong>Run</strong></span>. </p><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e256808"></a>Construire le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>A partir de la <span class="emphasis"><strong>Palette</strong></span>, cliquez-d&eacute;posez
+                        les composants suivants dans l&#8217;espace de mod&eacute;lisation&nbsp;: deux <span class="emphasis"><strong>tFileInputDelimited</strong></span>, un <span class="emphasis"><strong>tFlowToIterate</strong></span> et un <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Cliquez-droit sur chacun des composants pour les relier entre eux.
+                        Connectez le premier <span class="emphasis"><strong>tFileInputDelimited</strong></span> au
+                            <span class="emphasis"><strong>tFlowToIterate</strong></span> &agrave; l&#8217;aide d&#8217;un lien de
+                        type <span class="emphasis"><strong>Row Main</strong></span>, puis le <span class="emphasis"><strong>tFlowToIterate</strong></span> au deuxi&egrave;me <span class="emphasis"><strong>tFileInputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type <span class="emphasis"><strong>Iterate</strong></span>, enfin le second <span class="emphasis"><strong>tFileInputDelimited</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type <span class="emphasis"><strong>Row
+                            Main</strong></span>.</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tFlowToIterate1.png"></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e256860"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le premier
+                            <span class="emphasis"><strong>tFileInputDelimited</strong></span> pour afficher sa
+                        vue <span class="emphasis"><strong>Component</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Dans l'onglet <span class="emphasis"><strong>Basic settings</strong></span>, cliquez sur
+                        le bouton <span class="emphasis"><strong>[...]</strong></span> situ&eacute; &agrave; c&ocirc;t&eacute; du champ
+                            <span class="emphasis"><strong>File Name</strong></span> pour d&eacute;terminer le chemin
+                        d&#8217;acc&egrave;s au fichier d&#8217;entr&eacute;e. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Le champ <span class="emphasis"><strong>File Name</strong></span> est
+                            obligatoire.</p></div><div class="mediaobject"><img src="../images/Use_Case_tFlowToIterate2.png"></div><p>Le fichier d&#8217;entr&eacute;e utilis&eacute; dans ce sc&eacute;nario est
+                            <span class="emphasis"><em>Customers.</em></span> Il s&#8217;agit d&#8217;un fichier texte contenant
+                        trois autres fichiers texte simples&nbsp;: <span class="emphasis"><em>Name</em></span>,
+                            <span class="emphasis"><em>E-mail </em></span>et <span class="emphasis"><em>Address</em></span>. Le fichier
+                            <span class="emphasis"><em>Name</em></span> est constitu&eacute; d&#8217;une colonne contenant le nom
+                        des clients et le fichier <span class="emphasis"><em>E-mail</em></span> d&#8217;une colonne
+                        contenant l&#8217;adresse email de ces clients. Le troisi&egrave;me fichier texte,
+                            <span class="emphasis"><em>Address</em></span>, est compos&eacute; d&#8217;une colonne comprenant
+                        l&#8217;adresse postale des clients. </p><p>Renseignez les autres champs en fonction de votre fichier. Pour plus
+                        d&#8217;informations sur le <span class="emphasis"><strong>tFileInputDelimited</strong></span>,
+                        consultez <a class="xref" href="tFileInputDelimited.html#Raa86313-dup-2" title="Propri&eacute;t&eacute;s du tFileInputDelimited">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tFileInputDelimited&nbsp;&raquo;</a>. Dans ce sc&eacute;nario, l&#8217;en-t&ecirc;te, le
+                        pied de page et le nombre limite de lignes &agrave; traiter ne sont pas d&eacute;finis.
+                        Donc, laissez les champs <span class="emphasis"><strong>Header</strong></span> (en-t&ecirc;te)
+                        et <span class="emphasis"><strong>Footer</strong></span> (pied de page) et <span class="emphasis"><strong>Limit</strong></span> par d&eacute;faut.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="emphasis"><strong>Edit schema</strong></span> pour
+                        d&eacute;crire la structure des donn&eacute;es du fichier d&#8217;entr&eacute;e. Dans ce sc&eacute;nario, le
+                        sch&eacute;ma comporte une seule colonne appel&eacute;e
+                        <span class="emphasis"><em>FileName</em></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFlowToIterate7.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, s&eacute;lectionnez le <span class="emphasis"><strong>tFlowToIterate</strong></span> et cliquez sur l'onglet <span class="emphasis"><strong>Component</strong></span> pour d&eacute;finir sa configuration de base
+                            (<span class="emphasis"><strong>Basic settings</strong></span>).</p><div class="mediaobject"><img src="../images/Use_Case_tFlowToIterate3.png"></div><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter
+                        des lignes de param&egrave;tres et d&eacute;finissez vos variables. Cliquez dans la
+                        cellule <span class="emphasis"><strong>key</strong></span> afin de saisir le nom de la
+                        variable souhait&eacute;. Dans ce sc&eacute;nario, la variable est la suivante :
+                            <code class="code">"Name_of_File"</code>.</p><p>Vous pouvez &eacute;galement cocher la case <span class="emphasis"><strong>Use the default
+                            (key, value) in global variables</strong></span> pour utiliser la valeur par
+                        d&eacute;faut des variables globales. </p></li><li class="step" title="&Eacute;tape 5"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le second
+                        composant <span class="emphasis"><strong>tFileInputDelimited</strong></span> pour ouvrir
+                        sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFlowToIterate4.png"></div><p>Dans le champ <span class="emphasis"><strong>File Name</strong></span>, renseignez le
+                        r&eacute;pertoire des fichiers &agrave; lire puis appuyez sur les touches <span class="emphasis"><strong>Ctrl+Espace</strong></span> pour s&eacute;lectionner la variable globale
+                            <span class="emphasis"><em>"Name_of_File"</em></span>. Dans ce sc&eacute;nario, la
+                        syntaxe est la suivante
+                        :</p><pre class="programlisting">"C:/scenario/flow_to_iterate/"+((String)globalMap.get("Name_of_File"))</pre><p>Cliquez sur <span class="emphasis"><strong>Edit schema</strong></span> afin de d&eacute;finir
+                        le nom de la colonne du sch&eacute;ma. Nommez-la, dans ce sc&eacute;nario, <span class="emphasis"><em>RowContent</em></span>.</p><p>Renseignez les autres champs selon vos besoins. Pour plus d&#8217;informations,
+                        consultez <a class="xref" href="tFileInputDelimited.html#Raa86313-dup-2" title="Propri&eacute;t&eacute;s du tFileInputDelimited">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tFileInputDelimited&nbsp;&raquo;</a>.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le dernier
+                        composant, le <span class="emphasis"><strong>tLogRow</strong></span>, pour afficher sa vue
+                            <span class="emphasis"><strong>Component</strong></span> et d&eacute;finir sa configuration
+                        de base (<span class="emphasis"><strong>Basic settings</strong></span>).</p><div class="mediaobject"><img src="../images/Use_Case_tFlowToIterate6.png"></div><p>D&eacute;finissez les param&egrave;tres selon vos besoins. Pour plus d&#8217;informations,
+                        consultez <a class="xref" href="tLogRow.html#Raa83212" title="Propri&eacute;t&eacute;s du tLogRow">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tLogRow&nbsp;&raquo;</a>.</p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e257032"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Enregistrez votre Job en appuyant sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour l&#8217;ex&eacute;cuter ou cliquez
+                        sur le bouton <span class="emphasis"><strong>Run</strong></span> dans la vue <span class="emphasis"><strong>Run</strong></span>.</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tFlowToIterate5.png"></div><p>La console affiche, pour chaque ligne, le nom du client, son e-mail et son
+                adresse, pr&eacute;c&eacute;d&eacute;s du nom de la colonne du sch&eacute;ma. </p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch-orchestration.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-orchestration.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tForeach.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;17.&nbsp;Composants Orchestration&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tForeach</td></tr></table></div></body></html>

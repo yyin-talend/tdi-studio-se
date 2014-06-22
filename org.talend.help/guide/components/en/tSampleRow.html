@@ -1,0 +1,113 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSampleRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-processing.html" title="Chapter&nbsp;18.&nbsp;Processing components"><link rel="prev" href="tReplace.html" title="tReplace"><link rel="next" href="tSortRow.html" title="tSortRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSampleRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tReplace.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;18.&nbsp;Processing components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSortRow.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tSampleRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSampleRow"></a>tSampleRow</h2></div></div></div><div class="mediaobject"><img src="../images/tSampleRow_icon32_white.png"></div><div class="section" title="tSampleRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e274126"></a>tSampleRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Component
+                                                  family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Processing</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="emphasis"><strong>tSampleRow</strong></span>
+                                                  filters rows according to line numbers.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="emphasis"><strong>tSampleRow</strong></span>
+                                                  helps to select rows according to a list of single
+                                                  lines and/or a list of groups of lines.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields that will be
+                                                  processed and passed on to the next component.
+                                                  <span>The schema is
+                                                  either <span class="emphasis"><strong>Built-in</strong></span>
+                                                  or stored remotely in the <span class="emphasis"><strong>Repository</strong></span>. </span>
+                                                  </p>
+                                                  <p>Click <span class="emphasis"><strong>Edit
+                                                  Schema</strong></span> to make changes to the schema.
+                                                  Note that if you make changes, the schema
+                                                  automatically becomes built-in. </p>
+                                                  <p>Click <span class="emphasis"><strong>Sync
+                                                  columns</strong></span> to retrieve the schema from the
+                                                  previous component in the Job.</p>
+                                                  
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Built-in</strong></span>:
+                                                  You create the schema and store it locally for the
+                                                  relevant component. Related topic: see
+                                                  <span class="emphasis"><em>Talend Open Studio User
+                                                  Guide</em></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused in various
+                                                  projects and Job flowcharts. Related topic: see
+                                                  <span class="emphasis"><em>Talend Open Studio
+                                                  User Guide</em></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Range</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Enter a range using the relevant syntax to
+                                                  choose a list of single lines and/or a list of
+                                                  groups of lines.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component handles flows of data
+                                                  therefore it requires input and output
+                                                  components.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>n/a</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Filtering rows and groups of rows"><div class="titlepage"><div><div><h3 class="title"><a name="tSortRow-dup-2"></a>Scenario: Filtering rows and groups of rows</h3></div></div></div><p>This scenario describes a three-component Job. A <span class="emphasis"><strong>tRowGenerator</strong></span> is used to create random entries which are
+                        directly sent to a <span class="emphasis"><strong>tSampleRow </strong></span>where they
+                        will be filtered according to a defined range. In this scenario, we suppose
+                        the input flow contains names of salespersons along with their respective
+                        number of sold products and their years of presence in the enterprise. The
+                        result of the filtering operation is displayed on the <span class="emphasis"><strong>Run</strong></span> console.</p><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e274315"></a>Dropping and linking the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> onto the design
+                                                workspace: <span class="emphasis"><strong>tRowGenerator</strong></span>, <span class="emphasis"><strong>tSampleRow</strong></span>, and <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="Step 2"><p>Connect the three components using <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> links.</p><div class="mediaobject"><img src="../images/Use_Case_tSampleRow.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e274346"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the design workspace, select <span class="emphasis"><strong>tRowgenerator</strong></span>, and click the <span class="emphasis"><strong>Component</strong></span> tab to define the
+                                                basic settings for <span class="emphasis"><strong>tRowGenerator</strong></span>.</p></li><li class="step" title="Step 2"><p>Click the <span class="emphasis"><strong>[...]</strong></span>
+                                                button next to <span class="emphasis"><strong>Edit
+                                                  Schema</strong></span> to define the data you want to
+                                                use as input. In this scenario, the schema is made
+                                                of five columns.</p><div class="mediaobject"><img src="../images/Use_Case_tSampleRow1.png"></div></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Basic settings</strong></span>
+                                                view, click <span class="emphasis"><strong>RowGenerator
+                                                  Editor</strong></span> to define the data to be
+                                                generated.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>RowGenerator
+                                                  Editor</strong></span>, specify the number of rows to
+                                                be generated in the <span class="emphasis"><strong>Number of
+                                                  Rows for RowGenerator</strong></span> field and click
+                                                  <span class="emphasis"><strong>OK</strong></span>. The <span class="emphasis"><strong>RowGenerator Editor</strong></span>
+                                                closes.</p><div class="mediaobject"><img src="../images/Use_Case_tSampleRow2.png"></div></li><li class="step" title="Step 5"><p>In the design workspace, select <span class="emphasis"><strong>tSampleRow</strong></span> and click the <span class="emphasis"><strong>Component</strong></span> tab to define the
+                                                basic settings for <span class="emphasis"><strong>tSampleRow</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tSampleRow3.png"></div></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>Basic settings</strong></span>
+                                                view, set the <span class="emphasis"><strong>Schema</strong></span> to <span class="emphasis"><strong>Built-In</strong></span> and click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+                                                the schema from the <span class="emphasis"><strong>tRowGenerator</strong></span> component.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Range</strong></span> panel,
+                                                set the filter to select your rows using the correct
+                                                syntax as explained. In this scenario, we want to
+                                                select the first and fifth lines along with the
+                                                group of lines between 9 and 12.</p></li><li class="step" title="Step 8"><p>In the design workspace, select <span class="emphasis"><strong>tLogRow</strong></span> and click the <span class="emphasis"><strong>Component</strong></span> tab to define its
+                                                basic settings. For more information about <span class="emphasis"><strong>tLogRow</strong></span>, see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a>.</p></li></ol></div></div><div class="section" title="Saving and execting the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e274454"></a>Saving and execting the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save
+                                        your Job.</p></li><li class="step" title="Step 2"><p>Press <span class="emphasis"><strong>F6</strong></span>, or click
+                                                  <span class="emphasis"><strong>Run</strong></span> on the
+                                                  <span class="emphasis"><strong>Run</strong></span> tab to
+                                                execute the Job.</p><div class="mediaobject"><img src="../images/Use_Case_tSampleRow4.png"></div><p>The filtering result displayed on the console shows
+                                                the first and fifth rows and the group of rows
+                                                between 9 and 12.</p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tReplace.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSortRow.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tReplace&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSortRow</td></tr></table></div></body></html>

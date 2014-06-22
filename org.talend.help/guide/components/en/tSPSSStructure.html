@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSPSSStructure</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-businessintelligence.html" title="Chapter&nbsp;3.&nbsp;Business Intelligence components"><link rel="prev" href="tSPSSProperties.html" title="tSPSSProperties"><link rel="next" href="tSybaseSCD.html" title="tSybaseSCD"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSPSSStructure</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSPSSProperties.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;3.&nbsp;Business Intelligence components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSybaseSCD.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tSPSSStructure"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSPSSStructure"></a>tSPSSStructure</h2></div></div></div><div class="mediaobject"><img src="../images/tSPSSStructure_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+                        <span class="emphasis"><em>Before being able to benefit from all functional
+                                objectives of the SPSS components, make sure to do the following:
+                                -If you have already installed SPSS, add the path to the SPSS
+                                directory as the following: SET
+                                PATH=%PATH%;&lt;DR&gt;:\program\SPSS, or -If you have not installed
+                                SPSS, you must copy the SPSS IO "spssio32.dll" lib from the SPSS
+                                installation CD and paste it in <span class="emphasis"><strong>Talend</strong></span> root
+                        directory.</em></span></p></div><div class="section" title="tSPSSStructure properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e45367"></a>tSPSSStructure properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Component family</strong></span></p>
+                                                </td><td valign="top"><p>Business
+                                                  Intelligence</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tSPSSStructure
+                                                  </strong></span>retrieves information about the
+                                                  variables inside .sav files.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tSPSSStructure</strong></span> addresses variables
+                                                  inside .sav files. You can use this component in
+                                                  combination with <span class="emphasis"><strong>tFileList</strong></span> to gather information about
+                                                  existing *.sav files to further analyze or check
+                                                  the findings.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top"><p>The schema metadata in
+                                                  this component is predefined and thus read-only.
+                                                  It is based on the internal SPSS convention. You
+                                                  can click <span class="emphasis"><strong>Edit
+                                                  schema</strong></span> to view the predefined
+                                                  metadata.</p><p> A schema is a row
+                                                  description, i.e., it defines the number of fields
+                                                  to be processed and passed on to the next
+                                                  component. <span>The
+                                                  schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+                                                  <span class="emphasis"><strong>Repository</strong></span></span>. </p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created and
+                                                  stored locally for this component only. Related
+                                                  topic: see <span class="emphasis"><em>Talend Open Studio
+                                                  User Guide</em></span>.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Repository</strong></span>: The schema already exists
+                                                  and is stored in the Repository, hence can be
+                                                  reused. Related topic: see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Filename</em></span></p>
+                                                </td><td valign="top"><p> Name or path of the .sav
+                                                  file to be processed.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top"><p>Select this check box to
+                                                  collect log data at the component level.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>Use this component as a start component. It
+                                                  needs an output flow.</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e45522"></a>Related scenarios</h3></div></div></div><p>For related topics, see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMDMInput.html#Raa34575" title="Scenario: Reading master data in an MDM hub">the section called &#8220;Scenario: Reading master data in an MDM hub&#8221;</a>.</p></li><li class="listitem"><p><a class="xref" href="tSPSSOutput.html#Raa38142" title="Scenario: Writing data in an .sav file">the section called &#8220;Scenario: Writing data in an .sav file&#8221;</a>.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSPSSProperties.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-businessintelligence.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSybaseSCD.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tSPSSProperties&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSybaseSCD</td></tr></table></div></body></html>

@@ -1,0 +1,235 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMSSqlConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-databases-traditional.html" title="Chapitre&nbsp;7.&nbsp;Databases - Composants traditionnels"><link rel="prev" href="tMSSqlCommit.html" title="tMSSqlCommit"><link rel="next" href="tMSSqlInput.html" title="tMSSqlInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMSSqlConnection</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMSSqlCommit.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;7.&nbsp;Databases - Composants traditionnels</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMSSqlInput.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tMSSqlConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMSSqlConnection"></a>tMSSqlConnection</h2></div></div></div><div class="mediaobject"><img src="../images/tMSSqlConnection_icon32.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tMSSqlConnection"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e81022"></a>Propri&eacute;t&eacute;s du tMSSqlConnection</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="emphasis"><strong>tMSSqlCommit</strong></span> et <span class="emphasis"><strong>tMSSqlRollback</strong></span>. Ils
+			sont g&eacute;n&eacute;ralement utilis&eacute;s avec un composant <span class="emphasis"><strong>tMSSqlConnection</strong></span> car il permet d&#8217;ouvrir une connexion pour la
+			transaction en cours.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/MSSQL</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tMSSqlConnection</strong></span>
+								ouvre une connexion vers une base de donn&eacute;es afin d&#8217;effectuer une
+								transaction.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant permet de commiter les donn&eacute;es d&#8217;un Job entier en une
+								seule transaction vers une base de donn&eacute;es de sortie.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top"><span>Peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou <span class="emphasis"><strong>Repository</strong></span></span>.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du sch&eacute;ma.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Ajoutez des informations de connexion suppl&eacute;mentaires n&eacute;cessaires
+								&agrave; la connexion &agrave; la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use or register a shared DB Connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour partager votre connexion ou r&eacute;cup&eacute;rer une
+								connexion mise en partage dans un Job p&egrave;re ou un Job fils. Cette
+								option vous permet de partager une seule connexion &agrave; une base de
+								donn&eacute;es dans plusieurs composants de connexion &agrave; des bases de
+								donn&eacute;es, dans diff&eacute;rents niveaux de Jobs, qui peuvent &ecirc;tre des Jobs
+								parent ou enfant.</p>
+							<div lang="" class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>Cette option est incompatible avec les options <span class="emphasis"><strong>Use dynamic
+                job</strong></span> et <span class="emphasis"><strong>Use an independent process to run
+                subjob</strong></span> du composant <span class="emphasis"><strong>tRunJob</strong></span>. Utiliser
+            une connexion partag&eacute;e &agrave; une base de donn&eacute;es avec un <span class="emphasis"><strong>tRunJob</strong></span> ayant l'une de ces options activ&eacute;e fera &eacute;chouer votre
+            Job.</p></div>
+							<p><span class="emphasis"><strong>Shared DB Connection Name&nbsp;:</strong></span>
+								d&eacute;finissez ou saisissez le nom de la connexion partag&eacute;e.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Auto commit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour que, lorsqu&#8217;une d&eacute;claration est termin&eacute;e,
+								la m&eacute;thode commit soit appel&eacute;e automatiquement sur cette
+								d&eacute;claration. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log, aussi bien au
+								niveau du Job qu&#8217;au niveau de chaque composant. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; avec des composants MSSql,
+								notamment les composants <span class="emphasis"><strong>tMSSqlCommit</strong></span> et <span class="emphasis"><strong>tMSSqlRollback</strong></span>.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Ins&eacute;rer des donn&eacute;es dans une table de base de donn&eacute;es et en extraire des informations"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e81366"></a>Sc&eacute;nario : Ins&eacute;rer des donn&eacute;es dans une table de base de donn&eacute;es et en extraire des
+			informations</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job lisant des donn&eacute;es d'un fichier texte, relatives aux
+			employ&eacute;s, ins&eacute;rant les donn&eacute;es dans une table d'une base de donn&eacute;es MSSQL et extrayant
+			les donn&eacute;es les plus utiles de la table, pour les afficher dans la console.</p><p>
+			</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection.png"></div><p>
+		</p><p>Ce sc&eacute;nario comprend les composants suivants :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>un <span class="emphasis"><strong>tMSSqlConnection</strong></span> : &eacute;tablit une connexion
+					au serveur MSSQL.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tFileInputDelimited</strong></span> : lit le fichier
+					d'entr&eacute;e, d&eacute;finit la structure des donn&eacute;es et les envoie au composant
+					suivant.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tMSSqlOutput</strong></span> : &eacute;crit les donn&eacute;es qu'il
+					re&ccedil;oit du composant pr&eacute;c&eacute;dent dans une table d'une base de donn&eacute;es MSSQL.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tMSSqlInput</strong></span> : extrait les donn&eacute;es de la
+					table selon une requ&ecirc;te SQL.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tLogRow</strong></span> : affiche les informations re&ccedil;ues
+					du composant pr&eacute;c&eacute;dent dans la console.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tMSSqlCommit</strong></span> : commite la transaction sur
+					le serveur MSSQL connect&eacute;.</p></li></ul></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e81416"></a>Construire le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique : un
+							<span class="emphasis"><strong>tMSSqlConnection</strong></span>, un <span class="emphasis"><strong>tFileInputDelimited</strong></span>, un <span class="emphasis"><strong>tMSSqlOutput</strong></span>, un <span class="emphasis"><strong>tMSSqlInput</strong></span>, un <span class="emphasis"><strong>tLogRow</strong></span> et
+						un <span class="emphasis"><strong>tMSSqlCommit</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez le <span class="emphasis"><strong>tMSSqlConnection</strong></span> au
+							<span class="emphasis"><strong>tFileInputDelimited</strong></span> &agrave; l'aide d'un lien
+							<span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>OnSubjobOk</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Reliez de la m&ecirc;me mani&egrave;re le <span class="emphasis"><strong>tFileInputDelimited</strong></span> au <span class="emphasis"><strong>tMSSqlInput</strong></span> et le composant <span class="emphasis"><strong>tMSSqlInput</strong></span> au <span class="emphasis"><strong>tMSSqlCommit</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Connectez le <span class="emphasis"><strong>tFileInputDelimited</strong></span> au <span class="emphasis"><strong>tMSSqlOutput</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour connecter le <span class="emphasis"><strong>tMSSqlInput</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e81498"></a>Configurer les composants</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.1.&nbsp;Ouvrir une connexion au serveur MSSQL"><a name="d43281e81501"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.1.&nbsp;Ouvrir une connexion au serveur MSSQL</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tMSSqlConnection</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>Host</strong></span>, saisissez l'adresse
+						IP ou le nom de l'h&ocirc;te du serveur MSSQL, <span class="emphasis"><em>192.168.30.47</em></span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Port</strong></span>, saisissez le num&eacute;ro
+						du port du serveur de la base de donn&eacute;es, <span class="emphasis"><em>1433</em></span> dans ce sc&eacute;nario.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Schema</strong></span>, saisissez le nom du
+						sch&eacute;ma, <span class="emphasis"><em>dbo</em></span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans le champ <span class="emphasis"><strong>Database</strong></span>, saisissez le nom
+						de la base de donn&eacute;es, <span class="emphasis"><em>talend</em></span> dans ce
+						sc&eacute;nario.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans les champs <span class="emphasis"><strong>Username</strong></span> et <span class="emphasis"><strong>Password</strong></span>, saisissez respectivement votre
+						identifiant et votre mot de passe de connexion &agrave; MSSQL.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.2.&nbsp;Lire les donn&eacute;es d'entr&eacute;e"><a name="d43281e81561"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.2.&nbsp;Lire les donn&eacute;es d'entr&eacute;e</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tFileInputDelimited</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>File Name/Stream</strong></span> afin de parcourir votre syst&egrave;me
+						jusqu'au fichier d'entr&eacute;e, par exemple <span class="emphasis"><em>D:/Input/Employee_Wage.txt</em></span>. Ce fichier texte contient trois
+						colonnes : <span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>name</em></span> et <span class="emphasis"><em>wage</em></span>.
+						</p><pre class="programlisting">id;name;wage
+51;Harry;2300
+40;Ronald;3796
+17;Theodore;2174
+21;James;1986
+2;George;2591
+89;Calvin;2362
+84;Ulysses;3383
+4;Lyndon;2264
+17;Franklin;1780
+86;Lyndon;3999</pre></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Header</strong></span>, saisissez <span class="emphasis"><em>1</em></span> pour ignorer la premi&egrave;re ligne du fichier
+						d'entr&eacute;e.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur <span class="emphasis"><strong>Edit schema</strong></span> pour d&eacute;finir les
+						donn&eacute;es &agrave; passer au composant <span class="emphasis"><strong>tMSSqlOutput</strong></span>.
+						Dans cet exemple, d&eacute;finissez <span class="emphasis"><em>id</em></span> comme la
+						cl&eacute; (cochez la case <span class="emphasis"><strong>Key</strong></span>) et sp&eacute;cifiez la
+						longueur (<span class="emphasis"><strong>Length</strong></span>) et la pr&eacute;cision
+							(<span class="emphasis"><strong>Precision</strong></span>) pour chaque colonne.</p><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer l'&eacute;diteur de
+						sch&eacute;ma. Une bo&icirc;te de dialogue s'ouvre, dans laquelle vous pouvez choisir de
+						propager le sch&eacute;ma au composant suivant.</p><p>
+						</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection3.png"></div><p>
+					</p><p>Pour plus d'informations, consultez <a class="xref" href="tFileInputDelimited.html" title="tFileInputDelimited">la section intitul&eacute;e &laquo;&nbsp;tFileInputDelimited&nbsp;&raquo;</a>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.3.&nbsp;Ecrire les donn&eacute;es dans la table de la base de donn&eacute;es"><a name="d43281e81644"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.3.&nbsp;Ecrire les donn&eacute;es dans la table de la base de donn&eacute;es</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tMSSqlOutput</strong></span> pour
+						ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><p>
+						</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection4.png"></div><p>
+					</p></li><li class="step" title="&Eacute;tape 2"><p>Saisissez les informations requises pour la connexion ou utilisez une connexion existante
+						pr&eacute;c&eacute;demment configur&eacute;e. Dans cet exemple, cochez la case <span class="emphasis"><strong>Use an existing connection</strong></span>. Si plusieurs
+						connexions sont disponibles, s&eacute;lectionnez celle que vous souhaitez utiliser,
+						dans la liste d&eacute;roulante <span class="emphasis"><strong>Component
+						List</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Table</strong></span>, saisissez le nom de
+						la table dans laquelle vous souhaitez &eacute;crire les donn&eacute;es : <span class="emphasis"><em>Wage_Info</em></span> dans ce sc&eacute;nario. Vous pouvez
+						&eacute;galement cliquer sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave;
+						c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Table</strong></span> pour ouvrir une bo&icirc;te
+						de dialogue et s&eacute;lectionner une autre table.</p></li><li class="step" title="&Eacute;tape 4"><p>S&eacute;lectionnez <span class="emphasis"><strong>Create table if not exists</strong></span>
+						dans la liste d&eacute;roulante <span class="emphasis"><strong>Action on table</strong></span>.
+					</p></li><li class="step" title="&Eacute;tape 5"><p>S&eacute;lectionnez <span class="emphasis"><strong>Insert if not exists</strong></span> dans la
+						liste d&eacute;roulante <span class="emphasis"><strong>Action on data</strong></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer
+						le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.4.&nbsp;Extraire des informations de la table"><a name="d43281e81710"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.4.&nbsp;Extraire des informations de la table</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tMSSqlInput</strong></span> pour afficher sa vue <span class="emphasis"><strong>Component</strong></span>.</p><p>
+						</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection5.png"></div><p>
+					</p></li><li class="step" title="&Eacute;tape 2"><p>Cochez la case <span class="emphasis"><strong>Use an existing connection</strong></span>. Si plusieurs
+						connexions sont disponibles, s&eacute;lectionnez celle que vous souhaitez utiliser,
+						dans la liste d&eacute;roulante <span class="emphasis"><strong>Component
+						List</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur <span class="emphasis"><strong>Edit schema</strong></span> pour d&eacute;finir la
+						structure des donn&eacute;es &agrave; lire depuis la table. Dans cet exemple, vous devez
+						lire les trois colonnes de la table.</p><p>
+						</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection6.png"></div><p>
+					</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Table Name</strong></span>, saisissez le
+						nom de la table de laquelle vous souhaitez lire les donn&eacute;es : <span class="emphasis"><em>Wage_Info</em></span> dans ce sc&eacute;nario.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans le champ <span class="emphasis"><strong>Query</strong></span>, renseignez la
+						requ&ecirc;te SQL &agrave; ex&eacute;cuter sur la table sp&eacute;cifi&eacute;e. Pour obtenir les donn&eacute;es
+						relatives aux employ&eacute;s dont le salaire est sup&eacute;rieur &agrave; la moyenne et les
+						classer par ID, saisissez la requ&ecirc;te SQL comme suit
+						:</p><pre class="programlisting">SELECT    * 
+FROM      Wage_Info
+WHERE     wage &gt;
+(SELECT   avg(wage)
+FROM      Wage_Info)
+ORDER BY  id
+</pre></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.5.&nbsp;Afficher les informations dans la console"><a name="d43281e81766"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.5.&nbsp;Afficher les informations dans la console</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tLogRow</strong></span> pour
+						afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Table (print values in cells of a table)</strong></span>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.6.&nbsp;Commiter la transaction et fermer la connexion"><a name="d43281e81787"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.6.&nbsp;Commiter la transaction et fermer la connexion</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tMSSqlCommit</strong></span> pour
+						ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><p>
+						</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection7.png"></div><p>
+					</p></li><li class="step" title="&Eacute;tape 2"><p>Cochez la case <span class="emphasis"><strong>Close Connection</strong></span>.</p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e81811"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span> pour
+						sauvegarder votre Job.</p></li><li class="step" title="&Eacute;tape 2"><p>Ex&eacute;cutez le Job en appuyant sur la touche <span class="emphasis"><strong>F6</strong></span> ou en cliquant sur le bouton <span class="emphasis"><strong>Run</strong></span> de la vue <span class="emphasis"><strong>Run</strong></span>.</p><p>La console affiche l'ID des employ&eacute;s dont le salaire est sup&eacute;rieur &agrave; la
+						moyenne, leur nom et leur salaire. Les employ&eacute;s sont class&eacute;s par ID.</p><p>
+						</p><div class="mediaobject"><img src="../images/use_case_tmssqlconnection8.png"></div><p>
+					</p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMSSqlCommit.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMSSqlInput.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tMSSqlCommit&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tMSSqlInput</td></tr></table></div></body></html>

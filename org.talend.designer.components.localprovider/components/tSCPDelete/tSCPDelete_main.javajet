@@ -1,0 +1,77 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    
+    java.util.List
+    java.util.Map    
+"
+%>
+
+<%
+        CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+        INode node = (INode)codeGenArgument.getArgument();
+        String cid = node.getUniqueName();
+        
+        List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILELIST__");
+%>
+		
+		//initial the command
+		StringBuilder command_<%=cid %> = new StringBuilder();
+		String dir_<%=cid%> = null;
+<%
+			for (int i = 0;i<filelist.size();i++) {
+%>
+				dir_<%=cid%> = <%=filelist.get(i).get("SOURCE")%>;
+				dir_<%=cid%> = "\""+dir_<%=cid%>+"\"";
+<%
+			  if(i==0){
+%>
+         	command_<%=cid %>.append("rm " + dir_<%=cid%>);
+         	nb_file_<%=cid %> ++;
+       <%}else{%>
+         	if(command_<%=cid %>.length() > 0){
+         		command_<%=cid %>.append(" ");
+         	} 
+            command_<%=cid %>.append(dir_<%=cid%>);
+            nb_file_<%=cid %> ++;
+            <%}
+            }
+         %>
+       
+		/* Create a session */
+		ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
+		
+		//execute the command
+		sess_<%=cid%>.execCommand((command_<%=cid %>).toString());		
+		
+		//get the return info
+		
+		java.io.InputStream stderr_<%=cid%> = sess_<%=cid%>.getStderr();
+        java.io.BufferedReader breer_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stderr_<%=cid%>));
+        String line_err_<%=cid%> = "";
+        StringBuilder stringStderr_<%=cid%> =new StringBuilder();
+		while((line_err_<%=cid%> = breer_<%=cid%>.readLine()) != null) {
+			stringStderr_<%=cid%>.append(line_err_<%=cid%> + "\n");
+		}
+		String stderrString_<%=cid %> = stringStderr_<%=cid %>.toString();
+		
+		<%for (int i = 0;i<filelist.size();i++) {%>
+		
+		    if(stderrString_<%=cid %>.contains(<%=filelist.get(i).get("SOURCE")%>)){
+		    	nb_file_<%=cid %> --;
+		    }
+		<%}%>
+		
+		breer_<%=cid%>.close();
+		stderr_<%=cid%>.close();
+		
+		 /* Close this session */			
+		sess_<%=cid%>.close();
+		
+		if(("").equals(stringStderr_<%=cid %>.toString()) || (stringStderr_<%=cid %>.toString() == null)){
+			globalMap.put("<%=cid %>_STATUS","File(s) deleted OK");
+		}else{
+			globalMap.put("<%=cid %>_STATUS",stringStderr_<%=cid %>.toString());
+		}

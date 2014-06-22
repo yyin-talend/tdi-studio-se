@@ -1,0 +1,122 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFilterRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-processing.html" title="Chapitre&nbsp;19.&nbsp;Composants Processing"><link rel="prev" href="tFilterColumns.html" title="tFilterColumns"><link rel="next" href="tJoin.html" title="tJoin"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFilterRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFilterColumns.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;19.&nbsp;Composants Processing</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tJoin.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFilterRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFilterRow"></a>tFilterRow</h2></div></div></div><div class="mediaobject"><img src="../images/tFilterRow.png"></div><a name="Xaa4557213"></a><div class="section" title="Propri&eacute;t&eacute;s du tFilterRow"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e346405"></a>Propri&eacute;t&eacute;s du tFilterRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Processing</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tFilterRow</strong></span> filtre des lignes d&#8217;entr&eacute;e en
+                                d&eacute;finissant des conditions sur les colonnes s&eacute;lectionn&eacute;es. </p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tFilterRow</strong></span> aide &agrave; param&eacute;trer les filtres
+                                sur les donn&eacute;es source. </p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema </em></span>et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+                                pass&eacute;s au composant suivant. <span>Le
+                                    sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>) , soit distant dans le <span class="emphasis"><strong>Repository</strong></span></span>
+                                </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Ce composant offre l'avantage du sch&eacute;ma dynamique. Cela
+                                        vous permet de r&eacute;cup&eacute;rer les colonnes inconnues des fichiers
+                                        sources ou de copier des groupes de colonnes &agrave; partir d'une
+                                        source sans avoir &agrave; mapper chaque colonne une par une. Pour
+                                        plus d'informations sur les sch&eacute;mas dynamiques, consultez
+                                            <span class="emphasis"><em>Guide utilisateur
+                                            de</em></span><span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p></div>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Le sch&eacute;ma est en lecture seule.</p></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant
+                                seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.
+                            </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Logical operator used to combine
+                                    conditions </em></span></p>
+                        </td><td valign="top"><p>Si vous souhaitez utiliser les modes de filtrage
+                                simple et avanc&eacute; &agrave; la fois, s&eacute;lectionnez l&#8217;op&eacute;rateur permettant de
+                                combiner les deux modes. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Conditions</em></span></p>
+                        </td><td valign="top"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter autant de conditions que voulu. Les
+                                conditions sont ex&eacute;cut&eacute;es les unes apr&egrave;s les autres pour chaque
+                                ligne. </p><p><span class="emphasis"><strong>Input column&nbsp;</strong></span>:
+                                S&eacute;lectionnez la colonne du sch&eacute;ma sur laquelle ex&eacute;cuter la
+                                fonction.</p><p><span class="emphasis"><strong>Function&nbsp;</strong></span>:
+                                S&eacute;lectionnez une fonction dans la liste.</p><p><span class="emphasis"><strong>Operator&nbsp;</strong></span>: S&eacute;lectionnez l&#8217;op&eacute;rateur
+                                permettant de relier la colonne d&#8217;entr&eacute;e et la
+                                    valeur.</p><p><span class="emphasis"><strong>Value</strong></span>&nbsp;:
+                                Renseignez la valeur filtr&eacute;e, entre guillemets si besoin est.
+                            </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use advanced mode</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case lorsque l&#8217;op&eacute;ration &agrave; effectuer
+                                ne peut aboutir gr&acirc;ce aux fonctions standard propos&eacute;es. Dans le
+                                champ texte, entrez l&#8217;expression r&eacute;guli&egrave;re comme demand&eacute;.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant n&#8217;est pas un
+                                composant de d&eacute;but (fond vert) et il n&eacute;cessite un composant de
+                                sortie. </p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Filtrer une liste de noms et faire une recherche dans la liste"><div class="titlepage"><div><div><h3 class="title"><a name="Raa55979"></a>Sc&eacute;nario&nbsp;: Filtrer une liste de noms et faire une recherche dans la liste</h3></div></div></div><p>Le sc&eacute;nario suivant est un Job Java qui utilise une condition simple et une expression
+            r&eacute;guli&egrave;re pour filtrer une liste d&#8217;enregistrements. Le Job &eacute;crit deux tables de sortie&nbsp;:
+            la premi&egrave;re liste tous les enregistrements de langue italienne dont les pr&eacute;noms
+            contiennent moins de six caract&egrave;res et la seconde liste tous les enregistrements
+            rejet&eacute;s. Un message d&#8217;erreur s&#8217;affichera dans la table pour chaque enregistrement
+            rejet&eacute;, afin d&#8217;expliquer pourquoi l&#8217;enregistrement a &eacute;t&eacute; rejet&eacute;. </p><div class="mediaobject"><img src="../images/Use_Case_tFilterRow1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="emphasis"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;&eacute;diteur graphique&nbsp;: un <span class="emphasis"><strong>tFixedFlowInput</strong></span>, un <span class="emphasis"><strong>tFilterRow</strong></span>
+                    et un <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connectez le <span class="emphasis"><strong>tFixedFlowInput</strong></span> au <span class="emphasis"><strong>tFilterRow</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Row &gt; Main</strong></span>. Ensuite, connectez le <span class="emphasis"><strong>tFilterRow</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span>, &agrave; l&#8217;aide
+                    d&#8217;un lien <span class="emphasis"><strong>Row &gt; Filter</strong></span>. </p></li><li class="listitem"><p>D&eacute;posez de la <span class="emphasis"><strong>Palette</strong></span> dans l&#8217;espace de
+                    mod&eacute;lisation graphique un nouveau <span class="emphasis"><strong>tLogRow</strong></span> et
+                        renommez-le&nbsp;<span class="emphasis"><em>reject</em></span>. Reliez le <span class="emphasis"><strong>tFilterRow</strong></span> &agrave; ce <span class="emphasis"><strong>tLogRow</strong></span> &agrave;
+                    l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Reject</strong></span>.</p></li><li class="listitem"><p>Dans l&#8217;espace graphique, cliquez sur le composant <span class="emphasis"><strong>tFixedFlowInput</strong></span> afin d&#8217;afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s.</p></li><li class="listitem"><p>S&eacute;lectionnez l&#8217;option <span class="emphasis"><strong>Use Inline Content(delimited
+                        file)</strong></span> dans la zone <span class="emphasis"><strong>Mode</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...] </strong></span>&agrave; c&ocirc;t&eacute; du champ
+                        <span class="emphasis"><strong>File Name </strong></span>pour d&eacute;finir le chemin d&#8217;acc&egrave;s au
+                    fichier d&#8217;entr&eacute;e. </p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tFilterRow2.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Renseignez les s&eacute;parateurs de lignes (<span class="emphasis"><strong>Row
+                        Separator</strong></span>) et de champs (<span class="emphasis"><strong>Field
+                        Separator</strong></span>). Le s&eacute;parateur de lignes est constitu&eacute; d&#8217;un retour
+                    chariot et le s&eacute;parateur de champs d&#8217;un point-virgule.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="emphasis"><strong>Edit schema</strong></span> pour d&eacute;finir le sch&eacute;ma du
+                    fichier d&#8217;entr&eacute;e. Dans cet exemple, le sch&eacute;ma se compose de quatre colonnes&nbsp;:
+                        <span class="emphasis"><em>firstname</em></span>, <span class="emphasis"><em>gender</em></span>,
+                        <span class="emphasis"><em>language</em></span> et&nbsp;<span class="emphasis"><em>frequency</em></span>. Dans la
+                    colonne <span class="emphasis"><strong>Type</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>String</strong></span> pour les trois premi&egrave;res colonnes et <span class="emphasis"><strong>Integer</strong></span> pour la
+                        colonne&nbsp;<span class="emphasis"><em>frequency</em></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tFilterRow3.1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider et fermer
+                    l&#8217;&eacute;diteur. Une bo&icirc;te de dialogue s&#8217;ouvre et vous demande si vous voulez propager
+                    les changements. Cliquez sur <span class="emphasis"><strong>Yes</strong></span> (oui).</p></li><li class="listitem"><p>Dans la zone de texte <span class="emphasis"><strong>Content</strong></span>, saisissez
+                    votre texte en respectant votre sch&eacute;ma. </p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tFilterRow</strong></span>
+                    pour afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir
+                    ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tFilterRow4.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le tableau <span class="emphasis"><strong>Conditions</strong></span>, renseignez les
+                    param&egrave;tres de filtre sur la colonne&nbsp;<span class="emphasis"><em>firstname</em></span>.</p></li><li class="listitem"><p>Dans la colonne <span class="emphasis"><strong>InputColumn</strong></span>, s&eacute;lectionnez
+                        <span class="emphasis"><em>firstname</em></span>. Dans la colonne <span class="emphasis"><strong>Function</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Length</strong></span>.
+                    Dans la colonne <span class="emphasis"><strong>Operator</strong></span>, s&eacute;lectionnez
+                        <span class="emphasis"><strong>Lower than</strong></span>.</p></li><li class="listitem"><p>Dans la colonne <span class="emphasis"><strong>Value</strong></span>,
+                        saisissez&nbsp;<span class="emphasis"><em>6</em></span> afin de filtrer uniquement les noms dont la
+                    longueur est sup&eacute;rieure &agrave; six caract&egrave;res.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Dans la colonne <span class="emphasis"><strong>Value</strong></span>, vous devez saisir vos
+                valeurs entre guillemets doubles pour tous les types de donn&eacute;es, sauf pour le type
+                    <span class="emphasis"><strong>Integer</strong></span>, qui n&#8217;en n&eacute;cessite pas.</p></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Pour impl&eacute;menter la recherche sur les noms italiens, cochez la case <span class="emphasis"><strong>Use advanced mode</strong></span> et saisissez l&#8217;expression r&eacute;guli&egrave;re
+                    suivante, qui comprend le nom de la colonne dans laquelle chercher&nbsp;:
+                        <code class="code">input_row.language.equals(&#8220;italian&#8221;)</code>.</p></li><li class="listitem"><p>Pour combiner les deux conditions, simple et avanc&eacute;e, s&eacute;lectionnez l&#8217;op&eacute;rateur
+                    logique <span class="emphasis"><strong>And</strong></span> dans la liste<span class="emphasis"><strong>
+                        Logical operator used to combine conditions</strong></span>.</p></li><li class="listitem"><p>Dans la vue <span class="emphasis"><strong>Basic settings</strong></span> des composants
+                        <span class="emphasis"><strong>tLogRow</strong></span>, s&eacute;lectionnez l&#8217;option <span class="emphasis"><strong>Table (print values in cells of a table)</strong></span> dans la zone
+                        <span class="emphasis"><strong>Mode</strong></span>.</p></li><li class="listitem"><p>Sauvegardez votre Job puis appuyez sur <span class="emphasis"><strong>F6</strong></span>
+                    pour l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tFilterRow5.png"></div><p>La premi&egrave;re table liste les enregistrements contenant des pr&eacute;noms italiens comprenant
+            moins de six caract&egrave;res et la seconde affiche les enregistrements ne correspondant pas &agrave;
+            la condition de filtre. A chaque enregistrement rejet&eacute; correspond un message d&#8217;erreur
+            expliquant la raison du rejet. </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFilterColumns.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tJoin.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFilterColumns&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tJoin</td></tr></table></div></body></html>

@@ -1,0 +1,223 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRESTClient</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-esb.html" title="Chapitre&nbsp;12.&nbsp;Composants ESB"><link rel="prev" href="tESBProviderResponse.html" title="tESBProviderResponse"><link rel="next" href="tRESTRequest.html" title="tRESTRequest"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tRESTClient</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tESBProviderResponse.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;12.&nbsp;Composants ESB</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tRESTRequest.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tRESTClient"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRESTClient"></a>tRESTClient</h2></div></div></div><div class="mediaobject"><img src="../images/tRESTClient_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tRESTClient"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e203276"></a>Propri&eacute;t&eacute;s du tRESTClient</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>ESB/REST </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tRESTClient</strong></span> envoie
+                                des requ&ecirc;tes HTTP et HTTPS &agrave; un fournisseur des services Web REST
+                                (REpresentational State Transfer) et obtient les r&eacute;ponses
+                                correspondantes. Ce composant s'int&egrave;gre parfaitement dans <span class="emphasis"><strong>Talend</strong></span> Runtime pour un support de HTTPS
+                                et, ult&eacute;rieurement, le support de fonctionnalit&eacute;s de qualit&eacute; de
+                                service.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tRESTClient</strong></span> est
+                                utilis&eacute; pour interagir avec des fournisseurs de services Web
+                                RESTful, en envoyant des requ&ecirc;tes HTTP et HTTPS, &agrave; l'aide de CXF
+                                (JAX-RS). </p>
+                        </td></tr><tr><td>
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>URL</em></span></p>
+                        </td><td valign="top">
+                            <p>Saisissez l'URL du serveur REST &agrave; invoquer. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>HTTP Method</em></span></p>
+                        </td><td valign="top">
+                            <p>Dans cette liste, s&eacute;lectionnez une m&eacute;thode HTTP d&eacute;crivant l'action
+                                souhait&eacute;e. Les significations des m&eacute;thodes HTTP sont sujets aux
+                                d&eacute;finitions de votre fournisseur de service Web. Les d&eacute;finitions des
+                                m&eacute;thodes HTTP g&eacute;n&eacute;ralement accept&eacute;es sont list&eacute;es ci-dessous : </p>
+                            <p><span class="emphasis"><strong>- GET</strong></span> : r&eacute;cup&egrave;re des donn&eacute;es du
+                                c&ocirc;t&eacute; serveur selon les param&egrave;tres donn&eacute;s.</p>
+                            <p><span class="emphasis"><strong>- POST</strong></span> : charge des donn&eacute;es dans
+                                le serveur selon les param&egrave;tres donn&eacute;s.</p>
+                            <p><span class="emphasis"><strong>- PUT</strong></span> : met &agrave; jour des donn&eacute;es
+                                selon les param&egrave;tres donn&eacute;s, ou cr&eacute;e les donn&eacute;es, si elles
+                                n'existent pas.</p>
+                            <p><span class="emphasis"><strong>- DELETE</strong></span> : supprime les donn&eacute;es
+                                selon les param&egrave;tres donn&eacute;s. </p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Content Type</em></span></td><td valign="top"><p>S&eacute;lectionnez <span class="emphasis"><strong>XML</strong></span>, <span class="emphasis"><strong>JSON</strong></span> ou
+                                    <span class="emphasis"><strong>FORM</strong></span> selon le type de m&eacute;dia du
+                                contenu &agrave; charger dans le serveur. </p>
+                            <p>Cette liste appara&icirc;t lorsque vous s&eacute;lectionnez la m&eacute;thode HTTP
+                                    <span class="emphasis"><strong>POST</strong></span> ou <span class="emphasis"><strong>PUT</strong></span>.</p></td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Accept Type</em></span></td><td valign="top"><p>S&eacute;lectionnez le type de m&eacute;dia que le c&ocirc;t&eacute; client est pr&eacute;par&eacute; &agrave; accepter pour la r&eacute;ponse, du
+                                c&ocirc;t&eacute; serveur.</p>
+                            <p>Les options disponibles sont : <span class="emphasis"><strong>XML</strong></span>, <span class="emphasis"><strong>JSON</strong></span> et
+                                    <span class="emphasis"><strong>ANY</strong></span>. Lorsque <span class="emphasis"><strong>ANY</strong></span> est s&eacute;lectionn&eacute;e, le message de
+                                r&eacute;ponse peut &ecirc;tre de tout type et sera transform&eacute; en une cha&icirc;ne de
+                                caract&egrave;res (string).</p></td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Query
+                            parameters</em></span></td><td valign="top"><p>Sp&eacute;cifiez  les param&egrave;tres de la requ&ecirc;te sous forme de
+                            paires nom-valeur.</p>
+                        <p>Cette option est g&eacute;n&eacute;ralement utilis&eacute;e avec la m&eacute;thode GET.</p></td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Use
+                            Authentication</em></span></td><td valign="top"><p>Cochez cette case si l'authentification est requise du c&ocirc;t&eacute; du serveur REST. Une fois coch&eacute;e,
+                                vous devez saisir votre identifiant et votre mot de passe.</p>
+                            <p>Seule l'authentification <span class="emphasis"><strong>Basic
+                                    HTTP</strong></span> est support&eacute;e.</p></td></tr><tr><td valign="top">
+                            <p> </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. </p>
+                            <p>Ce composant utilise trois sch&eacute;mas built-in, en lecture
+                                seule.</p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+                                visualiser la structure du sch&eacute;ma. </p>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p><span class="emphasis"><em>Modifier le type du sch&eacute;ma peut conduire &agrave; une perte
+                                        de cette structure et &agrave; un &eacute;chec de l'ex&eacute;cution du
+                                        composant.</em></span></p></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Input Schema</em></span></td><td valign="top">
+                            <p>Sch&eacute;ma des donn&eacute;es d'entr&eacute;e. Le sch&eacute;ma contient deux colonnes
+                                :</p>
+                            <p>- <span class="emphasis"><strong>body</strong></span> : stocke le contenu des
+                                donn&eacute;es d'entr&eacute;e structur&eacute;es</p>
+                            <p>- <span class="emphasis"><strong>string</strong></span> : stocke le contenu
+                                d'entr&eacute;e lorsqu'il est de type string, ou est g&eacute;r&eacute; comme tel.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Response
+                            Schema</em></span></td><td valign="top">
+                            <p>Sch&eacute;ma pour la r&eacute;ponse du serveur. Ce sch&eacute;ma est pass&eacute; au
+                                composant suivant &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Response</strong></span> et
+                                contient trois colonnes:</p>
+                            <p>- <span class="emphasis"><strong>statusCode</strong></span> : stocke le code de
+                                statut HTTP du serveur.</p>
+                            <p>- <span class="emphasis"><strong>body</strong></span> : stocke le contenu d'une
+                                r&eacute;ponse structur&eacute;e du serveur.</p>
+                            <p>- <span class="emphasis"><strong>string</strong></span> : stocke le contenu de
+                                la r&eacute;ponse du serveur, lorsqu'elle est de type string ou g&eacute;r&eacute;e comme
+                                telle.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Error Schema</em></span></td><td valign="top">
+                            <p>Sch&eacute;ma pour les informations d'erreur. Ce sch&eacute;ma est pass&eacute; au
+                                composant suivant via un lien <span class="emphasis"><strong>Row</strong></span> &gt;
+                                    <span class="emphasis"><strong>Error</strong></span> et contient deux colonnes
+                                :</p>
+                            <p>- <span class="emphasis"><strong>errorCode</strong></span> : stocke le code de
+                                statut HTTP du serveur lorsqu'une erreur survient durant le
+                                processus d'invocation. L'interpr&eacute;tation des codes d'erreur
+                                sp&eacute;cifiques est soumise aux d&eacute;finitions de votre fournisseur de
+                                services Web. Pour des informations de r&eacute;f&eacute;rence, consultez le site
+                                    <a class="link" href="http://fr.wikipedia.org/wiki/Liste_des_codes_HTTP" target="_top">http://fr.wikipedia.org/wiki/Liste_des_codes_HTTP</a>.</p>
+                            <p>- <span class="emphasis"><strong>errorMessage</strong></span> : stocke le
+                                message d'erreur correspondant au code d'erreur.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Die on error</em></span></td><td valign="top">Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas
+                            d&#8217;erreur. D&eacute;cochez cette case pour terminer le traitement avec les
+                            lignes sans erreur, et ignorer les lignes en erreur. </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Connection timeout</em></span></p>
+                        </td><td valign="top">
+                            <p>Configurez le temps, en secondes, avant suspension, durant lequel
+                                le client attend pour &eacute;tablir une connexion. Si ce champ est
+                                configur&eacute; &agrave; <span class="emphasis"><em>0</em></span>, le client continue
+                                ind&eacute;finiment &agrave; essayer d'ouvrir une connexion.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Receive
+                            timeout</em></span></td><td valign="top">Configurez le temps, en secondes, durant lequel le
+                            client attend pour obtenir une r&eacute;ponse, avant suspension de la
+                            connexion. Si ce champ est configur&eacute; &agrave; <span class="emphasis"><em>0</em></span>, le client attend ind&eacute;finiment.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>HTTP Headers</em></span></td><td valign="top">
+                            <p>Saisissez la (les) paire(s) nom-valeur des en-t&ecirc;tes HTTP pour
+                                d&eacute;finir les param&egrave;tres de l'op&eacute;ration HTTP demand&eacute;e.</p>
+                            <p>Pour les d&eacute;finitions sp&eacute;cifiques des en-t&ecirc;tes HTTP, consultez
+                                votre fournisseur de services Web REST. Pour des informations de
+                                r&eacute;f&eacute;rence, consultez <a class="link" href="http://en.wikipedia.org/wiki/List_of_HTTP_headers" target="_top">en.wikipedia.org/wiki/List_of_HTTP_headers</a> (en
+                                anglais).</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Use HTTP
+                            proxy</em></span></td><td valign="top">Cochez cette case si vous utilisez un serveur proxy. Une
+                            fois coch&eacute;e, vous devez saisir les informations de connexion : h&ocirc;te,
+                            port, identifiant et mot de passe. </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>tStatCatcher Statistics</em></span></td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log, aussi bien au
+                                niveau du Job qu&#8217;au niveau de chaque composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est utilis&eacute; comme client de service Web RESTful pour
+                                communiquer avec un fournisseur de services RESTful, avec la
+                                possibilit&eacute; de saisir une requ&ecirc;te dans un service, &agrave; l'int&eacute;rieur
+                                d'un Job et de retourner le r&eacute;sultat du Job comme r&eacute;ponse du
+                                service. Selon les actions &agrave; effectuer, le composant peut &ecirc;tre un
+                                composant de d&eacute;but ou interm&eacute;diaire.</p>
+                        </td></tr><tr><td valign="top"><span class="emphasis"><strong>Connections</strong></span></td><td colspan="2" valign="top">
+                            <p>Liens de sortie : </p>
+                            <p><span class="emphasis"><strong>Row</strong></span> : Response ; Error. </p>
+                            <p><span class="emphasis"><strong>Trigger</strong></span> : OnSubjobOk ;
+                                OnSubjobError ; Run if ; OnComponentOk ; OnComponentError. </p>
+                            <p> </p>
+                            <p>Liens d'entr&eacute;e : </p>
+                            <p><span class="emphasis"><strong>Row</strong></span> : Main ; Reject. </p>
+                            <p><span class="emphasis"><strong>Trigger</strong></span> : Run if ; OnSubjobOk ;
+                                OnSubjobError ; OnComponentOk ; OnComponentError. </p>
+                            <p>Pour plus d'informations concernant les connexions, consultez le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Envoyer et r&eacute;cup&eacute;rer des donn&eacute;es en interagissant avec un service RESTful"><div class="titlepage"><div><div><h3 class="title"><a name="jzhang-20121013-esb-trestclient-sceanrio1"></a>Sc&eacute;nario : Envoyer et r&eacute;cup&eacute;rer des donn&eacute;es en interagissant avec un service
+            RESTful</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job compos&eacute; de deux sous-jobs : le premier contient quatre
+            composants et permet d'ajouter un enregistrement client &agrave; un service Web RESTful. Le
+            second contient deux composants r&eacute;cup&eacute;rant des informations client du serveur. Lorsque
+            le Job est ex&eacute;cut&eacute;, les informations correspondantes sont affich&eacute;es dans la console de
+            la vue <span class="emphasis"><strong>Run</strong></span>.</p><p>Dans ce sc&eacute;nario, le service Web utilis&eacute; en exemple poss&egrave;de la structure XML suivante,
+            dans laquelle seul le contenu du n&#339;ud <span class="emphasis"><em>name</em></span> est
+            personnalisable : </p><pre class="programlisting">&lt;Customers&gt;
+    &lt;Customer&gt;
+        &lt;id&gt;id1&lt;/id&gt;
+        &lt;name&gt;<span class="emphasis"><em>Name1</em></span>&lt;/name&gt;
+    &lt;/Customer&gt;
+    &lt;Customer&gt;
+        &lt;id&gt;id2&lt;/id&gt;
+        &lt;name&gt;<span class="emphasis"><em>Name2</em></span>&lt;/name&gt;
+    &lt;/Customer&gt;
+    ...
+&lt;/Customers&gt;</pre><p>Dans le premier sous-job, un composant <span class="emphasis"><strong>tXMLMap</strong></span> est
+            utilis&eacute; pour adapter la structure des donn&eacute;es d'entr&eacute;e &agrave; la structure du service Web
+            RESTful.</p><div class="section" title="Configurer le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e203734"></a>Configurer le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique : un
+                            <span class="emphasis"><strong>tFixedFlowInput</strong></span>, un <span class="emphasis"><strong>tXMLMap</strong></span>, deux composants <span class="emphasis"><strong>tRESTClient</strong></span> et deux <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez le <span class="emphasis"><strong>tFixedFlowInput</strong></span> au <span class="emphasis"><strong>tXMLMap</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Reliez le composant <span class="emphasis"><strong>tXMLMap</strong></span> au premier
+                            <span class="emphasis"><strong>tRESTClient</strong></span> &agrave; l'aide d'un lien
+                            <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>. Nommez cette connexion <span class="emphasis"><em>out</em></span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 4"><p>Reliez le premier <span class="emphasis"><strong>tRESTClient</strong></span> au premier
+                            <span class="emphasis"><strong>tLogRow</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Response</strong></span> afin de terminer le premier sous-job, qui charge un
+                        enregistrement client sur le serveur et affiche les informations de r&eacute;ponse
+                        du serveur. </p></li><li class="step" title="&Eacute;tape 5"><p>Reliez le second <span class="emphasis"><strong>tRESTClient</strong></span> au second
+                            <span class="emphasis"><strong>tLogRow</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Response</strong></span>
+                        afin de terminer le second sous-job, qui r&eacute;cup&egrave;re et affiche les
+                        informations client du c&ocirc;t&eacute; serveur.</p></li><li class="step" title="&Eacute;tape 6"><p>Reliez les deux sous-jobs &agrave; l'aide d'un lien <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>OnSubjobOk</strong></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Nommez les composants comme vous le souhaitez afin que leur nom refl&egrave;te
+                        leur r&ocirc;le.</p><div class="mediaobject"><img src="../images/use_case-trestclient01.png"></div></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e203834"></a>Configurer les composants</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;12.5.&nbsp;Configurer les donn&eacute;es d'entr&eacute;e et le mapping de la structure"><a name="d43281e203837"></a><p class="title"><b>Proc&eacute;dure&nbsp;12.5.&nbsp;Configurer les donn&eacute;es d'entr&eacute;e et le mapping de la structure</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tFixedFlowInput</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-trestclient02.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="emphasis"><strong>Edit schema</strong></span> puis configurez le sch&eacute;ma
+                        des donn&eacute;es d'entr&eacute;e dans la bo&icirc;te de dialogue <span class="emphasis"><strong>[Schema]</strong></span>, puis cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de dialogue <span class="emphasis"><strong>[Schema]</strong></span>.</p><p>Dans cet exemple, le sch&eacute;ma d'entr&eacute;e poss&egrave;de une colonne, <span class="emphasis"><em>name</em></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la table <span class="emphasis"><strong>Values</strong></span> sous l'option
+                            <span class="emphasis"><strong>Use Single Table</strong></span>, saisissez dans la
+                        colonne <span class="emphasis"><strong>Value</strong></span> le nom d'un client, <span class="emphasis"><em>Gerald Wilson</em></span> par exemple, entre guillemets
+                        doubles.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Number of rows</strong></span>, saisissez
+                            <span class="emphasis"><em>1</em></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Double-cliquez sur le <span class="emphasis"><strong>tXMLMap</strong></span> pour ouvrir
+                        l'&eacute;diteur de mapping.</p><div class="mediaobject"><img src="../images/use_case-trestclient03.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Dans la table de sortie, cliquez-droit sur le n&#339;ud <span class="emphasis"><em>root</em></span> (racine) par d&eacute;faut de la colonne <span class="emphasis"><em>body</em></span>. S&eacute;lectionnez <span class="emphasis"><strong>Rename</strong></span> dans le menu contextuel et renommez le n&#339;ud <span class="emphasis"><em>Customer</em></span>. V&eacute;rifiez que <span class="emphasis"><em>Customer</em></span> est bien l'&eacute;l&eacute;ment de boucle car la structure XML
+                        du service Web &agrave; invoquer effectue une boucle sur cet &eacute;l&eacute;ment.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez-droit sur le n&#339;ud <span class="emphasis"><em>Customer</em></span>,
+                        s&eacute;lectionnez <span class="emphasis"><strong>Create Sub-Element</strong></span> dans le
+                        menu contextuel, puis cr&eacute;ez un sous-&eacute;l&eacute;ment nomm&eacute; <span class="emphasis"><em>name</em></span>. </p></li><li class="step" title="&Eacute;tape 8"><p>D&eacute;posez la colonne <span class="emphasis"><em>name</em></span> de la table
+                        d'entr&eacute;e sur le n&#339;ud <span class="emphasis"><em>name</em></span> dans la table
+                        de sortie, puis cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider
+                        le mapping et fermer l'&eacute;diteur.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;12.6.&nbsp;Configurer les actions REST et l'affichage dans la console"><a name="d43281e203950"></a><p class="title"><b>Proc&eacute;dure&nbsp;12.6.&nbsp;Configurer les actions REST et l'affichage dans la console</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tRESTClient</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic
+                            settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-trestclient04.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>URL</strong></span>, saisissez l'URL du
+                        service Web que vous souhaitez invoquer. Notez que l'URL fournie dans ce
+                        sc&eacute;nario est donn&eacute;e uniquement &agrave; titre d'exemple.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la liste <span class="emphasis"><strong>HTTP Method</strong></span>, s&eacute;lectionnez
+                            <span class="emphasis"><strong>POST</strong></span> pour envoyer une requ&ecirc;te HTTP et
+                        cr&eacute;er un nouvel enregistrement.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la liste <span class="emphasis"><strong>Content Type</strong></span>, s&eacute;lectionnez
+                        le type de contenu &agrave; charger sur le serveur, <span class="emphasis"><strong>XML</strong></span> dans cet exemple. </p></li><li class="step" title="&Eacute;tape 5"><p>Dans la liste <span class="emphasis"><strong>Accept Type</strong></span>, s&eacute;lectionnez
+                        le type que le c&ocirc;t&eacute; client accepte pour la r&eacute;ponse du serveur, <span class="emphasis"><strong>XML</strong></span> dans cet exemple. Laissez les autres
+                        param&egrave;tres tels qu'ils sont.</p></li><li class="step" title="&Eacute;tape 6"><p>Double-cliquez sur le second <span class="emphasis"><strong>tRESTClient</strong></span>
+                        pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-trestclient05.png"></div></li><li class="step" title="&Eacute;tape 7"><p>Dans le champ <span class="emphasis"><strong>URL</strong></span>, saisissez la m&ecirc;me URL
+                        que dans le premier <span class="emphasis"><strong>tRESTClient</strong></span>.</p></li><li class="step" title="&Eacute;tape 8"><p>Dans la liste <span class="emphasis"><strong>HTTP Method</strong></span>, s&eacute;lectionnez
+                            <span class="emphasis"><strong>GET</strong></span> pour envoyer une requ&ecirc;te HTTP afin
+                        der r&eacute;cup&eacute;rer les enregistrements existants et s&eacute;lectionnez <span class="emphasis"><strong>XML</strong></span> dans la liste <span class="emphasis"><strong>Accept
+                            Type</strong></span>. Laissez les autres param&egrave;tres tels qu'ils sont.</p></li><li class="step" title="&Eacute;tape 9"><p>Dans la vue <span class="emphasis"><strong>Basic settings</strong></span> de chaque
+                            <span class="emphasis"><strong>tLogRow</strong></span>, cochez les cases <span class="emphasis"><strong>Print component unique name in front of each output
+                            row</strong></span> et <span class="emphasis"><strong>Print schema column name in
+                            front of each value</strong></span> afin de mieux identifier les flux de
+                        sortie.</p><div class="mediaobject"><img src="../images/use_case-trestclient06.png"></div></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e204052"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur <span class="emphasis"><strong>Ctrl+S</strong></span> pour sauvegarder votre
+                        Job. </p></li><li class="step" title="&Eacute;tape 2"><p>Appuyez sur la touche <span class="emphasis"><strong>F6</strong></span> ou sur le bouton
+                            <span class="emphasis"><strong>Run</strong></span> de la vue <span class="emphasis"><strong>Run</strong></span> pour ex&eacute;cuter le Job. </p><p>La console montre que le premier composant <span class="emphasis"><strong>tRESTClient</strong></span> envoie une requ&ecirc;te HTTP au serveur afin de cr&eacute;er
+                        un nouveau client nomm&eacute; <span class="emphasis"><em>Gerald Wilson</em></span>. Le second
+                            <span class="emphasis"><strong>tRESTClient</strong></span> lit les donn&eacute;es du serveur,
+                        y compris les informations du nouveau client cr&eacute;&eacute;.</p><div class="mediaobject"><img src="../images/use_case-trestclient07.png"></div></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tESBProviderResponse.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-esb.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tRESTRequest.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tESBProviderResponse&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tRESTRequest</td></tr></table></div></body></html>

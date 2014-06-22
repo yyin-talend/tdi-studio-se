@@ -1,0 +1,115 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tOpenbravoERPOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-business.html" title="Chapter&nbsp;2.&nbsp;Business components"><link rel="prev" href="tOpenbravoERPInput.html" title="tOpenbravoERPInput"><link rel="next" href="tSageX3Input.html" title="tSageX3Input"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tOpenbravoERPOutput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tOpenbravoERPInput.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;2.&nbsp;Business components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSageX3Input.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tOpenbravoERPOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tOpenbravoERPOutput"></a>tOpenbravoERPOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tOpenbravoERPOutput_icon32_white.png"></div><div class="section" title="tOpenbravoERPOutput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10753"></a>tOpenbravoERPOutput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Business </p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tOpenbravoERPOutput</strong></span> writes an
+								object in an OpenbravoERP database via the appropriate Web service.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component writes data in an OpenbravoERP database.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Openbravo REST Webservice URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the URL of the Web service that allows you to connect to the
+								OpenbravoERP database. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>User authentication information.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on data</em></span>
+							</p>
+						</td><td valign="top">
+							<p>From the list, select the one of the following actions: </p>
+							<p><span class="emphasis"><strong>Update/Create</strong></span>
+							</p>
+							<p> or</p>
+							<p>
+								<span class="emphasis"><strong>Remove</strong></span>
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use existing data file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box if desired and then select the file by
+								browsing your directory.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Entity</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the appropriate entity from the drop-down list. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+								<span class="emphasis"><strong>Repository</strong></span>.</p>
+							<p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+								changes to the schema. <span>Note that if
+									you make changes, the schema automatically becomes <span class="emphasis"><strong>Built-in</strong></span>.</span>.</p>
+							<p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+								the schema from the previous component connected in the Job.</p><p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+							<p>Note that if you modify the schema, it automatically
+								built-in.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect the log data at a component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is used as an output component. It requires an
+								input component.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11025"></a>Related scenario</h3></div></div></div><p>For a scenario in which <span class="emphasis"><strong>tOpenbravoERPOutput</strong></span> may be
+			used, see <a class="xref" href="tMicrosoftCrmInput.html#Raa70068" title="Scenario: Writing data in a Microsoft CRM database and putting conditions on columns to extract specified rows">the section called &#8220;Scenario: Writing data in a Microsoft CRM database and putting conditions on columns
+            to extract specified rows&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tOpenbravoERPInput.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-business.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSageX3Input.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tOpenbravoERPInput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSageX3Input</td></tr></table></div></body></html>

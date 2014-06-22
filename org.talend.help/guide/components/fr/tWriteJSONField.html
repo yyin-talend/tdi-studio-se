@@ -1,0 +1,95 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tWriteJSONField</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-processing.html" title="Chapitre&nbsp;18.&nbsp;Composants Processing"><link rel="prev" href="tSplitRow.html" title="tSplitRow"><link rel="next" href="tXMLMap.html" title="tXMLMap"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tWriteJSONField</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSplitRow.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;18.&nbsp;Composants Processing</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tXMLMap.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tWriteJSONField"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tWriteJSONField"></a>tWriteJSONField</h2></div></div></div><div class="mediaobject"><img src="../images/tWriteJSONField_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tWriteJSONField"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e271202"></a>Propri&eacute;t&eacute;s du tWriteJSONField</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Processing/Fields</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tWriteJSONField</strong></span>
+                                &eacute;crit des objets JSON dans le champ d&eacute;fini d'un fichier de
+                                sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tWriteJSONField</strong></span> lit des
+                                donn&eacute;es d'un fichier d'entr&eacute;e, les assemble en objets JSON et les
+                                &eacute;crit dans le champ d&eacute;fini d'un fichier de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Output Column</em></span></p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez le champ de destination du composant de sortie dans
+                                lequel vous souhaitez &eacute;crire les objets JSON.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Configure JSON Tree</em></span></p>
+                        </td><td valign="top">
+                            <p>Ouvrez l'interface supportant la cr&eacute;ation de la structure de
+                                donn&eacute;es JSON que vous souhaitez &eacute;crire dans un champ.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema type</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans le
+                                        <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. <span>Notez que si vous
+                                    effectuez des modifications, le sch&eacute;ma devient automatiquement
+                                    built-in.</span></p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce
+                                composant seulement. Voir &eacute;galement&nbsp; le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute;
+                                dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute; dans divers
+                                projets et Job designs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Sync columns</em></span></p>
+                        </td><td valign="top">
+                            <p>Cliquez sur ce bouton pour synchroniser le sch&eacute;ma du fichier de
+                                sortie et le sch&eacute;ma du fichier d'entr&eacute;e. La fonction <span class="emphasis"><strong>Sync</strong></span> s'affiche uniquement lorsque le lien
+                                    <span class="emphasis"><strong>Row</strong></span> est connect&eacute; au composant
+                                de sortie.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Group by</em></span></p>
+                        </td><td valign="top">
+                            <p>D&eacute;finissez l'ensemble d'agr&eacute;gation, les colonnes que vous
+                                souhaitez utiliser pour regrouper les donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est utilis&eacute; comme &eacute;tape interm&eacute;diaire dans un flux de
+                                donn&eacute;es.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e271446"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour des sc&eacute;narios associ&eacute;s, consultez</p><p>
+            </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tWriteXMLField.html#xml-twritexmlfield-scenario-xml_field" title="Sc&eacute;nario&nbsp;: Extraire la structure d&#8217;un fichier XML et l&#8217;ins&eacute;rer dans les champs d&#8217;une base de donn&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Extraire la structure d&#8217;un fichier XML et l&#8217;ins&eacute;rer dans les champs d&#8217;une
+            base de donn&eacute;es&nbsp;&raquo;</a>.</p></li></ul></div><p>
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSplitRow.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tXMLMap.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tSplitRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tXMLMap</td></tr></table></div></body></html>

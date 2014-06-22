@@ -1,0 +1,333 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tTeradataTPTUtility</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-databases-appliance-dw.html" title="Chapter&nbsp;8.&nbsp;Databases - appliance/datawarehouse components"><link rel="prev" href="tTeradataRow.html" title="tTeradataRow"><link rel="next" href="tTeradataTPump.html" title="tTeradataTPump"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tTeradataTPTUtility</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tTeradataRow.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;8.&nbsp;Databases - appliance/datawarehouse components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tTeradataTPump.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tTeradataTPTUtility"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tTeradataTPTUtility"></a>tTeradataTPTUtility</h2></div></div></div><div class="mediaobject"><img src="../images/tTeradataTPTUtility_icon32_white.png"></div><div class="section" title="tTeradataTPTUtility Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e144344"></a>tTeradataTPTUtility Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Teradata </p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tTeradataTPTUtility</strong></span> combines the
+								utilities of <span class="emphasis"><strong>tTeradataFastLoad</strong></span>,
+									<span class="emphasis"><strong>tTeradataMultiLoad</strong></span>, <span class="emphasis"><strong>tTeradataTPump</strong></span>, and <span class="emphasis"><strong>tTeradataFastExport</strong></span> into one comprehensive
+								utility.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tTeradataTPTUtility</strong></span> allows you to
+								insert data to load data into and delete data from any accessible
+								table in the Teradata Database or from any other data stores for
+								which an access operator or an access module exists.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span>.</p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Filename</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Browse your directory and select the file to save the output
+								data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Append</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to append the work table to the path set in
+								the <span class="emphasis"><strong>Filename</strong></span> field.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on data</em></span>
+							</p>
+						</td><td valign="top">
+							<p>On the data of the table defined, you can perform:</p>
+							<p>
+								<span class="emphasis"><strong>Insert</strong></span>: Add new entries to the
+								table. If duplicates are found, job stops.</p>
+							<p>
+								<span class="emphasis"><strong>Update</strong></span>: Make changes to existing
+								entries</p>
+							<p><span class="emphasis"><strong>Insert or update</strong></span>: inserts a new record.
+		If the record with the given reference already exists, an update would be made.</p>
+							<p>
+								<span class="emphasis"><strong>Delete</strong></span>: Remove entries
+								corresponding to the input flow.</p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+									<span class="emphasis"><em> It is necessary to specify at least one
+										column as a primary key on which the Update and Delete
+										operations are based. You can do that by clicking <span class="emphasis"><strong>Edit Schema</strong></span> and selecting the
+										check box(es) next to the column(s) you want to set as
+										primary key(s).</em></span>
+								</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. The
+								schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored
+								remotely in the <span class="emphasis"><strong>Repository</strong></span>. </p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+									<span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused. Related
+								topic: see <span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Execution platform</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the Operating System type you use.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>TDPID</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Teradata director program identifier. It can be either the name or
+								the IP address of the Teradata Database system being
+								accessed.</p>
+							<p>
+								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you do not specify a TDPID, the system will use the
+										name of Teradata database as the default TDPID. The
+										customized TDPID can be up to 256 characters and can be a
+										domain server name. For further information about TDPID, see
+											<a class="link" href="http://developer.teradata.com/sites/all/files/documentation/linked_docs/html/online/B035-2436-088A/wwhelp/wwhimpl/js/html/wwhelp.htm" target="_top">Teradata Parallel Transporter Reference</a>.</p></div><p>
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+								<span class="emphasis"><em>name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Fill this field with the name of the Teradata database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Load Operator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>A consumer operator that functions similarly to <span class="emphasis"><strong>tTeradataFastLoad</strong></span> to load data from data
+								streams and inserts data into individual rows of a target table in
+								the Teradata database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data Connector</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Functions as either a file reader to read from flat files or
+								access modules or a file writer to write to flat files or access
+								modules.</p>
+							<p>
+								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>For further information about flat file, see <a class="link" href="http://en.wikipedia.org/wiki/Flat_file_database#Flat_files" target="_top">Flat file database</a>.</p></div><p>
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Job Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of a Teradata Parallel Transporter Job which is defined using
+								Teradata <span class="emphasis"><em>tbuild</em></span> command. </p>
+							<p>
+								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you do not specify a Job name, the default is the user
+										name followed by a hyphen and a generated TPT Job sequence
+										number as follows:</p><p>
+										<code class="code">&lt;user name&gt;-&lt;job sequence number&gt;</code>
+									</p><p>For further information about Teradata commands, see <a class="link" href="http://developer.teradata.com/sites/all/files/documentation/linked_docs/html/online/B035-2436-088A/wwhelp/wwhimpl/js/html/wwhelp.htm" target="_top">Teradata Parallel Transporter Reference</a>.</p></div><p>
+							</p>
+
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Layout Name(schema)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>A schema for the data to be interchanged.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>The Teradata database username and the Teradata database password
+								associated with the username for Teradata database
+								authentication.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the table to be written into the Teradata database. Note
+								that only one table can be written at a time.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Script generated folder</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Browse your directory and select the destination of the file which
+								will be created.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Where condition in case Delete</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in script as a condition, which, once verified, will delete
+								the row.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Error file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Browse your directory and select the destination of the file where
+								the error messages will be recorded.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;<span class="emphasis"><strong>Advanced settings</strong></span></p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Row seperator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Character, string or regular expression to separate rows.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field seperator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Character, string or regular expression to separate fields.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Include header</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to include the column header to the
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field is
+								compulsory for DB data handling. </p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Define Log table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>This check box is selected to define a log table you want to use
+								in place of the default one that is the database table you defined
+								in <span class="emphasis"><strong>Basic settings</strong></span> followed by
+									"<code class="code">_log</code>". The syntax required to define the log table
+								is <span class="emphasis"><em>logtablename</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Return mload error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to specify the exit code number to indicate
+								the point at which an error message should display in the console.
+								For further information about this error, see <a class="link" href="https://developer.teradata.com/tools/reference/teradata-multiload-reference/13-10" target="_top">Teradata MultiLoad Reference</a>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Define character set</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify the character encoding to be used in your system.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStat</em></span>
+								<span class="emphasis"><em>Catcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component offers the flexibility of the DB query and covers
+								all possible SQL queries. For further information about the usage of
+								this component, see <a class="link" href="http://developer.teradata.com/sites/all/files/documentation/linked_docs/html/online/B035-2436-088A/wwhelp/wwhimpl/js/html/wwhelp.htm" target="_top">Teradata Parallel Transporter Reference</a>.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e145115"></a>Related scenario</h3></div></div></div><p>For related topic, see <a class="xref" href="tTeradataTPump.html#Raa51052" title="Scenario: Inserting data into a Teradata database table">the section called &#8220;Scenario: Inserting data into a Teradata database table&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tTeradataRow.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-appliance-dw.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tTeradataTPump.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tTeradataRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tTeradataTPump</td></tr></table></div></body></html>

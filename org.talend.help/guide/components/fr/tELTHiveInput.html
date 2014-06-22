@@ -1,0 +1,87 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tELTHiveInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-elt.html" title="Chapitre&nbsp;11.&nbsp;Composants ELT"><link rel="prev" href="tELTGreenplumOutput.html" title="tELTGreenplumOutput"><link rel="next" href="tELTHiveMap.html" title="tELTHiveMap"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tELTHiveInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tELTGreenplumOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;11.&nbsp;Composants ELT</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tELTHiveMap.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tELTHiveInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tELTHiveInput"></a>tELTHiveInput</h2></div></div></div><div class="mediaobject"><img src="../images/telthiveinput_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tELTHiveInput"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e254752"></a>Propri&eacute;t&eacute;s du tELTHiveInput</h3></div></div></div><p>Les trois composants ELT Hive sont &eacute;troitement li&eacute;s en ce qui concernent leurs
+			conditions d'utilisation. Ces composants sont con&ccedil;us pour prendre en charge les sch&eacute;mas
+			Hive DB afin de g&eacute;n&eacute;rer des commandes Insert, dont des clauses, qui sont ex&eacute;cut&eacute;s dans
+			la table de sortie d&eacute;finie.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>ELT/Map/Hive</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant fournit, pour le composant <span class="emphasis"><strong>tELTHiveMap</strong></span>
+								qui suit, le sch&eacute;ma d'entr&eacute;e de la table Hive &agrave; utiliser.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="emphasis"><strong>tELTHiveInput</strong></span> permet de r&eacute;pliquer le sch&eacute;ma,
+								utilis&eacute; par le composant <span class="emphasis"><strong>tELTHiveMap</strong></span> suivant, de la table d'entr&eacute;e
+								Hive.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;<span class="emphasis"><strong>Basic settings</strong></span></p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span> : Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; ponctuellement
+		pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+			de</em></span>
+		<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span> : Le sch&eacute;ma existe d&eacute;j&agrave; et il est stock&eacute; dans le
+			<span class="emphasis"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir
+		&eacute;galement le <span class="emphasis"><em>Guide utilisateur de</em></span>
+		<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+							<p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Edit schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour modifier le sch&eacute;ma. <span>Si vous effectuez des modifications, le sch&eacute;ma devient
+			automatiquement built-in.</span></p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Default table name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom du sch&eacute;ma par d&eacute;faut, entre guillemets
+								doubles.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;<span class="emphasis"><em>Advanced settings</em></span></p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStat Catcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>L&#8217;utilisation du composant <span class="emphasis"><strong>tELTHiveOutput</strong></span> est
+								&eacute;troitement li&eacute;e &agrave; celle des composants <span class="emphasis"><strong>tELTHiveMap</strong></span> et <span class="emphasis"><strong>tELTHiveInput</strong></span>. Notez que le lien de sortie (output)
+								&agrave; utiliser avec ces deux composants doit respecter strictement la
+								syntaxe du nom de la table. </p>
+							<p>Si le Studio utilis&eacute; pour vous connecter &agrave; une base de donn&eacute;es Hive fonctionne sous
+		Windows, vous devez cr&eacute;er manuellement un fichier appel&eacute; <span class="emphasis"><em>tmp</em></span> &agrave; la racine du disque o&ugrave; le Studio est install&eacute;.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Les composants ELT ne traitent pas le flux de donn&eacute;es lui-m&ecirc;me
+									mais uniquement les informations du sch&eacute;ma.</p></div>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e254973"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tELTHiveMap.html#ychen-09192012-elt-telthivemap_scenario" title="Sc&eacute;nario : Effectuer une jointure sur les colonnes d'une table et les &eacute;crire dans Hive">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario : Effectuer une jointure sur les colonnes d'une table et les &eacute;crire dans
+			Hive&nbsp;&raquo;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tELTGreenplumOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-elt.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tELTHiveMap.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tELTGreenplumOutput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tELTHiveMap</td></tr></table></div></body></html>

@@ -1,0 +1,100 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tExtractEBCDICFields</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-processing.html" title="Chapitre&nbsp;18.&nbsp;Composants Processing"><link rel="prev" href="tExtractDelimitedFields.html" title="tExtractDelimitedFields"><link rel="next" href="tExtractPositionalFields.html" title="tExtractPositionalFields"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tExtractEBCDICFields</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tExtractDelimitedFields.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;18.&nbsp;Composants Processing</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tExtractPositionalFields.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tExtractEBCDICFields"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tExtractEBCDICFields"></a>tExtractEBCDICFields</h2></div></div></div><div class="mediaobject"><img src="../images/tExtractEBCDICFields_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tExtractEBCDICFields"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e264398"></a>Propri&eacute;t&eacute;s du tExtractEBCDICFields</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Processing/Fields</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tExtractEBCDICFields</strong></span>
+                                g&eacute;n&egrave;re de multiples colonnes &agrave; partir d'une colonne, &agrave; l'aide de la
+                                mise en correspondance de regex.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tExtractEBCDICFields</strong></span> vous
+                                permet d'utiliser des expressions r&eacute;guli&egrave;re pour extraire des
+                                donn&eacute;es d'une cha&icirc;ne de caract&egrave;res format&eacute;e.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Field</em></span></p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez dans la liste <span class="emphasis"><strong>Field</strong></span>
+                                un champ entrant &agrave; extraire.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+                                D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+                                erreur, et ignorer les lignes en erreur. Vous pouvez r&eacute;cup&eacute;rer les
+                                lignes en erreur, si vous le souhaitez. Pour cela, utilisez un lien
+                                    <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Rejects</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans le
+                                        <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. <span>Notez que si vous
+                                    effectuez des modifications, le sch&eacute;ma devient automatiquement
+                                    built-in.</span></p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in</strong></span> : S&eacute;lectionnez cette option pour &eacute;diter le sch&eacute;ma
+                                Built-in pour les donn&eacute;es &agrave; traiter.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span> : S&eacute;lectionnez cette
+                                option pour &eacute;diter le sch&eacute;ma du <span class="emphasis"><strong>Repository</strong></span> s&eacute;lectionn&eacute;. Les champs suivants sont
+                                automatiquement renseign&eacute;s &agrave; l'aide du sch&eacute;ma s&eacute;lectionn&eacute;..</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Edit schema</em></span></p>
+                        </td><td valign="top"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> pour &eacute;diter le sch&eacute;ma Built-in ou
+                                Repository pour les donn&eacute;es &agrave; traiter.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Sync columns</em></span></p>
+                        </td><td valign="top">
+                            <p>Cliquez sur ce bouton pour r&eacute;cup&eacute;rer le sch&eacute;ma d&eacute;fini dans le
+                                composant d'entr&eacute;e.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Ce bouton est disponible uniquement lorsqu'un composant
+                                        d'entr&eacute;e est connect&eacute; &agrave; ce composant via un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;<span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+                                    <span class="emphasis"><strong>Custom</strong></span> et d&eacute;finissez-le
+                                manuellement. Ce champ est obligatoire pour la manipulation des
+                                donn&eacute;es de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Trim all column</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+                                champ dans les colonnes d&eacute;finies.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du Job ainsi qu'au niveau de
+                                chaque composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant g&egrave;re un flux de donn&eacute;es et n&eacute;cessite donc un
+                                composant d'entr&eacute;e et un composant de sortie. Cela vous permet
+                                d'extraire des donn&eacute;es d'un fichier d&eacute;limit&eacute;, &agrave; l'aide d'un lien
+                                    <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> et vous permet de cr&eacute;er un flux de rejet
+                                filtrant des donn&eacute;es dont le type ne correspond pas au type
+                                d&eacute;fini.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e264676"></a>Sc&eacute;nario</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tExtractRegexFields.html#tExtractRegexFields_sce" title="Sc&eacute;nario&nbsp;: Extraire des noms, des domaines et domaines de premier niveau &agrave; partir d&#8217;adresses e-mail">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Extraire des noms, des domaines et domaines de premier niveau &agrave; partir
+            d&#8217;adresses e-mail&nbsp;&raquo;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tExtractDelimitedFields.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tExtractPositionalFields.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tExtractDelimitedFields&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tExtractPositionalFields</td></tr></table></div></body></html>

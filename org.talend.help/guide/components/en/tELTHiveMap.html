@@ -1,0 +1,338 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tELTHiveMap</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-elt.html" title="Chapter&nbsp;11.&nbsp;ELT components"><link rel="prev" href="tELTHiveInput.html" title="tELTHiveInput"><link rel="next" href="tELTHiveOutput.html" title="tELTHiveOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tELTHiveMap</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tELTHiveInput.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;11.&nbsp;ELT components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tELTHiveOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tELTHiveMap"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tELTHiveMap"></a>tELTHiveMap</h2></div></div></div><div class="mediaobject"><img src="../images/telthivemap_icon32_white.png"></div><div class="section" title="tELTHiveMap properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e261197"></a>tELTHiveMap properties</h3></div></div></div><p>The three ELT Hive components are closely related, in terms of their operating
+			conditions. These components should be used to handle Hive DB schemas to generate Insert
+			statements, including clauses, which are to be executed in the DB output table
+			defined.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>ELT/Map/Hive</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component uses the tables provided as input, to feed the
+								parameter in the built statement. The statement can include inner or
+								outer joins to be implemented between tables or between one table
+								and its aliases.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component helps to graphically build the Hive QL statement in
+								order to transform data.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Data Integration Studio
+				User Guide</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>ELT Hive Map editor</em></span>
+							</p>
+						</td><td valign="top">
+							<p>The ELT Map editor helps you to define the output schema as well
+								as build graphically the Hive QL statement to be executed. The
+								column names of schema can be different from the column names in the
+								database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Style link</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the way in which links are displayed. </p>
+							<p>
+								<span class="emphasis"><strong>Auto</strong></span>: By default, the links between
+								the input and output schemas and the Web service parameters are in
+								the form of curves. </p>
+							<p>
+								<span class="emphasis"><strong>Bezier curve</strong></span>: Links between the
+								schema and the Web service parameters are in the form of curve. </p>
+							<p>
+								<span class="emphasis"><strong>Line</strong></span>: Links between the schema and
+								the Web service parameters are in the form of straight lines. </p>
+							<p> This option slightly optimizes performance.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><em>Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Distribution</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the product you are using as the Hadoop distribution from
+								the drop-down list. </p>
+							<p>The options in the list vary depending on the component you are
+								using.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hive version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the version of the Hadoop distribution you are using.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Connection mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select a connection mode from the list. The options vary depending
+								on the distribution you are using.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Database server IP address.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Listening port number of DB server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the database. According to the documentation of Hive, the
+								only database name supported is <span class="emphasis"><em>default</em></span>.</p>
+							<p>For further information, see <a class="link" href="https://cwiki.apache.org/Hive/hiveclient.html" target="_top">https://cwiki.apache.org/Hive/hiveclient.html</a>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><em>Hadoop properties</em></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Set Jobtracker URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to indicate the location of the Hadoop Jobtracker service to be
+		used. For example, we assume that you have chosen a machine called <span class="emphasis"><em>machine1</em></span> as the JobTracker, then set its location as <span class="emphasis"><em>machine1:portnumber</em></span>.</p>
+							<p>This property is required when the query you want to use is executed in Windows and it is
+		a <code class="code">Select</code> query. For example, <code class="code">SELECT your_column_name FROM
+			your_table_name</code></p>
+							<p>You can keep this check box clear, when a query is executed in Windows but does not
+		require the Hadoop Map/Reduce framework, for example, <code class="code">select * from
+			your_table_name</code>; however, setting the exact value for this property does not
+		provoke any issues with the execution in that situation.</p>
+							<p>For further information about the Hadoop Map/Reduce framework, see the Map/Reduce tutorial
+		in the Hadoop documentation.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Set NameNode URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to indicate the location of the NameNode of the Hadoop cluster to be
+		used.</p>
+							<p>This property is required when the query you want to use is executed in Windows and it is
+		a <code class="code">Select</code> query. For example, <code class="code">SELECT your_column_name FROM
+			your_table_name</code></p>
+							<p>You can keep this check box clear, when a query is executed in Windows but does not
+		require the Hadoop Map/Reduce framework, for example, <code class="code">select * from
+			your_table_name</code>; however, setting the exact value for this property does not
+		provoke any issues with the execution in that situation.</p>
+							<p>For further information about the Hadoop Map/Reduce framework, see the Map/Reduce tutorial
+		in the Hadoop documentation.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><em>Advanced settings</em></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hadoop properties</em></span>
+							</p>
+						</td><td valign="top">
+							<p>If you need to use custom configuration for the Hadoop of
+		interest, complete this table with the property or properties to be
+		customized. Then at runtime, the customized property or properties
+		will override those corresponding ones defined earlier for the same
+		Hadoop. </p>
+							<p>For further information about the properties required by Hadoop,
+		see the Hadoop documentation. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Temporary path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>If you do not want to set the Jobtracker and the NameNode when you execute the query
+			<code class="code">select * from your_table_name</code>, you need to set this temporary path. For
+		example, <span class="emphasis"><em>/C:/select_all</em></span> in Windows.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tELTHiveMap</strong></span> is used along with a
+									<span class="emphasis"><strong>tELTHiveInput</strong></span> and <span class="emphasis"><strong>tELTHiveOutput</strong></span>. Note that the Output link
+								to be used with these components must correspond strictly to the
+								syntax of the table name. </p>
+							<p>If the Studio used to connect to a Hive database is operated on Windows, you must manually
+		create a file called <span class="emphasis"><em>tmp</em></span> in the root of the disk where
+		this Studio is installed.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The ELT components do not handle actual data flow but only
+									schema information.</p></div>
+						</td></tr></tbody></table></div><div class="section" title="Connecting Hive ELT components"><div class="titlepage"><div><div><h4 class="title"><a name="ychen-09192012-elt-elthive"></a>Connecting Hive ELT components</h4></div></div></div><p>The ELT components do not handle any data as such but table schema information
+				that will be used to build the Hive QL query to execute.</p><p>Therefore the only connection required to connect these components together is a
+				simple link. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The output name you give to this link when creating it should always be the
+					exact name of the table to be accessed as this parameter will be used in the
+					Hive QL statement generated.</p></div><p>Related topic: see <span class="emphasis"><em>Talend Data Integration Studio</em></span>
+				<span class="emphasis"><em>User Guide</em></span>.</p></div><div class="section" title="Mapping and joining tables"><div class="titlepage"><div><div><h4 class="title"><a name="d0e261746"></a>Mapping and joining tables</h4></div></div></div><p>In the ELT Mapper, you can select specific columns from input schemas and include
+				them in the output schema. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>As you would do it in the regular Map editor, simply drag &amp; drop the
+						content from the input schema towards the output table defined.</p></li><li class="listitem"><p>Use the <span class="emphasis"><strong>Ctrl</strong></span> and <span class="emphasis"><strong>Shift</strong></span> keys for multiple selection of contiguous or non
+						contiguous table columns.</p></li></ul></div><p>You can implement explicit joins to retrieve various data from different tables. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="emphasis"><strong>Explicit join</strong></span> check box for
+						the relevant column, and select a type of join from the <span class="emphasis"><strong>Join</strong></span> list. </p></li><li class="listitem"><p>Possible joins include: <span class="emphasis"><strong>Inner Join</strong></span>,
+							<span class="emphasis"><strong>Left Outer Join</strong></span>, <span class="emphasis"><strong>Right Outer Join</strong></span> or <span class="emphasis"><strong>Full Outer
+							Join</strong></span> and <span class="emphasis"><strong>Cross Join</strong></span>.</p></li><li class="listitem"><p>By default the <span class="emphasis"><strong>Inner Join</strong></span> is
+						selected.</p></li></ul></div><p>You can also create <span class="emphasis"><strong>Alias</strong></span> tables to retrieve
+				various data from the same table.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the Input area, click the <span class="inlinemediaobject"><img src="../images/Button_Plus.png" align="middle"></span> button to create an Alias. </p></li><li class="listitem"><p>Define the table to base the alias on.</p></li><li class="listitem"><p>Type in a new name for the alias table, preferably not the same as the
+						main table.</p></li></ul></div></div><div class="section" title="Adding where clauses"><div class="titlepage"><div><div><h4 class="title"><a name="d0e261819"></a>Adding where clauses</h4></div></div></div><p>You can also restrict the Select statement based on a Where clause. Click the
+					<span class="emphasis"><strong>Add filter row</strong></span> button at the top of the output
+				table and type in the relevant restriction to be applied.</p><p>Ensure that all input components are linked correctly to the ELT Map component to
+				be able to implement all inclusions, joins and clauses.</p></div><div class="section" title="Generating the Hive QL statement"><div class="titlepage"><div><div><h4 class="title"><a name="d0e261829"></a>Generating the Hive QL statement</h4></div></div></div><p>The mapping of elements from the input schemas to the output schemas create
+				instantly the corresponding Select statement. For example,</p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap2.png" align="middle"></div><p>The clause are also included automatically.</p></div></div><div class="section" title="Scenario: Joining table columns and writing them into Hive"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-09192012-elt-telthivemap_scenario"></a>Scenario: Joining table columns and writing them into Hive</h3></div></div></div><p>This scenario uses a four-component Job to join the columns selected from two Hive
+			tables and write them into another Hive table.</p><div class="mediaobject"><img src="../images/use_case-telthivemap1.png"></div><div class="section" title="Preparing the Hive tables"><div class="titlepage"><div><div><h4 class="title"><a name="d0e261847"></a>Preparing the Hive tables</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Create the Hive table you want to write data in. In this scenario, this
+						table is named as <span class="emphasis"><em>agg_result</em></span>, and you can
+						create it using the following statement in <span class="emphasis"><strong>tHiveRow</strong></span>:
+						</p><pre class="programlisting">create table agg_result (id int, name string, address string, sum1 string, postal string, state string, capital string, mostpopulouscity string) partitioned by (type string) row format delimited fields terminated by ';' location '/user/ychen/hive/table/agg_result'</pre><p>In this statement,<span class="emphasis"><em>
+							'/user/ychen/hive/table/agg_result'</em></span> is the directory used in
+						this scenario to store this created table in HDFS. You need to replace it
+						with the directory you want to use in your environment.</p><p>For further information about <span class="emphasis"><strong>tHiveRow</strong></span>,
+						see <a class="xref" href="tHiveRow.html" title="tHiveRow">the section called &#8220;tHiveRow&#8221;</a>.</p></li><li class="step" title="Step 2"><p>Create two input Hive tables containing the columns you want to join and
+						aggregate these columns into the output Hive table, <span class="emphasis"><em>agg_result</em></span>. The statements to be used are:
+						</p><pre class="programlisting">create table customer (id int, name string, address string, idState int, id2 int, regTime string, registerTime string, sum1 string, sum2 string) row format delimited fields terminated by ';' location '/user/ychen/hive/table/customer'</pre><p>
+						and
+						</p><pre class="programlisting">create table state_city (id int, postal string, state string, capital int, mostpopulouscity string) row format delimited fields terminated by ';' location '/user/ychen/hive/table/state_city'</pre></li><li class="step" title="Step 3"><p>Use <span class="emphasis"><strong>tHiveRow</strong></span> to load data into the two
+						input tables, <span class="emphasis"><em>customer</em></span> and <span class="emphasis"><em>state_city</em></span>. The statements to be used are:
+						</p><pre class="programlisting">"LOAD DATA LOCAL INPATH 'C:/tmp/customer.csv' OVERWRITE INTO TABLE customer"</pre><p>
+						and
+						</p><pre class="programlisting">"LOAD DATA LOCAL INPATH 'C:/tmp/State_City.csv' OVERWRITE INTO TABLE state_city"</pre><p>The two files, <span class="emphasis"><em>customer.csv</em></span> and
+							<span class="emphasis"><em>State_City.csv</em></span>, are two local files
+						we created for this scenario. You need to create your own files to provide
+						data to the input Hive tables. The data schema of each file should be
+						identical with their corresponding table.</p><p>You can use <span class="emphasis"><strong>tRowGenerator</strong></span> and <span class="emphasis"><strong>tFileOutputDelimited</strong></span> to create these two files
+						easily. For further information about these two components, see <a class="xref" href="tRowGenerator.html" title="tRowGenerator">the section called &#8220;tRowGenerator&#8221;</a> and <a class="xref" href="tFileOutputDelimited.html" title="tFileOutputDelimited">the section called &#8220;tFileOutputDelimited&#8221;</a>.</p><p>For further information about the Hive query language, see <a class="link" href="https://cwiki.apache.org/Hive/languagemanual.html" target="_top">https://cwiki.apache.org/Hive/languagemanual.html</a>.</p></li></ol></div></div><div class="section" title="Linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e261927"></a>Linking the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the <span class="emphasis"><strong>Integration</strong></span> perspective of the
+						Studio, create an empty Job from the<span class="emphasis"><strong> Job
+							Designs</strong></span> node in the <span class="emphasis"><strong>Repository</strong></span> tree view.</p><p>For further information about how to create a Job, see the user guide of
+						the Studio for integration.</p></li><li class="step" title="Step 2"><p>Drop two <span class="emphasis"><strong>tELTHiveInput</strong></span> components and
+							<span class="emphasis"><strong>tELTHiveMap</strong></span> and <span class="emphasis"><strong>tELTHiveOutput</strong></span> onto the workspace.</p></li><li class="step" title="Step 3"><p>Connect them using the <span class="emphasis"><strong>Row &gt; Main</strong></span>
+						link.</p><p>Each time when you connect two components, a wizard pops up to prompt you
+						to name the link you are creating. This name must be the same as that of the
+						Hive table you want the active component to process. In this scenario, the
+						input tables the two <span class="emphasis"><strong>tELTHiveInput</strong></span>
+						components will handle are <span class="emphasis"><em>customer</em></span> and
+							<span class="emphasis"><em>state_city</em></span> and the output table
+							<span class="emphasis"><strong>tELTHiveOutput</strong></span> will handle is <span class="emphasis"><em>agg_result</em></span>.</p></li></ol></div></div><div class="section" title="Configuring the input schemas"><div class="titlepage"><div><div><h4 class="title"><a name="d0e261980"></a>Configuring the input schemas</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click the <span class="emphasis"><strong>tELTHiveInput</strong></span> component
+						using the <span class="emphasis"><em>customer</em></span> link to open its
+							<span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap3.png" align="middle"></div></li><li class="step" title="Step 2"><p>Click the <span class="emphasis"><strong>[...]</strong></span> button next to <span class="emphasis"><strong>Edit schema</strong></span> to open the schema editor.</p></li><li class="step" title="Step 3"><p>Click the <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> button as many times as required to add columns and
+						rename them to replicate the schema of the <span class="emphasis"><em>customer</em></span> table we created earlier in Hive.</p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap4.png" align="middle"></div><p>To set up this schema, you can as well use the
+							<span class="emphasis"><em>customer</em></span> schema you retrieve and
+						store in the <span class="emphasis"><strong>Repository</strong></span>. For further
+						information about how to set up a connection to Hive and retrieve and store
+						the schema in <span class="emphasis"><strong>Repository</strong></span>, see the user
+						guide of the Studio for integration.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Default table name</strong></span> field, enter
+						the name of the input table, <span class="emphasis"><em>customer</em></span>, to
+						be processed by this component.</p></li><li class="step" title="Step 5"><p>Double-click the other <span class="emphasis"><strong>tELTHiveInput</strong></span>
+						component using the <span class="emphasis"><em>state_city</em></span> link to
+						open its <span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap10.png" align="middle"></div></li><li class="step" title="Step 6"><p>Click the [<span class="emphasis"><strong>...]</strong></span> button next to <span class="emphasis"><strong>Edit schema</strong></span> to open the schema editor.</p></li><li class="step" title="Step 7"><p>Click the <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> button as many times as required to add columns and
+						rename them to replicate the schema of the <span class="emphasis"><em>state_city</em></span> table we created earlier in Hive.</p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap5.png" align="middle"></div></li><li class="step" title="Step 8"><p>In the <span class="emphasis"><strong>Default table name</strong></span> field, enter
+						the name of the input table, <span class="emphasis"><em>state_city</em></span>,
+						to be processed by this component.</p></li></ol></div></div><div class="section" title="Mapping the input and the output schemas"><div class="titlepage"><div><div><h4 class="title"><a name="d0e262087"></a>Mapping the input and the output schemas</h4></div></div></div><div class="procedure" title="Procedure&nbsp;11.1.&nbsp;Configuring the connection to Hive"><a name="d0e262090"></a><p class="title"><b>Procedure&nbsp;11.1.&nbsp;Configuring the connection to Hive</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Click <span class="emphasis"><strong>tELTHiveMap</strong></span>, then, click <span class="emphasis"><strong>Component</strong></span> to open its <span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap6.png" align="middle"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>Version</strong></span> area, select the Hadoop
+						distribution you are using and the Hive version.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Connection mode</strong></span> list, select the
+						connection mode you want to use. If your distribution is HortonWorks, this
+						mode is <span class="emphasis"><strong>Embedded</strong></span> only.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Host</strong></span> field and the <span class="emphasis"><strong>Port</strong></span> field, enter the authentication information
+						for the component to connect to Hive. For example, the host is<span class="emphasis"><em> talend-hdp-all</em></span> and the port is <span class="emphasis"><em>9083</em></span>.</p></li><li class="step" title="Step 5"><p>Select the<span class="emphasis"><strong> Set Jobtracker URI</strong></span> check box
+						and enter the location of the Jobtracker. For example, <span class="emphasis"><em>talend-hdp-all:50300</em></span>.</p></li><li class="step" title="Step 6"><p>Select the<span class="emphasis"><strong> Set NameNode URI</strong></span> check box and
+						enter the location of the NameNode. For example, <span class="emphasis"><em>hdfs://talend-hdp-all:8020</em></span>.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;11.2.&nbsp;Mapping the schemas"><a name="d0e262156"></a><p class="title"><b>Procedure&nbsp;11.2.&nbsp;Mapping the schemas</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Click <span class="emphasis"><strong>ELT Hive Map Editor</strong></span> to map the
+						schemas</p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap7.png" align="middle"></div></li><li class="step" title="Step 2"><p>On the input side (left in the figure), click the <span class="emphasis"><strong>Add alias</strong></span> button to add the table to be used.</p><div class="mediaobject" align="center"><img src="../images/add_alias.png" align="middle"></div></li><li class="step" title="Step 3"><p>In the pop-up window, select the <span class="emphasis"><em>customer</em></span> table, then click <span class="emphasis"><strong>OK</strong></span>.</p></li><li class="step" title="Step 4"><p>Repeat the operations to select the <span class="emphasis"><em>state_city</em></span> table.</p></li><li class="step" title="Step 5"><p>Drag and drop the<span class="emphasis"><em> idstate</em></span> column from
+						the <span class="emphasis"><em>customer</em></span> table onto the <span class="emphasis"><em>id</em></span> column of the <span class="emphasis"><em>state_city</em></span> table. Thus an inner join is created
+						automatically.</p></li><li class="step" title="Step 6"><p>On the output side (the right side in the figure), the <span class="emphasis"><em>agg_result</em></span> table is empty at first. Click <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> at the bottom of this side to add as many columns as
+						required and rename them to replicate the schema of the <span class="emphasis"><em>agg_result</em></span> table you created earlier in Hive. </p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap8.png" align="middle"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The <span class="emphasis"><em>type</em></span> column is the partition
+							column of the <span class="emphasis"><em>agg_result</em></span> table and
+							should not be replicated in this schema. For further information about
+							the partition column of the Hive table, see the Hive manual.</p></div></li><li class="step" title="Step 7"><p>From the <span class="emphasis"><em>customer</em></span> table, drop<span class="emphasis"><em> id</em></span>, <span class="emphasis"><em>name</em></span>,
+							<span class="emphasis"><em>address</em></span>, and <span class="emphasis"><em>sum1</em></span> to the corresponding columns in the <span class="emphasis"><em>agg_result</em></span> table.</p></li><li class="step" title="Step 8"><p>From the <span class="emphasis"><em>state_city</em></span> table, drop
+							<span class="emphasis"><em>postal</em></span>, <span class="emphasis"><em>state</em></span>, <span class="emphasis"><em>capital</em></span> and
+							<span class="emphasis"><em>mostpopulouscity</em></span> to the corresponding
+						columns in the <span class="emphasis"><em>agg_result</em></span> table.</p></li><li class="step" title="Step 9"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate these
+						changes.</p></li></ol></div></div><div class="section" title="Configuring the output schema"><div class="titlepage"><div><div><h4 class="title"><a name="d0e262280"></a>Configuring the output schema</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tELTHiveOutput</strong></span> to open its
+							<span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap9.png" align="middle"></div></li><li class="step" title="Step 2"><p>If this component does not have the same schema of the preceding
+						component, a warning icon appears. In this case, click the <span class="emphasis"><strong>Sync columns</strong></span> button to retrieve the schema from
+						the preceding one and once done, the warning icon disappears. </p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Default table name</strong></span> field, enter
+						the output table you want to write data in. In this example, it is <span class="emphasis"><em>agg_result</em></span>.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Field partition</strong></span> table, click <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> to add one row. This allows you to write data in the
+						partition column of the <span class="emphasis"><em>agg_result</em></span>
+						table.</p><p>This partition column was defined the moment we created the <span class="emphasis"><em>agg_result</em></span> table using <code class="code">partitioned by
+							(type string)</code> in the Create statement presented earlier. This
+						partition column is <span class="emphasis"><em>type</em></span>, which describes
+						the type of a customer.</p></li><li class="step" title="Step 5"><p>In <span class="emphasis"><strong>Partition column</strong></span>, enter <span class="emphasis"><em>type</em></span> without any quotation marks and in <span class="emphasis"><strong>Partition value</strong></span>, enter <span class="emphasis"><em>prospective</em></span> in single quotation marks.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e262350"></a>Executing the Job </h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>F6</strong></span> to run this Job. </p></li></ul></div><p>Once done, verify <span class="emphasis"><em>agg_result</em></span> in Hive using, for
+				example, </p><pre class="programlisting">select * from agg_result;</pre><div class="mediaobject" align="center"><img src="../images/use_case-telthivemap11.png" align="middle"></div><p>This figure present only a part of the table. You can find that the selected input
+				columns are aggregated and written into the<span class="emphasis"><em>
+					agg_result</em></span> table and the partition column is filled with the value
+					<span class="emphasis"><em>prospective</em></span>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tELTHiveInput.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-elt.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tELTHiveOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tELTHiveInput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tELTHiveOutput</td></tr></table></div></body></html>

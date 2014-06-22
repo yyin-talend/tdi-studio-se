@@ -1,0 +1,246 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tVerticaBulkExec</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-databases-appliance-dw.html" title="Chapter&nbsp;8.&nbsp;Databases - appliance/datawarehouse components"><link rel="prev" href="tVectorWiseRow.html" title="tVectorWiseRow"><link rel="next" href="tVerticaClose.html" title="tVerticaClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tVerticaBulkExec</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tVectorWiseRow.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;8.&nbsp;Databases - appliance/datawarehouse components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tVerticaClose.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tVerticaBulkExec"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tVerticaBulkExec"></a>tVerticaBulkExec</h2></div></div></div><div class="mediaobject"><img src="../images/tVerticaBulkExec_icon32_white.png"></div><div class="section" title="tVerticaBulkExec Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e148705"></a>tVerticaBulkExec Properties</h3></div></div></div><p>The <span class="emphasis"><strong>tVerticaOutputBulk</strong></span> and <span class="emphasis"><strong>tVerticaBulkExec</strong></span> components are generally used together as parts of a
+			two step process. In the first step, an output file is generated. In the second step,
+			this file is used in the INSERT operation used to feed a database. These two steps are
+			fused together in the <span class="emphasis"><strong>tVerticaOutputBulkExec</strong></span> component,
+			detailed in a separate section. The advantage of using two separate components is that
+			the data can be transformed before it is loaded in the database. </p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Vertica</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Executes the Insert action on the data provided.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>As a dedicated component, <span class="emphasis"><strong>tVerticaBulkExec</strong></span> offers gains in performance while
+								carrying out the Insert operations to a Mysql database</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Open Studio
+				User Guide</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Database server IP address</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Listening port number of DB server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the database</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>On the table defined, you can perform one of the following
+								operations:</p>
+							<p>
+								<span class="emphasis"><strong>None</strong></span>: No operation is carried
+								out.</p>
+							<p>
+								<span class="emphasis"><strong>Drop and create table</strong></span>: The table is
+								removed and created again.</p>
+							<p>
+								<span class="emphasis"><strong>Create table</strong></span>: The table does not
+								exist and gets created.</p>
+							<p>
+								<span class="emphasis"><strong>Create table if not exists</strong></span>: The
+								table is created if it does not exist.</p>
+							<p>
+								<span class="emphasis"><strong>Clear table</strong></span>: The table content is
+								deleted. You have the possibility to rollback the operation.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the table to be written. Note that only one table can be
+								written at a time and that the table must exist for the insert
+								operation to succeed.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+										<span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused. Related
+								topic: see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the file to be loaded. </p>
+							<p>This file should be located on the same machine where the Studio
+								is installed or where the Job using <span class="emphasis"><strong>tVerticaBulkExec</strong></span> is deployed.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Write to ROS (Read Optimized Store)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to store the data in a physical storage
+								area, in order to optimize the reading, as the data is compressed
+								and pre-sorted.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Exit job if no row was loaded</em></span>
+							</p>
+						</td><td valign="top">
+							<p>The Job automatically stops if no row has been loaded. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Fields terminated by</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Character, string or regular expression to separate fields.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Null string</em></span>
+							</p>
+						</td><td valign="top">
+							<p>String displayed to indicate that the value is null. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is to be used along with <span class="emphasis"><strong>tVerticaOutputBulk</strong></span> component. Used together, they
+								can offer gains in performance while feeding a Vertica database.
+							</p>
+						</td></tr><tr><td valign="top">
+							<span class="emphasis"><strong>Limitation</strong></span>
+						</td><td colspan="2" valign="top">
+							<p>
+								<span>n/a</span>
+							</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e149297"></a>Related scenarios</h3></div></div></div><p>For related topics, see: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMysqlOutputBulk.html#Raa15985" title="Scenario: Inserting transformed data in MySQL database">the section called &#8220;Scenario: Inserting transformed data in MySQL database&#8221;</a>.</p></li><li class="listitem"><p><a class="xref" href="tMysqlOutputBulkExec.html#Raa97924" title="Scenario: Inserting data in MySQL database">the section called &#8220;Scenario: Inserting data in MySQL database&#8221;</a>. </p></li><li class="listitem"><p><a class="xref" href="tOracleBulkExec.html#Raa26152" title="Scenario: Truncating and inserting file data into Oracle DB">the section called &#8220;Scenario: Truncating and inserting file data into Oracle DB&#8221;</a>. </p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tVectorWiseRow.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-appliance-dw.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tVerticaClose.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tVectorWiseRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tVerticaClose</td></tr></table></div></body></html>

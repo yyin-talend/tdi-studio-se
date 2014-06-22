@@ -1,0 +1,166 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUniservRTMailSearch</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-dataquality.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tUniservRTMailOutput.html" title="tUniservRTMailOutput"><link rel="next" href="tUniservRTPost.html" title="tUniservRTPost"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tUniservRTMailSearch</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tUniservRTMailOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;6.&nbsp;Composants Data Quality</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tUniservRTPost.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tUniservRTMailSearch"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservRTMailSearch"></a>tUniservRTMailSearch</h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservrtmailsearch_icon.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span>
+                        du Studio uniquement si vous avez souscrit &agrave; l'&eacute;dition correspondante de
+                                <span class="emphasis"><em>Data Quality Service Hub
+                        Studio</em></span>.</p></div><div class="section" title="Propri&eacute;t&eacute;s du tUniservRTMailSearch"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e59994"></a>Propri&eacute;t&eacute;s du tUniservRTMailSearch</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Famille de
+                                                  composant</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Data Quality</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Fonction</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le composant <span class="emphasis"><strong>tUniservRTMailSearch</strong></span> recherche des
+                                                  donn&eacute;es similaires dans l'enregistrement d'entr&eacute;e
+                                                  donn&eacute;.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Objectif</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le <span class="emphasis"><strong>tUniservRTMailSearch</strong></span> cherche les
+                                                  valeurs dupliqu&eacute;es et ajoute de nouvelles donn&eacute;es
+                                                  &agrave; chaque enregistrement.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> et
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Un sch&eacute;ma est une description de lignes, il
+                                                  d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+                                                  pass&eacute;s au composant suivant. Le sch&eacute;ma est soit
+                                                  local (Built-in) soit distant dans le <span class="emphasis"><strong>Repository</strong></span>. </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Host name</em></span></p>
+                                                </td><td valign="top">Nom de l'h&ocirc;te du serveur, entre
+                                                  guillemets doubles.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Port</em></span></p>
+                                                </td><td valign="top">Num&eacute;ro du port d'&eacute;coute du
+                                                  serveur, entre guillemets doubles.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Service</em></span></p>
+                                                </td><td>
+                                                  <p>Le nom du service est <code class="code">"mail"</code>
+                                                  par d&eacute;faut. Saisissez une nouveau nom si
+                                                  n&eacute;cessaire (si le suffixe du service change, par
+                                                  exemple), entre guillemets doubles. </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Maximum of displayed duplicates (0
+                                                  = All)</em></span></p>
+                                                </td><td>
+                                                  <p>Saisissez le nombre maximum de doublons &agrave;
+                                                  afficher dans la vue <span class="emphasis"><strong>Run</strong></span>. La valeur par d&eacute;faut est 0, ce
+                                                  qui signifie que tous les doublons sont affich&eacute;s.
+                                                  Mille doublons peuvent &ecirc;tre affich&eacute;s au maximum.
+                                                  </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Use rejects</em></span></p>
+                                                </td><td>
+                                                  <p>Cochez cette case pour param&eacute;trer les
+                                                  options d&eacute;finissant les enregistrements de
+                                                  doublons ajouter au flux de rejet. D&eacute;finissez
+                                                  :</p>
+                                                  <p><span class="emphasis"><strong>Element</strong></span> :
+                                                  Compte des doublons. </p>
+                                                  <p><span class="emphasis"><strong>Operator</strong></span> :
+                                                  &lt;, &lt;=, =, &gt;=, &gt;. </p>
+                                                  <p><span class="emphasis"><strong>Value</strong></span> :
+                                                  Saisissez la valeur manuellement..</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Uniserv Parameters</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Pour plus d'informations, veuillez consulter
+                                                  le manuel utilisateur Uniserv <span class="emphasis"><em>mailRetrieval</em></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td>Cochez cette case pour collecter les donn&eacute;es
+                                                  de log au niveau du Job et de chaque
+                                                  composant.</td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le <span class="emphasis"><strong>tUniservRTMailSearch</strong></span> requiert un
+                                                  composant d'entr&eacute;e et un ou plusieurs composant(s)
+                                                  de sortie.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Pour utiliser le composant <span class="emphasis"><strong>tUniservRTMailSearch</strong></span>, le
+                                                  logiciel Uniserv <span class="emphasis"><em>mailRetrieval</em></span> doit &ecirc;tre
+                                                  install&eacute;.</p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Avant d'utiliser le <span class="emphasis"><strong>tUniservRTMailSearch</strong></span>, un pool d'index
+                                                  doit &ecirc;tre cr&eacute;&eacute;. Vous pouvez cr&eacute;er un pool d'index
+                                                  gr&acirc;ce au composant <span class="emphasis"><strong>tUniservRTMailBulk</strong></span>.</p></div>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Ajouter des contacts au pool d'index de mailRetrieval"><div class="titlepage"><div><div><h3 class="title"><a name="add_contact_to_index_pool"></a>Sc&eacute;nario : Ajouter des contacts au pool d'index de mailRetrieval</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job qui ajoute des contacts &agrave; un pool d'index de
+                                <span class="emphasis"><em>mailRetrieval</em></span>. Vous devez au
+                        pr&eacute;alable vous assurer que ces contacts existent d&eacute;j&agrave;.</p><p>Le fichier d'entr&eacute;e de ce sc&eacute;nario est sauvegard&eacute; dans le <span class="emphasis"><strong>Repository</strong></span>, ce qui rend disponible le sch&eacute;ma
+                        des m&eacute;tadonn&eacute;es.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Les donn&eacute;es de la source d'entr&eacute;e doivent provenir du m&ecirc;me
+                                pays.</p></div><div class="procedure" title="Proc&eacute;dure&nbsp;6.1.&nbsp;D&eacute;poser et relier les composants"><a name="d43281e60265"></a><p class="title"><b>Proc&eacute;dure&nbsp;6.1.&nbsp;D&eacute;poser et relier les composants</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="emphasis"><strong>Repository</strong></span>,
+                                        d&eacute;veloppez le n&#339;ud <span class="emphasis"><strong>Metadata</strong></span>
+                                        et le r&eacute;pertoire dans lequel le fichier est sauvegard&eacute;.
+                                        Glissez ce fichier dans l'espace de mod&eacute;lisation
+                                        graphique.</p><p>La bo&icirc;te de dialogue suivante appara&icirc;t :</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez <span class="emphasis"><strong>tFileInputDelimited</strong></span> et cliquez sur
+                                                <span class="emphasis"><strong>OK</strong></span> pour fermer la
+                                        bo&icirc;te de dialogue.</p><p>Le composant s'affiche dans l'espace de mod&eacute;lisation
+                                        graphique. </p></li><li class="step" title="&Eacute;tape 3"><p>Glissez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation
+                                        graphique : deux composants <span class="emphasis"><strong>tMap</strong></span>, un <span class="emphasis"><strong>tUniservRTMailSearch</strong></span> et un <span class="emphasis"><strong>tUniservRTMailOutput</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Connectez les composants &agrave; l'aide de liens <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_2.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Acceptez le sch&eacute;ma du <span class="emphasis"><strong>tUniservRTMailSearch</strong></span> en cliquant sur
+                                                <span class="emphasis"><strong>Yes</strong></span> dans la fen&ecirc;tre
+                                        de validation.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_3.png"></div></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;6.2.&nbsp;Configurer les composants"><a name="d43281e60332"></a><p class="title"><b>Proc&eacute;dure&nbsp;6.2.&nbsp;Configurer les composants</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tMap_1</strong></span> pour ouvrir la fen&ecirc;tre de mapping
+                                        de son sch&eacute;ma. Sur la gauche se trouve la structure du
+                                        fichier d'entr&eacute;e et sur la droite le sch&eacute;ma du <span class="emphasis"><strong>tUniservRTMailSearch</strong></span>. En bas
+                                        se trouve le <span class="emphasis"><strong>Schema Editor</strong></span>,
+                                        o&ugrave; vous pouvez trouver et &eacute;diter les attributs de chaque
+                                        colonne.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_3.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Mappez les colonnes du fichier d'entr&eacute;e &agrave; leurs colonnes
+                                        respectives dans le <span class="emphasis"><strong>tUniservRTMailSearch</strong></span>. Pour ce faire,
+                                        s&eacute;lectionnez une colonne de la source d'entr&eacute;e et glissez-la
+                                        sur la colonne appropri&eacute;e du c&ocirc;t&eacute; droit. </p></li><li class="step" title="&Eacute;tape 3"><p>Quand une liste d'entr&eacute;e contient un ID de r&eacute;f&eacute;rence, il est
+                                        conseill&eacute; de l'accepter. Pour ce faire, cr&eacute;ez une nouvelle
+                                        colonne appel&eacute;e <span class="emphasis"><em>IN_DBREF</em></span>
+                                        depuis le <span class="emphasis"><strong>Schema Editor</strong></span> et
+                                        connectez-la &agrave; votre ID de r&eacute;f&eacute;rence.</p><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la
+                                        fen&ecirc;tre.</p></li><li class="step" title="&Eacute;tape 4"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tUniservRTMailSearch</strong></span> pour ouvrir sa vue
+                                                <span class="emphasis"><strong>Basic
+                                        settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_4.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Dans la case <span class="emphasis"><strong>Maximum of displayed
+                                                "duplicates"</strong></span>, saisissez <span class="emphasis"><em>0</em></span> pour afficher tous les
+                                        doublons.</p><p>S&eacute;lectionnez <span class="emphasis"><strong>Define rejects</strong></span>
+                                        pour ouvrir la fen&ecirc;tre de d&eacute;finition des rejets.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span>
+                                        pour ins&eacute;rer une ligne dans la fen&ecirc;tre. S&eacute;lectionnez
+                                                <span class="emphasis"><em>Duplicate count</em></span>
+                                        dans la colonne <span class="emphasis"><strong>Elements</strong></span>,
+                                                <span class="emphasis"><em>&gt;</em></span> dans la colonne
+                                                <span class="emphasis"><strong>Operator</strong></span> et
+                                                <span class="emphasis"><em>0</em></span> dans la colonne
+                                                <span class="emphasis"><strong>Value</strong></span>. De cette
+                                        fa&ccedil;on, tous les contacts existants sont &eacute;cart&eacute;s et seuls les
+                                        nouveaux contacts sont ajout&eacute;s au pool d'index.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur l'onglet <span class="emphasis"><strong>Advanced
+                                                Settings</strong></span> et v&eacute;rifiez les param&egrave;tres. Des
+                                        param&egrave;tres par d&eacute;faut ont &eacute;t&eacute; d&eacute;finis. R&eacute;f&eacute;rez-vous au
+                                        manuel de <span class="emphasis"><em>mailRetrieval</em></span>
+                                        pour plus de pr&eacute;cisions.</p></li><li class="step" title="&Eacute;tape 8"><p>Double-cliquez sur le second composant <span class="emphasis"><strong>tMap</strong></span> pour ouvrir la fen&ecirc;tre de mapping
+                                        de son sch&eacute;ma. Sur la gauche se trouve le sch&eacute;ma du
+                                                <span class="emphasis"><strong>tUniservRTMailSearch</strong></span> et sur la droite
+                                        celui du <span class="emphasis"><strong>tUniservRTMailOutput</strong></span>.</p></li><li class="step" title="&Eacute;tape 9"><p>Cliquez sur <span class="emphasis"><strong>Auto map!</strong></span> pour
+                                        mapper les champs automatiquement.</p></li><li class="step" title="&Eacute;tape 10"><p>Le seul champ devant &ecirc;tre mapp&eacute; manuellement est l'ID de
+                                        r&eacute;f&eacute;rence. Pour ce faire, glissez <span class="emphasis"><em>OUT-DBREF</em></span> vers le champ <span class="emphasis"><em>IN_DBREF</em></span> du c&ocirc;t&eacute;
+                                        droit.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_5.png"></div><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la
+                                        bo&icirc;te de dialogue.</p></li><li class="step" title="&Eacute;tape 11"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tUniservRTMailOutput</strong></span> pour afficher sa
+                                        vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_6.png"></div></li><li class="step" title="&Eacute;tape 12"><p>Dans la liste <span class="emphasis"><strong>Action on Data</strong></span>,
+                                        s&eacute;lectionnez <span class="emphasis"><em>Insert or
+                                                update</em></span> pour que tous les nouveaux
+                                        contacts soient ajout&eacute;s au pool d'index.</p></li></ol></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tUniservRTMailOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tUniservRTPost.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tUniservRTMailOutput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tUniservRTPost</td></tr></table></div></body></html>

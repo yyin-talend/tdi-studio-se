@@ -1,0 +1,182 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputMSDelimited</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-file.html" title="Chapitre&nbsp;13.&nbsp;Composants File"><link rel="prev" href="tFileInputMail.html" title="tFileInputMail"><link rel="next" href="tFileInputMSPositional.html" title="tFileInputMSPositional"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileInputMSDelimited</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileInputMail.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;13.&nbsp;Composants File</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileInputMSPositional.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFileInputMSDelimited"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputMSDelimited"></a>tFileInputMSDelimited</h2></div></div></div><div class="mediaobject"><img src="../images/tFileInputMSDelimited_icon32.png"></div><a name="Xaa3475734"></a><div class="section" title="Propri&eacute;t&eacute;s du tFileInputMSDelimited"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e215833"></a>Propri&eacute;t&eacute;s du tFileInputMSDelimited</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tFileInputMSDelimited</strong></span> permet de lire des fichiers
+                                d&eacute;limit&eacute;s multi-structure complexes. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tFileInputMSDelimited</strong></span> ouvre le
+                                fichier multi&nbsp;structure complexe, en lit la structure (sch&eacute;mas) puis
+                                utilise des liens de type <span class="emphasis"><strong>Row</strong></span> pour
+                                envoyer les champs, tels qu&#8217;ils ont &eacute;t&eacute; d&eacute;finis dans les diff&eacute;rents
+                                sch&eacute;mas, vers les composants suivants dans le Job. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Multi Schema Editor</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>L&#8217;&eacute;diteur de sch&eacute;mas <span class="emphasis"><strong>[Multi Schema
+                                    Editor]</strong></span> permet de construire et de configurer le flux
+                                de donn&eacute;es dans un fichier d&eacute;limit&eacute; multi-structure pour pouvoir
+                                associer un sch&eacute;ma pour chaque sortie. </p>
+                            <p>Pour plus d&#8217;informations, consultez&nbsp;<a class="xref" href="tFileInputMSDelimited.html#Raa13068" title="L&#8217;&eacute;diteur de sch&eacute;mas Multi Schema Editor">la section intitul&eacute;e &laquo;&nbsp;L&#8217;&eacute;diteur de sch&eacute;mas Multi Schema Editor&nbsp;&raquo;</a>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Output</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Les sch&eacute;mas d&eacute;finis dans l&#8217;&eacute;diteur de sch&eacute;mas <span class="emphasis"><strong>[Multi Schema Editor]</strong></span>, ainsi que les
+                                types d&#8217;enregistrements correspondants, s&#8217;affichent automatiquement
+                                dans le tableau <span class="emphasis"><strong>Output</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Die on error</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+                                D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+                                erreurs, et ignorer les lignes en erreur.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Trim all columns</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+                                champ dans toutes les colonnes.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Validate date</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour v&eacute;rifier strictement le format de la date
+                                par rapport au sch&eacute;ma d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Advanced separator (for numbers)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette option pour modifier les s&eacute;parateurs utilis&eacute;s pour
+                                les nombres&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Thousands separator</strong></span>&nbsp;: d&eacute;finissez
+                                le s&eacute;parateur utilis&eacute; pour les milliers.</p>
+                            <p><span class="emphasis"><strong>Decimal separator</strong></span>&nbsp;: d&eacute;finissez le
+                                s&eacute;parateur utilis&eacute; pour les d&eacute;cimaux. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation </strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Utilisez ce composant pour lire des fichiers d&eacute;limit&eacute;s
+                                multi&nbsp;structure et d&eacute;finissez un s&eacute;parateur de champs pour
+                                diff&eacute;rencier les champs contenus dans ces fichiers. </p>
+                        </td></tr></tbody></table></div><div class="section" title="L&#8217;&eacute;diteur de sch&eacute;mas Multi Schema Editor"><div class="titlepage"><div><div><h4 class="title"><a name="Raa13068"></a>L&#8217;&eacute;diteur de sch&eacute;mas Multi Schema Editor</h4></div></div></div><p>L&#8217;&eacute;diteur <span class="emphasis"><strong>[Multi Schema Editor]</strong></span> vous permet de
+                d&eacute;finir&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>le chemin d&#8217;acc&egrave;s au fichier source,</p></li><li class="listitem"><p>les propri&eacute;t&eacute;s du fichier source,</p></li><li class="listitem"><p>la structure des donn&eacute;es pour chacun des sch&eacute;mas de sortie. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous d&eacute;finissez la structure de chaque sch&eacute;ma de sortie dans le
+                        <span class="emphasis"><strong>[Multi Schema Editor]</strong></span>, le nom des colonnes
+                    des diff&eacute;rentes structures s&#8217;affichent automatiquement dans la liste du sch&eacute;ma
+                    d&#8217;entr&eacute;e des composants qui suivent le <span class="emphasis"><strong>tFileInputMSDelimited</strong></span>. Vous pouvez cependant d&eacute;finir la
+                    structure des donn&eacute;es directement dans la vue <span class="emphasis"><strong>Basic
+                        settings</strong></span> de chacun de ces composants. </p></div><p>Le <span class="emphasis"><strong>[Multi Schema Editor]</strong></span> permet &eacute;galement de
+                s&eacute;lectionner un sch&eacute;ma qui servira de source (cl&eacute; primaire) aux donn&eacute;es entrantes,
+                afin d&#8217;en assurer l&#8217;unicit&eacute;. L&#8217;&eacute;diteur utilise ce proc&eacute;d&eacute; de mapping pour associer
+                tous les sch&eacute;mas trait&eacute;s dans le fichier d&eacute;limit&eacute; au sch&eacute;ma source de ce m&ecirc;me
+                fichier. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>L&#8217;&eacute;diteur s&#8217;ouvre en affichant par d&eacute;faut la premi&egrave;re colonne. Cette colonne
+                    contient g&eacute;n&eacute;ralement l&#8217;indicateur de type des enregistrements. Une fois ouvert,
+                    vous pouvez cependant d&eacute;finir comme cl&eacute; primaire n&#8217;importe quelle colonne du
+                    sch&eacute;ma en cochant la case associ&eacute;e.</p></div><p>L&#8217;image ci-dessous donne un aper&ccedil;u de l&#8217;&eacute;diteur de sch&eacute;mas <span class="emphasis"><strong>[Multi Schema Editor]</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted1.png"></div><p>Pour des informations plus d&eacute;taill&eacute;es sur le <span class="emphasis"><strong>Multi Schema
+                    Editor</strong></span>, consultez <a class="xref" href="tFileInputMSDelimited.html#Raa65005" title="Sc&eacute;nario&nbsp;: Lecture d&#8217;un fichier d&eacute;limit&eacute; multi-structure">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Lecture d&#8217;un fichier d&eacute;limit&eacute; multi-structure&nbsp;&raquo;</a>.</p></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Lecture d&#8217;un fichier d&eacute;limit&eacute; multi-structure"><div class="titlepage"><div><div><h3 class="title"><a name="Raa65005"></a>Sc&eacute;nario&nbsp;: Lecture d&#8217;un fichier d&eacute;limit&eacute; multi-structure</h3></div></div></div><p>Le pr&eacute;sent sc&eacute;nario sert &agrave; cr&eacute;er un Job en Java permettant de lire trois sch&eacute;mas dans
+            un m&ecirc;me fichier d&eacute;limit&eacute; et d&#8217;en afficher la structure sur la console de la vue
+                <span class="emphasis"><strong>Run</strong></span>.</p><p>Le fichier d&eacute;limit&eacute; trait&eacute; dans ce sc&eacute;nario se pr&eacute;sente comme suit&nbsp;:</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted2.png"></div><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e216135"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>A partir de la <span class="emphasis"><strong>Palette</strong></span>, d&eacute;posez les
+                        composants suivants dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: un composant
+                            <span class="emphasis"><strong>tFileInputMSDelimited</strong></span> et trois
+                            <span class="emphasis"><strong>tLogRow</strong></span>. </p></li><li class="step" title="&Eacute;tape 2"><p>Dans l'espace de mod&eacute;lisation graphique, faites un clic droit sur le
+                        composant <span class="emphasis"><strong>tFileInputMSDelimited</strong></span> et
+                        connectez-le aux trois composants <span class="emphasis"><strong>tLogRow</strong></span>
+                        (nomm&eacute;s ici <span class="emphasis"><strong>tLogRow1</strong></span>, <span class="emphasis"><strong>tLogRow2</strong></span> et <span class="emphasis"><strong>tLogRow3</strong></span> &agrave;
+                        l'aide de liens <span class="emphasis"><strong>row</strong></span> nomm&eacute;s respectivement
+                            <span class="emphasis"><strong>row_A_1</strong></span>, <span class="emphasis"><strong>row_B_1</strong></span> et <span class="emphasis"><strong>row_C_1</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted5.png"></div></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e216184"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tFileInputMSDelimited</strong></span> pour ouvrir l&#8217;&eacute;diteur <span class="emphasis"><strong>Multi Schema Editor</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>Browse...</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="emphasis"><strong>File name</strong></span> pour indiquer o&ugrave; se trouve
+                        le fichier d&eacute;limit&eacute; multi-sch&eacute;ma que vous voulez traiter.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la zone <span class="emphasis"><strong>File Settings</strong></span>,
+                        renseignez&nbsp;:</p><p>-le type d&#8217;encodage de votre fichier source, &agrave; partir de la liste
+                        d&eacute;roulante. Cette option permet de garantir une certaine coh&eacute;rence entre
+                        tous les fichiers d&#8217;entr&eacute;e et de sortie. </p><p>-les s&eacute;parateurs de champ et de ligne utilis&eacute;s dans le fichier source. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Cochez la case <span class="emphasis"><strong>Use Multiple Separator</strong></span>
+                            et configurez les champs qui suivent si diff&eacute;rents s&eacute;parateurs de champs
+                            sont utilis&eacute;s pour s&eacute;parer les sch&eacute;mas du fichier source.</p></div><p>Un aper&ccedil;u des donn&eacute;es du fichier source appara&icirc;t automatiquement dans le
+                        panneau d&#8217;affichage <span class="emphasis"><strong>Preview</strong></span>. </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted1.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>La colonne <span class="emphasis"><strong>Column 0</strong></span>, qui contient
+                            g&eacute;n&eacute;ralement l&#8217;indicateur de type des enregistrements est s&eacute;lectionn&eacute;e
+                            par d&eacute;faut. Vous pouvez cependant d&eacute;finir n&#8217;importe quelle autre colonne
+                            comme cl&eacute; primaire en cochant sa case associ&eacute;e.</p></div></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur le bouton <span class="emphasis"><strong>Fetch Codes</strong></span> &agrave;
+                        droite du panneau <span class="emphasis"><strong>Preview</strong></span> pour cataloguer
+                        les types de sch&eacute;mas et les enregistrements du fichier source. Dans ce
+                        sc&eacute;nario, le fichier source comporte trois types de sch&eacute;mas (<span class="emphasis"><em>A, B,
+                            C</em></span>).</p><p>A partir du panneau d&#8217;affichage <span class="emphasis"><strong>Fetch
+                            Codes</strong></span>, cliquez sur chacun des trois types pour que la
+                        structure de leurs donn&eacute;es s&#8217;affiche dans le panneau <span class="emphasis"><strong>Preview</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez dans les cellules de la ligne <span class="emphasis"><em>Name</em></span> et
+                        choisissez le nom des colonnes de chacun des sch&eacute;mas s&eacute;lectionn&eacute;s.</p><p>Dans ce sc&eacute;nario, les colonnes se lisent comme suit&nbsp;:</p><p>-Sch&eacute;ma <span class="emphasis"><em>A</em></span>&nbsp;: <span class="emphasis"><em>Type, DiscName, Author,
+                            Date</em></span>,</p><p>-Sch&eacute;ma <span class="emphasis"><em>B</em></span>&nbsp;: <span class="emphasis"><em>Type,
+                        SongName</em></span>,</p><p>-Sch&eacute;ma <span class="emphasis"><em>C&nbsp;</em></span>: <span class="emphasis"><em>Type,
+                        LibraryName</em></span>.</p><p>Vous devez &agrave; pr&eacute;sent d&eacute;finir, &agrave; partir des donn&eacute;es d&#8217;entr&eacute;e, la cl&eacute;
+                        primaire qui permettra de conserver leur unicit&eacute; (dans ce sc&eacute;nario, il
+                        s&#8217;agit de <span class="emphasis"><em>DiscName</em></span>). Il vous faut pour cela&nbsp;:</p></li><li class="step" title="&Eacute;tape 6"><p>S&eacute;lectionner, &agrave; partir du panneau d&#8217;affichage <span class="emphasis"><strong>Fetch
+                            Codes</strong></span>, le sch&eacute;ma contenant la colonne que vous voulez d&eacute;finir
+                        comme cl&eacute; primaire (dans ce sc&eacute;nario, il s&#8217;agit du sch&eacute;ma
+                            <span class="emphasis"><em>A</em></span>) pour en afficher la structure.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquer dans la cellule <span class="emphasis"><em>Key</em></span> correspondant &agrave; la
+                        colonne <span class="emphasis"><em>DiscName</em></span> et cocher la case qui s&#8217;affiche alors. </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted4.png"></div></li><li class="step" title="&Eacute;tape 8"><p>Cliquer n&#8217;importe o&ugrave; dans l&#8217;&eacute;diteur pour que la mention
+                            <span class="emphasis"><em>false</em></span>, dans la case <span class="emphasis"><em>Key</em></span>,
+                        devienne <span class="emphasis"><em>true</em></span>.</p><p>Vous devez maintenant indiquer le sch&eacute;ma &#8220;p&egrave;re&#8221; auquel vous voulez
+                        rattacher les autres sch&eacute;mas &#8220;fils&#8221; (dans ce sc&eacute;nario, il s&#8217;agit de
+                            <span class="emphasis"><em>DiscName</em></span>). Il vous faut pour cela&nbsp;: </p></li><li class="step" title="&Eacute;tape 9"><p>S&eacute;lectionner le sch&eacute;ma <span class="emphasis"><em>B</em></span>, &agrave; partir du panneau
+                        d&#8217;affichage <span class="emphasis"><strong>Fetch Codes</strong></span>, puis cliquer sur
+                        le bouton fl&egrave;che droite pour le d&eacute;placer vers la droite.</p><p>Faire de m&ecirc;me pour le sch&eacute;ma <span class="emphasis"><em>C</em></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted3.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Le champ <span class="emphasis"><strong>Cardinality</strong></span> n&#8217;est pas
+                            obligatoire. Il vous permet de d&eacute;terminer le nombre (ou l&#8217;intervalle) de
+                            champs des sch&eacute;mas &#8220;fils&#8221; rattach&eacute;s au sch&eacute;ma &#8220;p&egrave;re&#8221;. Cependant, si vous
+                            entrez un nombre ou un intervalle inexact et essayez d&#8217;ex&eacute;cuter le Job,
+                            un message d&#8217;erreur appara&icirc;tra. </p></div></li><li class="step" title="&Eacute;tape 10"><p>Dans le <span class="emphasis"><strong>[Multi Schema Editor]</strong></span>, cliquez
+                        sur le bouton <span class="emphasis"><strong>OK</strong></span> pour valider tous les
+                        changements que vous venez d&#8217;effectuer et fermer l&#8217;&eacute;diteur de sch&eacute;mas. </p><p>Les trois sch&eacute;mas d&eacute;finis, ainsi que les types d&#8217;enregistrements
+                        correspondants, s&#8217;affichent automatiquement dans la vue <span class="emphasis"><strong>Basic settings</strong></span> du composant <span class="emphasis"><strong>tFileInputMSDelimited</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted6.png"></div><p>Les trois sch&eacute;mas que vous avez d&eacute;finis dans l&#8217;&eacute;diteur <span class="emphasis"><strong>[Multi Schema Editor]</strong></span> sont automatiquement
+                        communiqu&eacute;s aux trois composants <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 11"><p>Si n&eacute;cessaire, cliquez sur le bouton <span class="emphasis"><strong>Edit
+                            schema</strong></span> dans la vue <span class="emphasis"><strong>Basic
+                            settings</strong></span> de chacun des composants <span class="emphasis"><strong>tLogRow</strong></span> pour avoir un aper&ccedil;u des structures de donn&eacute;es en
+                        entr&eacute;e et en sortie, telles que vous les avez d&eacute;finies dans le <span class="emphasis"><strong>Multi Schema Editor</strong></span>, ou pour les modifier. </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted7.png"></div></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e216403"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur <span class="emphasis"><strong>Ctrl+S</strong></span> pour sauvegarder votre
+                        Job.</p></li><li class="step" title="&Eacute;tape 2"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> ou cliquez sur le bouton
+                            <span class="emphasis"><strong>Run</strong></span> de l'onglet <span class="emphasis"><strong>Run</strong></span> pour l&#8217;ex&eacute;cuter.</p><p>Le fichier d&eacute;limit&eacute; multi-sch&eacute;ma est lu ligne par ligne et les champs
+                        extraits sont affich&eacute;s dans la console <span class="emphasis"><strong>Run
+                            Job</strong></span> comme d&eacute;fini dans le <span class="emphasis"><strong>[Multi Schema
+                            Editor]</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputMSDelimeted8.png"></div></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileInputMail.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileInputMSPositional.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFileInputMail&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tFileInputMSPositional</td></tr></table></div></body></html>

@@ -1,0 +1,53 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tVerticaRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-databases-appliance-dw.html" title="Chapitre&nbsp;8.&nbsp;Databases - Composants d'appliance et de datawarehouse"><link rel="prev" href="tVerticaOutputBulkExec.html" title="tVerticaOutputBulkExec"><link rel="next" href="tVerticaRow.html" title="tVerticaRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tVerticaRollback</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tVerticaOutputBulkExec.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;8.&nbsp;Databases - Composants d'appliance et de datawarehouse</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tVerticaRow.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tVerticaRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tVerticaRollback"></a>tVerticaRollback</h2></div></div></div><div class="mediaobject"><img src="../images/tVerticaRollback_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tVerticaRollback"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e149343"></a>Propri&eacute;t&eacute;s du tVerticaRollback</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants
+				<span class="emphasis"><strong>tVerticaCommit</strong></span> et <span class="emphasis"><strong>tVerticaConnection</strong></span>. Ils sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble lors d&#8217;une
+			transaction. </p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+									composant</strong></span></p>
+						</td><td valign="top"><p>Databases/Vertica</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Le <span class="emphasis"><strong>tVerticaRollback</strong></span> annule la transaction dans une base
+								de donn&eacute;es connect&eacute;e. </p>
+						</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Ce composant &eacute;vite le
+								commit de transaction involontaire. </p>
+						</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Component list</em></span></p>
+						</td><td valign="top"><p>S&eacute;lectionnez le composant <span class="emphasis"><strong>tVerticaConnection</strong></span> dans la liste s&#8217;il y a plus d&#8217;une
+								connexion dans votre Job. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Close Connection</em></span></p>
+						</td><td valign="top"><p>D&eacute;cochez cette case pour continuer &agrave; utiliser la
+								connexion une fois que le composant a ex&eacute;cut&eacute; sa t&acirc;che. </p>
+						</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+								Statistics</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+								log au niveau du composant.</p>
+						</td></tr><tr><td valign="top">
+							<p><span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p lang="fr">Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ligne &agrave; la table.
+		Dans le champ <span class="emphasis"><strong>Code</strong></span>, saisissez une variable de contexte afin
+		de s&eacute;lectionner dynamiquement votre connexion &agrave; la base de donn&eacute;es parmi celles pr&eacute;vues dans
+		votre Job. Cette fonctionnalit&eacute; est utile si vous devez acc&eacute;der &agrave; plusieurs tables de bases
+		de donn&eacute;es ayant la m&ecirc;me structure mais se trouvant dans diff&eacute;rentes bases de donn&eacute;es, en
+		particulier lorsque vous travaillez dans un environnement dans lequel vous ne pouvez pas
+		changer les param&egrave;tres de votre Job, par exemple lorsque votre Job doit &ecirc;tre d&eacute;ploy&eacute; et
+		ex&eacute;cut&eacute; dans un Studio <span class="emphasis"><strong>Talend</strong></span> ind&eacute;pendant.</p>
+							<p lang="fr">La table <span class="emphasis"><strong>Dynamic settings</strong></span> n'est disponible que si la case
+			<span class="emphasis"><strong>Use an existing connection</strong></span> est coch&eacute;e dans la vue
+			<span class="emphasis"><strong>Basic settings</strong></span>. Lorsqu'un param&egrave;tre dynamique est
+		configur&eacute;, la liste <span class="emphasis"><strong>Component List</strong></span> devient inaccessible
+		dans la vue <span class="emphasis"><strong>Basic settings</strong></span>. </p>
+							<p lang="fr">Pour plus d'informations concernant les <span class="emphasis"><strong>Dynamic settings</strong></span>
+		et les variables de contexte, consultez le <span class="emphasis"><em>Guide utilisateur Talend Open Studio</em></span>.</p>
+						</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; avec d&#8217;autres composants Vertica, notamment les
+								composants <span class="emphasis"><strong>tVerticaConnection</strong></span> et
+									<span class="emphasis"><strong>tVerticaCommit</strong></span>. </p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e149506"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au composant <span class="emphasis"><strong>tVerticaRollback</strong></span>,
+			consultez <a class="xref" href="tMysqlRollback.html#Raa29494" title="Sc&eacute;nario&nbsp;: Annuler l&#8217;insertion de donn&eacute;es dans des tables m&egrave;re/fille">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Annuler l&#8217;insertion de donn&eacute;es dans des tables m&egrave;re/fille&nbsp;&raquo;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tVerticaOutputBulkExec.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-appliance-dw.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tVerticaRow.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tVerticaOutputBulkExec&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tVerticaRow</td></tr></table></div></body></html>

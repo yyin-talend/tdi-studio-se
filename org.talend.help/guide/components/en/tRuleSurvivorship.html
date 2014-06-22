@@ -1,0 +1,537 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRuleSurvivorship</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tReplaceList.html" title="tReplaceList"><link rel="next" href="tSchemaComplianceCheck.html" title="tSchemaComplianceCheck"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tRuleSurvivorship</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tReplaceList.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSchemaComplianceCheck.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tRuleSurvivorship"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRuleSurvivorship"></a>tRuleSurvivorship</h2></div></div></div><div class="mediaobject"><img src="../images/trulesurvivorship_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of
+			the studio on the condition that you have subscribed to any <span class="emphasis"><em>Talend Platform</em></span> product.</p></div><div class="section" title="tRuleSurvivorship Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e109651"></a>tRuleSurvivorship Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tRuleSurvivorship</strong></span> receives
+								records where duplicates, or possible duplicates, are already
+								estimated and grouped together. Based on user-defined business
+								rules, it creates one single representation for each duplicates
+								group using the best-of-breed data. This representation is called a
+								"survivor".</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tRuleSurvivorship</strong></span> creates the
+								single representation of an entity according to business rules. It
+								helps to create a master copy of data for MDM. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository.</p>
+							<p>This component provides two read-only columns:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>SURVIVOR</strong></span>: this column
+											is of type <span class="emphasis"><strong>Boolean</strong></span>. It
+											indicates whether a record is the survivor (true) or not
+											(false). There will be only one survivor for each group
+											. </p></li><li class="listitem"><p><span class="emphasis"><strong>CONFLICT</strong></span>: when more
+											than one record meet a given business rule, this column
+											presents them.</p></li></ul></div><p>
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will be created and stored
+								locally for this component only. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already exists and is stored in
+								the Repository, hence can be reused in various projects and job
+								designs. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Group identifier</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the column whose contents indicate the required group
+								identifiers from the input schema.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Group size</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the column whose contents indicates the required group size
+								from the input schema.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Rule package name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the name of the rule package you are creating with this
+								component.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Generate rules and survivorship flow</em></span>
+						</td><td valign="top">
+							<p>Once you have defined all of the rules of a rule package or
+								modified some of them with this component, click this <span class="emphasis"><strong>Go</strong></span> button to generate this rule package
+								into the <span class="emphasis"><strong>Survivorship Rules</strong></span> node of
+									<span class="emphasis"><strong>Rules Management</strong></span> under
+									<span class="emphasis"><strong>Metadata</strong></span> in the <span class="emphasis"><strong>Repository</strong></span> of your Studio. </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This step is necessary to validate these changes and take them
+									into account at runtime. If the rule package of the same name
+									exists already in the <span class="emphasis"><strong>Repository</strong></span>, these changes will overwrite it once
+									validated, otherwise the <span class="emphasis"><strong>Repository</strong></span> one takes the priority during
+									execution.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Rule table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Complete this table to create a complete survivor validation flow.
+								Basically, each given rule is defined as an execution step, so in
+								the top-down order within this table, these rules form a sequence
+								and thus a flow takes shape. The columns of this table are:</p>
+							<p><span class="emphasis"><strong>Order</strong></span>: From the list, select the
+								execution order of the rules you are creating so as to define a
+								survivor validation flow. The types of order may be:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>Sequential</strong></span>: a
+												<span class="emphasis"><strong>Sequential</strong></span> rule is
+											an execution step of the survivor validation flow. For
+											example, the first rule on the top of this <span class="emphasis"><strong>Rule table</strong></span> will be the first
+											step and from this rule down, the second <span class="emphasis"><strong>Sequential</strong></span> rule will be the
+											second step.</p><p>The first rule on the top must be a <span class="emphasis"><strong>Sequential</strong></span> rule.</p></li><li class="listitem"><p><span class="emphasis"><strong>Multi-condition</strong></span>: a
+												<span class="emphasis"><strong>Multi-condition</strong></span>
+											rule is an additional rule to a given execution step. It
+											is always added to the last <span class="emphasis"><strong>Sequential</strong></span> rule above it in this table
+											and then at this step, both of these two rules become
+											necessary to respect. For example, having defined the
+											first <span class="emphasis"><strong>Sequential</strong></span> rule,
+											you define a <span class="emphasis"><strong>Multi-condition</strong></span> rule below; then both of
+											them will become the rules of the first step.</p></li><li class="listitem"><p><span class="emphasis"><strong>Multi-target</strong></span>: as each
+											step, once executed, validates a record field value from
+											a given <span class="emphasis"><strong>Reference
+												column</strong></span> and select the corresponding value
+											as the best from a given <span class="emphasis"><strong>Target
+												column</strong></span>, a <span class="emphasis"><strong>Multi-target</strong></span> rule allows you to add one
+											more <span class="emphasis"><strong>Target column</strong></span> to
+											the same step.</p><p>You need to define each <span class="emphasis"><strong>Reference column</strong></span> and <span class="emphasis"><strong>Target column</strong></span> manually in
+											this table. </p></li></ul></div>
+							<p><span class="emphasis"><strong>Rule Name</strong></span>: Type in the name of
+								each rule you are creating. This column is only available to the
+									<span class="emphasis"><strong>Sequential</strong></span> rules as they define
+								the steps of the survivor validation flow.</p>
+							<p><span class="emphasis"><strong>Reference column</strong></span>: Select the
+								column you need to apply a given rule on. They are the columns you
+								have defined in the schema of this component. This column is not
+								available to the <span class="emphasis"><strong>Multi-target</strong></span> rules
+								as they define only the <span class="emphasis"><strong>Target
+									column</strong></span>.</p>
+							<p><span class="emphasis"><strong>Function</strong></span>: Select the type of
+								validation operation to be performed on a given <span class="emphasis"><strong>Reference column</strong></span>. The available types include:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>None</strong></span>: no validation
+											operation is performed.</p></li><li class="listitem"><p><span class="emphasis"><strong>Most common</strong></span>: it
+											validates the most frequent field value in each
+											duplicates group.</p></li><li class="listitem"><p><span class="emphasis"><strong>Most recent</strong></span> or
+												<span class="emphasis"><strong>Most ancient</strong></span>: the
+											former validates the earliest date value and the latter
+											the latest date value in each duplicates group. The
+											relevant reference column must be of the <span class="emphasis"><strong>Date</strong></span> type.</p></li><li class="listitem"><p><span class="emphasis"><strong>Longest</strong></span> or <span class="emphasis"><strong>Shortest</strong></span>: the former
+											validates the longest field value and the latter the
+											shortest in each duplicates group.</p></li><li class="listitem"><p><span class="emphasis"><strong>Largest</strong></span> or <span class="emphasis"><strong>Smallest</strong></span>: the former
+											validates the largest numerical value and the latter the
+											smallest numerical value in a duplicates group.</p></li><li class="listitem"><p><span class="emphasis"><strong>Match regex</strong></span>: it
+											validates the field when this field complies to the
+											regular expression given in the <span class="emphasis"><strong>Value</strong></span> column .</p></li><li class="listitem"><p><span class="emphasis"><strong>Expression</strong></span>: it
+											validates the field when it complies to the expression
+											that you enter in the <span class="emphasis"><strong>Value</strong></span> column. The expression value must
+											be written with the Drools language. </p></li><li class="listitem"><p><span class="emphasis"><strong>Most Complete</strong></span>: it
+											validates the field when the record it belongs to has
+											the least empty fields. </p></li></ul></div>
+							<p><span class="emphasis"><strong>Value</strong></span>: enter the expression of
+								interest corresponding to the <span class="emphasis"><strong>Match
+									regex</strong></span> or the <span class="emphasis"><strong>Expression</strong></span> function you have selected in the
+									<span class="emphasis"><strong>Function</strong></span> column.</p>
+							<p><span class="emphasis"><strong>Target column</strong></span>: when a step is
+								executed, it validates a record field value from a given <span class="emphasis"><strong>Reference column</strong></span> and selects the
+								corresponding value as the best from a given <span class="emphasis"><strong>Target column</strong></span>. Select this <span class="emphasis"><strong>Target column</strong></span> from the schema columns of this
+								component.</p>
+							<p><span class="emphasis"><strong>Ignore blanks</strong></span>: Select the check
+								boxes which correspond to the names of the columns for which you
+								want the blank value to be ignored.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics </em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the Job and the
+								component levels.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component requires an input component and an output
+								component.</p>
+							<p>As it needs grouped data to process, this component works
+								straightforwardly alongside the components like <span class="emphasis"><strong>tMatchGroup</strong></span> as it requires a group
+								identifier column and a group size column. </p>
+							<p>It also requires that the input data are sorted by the group
+								identifier and that the first row of a group contains the group
+								size.</p>
+							<p>When you export a Job using <span class="emphasis"><strong>tRuleSurvivorship</strong></span>, you
+								need to select the <span class="emphasis"><strong>Export
+									dependencies</strong></span> check box in order to export the
+								generated survivor validation rules together. For further
+								information about how to export a Job, see <span class="emphasis"><em>Talend Data Integration StudioUser Guide</em></span>.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Selecting the best-of-breed data from a group of duplicates to create a survivor"><div class="titlepage"><div><div><h3 class="title"><a name="d0e110138"></a>Scenario: Selecting the best-of-breed data from a group of duplicates to create a
+			survivor</h3></div></div></div><p> The Job in this scenario uses five components to group the duplicate data and create
+			one single representation of these duplicates. This representation is the "survivor" at
+			the end of the selection process and you can use this survivor, for example, to create a
+			master copy of data for MDM. </p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship1.png" align="middle"></div><p>The components used in this Job are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>tFixedFlowInput</strong></span>: it provides the input data
+					to be processed by this Job. In the real-world use case, you may use another
+					input component of interest to replace <span class="emphasis"><strong>tFixedFlowInput</strong></span> for providing the required data.</p></li><li class="listitem"><p><span class="emphasis"><strong>tMatchGroup</strong></span>: it groups the duplicates of the
+					input data and gives each group the information about its group ID and group
+					size. The technical names of the information are <span class="emphasis"><strong>GID</strong></span> and <span class="emphasis"><strong>GRP_SIZE</strong></span> respectively
+					and they are required by <span class="emphasis"><strong>tRuleSurvivorship</strong></span>.</p></li><li class="listitem"><p><span class="emphasis"><strong>tRuleSurvivorship</strong></span>: it creates the
+					user-defined survivor validation flow to select the best-of-breed data that
+					composes the single representation of each duplicates group.</p></li><li class="listitem"><p><span class="emphasis"><strong>tFilterColumns</strong></span>: it rules out the technical
+					columns and outputs the columns that carry the actual information of interest.
+				</p></li><li class="listitem"><p><span class="emphasis"><strong>tLogRow</strong></span>: it presents the result of the Job
+					execution. </p></li></ul></div><p>To replicate this scenario, proceed as the following sections illustrate.</p><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e110188"></a>Dropping and linking the components</h4></div></div></div><p>To do this, perform the following operations:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop <span class="emphasis"><strong>tFixedFlowInput</strong></span>, <span class="emphasis"><strong>tMatchGroup</strong></span>, <span class="emphasis"><strong>tRuleSurvivorship</strong></span>, <span class="emphasis"><strong>tFilterColumns</strong></span> and <span class="emphasis"><strong>tLogRow</strong></span>
+						from <span class="emphasis"><strong>Palette</strong></span> onto the Design
+						workspace.</p></li><li class="step" title="Step 2"><p>Right-click <span class="emphasis"><strong>tFixedFlowInput</strong></span> to open its
+						contextual menu and select the <span class="emphasis"><strong>Row</strong></span> &gt;
+							<span class="emphasis"><strong>Main</strong></span> link from this menu to connect
+						this component to <span class="emphasis"><strong>tMatchGroup</strong></span>.</p></li><li class="step" title="Step 3"><p>Do the same to create the <span class="emphasis"><strong>Main</strong></span> link from
+							<span class="emphasis"><strong>tMatchGroup</strong></span> to <span class="emphasis"><strong>tRuleSurvivorship</strong></span>, then to <span class="emphasis"><strong>tFilterColumns</strong></span> and to <span class="emphasis"><strong>tLogRow</strong></span>.</p></li></ol></div><p>The components to be used in this scenario are all placed and linked. Then you
+				need continue to configure them successively. </p></div><div class="section" title="Configuring the process of grouping the input data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e110250"></a>Configuring the process of grouping the input data</h4></div></div></div><p>To do this, proceed as follows:</p><div class="procedure" title="Procedure&nbsp;6.10.&nbsp;Setting up the input records"><a name="d0e110255"></a><p class="title"><b>Procedure&nbsp;6.10.&nbsp;Setting up the input records</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tFixedFlowInput</strong></span> to open its
+							<span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship2.png" align="middle"></div></li><li class="step" title="Step 2"><p> Click the three-dot button next to <span class="emphasis"><strong>Edit
+							schema</strong></span> to open the schema editor.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship3.png" align="middle"></div></li><li class="step" title="Step 3"><p>Click the plus button nine times to add nine rows and rename these rows
+						respectively. In this example, they are: <span class="emphasis"><em>acctName</em></span>, <span class="emphasis"><em>addr</em></span>, <span class="emphasis"><em>city</em></span>, <span class="emphasis"><em>state</em></span>,
+							<span class="emphasis"><em>zip</em></span>, <span class="emphasis"><em>country</em></span>, <span class="emphasis"><em>phone</em></span>, <span class="emphasis"><em>data</em></span>, <span class="emphasis"><em>credibility</em></span>. They are the nine columns of the schema of the
+						input data.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Type</strong></span> column, select the data types
+						for the rows of interest. In this example, select <span class="emphasis"><strong>Date</strong></span> for the <span class="emphasis"><em>data</em></span> column
+						and <span class="emphasis"><strong>Double</strong></span> for the <span class="emphasis"><em>credibility</em></span> column.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Be aware of setting the proper data type so that later you are able to
+							define the validation rules easily.</p></div></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Date Pattern</strong></span> column, type in the
+						data pattern to reflect the date format of interest. In this scenario, this
+						format is <span class="emphasis"><em>yyyyMMdd</em></span>.</p></li><li class="step" title="Step 6"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate these changes and
+						accept the propagation prompted by the pop-up dialog box.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Mode</strong></span> area of the <span class="emphasis"><strong>Basic settings</strong></span> view, select <span class="emphasis"><strong>Use Inline Content (delimited file)</strong></span> to enter the input data
+						of interest.</p></li><li class="step" title="Step 8"><p>In the <span class="emphasis"><strong>Content</strong></span> field, enter the input
+						data to be processed. This data should correspond to the schema you have
+						defined and in this example, the contents of the data are:</p><pre class="programlisting">GRIZZARD CO.;110 N MARYLAND AVE;GLENDALE;CA;912066;FR;8185431314;20110101;5
+GRIZZARD;110 NORTH MARYLAND AVENUE;GLENDALE;CA;912066;US;9003254892;20110118;4
+GRIZZARD INC;110 N. MARYLAND AVENUE;GLENDALE;CA;91206;US;(818) 543-1315;20110103;2
+GRIZZARD CO;1480 S COLORADO BOULEVARD;LOS ANGELES;CA;91206;US;(800) 325-4892;20110115;1</pre></li></ol></div><div class="procedure" title="Procedure&nbsp;6.11.&nbsp;Grouping the duplicate records"><a name="d0e110365"></a><p class="title"><b>Procedure&nbsp;6.11.&nbsp;Grouping the duplicate records</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Right-click <span class="emphasis"><strong>tMatchGroup</strong></span> to open its
+						contextual menu and select <span class="emphasis"><strong>Configuration
+							wizard</strong></span>. This shows how your groups look like and to adjust
+						the component settings in order to correctly get the similar matches. </p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship4-config_wizard.png" align="middle"></div></li><li class="step" title="Step 2"><p>Click the plus button under the <span class="emphasis"><strong>Key
+							Definition</strong></span> table to add one row.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Input Key Attribute</strong></span> column of this
+						row, select <span class="emphasis"><em>acctName</em></span>. This way, this
+						column becomes the reference used to match the duplicates of the input data.
+					</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Matching Type</strong></span> column, select the
+							<span class="emphasis"><strong>Jaro-Winkler</strong></span> matching algorithm.</p></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Match threshold</strong></span> field, enter the
+						numerical value to indicate at which value two record fields match each
+						other. In this example, type in <span class="emphasis"><em>0.6</em></span>.</p></li><li class="step" title="Step 6"><p>Click <span class="emphasis"><strong>Refresh</strong></span> to execute this matching
+						rule and show the result in this wizard. If the input records are not put
+						into one single group, replace <span class="emphasis"><em>0.6</em></span> with a
+						smaller value and click <span class="emphasis"><strong>Refresh</strong></span> again to
+						check the result until all of the four records are in the same group.</p><p>The Job in this scenario puts four similar records into one single
+						duplicates group so that <span class="emphasis"><strong>tRuleSurvivorship</strong></span>
+						is able to create one survivor from them. This simple sample allows you to
+						have a clear picture about how <span class="emphasis"><strong>tRuleSurvivorship</strong></span> works along with other components to
+						create the best data. However, in the real-world case, you may need to
+						process much more data with complex duplicate situation and thus put the
+						data into much more groups. </p></li><li class="step" title="Step 7"><p>Click <span class="emphasis"><strong>OK</strong></span> to close this <span class="emphasis"><strong>Configuration wizard</strong></span> and the <span class="emphasis"><strong>Basic settings</strong></span> view of the <span class="emphasis"><strong>tMatchGroup</strong></span> component is automatically filled with the
+						parameters you have set.</p><p>For further information about the <span class="emphasis"><strong>Configuration
+							wizard</strong></span>, see <a class="xref" href="tMatchGroup.html#ychen-20111011-dataquality-configuration_wizard" title="Configuration wizard">the section called &#8220;Configuration wizard&#8221;</a></p></li></ol></div></div><div class="section" title="Defining the survivor validation flow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e110454"></a>Defining the survivor validation flow</h4></div></div></div><p>Having configured and grouped the input data, you need to create the survivor
+				validation flow using <span class="emphasis"><strong>tRuleSurvivorship</strong></span>. To do
+				this, proceed as follows: </p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tRuleSurvivorship</strong></span> to open
+						its <span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship5.png" align="middle"></div></li><li class="step" title="Step 2"><p>Select <span class="emphasis"><em>GID</em></span> for the <span class="emphasis"><strong>Group identifier</strong></span> field and <span class="emphasis"><em>GRP_SIZE</em></span> for the <span class="emphasis"><strong>Group
+							size</strong></span> field.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Rule package name</strong></span> field, enter the
+						name of the rule package you need to create to define the survivor
+						validation flow of interest. In this example, this name is <span class="emphasis"><em>org.talend.survivorship.sample</em></span>.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Rule table</strong></span>, click the plus button
+						to add as many rows as required and complete them using the corresponding
+						rule definitions. In this example, add ten rows and complete them using the
+						contents as follows: </p><div class="informaltable"><table border="1"><colgroup><col><col><col><col><col><col></colgroup><thead><tr><th valign="top">
+										<p>Order</p>
+									</th><th valign="top">
+										<p>Rule name</p>
+									</th><th valign="top">
+										<p>Reference column</p>
+									</th><th valign="top">
+										<p>Function</p>
+									</th><th valign="top">
+										<p>Value</p>
+									</th><th valign="top">
+										<p>Target column</p>
+									</th></tr></thead><tbody><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Sequential</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"1_LengthAcct"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>acctName</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>Expression</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">".length &gt;11"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>acctName</em></span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Sequential</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"2_LongestAddr"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>addr</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>Longest</em></span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>addr</em></span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Sequential</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"3_HighCredibility"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>credibility</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>Expression</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"&gt; 3"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>credibility</em></span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Sequential</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"4_MostCommonCity"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>city</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>Most common</em></span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>city</em></span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Sequential</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"5_MostCommonZip"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>zip</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>Most common</em></span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>zip</em></span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Multi-condition</em></span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>zip</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>Match regex</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"\\d{5}"</code>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Multi-target</em></span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>state</em></span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Multi-target</em></span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>country</em></span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Sequential</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"6_LatestPhone"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>date</em></span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>Most recent</em></span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>phone</em></span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>Multi-target</em></span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="emphasis"><em>date</em></span>
+										</p>
+									</td></tr></tbody></table></div><p>These rules are executed in the top-down order. The <span class="emphasis"><strong>Multi-condition</strong></span> rule is one of the conditions of the
+							<span class="emphasis"><em>5_MostCommonZip</em></span> rule, so the
+						rule-compliant zip code should be the most common zip code and meanwhile
+						have five digits. The <span class="emphasis"><em>zip</em></span> column is the
+						target column of the <span class="emphasis"><em>5_MostCommonZip</em></span> rule
+						and the two <span class="emphasis"><strong>Multi-target</strong></span> rules below it add
+						another two target columns, <span class="emphasis"><em>state</em></span> and
+							<span class="emphasis"><em>country</em></span>, so the <span class="emphasis"><em>zip</em></span>, the <span class="emphasis"><em>state</em></span> and the <span class="emphasis"><em>country</em></span>
+						columns will be the source of the best-of-breed data. Thus once a zip code
+						is validated, the corresponding record field values from these three columns
+						will be selected.</p><p>The same is true to the <span class="emphasis"><strong>Sequential</strong></span> rule
+							<span class="emphasis"><em>6_LatestPhone</em></span>. Once a date value is
+						validated, the corresponding record field values will be selected from the
+							<span class="emphasis"><em>phone</em></span> and the <span class="emphasis"><em>date</em></span> columns.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>In this table, the fields reading <span class="emphasis"><em>n/a</em></span> indicate that these fields are not available to the
+							corresponding <span class="emphasis"><strong>Order</strong></span> types or <span class="emphasis"><strong>Function</strong></span> types you have selected. In the
+								<span class="emphasis"><strong>Rule table</strong></span> of the <span class="emphasis"><strong>Basic settings</strong></span> view of <span class="emphasis"><strong>tRuleSurvivorship</strong></span>, these unavailable fields are greyed
+							out. For further information about this rule table, see the properties
+							table at the beginning of this <span class="emphasis"><strong>tRuleSurvivorShip</strong></span> section.</p></div></li><li class="step" title="Step 5"><p>Next to <span class="emphasis"><strong>Generate rules and survivorship
+							flow</strong></span>, click the <span class="emphasis"><strong>Go</strong></span> button to
+						generate the rule package with its contents you have defined.</p><p>Once done, you can find the generated rule package in the <span class="emphasis"><strong>Metadata &gt; <span>Rules Management &gt;
+							</span>Survivorship Rules</strong></span> directory of your Studio
+							<span class="emphasis"><strong>Repository</strong></span>. From there, you are able to
+						open the newly created survivor validation flow of this example and read its
+						diagram. For further information, see <span class="emphasis"><em>Talend Data Integration Studio</em></span>
+						<span class="emphasis"><em>User Guide</em></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship6-validation_flow.png" align="middle"></div></li></ol></div></div><div class="section" title="Selecting the columns of interest"><div class="titlepage"><div><div><h4 class="title"><a name="d0e111075"></a>Selecting the columns of interest</h4></div></div></div><p>The schema of <span class="emphasis"><strong>tRuleSurvivorship</strong></span> includes several
+				technical columns like <span class="emphasis"><strong>GID</strong></span>, <span class="emphasis"><strong>GRP_SIZE</strong></span>, which are not interesting in this example, so you may need
+				to use <span class="emphasis"><strong>tFilterColumns</strong></span> to rule these technical
+				columns out and leave the columns carrying actual data to be output. To do this,
+				proceed as follows:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tFilterColumns</strong></span> to open its
+							<span class="emphasis"><strong>Component</strong></span> view.</p></li><li class="step" title="Step 2"><p>Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve the schema
+						from its preceding component. If a dialog box pops up to prompt the
+						propagation, click <span class="emphasis"><strong>Yes</strong></span> to accept it.</p></li><li class="step" title="Step 3"><p>Click the three-dot button next to <span class="emphasis"><strong>Edit
+							schema</strong></span> to open the schema editor.</p></li><li class="step" title="Step 4"><p>On the <span class="emphasis"><strong>tFilterColumns</strong></span> side of this
+						editor, select the <span class="emphasis"><strong>GID</strong></span>, <span class="emphasis"><strong>GRP_SIZE</strong></span>, <span class="emphasis"><strong>MASTER</strong></span>
+						and <span class="emphasis"><strong>SCORE</strong></span> columns and click the red cross
+						icon below to remove them.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship7.png" align="middle"></div></li><li class="step" title="Step 5"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate these changes and
+						accept the propagation prompted by the pop-up dialog box.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e111144"></a> Executing the Job </h4></div></div></div><p>The <span class="emphasis"><strong>tLogRow</strong></span> component is used to present the
+				execution result of the Job. You can configure the presentation mode on its
+					<span class="emphasis"><strong>Component</strong></span> view.</p><p>To do this, double-click <span class="emphasis"><strong>tLogRow</strong></span> to open the
+					<span class="emphasis"><strong>Component</strong></span> view and in the <span class="emphasis"><strong>Mode</strong></span> area, select the <span class="emphasis"><strong>Table (print values in
+					cells of a table)</strong></span> check box.</p><p>To execute this Job, press <span class="emphasis"><strong>F6</strong></span>. </p><p>Once done, the <span class="emphasis"><strong>Run</strong></span> view is opened automatically,
+				where you can check the execution result.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship8.png" align="middle"></div><p>You can read that the last row is the survivor record because its <span class="emphasis"><strong>SURVIVOR</strong></span> column indicates <span class="emphasis"><em>true</em></span>. This record is composed of the best-of-breed data of each
+				column from the four other rows which are the duplicates of the same group. </p><p>The <span class="emphasis"><strong>CONFLICT</strong></span> column presents the columns carrying
+				more than one record field values compliant with the given validation rules. Take
+				the <span class="emphasis"><em>credibility</em></span> column for example: apart from
+				the survivor record whose credibility is <span class="emphasis"><em>5.0</em></span>, the
+					<span class="emphasis"><strong>CONFLICT</strong></span> column indicates that the credibility
+				of the second record <span class="emphasis"><em>GRIZZARD</em></span> is <span class="emphasis"><em>4.0</em></span>, also bigger than <span class="emphasis"><em>3</em></span>, the threshold set in the rules you have defined, however, as the
+				credibility <span class="emphasis"><em>5.0</em></span> appears in the first record
+					<span class="emphasis"><em>GRIZZARD CO.</em></span>, <span class="emphasis"><strong>tRuleSurvivorship</strong></span> selects it as best-of-breed data.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tReplaceList.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSchemaComplianceCheck.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tReplaceList&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSchemaComplianceCheck</td></tr></table></div></body></html>

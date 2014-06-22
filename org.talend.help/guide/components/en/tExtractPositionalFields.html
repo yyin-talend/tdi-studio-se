@@ -1,0 +1,136 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tExtractPositionalFields</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-processing.html" title="Chapter&nbsp;18.&nbsp;Processing components"><link rel="prev" href="tExtractEBCDICFields.html" title="tExtractEBCDICFields"><link rel="next" href="tExtractRegexFields.html" title="tExtractRegexFields"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tExtractPositionalFields</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tExtractEBCDICFields.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;18.&nbsp;Processing components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tExtractRegexFields.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tExtractPositionalFields"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tExtractPositionalFields"></a>tExtractPositionalFields</h2></div></div></div><div class="mediaobject"><img src="../images/tExtractPositionalFields_icon32_white.png"></div><div class="section" title="tExtractPositionalFields properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e268851"></a>tExtractPositionalFields properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Processing/Fields</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tExtractPositionalFields
+                                </strong></span>generates multiple columns from one column using
+                                positional fields.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tExtractPositionalFields </strong></span>allows
+                                you to use a positional pattern to extract data from a formatted
+                                string.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Field</em></span></p>
+                        </td><td valign="top">
+                            <p>Select an incoming field from the <span class="emphasis"><strong>Field</strong></span> list to extract.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Customize</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to customize the data format of the
+                                positional file and define the table columns:</p>
+                            <p>
+                                <span class="emphasis"><strong>Column</strong></span>: Select the column you want
+                                to customize.</p>
+                            <p>
+                                <span class="emphasis"><strong>Size</strong></span>: Enter the column size.</p>
+                            <p>
+                                <span class="emphasis"><strong>Padding char</strong></span>: Type in between
+                                inverted commas the padding character used, in order for it to be
+                                removed from the field. A space by default.</p>
+                            <p>
+                                <span class="emphasis"><strong>Alignment</strong></span>: Select the appropriate
+                                alignment parameter.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Pattern</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the pattern to use as basis for the extraction. </p>
+                            <p> A pattern is length values separated by commas, interpreted as a
+                                string between quotes. Make sure the values entered in this fields
+                                are consistent with the schema defined.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. Clear the check box to skip
+                                the row on error and complete the process for error-free rows. If
+                                needed, you can retrieve the rows on error via a <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Reject</strong></span> link.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema type</em></span> and <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                    <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+                                        <span class="emphasis"><strong>Repository</strong></span>.
+                                    </span>
+                            </p>
+                            <p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            <p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected to <span class="emphasis"><strong>t</strong></span>PositionalFields.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>: You create the schema
+                                and store it locally for the component. Related topic: see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><em>User Guide</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused in
+                                various projects and Job flowcharts. Related topic: see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Advanced separator (for number)</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to modify the separators used for
+                                numbers.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Trim Column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to remove leading and trailing whitespace
+                                from all columns.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Check each row structure against
+                                    schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to synchronize every row against the input
+                                schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the processing metadata at the Job
+                                level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component handles flow of data therefore it requires input
+                                and output components. It allows you to extract data from a
+                                delimited field, using a <span class="emphasis"><strong>Row</strong></span> &gt;
+                                    <span class="emphasis"><strong>Main</strong></span> link, and enables you to
+                                create a reject flow filtering data which type does not match the
+                                defined type.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e269194"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tExtractRegexFields.html#tExtractRegexFields_sce" title="Scenario: Extracting name, domain and TLD from e-mail addresses">the section called &#8220;Scenario: Extracting name, domain and TLD from e-mail addresses&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tExtractEBCDICFields.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tExtractRegexFields.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tExtractEBCDICFields&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tExtractRegexFields</td></tr></table></div></body></html>

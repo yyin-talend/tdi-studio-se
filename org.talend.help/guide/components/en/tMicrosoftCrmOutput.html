@@ -1,0 +1,139 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMicrosoftCrmOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-business.html" title="Chapter&nbsp;2.&nbsp;Business components"><link rel="prev" href="tMicrosoftCrmInput.html" title="tMicrosoftCrmInput"><link rel="next" href="tMSAXInput.html" title="tMSAXInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMicrosoftCrmOutput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMicrosoftCrmInput.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;2.&nbsp;Business components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMSAXInput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tMicrosoftCrmOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMicrosoftCrmOutput"></a>tMicrosoftCrmOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tMicrosoftCrmOutput_icon32_white.png"></div><div class="section" title="tMicrosoftCrmOutput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e8506"></a>tMicrosoftCrmOutput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Business / Microsoft CRM</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Writes in an entity of a Microsoft CRM database via the relevant
+                                webservice.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Allows to write data into a Microsoft CRM DB.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Authentication Type</em></span></p>
+                        </td><td valign="top">
+                            <p>List of authentication types that correspond to specific CRM
+                                deployment models. For details, download <a class="link" href="http://www.microsoft.com/en-us/download/details.aspx?id=12108" target="_top">White paper: Microsoft Dynamics CRM Security
+                                Model</a>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Microsoft Webservice URL</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the webservice URL to connect to the Microsoft CRM
+                                DB.</p>
+                            <p>(Available when <span class="emphasis"><strong>On_Premise</strong></span> is
+                                selected from the <span class="emphasis"><strong>Authentication
+                                    Type</strong></span> list.)</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Organizename</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the name of the organization that needs to access the
+                                Microsoft CRM database</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the Webservice user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Domain</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the domain name of the server that installs Microsoft CRM
+                                server.</p>
+                            <p>(Available when <span class="emphasis"><strong>On_Premise</strong></span> is
+                                selected from the <span class="emphasis"><strong>Authentication
+                                    Type</strong></span> list.)</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the IP address of Microsoft CRM database server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top">
+                            <p>Listening port number of Microsoft CRM database server.</p>
+                            <p>(Available when <span class="emphasis"><strong>On_Premise</strong></span> is
+                                selected from the <span class="emphasis"><strong>Authentication
+                                    Type</strong></span> list.)</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Action </em></span></p>
+                        </td><td valign="top">
+                            <p>Select in the list the action you want to do on the CRM data.
+                                Available actions are: <span class="emphasis"><strong>insert</strong></span>,
+                                    <span class="emphasis"><strong>update</strong></span>, and <span class="emphasis"><strong>delete</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Time out (seconds)</em></span></p>
+                        </td><td valign="top">
+                            <p>Number of seconds for the port to listen before closing.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Entity</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the relevant entity in the list.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                        	<p>A schema is a row description, i.e., it defines the number of
+                        		fields that will be processed and passed on to the next component.
+                        		The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+                        		<span class="emphasis"><strong>Repository</strong></span>.</p>
+                        	<p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+                        		changes to the schema. <span>Note that if
+                        			you make changes, the schema automatically becomes <span class="emphasis"><strong>Built-in</strong></span>.</span>.</p>
+                        	<p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+                        		the schema from the previous component connected in the Job.</p><p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Lookup Type Mapping</em></span>
+                            </p>
+                        </td><td valign="top">Add lines as needed to establish mappings between the
+                            source and target tables. Select a lookup object from the <span class="emphasis"><strong>Input column</strong></span> drop down list and enter the
+                            keyword of the source tables in the <span class="emphasis"><strong>Type</strong></span> field.</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Reuse Http Client</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to retain the current connection or deselect
+                                it to release the connection.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Used as an output component. An Input component is required.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e8897"></a>Related Scenario</h3></div></div></div><p>For a related use case, see <a class="xref" href="tMicrosoftCrmInput.html#Raa70068" title="Scenario: Writing data in a Microsoft CRM database and putting conditions on columns to extract specified rows">the section called &#8220;Scenario: Writing data in a Microsoft CRM database and putting conditions on columns
+            to extract specified rows&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMicrosoftCrmInput.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-business.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMSAXInput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tMicrosoftCrmInput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tMSAXInput</td></tr></table></div></body></html>

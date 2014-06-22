@@ -1,0 +1,165 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMongoDBInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-bigdata.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tMongoDBConnection.html" title="tMongoDBConnection"><link rel="next" href="tMongoDBOutput.html" title="tMongoDBOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMongoDBInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMongoDBConnection.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;1.&nbsp;Big Data components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMongoDBOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tMongoDBInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMongoDBInput"></a>tMongoDBInput</h2></div></div></div><div class="mediaobject"><img src="../images/tMongoDBInput_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+			<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="emphasis"><em>Talend Big Data Studio</em></span>.</em></span>
+		</p></div><div class="section" title="tMongoDBInput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e19863"></a>tMongoDBInput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / MongoDB</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tMongoDBInput</strong></span> retrieves records
+								from a collection in the Mongo database and transfers them to the
+								following component.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component allows you to retrieve records from a collection in
+								the Mongo database and transfer them to the following component for
+								display or storage.</p>
+						</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td>
+							<p>
+								<span class="emphasis"><em>Use existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use replica set address</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to show the <span class="emphasis"><strong>Replica
+									address</strong></span> table.</p>
+							<p>In the <span class="emphasis"><strong>Replica address</strong></span> table, you
+								can define multiple Mongo database servers for failover.</p>
+							<p>Available when the <span class="emphasis"><strong>Use existing
+									connection</strong></span> check box is not selected.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Server</em></span> and <span class="emphasis"><em>Port</em></span></p>
+						</td><td valign="top">
+							<p>IP address and listening port of the database server.</p>
+							<p>Available when the <span class="emphasis"><strong>Use existing
+									connection</strong></span> or <span class="emphasis"><strong>Use replica set
+									address</strong></span> check box is not selected.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Required authentication</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to enable the database
+								authentication.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and <span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+							<p>Available when the <span class="emphasis"><strong>Required
+									authentication</strong></span> check box is selected.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Collection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the collection in the Mongo database.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e. it defines the number of
+								fields that will be processed and passed on to the next component. </p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+							<p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+								changes to the schema. <span>Note that if
+									you make changes, the schema automatically becomes
+									built-in.</span></p>
+							<p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+								the schema from the previous component connected in the Job.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>
+								<span class="emphasis"><em>Query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify the query condition.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>
+								<span class="emphasis"><em>Mapping</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify the parent node for the column in the Mongo
+								database.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Sort by</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify the column and choose the order for the sort
+								operation.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Limit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the maximum number of records to be retrieved.</p>
+						</td></tr><tr><td>
+							<span class="emphasis"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect the log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tMongoDBInput</strong></span> allows you to
+								retrieve records from a collection in the Mongo database and
+								transfer them to the following component for display or
+								storage.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>N/A</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e20244"></a>Related scenarios</h3></div></div></div><p>For related scenarios, see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+					<a class="xref" href="tMongoDBOutput.html#andy-20120913-bigdata-tmongodboutput-Creating_collection_and_writing_data_to_it" title="Scenario 1: Creating a collection and writing data to it">the section called &#8220;Scenario 1: Creating a collection and writing data to it&#8221;</a>
+				</p></li><li class="listitem"><p>
+					<a class="xref" href="tMongoDBRow.html#andy-20120925-bigdata-tmongodbrow-use_mongo_function_to_create_collection" title="Scenario: Using Mongo functions to create a collection and write data to it">the section called &#8220;Scenario: Using Mongo functions to create a collection and write data to it&#8221;</a>
+				</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMongoDBConnection.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMongoDBOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tMongoDBConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tMongoDBOutput</td></tr></table></div></body></html>

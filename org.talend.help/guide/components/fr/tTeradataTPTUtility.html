@@ -1,0 +1,338 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tTeradataTPTUtility</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-databases-appliance-dw.html" title="Chapitre&nbsp;8.&nbsp;Databases - Composants d'appliance et de datawarehouse"><link rel="prev" href="tTeradataRow.html" title="tTeradataRow"><link rel="next" href="tTeradataTPump.html" title="tTeradataTPump"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tTeradataTPTUtility</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tTeradataRow.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;8.&nbsp;Databases - Composants d'appliance et de datawarehouse</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tTeradataTPump.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tTeradataTPTUtility"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tTeradataTPTUtility"></a>tTeradataTPTUtility</h2></div></div></div><div class="mediaobject"><img src="../images/tTeradataTPTUtility_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tTeradataTPTUtility"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e141154"></a>Propri&eacute;t&eacute;s du tTeradataTPTUtility</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Teradata </p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tTeradataTPTUtility</strong></span>
+								combine les utilitaires des composants <span class="emphasis"><strong>tTeradataFastLoad</strong></span>, <span class="emphasis"><strong>tTeradataMultiLoad</strong></span>, <span class="emphasis"><strong>tTeradataTPump</strong></span> et <span class="emphasis"><strong>tTeradataFastExport</strong></span> en un seul utilitaire
+								complet.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="emphasis"><strong>tTeradataTPTUtility</strong></span> vous
+								permet d'ins&eacute;rer des donn&eacute;es &agrave; charger dans ou de les supprimer de
+								toute table accessible de la base de donn&eacute;es Teradata ou dans tout
+								autre entrep&ocirc;t de donn&eacute;es pour lequel existe un op&eacute;rateur ou un
+								module d'acc&egrave;s.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou <span class="emphasis"><strong>Repository</strong></span>.</p>
+							<p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p></td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span> : Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span> : S&eacute;lectionnez le
+								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Filename</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez votre r&eacute;pertoire et s&eacute;lectionnez le fichier dans lequel
+								sauvegarder vos donn&eacute;es de sortie.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Append</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour ajouter des nouvelles lignes &agrave; la fin du
+								fichier d&eacute;fini dans le champ <span class="emphasis"><strong>Filename</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on data</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Dans les donn&eacute;es de la table d&eacute;finie, vous pouvez effectuer les
+								op&eacute;rations suivantes :</p>
+							<p><span class="emphasis"><strong>Insert</strong></span> : Ajouter de nouvelles
+								entr&eacute;es &agrave; la table. Le Job s&#8217;arr&ecirc;te lorsqu&#8217;il d&eacute;tecte des
+								doublons.</p>
+							<p><span class="emphasis"><strong>Update</strong></span> : Mettre &agrave; jour les
+								entr&eacute;es existantes.</p>
+							<p><span class="emphasis"><strong>Insert or update</strong></span> : ins&egrave;re un nouvel enregistrement. Si
+		l'enregistrement avec la r&eacute;f&eacute;rence donn&eacute;e existe d&eacute;j&agrave;, une mise &agrave; jour est effectu&eacute;e.</p>
+						
+							<p><span class="emphasis"><strong>Delete</strong></span> : Supprimer les entr&eacute;es
+								correspondantes au flux d&#8217;entr&eacute;e.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Il est n&eacute;cessaire de sp&eacute;cifier au minimum une colonne comme cl&eacute; primaire sur laquelle
+									baser les op&eacute;rations <span class="emphasis"><strong>Update</strong></span>
+									et <span class="emphasis"><strong>Delete</strong></span>.
+									Pour cela, cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave;
+									c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Edit
+										Schema</strong></span> et cochez la ou les case(s) correspondant
+									&agrave; la ou aux colonne(s) que vous souhaitez d&eacute;finir comme cl&eacute;(s)
+									primaire(s). </p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local
+									(<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans
+								le <span class="emphasis"><strong>Repository</strong></span>. </p>
+							<p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span> : Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce
+								composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+									utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository&nbsp;</strong></span>:
+								Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le <span class="emphasis"><strong>Repository</strong></span>.
+								Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Execution platform</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez votre syst&egrave;me d'exploitation.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>TDPID</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom ou adresse IP de la base de donn&eacute;es Teradata &agrave; laquelle vous
+								acc&eacute;dez.</p>
+							<p>
+								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Si vous ne sp&eacute;cifiez pas de TDPID, le syst&egrave;me utilise le
+										TDPID par d&eacute;faut. Le TDPID personnalis&eacute; peut contenir
+										jusqu'&agrave; 256 caract&egrave;res et peut &ecirc;tre le nom d'un serveur de
+										domaine. Pour plus d'informations concernant le TDPID,
+										consultez <a class="link" href="http://developer.teradata.com/sites/all/files/documentation/linked_docs/html/online/B035-2436-088A/wwhelp/wwhimpl/js/html/wwhelp.htm" target="_top">Teradata Parallel Transporter Reference</a> (en
+										anglais).</p></div><p>
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez dans ce champ le nom de la base de donn&eacute;es
+								Teradata.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Load Operator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cet op&eacute;rateur fonctionne de la m&ecirc;me mani&egrave;re que celui du <span class="emphasis"><strong>tTeradataFastLoad</strong></span> pour charger des
+								donn&eacute;es &agrave; partir de flux et ins&eacute;rer des donn&eacute;es dans des lignes
+								individuelles d'une table cible dans une base de donn&eacute;es
+								Teradata.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data Connector</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Fonctionne soit comme un "file reader" lisant des fichiers plats
+								ou acc&eacute;dant &agrave; des modules, soit comme un "file writer" &eacute;crivant des
+								donn&eacute;es dans des fichiers plats ou acc&eacute;dant &agrave; des modules.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Pour plus d'informations concernant les fichiers plats,
+										consultez <a class="link" href="http://en.wikipedia.org/wiki/Flat_file_database#Flat_files" target="_top">Flat file database</a> (en anglais).</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Job Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du Job TPT (Teradata Parallel Transporter) d&eacute;fini via la
+								commande Teradata <span class="emphasis"><em>tbuild</em></span>. </p>
+							<p>
+								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Si vous ne sp&eacute;cifiez pas de nom de Job, le nom par d&eacute;faut
+										est celui de l'utilisateur suivi d'un tiret et d'un num&eacute;ro
+										de s&eacute;quence automatique g&eacute;n&eacute;r&eacute; par le Job TPT :</p><p>
+										<code class="code">&lt;user name&gt;-&lt;job sequence number&gt;</code>
+									</p><p>Pour plus d'informations concernant les commandes
+										Teradata, consultez <a class="link" href="http://developer.teradata.com/sites/all/files/documentation/linked_docs/html/online/B035-2436-088A/wwhelp/wwhimpl/js/html/wwhelp.htm" target="_top">Teradata Parallel Transporter Reference</a> (en
+										anglais).</p></div><p>
+							</p>
+
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Layout Name(schema)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sch&eacute;ma des donn&eacute;es &agrave; interchanger.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Identifiant et mot de passe de l'utilisateur de la base de donn&eacute;es
+								Teradata.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la table &agrave; &eacute;crire dans la base de donn&eacute;es Teradata. Notez
+								que vous pouvez &eacute;crire une table &agrave; la fois.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Script generated folder</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez votre syst&egrave;me et s&eacute;lectionnez l'emplacement o&ugrave; le
+								fichier sera cr&eacute;&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Where condition in case Delete</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez une condition, qui, une fois v&eacute;rifi&eacute;e, supprimera la
+								ligne.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Error file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez votre r&eacute;pertoire et s&eacute;lectionnez l'emplacement du
+								fichier dans lequel les messages d'erreur seront enregistr&eacute;s.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;<span class="emphasis"><strong>Advanced settings</strong></span></p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Row seperator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cha&icirc;ne (ex&nbsp;: &#8220;\n&#8221; sous Unix) s&eacute;parant les lignes.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field seperator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Caract&egrave;re, cha&icirc;ne ou expression r&eacute;guli&egrave;re s&eacute;parant les
+								champs.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Include header</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour inclure l&#8217;en-t&ecirc;te des colonnes dans le
+								fichier.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+									<span class="emphasis"><strong>Custom</strong></span> et
+								d&eacute;finissez-le manuellement. Ce champ est obligatoire pour la
+								manipulation des donn&eacute;es de base de donn&eacute;es. </p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Define Log table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour d&eacute;finir la table de log que vous souhaitez
+								utiliser &agrave; la place de celle par d&eacute;faut, qui est celle d&eacute;finie dans
+								la vue <span class="emphasis"><strong>Basic settings</strong></span> suivie de
+									"<code class="code">_log</code>". La syntaxe requise pour d&eacute;finir la table de
+								log est <span class="emphasis"><em>logtablename</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Return mload error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour sp&eacute;cifier le code de retour &agrave; partir duquel
+								retourner une erreur dans la console. Pour plus d'informations
+								concernant cette erreur, consultez <a class="link" href="https://developer.teradata.com/tools/reference/teradata-multiload-reference/13-10" target="_top">Teradata MultiLoad Reference</a> (en anglais).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Define character set</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez l'encodage des caract&egrave;res &agrave; utiliser dans votre
+								syst&egrave;me.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant couvre toutes les possibilit&eacute;s de requ&ecirc;te SQL dans
+								les bases de donn&eacute;es Teradata. Pour plus d'informations concernant
+								l'utilisation de ce composant, consultez <a class="link" href="http://developer.teradata.com/sites/all/files/documentation/linked_docs/html/online/B035-2436-088A/wwhelp/wwhimpl/js/html/wwhelp.htm" target="_top">Teradata Parallel Transporter Reference</a> (en
+								anglais).</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e141928"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tTeradataTPump.html#Raa51052" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une table d&#8217;une base de donn&eacute;es Teradata">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une table d&#8217;une base de donn&eacute;es Teradata&nbsp;&raquo;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tTeradataRow.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-appliance-dw.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tTeradataTPump.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tTeradataRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tTeradataTPump</td></tr></table></div></body></html>

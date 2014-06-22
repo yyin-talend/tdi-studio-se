@@ -1,0 +1,402 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGenKeyHadoop</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tGenKey.html" title="tGenKey"><link rel="next" href="tGoogleAddressRow.html" title="tGoogleAddressRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tGenKeyHadoop</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tGenKey.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tGoogleAddressRow.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tGenKeyHadoop"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGenKeyHadoop"></a>tGenKeyHadoop</h2></div></div></div><div class="mediaobject"><img src="../images/tgenkeyhadoop_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of
+			the studio on the condition that you have subscribed to any <span class="emphasis"><em>Talend Platform</em></span> product.</p></div><div class="section" title="tGenKeyHadoop properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e92467"></a>tGenKeyHadoop properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality/Matching</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component connects to a given Hadoop distribution to process
+								the data stored in HDFS. It enables you to apply several kinds of
+								algorithms on each input column and use the computed results to
+								generate a functional key. These algorithms can be key or optional
+								algorithms.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The values returned by the key algorithms will be
+									concatenated, according to the column order in the <span class="emphasis"><strong>Key composition</strong></span> table.</p></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component generates a functional key from the input columns,
+								by applying different types of algorithms on each column and
+								grouping the computed results in one key. It outputs this key
+								together with the input columns. </p>
+							<p>This component helps, using the generated functional key, to
+								narrow down your data filter/matching results for example.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository.</p>
+							<p>Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+								the schema from the previous component in the Job.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: You create and store
+								the schema locally for this component only. Related topic: see
+									<span class="emphasis"><em>Talend Data Integration Studio</em></span>
+								User Guide.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: You have already
+								created and stored the schema in the Repository. You can reuse it in
+								other projects and job designs. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio</em></span> User Guide.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Link with a tGenKeyHadoop</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to reuse the connection, created by another
+									<span class="emphasis"><strong>tGenKeyHadoop</strong></span>, to a given file
+								in HDFS.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		HDFS connection component from which you want to reuse the connection details already
+		defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, <span class="emphasis"><strong>Component
+				list</strong></span> presents only the connection components in the same Job level.</p></div>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Hadoop version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the product you are using as the Hadoop distribution from
+								the drop-down list.</p>
+						</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><em>Hadoop configuration</em></span>
+							</p>
+						</td><td>
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the name or the address of the host of the HDFS you need to
+								use.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the listening port of the HDFS you need to use.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>HDFS directory</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the HDFS directory where the data to be processed is. </p>
+							<p>At runtime, this component will clean up any data in this
+								directory if it exists, write the input data in and perform the
+								operations.</p>
+							<p>If you want to reuse the existing data in HDFS, use:</p>
+							<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+										<span class="emphasis"><strong>Link with a tGenKeyHadoop</strong></span>
+									</p></li><li class="listitem"><p>
+										<span class="emphasis"><strong>Use existing HDFS file</strong></span>
+									</p></li></ul></div>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>User name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the user authentication name of HDFS.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><em>Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the column(s) from the main flow on which you want to
+								define certain algorithms to set the functional key</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When you select a date column on which to apply an algorithm or a matching algorithm,
+			you can decide what to compare in the date format.</p><p>For example, if you want to only compare the year in the date, in the component schema
+			set the type of the date column to <span class="emphasis"><strong>Date</strong></span> and then enter
+				"<span class="emphasis"><em>yyyy</em></span>" in the <span class="emphasis"><strong>Date
+				Pattern</strong></span> field. The component then converts the date format to a string
+			according to the pattern defined in the schema before starting a string
+			comparison.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Pre-Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>If required, select the relevant matching algorithm from the
+								list:</p>
+							<p>
+								<span class="emphasis"><strong>remove diacritical marks:</strong></span>removes
+								any diacritical mark.</p>
+							<p>
+								<span class="emphasis"><strong>remove diacritical marks and lower
+									case</strong></span>: removes any diacritical mark and converts to
+								lower case before generating the code of the column.</p>
+							<p>
+								<span class="emphasis"><strong>remove diacritical marks and upper case:
+								</strong></span>removes any diacritical mark and converts to upper case
+								before generating the code of the column.</p>
+							<p>
+								<span class="emphasis"><strong>lower case</strong></span>: converts the field to
+								lower case before applying the key algorithm.</p>
+							<p>
+								<span class="emphasis"><strong>upper case</strong></span>: converts the field to
+								upper case before applying the key algorithm.</p>
+							<p>
+								<span class="emphasis"><strong>add left position character</strong></span>:
+								enables you to add a character to the left of the column. </p>
+							<p>
+								<span class="emphasis"><strong>add right position character</strong></span>:
+								enables you to add a character to the right of the column.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Value</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Set the algorithm value, where applicable.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the relevant algorithm from the list:</p>
+							<p>
+								<span class="emphasis"><strong>first character of each word</strong></span>:
+								includes in the functional key the first character of each word in
+								the column.</p>
+							<p>
+								<span class="emphasis"><strong>N first characters of each word</strong></span>:
+								includes in the functional key N first characters of each word in
+								the column. </p>
+							<p>
+								<span class="emphasis"><strong>first N characters of the string</strong></span>:
+								includes in the functional key N first characters of the
+								string.</p>
+							<p>
+								<span class="emphasis"><strong>last N characters of the string</strong></span>:
+								includes in the functional key N last characters of the
+								string.</p>
+							<p>
+								<span class="emphasis"><strong>first N consonants of the string</strong></span>:
+								includes in the functional key N first consonants of the
+								string.</p>
+							<p>
+								<span class="emphasis"><strong>first N vowels of the string:</strong></span>
+								includes in the functional key N first vowels of the string.</p>
+							<p>
+								<span class="emphasis"><strong>pick characters</strong></span>: includes in the
+								functional key the characters located at a fixed position
+								(corresponding to the set digital/range).</p>
+							<p>
+								<span class="emphasis"><strong>exact</strong></span>: includes in the functional
+								key the full string.</p>
+							<p>
+								<span class="emphasis"><strong>substring(a,b)</strong></span>: includes in the
+								functional key character according to the set index.</p>
+							<p>
+								<span class="emphasis"><strong>soundex code</strong></span>: generates a code
+								according to a standard English phonetic algorithm. This code
+								represents the character string that will be included in the
+								functional key. </p>
+							<p>
+								<span class="emphasis"><strong>metaphone code</strong></span>: generates a code
+								according to the character pronunciation. This code represents the
+								character string that will be included in the functional key. </p>
+							<p>
+								<span class="emphasis"><strong>double-metaphone code</strong></span>: generates a
+								code according to the character pronunciation using a new version of
+								the Metaphone phonetic algorithm, that produces more accurate
+								results than the original algorithm. This code represents the
+								character string that will be included in the functional key.</p>
+							<p><span class="emphasis"><strong>fingerPrintkey</strong></span>: generates the
+								functional key from a string value through the following sequential process:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p> remove leading and trailing whitespace,</p></li><li class="listitem"><p> change all characters to their lowercase
+											representation,</p></li><li class="listitem"><p> remove all punctuation and control characters,</p></li><li class="listitem"><p>split the string into whitespace-separated
+											tokens,</p></li><li class="listitem"><p>sort the tokens and remove duplicates,</p></li><li class="listitem"><p>join the tokens back together,</p><p>Because the string parts are sorted, the given order
+											of tokens does not matter. So, <span class="emphasis"><em>Cruise,
+												Tom</em></span> and <span class="emphasis"><em>Tom Cruise</em></span>
+											both end up with a fingerprint <span class="emphasis"><em>cruise
+												tom</em></span> and therefore end up in the same
+											cluster.</p></li><li class="listitem"><p>normalize extended western characters to their ASCII
+											representation ,for example <span class="emphasis"><em>g&ouml;del</em></span>
+											to <span class="emphasis"><em>godel</em></span>.</p><p>This reproduce data entry mistakes performed when
+											entering extended characters with an ASCII-only
+											keyboard. However, this procedure can also lead to false
+											positives, for example <span class="emphasis"><em>g&ouml;del</em></span> and
+												<span class="emphasis"><em>god&eacute;l</em></span> would both end up with
+												<span class="emphasis"><em>godel</em></span> as their fingerprint but
+											they are likely to be different names. So this might
+											work less effectively for datasets where extended
+											characters play substantial differentiation role.</p></li></ol></div>
+							<p><span class="emphasis"><strong>nGramkey</strong></span>: this algorithm is
+								similar to the <span class="emphasis"><strong>fingerPrintkey</strong></span>
+								method described above. But instead of using whitespace separated
+								tokens, it uses n-grams, where the <span class="emphasis"><em>n</em></span> can be
+								specified by the user. This method generates the functional key from
+								a string value through the following sequential process:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>change all characters to their lowercase
+											representation,</p></li><li class="listitem"><p>remove all punctuation and control characters,</p></li><li class="listitem"><p>obtain all the string n-grams, </p></li><li class="listitem"><p>sort the n-grams and remove duplicates,</p></li><li class="listitem"><p>join the sorted n-grams back together,</p></li><li class="listitem"><p>normalize extended western characters to their ASCII
+											representation, for example <span class="emphasis"><em>g&ouml;del</em></span>
+											to <span class="emphasis"><em>godel</em></span>.</p><p>For example, the 2-gram fingerprint of
+												<span class="emphasis"><em>Paris</em></span> is
+												<span class="emphasis"><em>arispari</em></span> and the 1-gram
+											fingerprint is <span class="emphasis"><em>aiprs</em></span>. </p><p>The delivered implementation of this algorithm is
+											2-grams.</p></li></ol></div>
+							<p><span class="emphasis"><strong>colognPhonetic</strong></span>: a soundex
+								phonetic algorithm optimized for the German language. It encodes a
+								string into a Cologne phonetic value. This code represents the
+								character string that will be included in the functional key.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Value</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Set the algorithm value, where applicable.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Post-Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>If required, select the relevant matching algorithm from the
+								list:</p>
+							<p>
+								<span class="emphasis"><strong>use default value</strong></span> (string): enables
+								you to choose a string to replace null or empty data.</p>
+							<p>
+								<span class="emphasis"><strong>add left position character</strong></span>:
+								enables you to add a character to the left of the column. </p>
+							<p>
+								<span class="emphasis"><strong>add right position character</strong></span>:
+								enables you to add a character to the right of the column.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Value</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Set the option value, where applicable.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Show help</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to display instructions on how to set
+								algorithms/options parameters.</p>
+						</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hadoop Properties</em></span>
+							</p>
+						</td><td valign="top">
+							<p>If you need to use custom configuration for the Hadoop of
+		interest, complete this table with the property or properties to be
+		customized. Then at runtime, the customized property or properties
+		will override those corresponding ones defined earlier for the same
+		Hadoop. </p>
+							<p>For further information about the properties required by Hadoop,
+		see the Hadoop documentation. </p>
+							<p>This table will not be available when you select the <span class="emphasis"><strong>Link with a tGenKeyHadoop</strong></span> check
+								box.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Keep data in Hadoop</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to keep the data processed by this component
+								in the HDFS file. </p>
+							<p>If you leave this check box unselected, the component processes
+								data and then retrieves it from the HDFS file and output it in the
+								Job flow.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use existing HDFS file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to enable the component to directly process
+								the data located in a given directory in HDFS. When this check box
+								is selected, this component can act as a start component in your
+								Job.</p>
+							<p><span class="emphasis"><strong>HDFS file URI</strong></span>: set the URI of the
+								HDFS file holding the data you want to process.</p>
+							<p><span class="emphasis"><strong>Field delimiter</strong></span>: set the
+								character used as a field delimiter in the HDFS file.</p>
+							<p>If you leave this check box unselected, this component receives
+								the data flow to be processed and loads it into an HDFS file
+								specified in the <span class="emphasis"><strong>HDFS directory</strong></span>
+								field.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row
+								in the table and fill the <span class="emphasis"><strong>Code</strong></span>
+								field with a context variable to choose your HDFS connection
+								dynamically from multiple connections planned in your Job. </p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component can be a start or an intermediary component to read
+								and process given data in HDFS. This component can be used with
+								other components, such as <span class="emphasis"><strong>tMatchGroupHadoop</strong></span>, in order to create a blocking key
+								for the data stored in HDFS. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation/prerequisite</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>You need to use Linux to run the Job using this component.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e93329"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tMatchGroupHadoop.html#ychen-20111205-tmatchgrouphadoop-multiple_passes" title="Scenario: Running customer matching through multiple passes">the section called &#8220;Scenario: Running customer matching through multiple passes &#8221;</a>
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tGenKey.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tGoogleAddressRow.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tGenKey&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tGoogleAddressRow</td></tr></table></div></body></html>

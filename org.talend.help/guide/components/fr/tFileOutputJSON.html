@@ -1,0 +1,133 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileOutputJSON</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-file.html" title="Chapitre&nbsp;13.&nbsp;Composants File"><link rel="prev" href="tFileOutputExcel.html" title="tFileOutputExcel"><link rel="next" href="tFileOutputLDIF.html" title="tFileOutputLDIF"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileOutputJSON</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileOutputExcel.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;13.&nbsp;Composants File</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileOutputLDIF.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFileOutputJSON"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileOutputJSON"></a>tFileOutputJSON</h2></div></div></div><div class="mediaobject"><img src="../images/tFileOutputJSON_icon32_white.png"></div><a name="Xaa3471547"></a><div class="section" title="Propi&eacute;t&eacute;s du tFileOutputJSON"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e223254"></a>Propi&eacute;t&eacute;s du tFileOutputJSON</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tFileOutputJSON</strong></span>
+                                &eacute;crit des donn&eacute;es dans un fichier structur&eacute; JSON de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant re&ccedil;oit des donn&eacute;es et les r&eacute;&eacute;crit dans un bloc de
+                                donn&eacute;es structur&eacute;es JSON, dans un ficher de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>File Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nom du fichier de sortie et son chemin d&#8217;acc&egrave;s.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Name of data blocks</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez, entre guillemets doubles, un nom pour le bloc de
+                                donn&eacute;es &agrave; &eacute;crire.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans le
+                                        <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; ponctuellement pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de
+                                    </em></span><span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Job designs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de </em></span><span class="emphasis"><em>Talend Open Studio</em></span>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Sync columns</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cliquez pour synchroniser le sch&eacute;ma du fichier de sortie et le
+                                sch&eacute;ma du fichier d&#8217;entr&eacute;e. La fonction <span class="emphasis"><strong>Sync</strong></span> ne s&#8217;affiche que lorsqu&#8217;un lien <span class="emphasis"><strong>Row</strong></span> connecte le composant de
+                                sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Create directory if not exists</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut. Cette option permet de cr&eacute;er le
+                                dossier contenant le fichier de sortie s&#8217;il n&#8217;existe pas
+                                d&eacute;j&agrave;.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                Job, ainsi qu&#8217;au niveau de chaque composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Utilisez ce composant pour r&eacute;&eacute;crire des donn&eacute;es re&ccedil;ues dans un
+                                fichier de sortie structur&eacute; JSON.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Ecrire un fichier JSON structur&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="Raascenariowritingajsonstructuredfile"></a>Sc&eacute;nario&nbsp;: Ecrire un fichier JSON structur&eacute;</h3></div></div></div><p>Ce sc&eacute;nario de deux composants comprend un composant<span class="emphasis"><strong>
+                tRowGenerator</strong></span> qui g&eacute;n&egrave;re des donn&eacute;es au hasard, ainsi qu&#8217;un composant
+                <span class="emphasis"><strong>tFileOutputJSON</strong></span> qui &eacute;crit dans un fichier structur&eacute;
+            JSON de sortie. </p><div class="mediaobject"><img src="../images/Use_Case_tFileOutputJSON1.png"></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Glissez de la <span class="emphasis"><strong>Palette</strong></span> dans l&#8217;espace de
+                    mod&eacute;lisation graphique un <span class="emphasis"><strong>tRowGenerator</strong></span> et un
+                        <span class="emphasis"><strong>tFileOutputJSON</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Liez les composants &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Row &gt;
+                        Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Double-cliquez sur le <span class="emphasis"><strong>tRowGenerator</strong></span> pour
+                    d&eacute;finir ses<span class="emphasis"><strong> Basic settings</strong></span> dans la vue
+                        <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileOutputJSON2.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du bouton <span class="emphasis"><strong>Edit Schema</strong></span> afin d&#8217;afficher la bo&icirc;te de dialogue et
+                    d&eacute;finir son sch&eacute;ma.</p><div class="mediaobject"><img src="../images/Use_Case_tFileOutputJSON3.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter les
+                    colonnes d&eacute;sir&eacute;es.</p></li><li class="step" title="&Eacute;tape 6"><p>Sous le n&#339;ud <span class="emphasis"><strong>Columns</strong></span>, saisissez le nom des
+                    colonnes.</p></li><li class="step" title="&Eacute;tape 7"><p>Sous <span class="emphasis"><strong>Type</strong></span>, s&eacute;lectionnez le type dans la
+                    liste.</p></li><li class="step" title="&Eacute;tape 8"><p>Cliquez sur <span class="emphasis"><strong>OK </strong></span>pour fermer la bo&icirc;te de
+                    dialogue.</p></li><li class="step" title="&Eacute;tape 9"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> &agrave; c&ocirc;t&eacute; de <span class="emphasis"><strong>RowGenerator Editor</strong></span> pour ouvrir la bo&icirc;te de dialogue
+                    correspondante.</p><div class="mediaobject"><img src="../images/Use_Case_tFileOutputJSON4.png"></div></li><li class="step" title="&Eacute;tape 10"><p>Sous <span class="emphasis"><strong>Functions</strong></span>, s&eacute;lectionnez les fonctions
+                    pr&eacute;-d&eacute;finies pour les colonnes, si besoin, ou s&eacute;lectionnez <span class="emphasis"><strong>[...]</strong></span> pour d&eacute;finir les param&egrave;tres personnalis&eacute;s des fonctions,
+                    dans l&#8217;onglet <span class="emphasis"><strong>Function parameters</strong></span>.</p></li><li class="step" title="&Eacute;tape 11"><p>Saisissez le nombre de lignes &agrave; g&eacute;n&eacute;rer, dans le champ <span class="emphasis"><strong>Number of Rows for RowGenerator</strong></span>.</p></li><li class="step" title="&Eacute;tape 12"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue.</p></li><li class="step" title="&Eacute;tape 13"><p>Cliquez sur le composant <span class="emphasis"><strong>tFileOutputJSON</strong></span> afin
+                    de d&eacute;finir ses propri&eacute;t&eacute;s, dans l&#8217;onglet <span class="emphasis"><strong>Basic
+                        Settings</strong></span> de la vue <span class="emphasis"><strong>Component</strong></span>. </p><div class="mediaobject"><img src="../images/Use_Case_tFileOutputJSON5.png"></div></li><li class="step" title="&Eacute;tape 14"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> pour parcourir
+                    votre r&eacute;pertoire et d&eacute;finir o&ugrave; vous souhaitez g&eacute;n&eacute;rer le fichier de sortie JSON,
+                    puis saisissez un nom de fichier.</p></li><li class="step" title="&Eacute;tape 15"><p>Saisissez un nom pour le bloc de donn&eacute;es &agrave; g&eacute;n&eacute;rer dans le champ
+                    correspondant, entre guillemets doubles.</p></li><li class="step" title="&Eacute;tape 16"><p>S&eacute;lectionnez <span class="emphasis"><strong>Built-In </strong></span>dans la liste <span class="emphasis"><strong>Schema</strong></span>.</p></li><li class="step" title="&Eacute;tape 17"><p>Cliquez sur <span class="emphasis"><strong>Sync Columns</strong></span> afin de retrouver le
+                    sch&eacute;ma du pr&eacute;c&eacute;dent composant. </p></li><li class="step" title="&Eacute;tape 18"><p>Appuyez sur <span class="emphasis"><strong>Ctrl+S</strong></span> pour sauvegarder votre
+                    Job.</p></li><li class="step" title="&Eacute;tape 19"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> ou cliquez sur le bouton
+                        <span class="emphasis"><strong>Run</strong></span> de l'onglet <span class="emphasis"><strong>Run</strong></span> pour ex&eacute;cuter le Job.</p><div class="mediaobject"><img src="../images/Use_Case_tFileOutputJSON6.png"></div></li></ol></div><p>Les donn&eacute;es du sch&eacute;ma d&#8217;entr&eacute;e sont &eacute;crites dans un bloc de donn&eacute;es structur&eacute;es JSON,
+            dans le fichier de sortie.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileOutputExcel.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileOutputLDIF.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFileOutputExcel&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tFileOutputLDIF</td></tr></table></div></body></html>

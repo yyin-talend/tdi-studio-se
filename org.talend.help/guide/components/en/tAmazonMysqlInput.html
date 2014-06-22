@@ -1,0 +1,330 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAmazonMysqlInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-cloud.html" title="Chapter&nbsp;4.&nbsp;Cloud components"><link rel="prev" href="tAmazonMysqlConnection.html" title="tAmazonMysqlConnection"><link rel="next" href="tAmazonMysqlOutput.html" title="tAmazonMysqlOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tAmazonMysqlInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tAmazonMysqlConnection.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;4.&nbsp;Cloud components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tAmazonMysqlOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tAmazonMysqlInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAmazonMysqlInput"></a>tAmazonMysqlInput</h2></div></div></div><div class="mediaobject"><img src="../images/tAmazonMysqlInput_icon32_white.png"></div><div class="section" title="tAmazonMysqlInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e76021"></a>tAmazonMysqlInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Cloud/AmazonRDS/MySQL</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tAmazonMysqlInput</strong></span> reads a
+								database and extracts fields based on a query. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tAmazonMysqlInput</strong></span> executes a DB
+								query with a strictly defined order which must correspond to the
+								schema definition. Then it passes on the field list to the next
+								component via a <span class="emphasis"><strong>Main</strong></span> row
+								link.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>DB Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>MySQL 5 is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Data Integration Studio
+				User Guide</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Database server IP address.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Listening port number of DB server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p><span>This component offers the advantage of the dynamic
+										schema feature. This allows you to retrieve unknown columns
+										from source files or to copy batches of columns from a
+										source without map&shy;ping each column individually. For
+										further information about dynamic schemas, see
+										</span><span class="emphasis"><em>Talend Data Integration Studio</em></span> User Guide.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+										<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused. Related
+								topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+								<span class="emphasis"><em>Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the table to be read.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Query type </em></span>and
+								<span class="emphasis"><em>Query</em></span></p>
+						</td><td valign="top">
+							<p>Enter your DB query paying particularly attention to properly
+								sequence the fields in order to match the schema definition. </p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+									<span class="emphasis"><em>If using the dynamic schema feature, the
+										SELECT query must include the <span class="emphasis"><strong>*</strong></span> wildcard, to retrieve all of the columns
+										from the table selected.</em></span>
+								</p></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify additional connection properties for the DB connection you
+								are creating. This option is not available if you have selected the
+									<span class="emphasis"><strong>Use an existing connection</strong></span>
+								check box in the <span class="emphasis"><strong>Basic
+								settings</strong></span>.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> When you need to handle data of the time-stamp type
+										<span class="emphasis"><em>0000-00-00 00:00:00</em></span> using this
+									component, set the parameter as:</p><p>
+									<code class="code">noDatetimeStringSync=true&amp;zeroDa&shy;teTimeBehavior=convertToNull</code>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Enable stream</em></span>
+							</p>
+						</td><td valign="top">
+							<p> Select this check box to enables streaming over buffering which
+								allows the code to read from a large table without consuming a large
+								amount of memory in order to optimize the performance.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to remove leading and trailing whitespace
+								from all the String/Char columns.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Remove leading and trailing whitespace from defined
+								columns.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Deselect <span class="emphasis"><strong>Trim all the String/Char
+										columns</strong></span> to enable Trim columns in this
+									field.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component covers all possible SQL queries for Mysql
+								databases.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario 1: Writing columns from a MySQL database to an output file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e76603"></a>Scenario 1: Writing columns from a MySQL database to an output file</h3></div></div></div><p>In this scenario we will read certain columns from a MySQL database, and then write
+			them to a table in a local output file.</p><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e76608"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Drop <span class="emphasis"><strong>tAmazonMysqlInput</strong></span> and <span class="emphasis"><strong>tFileOutputDelimited</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> onto the workspace.</p><div class="mediaobject"><img src="../images/Use_Case_tAmazonMysqlInput_1.png"></div></li><li class="step" title="Step 2"><p> Link <span class="emphasis"><strong>tAmazonMysqlInput</strong></span> to <span class="emphasis"><strong>tFileOutputDelimited</strong></span> using a <span class="emphasis"><strong>Row &gt; Main</strong></span> connection.</p></li></ol></div></div><div class="section" title="Configuring the input component"><div class="titlepage"><div><div><h4 class="title"><a name="d0e76639"></a>Configuring the input component</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="emphasis"><strong>tAmazonMysqlInput</strong></span> to open
+						its <span class="emphasis"><strong>Basic Settings</strong></span> view in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tAmazonMysqlInput_2.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><span class="emphasis"><em>For Talend Open Studio for Big Data, the <span class="emphasis"><strong>Property type</strong></span>, <span class="emphasis"><strong>Schema</strong></span>
+				and <span class="emphasis"><strong>Query Type</strong></span> of components are always <span class="emphasis"><strong>Built-in</strong></span>. For how to edit a Built-in schema, see Talend Data Integration Studio
+			User Guide.</em></span></p></div></li><li class="step" title="Step 2"><p> From the <span class="emphasis"><strong>Property Type</strong></span> list, select
+							<span class="emphasis"><strong>Repository</strong></span> if you have already stored
+						the connection to database in the <span class="emphasis"><strong>Metadata</strong></span>
+						node of the <span class="emphasis"><strong>Repository</strong></span> tree view. The
+						property fields that follow are automatically filled in. </p><p>For more information about how to store a database connection, see
+								<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p><p> If you have not defined the database connection locally in the <span class="emphasis"><strong>Repository</strong></span>, fill in the details manually after
+						selecting <span class="emphasis"><strong>Built-in</strong></span> from the <span class="emphasis"><strong>Property Type</strong></span> list.</p></li><li class="step" title="Step 3"><p><span>Set the <span class="emphasis"><strong>Schema
+								</strong></span>as<span class="emphasis"><strong> Built-in</strong></span> and
+							click</span>
+						<span class="emphasis"><strong>Edit schema</strong></span> to define the desired
+						schema.</p><p> The schema editor opens:</p><div class="mediaobject"><img src="../images/Use_Case_tAmazonMysqlInput_3.png"></div></li><li class="step" title="Step 4"><p> Click the <span class="emphasis"><strong>[+]</strong></span> button to add the rows
+						that you will use to define the schema, four columns in this example
+							<span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>first_name</em></span>,
+							<span class="emphasis"><em>city</em></span> and <span class="emphasis"><em>salary</em></span>.</p></li><li class="step" title="Step 5"><p> Under <span class="emphasis"><strong>Column</strong></span>, click in the fields to
+						enter the corresponding column names. </p></li><li class="step" title="Step 6"><p> Click the field under <span class="emphasis"><strong>Type</strong></span> to define the
+						type of data. Click <span class="emphasis"><strong>OK</strong></span> to close the schema
+						editor.</p></li><li class="step" title="Step 7"><p> Next to the <span class="emphasis"><strong>Table Name</strong></span> field, click the
+							<span class="emphasis"><strong>[...]</strong></span> button to select the database
+						table of interest.</p><p> A dialog box displays a tree diagram of all the tables in the selected
+						database:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_4.png"></div></li><li class="step" title="Step 8"><p> Click the table of interest and then click <span class="emphasis"><strong>OK</strong></span> to close the dialog box.</p></li><li class="step" title="Step 9"><p><span>Set the <span class="emphasis"><strong>Query
+								Type</strong></span> to <span class="emphasis"><strong>Built-In</strong></span>.
+						</span>In the <span class="emphasis"><strong>Query</strong></span> box, enter the query
+						required to retrieve the desired columns from the table.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_5.png"></div></li></ol></div></div><div class="section" title="Configuring the output component"><div class="titlepage"><div><div><h4 class="title"><a name="d0e76794"></a>Configuring the output component</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="emphasis"><strong>tFileOutputDelimited</strong></span> to set
+						its <span class="emphasis"><strong>Basic Settings</strong></span> in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_6.png"></div></li><li class="step" title="Step 2"><p> Next to the <span class="emphasis"><strong>File Name</strong></span> field, click the
+							<span class="emphasis"><strong>[...]</strong></span> button to browse your directory
+						to where you want to save the output file, then enter a name for the
+						file.</p></li><li class="step" title="Step 3"><p> Select the <span class="emphasis"><strong>Include Header</strong></span> check box to
+						retrieve the column names as well as the data.</p></li></ol></div></div><div class="section" title="Job execution"><div class="titlepage"><div><div><h4 class="title"><a name="d0e76828"></a>Job execution</h4></div></div></div><p> Save the Job and press <span class="emphasis"><strong>F6</strong></span> to run it.</p><p> The output file is written with the desired column names and corresponding data,
+				retrieved from the database:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_7.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> The Job can also be run in the <span class="emphasis"><strong>Traces Debug</strong></span>
+					mode, which allows you to view the rows as they are being written to the output
+					file, in the workspace.</p></div></div></div><div class="section" title="Scenario 2: Writing dynamic columns from a MySQL database to an output file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e76847"></a>Scenario 2: Writing dynamic columns from a MySQL database to an output file</h3></div></div></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+				<span class="emphasis"><em>This scenario makes use of the Dynamic Schema feature, which
+					is only available to users who have subscribed to one of the <span class="emphasis"><strong>Talend</strong></span> solutions.</em></span>
+			</p></div><p>In this scenario we will read dynamic columns from a MySQL database, map them and then
+			write them to a table in a local output file. By defining a dynamic column alongside
+			known column names, we can retrieve all of the columns from the database table,
+			including the unknown columns.</p><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e76861"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Drop a <span class="emphasis"><strong>tAmazonMysqlInput</strong></span>, a <span class="emphasis"><strong>tMap</strong></span> and a <span class="emphasis"><strong>tFileOutputDelimited</strong></span> component onto the workspace.</p><div class="mediaobject"><img src="../images/Use_Case_tAmazonMysqlInput_Dynamic_Schema_1.png"></div></li><li class="step" title="Step 2"><p> Link <span class="emphasis"><strong>tAmazonMysqlInput</strong></span> to <span class="emphasis"><strong>tMap</strong></span> using a <span class="emphasis"><strong>Row &gt;
+							Main</strong></span> connection. Link <span class="emphasis"><strong>tMap</strong></span>
+						to <span class="emphasis"><strong>tFileOutputDelimited</strong></span> using a <span class="emphasis"><strong>Row &gt; *New Output* (Main)</strong></span> connection.</p></li></ol></div></div><div class="section" title="Configuring the input component"><div class="titlepage"><div><div><h4 class="title"><a name="d0e76901"></a>Configuring the input component</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="emphasis"><strong>tAmazonMysqlInput</strong></span> to open
+						its <span class="emphasis"><strong>Basic settings</strong></span> view in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tAmazonMysqlInput_Dynamic_Schema_2.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+							<span class="emphasis"><em>The dynamic schema feature is only supported in
+									<span class="emphasis"><strong>Built-In</strong></span> mode.</em></span>
+						</p></div></li><li class="step" title="Step 2"><p> Select <span class="emphasis"><strong>Built-in</strong></span> as the <span class="emphasis"><strong>Property Type</strong></span>. Select the <span class="emphasis"><strong>DB Version</strong></span> from the corresponding list.</p></li><li class="step" title="Step 3"><p> Next to <span class="emphasis"><strong>Host</strong></span>, enter the database server
+						IP address. Next to <span class="emphasis"><strong>Port</strong></span>, enter the
+						listening port number of the database server.</p></li><li class="step" title="Step 4"><p> Enter your authentication data in the <span class="emphasis"><strong>Username</strong></span> and <span class="emphasis"><strong>Password</strong></span>
+						fields. Set the <span class="emphasis"><strong>Schema type</strong></span> as<span class="emphasis"><strong> Built-in</strong></span> and click <span class="emphasis"><strong>Edit
+							schema</strong></span> to define the dynamic schema.</p><p> The schema editor opens:</p><div class="mediaobject"><img src="../images/Use_Case_tAmazonMysqlInput_Dynamic_Schema_3.png"></div></li><li class="step" title="Step 5"><p> Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row to the
+						schema. Under <span class="emphasis"><strong>Column</strong></span>, click in the fields
+						to enter the corresponding column names.</p></li><li class="step" title="Step 6"><p> Click the field under <span class="emphasis"><strong>Type</strong></span> to define the
+						type of data. Click the arrow and select <span class="emphasis"><strong>Dynamic</strong></span> from the list and click <span class="emphasis"><strong>OK</strong></span> to close the schema editor.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+							<span class="emphasis"><em>Under <span class="emphasis"><strong>Type</strong></span>, the
+								dynamic column type must be set as <span class="emphasis"><strong>Dynamic</strong></span>.</em></span>
+						</p></div></li><li class="step" title="Step 7"><p> Next to the <span class="emphasis"><strong>Table Name</strong></span> field, click the
+							<span class="emphasis"><strong>[...]</strong></span> button to select the database
+						table of interest.</p><p> A dialog box displays a tree diagram of all the tables in the selected
+						database:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_4.png"></div></li><li class="step" title="Step 8"><p> Click the table of interest and then click <span class="emphasis"><strong>OK</strong></span> to close the dialog box. Set the <span class="emphasis"><strong>Query Type</strong></span> as <span class="emphasis"><strong>Built-In</strong></span>.</p></li><li class="step" title="Step 9"><p> In the <span class="emphasis"><strong>Query</strong></span> box, enter the query
+						required to retrieve all of the columns from the table.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+							<span class="emphasis"><em>In the SELECT statement it is necessary to use
+								the <span class="emphasis"><strong>*</strong></span> wildcard character, to
+								retrieve all of the columns from the selected table.</em></span>
+						</p></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_5.png"></div></li></ol></div></div><div class="section" title="Configuring the tMap component"><div class="titlepage"><div><div><h4 class="title"><a name="d0e77050"></a>Configuring the tMap component</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Click <span class="emphasis"><strong>tMap</strong></span> to open its <span class="emphasis"><strong>Basic Settings</strong></span> view in the <span class="emphasis"><strong>Component</strong></span> tab. Click <span class="emphasis"><strong>[...]</strong></span>
+						next to <span class="emphasis"><strong>Map Editor</strong></span> to map the column from
+						the source file.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_6.png"></div></li><li class="step" title="Step 2"><p> Drop the column defined as dynamic from the input schema on the left onto
+						the output schema on the right.</p><p> The column dropped on the output schema retains its original
+						values.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+							<span class="emphasis"><em>The dynamic column must be mapped on a one to one basis and
+								cannot undergo any transformations. It cannot be used in a filter
+								expression or in a variables section. It cannot be renamed in the
+								output table and cannot be used as a join condition.</em></span>
+						</p></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_7.png"></div></li><li class="step" title="Step 3"><p> Click <span class="emphasis"><strong>OK</strong></span> to close the <span class="emphasis"><strong>Map Editor</strong></span>. </p></li></ol></div></div><div class="section" title="Configuring the output component"><div class="titlepage"><div><div><h4 class="title"><a name="d0e77098"></a>Configuring the output component</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tFileOutputDelimited</strong></span> to set
+						its <span class="emphasis"><strong>Basic Settings</strong></span> in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_8.png"></div></li><li class="step" title="Step 2"><p> Next to the <span class="emphasis"><strong>File Name</strong></span> field, click the
+							<span class="emphasis"><strong>[...]</strong></span> button to browse your directory
+						to where you want to save the output file, then enter a name for the
+						file.</p></li><li class="step" title="Step 3"><p> Select the <span class="emphasis"><strong>Include Header</strong></span> check box to
+						retrieve the column names as well as the data. </p></li></ol></div></div><div class="section" title="Job execution"><div class="titlepage"><div><div><h4 class="title"><a name="d0e77132"></a>Job execution</h4></div></div></div><p>Save the Job and press <span class="emphasis"><strong>F6</strong></span> to run it.</p><p>The output file is written with all the column names and corresponding data,
+				retrieved from the database via the dynamic schema:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_9.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> The Job can also be run in the <span class="emphasis"><strong>Traces Debug</strong></span>
+					mode, which allows you to view the rows as they are written to the output file,
+					in the workspace.</p><p> </p></div><p>For further information about defining and mapping dynamic schemas, see
+						<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p><p>For related scenarios, see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+						<a class="xref" href="tContextLoad.html#Raa15947" title="Scenario: Dynamic context use in MySQL DB insert">the section called &#8220;Scenario: Dynamic context use in MySQL DB insert&#8221;</a>.</p></li><li class="listitem"><p>
+						<a class="xref" href="tDBInput.html#Raa95556" title="Scenario 1: Displaying selected data from DB table">the section called &#8220;Scenario 1: Displaying selected data from DB table&#8221;</a>.</p></li><li class="listitem"><p>
+						<a class="xref" href="tDBInput.html#Raa80338" title="Scenario 2: Using StoreSQLQuery variable">the section called &#8220;Scenario 2: Using StoreSQLQuery variable&#8221;</a>.</p></li><li class="listitem"><p>
+						<a class="xref" href="tMysqlOutput.html#Raa52976" title="Scenario 4: Writing dynamic columns from a source file to a MySQL database">the section called &#8220;Scenario 4: Writing dynamic columns from a source file to a MySQL database&#8221;</a>.</p></li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tAmazonMysqlConnection.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-cloud.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tAmazonMysqlOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tAmazonMysqlConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tAmazonMysqlOutput</td></tr></table></div></body></html>

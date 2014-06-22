@@ -1,0 +1,135 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileExist</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileDelete.html" title="tFileDelete"><link rel="next" href="tFileInputARFF.html" title="tFileInputARFF"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileExist</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileDelete.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileInputARFF.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileExist"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileExist"></a>tFileExist</h2></div></div></div><div class="mediaobject"><img src="../images/tFileExist_icon32_white.png"></div><div class="section" title="tFileExist Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e214246"></a>tFileExist Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>File/Management</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileExist </strong></span>checks if a file
+								exists or not.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileExists </strong></span>helps to streamline
+								processes by automating recurrent and tedious tasks such as checking
+								if a file exists.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Path to the file you want to check if it exists or not.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component can be used as standalone component.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Global Variables</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Exists</strong></span>: Indicates whether a
+								specified file exists or not. This is available as a <span class="emphasis"><strong>Flow</strong></span> variable</p>
+							<p> Returns a boolean value: </p>
+							<p> - true if the file exists.</p>
+							<p> - false if the file does not exist. </p>
+							<p> </p>
+							<p>
+								<span class="emphasis"><strong>File Name</strong></span>: Retrieves the name and
+								path to a file. This is available as an <span class="emphasis"><strong>After</strong></span> variable.</p>
+							<p> Returns a string.</p>
+							<p> </p>
+							<p> For further information about variables, see <span class="emphasis"><em>Talend Open Studio</em></span>
+								<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Outgoing links (from one component to another):</p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+								Error; Run if; On Component Ok; On Component Error.</p>
+							<p> </p>
+							<p> Incoming links (from one component to another):</p>
+							<p>
+								<span class="emphasis"><strong>Row</strong></span>: Iterate.</p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: Run if; On Subjob Ok; On
+								Subjob Error; On component Ok; On Component Error; Synchronize;
+								Parallelize. </p>
+							<p> </p>
+							<p> For further information regarding connections, see <span class="emphasis"><em>Talend Open Studio</em></span>
+								<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Checking for the presence of a file and creating it if it does not exist"><div class="titlepage"><div><div><h3 class="title"><a name="d0e214489"></a>Scenario: Checking for the presence of a file and creating it if it does not
+			exist</h3></div></div></div><p>This scenario describes a simple Job that: checks if a given file exists, displays a
+			graphical message to confirm that the file does not exist, reads the input data in
+			another given file and writes it in an output delimited file.</p><div class="procedure" title="Procedure&nbsp;13.4.&nbsp; Dropping and linking the components"><a name="d0e214494"></a><p class="title"><b>Procedure&nbsp;13.4.&nbsp; Dropping and linking the components </b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> onto the design workspace: <span class="emphasis"><strong>tFileExist</strong></span>, <span class="emphasis"><strong>tFileInputDelimited</strong></span>, <span class="emphasis"><strong>tFileOutputDelimited</strong></span>, and <span class="emphasis"><strong>tMsgBox</strong></span>.</p></li><li class="step" title="Step 2"><p>Connect <span class="emphasis"><strong>tFileExist</strong></span> to <span class="emphasis"><strong>tFile InputDelimited</strong></span> using an <span class="emphasis"><strong>OnSubjobOk</strong></span> and to <span class="emphasis"><strong>tMsgBox</strong></span> using
+					a <span class="emphasis"><strong>Run If</strong></span> link.</p><div class="mediaobject"><img src="../images/Use_Case_tFileExist.png"></div></li><li class="step" title="Step 3"><p>Connect <span class="emphasis"><strong>tFileInputDelimited </strong></span>to <span class="emphasis"><strong>tFileOutputDelimite</strong></span> using a <span class="emphasis"><strong>Row
+						Main</strong></span> link.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;13.5.&nbsp; Configuring the components"><a name="d0e214548"></a><p class="title"><b>Procedure&nbsp;13.5.&nbsp; Configuring the components </b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the design workspace, select <span class="emphasis"><strong>tFileExist</strong></span>
+					and click the <span class="emphasis"><strong>Component</strong></span> tab to define its basic
+					settings.</p><div class="mediaobject"><img src="../images/Use_Case_tFileExist1.png"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>File name</strong></span> field, enter the file path
+					or browse to the file you want to check if it exists or not.</p></li><li class="step" title="Step 3"><p>In the design workspace, select <span class="emphasis"><strong>tFileInputDelimited</strong></span> and click the <span class="emphasis"><strong>Component</strong></span> tab to define its basic settings.</p><div class="mediaobject"><img src="../images/Use_Case_tFileExist3.png"></div></li><li class="step" title="Step 4"><p>Browse to the input file you want to read to fill out the<span class="emphasis"><strong> File Name</strong></span> field.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+						<span class="emphasis"><em>If the path of the file contains some accented
+							characters, you will get an error message when executing your Job. For
+							more information regarding the procedures to follow when the support of
+							accented characters is missing, see the </em></span>
+						<span class="emphasis"><em>Talend
+							Installation and Upgrade Guide</em></span> of the<span class="emphasis"><em>
+							<span class="emphasis"><strong>Talend</strong></span> solution you are using.</em></span>
+					</p></div></li><li class="step" title="Step 5"><p>Set the row and field separators in their corresponding fields.</p></li><li class="step" title="Step 6"><p>Set the header, footer and number of processed rows as needed. In this
+					scenario, there is one header in our table.</p></li><li class="step" title="Step 7"><p>Set <span class="emphasis"><strong>Schema</strong></span> to <span class="emphasis"><strong>Built-in
+					</strong></span>and click the <span class="emphasis"><strong>Edit schema</strong></span> button to
+					define the data to pass on to the <span class="emphasis"><strong>tFileOutputDelimited</strong></span> component. Define the data present in the
+					file to read, file2 in this scenario.</p><p>For more information about schema types, see <span class="emphasis"><em>Talend Open Studio</em></span><span class="emphasis"><em> User
+					Guide.</em></span></p><div class="mediaobject"><img src="../images/Use_Case_tFileExist5.png"></div><p>The schema in file2 consists of five columns: <span class="emphasis"><em>Num, Ref, Price,
+						Quant, </em></span>and <span class="emphasis"><em>tax</em></span>.</p></li><li class="step" title="Step 8"><p>In the design workspace, select the <span class="emphasis"><strong>tFileOutputDelimited</strong></span> component.</p></li><li class="step" title="Step 9"><p>Click the <span class="emphasis"><strong>Component</strong></span> tab to define the basic
+					settings of <span class="emphasis"><strong>tFileOutputDelimited</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileExist4.png"></div></li><li class="step" title="Step 10"><p>Set property type to <span class="emphasis"><strong>Built-in</strong></span>.</p></li><li class="step" title="Step 11"><p>In the <span class="emphasis"><strong>File name</strong></span> field, press <span class="emphasis"><strong>Ctrl+Space</strong></span> to access the variable list and select the
+					global variable FILENAME.</p></li><li class="step" title="Step 12"><p>Set the row and field separators in their corresponding fields.</p></li><li class="step" title="Step 13"><p>Select the <span class="emphasis"><strong>Include Header</strong></span> check box as file2
+					in this scenario includes a header.</p></li><li class="step" title="Step 14"><p>Set <span class="emphasis"><strong>Schema</strong></span> to <span class="emphasis"><strong>Built-in
+					</strong></span>and click <span class="emphasis"><strong>Sync columns</strong></span> to
+					synchronize the output file schema (file1) with the input file schema
+					(file2).</p><div class="mediaobject"><img src="../images/Use_Case_tFileExist6.png"></div></li><li class="step" title="Step 15"><p> In the design workspace, select the <span class="emphasis"><strong>tMsgBox</strong></span>
+					component.</p></li><li class="step" title="Step 16"><p> Click the <span class="emphasis"><strong>Component</strong></span> tab to define the basic
+					settings of <span class="emphasis"><strong>tMsgBox</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileExist7.png"></div></li><li class="step" title="Step 17"><p>Click the <span class="emphasis"><strong>If</strong></span> link to display its properties
+					in the <span class="emphasis"><strong>Basic settings </strong></span>view.</p></li><li class="step" title="Step 18"><p>In the <span class="emphasis"><strong>Condition</strong></span> panel, press <span class="emphasis"><strong>Ctrl+Space</strong></span> to access the variable list and select the
+					global variable EXISTS. Type an exclamation mark before the variable to negate
+					the meaning of the variable.</p><div class="mediaobject"><img src="../images/Use_Case_tFileExist8.png"></div></li></ol></div><div class="procedure" title="Procedure&nbsp;13.6.&nbsp; Saving and executing the Job"><a name="d0e214736"></a><p class="title"><b>Procedure&nbsp;13.6.&nbsp; Saving and executing the Job </b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save your Job.</p></li><li class="step" title="Step 2"><p>Press <span class="emphasis"><strong>F6 </strong></span> or click the <span class="emphasis"><strong>Run</strong></span> button in the <span class="emphasis"><strong>Run</strong></span> tab to
+					execute it. </p><div class="mediaobject"><img src="../images/Use_Case_tFileExist9.png"></div></li></ol></div><p>A dialog box appears to confirm that the file does not exists. </p><p>Click <span class="emphasis"><strong>OK</strong></span> to close the dialog box and continue the Job
+			execution process. The missing file, file1 in this scenario, got written in a delimited
+			file in the defined place.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileDelete.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileInputARFF.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileDelete&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileInputARFF</td></tr></table></div></body></html>

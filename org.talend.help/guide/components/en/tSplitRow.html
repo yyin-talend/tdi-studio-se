@@ -1,0 +1,153 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSplitRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-processing.html" title="Chapter&nbsp;18.&nbsp;Processing components"><link rel="prev" href="tSortRow.html" title="tSortRow"><link rel="next" href="tWriteJSONField.html" title="tWriteJSONField"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSplitRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSortRow.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;18.&nbsp;Processing components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tWriteJSONField.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tSplitRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSplitRow"></a>tSplitRow</h2></div></div></div><div class="mediaobject"><img src="../images/tsplitrow_icon32.png"></div><div class="section" title="tSplitRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e274883"></a>tSplitRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Component
+                                                  family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Processing/Fields</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="emphasis"><strong>tSplitRow</strong></span>
+                                                  splits one row into several rows.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component helps splitting one input row
+                                                  into several output rows.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema </em></span>and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields that will be
+                                                  processed and passed on to the next component.
+                                                  <span>The schema is
+                                                  either <span class="emphasis"><strong>Built-in</strong></span>
+                                                  or stored remotely in the <span class="emphasis"><strong>Repository</strong></span>. </span>
+                                                  </p>
+                                                  <p> Click <span class="emphasis"><strong>Edit
+                                                  Schema</strong></span> to make changes to the schema.
+                                                  Note that if you make changes, the schema
+                                                  automatically becomes built-in.</p>
+                                                  <p> Click <span class="emphasis"><strong>Sync
+                                                  columns</strong></span> to retrieve the schema from the
+                                                  previous component connected in the Job.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Built-in</strong></span>:
+                                                  The schema will be created and stored locally for
+                                                  this component only. Related topic: see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                                          <span class="emphasis"><em>User
+                                                  Guide</em></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused in various
+                                                  projects and Job flowcharts. Related topic: see
+                                                  <span class="emphasis"><em>Talend Open Studio
+                                                  User Guide</em></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Columns mapping</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Click the plus button to add as many lines
+                                                  as needed by mappings from input columns onto
+                                                  output columns.</p>
+                                                </td></tr><tr><td>
+                                                  <p><span class="emphasis"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to gather the Job
+                                                  processing metadata at the Job level as well as at
+                                                  each component level. </p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component splits one input row into
+                                                  multiple output rows by mapping input columns onto
+                                                  output columns.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>n/a</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario 1: Splitting one row into two rows"><div class="titlepage"><div><div><h3 class="title"><a name="d0e275077"></a>Scenario<span> 1</span>: Splitting one row into two rows</h3></div></div></div><p>This scenario describes a three-component Job. A row of data containing
+                        information of two companies will be split up into two rows.</p><div class="mediaobject"><img src="../images/use_case-tsplitrow1.png"></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop the following components required for this use case:
+                                                <span class="emphasis"><strong>tFixedFlowInput</strong></span>,
+                                                <span class="emphasis"><strong>tSplitRow</strong></span> and
+                                                <span class="emphasis"><strong>tLogRow</strong></span> from the
+                                                <span class="emphasis"><strong>Palette</strong></span> to the
+                                        design workspace.</p></li><li class="listitem"><p>Connect them together using <span class="emphasis"><strong>Row</strong></span>
+                                        <span class="emphasis"><strong>Main</strong></span> connections.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tFixedFlowInput</strong></span>
+                                        to open its <span class="emphasis"><strong>Basic settings</strong></span>
+                                        view.</p><div class="mediaobject"><img src="../images/use_case-tsplitrow2.png"></div></li><li class="listitem"><p>Select <span class="emphasis"><strong>Use Inline Content(delimited
+                                                file)</strong></span> in the <span class="emphasis"><strong>Mode</strong></span> area.</p></li><li class="listitem"><p>Fill the <span class="emphasis"><strong>Content</strong></span> area with
+                                        the following scripts:</p><p><span class="emphasis"><em>Talend;LA;California;537;5thAvenue;IT;Lionbridge;Memphis;Tennessee;537;Lincoln
+                                                Road;IT Service;</em></span></p></li><li class="listitem"><p>Click <span class="emphasis"><strong>Edit schema</strong></span> to open a
+                                        dialog box to edit the schema for the input data.</p><div class="mediaobject"><img src="../images/use_case-tsplitrow3.png"></div></li><li class="listitem"><p>Click the plus button to add twelve lines for the input
+                                        columns: <span class="emphasis"><em>Company</em></span>,
+                                                <span class="emphasis"><em>City</em></span>,
+                                                <span class="emphasis"><em>State</em></span>,
+                                                <span class="emphasis"><em>CountryCode</em></span>,
+                                                <span class="emphasis"><em>Street</em></span>,
+                                                <span class="emphasis"><em>Industry</em></span>,
+                                                <span class="emphasis"><em>Company2</em></span>,
+                                                <span class="emphasis"><em>City2</em></span>,
+                                                <span class="emphasis"><em>State2</em></span>,
+                                                <span class="emphasis"><em>CountryCode2</em></span>,
+                                                <span class="emphasis"><em>Street2</em></span> and
+                                                <span class="emphasis"><em>Industry2</em></span>.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span> to close the dialog
+                                        box.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tSplitRow</strong></span> to
+                                        open its <span class="emphasis"><strong>Basic settings</strong></span>
+                                        view.</p><div class="mediaobject"><img src="../images/use_case-tsplitrow4.png"></div></li><li class="listitem"><p>Click <span class="emphasis"><strong>Edit schema</strong></span> to set the
+                                        schema for the output data.</p><div class="mediaobject"><img src="../images/use_case-tsplitrow5.png"></div></li><li class="listitem"><p>Click the plus button beneath the
+                                                <span class="emphasis"><em>tSplitRow_1(Output)</em></span> table to
+                                        add four lines for the output columns:
+                                                <span class="emphasis"><em>Company</em></span>,
+                                                <span class="emphasis"><em>CountryCode</em></span>,
+                                                <span class="emphasis"><em>Address</em></span> and
+                                                <span class="emphasis"><em>Industry</em></span>.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span> to close the dialog
+                                        box. Then an empty table with column names defined in the
+                                        preceding step will appear in the <span class="emphasis"><strong>Columns mapping</strong></span> area:</p><div class="mediaobject"><img src="../images/use_case-tsplitrow7.png"></div></li><li class="listitem"><p>Click the plus button beneath the empty table in the <span class="emphasis"><strong>Columns mapping</strong></span> area to add
+                                        two lines for the output rows.</p></li><li class="listitem"><p>Fill the table in the <span class="emphasis"><strong>Columns
+                                                mapping</strong></span> area by columns with the
+                                        following values:</p><p><span class="emphasis"><em>Company</em></span>:
+                                                <span class="emphasis"><em>row1.Company</em></span>,
+                                                <span class="emphasis"><em>row1.Company2</em></span>;</p><p><span class="emphasis"><em>Country</em></span>:
+                                                <span class="emphasis"><em>row1.CountryCode</em></span>,
+                                                <span class="emphasis"><em>row1.CountryCode2</em></span>;</p><p><span class="emphasis"><em>Address</em></span>:
+                                                <span class="emphasis"><em>row1.Street</em></span>+<span class="emphasis"><em>","</em></span>+<span class="emphasis"><em>row1.City</em></span>+<span class="emphasis"><em>","</em></span>+<span class="emphasis"><em>row1.State</em></span>,
+                                                <span class="emphasis"><em>row1.Street2</em></span>+<span class="emphasis"><em>","</em></span>+<span class="emphasis"><em>row1.City2</em></span>+<span class="emphasis"><em>","</em></span>+<span class="emphasis"><em>row1.State2</em></span>;</p><p><span class="emphasis"><em>Industry</em></span>:
+                                                <span class="emphasis"><em>row1.Industry</em></span>,
+                                                <span class="emphasis"><em>row1.Industry2</em></span>;
+                                </p><div class="mediaobject"><img src="../images/use_case-tsplitrow6.png"></div><p>
+                                        </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The value in <span class="emphasis"><em>Address</em></span>
+                                                  column, for example,
+                                                  <span class="emphasis"><em>row1.Street</em></span>+<span class="emphasis"><em>","</em></span>+<span class="emphasis"><em>row1.City</em></span>+<span class="emphasis"><em>","</em></span>+<span class="emphasis"><em>row1.State</em></span>,
+                                                  will display an absolute address by combining
+                                                  values in <span class="emphasis"><em>Street</em></span> column,
+                                                  <span class="emphasis"><em>City</em></span> column and
+                                                  <span class="emphasis"><em>State</em></span> column together. The
+                                                  "<span class="emphasis"><em>row1</em></span>" used in the values of
+                                                  each column refers to the input row from <span class="emphasis"><strong>tFixedFlowInput</strong></span>.</p></div><p>
+                                </p></li><li class="listitem"><p>Double-click<span class="emphasis"><strong> tLogRow</strong></span> to open
+                                        its <span class="emphasis"><strong>Basic settings</strong></span>
+                                        view.</p><div class="mediaobject"><img src="../images/use_case-tsplitrow8.png"></div></li><li class="listitem"><p>Click <span class="emphasis"><strong>Sync columns</strong></span> to
+                                        retrieve the schema defined in the preceding
+                                        component.</p></li><li class="listitem"><p>Select <span class="emphasis"><strong>Table</strong></span> in the <span class="emphasis"><strong>Mode</strong></span> area.</p></li><li class="listitem"><p>Save the Job and press <span class="emphasis"><strong>F6</strong></span> to
+                                        run it.</p></li></ol></div><div class="mediaobject"><img src="../images/use_case-tsplitrow9.png"></div><p>The input data in one row is split into two rows of data containing the same
+                        company information.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSortRow.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tWriteJSONField.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tSortRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tWriteJSONField</td></tr></table></div></body></html>

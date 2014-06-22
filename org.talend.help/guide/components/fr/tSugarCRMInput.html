@@ -1,0 +1,120 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSugarCRMInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-business.html" title="Chapitre&nbsp;2.&nbsp;Composants Business"><link rel="prev" href="tSAPRollback.html" title="tSAPRollback"><link rel="next" href="tSugarCRMOutput.html" title="tSugarCRMOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSugarCRMInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSAPRollback.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;2.&nbsp;Composants Business</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSugarCRMOutput.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tSugarCRMInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSugarCRMInput"></a>tSugarCRMInput</h2></div></div></div><div class="mediaobject"><img src="../images/tSugarCRMInput_icon32_white.png"></div><a name="Xaa2506379"></a><div class="section" title="Propri&eacute;t&eacute;s du tSugarCRMInput"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e21087"></a>Propri&eacute;t&eacute;s du tSugarCRMInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille du composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Business/Cloud</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="emphasis"><strong>tSugarCRMInput</strong></span> se connecte &agrave;
+								un module de la base de donn&eacute;es SugarCRM via le service Web ad&eacute;quat.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="emphasis"><strong>tSugarCRMInput</strong></span> permet
+								d&#8217;extraire les donn&eacute;es d&#8217;une base de donn&eacute;es SugarCRM &agrave; l&#8217;aide d&#8217;une
+								requ&ecirc;te. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>SugarCRM Webservice URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez l&#8217;URL du service Web permettant de se connecter &agrave; la
+								base de donn&eacute;es SugarCRM. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Saisissez les informations d&#8217;authentification de l&#8217;utilisateur au
+								service Web. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Module</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le module ad&eacute;quat dans la liste.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Pour utiliser des tables personnalis&eacute;es, s&eacute;lectionnez
+										<span class="emphasis"><strong>Use custom module</strong></span> dans la
+									liste . Les champs <span class="emphasis"><strong>Custom module package
+										name</strong></span> et <span class="emphasis"><strong>Custom module name
+									</strong></span>qui s&#8217;affichent sont automatiquement remplis avec les
+									noms correspondants.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>) , soit distant dans le
+										<span class="emphasis"><strong>Repository</strong></span></span>.</p>
+							<p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma. <span>Notez que si vous
+									effectuez des modifications, le sch&eacute;ma devient automatiquement
+									built-in.</span></p>
+							<p> Pour ce composant, le sch&eacute;ma d&eacute;pend du <span class="emphasis"><strong>Module</strong></span> s&eacute;lectionn&eacute;. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Query condition</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez la requ&ecirc;te permettant de s&eacute;lectionner les donn&eacute;es &agrave;
+								extraire. Exemple&nbsp;: account_name= &#8216;Talend&#8217; </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; en tant que composant de
+								d&eacute;but. Un composant de sortie est n&eacute;cessaire. </p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario: Extraire les donn&eacute;es d&#8217;un compte &agrave; partir de SugarCRM"><div class="titlepage"><div><div><h3 class="title"><a name="Raa74498"></a>Sc&eacute;nario: Extraire les donn&eacute;es d&#8217;un compte &agrave; partir de SugarCRM</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; deux composants visant &agrave; extraire les informations d&#8217;un
+			compte &agrave; partir d&#8217;une base de donn&eacute;es SugarCRM vers un fichier de sortie Excel. </p><div class="mediaobject"><img src="../images/Use_Case_tSugarCRMInput1.png"></div><div class="section" title="Configurer le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e21324"></a>Configurer le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>A partir de la <span class="emphasis"><strong>Palette</strong></span>, cliquez-d&eacute;posez
+						un composant <span class="emphasis"><strong>tSugarCRMInput</strong></span> et un composant
+							<span class="emphasis"><strong>tFileOutputExcel</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez les composants d&#8217;entr&eacute;e et de sortie &agrave; l&#8217;aide d&#8217;un lien de type
+							<span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>. </p></li></ol></div></div><div class="section" title="Configurer le composant d' entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e21349"></a>Configurer le composant d' entr&eacute;e</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tSugarCRMInput</strong></span> pour
+						afficher l&#8217;onglet <span class="emphasis"><strong>Basic settings</strong></span> de la vue
+							<span class="emphasis"><strong>Component</strong></span> et param&eacute;trer ses
+						propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_tSugarCRMInput2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Remplissez les informations de connexion dans les champs <span class="emphasis"><strong>SugarCRM Web Service URL</strong></span>, <span class="emphasis"><strong>Username</strong></span> et <span class="emphasis"><strong>Password</strong></span>.
+					</p></li><li class="step" title="&Eacute;tape 3"><p>S&eacute;lectionnez ensuite le module ad&eacute;quat parmi ceux propos&eacute;s dans la liste
+							<span class="emphasis"><strong>Module</strong></span>. Dans cet exemple,
+							c&#8217;est&nbsp;<span class="emphasis"><em>Accounts</em></span> qui est s&eacute;lectionn&eacute;. </p><p>Le champ <span class="emphasis"><strong>Schema</strong></span> est automatiquement
+						renseign&eacute; en fonction du module s&eacute;lectionn&eacute;, mais il est possible de le
+						modifier et de supprimer les colonnes dont vous n&#8217;avez pas besoin en sortie.
+					</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Query Condition</strong></span>, saisissez
+						la requ&ecirc;te que vous voulez utiliser pour extraire les donn&eacute;es du CRM. Dans
+						cet exemple&nbsp;:
+						&#8220;<span class="emphasis"><em>billing_address_city=&#8217;Sunnyvale</em></span>&#8217;&#8221;.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e21403"></a>Ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>S&eacute;lectionnez ensuite le composant <span class="emphasis"><strong>tFileOutputExcel</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tSugarCRMInput3.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Renseignez le nom du fichier de destination dans le champ <span class="emphasis"><strong>File Name</strong></span> ainsi que le nom de la feuille de
+						calcul dans le champ <span class="emphasis"><strong>Sheet</strong></span> puis cochez la
+						case <span class="emphasis"><strong>Include header</strong></span> pour consid&eacute;rer les
+						ent&ecirc;tes.</p></li><li class="step" title="&Eacute;tape 3"><p>Enregistrez votre Job puis appuyez sur <span class="emphasis"><strong>F6</strong></span>
+						pour l&#8217;ex&eacute;cuter.</p><div class="mediaobject"><img src="../images/Use_Case_tSugarCRMInput4.png"></div><p>Les donn&eacute;es filtr&eacute;es sont inscrites en sortie dans la feuille de calcul du
+						fichier Excel sp&eacute;cifi&eacute;. </p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSAPRollback.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-business.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSugarCRMOutput.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tSAPRollback&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tSugarCRMOutput</td></tr></table></div></body></html>

@@ -1,0 +1,128 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHiveConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-bigdata.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tHiveClose.html" title="tHiveClose"><link rel="next" href="tHiveRow.html" title="tHiveRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tHiveConnection</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tHiveClose.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;1.&nbsp;Big Data components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tHiveRow.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tHiveConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHiveConnection"></a>tHiveConnection</h2></div></div></div><div class="mediaobject"><img src="../images/thiveconnection_icon32_white.png"></div><div class="section" title="tHiveConnection properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e316"></a>tHiveConnection properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Database
+                                Family</strong></span></p>
+                        </td><td valign="top"><p>Big Data / Hive</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tHiveConnection</strong></span> opens a connection to a database in
+                                order that a transaction may be made.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component allows you
+                                to commit all of the Job data to an output database in just a single
+                                transaction, once the data has been validated.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span>.</p>
+                        	<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored centrally.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Repository</strong></span>:
+                                Select the repository file in which the properties are stored. The
+                                fields that follow are completed automatically using the data
+                                retrieved.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Version</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Distribution</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the product you are using as the Hadoop distribution. </p>
+                            <p>The options in the list vary depending on the component you are
+                                using.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Hive version</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the version of the Hadoop distribution you are using.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Connection mode</em></span>
+							</p>
+                        </td><td valign="top">
+                            <p>Select a connection mode from the list. The options vary depending
+                                on the distribution you are using.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>Database server IP address.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>DB server listening port.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Database</em></span></p>
+                        </td><td valign="top"><p>Fill this field with the name of the database.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This field is not available when you select <span class="emphasis"><strong>Embedded</strong></span> from the <span class="emphasis"><strong>Connection mode</strong></span> list.</p></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Username</em></span><span class="emphasis"><em> and
+                                    Password</em></span></p>
+                        </td><td valign="top"><p>DB user authentication data.</p>
+                        </td></tr><tr><td>
+							<p><span class="emphasis"><em>Hadoop properties</em></span></p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Set Jobtracker URI</em></span></p>
+						</td><td valign="top"><p>Select this check box to indicate the location of the Hadoop Jobtracker service to be
+		used. For example, we assume that you have chosen a machine called <span class="emphasis"><em>machine1</em></span> as the JobTracker, then set its location as <span class="emphasis"><em>machine1:portnumber</em></span>.</p><p>This property is required when the query you want to use is executed in Windows and it is
+		a <code class="code">Select</code> query. For example, <code class="code">SELECT your_column_name FROM
+			your_table_name</code></p><p>You can keep this check box clear, when a query is executed in Windows but does not
+		require the Hadoop Map/Reduce framework, for example, <code class="code">select * from
+			your_table_name</code>; however, setting the exact value for this property does not
+		provoke any issues with the execution in that situation.</p><p>For further information about the Hadoop Map/Reduce framework, see the Map/Reduce tutorial
+		in the Hadoop documentation.</p></td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p><span class="emphasis"><em>Set NameNode URI</em></span></p>
+						</td><td valign="top"><p>Select this check box to indicate the location of the NameNode of the Hadoop cluster to be
+		used.</p><p>This property is required when the query you want to use is executed in Windows and it is
+		a <code class="code">Select</code> query. For example, <code class="code">SELECT your_column_name FROM
+			your_table_name</code></p><p>You can keep this check box clear, when a query is executed in Windows but does not
+		require the Hadoop Map/Reduce framework, for example, <code class="code">select * from
+			your_table_name</code>; however, setting the exact value for this property does not
+		provoke any issues with the execution in that situation.</p><p>For further information about the Hadoop Map/Reduce framework, see the Map/Reduce tutorial
+		in the Hadoop documentation.</p></td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use or register a shared DB
+                                    Connection</em></span></p>
+                        </td><td valign="top"><p>Select this check box to share your connection or
+                                fetch a connection shared by a parent or child Job. This allows you
+                                to share one single DB connection among several DB connection
+                                components from different Job levels that can be either parent or
+                                child. </p>
+                            <div lang="" class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This option is incompatible with the <span class="emphasis"><strong>Use dynamic job</strong></span>
+            and <span class="emphasis"><strong>Use an independent process to run subjob</strong></span> options of
+            the <span class="emphasis"><strong>tRunJob</strong></span> component. Using a shared database
+            connection together with a <span class="emphasis"><strong>tRunJob</strong></span> component with
+            either of these two options enabled will cause your Job to fail.</p></div>
+                            <p>
+                                <span class="emphasis"><strong>Shared DB Connection Name:</strong></span> set or
+                                type in the shared connection name.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                    Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to collect the log data at a
+                                component level. </p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is generally used with other Hive components, particularly <span class="emphasis"><strong>tHiveClose</strong></span>. </p>
+                        	<p>If the Studio used to connect to a Hive database is operated on Windows, you must manually
+		create a file called <span class="emphasis"><em>tmp</em></span> in the root of the disk where
+		this Studio is installed.</p>
+                        </td></tr><tr><td valign="top">
+                			<p>
+                				<span class="emphasis"><strong>Prerequisites</strong></span>
+                			</p>
+                		</td><td colspan="2" valign="top">
+                			<p>The Hadoop distribution must be properly installed, so as to guarantee the interaction
+		with the Studio.</p>
+                			<p>For example, if you need to connect to MapR from the Studio, ensure that you have installed
+		the MapR client in the machine where the Studio is, and added the MapR client library to the
+		PATH variable of that machine. For Windows, this library is <span class="emphasis"><em>lib\MapRClient.dll</em></span> in the MapR client jar file; without adding it, you may
+		encounter the following error: <code class="code">no MapRClient in java.library.path</code>.</p>
+                			<p>For further information about how to install an Hadoop distribution, see the manuals
+		corresponding to the Hadoop distribution you are using.</p>
+                		</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e710"></a>Related scenario</h3></div></div></div><p>For a scenario in which<span class="emphasis"><strong> tHiveConnection</strong></span>, might be
+            used, see <a class="xref" href="tMysqlConnection.html#Raa91640" title="Scenario: Inserting data in mother/daughter tables">the section called &#8220;Scenario: Inserting data in mother/daughter tables&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tHiveClose.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tHiveRow.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tHiveClose&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tHiveRow</td></tr></table></div></body></html>

@@ -1,0 +1,114 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRecollector</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-orchestration.html" title="Chapter&nbsp;18.&nbsp;Orchestration components"><link rel="prev" href="tPrejob.html" title="tPrejob"><link rel="next" href="tReplicate.html" title="tReplicate"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tRecollector</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tPrejob.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;18.&nbsp;Orchestration components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tReplicate.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tRecollector"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRecollector"></a>tRecollector</h2></div></div></div><div class="mediaobject"><img src="../images/trecollector_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of
+			the <span class="emphasis"><strong>Integration</strong></span> perspective of your studio on the
+			condition that you have subscribed to one of the <span class="emphasis"><em>Talend Platform</em></span>
+			solutions or Big Data solutions. </p></div><p>The parallelization components work closely with each other to accomplish parallel
+		execution on given processes. The <span class="emphasis"><strong>tPartitioner</strong></span> component
+		dispatches the input records into a specific number of threads; the <span class="emphasis"><strong>tCollector</strong></span> component sends these threads to its following components for
+		parallel execution; the <span class="emphasis"><strong>tDepartitioner</strong></span> component regroups
+		the outputs of the processed parallel threads; the <span class="emphasis"><strong>tRecollector</strong></span> component captures the output of a given <span class="emphasis"><strong>tDepartitioner</strong></span> component and sends the captured data to the next
+		component.</p><div class="section" title="tRecollector Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e344158"></a>tRecollector Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Orchestration</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component captures and outputs the parallel execution results
+								that a given <span class="emphasis"><strong>tDepartitioner</strong></span> has
+								regrouped.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Depending on <span class="emphasis"><strong>tDepartitioner</strong></span>, the
+									<span class="emphasis"><strong>tRecollector</strong></span> component enables
+								the output of the parallel execution results.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description. It defines the number of fields to be processed and passed on
+		to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the <span class="emphasis"><strong>Repository</strong></span>.</span></p>
+							<p>Click <span class="emphasis"><strong>Edit Schema</strong></span> to make changes to the schema. <span>Note that if you make changes, the schema automatically becomes
+			built-in.</span></p>
+							<p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve the schema from the
+		previous component connected in the Job.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Linked Departitioner</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the <span class="emphasis"><strong>tDepartitioner</strong></span>
+								component from which you want to receive the regrouped parallel
+								execution results.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Merge sort partitions</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to implement the Mergesort algorithm to
+								ensure the consistency of data.</p>
+						</td></tr><tr><td>
+							<span class="emphasis"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect the log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is a start component, triggered by the <span class="emphasis"><strong>tPartitioner</strong></span> component to capture the
+								parallel execution results that a selected <span class="emphasis"><strong>tDepartitioner</strong></span> component returns.</p>
+							<p>This component is connected using the <span class="emphasis"><strong>Trigger &gt; Start</strong></span> link from <span class="emphasis"><strong>tPartitioner</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Global Variables</strong></span>
+							</p>
+						</td><td valign="top">&nbsp;</td><td valign="top">
+							<p><span class="emphasis"><strong>NB_LINE</strong></span>: indicates the number of lines processed. This is
+		available as an <span class="emphasis"><strong>After</strong></span> variable</p>
+							<p> </p>
+							<p> For further information regarding global variables, see <span class="emphasis"><em>Talend Data Integration Studio</em></span>
+		<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Incoming links (from the preceding component to this
+								component):</p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: Start.</p>
+							<p>Outgoing links (from this component to the next):</p>
+							<p>
+								<span class="emphasis"><strong>Row</strong></span>: Main.</p>
+							<p> </p>
+							<p> </p>
+							<p> </p>
+							<p> For further information regarding connections, see <span class="emphasis"><em>Talend Data Integration Studio</em></span> User Guide.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e344441"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tPartitioner.html#ychen-20121126-orchestration-tpartitioner" title="Scenario: sorting the customer data of large size in parallel">the section called &#8220;Scenario: sorting the customer data of large size in parallel&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tPrejob.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-orchestration.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tReplicate.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tPrejob&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tReplicate</td></tr></table></div></body></html>

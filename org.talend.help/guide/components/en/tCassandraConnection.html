@@ -1,0 +1,94 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tCassandraConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-bigdata.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tCassandraClose.html" title="tCassandraClose"><link rel="next" href="tCassandraInput.html" title="tCassandraInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tCassandraConnection</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tCassandraClose.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;1.&nbsp;Big Data components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tCassandraInput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tCassandraConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tCassandraConnection"></a>tCassandraConnection</h2></div></div></div><div class="mediaobject"><img src="../images/tCassandraConnection_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+			<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="emphasis"><em>Talend Big Data Studio</em></span>.</em></span>
+		</p></div><div class="section" title="tCassandraConnection properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2544"></a>tCassandraConnection properties </h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Cassandra</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tCassandraConnection</strong></span> opens a
+								connection to a Cassandra server.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tCassandraConnection</strong></span> allows you
+								to define a connection to a Cassandra server to be reused by other
+								Cassandra components.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span></p>
+							<p>
+								<span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+							<p>
+								<span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Server</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the IP address or hostname of the Cassandra server.
+							</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the listening port number of the Cassandra server.</p>
+						</td></tr><tr><td><span class="emphasis"><em>Required Authentication</em></span></td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span></p>
+						</td><td valign="top">
+							<p>Fill in this field with the username for the Cassandra
+								authentication.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p><span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Fill in this field with the password for the Cassandra
+								authentication.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at the
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is generally used with other Cassandra components,
+								particularly <span class="emphasis"><strong>tCassandraClose</strong></span>.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2760"></a>Related scenario </h3></div></div></div><p>For a scenario in which <span class="emphasis"><strong>tCassandraConnection</strong></span> is used,
+			see <a class="xref" href="tCassandraInput.html#rxie-20120921-bigdata-tcassandrainput_scenario" title="Scenario: Handling data with Cassandra">the section called &#8220;Scenario: Handling data with Cassandra&#8221;</a>. </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tCassandraClose.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tCassandraInput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tCassandraClose&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tCassandraInput</td></tr></table></div></body></html>

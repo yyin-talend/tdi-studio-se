@@ -1,0 +1,127 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMemorizeRows</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-misc.html" title="Chapitre&nbsp;16.&nbsp;Composants Misc"><link rel="prev" href="tFixedFlowInput.html" title="tFixedFlowInput"><link rel="next" href="tMsgBox.html" title="tMsgBox"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMemorizeRows</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFixedFlowInput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;16.&nbsp;Composants Misc</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMsgBox.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tMemorizeRows"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMemorizeRows"></a>tMemorizeRows</h2></div></div></div><div class="mediaobject"><img src="../images/tMemorizeRows_icon.png"></div><a name="Xaa2757968"></a><div class="section" title="Propri&eacute;t&eacute;s du tMemorizeRows"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e255184"></a>Propri&eacute;t&eacute;s du tMemorizeRows</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de composant</strong></span></p>
+            </td><td valign="top"><p>Misc</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+            </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tMemorizeRows</strong></span> m&eacute;morise temporairement une collection de donn&eacute;es
+                entrantes en s&eacute;quence ligne par ligne et instancie cette collection en indexant
+                chaque ligne m&eacute;moris&eacute;e &agrave; partir de 0. Le nombre maximum de lignes &agrave; m&eacute;moriser &agrave; un
+                moment donn&eacute; est d&eacute;fini dans la vue <span class="emphasis"><strong>Basic
+                settings</strong></span>.</p>
+            </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+            </td><td colspan="2" valign="top"><p>Le <span class="emphasis"><strong>tMemorizeRows</strong></span> m&eacute;morise une s&eacute;quence de lignes passant dans ce
+                composant et permet au(x) composant(s) suivant(s) d&#8217;effectuer des op&eacute;rations sur les
+                lignes m&eacute;moris&eacute;es, selon vos besoins.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                  schema</em></span></p>
+            </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+                pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>) soit distant dans le <span class="emphasis"><strong>Repository</strong></span>.</p>
+              <p lang="fr">Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+              <p>- Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> afin d&#8217;apporter des modifications au sch&eacute;ma. Notez que, si
+                vous modifiez le sch&eacute;ma, il devient automatiquement <span class="emphasis"><strong>Built-In</strong></span>.</p><p>- Cliquez sur <span class="emphasis"><strong>Sync
+                  columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute;
+                et conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                <span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est
+                stock&eacute; dans le <span class="emphasis"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre
+                r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de
+                  </em></span><span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Row count to memorize</em></span></p>
+            </td><td valign="top"><p>Saisissez le nom de lignes &agrave; d&eacute;finir.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Columns to memorize</em></span></p>
+            </td><td valign="top"><p>S&eacute;lectionnez les colonnes &agrave; m&eacute;moriser du sch&eacute;ma
+                d&#8217;entr&eacute;e.</p>
+            </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de log au niveau
+                du composant.</p>
+            </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+            </td><td colspan="2" valign="top"><p>Ce composant peut &ecirc;tre utilis&eacute; en
+                tant qu&#8217;&eacute;tape interm&eacute;diaire dans un flux de donn&eacute;es ou comme derni&egrave;re &eacute;tape avant de
+                lancer un sous-job.</p><p> Note: Vous pouvez utiliser la variable globale
+                NB_LINE_ROWS afin de r&eacute;cup&eacute;rer la valeur renseign&eacute;e dans le champ <span class="emphasis"><strong>Row count to memorize</strong></span> du composant <span class="emphasis"><strong>tMemorizeRows</strong></span>.</p>
+            </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Connections</strong></span></p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                  autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;:
+                  Main.</p><p><span class="emphasis"><strong>Trigger&nbsp;</strong></span>: Run if, On Component
+                Ok, On Component Error.</p><p> </p><p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave;
+                un autre)&nbsp;:</p><p><span class="emphasis"><strong>Row&nbsp;</strong></span>: Main.
+                </p><p> </p><p>Pour plus d&#8217;informations concernant les connexions,
+                consultez le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Compter le nombre d&#8217;occurrences de diff&eacute;rents &acirc;ges"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e255427"></a>Sc&eacute;nario&nbsp;: Compter le nombre d&#8217;occurrences de diff&eacute;rents &acirc;ges</h3></div></div></div><p>Ce sc&eacute;nario a pour objectif de compter le nombre d&#8217;&acirc;ges diff&eacute;rents se trouvant dans un
+      groupe de&nbsp;12 clients. Dans ce sc&eacute;nario, les donn&eacute;es client sont g&eacute;n&eacute;r&eacute;es de mani&egrave;re
+      al&eacute;atoire.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows1.png"></div><p>Ce Job utilise les cinq composants suivants&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>tRowGenerator&nbsp;</strong></span>: ce composant g&eacute;n&egrave;re&nbsp;12 lignes de
+          donn&eacute;es client contenant les IDs, noms et &acirc;ges des&nbsp;12 clients.</p></li><li class="listitem"><p><span class="emphasis"><strong>tSortRow&nbsp;</strong></span>: ce composant trie les&nbsp;12 lignes selon les
+          donn&eacute;es de l&#8217;&acirc;ge.</p></li><li class="listitem"><p><span class="emphasis"><strong>tMemorizeRows&nbsp;</strong></span>: il m&eacute;morise temporairement un nombre
+          sp&eacute;cifique de lignes de donn&eacute;es entrantes &agrave; un moment donn&eacute; et indexe les lignes de
+          donn&eacute;es m&eacute;moris&eacute;es.</p></li><li class="listitem"><p><span class="emphasis"><strong>tJavaFlex</strong></span>&nbsp;: ce composant compare la valeur des &acirc;ges
+          dans les donn&eacute;es m&eacute;moris&eacute;es par le composant pr&eacute;c&eacute;dent, compte le nombre d&#8217;occurrences des
+          diff&eacute;rents &acirc;ges et affiche ces &acirc;ges dans la vue <span class="emphasis"><strong>Run</strong></span>.</p></li><li class="listitem"><p><span class="emphasis"><strong>tJava</strong></span>&nbsp;: il affiche le nombre d&#8217;occurrences des
+          diff&eacute;rents &acirc;ges.</p></li></ul></div><p>Pour reproduire le sc&eacute;nario, proc&eacute;dez comme dans les sections suivantes.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e255468"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans
+            l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="emphasis"><strong>tRowGenerator</strong></span>,
+              <span class="emphasis"><strong>tSortRow</strong></span>, <span class="emphasis"><strong>tMemorizeRows</strong></span>, <span class="emphasis"><strong>tJavaFlex</strong></span> et <span class="emphasis"><strong>tJava</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez le <span class="emphasis"><strong>tRowGenerator</strong></span> au <span class="emphasis"><strong>tSortRow</strong></span>, &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt;
+              <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>R&eacute;p&eacute;tez l&#8217;op&eacute;ration pour connecter le <span class="emphasis"><strong>tSortRow</strong></span>, le
+              <span class="emphasis"><strong>tMemorizeRows</strong></span> et le <span class="emphasis"><strong>tJavaFlex</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Row</strong></span> &gt;
+              <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Connectez le <span class="emphasis"><strong>tRowGenerator</strong></span> au <span class="emphasis"><strong>tJava</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Trigger</strong></span> &gt;
+              <span class="emphasis"><strong>OnSubjobOk</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e255541"></a>Configurer les composants</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;16.1.&nbsp;Configurer le composant tRowGenerator"><a name="d43281e255544"></a><p class="title"><b>Proc&eacute;dure&nbsp;16.1.&nbsp;Configurer le composant tRowGenerator</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tRowGenerator</strong></span> afin
+            d&#8217;ouvrir son &eacute;diteur.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans cet &eacute;diteur, cliquez trois fois sur le bouton<span class="emphasis"><strong>
+              [+]</strong></span> pour ajouter trois colonnes, que vous nommerez&nbsp;:<span class="emphasis"><em> id, name,
+              age</em></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="emphasis"><strong>Type</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Integer</strong></span> pour les colonnes&nbsp;<span class="emphasis"><em>id</em></span>
+              et&nbsp;<span class="emphasis"><em>age</em></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la colonne <span class="emphasis"><strong>Length</strong></span>, saisissez
+              <span class="emphasis"><em>50</em></span> pour la colonne&nbsp;<span class="emphasis"><em>name</em></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la colonne <span class="emphasis"><strong>Functions</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>random</strong></span> pour&nbsp;<span class="emphasis"><em>id</em></span>
+            et&nbsp;<span class="emphasis"><em>age</em></span>, puis s&eacute;lectionnez <span class="emphasis"><strong>getFirstName</strong></span> pour&nbsp;<span class="emphasis"><em>name</em></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans le champ <span class="emphasis"><strong>Number of Rows for RowGenerator</strong></span>,
+              saisissez&nbsp;<span class="emphasis"><em>12</em></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans la colonne <span class="emphasis"><strong>Column</strong></span>, cliquez
+              sur&nbsp;<span class="emphasis"><em>age</em></span> afin d&#8217;ouvrir sa vue <span class="emphasis"><strong>Function
+              parameters</strong></span> dans la partie inf&eacute;rieure de l&#8217;&eacute;diteur.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows3.png"></div><p>Dans la colonne <span class="emphasis"><strong>Value</strong></span> de la vue <span class="emphasis"><strong>Function parameters</strong></span>, saisissez l&#8217;&acirc;ge minimum et l&#8217;&acirc;ge maximum &agrave;
+            g&eacute;n&eacute;rer pour les&nbsp;12 clients. Dans cet exemple, saisissez
+              respectivement&nbsp;<span class="emphasis"><em>10</em></span> et&nbsp;<span class="emphasis"><em>25</em></span>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;16.2.&nbsp;Configurer le composant tSortRow"><a name="d43281e255651"></a><p class="title"><b>Proc&eacute;dure&nbsp;16.2.&nbsp;Configurer le composant tSortRow</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tSortRow</strong></span> afin d&#8217;ouvrir sa vue
+              <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows4.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le tableau <span class="emphasis"><strong>Criteria</strong></span>, cliquez sur le bouton
+              <span class="emphasis"><strong>[+]</strong></span> afin d&#8217;ajouter une ligne.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="emphasis"><strong>Schema column</strong></span>, s&eacute;lectionnez la
+            colonne de donn&eacute;es sur laquelle vous souhaitez baser le tri. Dans cet exemple,
+              s&eacute;lectionnez&nbsp;<span class="emphasis"><em>age</em></span>, puisque les &acirc;ges seront compar&eacute;s et
+            compt&eacute;s.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la colonne <span class="emphasis"><strong>Sort num or alpha</strong></span>, s&eacute;lectionnez le
+            type de tri. Dans cet exemple, comme&nbsp;<span class="emphasis"><em>age</em></span> est un entier (integer),
+            s&eacute;lectionnez <span class="emphasis"><strong>num</strong></span>, pour num&eacute;rique.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la colonne <span class="emphasis"><strong>Order asc or desc</strong></span>, s&eacute;lectionnez
+              <span class="emphasis"><strong>desc</strong></span> comme ordre de tri.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;16.3.&nbsp;Configurer le composant tMemorizeRows"><a name="d43281e255705"></a><p class="title"><b>Proc&eacute;dure&nbsp;16.3.&nbsp;Configurer le composant tMemorizeRows</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tMemorizeRows</strong></span> afin
+            d&#8217;ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows5.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>Row count to memorize</strong></span>, saisissez le
+            nombre maximum de lignes &agrave; m&eacute;moriser &agrave; un moment donn&eacute;. Puisque vous devez comparer les
+            &acirc;ges de deux clients &agrave; chaque fois, saisissez&nbsp;<span class="emphasis"><em>2</em></span>. </p><p>Ce composant m&eacute;morise deux lignes au maximum &agrave; un moment donn&eacute; et indexe toujours la
+            nouvelle ligne entrante comme&nbsp;0 et la ligne pr&eacute;c&eacute;dente comme&nbsp;1.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="emphasis"><strong>Memorize</strong></span> du tableau <span class="emphasis"><strong>Columns to memorize</strong></span>, cochez la (les) case(s) de la (des)
+            colonne(s) &agrave; m&eacute;moriser. Dans cet exemple, cochez la case correspondant &agrave; la
+              colonne&nbsp;<span class="emphasis"><em>age</em></span>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;16.4.&nbsp;Configurer les composants tJavaFlex et tJava"><a name="d43281e255743"></a><p class="title"><b>Proc&eacute;dure&nbsp;16.4.&nbsp;Configurer les composants tJavaFlex et tJava</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tJavaFlex</strong></span> afin d&#8217;ouvrir sa
+            vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows6.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans la zone <span class="emphasis"><strong>Start code</strong></span>, saisissez le code Java qui
+            sera appel&eacute; durant la phase d&#8217;initialisation. Dans cet exemple, saisissez&nbsp;<code class="code">int
+              count=0;</code> afin de d&eacute;clarer une variable&nbsp;<span class="emphasis"><em>count</em></span> et de lui
+            assigner la valeur&nbsp;<span class="emphasis"><em>0</em></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la zone <span class="emphasis"><strong>Main code</strong></span>, saisissez le code Java &agrave;
+            appliquer &agrave; chaque ligne du flux de donn&eacute;es. Dans ce sc&eacute;nario, saisissez&nbsp;:</p><p>
+            </p><pre class="programlisting">if(!age_tMemorizeRows_1[0].equals(age_tMemorizeRows_1[1]))
+{
+count++;
+}
+System.out.println(age_tMemorizeRows_1[0]);
+</pre><p>Ce
+            code compare les deux &acirc;ges m&eacute;moris&eacute;s &agrave; chaque fois par le <span class="emphasis"><strong>tMemorizeRows</strong></span> et compte un changement &agrave; chaque fois que des &acirc;ges
+            diff&eacute;rents sont trouv&eacute;s. Ce code affiche &eacute;galement les &acirc;ges index&eacute;s comme&nbsp;0 par le
+              <span class="emphasis"><strong>tMemorizeRows</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la zone <span class="emphasis"><strong>End code</strong></span>, saisissez le code qui sera
+            appel&eacute; durant la phase de fermeture. Dans cet exemple,
+              saisissez&nbsp;<code class="code">globalMap.put("count", count);</code> afin d&#8217;&eacute;crire le r&eacute;sultat du
+            compte.</p></li><li class="step" title="&Eacute;tape 5"><p>Double-cliquez sur le <span class="emphasis"><strong>tJava</strong></span> afin d&#8217;ouvrir sa vue
+              <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows7.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Dans la zone <span class="emphasis"><strong>Code</strong></span>, saisissez le code
+              <code class="code">System.out.println("Different ages: "+globalMap.get("count"));</code> afin de
+            r&eacute;cup&eacute;rer le r&eacute;sultat du compte.</p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e255820"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span> pour sauvegarder
+            votre Job.</p></li><li class="step" title="&Eacute;tape 2"><p>Appuyez sur<span class="emphasis"><strong> F6</strong></span> afin d&#8217;ex&eacute;cuter le Job, ou cliquez
+            sur le bouton <span class="emphasis"><strong>Run</strong></span> de la vue <span class="emphasis"><strong>Run</strong></span>.</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows8.png"></div><p>Dans la console, vous pouvez constater qu&#8217;il y a dix &acirc;ges diff&eacute;rents dans le groupe
+        des&nbsp;12 clients.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFixedFlowInput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-misc.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMsgBox.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFixedFlowInput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tMsgBox</td></tr></table></div></body></html>

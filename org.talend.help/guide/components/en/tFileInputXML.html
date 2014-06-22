@@ -1,0 +1,333 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputXML</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-xml.html" title="Chapter&nbsp;22.&nbsp;XML components"><link rel="prev" href="tExtractXMLField.html" title="tExtractXMLField"><link rel="next" href="tFileOutputXML.html" title="tFileOutputXML"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileInputXML</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tExtractXMLField.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;22.&nbsp;XML components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileOutputXML.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileInputXML"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputXML"></a>tFileInputXML</h2></div></div></div><div class="mediaobject"><img src="../images/tFileInputXML.png"></div><div class="section" title="tFileInputXML Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e292233"></a>tFileInputXML Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>XML or File/Input</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileInputXML</strong></span> reads an XML
+								structured file and extracts data row by row.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Opens an XML structured file and reads it row by row to split them
+								up into fields then sends fields as defined in the Schema to the
+								next component, via a <span class="emphasis"><strong>Row</strong></span>
+								link.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either Built-in or Repository. </p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the Repository
+								file where Properties are stored. The following fields are
+								pre-filled in using fetched data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository. </p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will be created and stored
+								locally for this component only. Related topic: see
+										<span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already exists and is stored in
+								the Repository, hence can be reused in various projects and job
+								flowcharts. Related topic: see <span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File Name/Stream</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>File name</strong></span>: Name and path of the
+								file to be processed. </p>
+							<p>
+								<span class="emphasis"><strong>Stream: </strong></span>The data flow to be
+								processed. The data must be added to the flow in order for <span class="emphasis"><strong>tFileInputXML </strong></span>to fetch these data via the
+								corresponding representative variable.</p>
+							<p> This variable could be already pre-defined in your Studio or
+								provided by the context or the components you are using along with
+								this component, for example, the <span class="emphasis"><em>INPUT_STREAM</em></span>
+								variable of <span class="emphasis"><strong>tFileFetch</strong></span>; otherwise,
+								you could define it manually and use it according to the design of
+								your Job, for example, using <span class="emphasis"><strong>tJava</strong></span>
+								or <span class="emphasis"><strong>tJavaFlex</strong></span>.</p>
+							<p> In order to avoid the inconvenience of hand writing, you could
+								select the variable of interest from the auto-completion list
+									(<span class="emphasis"><strong>Ctrl+Space</strong></span>) to fill the
+								current field on condition that this variable has been properly
+								defined.</p>
+							<p> </p>
+							<p> Related topic to the available variables: see <span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>. Related scenario to the input stream, see
+									<a class="xref" href="tFileInputDelimited.html#Raa47862" title="Scenario 2: Reading data from a remote file in streaming mode">the section called &#8220;Scenario 2: Reading data from a remote file in streaming mode&#8221;</a>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Loop XPath query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Node of the tree, which the loop is based on.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Mapping</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Column: </strong></span> Columns to map. They
+								reflect the schema as defined in the Schema type field.</p>
+							<p><span class="emphasis"><strong>XPath Query</strong></span>: Enter the fields to
+								be extracted from the structured input.</p>
+							<p><span class="emphasis"><strong>Get nodes</strong></span>: Select this check box
+								to recuperate the XML content of all current nodes specified in the
+									<span class="emphasis"><strong>Xpath query</strong></span> list, or select the
+								check box next to specific XML nodes to recuperate only the content
+								of the selected nodes. These nodes are important when the output
+								flow from this component needs to use the XML structure, for
+								example, the <span class="emphasis"><strong>Document</strong></span> data
+								type.</p>
+							<p>For further information about the Document type, see <span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>. </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The <span class="emphasis"><strong>Get Nodes</strong></span> option
+									functions in the <span class="emphasis"><strong>DOM4j</strong></span> and
+										<span class="emphasis"><strong>SAX</strong></span> modes, although in
+										<span class="emphasis"><strong>SAX</strong></span> mode namespaces are not
+									supported. For further information concerning the <span class="emphasis"><strong>DOM4j</strong></span> and <span class="emphasis"><strong>SAX</strong></span> modes, please see the properties noted in
+									the <span class="emphasis"><strong>Generation mode</strong></span> list of the
+										<span class="emphasis"><strong>Advanced Settings</strong></span>
+									tab..</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Limit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Maximum number of rows to be processed. If Limit = 0, no row is
+								read nor processed. If -1, all rows are read or processed.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>This check box is selected by default and stops the job in the
+								event of error. Clear the check box to skip erroneous rows. The
+								process will still be completed for error-free rows. If needed, you
+								can retrieve the erroneous rows using a <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Reject</strong></span>
+								link.</p>
+						</td></tr><tr><td>
+							<span class="emphasis"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<span class="emphasis"><em>Ignore DTD file</em></span>
+						</td><td valign="top">Select this check box to ignore the DTD file indicated
+							in the XML file being processed.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Advanced separator (for number)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to change data separator for numbers:</p>
+							<p>
+								<span class="emphasis"><strong>Thousands separator</strong></span>: define the
+								separators to use for thousands.</p>
+							<p>
+								<span class="emphasis"><strong>Decimal separator</strong></span>: define the
+								separators to use for decimals. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Ignore the namespaces</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to ignore name spaces.</p>
+							<p><span class="emphasis"><strong>Generate a temporary file</strong></span>: click
+								the three-dot button to browse to the XML temporary file and set its
+								path in the field. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Use Separator for mode Xerce</em></span>s</p>
+						</td><td valign="top">
+							<p>Select this check box if you want to separate concatenated
+								children node values.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This field can only be used if the selected <span class="emphasis"><strong>Generation mode</strong></span> is Xerces.</p></div>
+							<p>The following field displays:</p>
+							<p>
+								<span class="emphasis"><strong>Field separator</strong></span>: Define the
+								delimiter to be used to separate the children node values.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+								is compulsory for DB data handling.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Generation mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>From the drop-down list select the generation mode for the XML
+								file, according to the memory available and the desired speed: </p>
+							<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+										<span class="emphasis"><strong>Slow and memory-consuming
+											(Dom4j)</strong></span>
+									</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This option allows you to use dom4j to process the XML
+											files of high complexity.</p></div></li><li class="listitem"><p><span class="emphasis"><strong>Memory-consuming
+										(Xerces)</strong></span>. </p></li><li class="listitem"><p>
+										<span class="emphasis"><strong>Fast with low memory consumption
+											(SAX)</strong></span>
+									</p></li></ul></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Validate date</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to check the date format strictly against
+								the input schema.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileInputXML </strong></span>is for use as an
+								entry componant. It allows you to create a flow of XML data using a
+									<span class="emphasis"><strong>Row &gt; Main </strong></span>link. You can
+								also create a rejection flow using a <span class="emphasis"><strong>Row &gt;
+									Reject</strong></span> link to filter the data which doesn&#8217;t
+								correspond to the type defined. For an example of how to use these
+								two links, see <a class="xref" href="tExtractXMLField.html#Raa91776" title="Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file">the section called &#8220;Scenario 2: Extracting correct and erroneous data from an XML field in a delimited
+            file&#8221;</a>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario 1: Reading and extracting data from an XML structure"><div class="titlepage"><div><div><h3 class="title"><a name="d0e292861"></a>Scenario 1: Reading and extracting data from an XML structure</h3></div></div></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This scenario is for reference only. If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, the
+				property type and schema of a component are always built-in, which means you have to
+				drop all the required components from the <span class="emphasis"><strong>Palette</strong></span>
+				and configure the component property details and schemas manually.</p></div><p>This scenario describes a basic Job that reads a defined XML directory and extracts
+			specific information and outputs it on the <span class="emphasis"><strong>Run</strong></span> console
+			via a <span class="emphasis"><strong>tLogRow</strong></span> component.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputXML.png"></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop <span class="emphasis"><strong>tFileInputXML</strong></span> and <span class="emphasis"><strong>tLogRow</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> to the
+					design workspace.</p></li><li class="step" title="Step 2"><p>Connect both components together using a <span class="emphasis"><strong>Main Row
+					</strong></span>link.</p></li><li class="step" title="Step 3"><p>Double-click <span class="emphasis"><strong>tFileInputXML</strong></span> to open its
+						<span class="emphasis"><strong>Basic settings</strong></span> view and define the
+					component properties.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputXML2.png"></div></li><li class="step" title="Step 4"><p>As the street dir file used as input file has been previously defined in the
+					Metadata area, select <span class="emphasis"><strong>Repository</strong></span> as <span class="emphasis"><strong>Property type</strong></span>. This way, the properties are
+					automatically leveraged and the rest of the properties fields are filled in
+					(apart from Schema).<span> For more information
+						regarding the metadata creation wizards, see <span class="emphasis"><em>Talend Open Studio</em></span> User Guide.</span></p></li><li class="step" title="Step 5"><p>Select the same way the relevant schema in the Repository metadata list.
+						<span class="emphasis"><strong>Edit schema</strong></span> if you want to make any change
+					to the schema loaded. </p></li><li class="step" title="Step 6"><p>The <span class="emphasis"><strong>Filename</strong></span> shows the structured file to be
+					used as input</p></li><li class="step" title="Step 7"><p>In<span class="emphasis"><strong> Loop XPath query</strong></span>, change if needed the
+					node of the structure where the loop is based.</p></li><li class="step" title="Step 8"><p>On the <span class="emphasis"><strong>Mapping</strong></span> table, fill the fields to be
+					extracted and displayed in the output.</p></li><li class="step" title="Step 9"><p>If the file size is consequent, fill in a <span class="emphasis"><strong>Limit</strong></span> of rows to be read.</p></li><li class="step" title="Step 10"><p>Enter the encoding if needed then double-click on <span class="emphasis"><strong>tLogRow</strong></span> to define the separator character.</p></li><li class="step" title="Step 11"><p>Save your Job and press <span class="emphasis"><strong>F6</strong></span> to execute
+					it.</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tFileInputXML3.png"></div><p>The fields defined in the input properties are extracted from the XML structure and
+			displayed on the console.</p></div><div class="section" title="Scenario&nbsp;2: Extracting erroneous XML data via a reject flow"><div class="titlepage"><div><div><h3 class="title"><a name="Raa30210"></a>Scenario&nbsp;2: Extracting erroneous XML data via a reject flow</h3></div></div></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This scenario is for reference only. If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, the
+				property type and schema of a component are always built-in, which means you have to
+				drop all the required components from the <span class="emphasis"><strong>Palette</strong></span>
+				and configure the component property details and schemas manually.</p></div><p>This Java scenario describes a three-component Job that reads an XML file and:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>first, returns correct XML data in an output XML file,</p></li><li class="listitem"><p>and second, displays on the console erroneous XML data which type does not
+					correspond to the defined one in the schema.</p></li></ol></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> to the design workspace: <span class="emphasis"><strong>tFileInputXML</strong></span>, <span class="emphasis"><strong>tFileOutputXML</strong></span>
+					and <span class="emphasis"><strong>tLogRow</strong></span>.</p><p>Right-click <span class="emphasis"><strong>tFileInputXML</strong></span> and select
+						<span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> in the contextual menu and then click <span class="emphasis"><strong>tFileOutputXML</strong></span> to connect the components together.</p><p>Right-click <span class="emphasis"><strong>tFileInputXML</strong></span> and select
+						<span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Reject</strong></span> in the contextual menu and then click <span class="emphasis"><strong>tLogRow</strong></span> to connect the components together using a
+					reject link.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputXML2_1.png"></div></li><li class="step" title="Step 2"><p>Double-click <span class="emphasis"><strong>tFileInputXML</strong></span> to display the
+						<span class="emphasis"><strong>Basic settings</strong></span> view and define the
+					component properties.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputXML2_2.png"></div></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Property Type</strong></span> list, select <span class="emphasis"><strong>Repository</strong></span> and click the three-dot button next to the
+					field to display the <span class="emphasis"><strong>[Repository Content]
+					</strong></span>dialog box where you can select the metadata relative to the input
+					file if you have already stored it in the <span class="emphasis"><strong>File&nbsp;xml</strong></span> node under the <span class="emphasis"><strong>Metadata</strong></span> folder of the <span class="emphasis"><strong>Repository</strong></span> tree view. The fields that follow are automatically
+					filled with the fetched data. If not, select <span class="emphasis"><strong>Built-in</strong></span> and fill in the fields that follow manually.</p><p> For more information about storing schema metadat in
+					the Repository tree view, see <span class="emphasis"><em>Talend Open Studio User
+					Guide</em></span>.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Schema Type</strong></span> list, select <span class="emphasis"><strong>Repository</strong></span> and click the three-dot button to open the
+					dialog box where you can select the schema that describe the structure of the
+					input file if you have already stored it in the <span class="emphasis"><strong>Repository</strong></span> tree view. If not, select <span class="emphasis"><strong>Built-in</strong></span> and click the three-dot button next to <span class="emphasis"><strong>Edit schema</strong></span> to open a dialog box where you can define
+					the schema manually.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputXML2_3.png"></div><p>The schema in this example consists of five columns:<span class="emphasis"><em> id,
+						CustomerName, CustomerAddress, idState</em></span> and
+						<span class="emphasis"><em>id2</em></span>.</p></li><li class="step" title="Step 5"><p>Click the three-dot button next to the <span class="emphasis"><strong>Filename</strong></span> field and browse to the XML file you want to
+					process.</p></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>Loop XPath query</strong></span>, enter between
+					inverted commas the path of the XML node on which to loop in order to retrieve
+					data.</p><p>In the <span class="emphasis"><strong>Mapping</strong></span> table, <span class="emphasis"><strong>Column</strong></span> is automatically populated with the defined
+					schema.</p><p>In the <span class="emphasis"><strong>XPath query</strong></span> column, enter between
+					inverted commas the node of the XML file that holds the data you want to extract
+					from the corresponding column.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Limit</strong></span> field, enter the number of lines
+					to be processed, the first 10 lines in this example.</p></li><li class="step" title="Step 8"><p>Double-click <span class="emphasis"><strong>tFileOutputXML</strong></span> to display its
+						<span class="emphasis"><strong>Basic settings</strong></span> view and define the
+					component properties. </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputXML2_4.png"></div></li><li class="step" title="Step 9"><p>Click the three-dot button next to the <span class="emphasis"><strong>File
+						Name</strong></span> field and browse to the output XML file you want to collect
+					data in, <span class="emphasis"><em>customer_data.xml</em></span> in this example.</p><p>In the <span class="emphasis"><strong>Row tag</strong></span> field, enter between inverted
+					commas the name you want to give to the tag that will hold the recuperated
+					data.</p><p>Click <span class="emphasis"><strong>Edit schema</strong></span> to display the schema
+					dialog box and make sure that the schema matches that of the preceding
+					component. If not, click <span class="emphasis"><strong>Sync columns</strong></span> to
+					retrieve the schema from the preceding component.</p></li><li class="step" title="Step 10"><p>Double-click <span class="emphasis"><strong>tLogRow</strong></span> to display its <span class="emphasis"><strong>Basic settings</strong></span> view and define the component
+					properties.</p><p>Click <span class="emphasis"><strong>Edit schema</strong></span> to open the schema dialog
+					box and make sure that the schema matches that of the preceding component. If
+					not, click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve the schema
+					of the preceding component.</p><p>In the <span class="emphasis"><strong>Mode</strong></span> area, select the <span class="emphasis"><strong>Vertical</strong></span> option.</p></li><li class="step" title="Step 11"><p>Save your Job and press <span class="emphasis"><strong>F6</strong></span> to execute
+					it.</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tFileInputXML2_5.png"></div><p>The output file <span class="emphasis"><em>customer_data.xml</em></span> holding the correct XML data is
+			created in the defined path and erroneous XML data is displayed on the console of the
+				<span class="emphasis"><strong>Run</strong></span> view.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tExtractXMLField.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-xml.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileOutputXML.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tExtractXMLField&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileOutputXML</td></tr></table></div></body></html>

@@ -1,0 +1,164 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBigQueryInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-bigdata.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tBigQueryBulkExec.html" title="tBigQueryBulkExec"><link rel="next" href="tBigQueryOutput.html" title="tBigQueryOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tBigQueryInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tBigQueryBulkExec.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;1.&nbsp;Big Data components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tBigQueryOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tBigQueryInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBigQueryInput"></a>tBigQueryInput</h2></div></div></div><div class="mediaobject"><img src="../images/tBigQueryInput_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+			<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="emphasis"><em>Talend Big Data Studio</em></span>.</em></span>
+		</p></div><div class="section" title="tBigQueryInput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e630"></a>tBigQueryInput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Google BigQuery</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component connects to Google BigQuery and performs queries in
+								it.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component performed the queries supported by Google
+								BigQuery.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description. It defines the number of fields to be processed and passed on
+		to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the <span class="emphasis"><strong>Repository</strong></span>.</span></p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: You create and store the schema locally for
+		this component only. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio</em></span>
+		<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: You have already created the schema and
+		stored it in the Repository. You can reuse it in various projects and Job designs. Related
+		topic: see the user guide of the integration Studio.</p>
+						</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><em>Connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Client ID</em></span> and <span class="emphasis"><em>Client
+									secret</em></span></p>
+						</td><td valign="top">
+							<p>Paste the client ID and the client secret, both created and viewable on the API Access tab
+		view of the project hosting the BigQuery service and the Cloud Storage service you need to
+		use.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Project ID</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Paste the ID of the project hosting the BigQuery service you need to use.</p>
+							<p>The default ID of this project can be found in the URL of the Google API Console, or by
+		hovering your mouse pointer over the name of the project in the BigQuery Browser
+		Tool.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Authorization code</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Paste the authorization code provided by Google for the access you are building.</p>
+							<p>To obtain the authorization code, you need to execute the Job using this component and
+		when this Job pauses execution to print out an URL address, you navigate to this address to
+		copy the authorization code displayed.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the query you need to use.</p>
+						</td></tr><tr><td>
+							<span class="emphasis"><strong>Advanced settings</strong></span>
+
+						</td><td valign="top">
+							<p>
+		<span class="emphasis"><em>token properties File Name</em></span>
+	</p>
+						</td><td valign="top">
+							<p>Enter the path to, or browse to the refresh token file you need to use. </p>
+							<p>At the first Job execution using the <span class="emphasis"><strong>Authorization code</strong></span>
+		you have obtained from Google BigQuery, the value in this field is the directory and the
+		name of that refresh token file to be created and used; if that token file has been created
+		and you need to reuse it, you have to specify its directory and file name in this
+		field.</p>
+							<p>With only the token file name entered, the Studio considers the directory of that token file
+		to be the root of the Studio folder.</p>
+							<p>For further information about the refresh token, see the manual of Google BigQuery.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Advanced Separator (for number)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to change the separator used for the
+								numbers.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field is
+		compulsory for DB data handling.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect the log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This is an input component. It sends the extracted data to the
+								component that follows it.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>N/A</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Performing a query in BigQuery"><div class="titlepage"><div><div><h3 class="title"><a name="d0e945"></a>Scenario: Performing a query in BigQuery</h3></div></div></div><p> This scenario uses two components to perform the SELECT query in BigQuery and present
+			the result in the Studio. </p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryinput1.png" align="middle"></div><p>The following figure shows the schema of the table, <span class="emphasis"><em>UScustomer</em></span>, we use as example to perform the SELECT query in.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryinput2.png" align="middle"></div><p>We will select the State records and count the occurrence of each State among those
+			records.</p><div class="section" title="Linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e963"></a>Linking the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the <span class="emphasis"><strong>Integration</strong></span> perspective of the
+						Studio, create an empty Job, named <span class="emphasis"><em>BigQueryInput</em></span> for example, from the<span class="emphasis"><strong>
+							Job Designs</strong></span> node in the <span class="emphasis"><strong>Repository</strong></span> tree view.</p><p>For further information about how to create a Job, see the user guide of
+						the Studio for integration.</p></li><li class="step" title="Step 2"><p>Drop<span class="emphasis"><strong> tBigQueryInput</strong></span> and <span class="emphasis"><strong>tLogRow</strong></span> onto the workspace.</p></li><li class="step" title="Step 3"><p>Connect them using the <span class="emphasis"><strong>Row &gt; Main</strong></span>
+						link.</p></li></ol></div></div><div class="section" title="Creating the query"><div class="titlepage"><div><div><h4 class="title"><a name="d0e999"></a>Creating the query</h4></div></div></div><div class="procedure" title="Procedure&nbsp;1.1.&nbsp;Building access to BigQuery"><a name="d0e1002"></a><p class="title"><b>Procedure&nbsp;1.1.&nbsp;Building access to BigQuery</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tBigQueryInput</strong></span> to open its
+							<span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryinput3.png" align="middle"></div></li><li class="step" title="Step 2"><p>Click <span class="emphasis"><strong>Edit schema</strong></span> to open the
+						editor</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryinput4.png" align="middle"></div></li><li class="step" title="Step 3"><p>Click the <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> button twice to add two rows and enter the names of
+						your choice for each of them in the <span class="emphasis"><strong>Column</strong></span>
+						column. In this scenario, they are: <span class="emphasis"><em>States</em></span> and <span class="emphasis"><em>Count</em></span>.</p></li><li class="step" title="Step 4"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate these changes and
+						accept the propagation prompted by the pop-up dialog box.</p></li><li class="step" title="Step 5"><p>Navigate to the Google APIs Console in your web browser to access the
+						Google project hosting the BigQuery and the Cloud Storage services you need
+						to use.</p></li><li class="step" title="Step 6"><p>Click the API Access tab to open its view.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Component</strong></span> view of the Studio,
+						paste Client ID, Client secret and Project ID from the API Access tab view
+						to the corresponding fields, respectively.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;1.2.&nbsp;Getting Authorization code"><a name="d0e1060"></a><p class="title"><b>Procedure&nbsp;1.2.&nbsp;Getting Authorization code</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the <span class="emphasis"><strong>Run</strong></span> view of the Studio, click
+							<span class="emphasis"><strong>Run</strong></span> to execute this Job. The execution
+						will pause at a given moment to print out in the console the URL address
+						used to get the authorization code.</p></li><li class="step" title="Step 2"><p>Navigate to this address in your web browser and copy the authorization
+						code displayed.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Component</strong></span> view of <span class="emphasis"><strong>tBigQueryInput</strong></span>, paste the authorization code in
+						the <span class="emphasis"><strong>Authorization Code</strong></span> field.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;1.3.&nbsp;Writing the query"><a name="d0e1087"></a><p class="title"><b>Procedure&nbsp;1.3.&nbsp;Writing the query</b></p><ul class="procedure"><li class="step" title="Step 1"><p>In the <span class="emphasis"><strong>Query</strong></span> field, enter
+						</p><pre class="programlisting"><code class="code">select States, count (*) as Count from documentation.UScustomer group by States</code></pre></li></ul></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1099"></a>Executing the Job</h4></div></div></div><p>The <span class="emphasis"><strong>tLogRow</strong></span> component presents the execution
+				result of the Job. You can configure the presentation mode on its <span class="emphasis"><strong>Component</strong></span> view.</p><p>To do this, double-click <span class="emphasis"><strong>tLogRow</strong></span> to open the
+				<span class="emphasis"><strong>Component</strong></span> view and in the <span class="emphasis"><strong>Mode</strong></span> area, select the <span class="emphasis"><strong>Table
+						(print values in cells of a table)</strong></span> option.</p><div class="procedure"><ul class="procedure"><li class="step" title="Step 1"><p>To execute this Job, press <span class="emphasis"><strong>F6</strong></span>.</p></li></ul></div><p>Once done, the <span class="emphasis"><strong>Run</strong></span> view is opened
+				automatically, where you can check the execution result.</p><div class="mediaobject" align="center"><img src="../images/use_case-tbigqueryinput-result.png" align="middle"></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tBigQueryBulkExec.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tBigQueryOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tBigQueryBulkExec&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tBigQueryOutput</td></tr></table></div></body></html>

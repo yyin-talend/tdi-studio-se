@@ -1,0 +1,145 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tStewardshipTaskDelete</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-mdm.html" title="Chapter&nbsp;21.&nbsp;Talend MDM components"><link rel="prev" href="tMDMViewSearch.html" title="tMDMViewSearch"><link rel="next" href="tStewardshipTaskInput.html" title="tStewardshipTaskInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tStewardshipTaskDelete</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMDMViewSearch.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;21.&nbsp;Talend MDM components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tStewardshipTaskInput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tStewardshipTaskDelete"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tStewardshipTaskDelete"></a>tStewardshipTaskDelete</h2></div></div></div><div class="mediaobject"><img src="../images/tStewardshipTaskDelete_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component is available in the <span class="emphasis"><strong>Palette</strong></span> of the
+			studio but you will only be able to use it on the condition that you have subscribed to
+				<span class="emphasis"><em>Talend Platform for MDM</em></span>, <span class="emphasis"><em>Talend Platform for MDM
+				with Big Data</em></span>, or <span class="emphasis"><em>Talend Platform
+			Universal</em></span>.</p></div><div class="section" title="tStewardshipTaskDelete properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e374041"></a>tStewardshipTaskDelete properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+              <p><span class="emphasis"><strong>Component family</strong></span></p>
+            </td><td valign="top">
+              <p>Talend MDM</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Function</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p><span class="emphasis"><strong>tStewardshipTaskDelete</strong></span> deletes data sets stored
+                in the stewardship console database in the form of tasks, either matching certain
+                search criteria or without any search criteria.</p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>In order to better understand the purpose of this component, consult the
+                    <span class="emphasis"><em>Talend Data Stewardship Console User Guide</em></span>.</p></div>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Purpose</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>This component helps streamline processes by removing tasks that are no longer
+                used or relevant.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;<span class="emphasis"><strong>Basic settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Host</em></span></p>
+            </td><td valign="top">
+              <p>Server IP address of the stewardship console database.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Port</em></span></p>
+            </td><td valign="top">
+              <p>The listening port number of the database server.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>User name</em></span> and <span class="emphasis"><em>Password</em></span></p>
+            </td><td valign="top">
+              <p>Type in the authentication information to the MDM server.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Type</em></span></p>
+            </td><td valign="top">
+              <p>Select the type of the tasks you want to delete:</p>
+              <p><span class="emphasis"><strong>Resolution</strong></span>: data resolution tasks represent the
+                results of the data matching processes done on data across heterogeneous
+                sources.</p>
+              <p><span class="emphasis"><strong>Data</strong></span>: data integrity tasks are the results of
+                the data integrity processes done on data.</p>
+              <p>For further information on task types and task management, see <span class="emphasis"><em>Talend Data Stewardship Console User Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Owner</em></span></p>
+            </td><td valign="top">
+              <p>If required, type in the name of the task owner. This will filter the tasks
+                according to the task owner.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Tag</em></span></p>
+            </td><td valign="top">
+              <p>If required, type in the name of the tag category associated with the tasks you
+                want to delete.</p>
+              <p>For further information, see <span class="emphasis"><em>Talend Data Stewardship Console User
+                  Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Start Date/End Date</em></span></p>
+            </td><td valign="top">
+              <p>If required, set a task creation date range within which you want to delete the
+                tasks. Use the following format: <code class="code">yyyy-mm-dd hh:mm:ss</code>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Status</em></span></p>
+            </td><td valign="top">
+              <p>If required, select from the list the task status you want to use to filter the
+                retrieved tasks.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Delete when Star ranking is equal to or less than</em></span></p>
+            </td><td valign="top">
+              <p>If required, select the number of stars, 0 through 5, assigned to the tasks as a
+                numerical rating to highlight importance. This will delete tasks up to a certain
+                level of importance only.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Limit</em></span></p>
+            </td><td valign="top">
+              <p>If required, set the maximum number of tasks to be deleted. If Limit = 0, this
+                means there is no limit to the number of tasks deleted.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td valign="top">
+              <p>Select this check box to gather the processing metadata at the Job level as well
+                as at each component level.</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Scenario: Deleting tasks from the Data Stewardship Console"><div class="titlepage"><div><div><h3 class="title"><a name="d0e374314"></a>Scenario: Deleting tasks from the Data Stewardship Console</h3></div></div></div><p>This scenario describes a multi-component Job that deletes data sets stored in the Data
+      Stewardship Console database in the form of tasks, if these tasks match certain criteria. The
+      first part of the scenario creates some sample data and data stewardship tasks, and the second
+      part deletes tasks which are not used.</p><div class="mediaobject" align="center"><img src="../images/use_case_tstewardshiptaskdelete.png" align="middle"></div><div class="procedure" title="Procedure&nbsp;21.7.&nbsp;Creating sample stewardship tasks"><a name="d0e374322"></a><p class="title"><b>Procedure&nbsp;21.7.&nbsp;Creating sample stewardship tasks</b></p><p>The first part of this scenario creates the sample data and data stewardship
+        tasks.</p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop a <span class="emphasis"><strong>tFixedFlowInput</strong></span> component from the <span class="emphasis"><strong>Palette</strong></span> onto the workspace, and rename it <span class="emphasis"><em>SampleData</em></span>.</p></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>Component</strong></span> view of <span class="emphasis"><strong>tFixedFlowInput</strong></span> component called <span class="emphasis"><em>SampleData</em></span>, click the <span class="emphasis"><strong>Edit schema</strong></span> button.
+          In the schema that opens, create the columns shown below and set the appropriate <span class="emphasis"><strong>Type</strong></span> for each column.</p><div class="mediaobject" align="center"><img src="../images/tstewardshiptaskdelete-sampledata_schema.png" align="middle"></div></li><li class="step" title="Step 3"><p>Select <span class="emphasis"><strong>Use Inline Table</strong></span> and enter some data in each
+          of the columns, as in the example below.</p><div class="mediaobject" align="center"><img src="../images/tstewardshiptaskdelete-inlinetable_data.png" align="middle"></div></li><li class="step" title="Step 4"><p>Drop a <span class="emphasis"><strong>tStewardshipTaskOutput</strong></span> component onto the
+          workspace, and rename it <span class="emphasis"><em>CreateStewardshipTasks</em></span>.</p><p>The <span class="emphasis"><strong>tStewardshipTaskOutput</strong></span> component creates tasks in
+          the Talend Data Stewardship Console database and lists these tasks in the Data
+          Stewardship Console.</p></li><li class="step" title="Step 5"><p>Connect the <span class="emphasis"><strong>tFixedFlowInput</strong></span> component called
+            <span class="emphasis"><em>SampleData</em></span> to the <span class="emphasis"><strong>tStewardshipTaskOutput</strong></span> component called <span class="emphasis"><em>CreateStewardshipTasks</em></span> using a <span class="emphasis"><strong>Row Main</strong></span>
+          link.</p></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>Component</strong></span> view of <span class="emphasis"><strong>tStewardshipTaskOutput</strong></span> component called <span class="emphasis"><em>CreateStewardshipTasks</em></span>, in the <span class="emphasis"><strong>Basic
+            settings</strong></span> tab, provide the connection information (<span class="emphasis"><strong>Host</strong></span>, <span class="emphasis"><strong>Port</strong></span>, <span class="emphasis"><strong>User
+            name</strong></span> and <span class="emphasis"><strong>Password</strong></span>) for the Data Stewardship
+          Console to which you want to connect, and the information about the tasks you want to
+          create, as shown in the following example.</p><div class="mediaobject" align="center"><img src="../images/tstewardshiptaskdelete-createstewardshiptasks.png" align="middle"></div></li><li class="step" title="Step 7"><p>Run your Job and then open the Data Stewardship Console to check that your tasks have
+          been created.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;21.8.&nbsp;Deleting unused tasks"><a name="d0e374434"></a><p class="title"><b>Procedure&nbsp;21.8.&nbsp;Deleting unused tasks</b></p><p>The second part of this scenario lets you delete those tasks which are no longer
+        used.</p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop a <span class="emphasis"><strong>tStewardshipTaskInput</strong></span> component from the
+            <span class="emphasis"><strong>Palette</strong></span> onto the workspace. Connect the <span class="emphasis"><strong>tFixedFlowInput</strong></span> component called <span class="emphasis"><em>SampleData</em></span> to the <span class="emphasis"><strong>tStewardshipTaskInput</strong></span>
+          component using an <span class="emphasis"><strong>OnSubjobOk</strong></span> trigger.</p></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>tStewardshipTaskInput_1</strong></span> component, in the
+            <span class="emphasis"><strong>Basic settings</strong></span> tab, provide the connection information
+            (<span class="emphasis"><strong>Host</strong></span>, <span class="emphasis"><strong>Port</strong></span>, <span class="emphasis"><strong>User name</strong></span> and <span class="emphasis"><strong>Password</strong></span>) for the
+          Data Stewardship Console to which you want to connect, and information about the tasks you
+          want to use as input (<span class="emphasis"><strong>Owner</strong></span>, <span class="emphasis"><strong>Tag</strong></span>, <span class="emphasis"><strong>Start Date</strong></span> and <span class="emphasis"><strong>End Date</strong></span>).</p><p>For this scenario, make sure you specify the <span class="emphasis"><strong>Tag</strong></span> as
+            <span class="emphasis"><em>tag1</em></span>.</p><div class="mediaobject" align="center"><img src="../images/tstewardshiptaskdelete-input1_settings.png" align="middle"></div></li><li class="step" title="Step 3"><p>Drop a <span class="emphasis"><strong>tLogRow</strong></span> component from the <span class="emphasis"><strong>Palette</strong></span> onto the workspace. Connect the <span class="emphasis"><strong>tStewardshipTaskInput_1</strong></span> component to the new <span class="emphasis"><strong>tLogRow</strong></span> component using a <span class="emphasis"><strong>Row Main</strong></span>
+          link.</p><p>The <span class="emphasis"><strong>tLogRow</strong></span> component is used to monitor data
+          processed.</p></li><li class="step" title="Step 4"><p>Drop a <span class="emphasis"><strong>tStewardshipTaskDelete</strong></span> component from the
+            <span class="emphasis"><strong>Palette</strong></span> onto the workspace. Connect the <span class="emphasis"><strong>tStewardshipTaskDelete</strong></span> component to the <span class="emphasis"><strong>tStewardshipTaskInput_1</strong></span> component using an <span class="emphasis"><strong>OnSubjobOk</strong></span> trigger.</p><p>The <span class="emphasis"><strong>tStewardshipTaskDelete</strong></span> component helps streamline
+          processes by removing tasks that are no longer used or relevant when they match certain
+          criteria.</p></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>tStewardshipTaskDelete</strong></span> component, in the
+            <span class="emphasis"><strong>Basic settings</strong></span> tab, provide the connection information
+            (<span class="emphasis"><strong>Host</strong></span>, <span class="emphasis"><strong>Port</strong></span>, <span class="emphasis"><strong>User name</strong></span> and <span class="emphasis"><strong>Password</strong></span>) for the
+          Data Stewardship Console to which you want to connect.</p></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>Task Configuration</strong></span> area of the <span class="emphasis"><strong>Basic settings</strong></span> tab of the <span class="emphasis"><strong>tStewardshipTaskDelete</strong></span> component, enter the criteria to use when deciding
+          which tasks to delete. An example is shown in the image below.</p><div class="mediaobject" align="center"><img src="../images/tstewardshiptaskdelete-task_configuration.png" align="middle"></div></li><li class="step" title="Step 7"><p>Drop a <span class="emphasis"><strong>tJava</strong></span> component from the <span class="emphasis"><strong>Palette</strong></span> onto the workspace. Connect the <span class="emphasis"><strong>tStewardshipTaskDelete</strong></span> component to the <span class="emphasis"><strong>tJava</strong></span> component using an <span class="emphasis"><strong>OnSubjOk</strong></span>
+          trigger.</p><p>The <span class="emphasis"><strong>tJava</strong></span> component makes it possible to extend the
+          functionalities of a <span class="emphasis"><strong>Talend</strong></span> Job through
+          using Java commands. In this case, it shows you which tasks are deleted.</p></li><li class="step" title="Step 8"><p>In the <span class="emphasis"><strong>Basic settings</strong></span> tab of the <span class="emphasis"><strong>tJava</strong></span> component, enter the following code:</p><p>
+          </p><pre class="programlisting">System.out.println("---------------:"+((Integer)globalMap.get("tStewardshipTaskDelete_1_DELETED_TASK_NUMBER")));</pre><p>
+        </p></li><li class="step" title="Step 9"><p>Press <span class="emphasis"><strong>F6</strong></span> to run your Job and refresh or reopen the
+          Data Stewardship Console to check that your tasks have been deleted.</p></li></ol></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMDMViewSearch.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-mdm.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tStewardshipTaskInput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tMDMViewSearch&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tStewardshipTaskInput</td></tr></table></div></body></html>

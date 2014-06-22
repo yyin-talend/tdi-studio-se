@@ -1,0 +1,345 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tInformixBulkExec</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-databases-traditional.html" title="Chapter&nbsp;7.&nbsp;Databases - traditional components"><link rel="prev" href="tDB2SP.html" title="tDB2SP"><link rel="next" href="tInformixClose.html" title="tInformixClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tInformixBulkExec</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tDB2SP.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;7.&nbsp;Databases - traditional components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tInformixClose.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tInformixBulkExec"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tInformixBulkExec"></a>tInformixBulkExec</h2></div></div></div><div class="mediaobject"><img src="../images/tInformixBulkExec_icon32_white.png"></div><div class="section" title="tInformixBulkExec Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e75762"></a>tInformixBulkExec Properties</h3></div></div></div><p><span class="emphasis"><strong>tInformixOutputBulk</strong></span> and <span class="emphasis"><strong>tInformixBulkExec</strong></span> are generally used together in a two step process. In
+			the first step, an output file is generated. In the second step, this file is used in
+			the INSERT operation used to feed a database. These two steps are fused together in the
+				<span class="emphasis"><strong>tInformixOutputBulk</strong></span><span class="emphasis"><strong>Exec
+			</strong></span>component, detailed in another section. The advantage of using two components
+			is that data can be transformed before it is loaded in the database.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Informix</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tInformixBulkExec</strong></span> executes Insert
+								operations on the data supplied. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tInformixBulkExec</strong></span> is a dedicated
+								component which improves performance during Insert operations in
+								Informix databases.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in:</strong></span> No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Execution Platform</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the operating system you are using.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Open Studio
+				User Guide</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Database server IP address.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>DB server listening port.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the schema.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and <span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Instance</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the Informix instance to be used. This information can
+								generally be found in the <span class="emphasis"><em>SQL hosts</em></span>
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the table to be written. Note that only one table can be
+								written at a time. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>On the table defined, you can perform one of the following
+								operations:</p>
+							<p>
+								<span class="emphasis"><strong>None</strong></span>: No operation is carried
+								out.</p>
+							<p>
+								<span class="emphasis"><strong>Drop and create a table</strong></span>: The table
+								is removed and created again.</p>
+							<p>
+								<span class="emphasis"><strong>Create a table</strong></span>: The table does not
+								exist and gets created.</p>
+							<p>
+								<span class="emphasis"><strong>Create a table if not exists</strong></span>: The
+								table is created if it does not exist.</p>
+							<p>
+								<span class="emphasis"><strong>Drop a table if exists and create</strong></span>:
+								The table is removed if it already exists and created again.</p>
+							<p>
+								<span class="emphasis"><strong>Clear a table</strong></span>: The table content is
+								deleted.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will be
+								created and stored locally for this component only. Related topic:
+								see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused in
+								various projects and job designs. Related topic: see
+										<span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Informix Directory</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Informix installation directory, e.g. <span class="emphasis"><em>" C:\Program
+									Files\IBM\IBM Informix Dynamic Server\11.50\"</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the file to be loaded. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on data</em></span>
+							</p>
+						</td><td valign="top">
+							<p>On the data of the table defined, you can perform the following
+								operations:</p>
+							<p>
+								<span class="emphasis"><strong>Insert</strong></span>: Add new data to the table.
+								If duplicates are found, the job stops.</p>
+							<p>
+								<span class="emphasis"><strong>Update</strong></span>: Update the existing table
+								data.</p>
+							<p><span class="emphasis"><strong>Insert or update</strong></span>: inserts a new record.
+		If the record with the given reference already exists, an update would be made.</p>
+							<p>
+		<span class="emphasis"><strong>Update or insert</strong></span>: updates the record with the given
+		reference. If the record does not exist, a new record would be
+		inserted.</p>
+							<p>
+								<span class="emphasis"><strong>Delete</strong></span>: Delete the entry data which
+								corresponds to the input flow.</p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+									<span class="emphasis"><em>You must specify at least one key upon
+										which the Update and Delete operations are to be based. It
+										is possible to define the columns which should be used as
+										the key from the schema, from both the <span class="emphasis"><strong>Basic Settings</strong></span> and the <span class="emphasis"><strong>Advanced Settings</strong></span>, to optimise these
+										operations.</em></span>
+								</p></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify additional connection properties for the DB connection you
+								are creating. This option is not available if you have selected the
+									<span class="emphasis"><strong>Use an existing connection</strong></span>
+								check box in the <span class="emphasis"><strong>Basic
+								settings</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field terminated by</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Character, string or regular expression which separates the
+								fields.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Set DBMONEY</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to define the decimal separator in the
+									<span class="emphasis"><strong>Decimal separator</strong></span> field.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Set DBDATE</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the date format that you want to apply.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Rows Before Commit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the number of rows to be processed before the commit.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bad Rows Before Abort</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the number of rows in error at which point the Job should
+								stop.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStat</em></span>
+								<span class="emphasis"><em>Catcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to colelct the log data at component
+								level.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Output</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Where the output should go.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component offers database query flexibility and covers all
+								possible DB2 queries which may be required.</p>
+						</td></tr><tr><td valign="top">
+							<span class="emphasis"><strong>Limitation</strong></span>
+						</td><td colspan="2" valign="top">
+							<p>The database server/client must be installed on the same machine where the Studio is
+								installed or where the Job using <span class="emphasis"><strong>tInformixBulkExec</strong></span> is deployed,  so that the
+								component functions properly.</p>
+							
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e76565"></a>Related scenario</h3></div></div></div><p>For a scenario in which <span class="emphasis"><strong>tInformixBulkExec</strong></span> might be
+			used, see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMysqlOutputBulk.html#Raa15985" title="Scenario: Inserting transformed data in MySQL database">the section called &#8220;Scenario: Inserting transformed data in MySQL database&#8221;</a>.</p></li><li class="listitem"><p><a class="xref" href="tOracleBulkExec.html#Raa26152" title="Scenario: Truncating and inserting file data into Oracle DB">the section called &#8220;Scenario: Truncating and inserting file data into Oracle DB&#8221;</a>.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tDB2SP.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tInformixClose.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tDB2SP&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tInformixClose</td></tr></table></div></body></html>

@@ -1,0 +1,431 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMomInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-internet.html" title="Chapitre&nbsp;14.&nbsp;Composants Internet"><link rel="prev" href="tMomConnection.html" title="tMomConnection"><link rel="next" href="tMomMessageIdList.html" title="tMomMessageIdList"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMomInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMomConnection.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;14.&nbsp;Composants Internet</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMomMessageIdList.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tMomInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMomInput"></a>tMomInput</h2></div></div></div><div class="mediaobject"><img src="../images/tMomInput_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tMomInput"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e236772"></a>Propri&eacute;t&eacute;s du tMomInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Internet </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant r&eacute;cup&egrave;re un message d&#8217;une file d&#8217;attente d&#8217;un syst&egrave;me
+                                Middleware orient&eacute; Message et le passe au composant suivant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tMomInput</strong></span> permet de mettre en
+                                place des communications asynchrones via un serveur MOM.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use existing connection</em></span></p>
+                        </td><td valign="top">
+                            <p lang="fr">Cochez cette case et s&eacute;lectionnez le composant de connexion ad&eacute;quat &agrave; partir de la liste
+			<span class="emphasis"><strong>Component list</strong></span> pour r&eacute;utiliser les param&egrave;tres d&#8217;une
+		connexion que vous avez d&eacute;j&agrave; d&eacute;finie.</p>
+                            <div lang="fr" class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la liste <span class="emphasis"><strong>Component list</strong></span> pr&eacute;sente uniquement les composants de connexion du Job du
+			m&ecirc;me niveau.</p></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Keep Listening</em></span></td><td valign="top">
+                            <p>Cochez cette case pour consulter en continu le serveur MOM pour
+                                r&eacute;cup&eacute;rer les nouveaux messages.</p>
+                            <p>- Si vous s&eacute;lectionnez le serveur <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span>, cocher cette case fera appara&icirc;tre le champ
+                                    <span class="emphasis"><strong>Sleeping time (in sec)</strong></span>.</p>
+                            <p>- Si vous s&eacute;lectionnez le serveur <span class="emphasis"><strong>ActiveMQ</strong></span>, cocher cette case fera dispara&icirc;tre le
+                                champ <span class="emphasis"><strong>Sleeping time (in
+                                sec)</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Sleeping time (in sec)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez en secondes la fr&eacute;quence de variation.</p>
+                            <p>Ce champ est disponible si vous s&eacute;lectionnez <span class="emphasis"><strong>ActiveMQ</strong></span> ou <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span> dans la liste <span class="emphasis"><strong>MQ
+                                    Server</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>MQ Server</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez dans cette liste le serveur MOM &agrave; utiliser. Les
+                                param&egrave;tres requis diff&egrave;rent l&eacute;g&egrave;rement en fonction du serveur
+                                s&eacute;lectionn&eacute;.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Host/Port</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Renseignez le nom de l&#8217;h&ocirc;te (Host) et l&#8217;adresse IP du serveur MOM
+                                ainsi que le Port.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Username</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Identifiant de connexion au serveur MQ.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Password</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Mot de passe de connexion au serveur MQ.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Message From</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez la source du message, telle qu&#8217;attendue par le serveur.
+                                Celle-ci peut &ecirc;tre compos&eacute; du type et du nom de la source, par
+                                exemple&nbsp;: queue/A ou topic/testtopic.</p>
+                            <p>Notez que ce champ est sensible &agrave; la casse.</p>
+                            <p>Ce champ est disponible si vous s&eacute;lectionnez <span class="emphasis"><strong>ActiveMQ</strong></span> ou <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span> dans la liste <span class="emphasis"><strong>MQ
+                                    Server</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Message Type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez le type de message&nbsp;: <span class="emphasis"><strong>topic</strong></span> ou <span class="emphasis"><strong>queue</strong></span>.</p>
+                            <p>Ce champ est disponible si vous s&eacute;lectionnez <span class="emphasis"><strong>ActiveMQ</strong></span> ou <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span> dans la liste <span class="emphasis"><strong>MQ
+                                    Server</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Message Body Type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez le type de message&nbsp;: <span class="emphasis"><strong>Text</strong></span>, <span class="emphasis"><strong>Bytes</strong></span> ou
+                                    <span class="emphasis"><strong>Map</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. </p>
+                            <p>Le sch&eacute;ma du composant <span class="emphasis"><strong>tMomInput</strong></span>
+                                est compos&eacute; de deux colonnes&nbsp;: <span class="emphasis"><strong>From</strong></span>
+                                et <span class="emphasis"><strong>Message</strong></span>, dont le nom est en
+                                lecture seule.</p>
+                        </td></tr><tr><td valign="top"><span class="emphasis"><em>Websphere MQ</em></span></td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Channel</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Renseignez ce champ avec le nom du canal avec lequel la connexion
+                                est &eacute;tablie. La valeur par d&eacute;faut est
+                                    <span class="emphasis"><em>DC.SVRCONN</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Queue Manager</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Programme syst&egrave;me fournissant un conteneur logique pour la file de
+                                messages et responsable de transf&eacute;rer les donn&eacute;es &agrave; d'autres
+                                gestionnaires de file via des canaux de messages. Renseignez ce
+                                champ avec le nom du gestionnaire de file(s) d&#8217;attente auquel la
+                                connexion est effectu&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Message Queue</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File d&#8217;attente &agrave; partir de laquelle les applications de files
+                                d'attente de messages peuvent charger des messages et en r&eacute;cup&eacute;rer.
+                                Renseignez ce champ avec le nom de la file de messages.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Is using message id to fetch</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour appliquer un filtre portant sur les
+                                messages id, filtre que vous d&eacute;terminerez dans le champ <span class="emphasis"><strong>Message id</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Commit (delete message after reading from the
+                                    queue)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de forcer le commit apr&egrave;s lecture de chaque
+                                message dans la file d&#8217;attente.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top">
+                            <span class="emphasis"><em>Backout removed messages</em></span>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour indiquer au gestionnaire de file que tous
+                                les messages lus depuis le serveur ne seront pas supprim&eacute;s lorsque
+                                la connexion au serveur sera suspendue.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Cette case ainsi que la case <span class="emphasis"><strong>Browse
+                                        message</strong></span> dans la vue <span class="emphasis"><strong>Advanced settings</strong></span> vous permettent de lire des
+                                    messages de mani&egrave;re non destructive dans la file. Elle n'est
+                                    visible que lorsque la case <span class="emphasis"><strong>Keep
+                                        listening</strong></span> est d&eacute;coch&eacute;e. Pour plus d'informations,
+                                    consultez <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">le Guide MQSeries Using Java</a> (en anglais).</p></div>
+                        </td></tr><tr><td valign="top"><span class="emphasis"><em>ActiveMQ</em></span></td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Receive number of messages</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de limiter le nombre de messages &agrave; recevoir
+                                dans la console.</p>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Lorsque vous choisissez de limiter le nombre de messages &agrave;
+                                    recevoir, la limite de temps devient inactive, les champs
+                                        <span class="emphasis"><strong>Keep
+                                        listening</strong></span><span class="emphasis"><em>/</em></span><span class="emphasis"><strong>Sleeping time (in sec)</strong></span> disparaissent. </p></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Failover</em></span></td><td valign="top">
+                            <p>Cochez cette case pour afficher la table d'adresses du
+                                serveur.</p>
+                            <p>Dans cette table, vous pouvez d&eacute;finir plusieurs serveurs MQ pour
+                                le failover.</p>
+                        </td></tr><tr><td valign="top"><span class="emphasis"><strong>Advanced
+                            settings</strong></span></td><td valign="top"><span class="emphasis"><em>Get Jms Header</em></span></td><td valign="top">
+                            <p>Cochez cette case pour recevoir les en-t&ecirc;tes JMS via le mapping
+                                des champs JMS vers les champs MQ Series sur le serveur MQ. Lorsque
+                                cette case est coch&eacute;e, vous pouvez sp&eacute;cifier le nom de l'en-t&ecirc;te JMS
+                                ainsi que le nom de la colonne de r&eacute;f&eacute;rence correspondante dans la
+                                (les) ligne(s) ajout&eacute;e(s) en cliquant sur le bouton <span class="emphasis"><strong>[+]</strong></span> sous la table <span class="emphasis"><strong>Parameters</strong></span>. Pour plus d'informations concernant
+                                l'utilisation des en-t&ecirc;tes JMS, consultez le <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">Chapitre 12 de MQSeries Using Java</a> (en anglais).</p>
+                            <p>Ce champ est disponible si vous s&eacute;lectionnez <span class="emphasis"><strong>ActiveMQ</strong></span> ou <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span> dans la liste <span class="emphasis"><strong>MQ
+                                    Server</strong></span>.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Get Jms Properties</em></span></td><td valign="top">
+                            <p>Cochez cette case pour recevoir les propri&eacute;t&eacute;s JMS mapp&eacute;es dans
+                                les champs MQMD. Lorsque cette case est coch&eacute;e, vous pouvez
+                                sp&eacute;cifier le nom, le type et le nom de la colonne de r&eacute;f&eacute;rence dans
+                                la (les) ligne(s) ajout&eacute;e(s) en cliquant sur le bouton <span class="emphasis"><strong>[+]</strong></span> sous la table <span class="emphasis"><strong>Parameters</strong></span>. Pour plus d'informations concernant
+                                l'utilisation des propri&eacute;t&eacute;s JMS, consultez le <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">Chapitre 12 de MQSeries Using Java</a>.</p>
+                            <p>Ce champ est disponible si vous s&eacute;lectionnez <span class="emphasis"><strong>ActiveMQ</strong></span> ou <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span> dans la liste <span class="emphasis"><strong>MQ
+                                    Server</strong></span>.</p>
+                        </td></tr><tr><td valign="top"> </td><td valign="top">
+                            <span class="emphasis"><em>Browse message</em></span>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de d&eacute;sactiver les options <span class="emphasis"><strong>Commit (delete message after reading from the
+                                    queue)</strong></span> et <span class="emphasis"><strong>Backout removed
+                                    messages</strong></span> dans la vue <span class="emphasis"><strong>Basic
+                                    settings</strong></span> et d'ouvrir la file pour parcourir les
+                                messages.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Cette case ainsi que la case <span class="emphasis"><strong>Backout
+                                        removed messages</strong></span> dans la vue <span class="emphasis"><strong>Basic settings</strong></span> vous permettent de
+                                    lire des messages de mani&egrave;re non destructive dans la file. La
+                                    case <span class="emphasis"><strong>Browse message</strong></span> est visible
+                                    uniquement lorsque la case <span class="emphasis"><strong>Backout removed
+                                        messages</strong></span> est d&eacute;coch&eacute;e. Pour plus d'informations,
+                                    consultez <a class="link" href="http://publib.boulder.ibm.com/infocenter/wmqv7/v7r0m0/index.jsp?topic=%2Fcom.ibm.mq.java.doc%2Fcom%2Fibm%2Fmq%2FMQC.html/" target="_top">MQC: MQOO_BROWSE</a> (en anglais).</p></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <span class="emphasis"><em>Get MQMD Fields</em></span>
+                        </td><td valign="top"><p>Cochez cette case pour d&eacute;finir un ou plusieurs
+                                Message Descriptor(s) en ajoutant de nouveaux champs pour MQMD
+                                (Message queuing message descriptor) dans le tableau <span class="emphasis"><strong>Parameter</strong></span> :</p><p><span class="emphasis"><strong>Field Name</strong></span> : s&eacute;lectionnez un ou plusieurs
+                                descripteur(s) de messages dans la liste afin de r&eacute;cup&eacute;rer les
+                                informations de l'en-t&ecirc;te du message.</p><p><span class="emphasis"><strong>Reference Column Name</strong></span> : Informations
+                                d'en-t&ecirc;te et propri&eacute;t&eacute;s du message.</p><p>Pour plus
+                                d'informations, consultez <a class="link" href="http://publib.boulder.ibm.com/infocenter/wmqv7/v7r0m0/index.jsp?topic=%2Fcom.ibm.mq.csqzak.doc%2Ffr13040_.htm/" target="_top">Fields for MQMD</a> (en anglais).</p>
+                            <p>Ce champ est disponible si vous s&eacute;lectionnez <span class="emphasis"><strong>ActiveMQ</strong></span> ou <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span> dans la liste <span class="emphasis"><strong>MQ
+                                    Server</strong></span>.</p></td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Include Header</em></span></td><td valign="top">
+                            <p>Cochez cette case pour activer la case suivante : </p>
+                            <p><span class="emphasis"><strong>MQRFH2 fixed Portion</strong></span> : Cochez
+                                cette case et cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ou plusieurs ligne(s) pour
+                                sp&eacute;cifier le nom du champ et sa valeur pour la portion fixe de
+                                l'en-t&ecirc;te MQRFH2.</p>
+                            <p>et les cases pour les portions variables contenant les trois
+                                dossiers suivants :</p>
+                            <p><span class="emphasis"><strong>MCD folder</strong></span> : Cochez cette case et
+                                cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour
+                                ajouter une ou plusieurs ligne(s) pour sp&eacute;cifier le nom et la valeur
+                                des propri&eacute;t&eacute;s d&eacute;crivant le format du message.</p>
+                            <p><span class="emphasis"><strong>JMS folder</strong></span> : Cochez cette case et
+                                cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour
+                                ajouter une ou plusieurs ligne(s) pour sp&eacute;cifier le nom du champ et
+                                sa valeur pour le transport des champs d'en-t&ecirc;tes JMS et des
+                                propri&eacute;t&eacute;s JMSX.</p>
+                            <p><span class="emphasis"><strong>USR folder</strong></span> : Cochez cette case et
+                                cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour
+                                ajouter une ou plusieurs ligne(s) pour sp&eacute;cifier le nom du champ et
+                                sa valeur pour le transport des propri&eacute;t&eacute;s d&eacute;finies par
+                                l'application associ&eacute;e au message.</p>
+                            <p>Pour plus d'informations concernant les en-t&ecirc;tes MQRFH2, consultez
+                                le <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">Chapitre 12 de MQSeries Using Java</a>.</p>
+                            <p>Ce champ est disponible si vous s&eacute;lectionnez <span class="emphasis"><strong>ActiveMQ</strong></span> ou <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span> dans la liste <span class="emphasis"><strong>MQ
+                                    Server</strong></span>.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Set CipherSpec</em></span></td><td valign="top">
+                            <p>Cochez cette case pour activer la liste <span class="emphasis"><strong>CipherSpec</strong></span> dans laquelle vous pouvez sp&eacute;cifier le
+                                CipherSpec &agrave; utiliser avec le SSL WebSphere.</p>
+                            <p>Pour plus d'informations concernant CipherSpec, consultez <a class="link" href="http://publib.boulder.ibm.com/infocenter/wmqv6/v6r0/index.jsp?topic=%2Fcom.ibm.mq.csqzas.doc%2Fsy12870_.html" target="_top">Specifying CipherSpecs</a> (en anglais).</p>
+                            <p>Ce champ est disponible si vous s&eacute;lectionnez <span class="emphasis"><strong>ActiveMQ</strong></span> ou <span class="emphasis"><strong>JBoss
+                                    Messaging</strong></span> dans la liste <span class="emphasis"><strong>MQ
+                                    Server</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p> </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Dynamic settings</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour
+                                ajouter une ligne &agrave; la table. Dans le champ <span class="emphasis"><strong>Code</strong></span>, saisissez une variable de contexte afin de
+                                s&eacute;lectionner dynamiquement votre connexion au serveur MQ parmi
+                                celles pr&eacute;vues dans votre Job.</p>
+                            <p lang="fr">La table <span class="emphasis"><strong>Dynamic settings</strong></span> n'est disponible que si la case
+			<span class="emphasis"><strong>Use an existing connection</strong></span> est coch&eacute;e dans la vue
+			<span class="emphasis"><strong>Basic settings</strong></span>. Lorsqu'un param&egrave;tre dynamique est
+		configur&eacute;, la liste <span class="emphasis"><strong>Component List</strong></span> devient inaccessible
+		dans la vue <span class="emphasis"><strong>Basic settings</strong></span>. </p>
+                            <p lang="fr">Pour plus d'informations concernant les <span class="emphasis"><strong>Dynamic settings</strong></span>
+		et les variables de contexte, consultez le <span class="emphasis"><em>Guide utilisateur Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; en tant que composant de
+                                d&eacute;but. Il requiert un composant de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Assurez-vous que le serveur Websphere, JBoss ou ActiveMQ
+                                correspondant est lanc&eacute;.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;1 : Communication asynchrone via un serveur MOM"><div class="titlepage"><div><div><h3 class="title"><a name="Raa18347"></a>Sc&eacute;nario&nbsp;1 : Communication asynchrone via un serveur MOM</h3></div></div></div><p>Ce sc&eacute;nario est compos&eacute; de deux Jobs. Le premier permet de poster des messages sur la
+            file d&#8217;attente du serveur JBoss et le deuxi&egrave;me r&eacute;cup&egrave;re les messages de ce
+            serveur.</p><div class="section" title="Construire et ex&eacute;cuter le premier Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e237627"></a>Construire et ex&eacute;cuter le premier Job</h4></div></div></div><p>Dans le premier Job, un message compos&eacute; de cha&icirc;nes de caract&egrave;res est cr&eacute;&eacute; &agrave; l&#8217;aide du
+            composant <span class="emphasis"><strong>tRowGenerator</strong></span> puis transmis au serveur JBoss
+            &agrave; l&#8217;aide du composant <span class="emphasis"><strong>tMomOutput</strong></span>. Un composant
+            interm&eacute;diaire, le composant <span class="emphasis"><strong>tLogRow</strong></span>, permet d&#8217;afficher
+            le flux transmis.</p><div class="mediaobject"><img src="../images/Use_Case_tMomInput1.png"></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Cliquez et d&eacute;posez ces trois composants dans votre premier Job et
+                        connectez-les via le clic-droit avec des liens de type <span class="emphasis"><strong>Main</strong></span> &gt; <span class="emphasis"><strong>Row</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tRowGenerator</strong></span>
+                    pour configurer le sch&eacute;ma des donn&eacute;es qui seront g&eacute;n&eacute;r&eacute;es de mani&egrave;re
+                    al&eacute;atoire.</p><div class="mediaobject"><img src="../images/use_case-tmominput2.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Cr&eacute;ez une seule colonne appel&eacute;e <span class="emphasis"><em>message</em></span>. Elle correspond
+                    au message qui sera mis sur la file d&#8217;attente du MOM.</p></li><li class="step" title="&Eacute;tape 4"><p>Cette colonne est de type <span class="emphasis"><strong>String</strong></span> et peut
+                    contenir une valeur nulle. Pour produire les donn&eacute;es, utilisez une fonction
+                    pr&eacute;d&eacute;finie permettant de concat&eacute;ner de mani&egrave;re al&eacute;atoire les caract&egrave;res ascii
+                    choisis pour former la cha&icirc;ne de 6&nbsp;caract&egrave;res. Cette fonction est la suivante&nbsp;:
+                        <code class="code">getAsciiRandomString</code>. (version Java). Cliquez sur le bouton
+                    d&#8217;aper&ccedil;u pour afficher un &eacute;chantillon au hasard des donn&eacute;es g&eacute;n&eacute;r&eacute;es.</p></li><li class="step" title="&Eacute;tape 5"><p>Param&eacute;trez le champ <span class="emphasis"><strong>Number of rows to be
+                            generated</strong></span> permettant de d&eacute;finir le nombre de lignes g&eacute;n&eacute;r&eacute;e &agrave;
+                            <span class="emphasis"><em>10</em></span>.</p><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider.</p></li><li class="step" title="&Eacute;tape 6"><p>Le composant <span class="emphasis"><strong>tLogRow</strong></span> est uniquement utilis&eacute;
+                    pour afficher un &eacute;tat interm&eacute;diaire des donn&eacute;es manipul&eacute;es. Dans cet exemple,
+                    aucune configuration sp&eacute;cifique n&#8217;est n&eacute;cessaire.</p></li><li class="step" title="&Eacute;tape 7"><p>S&eacute;lectionnez le composant <span class="emphasis"><strong>tMomOutput</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMomInput3.png"></div></li><li class="step" title="&Eacute;tape 8"><p>Dans cet exemple, le serveur <span class="emphasis"><strong>MQ server</strong></span> &agrave;
+                        utiliser est de type <span class="emphasis"><strong>JBoss</strong></span>.</p><p>Dans les champs <span class="emphasis"><strong>Host</strong></span> et <span class="emphasis"><strong>Port</strong></span>, renseignez les informations de connexion
+                        correspondantes.</p></li><li class="step" title="&Eacute;tape 9"><p>S&eacute;lectionnez le type de message dans la liste d&eacute;roulante <span class="emphasis"><strong>Message type</strong></span>, il peut &ecirc;tre de type <span class="emphasis"><strong>Queue</strong></span> ou <span class="emphasis"><strong>Topic</strong></span>. Pour cet
+                    exemple, s&eacute;lectionnez le type <span class="emphasis"><strong>Queue</strong></span> dans la
+                    liste.</p></li><li class="step" title="&Eacute;tape 10"><p>Dans le champ <span class="emphasis"><strong>To</strong></span>, saisissez les informations
+                    source du message strictement telles qu&#8217;elles sont attendues par le serveur. Il
+                    doit correspondre au type de message que vous avez s&eacute;lectionn&eacute; dans la liste
+                    d&eacute;roulante <span class="emphasis"><strong>Message Type</strong></span>, notamment&nbsp;:
+                        <code class="code">queue/A</code>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Le nom du message est sensible &agrave; la casse, ainsi <code class="code">queue/A </code>et
+                    <code class="code">Queue/A</code> sont diff&eacute;rents.</p></div></li><li class="step" title="&Eacute;tape 11"><p>Puis cliquez sur <span class="emphasis"><strong>Sync Columns</strong></span> pour r&eacute;cup&eacute;rer
+                    le sch&eacute;ma du composant pr&eacute;c&eacute;dent. Le sch&eacute;ma &eacute;tant en lecture seule, il ne peut
+                    &ecirc;tre modifi&eacute;. Les donn&eacute;es envoy&eacute;es sur le serveur MQ proviennent de la premi&egrave;re
+                    colonne rencontr&eacute;e du sch&eacute;ma.</p></li><li class="step" title="&Eacute;tape 12"><p>Ex&eacute;cutez le Job en appuyant sur <span class="emphasis"><strong>F6</strong></span> et, gr&acirc;ce
+                        au composant <span class="emphasis"><strong>tLogRow</strong></span>, observez dans la
+                        console le flux de donn&eacute;es transmis.</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tMomInput6.png"></div></div><div class="section" title="Construire et ex&eacute;cuter le second Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e237778"></a>Construire et ex&eacute;cuter le second Job</h4></div></div></div><p>Puis param&eacute;trez le deuxi&egrave;me Job pour r&eacute;cup&eacute;rer les messages de la file d&#8217;attente du
+            serveur MOM.</p><div class="mediaobject"><img src="../images/Use_Case_tMomInput4.png"></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Cliquez et d&eacute;posez un composant <span class="emphasis"><strong>tMomInput</strong></span>
+                    (dans la famille <span class="emphasis"><strong>Internet</strong></span> de la <span class="emphasis"><strong>Palette</strong></span>) et un composant <span class="emphasis"><strong>tLogRow</strong></span> pour afficher les messages r&eacute;cup&eacute;r&eacute;s.</p></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez le <span class="emphasis"><strong>tMomInput</strong></span> et d&eacute;finissez ses
+                    param&egrave;tres.</p><div class="mediaobject"><img src="../images/Use_Case_tMomInput5.png"></div></li><li class="step" title="&Eacute;tape 3"><p>S&eacute;lectionnez le serveur <span class="emphasis"><strong>MQ server</strong></span> dans la
+                    liste. Dans cet exemple, un serveur de message JBoss est utilis&eacute;.</p></li><li class="step" title="&Eacute;tape 4"><p>Renseignez les informations <span class="emphasis"><strong>Host</strong></span> et <span class="emphasis"><strong>Port</strong></span> du serveur.</p></li><li class="step" title="&Eacute;tape 5"><p>Renseignez les param&egrave;tres des champs <span class="emphasis"><strong>Message
+                        From</strong></span> et <span class="emphasis"><strong>Message Type</strong></span> afin qu&#8217;ils
+                    correspondent &agrave; la source et au type de message attendus par le serveur de
+                    message.</p></li><li class="step" title="&Eacute;tape 6"><p>Le sch&eacute;ma dans le champ <span class="emphasis"><strong>Schema</strong></span> est en lecture
+                    seule et est compos&eacute; de deux colonnes&nbsp;: <span class="emphasis"><strong>From</strong></span> et
+                        <span class="emphasis"><strong>Message</strong></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Cochez la case <span class="emphasis"><strong>Keep listening</strong></span> et param&eacute;trez
+                        la fr&eacute;quence de v&eacute;rification &agrave; <span class="emphasis"><em>5&nbsp;</em></span>secondes.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous utilisez l&#8217;option <span class="emphasis"><strong>Keep Listening</strong></span>,
+                vous devez cliquez sur le bouton <span class="emphasis"><strong>Kill</strong></span> pour stopper
+                le Job.</p></div></li><li class="step" title="&Eacute;tape 8"><p>Laissez les param&egrave;tres par d&eacute;faut du composant <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 9"><p>Enregistrez le Job et ex&eacute;cutez-le (si vous le lancez pour la premi&egrave;re fois ou
+                    si vous l&#8217;avez stopp&eacute; au cours d&#8217;un lancement pr&eacute;c&eacute;dent).</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tMomInput7.png"></div><p>Les messages r&eacute;cup&eacute;r&eacute;s sur le serveur sont affich&eacute;s dans la console.</p></div></div><div class="section" title="Sc&eacute;nario 2 : Transmettre des fichiers XML via un serveur MOM"><div class="titlepage"><div><div><h3 class="title"><a name="jzhang-20120420-internet-tmominput_s2"></a>Sc&eacute;nario 2 : Transmettre des fichiers XML via un serveur MOM</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; cinq composants, comprenant deux sous-jobs envoyant des
+            fichiers XML depuis un dossier local vers une file MOM puis r&eacute;cup&eacute;rant les fichiers de
+            la file MOM et affichant le contenu des fichiers dans la console.</p><div class="mediaobject"><img src="../images/use_case-tmominput2-1.png"></div><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e237887"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>De la <span class="emphasis"><strong>Palette</strong></span>, d&eacute;posez les composants
+                        suivants dans l'espace de mod&eacute;lisation graphique : un <span class="emphasis"><strong>tFileList</strong></span>, un <span class="emphasis"><strong>tFileInputXML</strong></span>, un <span class="emphasis"><strong>tMomOutput</strong></span>,
+                        un <span class="emphasis"><strong>tMomInput</strong></span> et un <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez le <span class="emphasis"><strong>tFileList</strong></span> au <span class="emphasis"><strong>tFileInputXML</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Iterate</strong></span> et
+                        reliez le <span class="emphasis"><strong>tFileInputXML</strong></span> au <span class="emphasis"><strong>tMomOutput</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> afin
+                        de former le premier sous-job. Ce sous-job lit chaque fichier XML dans un
+                        dossier donn&eacute; et l'envoie dans une file MOM. </p></li><li class="step" title="&Eacute;tape 3"><p>Connectez le <span class="emphasis"><strong>tMomInput</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> pour former le
+                        second sous-job. Ce sous-job r&eacute;cup&egrave;re les fichiers XML de la file MOM et
+                        affiche leur contenu dans la console. </p></li><li class="step" title="&Eacute;tape 4"><p>Reliez le <span class="emphasis"><strong>tFileInputXML</strong></span> au <span class="emphasis"><strong>tMomInput</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>On Component
+                            Ok</strong></span> afin de relier les deux sous-jobs.</p></li></ol></div></div><div class="section" title="Configurer le premier sous-job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e237969"></a>Configurer le premier sous-job</h4></div></div></div><div class="section" title="Configurer les composants d'entr&eacute;e"><div class="titlepage"><div><div><h5 class="title"><a name="d43281e237972"></a>Configurer les composants d'entr&eacute;e</h5></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tFileList</strong></span> pour
+                            ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmominput2-2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>Directory</strong></span>, saisissez le
+                            chemin d'acc&egrave;s au r&eacute;pertoire duquel lire les fichiers XML, ou parcourez
+                            votre syst&egrave;me en cliquant sur le bouton <span class="emphasis"><strong>[...]</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Cochez la case <span class="emphasis"><strong>Use Glob Expressions as
+                                Filemask</strong></span>, ajoutez une nouvelle ligne dans la table
+                                <span class="emphasis"><strong>Files</strong></span> en cliquant sur le bouton
+                                <span class="emphasis"><strong>[+]</strong></span> et saisissez
+                                <code class="code">"*.xml"</code> comme masque de fichier, dans la colonne
+                                <span class="emphasis"><strong>Filemask</strong></span>, afin d'utiliser tous les
+                            fichiers XML du r&eacute;pertoire. Laissez les autres param&egrave;tres tels qu'ils
+                            sont. </p></li><li class="step" title="&Eacute;tape 4"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tFileInputXML</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmominput2-3.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                            champ <span class="emphasis"><strong>Edit schema</strong></span> pour ouvrir la bo&icirc;te
+                            de dialogue <span class="emphasis"><strong>[Schema]</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmominput2-4.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour
+                            ajouter une colonne, nommez-la <span class="emphasis"><em>message</em></span> dans cet exemple et s&eacute;lectionnez <span class="emphasis"><strong>Document</strong></span> dans la liste <span class="emphasis"><strong>Type</strong></span> afin de g&eacute;rer les fichiers au format XML. Cliquez
+                            sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                            dialogue.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans le champ <span class="emphasis"><strong>File name/Stream</strong></span>,
+                            appuyez sur les touches <span class="emphasis"><strong>Ctrl+Espace</strong></span>
+                            pour acc&eacute;der &agrave; la liste des variables globales et s&eacute;lectionnez
+                                <code class="code">tFileList_1.CURRENT_FILEPATH</code> afin d'effectuer une
+                            boucle sur le r&eacute;pertoire des fichiers de contexte. </p></li><li class="step" title="&Eacute;tape 8"><p>Dans le champ <span class="emphasis"><strong>Loop XPath query</strong></span>,
+                            saisissez <code class="code">&#8220;/&#8221;</code> pour d&eacute;finir la racine comme n&#339;ud de boucle
+                            dans la structure des fichiers d'entr&eacute;e. Dans la table <span class="emphasis"><strong>Mapping</strong></span>, dans la colonne <span class="emphasis"><strong>XPath query</strong></span>, saisissez <code class="code">&#8220;.&#8221;</code> pour
+                            extraire toutes les donn&eacute;es du n&#339;ud de contexte des fichiers source et
+                            cochez la case <span class="emphasis"><strong>Get Nodes</strong></span> afin de
+                            construire un flux de donn&eacute;es de type <span class="emphasis"><strong>Document</strong></span>. </p></li></ol></div></div><div class="section" title="Configurer le composant tMomOutput"><div class="titlepage"><div><div><h5 class="title"><a name="d43281e238096"></a>Configurer le composant tMomOutput</h5></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tMomOutput</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmominput2-5.png"></div></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez <span class="emphasis"><strong>WebSphere MQ</strong></span> dans la
+                            liste <span class="emphasis"><strong>MQ server</strong></span> et saisissez le nom de
+                            l'h&ocirc;te ou l'adresse IP du serveur MQ, ainsi que le num&eacute;ro du
+                            port.</p></li><li class="step" title="&Eacute;tape 3"><p>Saisissez les informations d'authentification dans les champs
+                                <span class="emphasis"><strong>Username</strong></span> (identifiant) et <span class="emphasis"><strong>Password</strong></span> (mot de passe) puis saisissez le nom
+                            du canal de la file de transmission, dans le champ <span class="emphasis"><strong>Channel</strong></span>. </p></li><li class="step" title="&Eacute;tape 4"><p>Comme vous g&eacute;rez des messages de fichiers, s&eacute;lectionnez <span class="emphasis"><strong>Text Message</strong></span> dans la liste <span class="emphasis"><strong>Message Body Type</strong></span>. </p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> afin de
+                            r&eacute;cup&eacute;rer la structure du sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 6"><p>Renseignez les informations relatives au gestionnaire de file, dans le
+                            champ <span class="emphasis"><strong>QueueManager</strong></span> et les informations
+                            concernant la file de messages, dans le champ <span class="emphasis"><strong>MessageQueue</strong></span>. Laissez les autres param&egrave;tres tels qu'ils
+                            sont. </p></li></ol></div></div></div><div class="section" title="Configurer le second sous-job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e238157"></a>Configurer le second sous-job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tMomInput</strong></span> pour
+                        ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmominput2-6.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Configurez les param&egrave;tres simples du composant de la m&ecirc;me mani&egrave;re que pour
+                        le <span class="emphasis"><strong>tMomOutput</strong></span>, y compris les informations
+                        du serveur MQ, les informations d'authentification, le canal, le type de
+                        message, le gestionnaire de file et la file de messages.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="emphasis"><strong>Edit schema</strong></span> pour ouvrir la bo&icirc;te de
+                        dialogue <span class="emphasis"><strong>[Schema]</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-tmominput2-7.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Dans la liste <span class="emphasis"><strong>Type</strong></span> de la colonne
+                            <span class="emphasis"><strong>message</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Document</strong></span> afin de g&eacute;rer les formats XML puis
+                        cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                        dialogue.</p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e238209"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span> afin de
+                        sauvegarder votre Job.</p></li><li class="step" title="&Eacute;tape 2"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> ou cliquez sur <span class="emphasis"><strong>Run</strong></span> dans l'onglet <span class="emphasis"><strong>Run</strong></span> pour ex&eacute;cuter le Job.</p><p>Les fichiers XML du dossier sp&eacute;cifi&eacute; sont &eacute;crits dans la file de messages
+                        puis sont r&eacute;cup&eacute;r&eacute;s de la file. Le contenu des fichiers est affich&eacute; dans la
+                        console.</p><div class="mediaobject"><img src="../images/use_case-tmominput2-8.png"></div></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMomConnection.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-internet.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMomMessageIdList.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tMomConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tMomMessageIdList</td></tr></table></div></body></html>

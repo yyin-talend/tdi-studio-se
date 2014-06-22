@@ -1,0 +1,145 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMemorizeRows</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-misc.html" title="Chapter&nbsp;16.&nbsp;Misc group components"><link rel="prev" href="tFixedFlowInput.html" title="tFixedFlowInput"><link rel="next" href="tMsgBox.html" title="tMsgBox"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMemorizeRows</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFixedFlowInput.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;16.&nbsp;Misc group components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMsgBox.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tMemorizeRows"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMemorizeRows"></a>tMemorizeRows</h2></div></div></div><div class="mediaobject"><img src="../images/tMemorizeRows_icon.png"></div><div class="section" title="tMemorizeRows properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e259633"></a>tMemorizeRows properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+              <p><span class="emphasis"><strong>Component family</strong></span></p>
+            </td><td valign="top">
+              <p>Misc</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Function</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p><span class="emphasis"><strong>tMemorizeRows</strong></span> temporarily memorizes an array of
+                incoming data in a row by row sequence and instantiates this array by indexing each
+                of the memorized rows from 0. The maximum number of rows to be memorized at any
+                given time is defined in the <span class="emphasis"><strong>Basic settings</strong></span>
+                view.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Purpose</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p><span class="emphasis"><strong>tMemorizeRows</strong></span> memorizes a sequence of rows that
+                pass this component and then allows its following component(s) to perform operations
+                of your interest on the memorized rows.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit schema</em></span></p>
+            </td><td valign="top">
+              <p>A schema is a row description, i.e., it defines the number of fields that will
+                be processed and passed on to the next component. The schema is either built-in or
+                remote in the Repository.</p>
+              <p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+              <p> - Click <span class="emphasis"><strong>Edit Schema</strong></span> to make changes to the
+                schema. Note that if you make changes, the schema automatically becomes
+                built-in.</p>
+              <p> - Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve the schema
+                from the previous component connected in the Job.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in</strong></span>: The schema will be created and stored
+                locally for this component only. Related topic: see <span class="emphasis"><em>Talend Open Studio User
+                  Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository</strong></span>: You have already created the schema
+                and stored it in the Repository, hence can be reused in various projects and job
+                designs. Related topic: see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Row count to memorize</em></span></p>
+            </td><td valign="top">
+              <p>Define the row count to be memorized.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Columns to memorize</em></span></p>
+            </td><td valign="top">
+              <p>Select the columns to be memorized from the incoming data schema.</p>
+            </td></tr><tr><td valign="top">
+              <p>Advanced settings</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td valign="top">
+              <p>Select this check box to gather the Job processing metadata at a Job level as
+                well as at each component level.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Usage</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>This component can be used as intermediate step in a data flow or the last step
+                before beginning a subjob.</p>
+              <p> Note: You can use the global variable NB_LINE_ROWS to retrieve the value of the
+                  <span class="emphasis"><strong>Row count to memorize</strong></span> field of the <span class="emphasis"><strong>tMemorizeRows</strong></span> component.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Connections</strong></span></p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>Outgoing links (from one component to another):</p>
+              <p>
+                <span class="emphasis"><strong>Row</strong></span>: Main</p>
+              <p>
+                <span class="emphasis"><strong>Trigger</strong></span>: Run if; On Component Ok; On Component
+                Error.</p>
+              <p> </p>
+              <p> Incoming links (from one component to another):</p>
+              <p>
+                <span class="emphasis"><strong>Row</strong></span>: Main; </p>
+              <p> </p>
+              <p> For further information regarding connections, see <span class="emphasis"><em>Talend Open Studio User
+                  Guide</em></span>.</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Scenario: Counting the occurrences of different ages"><div class="titlepage"><div><div><h3 class="title"><a name="d0e259892"></a>Scenario: Counting the occurrences of different ages</h3></div></div></div><p>This scenario counts how many different ages there are within a group of 12 customers. In
+      this scenario, the customer data is generated at random.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows1.png"></div><p>This Job uses 5 components which are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>tRowGenerator</strong></span>: it generates 12 rows of customer data
+          containing IDs, names and ages of the 12 customers.</p></li><li class="listitem"><p><span class="emphasis"><strong>tSortRow</strong></span>: it sorts the 12 rows according to the age
+          data.</p></li><li class="listitem"><p><span class="emphasis"><strong>tMemorizeRows</strong></span>: it temporarily memorizes a specific
+          number of incoming data rows at any give time and indexes the memorized data rows.</p></li><li class="listitem"><p><span class="emphasis"><strong>tJavaFlex</strong></span>: it compares the age values of the data
+          memorized by the preceding component, counts the occurrences of different ages and
+          displays these ages in the <span class="emphasis"><strong>Run</strong></span> view.</p></li><li class="listitem"><p><span class="emphasis"><strong>tJava</strong></span>: it displays the number of occurrences of
+          different ages.</p></li></ul></div><p>To replicate this scenario, proceed as follows:</p><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e259933"></a>Dropping and linking the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop <span class="emphasis"><strong>tRowGenerator</strong></span>, <span class="emphasis"><strong>tSortRow</strong></span>, <span class="emphasis"><strong>tMemorizeRows</strong></span>, <span class="emphasis"><strong>tJavaFlex</strong></span> and <span class="emphasis"><strong>tJava</strong></span> on the
+            design workspace.</p></li><li class="step" title="Step 2"><p>Connect <span class="emphasis"><strong>tRowGenerator </strong></span> to <span class="emphasis"><strong>tSortRow</strong></span> using the <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main </strong></span>link.</p></li><li class="step" title="Step 3"><p>Do the same to link together <span class="emphasis"><strong>tSortRow</strong></span>, <span class="emphasis"><strong>tMemorizeRows</strong></span> and <span class="emphasis"><strong>tJavaFlex</strong></span>
+            using the <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main
+            </strong></span>link.</p></li><li class="step" title="Step 4"><p>Connect <span class="emphasis"><strong>tRowGenerator</strong></span> to <span class="emphasis"><strong>tJava</strong></span> using the <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>OnSubjobOk </strong></span>link.</p></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e260003"></a>Configuring the components</h4></div></div></div><div class="procedure" title="Procedure&nbsp;16.1.&nbsp;Configuring the tRowGenerator component"><a name="d0e260006"></a><p class="title"><b>Procedure&nbsp;16.1.&nbsp;Configuring the tRowGenerator component</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double click the <span class="emphasis"><strong>tRowGenerator</strong></span> component to open
+            the its editor.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows2.png"></div></li><li class="step" title="Step 2"><p>In this editor, click the plus button three times to add three columns and name them
+              as:<span class="emphasis"><em> id, name, age</em></span>.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Type</strong></span> column, select <span class="emphasis"><strong>Integer</strong></span> for <span class="emphasis"><em>id</em></span> and <span class="emphasis"><em>age</em></span>.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Length</strong></span> column, enter <span class="emphasis"><em>50</em></span>
+            for <span class="emphasis"><em>name</em></span>.</p></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Functions</strong></span> column, select <span class="emphasis"><strong>random</strong></span> for <span class="emphasis"><em>id</em></span> and
+            <span class="emphasis"><em>age</em></span>, then select <span class="emphasis"><strong>getFirstName</strong></span> for
+              <span class="emphasis"><em>name</em></span>.</p></li><li class="step" title="Step 6"><p>In the field of <span class="emphasis"><strong>Number of Rows for RowGenerator</strong></span>,
+            type in 12.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Column</strong></span> column, click
+              <span class="emphasis"><em>age</em></span> to open its corresponding <span class="emphasis"><strong>Function
+              parameters</strong></span> view in the lower part of this editor.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows3.png"></div><p>In the <span class="emphasis"><strong>Value</strong></span> column of the <span class="emphasis"><strong>Function parameters</strong></span> view, type in the minimum age and maximum age that
+            will be generated for the 12 customers. In this example, they are 10 and 25. </p></li></ol></div><div class="procedure" title="Procedure&nbsp;16.2.&nbsp;Configuring the tSortRow component"><a name="d0e260101"></a><p class="title"><b>Procedure&nbsp;16.2.&nbsp;Configuring the tSortRow component</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double click <span class="emphasis"><strong>tSortRow</strong></span> to open its <span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows4.png"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>Criteria</strong></span> table, click the plus button to add
+            one row.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Schema column</strong></span> column, select the data column
+            you want to base the sorting operation on. In this example, select
+              <span class="emphasis"><em>age</em></span> as it is the ages that should be compared and counted.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Sort num or alpha</strong></span> column, select the type of
+            the sorting operation. In this example, select <span class="emphasis"><strong>num</strong></span>,
+            that is numerical, as <span class="emphasis"><em>age</em></span> is integer.</p></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Order asc or desc</strong></span> column, select <span class="emphasis"><strong>desc</strong></span> as the sorting order for this scenario.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;16.3.&nbsp;Configuring the tMemorizeRows component"><a name="d0e260152"></a><p class="title"><b>Procedure&nbsp;16.3.&nbsp;Configuring the tMemorizeRows component</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double click <span class="emphasis"><strong>tMemorizeRows</strong></span> to open its <span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows5.png"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>Row count to memorize</strong></span> field, type in the
+            maximum number of rows to be memorized at any given time. As you need to compare ages of
+            two customers for each time, enter <span class="emphasis"><em>2</em></span>. Thus, this component
+            memorizes two rows at maximum at any given moment and always indexes the newly incoming
+            row as 0 and the previously incoming row as 1.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Memorize</strong></span> column of the <span class="emphasis"><strong>Columns to memorize</strong></span> table, select the check box(es) to determine the
+            column(s) to be memorized. In this example, select the check box corresponding to
+              <span class="emphasis"><em>age</em></span>.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;16.4.&nbsp;Configuring the tJavaFlex and tJava components"><a name="d0e260188"></a><p class="title"><b>Procedure&nbsp;16.4.&nbsp;Configuring the tJavaFlex and tJava components</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double click <span class="emphasis"><strong>tJavaFlex</strong></span> to open its <span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows6.png"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>Start code</strong></span> area, enter the Java code that
+            will be called during the initialization phase. In this example, type in <code class="code">int
+              count=0;</code> in order to declare a variable <span class="emphasis"><em>count</em></span> and assign
+            the value <span class="emphasis"><em>0</em></span> to it.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Main code</strong></span> area, enter the Java code to be
+            applied to each row in the data flow. In this scenario, type in </p><p>
+            </p><pre class="programlisting">if(!age_tMemorizeRows_1[0].equals(age_tMemorizeRows_1[1]))
+{
+count++;
+}
+System.out.println(age_tMemorizeRows_1[0]);
+</pre><p>This
+            code compares two ages memorized by <span class="emphasis"><strong>tMemorizeRows</strong></span> each
+            time and count one change every time when the ages are found different. Then this code
+            displays the ages that have been indexed as 0 by <span class="emphasis"><strong>tMemorizeRows</strong></span>.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>End code</strong></span> area, enter the Java code that will
+            be called during the closing phase. In this example, type in
+              <code class="code">globalMap.put("count", count);</code> to output the count result.</p></li><li class="step" title="Step 5"><p>Double click <span class="emphasis"><strong>tJava</strong></span> to open its <span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows7.png"></div></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>Code</strong></span> area, type in the code
+              <code class="code">System.out.println("Different ages: "+globalMap.get("count"));</code> to
+            retrieve the count result.</p></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e260265"></a>Saving and executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save your Job.</p></li><li class="step" title="Step 2"><p>Press <span class="emphasis"><strong>F6</strong></span>, or click <span class="emphasis"><strong>Run
+            </strong></span>on the <span class="emphasis"><strong>Run </strong></span>console to execute the
+            Job.</p><div class="mediaobject"><img src="../images/Use_Case_tMemorizeRows8.png"></div></li></ol></div><p>In the console, you can read that there are 10 different ages within the group of 12
+        customers.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFixedFlowInput.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-misc.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMsgBox.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFixedFlowInput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tMsgBox</td></tr></table></div></body></html>

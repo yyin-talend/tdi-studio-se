@@ -1,0 +1,191 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMelissaDataAddress</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-dataquality.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tMatchGroupHadoop.html" title="tMatchGroupHadoop"><link rel="next" href="tMultiPatternCheck.html" title="tMultiPatternCheck"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMelissaDataAddress</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMatchGroupHadoop.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;6.&nbsp;Composants Data Quality</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMultiPatternCheck.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tMelissaDataAddress"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMelissaDataAddress"></a>tMelissaDataAddress</h2></div></div></div><div class="mediaobject"><img src="../images/tMelissaDataAddress_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du studio si
+			vous avez souscrit &agrave; l'un des produits <span class="emphasis"><em>Talend Platform</em></span>.</p></div><p>Ce composant de gestion d'adresse est le fruit de la collaboration de <span class="emphasis"><strong>Talend</strong></span> et de Melissa Data,
+    l'un des leaders mondiaux de validation d'adresses internationales </p><p>Pour plus d'informations concernant l'entreprise et ses outils logiciels, consultez le site
+    Web <a class="link" href="http://www.melissadata.com/" target="_top">http://www.melissadata.com/</a> (en anglais).</p><div class="section" title="Propri&eacute;t&eacute;s du tMelissaDataAddress"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e95191"></a>Propri&eacute;t&eacute;s du tMelissaDataAddress</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Famille de composant</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>Data Quality</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Fonction</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>Le composant <span class="emphasis"><strong>tMelissaDataAddress</strong></span> valide,
+                corrige et standardise des adresses provenant du Canada et des Etats-Unis. Il
+                effectue une boucle sur chaque ligne, lit toutes les adresses d'entr&eacute;e et les
+                compare au contenu d'un fichier de donn&eacute;es MelissaData.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Le <span class="emphasis"><strong>tMelissaDataAddress</strong></span> utilise la version
+                    de juillet 2012 de la biblioth&egrave;que MelissaData AddressObject.</p></div>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Objectif</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>Le <span class="emphasis"><strong>tMelissaDataAddress</strong></span> v&eacute;rifie qu'une adresse
+                est correctement format&eacute;e et corrige les erreurs de format ou d'orthographe dans
+                chaque ligne.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Basic settings</strong></span>
+              </p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit schema</em></span></p>
+            </td><td valign="top">
+              <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+                trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (built-in) soit
+                distant dans le Repository.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour
+                ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+                  de </em></span><span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe d&eacute;j&agrave; et est
+                stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilisable dans divers projets et
+                Job designs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+                  de</em></span>
+                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Choose Company column</em></span>
+              </p>
+            </td><td valign="top">
+              <p>S&eacute;lectionnez dans la liste le nom de l'entreprise &agrave; analyser.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Choose Address1 column</em></span>
+              </p>
+            </td><td valign="top">
+              <p>S&eacute;lectionnez dans la liste la premi&egrave;re colonne d'adresses &agrave; analyser.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Choose Address2 column</em></span>
+              </p>
+            </td><td valign="top">
+              <p>S&eacute;lectionnez dans la liste la seconde colonne d'adresses &agrave; analyser.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Choose City column</em></span>
+              </p>
+            </td><td valign="top">
+              <p>S&eacute;lectionnez dans la liste la colonne de villes &agrave; analyser.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Choose State column</em></span>
+              </p>
+            </td><td valign="top">
+              <p>S&eacute;lectionnez dans la liste la colonne d'&eacute;tats &agrave; analyser.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Choose Postal column</em></span>
+              </p>
+            </td><td valign="top">
+              <p>S&eacute;lectionnez dans la liste la colonne de codes postaux &agrave; analyser.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Specify your MelissaData license</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Saisissez la cl&eacute; de licence MelissaData fournie par MelissaData, lors de la
+                commande de Data Quality Suite ou de l'API Address Object.</p>
+              <p>La cl&eacute; d&eacute;verrouille les fonctionnalit&eacute;s de Address Object.</p>
+              <p>Pour plus d'informations, consultez le site <a class="link" href="http://www.melissadata.com/" target="_top">http://www.melissadata.com/</a> (en
+                anglais) et t&eacute;l&eacute;chargez le Guide <span class="emphasis"><strong>Reference Guide for Address
+                  Object</strong></span> depuis le centre de support de MelissaData.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Specify your MelissaData DataFile folder</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Configurez le chemin d'acc&egrave;s au dossier de donn&eacute;es MelissaData, fourni par
+                MelissaData et install&eacute; localement.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Avant de pouvoir utiliser le composant tMelissaDataAddress, vous devez
+                    commander et t&eacute;l&eacute;charger Data Quality Suite ou l'API Address Object sur le site
+                      <a class="link" href="http://www.melissadata.com/" target="_top">http://www.melissadata.com/</a>.</p><p>Le <span class="emphasis"><strong>tMelissaDataAddress</strong></span> utilise la version
+                    de juillet 2012 de la biblioth&egrave;que MelissaData AddressObject.</p></div>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Advanced settings</strong></span>
+              </p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td valign="top">
+              <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du Job, aussi bien
+                au niveau du Job qu&#8217;au niveau de chaque composant. </p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Utilisation</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>Ce composant est un composant interm&eacute;diaire et n&eacute;cessite un flux d'entr&eacute;e ainsi
+                qu'un flux de sortie.</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario: Editer des adresses par rapport &agrave; un fichier MelissaData"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e95526"></a>Sc&eacute;nario: Editer des adresses par rapport &agrave; un fichier MelissaData</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; trois composants qui :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>utilise un composant <span class="emphasis"><strong>tFixedFlowInput</strong></span> pour g&eacute;n&eacute;rer
+            les donn&eacute;es d'adresses &agrave; analyser,</p></li><li class="listitem"><p>utilise un composant <span class="emphasis"><strong>tMelissaDataAddress</strong></span> pour
+            analyser le sch&eacute;ma d'entr&eacute;e ainsi que valider, corriger et standardiser les adresses des
+            Etats-Unis g&eacute;n&eacute;r&eacute;es par le <span class="emphasis"><strong>tFixedFlowInput</strong></span>,</p></li><li class="listitem"><p>utilise un <span class="emphasis"><strong>tLogRow</strong></span> afin d'&eacute;crire en sortie les
+            adresses correctement format&eacute;es, dans la console.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/use_case_tmelissadataaddress.png" align="middle"></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e95556"></a>Construire le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span>
+              dans l'espace de mod&eacute;lisation graphique : <span class="emphasis"><strong>tFixedFlowInput</strong></span>, <span class="emphasis"><strong>tMelissaDataAddress</strong></span> et
+                <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez les trois composants &agrave; l'aide de liens <span class="emphasis"><strong>Main</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer le composant d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e95581"></a>Configurer le composant d'entr&eacute;e</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tFixedFlowInput</strong></span> pour ouvrir
+              sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmelissadataaddress2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cr&eacute;ez le sch&eacute;ma, en cliquant sur le bouton <span class="emphasis"><strong>Edit
+                Schema</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmelissadataaddress3.png"></div><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter les
+              colonnes suivantes dans le sch&eacute;ma d'entr&eacute;e : <span class="emphasis"><em>company</em></span>,
+                <span class="emphasis"><em>address1</em></span>, <span class="emphasis"><em>address2</em></span>,
+                <span class="emphasis"><em>city</em></span>, <span class="emphasis"><em>postal</em></span> et
+              <span class="emphasis"><em>state</em></span>. Ces colonnes sont obligatoires dans le composant <span class="emphasis"><strong>tMelissaDataAddress</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Number of rows</strong></span>, configurez le
+              nombre de lignes &agrave; <span class="emphasis"><em>1</em></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez l'option
+                <span class="emphasis"><strong>Use Inline Content (delimited file)</strong></span> et configurez
+              le s&eacute;parateur de lignes (<span class="emphasis"><strong>Row Separator</strong></span>) et le
+              s&eacute;parateur de champs (<span class="emphasis"><strong>Field Separator</strong></span>).</p></li><li class="step" title="&Eacute;tape 6"><p>Dans le tableau <span class="emphasis"><strong>Content</strong></span>, saisissez les donn&eacute;es
+              d'adresses que vous souhaitez analyser, par exemple :</p><pre class="programlisting">Talend Inc.|5150 El Camino Real|Suite C-31 |Los Altos  |94022|
+Talend Inc.|6 Executive Circle|Suite 200|Irvine  California  |92614|
+Talend Inc.|220 White Plains Road|Suite 390|Tarrytown  New York  |10591|
+Talend Inc.|8 New England Executive Park|Suite 170|Burlington  Massachusetts  |01803|</pre></li></ol></div></div><div class="section" title="Configurer le composant tMelissaDataAddress"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e95670"></a>Configurer le composant tMelissaDataAddress</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tMelissaDataAddress</strong></span> pour
+              afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmelissadataaddress4.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> afin de r&eacute;cup&eacute;rer le
+              sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="emphasis"><strong>Edit schema</strong></span> pour voir les
+              sch&eacute;mas d'entr&eacute;e et de sortie et effectuez des modifications, si n&eacute;cessaire.</p><div class="mediaobject"><img src="../images/use_case_tmelissadataaddress5.png"></div><p>Dans le sch&eacute;ma du composant se trouvent de nombreuses colonnes de sortie standards
+            en lecture seule. Ces colonnes de sortie retournent par exemple le nom standard des
+            villes et des entreprises, des adresses de deux lignes, des abr&eacute;viations pour le nom des
+            &eacute;tats et des pays, des codes postaux et des codes de r&eacute;sultat.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+              dialogue.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans chaque champ d'adresse, s&eacute;lectionnez dans la liste la colonne contenant les
+              informations d'adresse correspondantes, par exemple le nom de l'entreprise, la
+              premi&egrave;re et la seconde adresse, le nom de la ville et de l'Etat puis le code
+              postal.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans le champ <span class="emphasis"><strong>Specify your MelissaData license</strong></span>,
+              configurez votre cl&eacute; de licence fournie par MelissaData lors de la commande de Data
+              Quality Suite ou de l'API Address Object.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans le champ <span class="emphasis"><strong>Specify your MelissaData DataFile
+                folder</strong></span>, configurez le chemin d'acc&egrave;s au dossier "data" de MelissaData
+              data fourni par MelissaData et install&eacute; localement.</p></li></ol></div></div><div class="section" title="Finaliser le Job et l'ex&eacute;cuter"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e95724"></a>Finaliser le Job et l'ex&eacute;cuter</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tLogRow</strong></span> pour
+              afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Sauvegardez votre et appuyez sur <span class="emphasis"><strong>F6</strong></span> pour
+              l'ex&eacute;cuter.</p><p>Le composant <span class="emphasis"><strong>tMelissaDataAddress</strong></span> lit les lignes
+            d'adresses en entr&eacute;e, les corrige et les formate puis affiche le r&eacute;sultat en lignes
+            d'adresses "standardis&eacute;es" de sortie.</p><div class="mediaobject"><img src="../images/use_case_tmelissadataaddress6.png"></div><p>En plus de v&eacute;rifier et de standardiser une adresse, le <span class="emphasis"><strong>tMelissaDataAddress</strong></span> met &eacute;galement en correspondance le nom des rues par
+              rapport &agrave; un code postal, fait correspondre des donn&eacute;es g&eacute;ographiques &agrave; un code postal
+              et &agrave; des informations de villes, puis analyse les rues et retourne tous les r&eacute;sultats
+              via diff&eacute;rentes colonnes de sortie. La capture d'&eacute;cran ci-dessus montre uniquement
+              certaines des colonnes de sorties &eacute;crites par le composant <span class="emphasis"><strong>tMelissaDataAddress</strong></span>.</p><p> Ces colonnes de sortie retournent par exemple le nom standard des villes et des
+            entreprises, des adresses de deux lignes, des abr&eacute;viations pour le nom des &eacute;tats et des
+            pays et des codes postaux.</p><p>Elles retournent &eacute;galement des codes de r&eacute;sultat. Ces codes sont &eacute;crits dans des
+            listes d&eacute;limit&eacute;es par des virgules. Chaque code se compose de deux lettres suivies de
+            deux chiffres. Ces codes indiquent diff&eacute;rents statuts et erreurs. Par exemple, le code
+              <span class="emphasis"><em>AC02</em></span> signifie que le nom de l'&eacute;tat est correct,
+            selon la combinaison du nom de la ville et du code postal. Le code <span class="emphasis"><em>AS01</em></span> signifie que le nom de la rue est valide et
+            livrable.</p><p>Pour une liste exhaustive de la signification des codes de r&eacute;sultat, pour plus
+            d'informations concernant les des colonnes de sortie, consultez le Guide de R&eacute;f&eacute;rence
+            "Address Object" que vous pouvez t&eacute;l&eacute;charger &agrave; partir du centre de support de
+            MelissaData, sur le site Web <a class="link" href="http://www.melissadata.com/" target="_top">http://www.melissadata.com/</a>.</p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMatchGroupHadoop.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMultiPatternCheck.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tMatchGroupHadoop&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tMultiPatternCheck</td></tr></table></div></body></html>
