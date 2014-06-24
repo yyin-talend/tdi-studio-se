@@ -67,14 +67,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.designer.component.preview.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.utils.test"
          download-size="0"
          install-size="0"
@@ -230,7 +222,7 @@
          fragment="true"
          unpack="false"/>
 
-  <plugin
+   <plugin
          id="org.talend.osgi.lib.loader"
          download-size="0"
          install-size="0"
