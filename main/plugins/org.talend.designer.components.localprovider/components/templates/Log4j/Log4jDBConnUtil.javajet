@@ -44,9 +44,12 @@ imports="
 			}
  			this.cid = node.getUniqueName();
 			this.isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-			connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-			if(!"".equals(connection)){
-				connection = "'" + connection+"' ";
+			String useConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+			if(useConn == null || "".equals(useConn) || "true".equals(useConn)){
+				connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+				if(!"".equals(connection)){
+					connection = "'" + connection+"' ";
+				}
 			}
 			//for output
 			dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
