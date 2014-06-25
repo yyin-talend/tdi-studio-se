@@ -110,7 +110,9 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
                     }
                 }
                 // for validation rule
-                if (ERepositoryObjectType.METADATA_VALIDATION_RULES.equals(nodProperty) && !isUnderValidationRuleConnection(node)) {
+                if (ERepositoryObjectType.METADATA_VALIDATION_RULES != null
+                        && ERepositoryObjectType.METADATA_VALIDATION_RULES.equals(nodProperty)
+                        && !isUnderValidationRuleConnection(node)) {
                     visible = false;
                 }
                 // if (visible && parent != null && parent instanceof BinRepositoryNode) {
