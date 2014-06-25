@@ -350,7 +350,7 @@ public class SalesforceBulkAPI {
             }
             // Finished processing all rows
             // Create a final batch for any remaining data
-
+            rdr.close();
             if (currentLines > 1) {
                 createBatch(tmpOut, tmpFile, batchInfos);
             }
@@ -489,7 +489,7 @@ public class SalesforceBulkAPI {
             }
         }
         batchInfoList.add(info);
-        //For TDI-27909
+        // For TDI-27909
         closeJob();
     }
 
