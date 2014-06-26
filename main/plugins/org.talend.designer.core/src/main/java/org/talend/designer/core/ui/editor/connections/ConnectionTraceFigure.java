@@ -358,15 +358,23 @@ public class ConnectionTraceFigure extends Figure {
                     // }
                 }
                 if (tooltip != null) {
-                    variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT));
+                    if (variableFigure != null) {
+                        variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT));
+                    }
                 }
-                variableFigure.setOpaque(true);
+                if (variableFigure != null) {
+                    variableFigure.setOpaque(true);
+                }
                 if ((nbVar % 2) != 0) {
                     if (tooltip != null) {
-                        variableFigure.setBackgroundColor(ColorConstants.white);
+                        if (variableFigure != null) {
+                            variableFigure.setBackgroundColor(ColorConstants.white);
+                        }
                     }
                 } else {
-                    variableFigure.setBackgroundColor(BACKGROUND);
+                    if (variableFigure != null) {
+                        variableFigure.setBackgroundColor(BACKGROUND);
+                    }
                 }
 
                 nbVar++;
