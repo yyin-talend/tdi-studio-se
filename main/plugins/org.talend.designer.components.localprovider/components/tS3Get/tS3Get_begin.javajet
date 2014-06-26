@@ -22,7 +22,7 @@ imports="
 		conn_<%=cid%>.getObject(new com.amazonaws.services.s3.model.GetObjectRequest(<%=bucket%>, <%=key%>),new java.io.File(<%=file%>));
 	}catch(java.lang.Exception e_<%=cid%>){
 <%
-		if (("true").equals(dieOnError)) {
+		if (dieOnError) {
 %>
 		throw(e_<%=cid%>);
 <%
