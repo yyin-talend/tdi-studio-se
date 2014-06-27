@@ -42,9 +42,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.talend.commons.exception.LoginException;
@@ -79,7 +76,6 @@ import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -255,20 +251,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         // }
         if (!isEditable) {
             rEditorInput.getFile().setReadOnly(false);
-        }
-        // force clean jobsettings
-        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        if (activeWorkbenchWindow != null) {
-            IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-            if (activePage != null) {
-                IViewPart findView = activePage.findView(IJobSettingsView.ID);
-                if (findView != null) {
-                    IJobSettingsView jobsetting = (IJobSettingsView) findView;
-                    if (!jobsetting.isCleaned()) {
-                        jobsetting.cleanDisplay();
-                    }
-                }
-            }
         }
 
         // dispose custom color

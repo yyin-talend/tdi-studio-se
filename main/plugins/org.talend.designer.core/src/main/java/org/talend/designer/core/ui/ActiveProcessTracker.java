@@ -208,7 +208,6 @@ public class ActiveProcessTracker implements IPartListener {
                 if (currentProcess == process) {
                     Contexts.setTitle(""); //$NON-NLS-1$
                     Contexts.clearAll();
-                    JobSettings.cleanDisplay();
                     if (lastProcessOpened == currentProcess) {
                         lastProcessOpened = null;
                     }
@@ -240,10 +239,8 @@ public class ActiveProcessTracker implements IPartListener {
         }
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (page != null) {
-            if (page.getActiveEditor() != null) {
+            if (!page.getActiveEditor().getSite().getId().equals("org.talend.rcp.intro.starting.StartingBrowser")) {
                 JobSettings.switchToCurJobSettingsView();
-            } else {
-                JobSettings.cleanDisplay();
             }
         }
 
