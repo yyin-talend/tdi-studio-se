@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -337,8 +338,8 @@ public class CodeGenerator implements ICodeGenerator {
                         } else {
                             StringBuffer finallyPart = new StringBuffer();
                             componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                            for(INode mergeNode:subTree.getMergeNodes()){
-                            	componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.BEGIN, null));
+                            for (INode mergeNode : subTree.getMergeNodes()) {
+                                componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.BEGIN, null));
                             }
                             List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();
                             for (INode startNode : sortedMergeBranchStarts) {
@@ -351,10 +352,10 @@ public class CodeGenerator implements ICodeGenerator {
                                 componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.END, null));
                                 finallyPart.append(generateComponentsCode(subTree, startNode, ECodePart.FINALLY, null));
                             }
-                            
-                            for(INode mergeNode:subTree.getMergeNodes()){
-                            	componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.END, null));
-                            	finallyPart.append(generateComponentsCode(subTree, mergeNode, ECodePart.FINALLY, null));
+
+                            for (INode mergeNode : subTree.getMergeNodes()) {
+                                componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.END, null));
+                                finallyPart.append(generateComponentsCode(subTree, mergeNode, ECodePart.FINALLY, null));
                             }
                             Vector subprocess_footerArgument = new Vector(2);
                             subprocess_footerArgument.add(subTree);
@@ -426,10 +427,29 @@ public class CodeGenerator implements ICodeGenerator {
                 designerContext = process.getContextManager().getDefaultContext();
             }
             List<IContextParameter> listParameters = designerContext.getContextParameterList();
+            List<IContextParameter> listParametersCopy = new ArrayList<IContextParameter>(listParameters.size());
 
             if (listParameters != null) {
                 CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
-                codeGenArgument.setNode(listParameters);
+                // encrypt the password
+                for (IContextParameter iContextParameter : listParameters) {
+                    if (PasswordEncryptUtil.isPasswordType(iContextParameter.getType())) {
+                        IContextParameter icp = iContextParameter.clone();
+                        String pwd = icp.getValue();
+                        if (pwd != null && !pwd.isEmpty()) {
+                            try {
+                                icp.setValue(PasswordEncryptUtil.encryptPasswordHex(pwd));
+                            } catch (Exception e) {
+                                log.error(e.getMessage(), e);
+                            }
+                        }
+                        listParametersCopy.add(icp);
+                    } else {
+                        listParametersCopy.add(iContextParameter);
+                    }
+                }
+
+                codeGenArgument.setNode(listParametersCopy);
                 codeGenArgument.setContextName(designerContext.getName());
                 codeGenArgument.setCurrentProjectName(currentProjectName);
                 codeGenArgument.setJobName(jobName);
@@ -1069,8 +1089,8 @@ public class CodeGenerator implements ICodeGenerator {
                                 // generateTypedComponentCode
                                 // (EInternalTemplate.SUBPROCESS_HEADER,
                                 // subTree));
-                                for(INode mergeNode:subTree.getMergeNodes()){
-                                	componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.BEGIN, null));
+                                for (INode mergeNode : subTree.getMergeNodes()) {
+                                    componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.BEGIN, null));
                                 }
                                 List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();
                                 for (INode startNode : sortedMergeBranchStarts) {
@@ -1085,9 +1105,9 @@ public class CodeGenerator implements ICodeGenerator {
                                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN,
                                         subTree.getRootNode()));
 
-                                for(INode mergeNode:subTree.getMergeNodes()){
-                                	componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.END, null));
-                                	finallyPart.append(generateComponentsCode(subTree, mergeNode, ECodePart.FINALLY, null));
+                                for (INode mergeNode : subTree.getMergeNodes()) {
+                                    componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.END, null));
+                                    finallyPart.append(generateComponentsCode(subTree, mergeNode, ECodePart.FINALLY, null));
                                 }
 
                                 // componentsCode.append(
