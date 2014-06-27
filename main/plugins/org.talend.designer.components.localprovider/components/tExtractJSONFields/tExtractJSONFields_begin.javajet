@@ -384,7 +384,7 @@ if (outConn!=null) {
                             boolean isNotSetDefault = false;
                             String defaultValue=column.getDefault();
                             if(defaultValue!=null){
-                                isNotSetDefault = defaultValue.length()==0;
+                                isNotSetDefault = defaultValue.trim().length()==0;
                             }else{
                                 isNotSetDefault=true;
                             }
