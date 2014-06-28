@@ -313,7 +313,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     IProcess process = talendEditor.getProcess();
                     if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())) {
                         categories = getCategories(process);
-                        refresh();
                     }
                 }
             }
