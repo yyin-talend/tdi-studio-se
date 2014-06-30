@@ -27,8 +27,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-import org.talend.fileprocess.TOSDelimitedReader;
-
 /**
  * FileInputDelimited is dedicated to Talend's tFileInputDelimited component. It wraps all parameters in
  * tFileInputDelimted, so it makes the generated code much easier and cleaner. This class is not recommended to use in
@@ -42,7 +40,7 @@ public class FileInputDelimited {
 
     Iterator<Integer> random = null;
 
-    private int loopCount = 0;
+    private long loopCount = 0;
 
     private boolean randomSwitch = false;
 
@@ -58,16 +56,15 @@ public class FileInputDelimited {
             int header, int footer, int limit, int random) throws IOException {
         this(file, encoding, fieldSeparator, rowSeparator, skipEmptyRow, header, footer, limit, random, false);
     }
-    
+
     /**
      * This constructor is only for compatibility with the old usecase.(Before add the function support split Record.)
      * 
      */
-    public FileInputDelimited(java.io.InputStream is, String encoding, String fieldSeparator, String rowSeparator, boolean skipEmptyRow,
-            int header, int footer, int limit, int random) throws IOException {
+    public FileInputDelimited(java.io.InputStream is, String encoding, String fieldSeparator, String rowSeparator,
+            boolean skipEmptyRow, int header, int footer, int limit, int random) throws IOException {
         this(is, encoding, fieldSeparator, rowSeparator, skipEmptyRow, header, footer, limit, random, false);
     }
-    
 
     /**
      * The constructor's parameter wraps all parameters' value, and a pretreatment was made according the value of
@@ -101,11 +98,11 @@ public class FileInputDelimited {
                 if (limit > 0) {
                     this.loopCount = limit;
                 } else {
-                    this.loopCount = Integer.MAX_VALUE;
+                    this.loopCount = -1;
                 }
                 this.countNeedAdjust = true;
             } else {
-            	//for stream,not support the footer
+                // for stream,not support the footer
                 int count = (int) this.delimitedDataReader.getAvailableRowCount(footer);
                 this.delimitedDataReader.close();
                 this.delimitedDataReader = new TOSDelimitedReader(is, encoding, fieldSeparator, rowSeparator, skipEmptyRow);
@@ -172,7 +169,7 @@ public class FileInputDelimited {
                 if (limit > 0) {
                     this.loopCount = limit;
                 } else {
-                    this.loopCount = Integer.MAX_VALUE;
+                    this.loopCount = -1;
                 }
                 this.countNeedAdjust = true;
             } else {
@@ -211,7 +208,7 @@ public class FileInputDelimited {
     }
 
     /**
-     *In order to support InGest to parse String as content directly
+     * In order to support InGest to parse String as content directly
      * 
      * @param content
      * @param fieldSeparator
@@ -241,7 +238,7 @@ public class FileInputDelimited {
                 if (limit > 0) {
                     this.loopCount = limit;
                 } else {
-                    this.loopCount = Integer.MAX_VALUE;
+                    this.loopCount = -1;
                 }
                 this.countNeedAdjust = true;
             } else {
@@ -344,12 +341,22 @@ public class FileInputDelimited {
     }
 
     /**
+     * @deprecated use getLongRowNumber instead of this
      * 
      * @return number of rows get by tFileInputDelimited
      */
+    @Deprecated
     public int getRowNumber() {
         if (this.countNeedAdjust) {
             return (int) this.delimitedDataReader.getProcessedRecordCount();
+        } else {
+            return (int) this.loopCount;
+        }
+    }
+
+    public long getLongRowNumber() {
+        if (this.countNeedAdjust) {
+            return this.delimitedDataReader.getProcessedRecordCount();
         } else {
             return this.loopCount;
         }

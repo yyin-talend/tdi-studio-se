@@ -43,7 +43,7 @@ public class CopyInputStreamUtil {
     }
 
     public static void main(String[] args) throws IOException {
-        FileInputStream in = new FileInputStream("C:/Documents and Settings/Administrator/×ÀÃæ/Test.txt");
+        FileInputStream in = new FileInputStream("C:/Documents and Settings/Administrator/Test.txt");
         CopyInputStreamUtil util = new CopyInputStreamUtil(in);
         InputStream copy = util.getCopy();
         InputStream copy2 = util.getCopy();
