@@ -49,7 +49,7 @@
 %>
 				
             }
-            nb_line_<%=cid%>+=fid_<%=cid %>.getRowNumber();
+            nb_line_<%=cid%>+=fid_<%=cid %>.getLongRowNumber();
 		}
 		}finally{
             if(!((Object)(<%=filename %>) instanceof java.io.InputStream)){
@@ -77,9 +77,9 @@
                 	}
                 }
                 if(fid_<%=cid %>!=null){
-                	globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
+                	globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getLongRowNumber());
 					<%if(isLog4jEnabled){%>
-						log.info("<%=cid%> - Retrieved records count: "+ fid_<%=cid %>.getRowNumber() + ".");
+						log.info("<%=cid%> - Retrieved records count: "+ fid_<%=cid %>.getLongRowNumber() + ".");
 						log.info("<%=cid%> - Done.");
 					<%}%>
                 }
