@@ -210,7 +210,9 @@ public class JobErrorsChecker {
     }
 
     public static void checkLastGenerationHasCompilationError(boolean updateProblemsView) throws ProcessorException {
-    	updateProblemsView &= !CommonsPlugin.isHeadless();
+    	if(updateProblemsView && CommonsPlugin.isHeadless()){
+    		updateProblemsView = false;
+    	}
         boolean ret = false;
         boolean isJob = true;
         Item item = null;
