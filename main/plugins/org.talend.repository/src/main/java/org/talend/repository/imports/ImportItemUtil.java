@@ -77,6 +77,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionPackage;
 import org.talend.core.model.properties.BusinessProcessItem;
@@ -1865,21 +1866,28 @@ public class ImportItemUtil {
             return;
         }
 
+        Set<URL> jarsToDeploy = new HashSet<URL>();
         for (Object element : manager.getPaths()) {
             String value = element.toString();
             file = new File(value);
             if (extRoutines.contains(file.getName())) {
                 try {
-                    CorePlugin.getDefault().getLibrariesService().deployLibrary(file.toURL());
+                    jarsToDeploy.add(file.toURL());
                 } catch (MalformedURLException e) {
-                    ExceptionHandler.process(e);
-                } catch (IOException e) {
                     ExceptionHandler.process(e);
                 }
             }
 
         }
-
+        if (jarsToDeploy.size() > 0) {
+            ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
+                    ILibrariesService.class);
+            try {
+                libService.deployLibrarys(jarsToDeploy.toArray(new URL[0]));
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
+        }
     }
 
     private void deployJarToDesForArchive(final ResourcesManager manager, Set<String> extRoutines) {
@@ -1887,7 +1895,7 @@ public class ImportItemUtil {
             return;
         }
         IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$  
-
+        Set<URL> jarsToDeploy = new HashSet<URL>();
         File dirFile = tmpDir.toFile();
         for (IPath path : manager.getPaths()) {
             String fileName = path.lastSegment();
@@ -1908,16 +1916,22 @@ public class ImportItemUtil {
                         fos.write(b, 0, length);
                     }
                     fos.close();
-                    //
-                    CorePlugin.getDefault().getLibrariesService().deployLibrary(temFile.toURI().toURL());
 
-                    temFile.delete();
-
+                    jarsToDeploy.add(temFile.toURI().toURL());
                 } catch (MalformedURLException e) {
                     ExceptionHandler.process(e);
                 } catch (IOException e) {
                     ExceptionHandler.process(e);
                 }
+            }
+        }
+        if (jarsToDeploy.size() > 0) {
+            ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
+                    ILibrariesService.class);
+            try {
+                libService.deployLibrarys(jarsToDeploy.toArray(new URL[0]));
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
             }
         }
         dirFile.delete();
