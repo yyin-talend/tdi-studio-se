@@ -477,6 +477,24 @@
         NUM_ROW="4">
         <DEFAULT>*Note: Example for Additional JDBC Parameters: "parameterName1=value1;parameterName2=value2;"</DEFAULT>
     </PARAMETER>
+    	
+	<PARAMETER
+      NAME="L2_ENDDATE_TIME_DETAILS"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      SHOW_IF="(USE_L2 == 'true' and L2_ENDDATE_VALUE == 'FIXED_VALUE')"
+    >
+      <DEFAULT>"12:00:00"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+		NAME="NOICE"
+		FIELD="LABEL"
+		NUM_ROW="10"
+		SHOW_IF="(USE_L2 == 'true' and L2_ENDDATE_VALUE == 'FIXED_VALUE')"
+	>
+		<DEFAULT>(Time pattern: 'HH:mm:ss')</DEFAULT>
+	</PARAMETER>
 
   	<PARAMETER
       NAME="DEBUG"
