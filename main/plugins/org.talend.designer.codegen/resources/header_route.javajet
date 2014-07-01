@@ -26,6 +26,7 @@
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.designer.codegen.ITalendSynchronizer
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.designer.codegen.config.NodeParamsHelper
 		org.talend.designer.runprocess.CodeGeneratorRoutine
 		org.talend.core.model.process.EParameterFieldType
 	"
@@ -763,6 +764,7 @@ for (INode node : graphicalNodes) {
 	if(!node.isActivate()){
 		continue;
 	}
+	NodeParamsHelper helper = new NodeParamsHelper(node);
    	cid = node.getUniqueName();
 //  http://jira.talendforge.org/browse/TESB-5241
 	/*
@@ -1079,10 +1081,17 @@ for (INode node : graphicalNodes) {
 
 		sb.append("+\"&dataFormat=" + dataformat + "\"");
 
-		String specifyService = ElementParameterParser.getValue(node, "__SPECIFY_SERVICE__");
-		if("true".equals(specifyService)){
-			sb.append("+\"&serviceName=\"+").append(ElementParameterParser.getValue(node, "__SERVICE_NAME__").trim());
-			sb.append("+\"&endpointName=\"+").append(ElementParameterParser.getValue(node, "__PORT_NAME__").trim());
+		String serviceName = helper.getVisibleStringParam("__SERVICE_NAME__");
+		if(!serviceName.isEmpty()) {
+			sb.append("+\"&serviceName=\"+").append(serviceName);
+		}
+		String portName = helper.getVisibleStringParam("__PORT_NAME__");
+		if(!portName.isEmpty()) {
+			sb.append("+\"&portName=\"+").append(portName);
+		}
+		String operationName = helper.getVisibleStringParam("__OPERATION_NAME__");
+		if(!operationName.isEmpty()) {
+			sb.append("+\"&operationName=\"+").append(operationName);
 		}
 
 		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
