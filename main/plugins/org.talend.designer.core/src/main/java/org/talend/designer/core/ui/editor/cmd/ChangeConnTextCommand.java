@@ -61,7 +61,8 @@ public class ChangeConnTextCommand extends Command {
         connection.setName(newName);
         IElementParameter elementParameter = connection.getElementParameter(EParameterName.UNIQUE_NAME.getName());
         if (elementParameter != null) {
-            if ("TABLE".equals(connection.getConnectorName())) {
+            // if ("TABLE".equals(connection.getConnectorName())) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.TABLE)) {
                 oldMetaName = connection.getMetaName();
                 connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), connection.getMetaName());
             } else {
@@ -98,7 +99,8 @@ public class ChangeConnTextCommand extends Command {
         connection.setName(oldName);
         IElementParameter elementParameter = connection.getElementParameter(EParameterName.UNIQUE_NAME.getName());
         if (elementParameter != null) {
-            if ("TABLE".equals(connection.getConnectorName())) {
+            // if ("TABLE".equals(connection.getConnectorName())) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.TABLE)) {
                 connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), oldMetaName);
             } else {
                 connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), oldName);
