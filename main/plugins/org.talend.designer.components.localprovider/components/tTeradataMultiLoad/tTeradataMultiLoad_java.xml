@@ -144,6 +144,7 @@
       FIELD="TEXT"
       NUM_ROW="9"
       REQUIRED="false"
+      SHOW_IF="ACTION == 'DELETE'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
