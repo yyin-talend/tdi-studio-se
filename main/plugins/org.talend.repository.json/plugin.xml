@@ -181,5 +181,13 @@
          </importItemsHandler>
       </importItemsProvider>
    </extension>
-
+   <extension point="org.talend.core.runtime.librariesNeeded">
+        <libraryNeeded
+              context="plugin:org.talend.repository.json"
+              language="java"
+              message="Needed for file json "
+              name="xom-1.2.7.jar"
+              required="true">
+        </libraryNeeded>
+   </extension>
 </plugin>
