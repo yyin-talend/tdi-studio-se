@@ -81,6 +81,7 @@
 			   	java.util.List<org.talend.core.model.process.EParameterFieldType> ignoreT = java.util.Arrays.asList(
 			   		org.talend.core.model.process.EParameterFieldType.SCHEMA_TYPE,
 			   		org.talend.core.model.process.EParameterFieldType.LABEL,
+			   		org.talend.core.model.process.EParameterFieldType.EXTERNAL,
 			   		org.talend.core.model.process.EParameterFieldType.MAPPING_TYPE,org.talend.core.model.process.EParameterFieldType.IMAGE);
 		   		for(org.talend.core.model.process.IElementParameter ep : org.talend.core.model.utils.NodeUtil.getDisplayedParameters(node)){
 		   			if(ignoreT.contains(ep.getFieldType()) || (ignoredParamsList!=null && ignoredParamsList.contains(ep.getName()))){
