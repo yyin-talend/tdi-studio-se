@@ -245,8 +245,15 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             insertionStatement_<%=cid%>.setNull(<%=paramIndex + 1%>, java.sql.Types.DATE);
             <%
         } else {
+        	String endDateTimeString = ElementParameterParser.getValue(node, "__L2_ENDDATE_TIME_DETAILS__");
             %>
-            insertionStatement_<%=cid%>.setTimestamp(<%=paramIndex + 1%>, new java.sql.Timestamp(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(<%=scdConfiger.getDimensionType2Configer().getEndDateValue()%> + "-01-01 12:00:00").getTime()));
+            String endDateTimeDetail_<%=cid%> = <%=endDateTimeString.length()>0?endDateTimeString:"\"\""%>;
+            String datePattern_<%=cid%> = "yyyy-MM-dd";
+            if(endDateTimeDetail_<%=cid%>.length()>0 && !"null".equalsIgnoreCase(endDateTimeDetail_<%=cid%>)){
+            	endDateTimeDetail_<%=cid%> = " "+endDateTimeDetail_<%=cid%>;
+            	datePattern_<%=cid%> = "yyyy-MM-dd HH:mm:ss";
+            }
+            insertionStatement_<%=cid%>.setTimestamp(<%=paramIndex + 1%>, new java.sql.Timestamp(new java.text.SimpleDateFormat(datePattern_<%=cid%>).parse(<%=scdConfiger.getDimensionType2Configer().getEndDateValue()%> + "-01-01"+endDateTimeDetail_<%=cid%>).getTime()));
             <%
         }
     }
