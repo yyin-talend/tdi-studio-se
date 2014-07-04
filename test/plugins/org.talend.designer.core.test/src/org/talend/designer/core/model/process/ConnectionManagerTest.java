@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.model.process;
 
-import java.util.HashMap;
+import static org.junit.Assert.*;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.junit.After;
@@ -20,29 +20,19 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.User;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.utils.ProjectHelper;
-import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.repository.localprovider.model.LocalRepositoryFactory;
 import org.talend.repository.model.ComponentsFactoryProvider;
-
-import static org.junit.Assert.*;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -69,17 +59,6 @@ public class ConnectionManagerTest {
 
     private static Node newTarget;
 
-    private static String getProjectName(ECodeLanguage language) {
-        return "codegen_" + language.getName() + "_temp_project"; //$NON-NLS-1$ //$NON-NLS-2$
-        // return "TALENDDEMOSJAVA";
-    }
-
-    private static User createUser() {
-        User user = PropertiesFactory.eINSTANCE.createUser();
-        user.setLogin("user@talend.com"); //$NON-NLS-1$
-        return user;
-    }
-
     private static Property createProperty() {
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
@@ -96,29 +75,6 @@ public class ConnectionManagerTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
-        repFactory.setRepositoryFactoryFromProvider(LocalRepositoryFactory.getInstance());
-
-        Context ctx = CoreRuntimePlugin.getInstance().getContext();
-        if (ctx != null) {
-            RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-            ECodeLanguage language = ECodeLanguage.JAVA;
-            if (repositoryContext == null) {
-                repositoryContext = new RepositoryContext();
-                Project projectInfor = ProjectHelper.createProject(getProjectName(language), "Just a test!", //$NON-NLS-1$
-                        language, createUser());
-                Project project;
-                try {
-                    project = repFactory.createProject(projectInfor);
-                    repositoryContext.setFields(new HashMap<String, String>());
-                    repositoryContext.setProject(project);
-                    ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
-                } catch (PersistenceException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
         componentSource = ComponentsFactoryProvider.getInstance().get("tFileInputDelimited",
                 ComponentCategory.CATEGORY_4_DI.getName());
         componentTarget = ComponentsFactoryProvider.getInstance().get("tFileOutputDelimited",
