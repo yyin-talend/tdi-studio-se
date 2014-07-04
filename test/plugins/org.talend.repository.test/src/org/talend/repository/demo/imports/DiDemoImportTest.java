@@ -35,7 +35,7 @@ import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityMa
 
 /**
  * created by ldong on 2014-4-29 Detailled comment
- * 
+ *
  */
 public class DiDemoImportTest extends DemosImportTest {
 
@@ -112,13 +112,12 @@ public class DiDemoImportTest extends DemosImportTest {
 
         // test the routine items under DI_Demo.zip
         int currentRoutineItemsSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.ROUTINES).size();
-        int systemRoutineItemsSize = 13;
         File tempRoutineItemsFolder = new File(rootPath + File.separator + routineItemPath);
         List<File> demoRoutineItemsFiles = DemoImportTestUtil.collectProjectFilesFromDirectory(tempRoutineItemsFolder,
                 FileConstants.ITEM_EXTENSION, true);
         Assert.assertTrue(demoRoutineItemsFiles.size() > 0);
         Assert.assertTrue(currentRoutineItemsSize > 0);
-        Assert.assertEquals(demoRoutineItemsFiles.size() - systemRoutineItemsSize, currentRoutineItemsSize);
+        Assert.assertEquals(demoRoutineItemsFiles.size(), currentRoutineItemsSize);
 
         // test the business process items under DI_Demo.zip
         int currentBusinessItemsSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.BUSINESS_PROCESS).size();
@@ -128,14 +127,6 @@ public class DiDemoImportTest extends DemosImportTest {
         Assert.assertTrue(demoBusinessItemsFiles.size() > 0);
         Assert.assertTrue(currentBusinessItemsSize > 0);
         Assert.assertEquals(demoBusinessItemsFiles.size(), currentBusinessItemsSize);
-
-        // test the sql pattern items under DI_Demo.zip
-        int currentSqlPatternSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.SQLPATTERNS).size();
-        File tempSqlPatternFolder = new File(rootPath + File.separator + sqlPatternPath);
-        List<File> demoSqlPatternFiles = DemoImportTestUtil.collectProjectFilesFromDirectory(tempSqlPatternFolder,
-                FileConstants.ITEM_EXTENSION, true);
-        Assert.assertEquals(demoSqlPatternFiles.size(), 54);
-        Assert.assertTrue(currentSqlPatternSize == 0);
 
         // test the documention items under DI_Demo.zip
         int currentDocItemsSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.DOCUMENTATION).size();

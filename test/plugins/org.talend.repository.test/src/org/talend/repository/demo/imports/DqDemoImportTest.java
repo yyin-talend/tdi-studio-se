@@ -35,7 +35,7 @@ import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityMa
 
 /**
  * created by ldong on 2014-4-29 Detailled comment
- * 
+ *
  */
 public class DqDemoImportTest extends DemosImportTest {
 
@@ -111,12 +111,11 @@ public class DqDemoImportTest extends DemosImportTest {
         // test the routine items under DQ_Demo.zip
         int currentRoutineItemsSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.ROUTINES).size();
         Assert.assertTrue(currentRoutineItemsSize > 0);
-        int systemRoutineItemsSize = 13;
         File tempRoutineItemsFolder = new File(rootPath + File.separator + routineItemPath);
         List<File> demoRoutineItemsFiles = DemoImportTestUtil.collectProjectFilesFromDirectory(tempRoutineItemsFolder,
                 FileConstants.ITEM_EXTENSION, true);
         Assert.assertTrue(demoRoutineItemsFiles.size() > 0);
-        Assert.assertEquals(demoRoutineItemsFiles.size() - systemRoutineItemsSize, currentRoutineItemsSize);
+        Assert.assertEquals(demoRoutineItemsFiles.size(), currentRoutineItemsSize);
 
         // test the business process items under DQ_Demo.zip
         int currentBusinessItemsSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.BUSINESS_PROCESS).size();

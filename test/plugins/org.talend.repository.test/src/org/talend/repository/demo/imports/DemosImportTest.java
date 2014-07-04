@@ -22,8 +22,10 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
@@ -34,6 +36,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.general.TalendNature;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.repository.ProjectManager;
@@ -44,7 +47,7 @@ import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
 
 /**
  * created by ldong on 2014-4-28 Detailled comment
- * 
+ *
  */
 public abstract class DemosImportTest {
 
@@ -108,11 +111,12 @@ public abstract class DemosImportTest {
         mdmWorkflowPath = new Path("/MDM/workflow/");
     }
 
-    protected void initTempPro() throws PersistenceException, CoreException {
+    protected void initTempPro() throws PersistenceException, CoreException, LoginException {
         createTempDemoProject(demoName);
         Context ctx = CoreRuntimePlugin.getInstance().getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         originalProject = repositoryContext.getProject();
+        ProxyRepositoryFactory.getInstance().logOnProject(tempDemoProject, new NullProgressMonitor());
         // initilize the DQ sturcture for the original default project
         initDQStructure();
         repositoryContext.setProject(tempDemoProject);

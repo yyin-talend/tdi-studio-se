@@ -35,7 +35,7 @@ import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityMa
 
 /**
  * created by ldong on 2014-5-4 Detailled comment
- * 
+ *
  */
 public class BigdataCeImportTest extends DemosImportTest {
 
@@ -97,14 +97,5 @@ public class BigdataCeImportTest extends DemosImportTest {
                 FileConstants.ITEM_EXTENSION, true);
         Assert.assertTrue(demoContextItemsFiles.size() > 0);
         Assert.assertEquals(demoContextItemsFiles.size(), currentContextItemsSize);
-
-        // test the sql pattern items under BigDataDemo_ce.zip
-        int currentSqlPatternSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.SQLPATTERNS).size();
-        Assert.assertTrue(currentSqlPatternSize > 0);
-        File tempSqlPatternFolder = new File(rootPath + File.separator + sqlPatternPath);
-        List<File> demoSqlPatternFiles = DemoImportTestUtil.collectProjectFilesFromDirectory(tempSqlPatternFolder,
-                FileConstants.ITEM_EXTENSION, true);
-        Assert.assertTrue(demoSqlPatternFiles.size() > 0);
-        Assert.assertEquals(demoSqlPatternFiles.size(), currentSqlPatternSize);
     }
 }
