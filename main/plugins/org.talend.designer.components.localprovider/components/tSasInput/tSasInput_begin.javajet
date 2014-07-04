@@ -31,7 +31,7 @@ imports="
 			dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
 	    	boolean enableLibrefs = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_LIBREFS__"));
-    		List<Map<String, String>> sasProps = (List<Map<String,String>>)Element
+    		List<Map<String, String>> sasProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__JDBC_PARAMETERS__");
 			dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 			dbuser = ElementParameterParser.getValue(node, "__USER__");
 
