@@ -14,8 +14,11 @@ package org.talend.repository.view.di.viewer.handlers;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
+import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.model.RepositoryConstants;
 
 /**
@@ -47,26 +50,25 @@ public class SqlTemplateImportHandler extends ImportRepTypeHandler {
     }
 
     /*
-     * commet it, because it have done check in ImportBasicHandler.isSameName.
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#valid(org.talend.repository.items
+     * .importexport.handlers.model.ImportItem)
      */
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see
-    // * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#isSameName(org.talend.repository
-    // * .items.importexport.ui.wizard.imports.models.ItemRecord,
-    // org.talend.core.model.repository.IRepositoryViewObject)
-    // */
-    // @Override
-    // protected boolean isSameName(ImportItem itemRecord, IRepositoryViewObject repObject) {
-    // boolean sameName = super.isSameName(itemRecord, repObject);
-    // if (sameName) {
-    // // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into repository.
-    // if (!repObject.getPath().equals(itemRecord.getProperty().getItem().getState().getPath())) {
-    // sameName = false; // not in same folder
-    // }
-    // }
-    // return sameName;
-    // }
+    @Override
+    public boolean valid(ImportItem importItem) {
+        boolean valid = super.valid(importItem);
+        if (valid) {
+            Item item = importItem.getItem();
+            if (item instanceof SQLPatternItem) {
+                SQLPatternItem patternItem = (SQLPatternItem) item;
+                if (patternItem.isSystem()) {
+                    return false;
+                }
+            }
+        }
+        return valid;
+    }
 
 }

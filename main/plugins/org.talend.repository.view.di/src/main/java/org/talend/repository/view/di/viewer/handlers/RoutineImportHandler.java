@@ -106,7 +106,7 @@ public class RoutineImportHandler extends ImportRepTypeHandler implements IImpor
             return;
         }
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
-            IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$ //$NON-NLS-2$  
+            IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$ //$NON-NLS-2$
 
             File dirFile = tmpDir.toFile();
             for (IPath path : manager.getPaths()) {
@@ -221,5 +221,27 @@ public class RoutineImportHandler extends ImportRepTypeHandler implements IImpor
             }
         }
         jarsToDeploy.clear();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#valid(org.talend.repository.items
+     * .importexport.handlers.model.ImportItem)
+     */
+    @Override
+    public boolean valid(ImportItem importItem) {
+        boolean valid = super.valid(importItem);
+        if (valid) {
+            Item item = importItem.getItem();
+            if (item instanceof RoutineItem) {
+                RoutineItem routineItem = (RoutineItem) item;
+                if (routineItem.isBuiltIn()) {
+                    return false;
+                }
+            }
+        }
+        return valid;
     }
 }
