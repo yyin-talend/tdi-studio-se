@@ -1409,6 +1409,11 @@ for (INode node : graphicalNodes) {
 		uri = sb.toString();
 	} else if ("cMQTT".equals(componentName)) {
 		String resourceUri = "mqtt:";
+		boolean useFactory = helper.getBoolParam("__USE_CONNECTION_FACTORY__");
+		if(useFactory) {
+			resourceUri =  helper.getStringParam("__ROUTE_COMPONENT_TYPE_ID__");
+			resourceUri = resourceUri.replace("_", "") + ":";
+		}
 		String name = ElementParameterParser.getValue(node, "__NAME__");
 		String host = ElementParameterParser.getValue(node, "__HOST__");
 		String topicName = ElementParameterParser.getValue(node, "__TOPIC_NAME__");
@@ -1432,22 +1437,23 @@ for (INode node : graphicalNodes) {
 			sb.append("+" + name);
 		}
 		sb.append("+\"?\"");
-		
-		if (useSSL)
-			sb.append("+\"host=ssl://" + "\"+");
-		else
-			sb.append("+\"host=tcp://" + "\"+");
+		if(!useFactory) {
+			if (useSSL)
+				sb.append("+\"host=ssl://" + "\"+");
+			else
+				sb.append("+\"host=tcp://" + "\"+");
+				
+			if (null != host && !host.isEmpty() && !host.equals("\"\"")) {
+				sb.append(host + "+\":\"");
+			} else {
+				sb.append("\"127.0.0.1:" + "\"");
+			}
 			
-		if (null != host && !host.isEmpty() && !host.equals("\"\"")) {
-			sb.append(host + "+\":\"");
-		} else {
-			sb.append("\"127.0.0.1:" + "\"");
-		}
-		
-		if (null != port && !port.isEmpty() && !port.equals("\"\"")) {
-			sb.append("+" + port);
-		} else {
-			sb.append("+\"1883" + "\"");
+			if (null != port && !port.isEmpty() && !port.equals("\"\"")) {
+				sb.append("+" + port);
+			} else {
+				sb.append("+\"1883" + "\"");
+			}
 		}
 		
 		List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -1460,29 +1466,29 @@ for (INode node : graphicalNodes) {
 				sb.append("+\"&subscribeTopicName=" + "\"+" + topicName);
 			}
 		}
-
-		if (null != connectAttempts && !connectAttempts.isEmpty() && !connectAttempts.equals("\"\"")) {
-			sb.append("+\"&connectAttemptsMax=" + "\"+" + connectAttempts);
+		if(!useFactory) {
+			if (null != connectAttempts && !connectAttempts.isEmpty() && !connectAttempts.equals("\"\"")) {
+				sb.append("+\"&connectAttemptsMax=" + "\"+" + connectAttempts);
+			}
+			if (null != reconnectAttempts && !reconnectAttempts.isEmpty() && !reconnectAttempts.equals("\"\"")) {
+				sb.append("+\"&reconnectAttemptsMax=" + "\"+" + reconnectAttempts);
+			}
+			if (null != reconnectDelay && !reconnectDelay.isEmpty() && !reconnectDelay.equals("\"\"")) {
+				sb.append("+\"&reconnectDelay=" + "\"+" + reconnectDelay);
+			}
+			if (null != qos && !qos.isEmpty() && !qos.equals("\"\"")) {
+				sb.append("+\"&qualityOfService=" + "\"+\"" + qos + "\"");
+			}
+			if (null != connectWaitInSeconds && !connectWaitInSeconds.isEmpty() && !connectWaitInSeconds.equals("\"\"")) {
+				sb.append("+\"&connectWaitInSeconds=" + "\"+" + connectWaitInSeconds);
+			}
+			if (null != disconnectWaitInSeconds && !disconnectWaitInSeconds.isEmpty() && !disconnectWaitInSeconds.equals("\"\"")) {
+				sb.append("+\"&disconnectWaitInSeconds=" + "\"+" + disconnectWaitInSeconds);
+			}
+			if (null != sendWaitInSeconds && !sendWaitInSeconds.isEmpty() && !sendWaitInSeconds.equals("\"\"")) {
+				sb.append("+\"&sendWaitInSeconds=" + "\"+" + sendWaitInSeconds);
+			}
 		}
-		if (null != reconnectAttempts && !reconnectAttempts.isEmpty() && !reconnectAttempts.equals("\"\"")) {
-			sb.append("+\"&reconnectAttemptsMax=" + "\"+" + reconnectAttempts);
-		}
-		if (null != reconnectDelay && !reconnectDelay.isEmpty() && !reconnectDelay.equals("\"\"")) {
-			sb.append("+\"&reconnectDelay=" + "\"+" + reconnectDelay);
-		}
-		if (null != qos && !qos.isEmpty() && !qos.equals("\"\"")) {
-			sb.append("+\"&qualityOfService=" + "\"+\"" + qos + "\"");
-		}
-		if (null != connectWaitInSeconds && !connectWaitInSeconds.isEmpty() && !connectWaitInSeconds.equals("\"\"")) {
-			sb.append("+\"&connectWaitInSeconds=" + "\"+" + connectWaitInSeconds);
-		}
-		if (null != disconnectWaitInSeconds && !disconnectWaitInSeconds.isEmpty() && !disconnectWaitInSeconds.equals("\"\"")) {
-			sb.append("+\"&disconnectWaitInSeconds=" + "\"+" + disconnectWaitInSeconds);
-		}
-		if (null != sendWaitInSeconds && !sendWaitInSeconds.isEmpty() && !sendWaitInSeconds.equals("\"\"")) {
-			sb.append("+\"&sendWaitInSeconds=" + "\"+" + sendWaitInSeconds);
-		}
-
 		uri = sb.toString();
 	} else if ("cHttp".equals(componentName)) {
 
