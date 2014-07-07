@@ -691,7 +691,7 @@ public class CLASS {
     public List<Column> getInsertionColumnList(SCDConfiger scdConfiger) {
         List<Column> insertionColumnList = new ArrayList<Column>();
         String surrogateKeyField = scdConfiger.getSurrogateKeyField();
-        if(!scdConfiger.getSurrogateKeyValueType().equals("AUTO_INCREMENT") && !scdConfiger.getSurrogateKeyValueType().equals("DB_SEQUENCE")) {
+        if(surrogateKeyField.length()>0 && !scdConfiger.getSurrogateKeyValueType().equals("AUTO_INCREMENT") && !scdConfiger.getSurrogateKeyValueType().equals("DB_SEQUENCE")) {
             String surrogateKeyFieldType = scdConfiger.getSurrogateKeyFieldType();
             insertionColumnList.add(getColumn(surrogateKeyField, surrogateKeyFieldType));
         }
@@ -980,9 +980,15 @@ public class CLASS {
                 insertColumns = getLProtectedChar() + surrogateKeyField + getRProtectedChar();
                 insertValues = "?";
             }
-            if(scdConfiger.getSurrogateKeyValueType().equals("DB_SEQUENCE")) {
+            if(surrogateKeyField.length()>0 && scdConfiger.getSurrogateKeyValueType().equals("DB_SEQUENCE")) {
                 insertColumns = getLProtectedChar() + surrogateKeyField + getRProtectedChar();
                 insertValues = getDBSequenceWithSchemaPrefix(scdConfiger);
+            }
+            boolean isAbsenceSK="".equals(insertColumns);
+            int removedIndex = separator.length();
+            if(insertColumns.equals(getLProtectedChar()+getRProtectedChar())){
+            	isAbsenceSK = true;
+            	removedIndex = separator.length()+ getLProtectedChar().length()+getRProtectedChar().length();
             }
             if(isEqualWithSK) {
                 for(Column column : sourceKeys) {
@@ -1039,9 +1045,9 @@ public class CLASS {
                     insertValues += separator + "?";
                 }
             }
-            if(scdConfiger.getSurrogateKeyValueType().equals("AUTO_INCREMENT")) {
-                if(insertColumns.length() > separator.length()) {
-                    insertColumns = insertColumns.substring(separator.length());
+            if(isAbsenceSK || scdConfiger.getSurrogateKeyValueType().equals("AUTO_INCREMENT")) {
+                if(insertColumns.length() > removedIndex) {
+                    insertColumns = insertColumns.substring(removedIndex);
                 }
                 if(insertValues.length() > separator.length()) {
                     insertValues = insertValues.substring(separator.length());
@@ -1226,59 +1232,61 @@ public class CLASS {
                 }
                 createTableSQL.append(getLProtectedChar() + columnName + getRProtectedChar() + " ");
                 String dataType = null;
-                if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
-                    dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
-                } else {
-                    dataType = metadataColumn.getType();
-                }
-                createTableSQL.append(dataType);
-                Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
-                Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
-                boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
-                boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
-                String prefix = "";
-                String suffix = "";
-                String comma = "";
-                if(mappingType.isPreBeforeLength(getDBMSId(),dataType)) {
-                    if(!precisionIgnored) {
-                        prefix = "(";
-                        suffix = ") ";
-                        createTableSQL.append(prefix + precision);
-                    }
-                    if(!lengthIgnored) {
-                        prefix = (prefix.equals("") ? "(" : prefix);
-                        suffix = (suffix.equals("") ? ") " : suffix);
-                        if(precisionIgnored) {
-                            createTableSQL.append(prefix);
-                            comma = "";
-                        } else {
-                            comma = ",";
-                        }
-                        createTableSQL.append(comma + length);
-                    }
-                    createTableSQL.append(suffix);
-                } else {
-                    if(!lengthIgnored) {
-                        prefix = "(";
-                        suffix = ") ";
-                        createTableSQL.append(prefix + length);
-                    }
-                    if(!precisionIgnored) {
-                        prefix = (prefix.equals("") ? "(" : prefix);
-                        suffix = (suffix.equals("") ? ") " : suffix);
-                        if(lengthIgnored) {
-                            createTableSQL.append(prefix);
-                            comma = "";                        
-                        } else {
-                            comma = ",";
-                        }
-                        createTableSQL.append(comma + precision);
-                    }
-                    createTableSQL.append(suffix);
+                if(!("vertica_id".equals(getDBMSId()) && columnName.equals(surrogateKey) && surrogateKeyValueType.equals("AUTO_INCREMENT"))){ 
+	                if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
+	                    dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
+	                }else {
+	                    dataType = metadataColumn.getType();
+	                }
+	                createTableSQL.append(dataType);
+	                Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+	                Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
+	                boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
+	                boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
+	                String prefix = "";
+	                String suffix = "";
+	                String comma = "";
+	                if(mappingType.isPreBeforeLength(getDBMSId(),dataType)) {
+	                    if(!precisionIgnored) {
+	                        prefix = "(";
+	                        suffix = ") ";
+	                        createTableSQL.append(prefix + precision);
+	                    }
+	                    if(!lengthIgnored) {
+	                        prefix = (prefix.equals("") ? "(" : prefix);
+	                        suffix = (suffix.equals("") ? ") " : suffix);
+	                        if(precisionIgnored) {
+	                            createTableSQL.append(prefix);
+	                            comma = "";
+	                        } else {
+	                            comma = ",";
+	                        }
+	                        createTableSQL.append(comma + length);
+	                    }
+	                    createTableSQL.append(suffix);
+	                } else {
+	                    if(!lengthIgnored) {
+	                        prefix = "(";
+	                        suffix = ") ";
+	                        createTableSQL.append(prefix + length);
+	                    }
+	                    if(!precisionIgnored) {
+	                        prefix = (prefix.equals("") ? "(" : prefix);
+	                        suffix = (suffix.equals("") ? ") " : suffix);
+	                        if(lengthIgnored) {
+	                            createTableSQL.append(prefix);
+	                            comma = "";                        
+	                        } else {
+	                            comma = ",";
+	                        }
+	                        createTableSQL.append(comma + precision);
+	                    }
+	                    createTableSQL.append(suffix);
+	                }
                 }
                 if(columnName.equals(surrogateKey) && surrogateKeyValueType.equals("AUTO_INCREMENT")) {
-                    createTableSQL.append(setNullable(false));
                     createTableSQL.append(getIncrement());
+                    createTableSQL.append(setNullable(false));
                 } else {
                     createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));            
                     createTableSQL.append(setNullable(metadataColumn.isNullable()));                    
@@ -1828,7 +1836,7 @@ public class CLASS {
             return "";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "\" + " + surrogateKeySequence + " + \".nextval";
+            return "+ \" next value for " + surrogateKeySequence + "\" + \"";
         }
         protected String getIncrement() {
             return "";
@@ -1856,7 +1864,10 @@ public class CLASS {
             } else {
                 return "0";
             }            
-        }        
+        } 
+        protected String getDBSequenceWithSchemaPrefix (SCDConfiger scdConfiger) {
+        	return "\" " +getSequence(scdConfiger.getSurrogateKeySequence());
+        }
     }
     
     public class OracleSCDManager extends SCDManager {
@@ -2369,10 +2380,10 @@ public class CLASS {
             return "";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "+ \"" + surrogateKeySequence + "\" + \".nextval";
+        	return "+ \"nextval('\"+((dbschema_" + cid +"!= null && dbschema_" +cid+".trim().length()!=0)?dbschema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\"+ \"')\" + \"";
         }
         protected String getIncrement() {
-            return "";
+        	return " auto_increment ";
         }        
         protected String getDate(String endDateValue) {
             return "TO_DATE('\" + " + endDateValue + " + \"-01-01', 'YYYY-MM-DD')";
@@ -2397,7 +2408,10 @@ public class CLASS {
             } else {
                 return "0";
             }            
-        }        
+        }
+        protected String getDBSequenceWithSchemaPrefix (SCDConfiger scdConfiger) {
+        	return "\" " +getSequence(scdConfiger.getSurrogateKeySequence());
+        }
     }
     public SCDManager getSCDManager(String cid, String dbType) {
         SCDManager manager = managerMap.get(cid);
