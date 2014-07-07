@@ -329,8 +329,8 @@
 				contextRegister.register(<%=beanID%>, new <%=beanClass%>(<%=sb.toString()%>));
 <%
 			}
-            //cJMSConnectionFactory http://jira.talendforge.org/browse/TESB-4860
-			List<? extends INode> jmsCFNodes = process.getNodesOfType("cJMSConnectionFactory");
+            //cMQConnectionFactory http://jira.talendforge.org/browse/TESB-4860
+			List<? extends INode> jmsCFNodes = process.getNodesOfType("cMQConnectionFactory");
 			for(INode node: jmsCFNodes){
 				//Use transaction http://jira.talendforge.org/browse/TESB-5160 By LiXiaopeng
 				String useTransaction = ElementParameterParser.getValue(node, "__USE_TRANSACTION__");
