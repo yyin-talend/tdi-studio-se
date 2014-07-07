@@ -23,9 +23,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 		public void beforeComponentProcess(INode node){
 			super.beforeComponentProcess(node);
 			extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
-			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))||(!("INSERT").equals(dataAction))){
-				extendedInsert = false;
-			}
 		}
 		public void insertData(INode node,List<Column> colStruct,Manager manager,String incomingConnName,boolean isDynamic,int actionType,List<IMetadataColumn> rejectColumnList,List<IMetadataColumn> columnList,IMetadataColumn talendDynCol){
 			if(!extendedInsert) {

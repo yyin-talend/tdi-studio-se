@@ -28,9 +28,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 			isUseBatchByDBVersion = !"ORACLE_8".equalsIgnoreCase(dbVersion);
 			convertToUppercase = ("true").equals(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
 			extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
-			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))||(!("INSERT").equals(dataAction))){
-				extendedInsert = false;
-			}
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			if(("true").equals(useExistingConn)) {
 				List<? extends INode> nodes = node.getProcess().getNodesOfType("tAmazonMysqlConnection");
@@ -96,24 +93,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}
 					%>
 					<%@ include file="../templates/_hintInsert.javajet" %>
-					<%
-					//to fixed: bug8422
-					if(!(cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){%>
-							pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
-					<%}%>
-					<%
-				//to fixed: bug8422
-					if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){ %>
-							pstmt_<%=cid %> = null;
-							// [%connection%][psmt][tableName]
-							String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + tableName_<%=cid%> + "]";
-							if(GlobalResource.resourceMap.get(keyPsmt_<%=cid %>)== null){
-								pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
-								GlobalResource.resourceMap.put(keyPsmt_<%=cid %>, pstmt_<%=cid %>);
-							}else{
-								pstmt_<%=cid %> = (java.sql.PreparedStatement)GlobalResource.resourceMap.get(keyPsmt_<%=cid %>);
-							}
-					<%}%>
+					pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 				<%
 				} else {//extended-insert mode(begin)
 					if ("MYSQL_4".equals(dbVersion)) {

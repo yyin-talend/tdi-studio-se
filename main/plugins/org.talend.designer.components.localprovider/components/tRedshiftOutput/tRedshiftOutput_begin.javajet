@@ -43,10 +43,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 		public void defineExtendInsert(INode node){
 			if ("INSERT".equalsIgnoreCase(dataAction)) {
 				extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
-				//to fixed: bug8422
-				if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
-					extendedInsert = false;
-				}
 			}else {
 				extendedInsert = false;
 			}
