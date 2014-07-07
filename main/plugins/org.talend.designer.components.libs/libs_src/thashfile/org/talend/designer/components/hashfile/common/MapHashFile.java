@@ -31,6 +31,10 @@ public class MapHashFile {
             }
             return tMultiTheadLockMap.get(key);
         }
+        
+        public void remove(Object key){
+            tMultiTheadLockMap.remove(key);
+        }
     }
 	
 	private MapHashFile() {
