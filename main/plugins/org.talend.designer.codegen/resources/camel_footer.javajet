@@ -6,6 +6,7 @@
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.designer.codegen.config.NodeParamsHelper
 		org.talend.core.model.utils.JavaResourcesHelper
 		java.util.Vector
 		java.util.List
@@ -332,6 +333,7 @@
             //cMQConnectionFactory http://jira.talendforge.org/browse/TESB-4860
 			List<? extends INode> jmsCFNodes = process.getNodesOfType("cMQConnectionFactory");
 			for(INode node: jmsCFNodes){
+				NodeParamsHelper helper = new NodeParamsHelper(node);
 				//Use transaction http://jira.talendforge.org/browse/TESB-5160 By LiXiaopeng
 				String useTransaction = ElementParameterParser.getValue(node, "__USE_TRANSACTION__");
 				String transactedMethodStr = "";
@@ -488,6 +490,33 @@
 					}
 					
 					camelContext.addComponent(<%=name%>,activeMQComponent);
+				}
+<%
+				}else if("MQTT".equals(mqType)){
+					String host = helper.getStringParam("__MQTT_HOST__");
+					String port = helper.getStringParam("__MQTT_PORT__");
+					boolean useSSL = helper.getBoolParam("__MQTT_SSL__");
+					String brokerUri = "\""+(useSSL?"ssl":"tcp") + "://\"+" + host + "+\":\"+" + port;
+%>				
+				{	
+					 org.apache.camel.component.mqtt.MQTTComponent mqttComponent = new org.apache.camel.component.mqtt.MQTTComponent(){
+						 @Override
+							protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
+							 org.apache.camel.component.mqtt.MQTTEndpoint endpoint = 
+									 (org.apache.camel.component.mqtt.MQTTEndpoint) super.createEndpoint(uri, remaining, parameters);
+							 org.apache.camel.component.mqtt.MQTTConfiguration config = endpoint.getConfiguration();
+							 config.setHost(<%=brokerUri%>);
+							 config.setConnectAttemptsMax(<%=helper.getStringParam("__MQTT_CONNECT_ATTEMPTS__")%>);
+							 config.setReconnectAttemptsMax(<%=helper.getStringParam("__MQTT_RECONNECT_ATTEMPTS__")%>);
+							 config.setReconnectDelay(<%=helper.getStringParam("__MQTT_RECONNECT_DELAY__")%>);
+							 config.setQualityOfService("<%=helper.getStringParam("__MQTT_QOS__")%>");
+							 config.setConnectWaitInSeconds(<%=helper.getStringParam("__MQTT_CONNECT_WAIT_IN_SECONDS__")%>);
+							 config.setDisconnectWaitInSeconds(<%=helper.getStringParam("__MQTT_DISCONNECT_WAIT_IN_SECONDS__")%>);
+							 config.setSendWaitInSeconds(<%=helper.getStringParam("__MQTT_SEND_WAIT_IN_SECONDS__")%>);
+							 return endpoint;
+							}
+					 }
+					camelContext.addComponent(<%=name%>,mqttComponent);
 				}
 <%
 				}else if("Other".equals(mqType)){
