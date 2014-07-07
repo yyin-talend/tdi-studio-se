@@ -221,7 +221,7 @@
       SHOW_IF="SK_CREATION == 'DB_SEQUENCE'"
       SHOW="false"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT></DEFAULT>
     </PARAMETER>
 
     <PARAMETER
