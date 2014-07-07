@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070323A"
@@ -36,12 +36,31 @@
     <PARAMETER
       NAME="ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="1"
+      NUM_ROW="6"
       REQUIRED="true"
+      GROUP="CONSUMER"
     >
-      <ITEMS DEFAULT="INSERT">
-    		<ITEM NAME="INSERT" VALUE="Insert" />
+      <ITEMS DEFAULT="LOAD">
+    		<ITEM NAME="LOAD" VALUE="Load" />
+        <ITEM NAME="INSERTER" VALUE="Inserter" />
+        <ITEM NAME="UPDATE" VALUE="Update" />
+        <ITEM NAME="STREAM" VALUE="Stream" />
     	</ITEMS>
+    </PARAMETER>
+    <PARAMETER
+      NAME="DML_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="6"
+      REQUIRED="true"
+      GROUP="CONSUMER"
+      SHOW_IF="(ACTION=='UPDATE') or (ACTION=='STREAM')"
+    >
+      <ITEMS DEFAULT="UPSERT">
+        <ITEM NAME="INSERT" VALUE="Insert" />
+        <ITEM NAME="UPDATE" VALUE="Update" />
+        <ITEM NAME="UPSERT" VALUE="InsertOrUpdate" />
+        <ITEM NAME="DELETE" VALUE="Delete" />
+      </ITEMS>
     </PARAMETER>
     <PARAMETER
       NAME="PROPERTY"
@@ -67,84 +86,79 @@
       FIELD="TDPID"
       NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
+      REQUIRED="true"
+      GROUP="CONNECTION"
     >
       <DEFAULT>"localtd"</DEFAULT>
     </PARAMETER>
-    
+
+  <PARAMETER
+      NAME="DBNAME"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="SID"
+      REQUIRED="true"
+      GROUP="CONNECTION"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+  <PARAMETER
+      NAME="USER"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="USERNAME"
+      REQUIRED="true"
+      GROUP="CONNECTION"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+   <PARAMETER
+      NAME="PASS"
+      FIELD="PASSWORD"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="PASSWORD"
+      REQUIRED="true"
+      GROUP="CONNECTION"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
 	<PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="DBNAME"
-      FIELD="TEXT"
-      NUM_ROW="8"
-      REPOSITORY_VALUE="SID"
-      REQUIRED="true"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-	<PARAMETER
-      NAME="OPERATOR_LOAD"
-      FIELD="TEXT"
-      NUM_ROW="9"
-      REPOSITORY_VALUE="OPERATOR_LOAD"
-      REQUIRED="true"
-    >
-      <DEFAULT>"OPERATOR_LOAD"</DEFAULT>
-    </PARAMETER>
-	<PARAMETER
-      NAME="OPERATOR_DATA_CONNECTOR"
-      FIELD="TEXT"
-      NUM_ROW="9"
-      REPOSITORY_VALUE="OPERATOR_DATA_CONNECTOR"
-      REQUIRED="true"
-    >
-      <DEFAULT>"OPERATOR_DATA_CONNECTOR"</DEFAULT>
-    </PARAMETER>
-	<PARAMETER
-      NAME="JOB_NAME"
-      FIELD="TEXT"
-      NUM_ROW="10"
-      REPOSITORY_VALUE="JOB_NAME"
-      REQUIRED="true"
-    >
-      <DEFAULT>"JOB_NAME"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="LAYOUT_NAME"
-      FIELD="TEXT"
-      NUM_ROW="10"
-      REPOSITORY_VALUE="LAYOUT_NAME"
-      REQUIRED="true"
-    >
-      <DEFAULT>"LAYOUT_NAME"</DEFAULT>
-    </PARAMETER>
-    <PARAMETER
-      NAME="USER"
-      FIELD="TEXT"
-      NUM_ROW="11"
-      REPOSITORY_VALUE="USERNAME"
-      REQUIRED="true"
+      NUM_ROW="5"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
-      NAME="PASS"
-      FIELD="PASSWORD"
-      NUM_ROW="11"
-      REPOSITORY_VALUE="PASSWORD"
-      REQUIRED="true"
+    NAME="NOTE"
+    FIELD="LABEL"
+    NUM_ROW="5"
     >
-      <DEFAULT>""</DEFAULT>
+    <DEFAULT>*Note:You must specify one or more columns as primary key</DEFAULT>
     </PARAMETER>
-      
+
+   <PARAMETER
+      NAME="PRODUCER_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="9"
+      REQUIRED="true"
+      GROUP="PRODUCER"
+    >
+      <ITEMS DEFAULT="DATA_CONNECTOR">
+        <ITEM NAME="DATA_CONNECTOR" VALUE="DataConnector" />
+        <!--
+        <ITEM NAME="ODBC" VALUE="ODBC" />
+        <ITEM NAME="FASTEXPORT_INMOD_ADAPTER" VALUE="FastExport INMOD" />
+        <ITEM NAME="FASTLOAD_INMOD_ADAPTER" VALUE="FastLoad INMOD" />
+        <ITEM NAME="MULTILOAD_INMOD_ADAPTER" VALUE="MultiLoad INMOD" />
+        -->
+      </ITEMS>
+    </PARAMETER>
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -154,7 +168,7 @@
     >
       <DEFAULT>Teradata</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -162,8 +176,8 @@
       REQUIRED="true"
     >
       <DEFAULT>"mytable"</DEFAULT>
-    </PARAMETER>   
-    
+    </PARAMETER>
+
     <PARAMETER
       NAME="SCRIPT_PATH"
       FIELD="DIRECTORY"
@@ -171,7 +185,7 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>
     </PARAMETER>
-	
+
 	<PARAMETER
       NAME="LOAD_FILE"
       FIELD="FILE"
@@ -199,70 +213,125 @@
     >
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
-	<PARAMETER 
-	    NAME="SPECIFY_LOG_TABLE" 
-	    FIELD="CHECK" 
-	    NUM_ROW="20" 
+	<PARAMETER
+	    NAME="SPECIFY_LOG_TABLE"
+	    FIELD="CHECK"
+	    NUM_ROW="20"
 	    REQUIRED="true"
-	> 
-	    <DEFAULT>false</DEFAULT> 
+	>
+	    <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	<PARAMETER 
-	    NAME="LOG_TABLE_TABLE" 
-	    FIELD="TEXT" 
-	    NUM_ROW="20" 
+	<PARAMETER
+	    NAME="LOG_TABLE_TABLE"
+	    FIELD="TEXT"
+	    NUM_ROW="20"
 	    REQUIRED="true"
 		SHOW_IF="SPECIFY_LOG_TABLE=='true'"
-	> 
-	    <DEFAULT>""</DEFAULT> 
+	>
+	    <DEFAULT>""</DEFAULT>
 	</PARAMETER>
-	<PARAMETER 
-	    NAME="BEGINLOAD_ADVANCEDPARAM" 
-	    FIELD="TEXT" 
-	    NUM_ROW="30" 
-	    REQUIRED="true" 
-	> 
-	    <DEFAULT>"SESSIONS 8 CHECKPOINT 60 ERRLIMIT 1000"</DEFAULT> 
+     <PARAMETER
+      NAME="SCRIPT_PARAMETER"
+      FIELD="CHECK"
+      NUM_ROW="25"
+      REQUIRED="true"
+  >
+      <DEFAULT>false</DEFAULT>
+  </PARAMETER>
+
+  <PARAMETER
+      NAME="OPERATOR_LOAD"
+      FIELD="TEXT"
+      NUM_ROW="28"
+      REPOSITORY_VALUE="OPERATOR_LOAD"
+      GROUP="SCRIPT_PARAMETERS"
+      REQUIRED="true"
+      SHOW_IF="SCRIPT_PARAMETER=='true'"
+    >
+      <DEFAULT>"OPERATOR_LOAD"</DEFAULT>
+    </PARAMETER>
+  <PARAMETER
+      NAME="OPERATOR_DATA_CONNECTOR"
+      FIELD="TEXT"
+      NUM_ROW="28"
+      REPOSITORY_VALUE="OPERATOR_DATA_CONNECTOR"
+      GROUP="SCRIPT_PARAMETERS"
+      REQUIRED="true"
+      SHOW_IF="SCRIPT_PARAMETER=='true'"
+    >
+      <DEFAULT>"OPERATOR_DATA_CONNECTOR"</DEFAULT>
+    </PARAMETER>
+  <PARAMETER
+      NAME="JOB_NAME"
+      FIELD="TEXT"
+      NUM_ROW="29"
+      REPOSITORY_VALUE="JOB_NAME"
+      GROUP="SCRIPT_PARAMETERS"
+      REQUIRED="true"
+      SHOW_IF="SCRIPT_PARAMETER=='true'"
+    >
+      <DEFAULT>"JOB_NAME"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LAYOUT_NAME"
+      FIELD="TEXT"
+      NUM_ROW="29"
+      REPOSITORY_VALUE="LAYOUT_NAME"
+      GROUP="SCRIPT_PARAMETERS"
+      REQUIRED="true"
+      SHOW_IF="SCRIPT_PARAMETER=='true'"
+    >
+      <DEFAULT>"LAYOUT_NAME"</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+	    NAME="BEGINLOAD_ADVANCEDPARAM"
+	    FIELD="TEXT"
+	    NUM_ROW="30"
+	    REQUIRED="true"
+	>
+	    <DEFAULT>"SESSIONS 8 CHECKPOINT 60 ERRLIMIT 1000"</DEFAULT>
 	</PARAMETER>
-	<PARAMETER 
-	    NAME="RETURN_CODE_DIE" 
-	    FIELD="CHECK" 
-	    NUM_ROW="40" 
-	    REQUIRED="true" 
-	> 
-	    <DEFAULT>false</DEFAULT> 
+	<PARAMETER
+	    NAME="RETURN_CODE_DIE"
+	    FIELD="CHECK"
+	    NUM_ROW="40"
+	    REQUIRED="true"
+	>
+	    <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	<PARAMETER 
-	    NAME="RETURN_CODE" 
-	    FIELD="TEXT" 
-	    NUM_ROW="40" 
+	<PARAMETER
+	    NAME="RETURN_CODE"
+	    FIELD="TEXT"
+	    NUM_ROW="40"
 	    REQUIRED="true"
 		SHOW_IF="RETURN_CODE_DIE=='true'"
-	> 
-	    <DEFAULT>8</DEFAULT> 
+	>
+	    <DEFAULT>8</DEFAULT>
 	</PARAMETER>
-	<PARAMETER 
-	    NAME="DEFINE_CHARSET" 
-	    FIELD="CHECK" 
-	    NUM_ROW="50" 
-	    REQUIRED="true" 
-	> 
-	    <DEFAULT>false</DEFAULT> 
+	<PARAMETER
+	    NAME="DEFINE_CHARSET"
+	    FIELD="CHECK"
+	    NUM_ROW="50"
+	    REQUIRED="true"
+	>
+	    <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	<PARAMETER 
-	    NAME="CHARSET" 
-	    FIELD="TEXT" 
-	    NUM_ROW="50" 
+	<PARAMETER
+	    NAME="CHARSET"
+	    FIELD="TEXT"
+	    NUM_ROW="50"
 	    REQUIRED="true"
 		SHOW_IF="DEFINE_CHARSET=='true'"
-	> 
-   	    <DEFAULT>"ASCII"</DEFAULT> 
+	>
+   	    <DEFAULT>"ASCII"</DEFAULT>
  	</PARAMETER>
-  </ADVANCED_PARAMETERS> 
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
   </CODEGENERATION>
-   
+
   <RETURNS>
 	<RETURN NAME="EXIT_VALUE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
   </RETURNS>
