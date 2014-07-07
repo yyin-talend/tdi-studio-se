@@ -12,8 +12,8 @@
 	
 	<!-- modification 2: compile classpath -->
 		<path id="compile.classpath">
-			<pathelement location="${component.plugin.home}/tEDIFACTtoXML/dom4j-1.6.1.jar" /> 
-			<pathelement location="${component.plugin.home}/tWriteJSONFieldIn/commons-lang-2.6.jar" /> 
+			<pathelement location="../../../../../../tcommon-studio-se/main/plugins/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" /> 
+			<pathelement location="../../../../../../tcommon-studio-se/main/plugins/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar" /> 
 		</path>
 
 	<!-- #################################################### -->	

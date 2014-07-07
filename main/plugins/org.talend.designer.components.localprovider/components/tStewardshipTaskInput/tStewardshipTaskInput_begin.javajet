@@ -85,17 +85,17 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					endXMLGregorianCalendar_<%=cid%> = factory_<%=cid%>.newXMLGregorianCalendar(endDate_<%=cid%>);
 				}
 				
-				java.util.List<org.talend.datastewardship.server.ws.StringArray> tasksResult_<%=cid%> = TDSCWS_<%=cid%>.searchTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>,<%=status.equals("null")?null:"\""+status+"\""%>);
-				for(org.talend.datastewardship.server.ws.StringArray taskResult_<%=cid%>:tasksResult_<%=cid%>){
+				java.util.List<net.java.dev.jaxb.array.StringArray> tasksResult_<%=cid%> = TDSCWS_<%=cid%>.searchTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>,<%=status.equals("null")?null:"\""+status+"\""%>);
+				for(net.java.dev.jaxb.array.StringArray taskResult_<%=cid%>:tasksResult_<%=cid%>){
 					java.util.List<String> taskCols_<%=cid%> = taskResult_<%=cid%>.getItem();
 					
 					java.util.List<java.util.Map<String,String>> records_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
 					java.util.Map<String,String> recordTmp_<%=cid%>  = null;
-					java.util.List<org.talend.datastewardship.server.ws.StringArray> tgtRecord_<%=cid%> = TDSCWS_<%=cid%>.getTgtRecord(taskCols_<%=cid%>.get(0));
+					java.util.List<net.java.dev.jaxb.array.StringArray> tgtRecord_<%=cid%> = TDSCWS_<%=cid%>.getTgtRecord(taskCols_<%=cid%>.get(0));
 					recordTmp_<%=cid%> = new java.util.HashMap<String,String>();
 					if(tgtRecord_<%=cid%> != null){
 						recordTmp_<%=cid%>.put("TARGET","true");
-						for(org.talend.datastewardship.server.ws.StringArray tgtCols_<%=cid%>:tgtRecord_<%=cid%>){
+						for(net.java.dev.jaxb.array.StringArray tgtCols_<%=cid%>:tgtRecord_<%=cid%>){
 							java.util.List<String> tgtCol_<%=cid%> = tgtCols_<%=cid%>.getItem();
 							if(tgtCol_<%=cid%>!=null && !tgtCol_<%=cid%>.isEmpty()){
 								 recordTmp_<%=cid%>.put(tgtCol_<%=cid%>.get(0),tgtCol_<%=cid%>.get(3));
@@ -105,13 +105,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					records_<%=cid%>.add(recordTmp_<%=cid%>);// out of if statement is for return task info.
 					
 					<%if(!targetRecordOnly){%>
-						java.util.List<org.talend.datastewardship.server.ws.StringArrayArray> srcRecords_<%=cid%> = TDSCWS_<%=cid%>.getSrcRecord(taskCols_<%=cid%>.get(0));
-			            for (org.talend.datastewardship.server.ws.StringArrayArray srcRecord_<%=cid%> : srcRecords_<%=cid%>) {
-			                java.util.List<org.talend.datastewardship.server.ws.StringArray> srcRecordItem_<%=cid%> = srcRecord_<%=cid%>.getItem();
+						java.util.List<net.java.dev.jaxb.array.StringArrayArray> srcRecords_<%=cid%> = TDSCWS_<%=cid%>.getSrcRecord(taskCols_<%=cid%>.get(0));
+			            for (net.java.dev.jaxb.array.StringArrayArray srcRecord_<%=cid%> : srcRecords_<%=cid%>) {
+			                java.util.List<net.java.dev.jaxb.array.StringArray> srcRecordItem_<%=cid%> = srcRecord_<%=cid%>.getItem();
 			                recordTmp_<%=cid%> = new java.util.HashMap<String,String>();
 							recordTmp_<%=cid%>.put("TARGET","false");
 							String srcRecordName_<%=cid%> = "";
-			                for (org.talend.datastewardship.server.ws.StringArray srcCols_<%=cid%> : srcRecordItem_<%=cid%>) {
+			                for (net.java.dev.jaxb.array.StringArray srcCols_<%=cid%> : srcRecordItem_<%=cid%>) {
 			                    java.util.List<String> srcCol_<%=cid%> = srcCols_<%=cid%>.getItem();
 			                    if(srcCol_<%=cid%>!=null && !srcCol_<%=cid%>.isEmpty()){
 									 recordTmp_<%=cid%>.put(srcCol_<%=cid%>.get(0),srcCol_<%=cid%>.get(3));
