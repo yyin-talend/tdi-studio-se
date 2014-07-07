@@ -22,6 +22,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		private boolean convertToUppercase;
 		private boolean isLog4jEnabled;
 		private List<Column> stmtStructure;
+		private boolean xmlTypeExist;
 		public void beforeComponentProcess(INode node){
 			super.beforeComponentProcess(node);
 			cid = node.getUniqueName();
@@ -80,8 +81,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 		public void prepareColumn(List<Column> stmtStructure){
 			this.stmtStructure = stmtStructure;
-			if(convertToUppercase) {
-				for(Column column : stmtStructure) {
+			for(Column column : stmtStructure) {
+				if(convertToUppercase) {
 					if(column.isReplaced()) {
 						for (Column replacedColumn : column.getReplacement()) {
 							replacedColumn.setColumnName(replacedColumn.getColumnName().toUpperCase());
@@ -89,6 +90,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 					} else if(!column.isDynamic()){
 						column.setColumnName(column.getColumnName().toUpperCase());
 					}
+				}
+				if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getType()) && !column.isDynamic()) {
+					column.setSqlStmt("XMLType(?)");
+					xmlTypeExist = true;
 				}
 			}
 		}
@@ -148,14 +153,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 			//// hint options end ////
 		}
 		public void end(INode node){
-			boolean xmlTypeExist = false;
-			for(Column column : stmtStructure) {
-				//when use Additional column column.getColumn() == null
-				if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getType()) && !column.isDynamic()) {
-					column.setSqlStmt("XMLType(?)");
-					xmlTypeExist = true;
-				}
-			}
 			if (xmlTypeExist) {
 			%>
 				class XMLTypeUtil_<%=cid%> {
