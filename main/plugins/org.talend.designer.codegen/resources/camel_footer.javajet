@@ -501,7 +501,7 @@
 				{	
 					 org.apache.camel.component.mqtt.MQTTComponent mqttComponent = new org.apache.camel.component.mqtt.MQTTComponent(){
 						 @Override
-							protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
+							protected org.apache.camel.Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
 							 org.apache.camel.component.mqtt.MQTTEndpoint endpoint = 
 									 (org.apache.camel.component.mqtt.MQTTEndpoint) super.createEndpoint(uri, remaining, parameters);
 							 org.apache.camel.component.mqtt.MQTTConfiguration config = endpoint.getConfiguration();
@@ -515,7 +515,7 @@
 							 config.setSendWaitInSeconds(<%=helper.getStringParam("__MQTT_SEND_WAIT_IN_SECONDS__")%>);
 							 return endpoint;
 							}
-					 }
+					 };
 					camelContext.addComponent(<%=name%>,mqttComponent);
 				}
 <%
