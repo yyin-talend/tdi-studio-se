@@ -53,113 +53,63 @@ imports="
 	String concurrencyMode = ElementParameterParser.getValue(node,"__CONCURRENCY_MODE__");
 	String awaitTime = ElementParameterParser.getValue(node,"__AWAIT_TIME__");
 	
+	boolean bulkConnection = true; //for tSalesforceOAuth.javajet
 	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 	boolean useOAuth = "OAUTH".equals(loginType);
-	if(!useExistingConn && useOAuth){
-		String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
-		String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");
-		%>
-		org.talend.salesforce.oauth.OAuthClient oauthClient_<%=cid%> = new org.talend.salesforce.oauth.OAuthClient();
-		org.talend.salesforce.oauth.Token token_<%=cid%>;
-		String endpointURL_<%=cid%> = null;
-		String accessToken_<%=cid%> = null;
-		oauthClient_<%=cid%>.setBaseOAuthURL(<%=endpoint%>);
-		oauthClient_<%=cid%>.setClientID(<%=oauthKey%>);
-		oauthClient_<%=cid%>.setClientSecret(<%=oauthSecret%>);
-		String refreshToken_<%=cid%> = null;
-		<%
-		String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
-		if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
-		%>
-			// Attempt to load existing refresh token
-			String tokenFile_<%=cid%> = <%=tokenFile%>;
-			if(tokenFile_<%=cid%> != null){
-				java.util.Properties properties_<%=cid%> = new java.util.Properties();
-				try{
-					java.io.FileInputStream inputStream_<%=cid%> = new java.io.FileInputStream(tokenFile_<%=cid%>);
-					properties_<%=cid%>.load(inputStream_<%=cid%>);
-					inputStream_<%=cid%>.close();
-				}catch(java.io.FileNotFoundException e_<%=cid%>){
-				}catch(java.io.IOException ee_<%=cid%>){
-				}
-				String storedRefreshToken_<%=cid%> = (String) properties_<%=cid%>.get("refreshtoken");
-				
-				// Check to see if the an existing refresh token was loaded.
-				// If so, create a credential and call refreshToken() to get a new
-				// access token.
-				if(storedRefreshToken_<%=cid%> != null){
-					// Request a new Access token using the refresh token.
-					token_<%=cid%> = oauthClient_<%=cid%>.refreshToken(storedRefreshToken_<%=cid%>);
-					endpointURL_<%=cid%> = oauthClient_<%=cid%>.getBulkEndpoint(token_<%=cid%>, <%=apiVersion%>);
-					accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
-					refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
-				}
-			}
-		<%
-		}
-		%>
-		if(accessToken_<%=cid%> == null || endpointURL_<%=cid%> == null){
-			<%
-			String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
-			String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
-			%>
-			oauthClient_<%=cid%>.setCallbackHost(<%=callbackHost%>);
-			oauthClient_<%=cid%>.setCallbackPort(<%=callbackPort%>);
-			token_<%=cid%> = oauthClient_<%=cid%>.getToken();
-			endpointURL_<%=cid%> = oauthClient_<%=cid%>.getBulkEndpoint(token_<%=cid%>, <%=apiVersion%>);
-			accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
-			refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
-		}
-		<%
-		if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
-		%>
-			if(tokenFile_<%=cid%> != null && refreshToken_<%=cid%> != null){
-				// Store the refresh token for future use.
-				java.util.Properties storeProperties_<%=cid%> = new java.util.Properties();
-				storeProperties_<%=cid%>.setProperty("refreshtoken", refreshToken_<%=cid%>);
-				java.io.FileOutputStream outputStream_<%=cid%> = new java.io.FileOutputStream(tokenFile_<%=cid%>);
-				storeProperties_<%=cid%>.store(outputStream_<%=cid%>, null);
-				if(outputStream_<%=cid%> != null){
-				    outputStream_<%=cid%>.close();
-				}
-			}
-		<%
-		}
-	}
 	%>
 	int nb_line_<%=cid %> = 0;
     int nb_success_<%=cid%> = 0;
     int nb_reject_<%=cid%> = 0;
+	System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 	
-	org.talend.salesforceBulk.SalesforceBulkAPI sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI();
-	sforceBulk_<%=cid%>.setConcurrencyMode("<%=concurrencyMode%>");
-	sforceBulk_<%=cid%>.setAwaitTime(<%=awaitTime%>);
+	org.talend.salesforceBulk.SforceBulkConnection sforceConn_<%=cid%> = null;
 	<%
 	if(useExistingConn){
 	%>
-		if(globalMap.get("conn_<%=connection %>")==null){
+		if(globalMap.get("conn_<%=connection%>")==null){
 			throw new RuntimeException("Get null connection from <%=connection %>");
 		}
-		sforceBulk_<%=cid%>.login((com.sforce.async.BulkConnection)globalMap.get("conn_<%=connection %>"));
+		sforceConn_<%=cid%> = (org.talend.salesforceBulk.SforceBulkConnection)globalMap.get("conn_<%=connection %>");
 	<%
 	}else{
 		if(useOAuth){
-		%>
-			sforceBulk_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>);
+    		String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
+    		String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");
+        	String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
+    		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
+    		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
+    		%>
+    		sforceConn_<%=cid%> 
+        		= new org.talend.salesforceBulk.SforceOAuthBulkConnection.Builder(<%=endpoint%>, <%=oauthKey%>, <%=oauthSecret%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
+        			<%
+        			if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+        			%>
+        				.setTokenFilePath(<%=tokenFile%>)
+        			<%
+        			}
+        			%>
+        			.build();
 		<%
 		}else{
-			if(useProxy){
-			%>
-				sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
-			<%
-			}
-			%>
-			sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
+		%>
+			sforceConn_<%=cid%> 
+    			= new org.talend.salesforceBulk.SforceBasicBulkConnection.Builder(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>)
+    				<%
+    				if(useProxy){
+            		%>
+            			.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>)
+            		<%
+            		}	
+    				%>
+    				.build();
 		<%
 		}
 	}
 	%>
-
+	org.talend.salesforceBulk.SalesforceBulkAPI	sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI(sforceConn_<%=cid%>);
+	sforceBulk_<%=cid%>.setConcurrencyMode("<%=concurrencyMode%>");
+	sforceBulk_<%=cid%>.setAwaitTime(<%=awaitTime%>);
+	
 
 	sforceBulk_<%=cid%>.executeBulk(<%=sObject%>,"<%=action%>",<%=externalId%>,"<%=contentType%>",<%=bulkFileName%>,<%=maxBytes%>,<%=maxRows%>);
 
@@ -175,115 +125,118 @@ imports="
 				java.util.List<java.util.Map<String,String>> resultListMessage_<%=cid%> = sforceBulk_<%=cid%>.getBatchLog(i);
 				for(java.util.Map<String,String> resultMessage_<%=cid%> : resultListMessage_<%=cid%>){
 					j_<%=cid%>++;
-			<% 
-			List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-			if(outgoingConns!=null){
-				for (int i=0;i<outgoingConns.size();i++) {
-			    IConnection outgoingConn = outgoingConns.get(i);
-			    	if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-					%>
-						<%=outgoingConn.getName() %> = null;			
-					<%
-			    	}
-			    }
-			}
+					<% 
+					List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+					if(outgoingConns!=null){
+						for (int i=0;i<outgoingConns.size();i++) {
+					   		IConnection outgoingConn = outgoingConns.get(i);
+					    	if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+							%>
+								<%=outgoingConn.getName() %> = null;			
+							<%
+					    	}
+					    }
+					}
     	
-			List<? extends IConnection> connsSuccess = node.getOutgoingConnections("MAIN");
-			List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
-			%>	
-			if("true".equals(resultMessage_<%=cid%>.get("Success"))){
-				<%
-				if (connsSuccess != null && connsSuccess.size() == 1) {
-					IConnection connSuccess = connsSuccess.get(0);
-					if (connSuccess.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-					%>
+					List<? extends IConnection> connsSuccess = node.getOutgoingConnections("MAIN");
+					List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
+					%>	
+					if("true".equals(resultMessage_<%=cid%>.get("Success"))){
+						<%
+						if (connsSuccess != null && connsSuccess.size() == 1) {
+							IConnection connSuccess = connsSuccess.get(0);
+							if (connSuccess.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+							%>
 						nb_success_<%=cid %>++;
-						<%=connSuccess.getName() %> = new <%=connSuccess.getName() %>Struct();
-
-						<%=connSuccess.getName() %>.salesforce_created = resultMessage_<%=cid%>.get("Created");
-						<%=connSuccess.getName() %>.salesforce_id = resultMessage_<%=cid%>.get("Id");
-						<%
-						for (IMetadataColumn column: metadata.getListColumns()) {
-							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-							String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-							%>			
-							if("#N/A".equals(String.valueOf(resultMessage_<%=cid%>.get("<%=column.getLabel() %>")))){
-				        		resultMessage_<%=cid%>.put("<%=column.getLabel() %>",null);
-				        	}
-						    <%		
-					        if(javaType == JavaTypesManager.STRING ){
-							%>
-					            <%=connSuccess.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");
-							<%
-					        }else if(javaType == JavaTypesManager.DATE){
-					        %>
-					            <%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"), <%= pattern %>);
-					        <%
-					        }else if(JavaTypesManager.isNumberType(javaType)) {
-					        %>
-					            <%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
-					        <%
-					        }else { 
-							%>
-								<%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
-							<%
-							}
-							%>
+								<%=connSuccess.getName() %> = new <%=connSuccess.getName() %>Struct();
+		
+								<%=connSuccess.getName() %>.salesforce_created = resultMessage_<%=cid%>.get("Created");
+								
+								<%=connSuccess.getName() %>.salesforce_id = resultMessage_<%=cid%>.get("Id");
+								<%
+								for (IMetadataColumn column: metadata.getListColumns()) {
+									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+									String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+									%>			
+									if("#N/A".equals(String.valueOf(resultMessage_<%=cid%>.get("<%=column.getLabel() %>")))){
+						        		resultMessage_<%=cid%>.put("<%=column.getLabel() %>",null);
+						        	}
+								    <%		
+							        if(javaType == JavaTypesManager.STRING ){
+									%>
+							            <%=connSuccess.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");
+									<%
+							        }else if(javaType == JavaTypesManager.DATE){
+							        %>
+							            <%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"), <%= pattern %>);
+							        <%
+							        }else if(JavaTypesManager.isNumberType(javaType)) {
+							        %>
+							            <%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
+							        <%
+							        }else { 
+									%>
+										<%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
+									<%
+									}
+								}
+								%>
 				           			
-						<%					 
-						}
-					}
-				}
-				%>
-			}else{
-				<%
-				if (connsReject != null && connsReject.size() == 1) {
-					IConnection connReject = connsReject.get(0);
-					if (connReject.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-					%>
-						nb_reject_<%=cid %>++;
-						<%=connReject.getName() %> = new <%=connReject.getName() %>Struct();
-						<%=connReject.getName() %>.error = resultMessage_<%=cid%>.get("Error");
-			
-						<%
-						for (IMetadataColumn column: metadata.getListColumns()) {
-							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-							String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-							%>			
-							if("#N/A".equals(String.valueOf(resultMessage_<%=cid%>.get("<%=column.getLabel() %>")))){
-					        		resultMessage_<%=cid%>.put("<%=column.getLabel() %>",null);
-					        }
-						    <%		
-					        if(javaType == JavaTypesManager.STRING ){
-							%>
-					            <%=connReject.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");
-							<%
-					        }else if(javaType == JavaTypesManager.DATE && pattern != null){
-					        %>
-					            <%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"), <%= pattern %>);
-					        <%
-					        }else if(JavaTypesManager.isNumberType(javaType)) {
-					        %>
-					            <%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
-					        <%
-					        }else { 
-							%>
-								<%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
-							<%
+							<%	
 							}
-							%>
-						<%					 
 						}
-					}
-				}else{
-				%>
-					System.err.print("Row "+j_<%=cid%>+":"+resultMessage_<%=cid%>.get("Error"));
-				<%
-				}
+						%>
+					}else{
+						<%
+						if (connsReject != null && connsReject.size() == 1) {
+							IConnection connReject = connsReject.get(0);
+							if (connReject.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+							%>
+						nb_reject_<%=cid %>++;
+								<%=connReject.getName() %> = new <%=connReject.getName() %>Struct();
+								<%=connReject.getName() %>.error = resultMessage_<%=cid%>.get("Error");
+			
+								<%
+								for (IMetadataColumn column: metadata.getListColumns()) {
+									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+									String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+									%>			
+									if("#N/A".equals(String.valueOf(resultMessage_<%=cid%>.get("<%=column.getLabel() %>")))){
+							        	resultMessage_<%=cid%>.put("<%=column.getLabel() %>", null);
+							        }
+								    <%		
+							        if(javaType == JavaTypesManager.STRING ){
+									%>
+							            <%=connReject.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");
+									<%
+							        }else if(javaType == JavaTypesManager.DATE && pattern != null){
+							        %>
+							            <%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"), <%= pattern %>);
+							        <%
+							        }else if(JavaTypesManager.isNumberType(javaType)) {
+							        %>
+							            <%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
+							        <%
+							        }else { 
+									%>
+										<%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
+									<%
+									}
+								}
+							%>
+							<%	 
+							}
+						}else{
+						%>
+							System.err.print("Row "+j_<%=cid%>+":"+resultMessage_<%=cid%>.get("Error"));
+						<%
+						}
+						%>
+		<%
 		}//2
 	}//1
 	%>
-			}
+					}
 				
