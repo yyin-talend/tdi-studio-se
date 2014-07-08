@@ -1083,15 +1083,15 @@ for (INode node : graphicalNodes) {
 
 		String serviceName = helper.getVisibleStringParam("__SERVICE_NAME__");
 		if(!serviceName.isEmpty()) {
-			sb.append("+\"&serviceName=\"+").append(serviceName);
+			sb.append("+\"&serviceNameString=\"+").append(serviceName);
 		}
 		String portName = helper.getVisibleStringParam("__PORT_NAME__");
 		if(!portName.isEmpty()) {
-			sb.append("+\"&portName=\"+").append(portName);
+			sb.append("+\"&endpointNameString=\"+").append(portName);
 		}
 		String operationName = helper.getVisibleStringParam("__OPERATION_NAME__");
 		if(!operationName.isEmpty()) {
-			sb.append("+\"&operationName=\"+").append(operationName);
+			sb.append("+\"&defaultOperationName=\"+").append(operationName);
 		}
 
 		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
