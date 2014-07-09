@@ -1432,28 +1432,53 @@ for (INode node : graphicalNodes) {
 		sb.append("\"" + resourceUri + "\"");
 		
 		if (null == name || name.isEmpty() || name.equals("\"\"")) {
-			sb.append("+" + componentName);
+			sb.append("+" + "\"" + cid + "\"");
 		} else {
 			sb.append("+" + name);
 		}
 		sb.append("+\"?\"");
-		if(!useFactory) {
-			if (useSSL)
-				sb.append("+\"host=ssl://" + "\"+");
-			else
-				sb.append("+\"host=tcp://" + "\"+");
+		if(useFactory) {
+			List<? extends INode> mqttNodes = process.getNodesOfType("cMQConnectionFactory");
+			String factoryName = ElementParameterParser.getValue(node, "__ROUTE_COMPONENT_TYPE_ID__");
+			for(INode factoryNode : mqttNodes) {
+				if (factoryNode != null)
+				{
+					if (factoryName != null)
+					{
+						if (factoryNode.getUniqueName() != null && factoryNode.getUniqueName().equals(factoryName))
+						{
+							host = ElementParameterParser.getValue(factoryNode, "__MQTT_HOST__");
+							port = ElementParameterParser.getValue(factoryNode, "__MQTT_PORT__");
+							useSSL = ("true").equals(ElementParameterParser.getValue(node,"__MQTT_SSL__"));
+							connectAttempts = ElementParameterParser.getValue(node, "__MQTT_CONNECT_ATTEMPTS__");
+							reconnectAttempts = ElementParameterParser.getValue(node, "__MQTT_RECONNECT_ATTEMPTS__");
+							reconnectDelay = ElementParameterParser.getValue(node, "__MQTT_RECONNECT_DELAY__");
+							qos = ElementParameterParser.getValue(node, "__MQTT_QOS__");
+							connectWaitInSeconds = ElementParameterParser.getValue(node, "__MQTT_CONNECT_WAIT_IN_SECONDS__");
+							disconnectWaitInSeconds = ElementParameterParser.getValue(node, "__MQTT_DISCONNECT_WAIT_IN_SECONDS__");
+							sendWaitInSeconds = ElementParameterParser.getValue(node, "__MQTT_SEND_WAIT_IN_SECONDS__");
+							
+						}
+					}//End factory name if
+				}//End factoryNode if
+			}//End for
+		}//End useFactory
+		
+		if (useSSL)
+			sb.append("+\"host=ssl://" + "\"+");
+		else
+			sb.append("+\"host=tcp://" + "\"+");
 				
-			if (null != host && !host.isEmpty() && !host.equals("\"\"")) {
-				sb.append(host + "+\":\"");
-			} else {
-				sb.append("\"127.0.0.1:" + "\"");
-			}
+		if (null != host && !host.isEmpty() && !host.equals("\"\"")) {
+			sb.append(host + "+\":\"");
+		} else {
+			sb.append("\"127.0.0.1:" + "\"");
+		}
 			
-			if (null != port && !port.isEmpty() && !port.equals("\"\"")) {
-				sb.append("+" + port);
-			} else {
-				sb.append("+\"1883" + "\"");
-			}
+		if (null != port && !port.isEmpty() && !port.equals("\"\"")) {
+			sb.append("+" + port);
+		} else {
+			sb.append("+\"1883" + "\"");
 		}
 		
 		List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -1466,28 +1491,26 @@ for (INode node : graphicalNodes) {
 				sb.append("+\"&subscribeTopicName=" + "\"+" + topicName);
 			}
 		}
-		if(!useFactory) {
-			if (null != connectAttempts && !connectAttempts.isEmpty() && !connectAttempts.equals("\"\"")) {
-				sb.append("+\"&connectAttemptsMax=" + "\"+" + connectAttempts);
-			}
-			if (null != reconnectAttempts && !reconnectAttempts.isEmpty() && !reconnectAttempts.equals("\"\"")) {
-				sb.append("+\"&reconnectAttemptsMax=" + "\"+" + reconnectAttempts);
-			}
-			if (null != reconnectDelay && !reconnectDelay.isEmpty() && !reconnectDelay.equals("\"\"")) {
-				sb.append("+\"&reconnectDelay=" + "\"+" + reconnectDelay);
-			}
-			if (null != qos && !qos.isEmpty() && !qos.equals("\"\"")) {
-				sb.append("+\"&qualityOfService=" + "\"+\"" + qos + "\"");
-			}
-			if (null != connectWaitInSeconds && !connectWaitInSeconds.isEmpty() && !connectWaitInSeconds.equals("\"\"")) {
-				sb.append("+\"&connectWaitInSeconds=" + "\"+" + connectWaitInSeconds);
-			}
-			if (null != disconnectWaitInSeconds && !disconnectWaitInSeconds.isEmpty() && !disconnectWaitInSeconds.equals("\"\"")) {
-				sb.append("+\"&disconnectWaitInSeconds=" + "\"+" + disconnectWaitInSeconds);
-			}
-			if (null != sendWaitInSeconds && !sendWaitInSeconds.isEmpty() && !sendWaitInSeconds.equals("\"\"")) {
-				sb.append("+\"&sendWaitInSeconds=" + "\"+" + sendWaitInSeconds);
-			}
+		if (null != connectAttempts && !connectAttempts.isEmpty() && !connectAttempts.equals("\"\"")) {
+			sb.append("+\"&connectAttemptsMax=" + "\"+" + connectAttempts);
+		}
+		if (null != reconnectAttempts && !reconnectAttempts.isEmpty() && !reconnectAttempts.equals("\"\"")) {
+			sb.append("+\"&reconnectAttemptsMax=" + "\"+" + reconnectAttempts);
+		}
+		if (null != reconnectDelay && !reconnectDelay.isEmpty() && !reconnectDelay.equals("\"\"")) {
+			sb.append("+\"&reconnectDelay=" + "\"+" + reconnectDelay);
+		}
+		if (null != qos && !qos.isEmpty() && !qos.equals("\"\"")) {
+			sb.append("+\"&qualityOfService=" + "\"+\"" + qos + "\"");
+		}
+		if (null != connectWaitInSeconds && !connectWaitInSeconds.isEmpty() && !connectWaitInSeconds.equals("\"\"")) {
+			sb.append("+\"&connectWaitInSeconds=" + "\"+" + connectWaitInSeconds);
+		}
+		if (null != disconnectWaitInSeconds && !disconnectWaitInSeconds.isEmpty() && !disconnectWaitInSeconds.equals("\"\"")) {
+			sb.append("+\"&disconnectWaitInSeconds=" + "\"+" + disconnectWaitInSeconds);
+		}
+		if (null != sendWaitInSeconds && !sendWaitInSeconds.isEmpty() && !sendWaitInSeconds.equals("\"\"")) {
+			sb.append("+\"&sendWaitInSeconds=" + "\"+" + sendWaitInSeconds);
 		}
 		uri = sb.toString();
 	} else if ("cHttp".equals(componentName)) {
