@@ -1130,7 +1130,7 @@ public class EmfComponent extends AbstractComponent {
                 param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
                 param.setFieldType(EParameterFieldType.CHECK);
                 param.setCategory(EComponentCategory.ADVANCED);
-                param.setNumRow(99);
+                param.setNumRow(199);
                 param.setReadOnly(false);
                 param.setRequired(false);
                 param.setShow(tStatCatcherAvailable);
@@ -1230,7 +1230,7 @@ public class EmfComponent extends AbstractComponent {
             param.setDisplayName(EParameterName.PARALLELIZE.getDisplayName());
             param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(100);
+            param.setNumRow(200);
             param.setShow(true);
             listParam.add(param);
 
@@ -1241,7 +1241,7 @@ public class EmfComponent extends AbstractComponent {
             param.setDisplayName(EParameterName.PARALLELIZE_NUMBER.getDisplayName());
             param.setFieldType(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(100);
+            param.setNumRow(200);
             param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'"); //$NON-NLS-1$
             listParam.add(param);
 
@@ -1252,7 +1252,7 @@ public class EmfComponent extends AbstractComponent {
             param.setDisplayName(EParameterName.PARALLELIZE_KEEP_EMPTY.getDisplayName());
             param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(100);
+            param.setNumRow(200);
             param.setShow(false);
             listParam.add(param);
         }
