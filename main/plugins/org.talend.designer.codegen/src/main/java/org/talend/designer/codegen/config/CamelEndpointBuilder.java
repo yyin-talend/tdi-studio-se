@@ -286,9 +286,11 @@ public class CamelEndpointBuilder {
 	 *
 	 * @param component
 	 *            the component name, <b>Direct String</b>.
+	 * @return 
 	 */
-	public void setComponent(String component) {
+	public CamelEndpointBuilder setComponent(String component) {
 		this.component = component;
+		return this;
 	}
 
 	/**
