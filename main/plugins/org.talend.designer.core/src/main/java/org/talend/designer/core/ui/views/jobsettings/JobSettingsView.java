@@ -117,6 +117,19 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         return Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
     }
 
+    private IProcess getProcess(IRepositoryViewObject viewObject) {
+        boolean isOpen = RepositoryManager.isOpenedItemInEditor(viewObject);
+        if (isOpen) {
+            final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
+            if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
+                AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+                IProcess process = talendEditor.getProcess();
+                return process;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void createPartControl(Composite parent) {
         // tabFactory = new HorizontalTabFactory();
@@ -154,17 +167,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
                     } else if (data instanceof IRepositoryViewObject) {
                         IRepositoryViewObject viewObject = (IRepositoryViewObject) data;
-                        boolean isOpen = RepositoryManager.isOpenedItemInEditor(viewObject);
-                        if (isOpen) {
-                            final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
-                            if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
-                                AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor)
-                                        .getTalendEditor();
-                                IProcess process = talendEditor.getProcess();
-                                if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())) {
-                                    data = process;
-                                }
-                            }
+                        IProcess process = getProcess(viewObject);
+                        if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())) {
+                            data = process;
                         }
                         currentSelectedTab = descriptor;
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), data,
@@ -305,16 +310,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (obj != null && obj instanceof IRepositoryViewObject) {
             categories = getCategories(obj);
             IRepositoryViewObject viewObject = (IRepositoryViewObject) obj;
-            boolean isOpen = RepositoryManager.isOpenedItemInEditor(viewObject);
-            if (isOpen) {
-                final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
-                if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
-                    AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
-                    IProcess process = talendEditor.getProcess();
-                    if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())) {
-                        categories = getCategories(process);
-                    }
-                }
+            IProcess process = getProcess(viewObject);
+            if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())) {
+                categories = getCategories(process);
             }
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
