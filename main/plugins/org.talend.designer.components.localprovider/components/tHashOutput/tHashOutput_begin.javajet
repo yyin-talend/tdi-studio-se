@@ -171,7 +171,7 @@ if(!isLinked){//111
 		String connectionName = incommingDataConn.getName();
 %>    
 		org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName %>Struct> tHashFile_<%=cid %> = null;
-		String hashKey_<%=cid%> = "tHashFile_<%=jobName%>_" + pid + "_<%=cid%>";
+		String hashKey_<%=cid%> = "tHashFile_<%=jobName%>_" + pid + Thread.currentThread().getId() + "_<%=cid%>";
 <%
 		if (isAppend) {
 %>
@@ -199,7 +199,7 @@ if(!isLinked){//111
 %>
 		org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=tHashOutput_incommingDataConnName %>Struct> tHashFile_<%=cid %> = null; 
 		//use this map to keep the present key and the previous key of AdvancedMemoryHashFile
-		mf_<%=cid %>.getKeyMap().put("tHashFile_<%=jobName %>_" +pid + "_<%=cid %>", "tHashFile_<%=jobName %>_" + pid + "_<%=tHashOutputName %>");
+		mf_<%=cid %>.getKeyMap().put("tHashFile_<%=jobName %>_" +pid + Thread.currentThread().getId() + "_<%=cid %>", "tHashFile_<%=jobName %>_" + pid + Thread.currentThread().getId() + "_<%=tHashOutputName %>");
 <%
 }//111
 %>
