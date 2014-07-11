@@ -149,11 +149,11 @@
 		String jobName = codeGenArgument.getJobName();
     	if(release_cache){
 		%>	
-    		mf_<%=cid %>.clearCache("tHashFile_<%=jobName %>_" + pid +"_<%=tHashOutputName %>");
+    		mf_<%=cid %>.clearCache("tHashFile_<%=jobName %>_" + pid + Thread.currentThread().getId() +"_<%=tHashOutputName %>");
     	<%	
     	}
     	%>
-		org.talend.designer.components.hashfile.common.MapHashFile.resourceLockMap.remove("tHashFile_<%=jobName %>_" + pid +"_<%=tHashOutputName %>");<%//release lock the tHashOutput used%>
+		org.talend.designer.components.hashfile.common.MapHashFile.resourceLockMap.remove("tHashFile_<%=jobName %>_" + pid + Thread.currentThread().getId() +"_<%=tHashOutputName %>");<%//release lock the tHashOutput used%>
 	<%
 	}
 	%>
