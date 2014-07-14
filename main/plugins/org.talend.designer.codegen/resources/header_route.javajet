@@ -75,6 +75,7 @@ package <%= packageName %>;
 	importsSet.add("import java.util.HashMap");
 	importsSet.add("import java.util.Map");
 	importsSet.add("import javax.xml.bind.JAXBException");
+	importsSet.add("import javax.xml.namespace.QName");
 	importsSet.add("import org.apache.camel.ProducerTemplate");
 	importsSet.add("import org.apache.camel.impl.DefaultCamelContext");
 	importsSet.add("import org.apache.camel.main.MainSupport");
@@ -1092,13 +1093,15 @@ for (INode node : graphicalNodes) {
 		if(!portName.isEmpty()) {
 			sb.append("+\"&endpointNameString=\"+").append(portName);
 		}
-		String operationNamespace = helper.getVisibleStringParam("__OPERATION_NAMESPACE__");
-		if(!operationNamespace.isEmpty()) {
-			sb.append("+\"&defaultOperationNamespace=\"+").append(operationNamespace);
-		}
 		String operationName = helper.getVisibleStringParam("__OPERATION_NAME__");
 		if(!operationName.isEmpty()) {
-			sb.append("+\"&defaultOperationName=\"+").append(operationName);
+			sb.append("+\"&defaultOperationNamespace=\"+QName.valueOf(")
+			.append(operationName)
+			.append(").getNamespaceURI()");
+
+			sb.append("+\"&defaultOperationName=\"+QName.valueOf(")
+			.append(operationName)
+			.append(").getLocalPart()");
 		}
 
 		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
