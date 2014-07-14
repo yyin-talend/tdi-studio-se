@@ -764,6 +764,7 @@ static class CxfPayloadProvider implements javax.ws.rs.ext.MessageBodyWriter<org
 String cid = "";
 String componentName = "";
 String uri = "";
+String statements = null;
 for (INode node : graphicalNodes) {
 	if(!node.isActivate()){
 		continue;
@@ -1093,15 +1094,17 @@ for (INode node : graphicalNodes) {
 		if(!portName.isEmpty()) {
 			sb.append("+\"&endpointNameString=\"+").append(portName);
 		}
-		String operationName = helper.getVisibleStringParam("__OPERATION_NAME__");
-		if(!operationName.isEmpty()) {
-			sb.append("+\"&defaultOperationNamespace=\"+QName.valueOf(")
-			.append(operationName)
-			.append(").getNamespaceURI()");
-
-			sb.append("+\"&defaultOperationName=\"+QName.valueOf(")
-			.append(operationName)
-			.append(").getLocalPart()");
+		String operationName = helper.getVisibleStringParam("__OPERATION_NAME__").trim();
+		if(!operationName.isEmpty() && !operationName.equals("")) {
+			StringBuilder stmt = new StringBuilder();
+			stmt.append("QName operation = null;\n");
+			stmt.append("try { operation = QName.valueOf(")
+				.append(operationName)
+				.append(");}catch(Exception e){}\n");
+			statements = stmt.toString();
+			sb.append("+ operation == null?\"\":(")
+			.append("\"&defaultOperationNamespace=\"+operation.getNamespaceURI()");
+			.append("+\"&defaultOperationName=\"+operation.getLocalPart())");
 		}
 
 		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
@@ -1608,9 +1611,19 @@ for (INode node : graphicalNodes) {
 	} else {
 		continue;
 	}
+	if(statements != null) {
+%>
+		{
+			<%=statements%>
+<%
+	}
 %>
 		uriMap.put("<%=cid%>", <%=uri%>);
 <%
-}
+	if(statements != null) {
+%>
+		}
+<%
+}}
 %>
 	}
