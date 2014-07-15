@@ -48,6 +48,10 @@ public class ActiveProcessTracker implements IPartListener {
 
     private static ActiveProcessTracker apt = null;
 
+    private static final String DISTARTID = "org.talend.rcp.intro.starting.StartingBrowser";
+
+    private static final String MDMSTARTID = "org.talend.mdm.repository.ui.starting.editor.MDMStartingEditor";
+
     public static void initialize() {
         if (apt == null) {
             apt = new ActiveProcessTracker();
@@ -240,7 +244,8 @@ public class ActiveProcessTracker implements IPartListener {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (page != null) {
             if (page.getActiveEditor() != null) {
-                if (!page.getActiveEditor().getSite().getId().equals("org.talend.rcp.intro.starting.StartingBrowser")) {
+                if (!page.getActiveEditor().getSite().getId().equals(DISTARTID)
+                        && !page.getActiveEditor().getSite().getId().equals(MDMSTARTID)) {
                     JobSettings.switchToCurJobSettingsView();
                 }
             }
