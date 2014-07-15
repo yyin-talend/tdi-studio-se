@@ -1535,6 +1535,7 @@ for (INode node : graphicalNodes) {
 		uriMap.put("<%=cid%>", <%=uri%>);
 <%
 	if(statements != null) {
+		statements = null;//reset then another node.
 %>
 		}
 <%
