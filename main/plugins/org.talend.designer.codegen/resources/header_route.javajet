@@ -27,6 +27,7 @@
 		org.talend.designer.codegen.ITalendSynchronizer
 		org.talend.designer.codegen.config.CamelEndpointBuilder
 		org.talend.designer.codegen.config.CamelEndpointBuilder.BuildingValueParamAppender
+		org.talend.designer.codegen.config.CamelEndpointBuilder.ConditionParamAppender
 		org.talend.designer.codegen.config.CamelEndpointBuilder.NodeParamNotDefaultAppender
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.codegen.config.NodeParamsHelper

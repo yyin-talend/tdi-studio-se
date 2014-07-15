@@ -41,7 +41,7 @@ import org.talend.core.model.process.INode;
  * 
  * @author GaoZone
  * @since 5.6
- * @version 0.4
+ * @version 0.5
  */
 public class CamelEndpointBuilder {
 
@@ -53,6 +53,8 @@ public class CamelEndpointBuilder {
 
 	/** The params map. k-v both are Expression. */
 	private final Map<String, String> paramsMap;
+
+	private List<String> conditionsParam = new ArrayList<String>(1);
 
 	CamelEndpointBuilder() {
 		paramsMap = new LinkedHashMap<String, String>();
@@ -77,6 +79,21 @@ public class CamelEndpointBuilder {
 		 */
 		private static void appendExpression(StringBuilder sb, String expression) {
 			sb.append("+").append(expression);
+		}
+
+		public static void mergeConstantStrings(StringBuilder sb) {
+			String str = "\"+\"";
+			int index = sb.indexOf(str);
+			while (index>0) {
+				if(index>1 && sb.charAt(index-1)=='\\') {
+					// handle \"+" case.
+					index = index + str.length();
+				}else {
+					//we can merge "...abc"+"def..." to "...abcdef..."
+					sb.delete(index, index + str.length());
+				}
+				index = sb.indexOf(str, index);
+			}
 		}
 	}
 
@@ -128,7 +145,7 @@ public class CamelEndpointBuilder {
 
 	public final class NodeParamNotDefaultAppender extends ParamAppender {
 
-		private final boolean visibleRequired;
+		private boolean visibleRequired;
 		private INode node;
 
 		private NodeParamNotDefaultAppender(INode node, boolean visibleRequired) {
@@ -136,6 +153,10 @@ public class CamelEndpointBuilder {
 			this.node = node;
 		}
 
+		public NodeParamNotDefaultAppender visibleRequired(boolean isRequired) {
+			visibleRequired = isRequired;
+			return this;
+		}
 		/**
 		 * Adds the param.
 		 *
@@ -162,6 +183,76 @@ public class CamelEndpointBuilder {
 			addParamInConditions(key, value, false, defaultValue);
 			return this;
 		}
+		
+		public NodeParamNotDefaultAppender addParam(String key, String nodeParamKey) {
+			return addParam(key, nodeParamKey, null);
+		}
+
+		@SuppressWarnings("unchecked")
+		public NodeParamNotDefaultAppender addListMapParams(String nodeParamKey) {
+			Collection<Map<String, String>> tableValues = (List<Map<String, String>>)
+					ElementParameterParser.getObjectValue(node, nodeParamKey);
+			addParams(tableValues);
+			return this;
+		}
+	}
+
+	public final class ConditionParamAppender extends ParamAppender{
+
+		private final String condition;
+		private final Map<String, String> paramsMapWhenTrue;
+		private final Map<String, String> paramsMapWhenFalse;
+		public ConditionParamAppender(String conditionExp) {
+			condition = conditionExp;
+			paramsMapWhenTrue = new LinkedHashMap<String, String>();
+			paramsMapWhenFalse = new LinkedHashMap<String, String>();
+		}
+
+		@Override
+		public CamelEndpointBuilder finish() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("+(");
+			sb.append(condition);
+			sb.append("?");
+			appendMap(sb, paramsMapWhenTrue);
+			sb.append(":");
+			appendMap(sb, paramsMapWhenFalse);
+			sb.append(")");
+			conditionsParam.add(sb.toString());
+			return super.finish();
+		}
+
+		private final void appendMap(StringBuilder sb, Map<String, String> map) {  
+			if(map.isEmpty()) {
+				sb.append(QUOTED_EMPTY);
+			}else {
+				sb.append("(").append(QUOTED_EMPTY);
+				boolean first = true;
+				for (Entry<String, String> e : map.entrySet()) {
+					if(first) {
+						first = false;
+					}else {
+						SBTool.appendDirectString(sb, "&");
+					}
+					SBTool.appendExpression(sb, e.getKey());
+					SBTool.appendDirectString(sb, "=");
+					SBTool.appendExpression(sb, e.getValue());
+				}
+				sb.append(")");
+			}
+		}
+
+		public ConditionParamAppender appendParamWhenTrue(String key, String valueExp) {
+			return appendParam(true, key, valueExp);
+		}
+		public ConditionParamAppender appendParamWhenFalse(String key, String valueExp) {
+			return appendParam(false, key, valueExp);
+		}
+		private ConditionParamAppender appendParam(boolean whenTrue, String key, String valueExp) {
+			Map<String, String> map = whenTrue ? paramsMapWhenTrue : paramsMapWhenFalse;
+			map.put("\""+key+"\"", valueExp);
+			return this;
+		}
 	}
 
 	/**
@@ -175,17 +266,23 @@ public class CamelEndpointBuilder {
 
 	public String build() {
 		StringBuilder sb = new StringBuilder();
-		sb.append('\"').append(component).append(":").append('\"');
+		sb.append('\"').append(component).append("://").append('\"');
 		// "comp:"
-		SBTool.appendExpression(sb, name);
-		// "comp:"+name
-		SBTool.appendDirectString(sb, ":");
+		if(name!=null) {
+			SBTool.appendExpression(sb, name);
+			// "comp:"+name
+			SBTool.appendDirectString(sb, ":");
+		}
 		// "component:"+name+":"
+		SBTool.mergeConstantStrings(sb);
 		sb.append(buildPath()).append(buildParamQuery());
 		// comp+":"+name+":"+path+"?p="+v+"&p2="+v2
-		String build = sb.toString();
-		//merge "a"+"b" to "ab"
-		return StringUtils.remove(build, "\"+\"");
+		if(!conditionsParam.isEmpty()) {
+			for (String string : conditionsParam) {
+				sb.append(string);
+			}
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -208,10 +305,13 @@ public class CamelEndpointBuilder {
 	private CharSequence buildParamQuery() {
 		StringBuilder sb = new StringBuilder();
 		for (Entry<String, String> entry : paramsMap.entrySet()) {
-			SBTool.appendDirectString(sb, "&");
-			SBTool.appendExpression(sb, entry.getKey());
-			SBTool.appendDirectString(sb, "=");
-			SBTool.appendExpression(sb, entry.getValue());
+			StringBuilder paramSB= new StringBuilder();
+			SBTool.appendDirectString(paramSB, "&");
+			SBTool.appendExpression(paramSB, entry.getKey());
+			SBTool.appendDirectString(paramSB, "=");
+			SBTool.appendExpression(paramSB, entry.getValue());
+			SBTool.mergeConstantStrings(paramSB);
+			sb.append(paramSB);
 		}
 		if (sb.length() > 0) {
 			// fix first & to ?.
@@ -321,5 +421,9 @@ public class CamelEndpointBuilder {
 
 	public BuildingValueParamAppender getBuildingValueParamAppender(String paramName) {
 		return new BuildingValueParamAppender(paramName);
+	}
+
+	public ConditionParamAppender getConditionParamAppender(String conditionExp) {
+		return new ConditionParamAppender(conditionExp);
 	}
 }
