@@ -46,6 +46,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
 import org.talend.core.model.repository.IRepositoryEditorInput;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -152,7 +153,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                                 descriptor.getCategory());
 
                     } else if (data instanceof IRepositoryViewObject) {
-
+                        IRepositoryViewObject viewObject = (IRepositoryViewObject) data;
+                        IProcess process = getProcess(viewObject);
+                        if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())
+                                && process.getVersion().equals(viewObject.getVersion())) {
+                            data = process;
+                        }
                         currentSelectedTab = descriptor;
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), data,
                                 descriptor.getCategory());
@@ -272,6 +278,19 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         return dynamicComposite;
     }
 
+    private IProcess getProcess(IRepositoryViewObject viewObject) {
+        boolean isOpen = RepositoryManager.isOpenedItemInEditor(viewObject);
+        if (isOpen) {
+            final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
+            if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
+                AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+                IProcess process = talendEditor.getProcess();
+                return process;
+            }
+        }
+        return null;
+    }
+
     /**
      * 
      * DOC ggu Comment method "setElement".
@@ -291,6 +310,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             categories = getCategories(process);
         } else if (obj != null && obj instanceof IRepositoryViewObject) {
             categories = getCategories(obj);
+            IRepositoryViewObject viewObject = (IRepositoryViewObject) obj;
+            IProcess process = getProcess(viewObject);
+            if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())
+                    && process.getVersion().equals(viewObject.getVersion())) {
+                categories = getCategories(process);
+            }
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
                 categories = getCategories(obj);
