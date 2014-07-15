@@ -168,7 +168,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     } else if (data instanceof IRepositoryViewObject) {
                         IRepositoryViewObject viewObject = (IRepositoryViewObject) data;
                         IProcess process = getProcess(viewObject);
-                        if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())) {
+                        if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())
+                                && process.getVersion().equals(viewObject.getVersion())) {
                             data = process;
                         }
                         currentSelectedTab = descriptor;
@@ -311,7 +312,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             categories = getCategories(obj);
             IRepositoryViewObject viewObject = (IRepositoryViewObject) obj;
             IProcess process = getProcess(viewObject);
-            if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())) {
+            if (process != null && process instanceof Element && process.getId().equals(viewObject.getId())
+                    && process.getVersion().equals(viewObject.getVersion())) {
                 categories = getCategories(process);
             }
         } else if (obj instanceof IEditorPart) {
