@@ -1103,7 +1103,7 @@ for (INode node : graphicalNodes) {
 				.append(");}catch(Exception e){}\n");
 			statements = stmt.toString();
 			sb.append("+ operation == null?\"\":(")
-			.append("\"&defaultOperationNamespace=\"+operation.getNamespaceURI()");
+			.append("\"&defaultOperationNamespace=\"+operation.getNamespaceURI()")
 			.append("+\"&defaultOperationName=\"+operation.getLocalPart())");
 		}
 
