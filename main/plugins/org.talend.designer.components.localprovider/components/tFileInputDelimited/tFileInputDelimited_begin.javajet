@@ -420,7 +420,7 @@
 					}
 				}
 				%>
-				long nb_line_<%=cid%> = 0;
+				int nb_line_<%=cid%> = 0;
 				org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
 				try{
 					<%
@@ -950,7 +950,7 @@
 					}
 				}	
 				%>
-				long nb_line_<%=cid%> = 0;
+				int nb_line_<%=cid%> = 0;
 				int footer_<%=cid %> = <%= footer%>;
 				int totalLine<%=cid %> = 0;
 				int limit<%=cid %> = <%= limit %>;
