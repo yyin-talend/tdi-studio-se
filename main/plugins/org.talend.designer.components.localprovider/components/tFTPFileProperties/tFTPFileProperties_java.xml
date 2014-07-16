@@ -88,6 +88,7 @@
 	      FIELD="FILE"
 	      NUM_ROW="21"
 	      SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')  AND (USE_EXISTING_CONNECTION == 'false')"
+	      REPOSITORY_VALUE="PRIVATEKEY"
 	    >
 	      <DEFAULT>"/.ssh/id_dsa"</DEFAULT>
 	    </PARAMETER>
@@ -97,6 +98,7 @@
 	      FIELD="PASSWORD"
 	      NUM_ROW="22"
 	      SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')  AND (USE_EXISTING_CONNECTION == 'false')"
+	      REPOSITORY_VALUE="PASSPHRASE"
 	    >
 	      <DEFAULT>"secret"</DEFAULT>
 	    </PARAMETER>
