@@ -304,7 +304,7 @@ public class DummyComponent extends AbstractComponent {
      */
     @Override
     public String getPluginExtension() {
-        return "";
+        return null;
     }
 
     /*
@@ -314,7 +314,7 @@ public class DummyComponent extends AbstractComponent {
      */
     @Override
     public String getTranslatedFamilyName() {
-        return ""; //$NON-NLS-1$ 
+        return ""; //$NON-NLS-1$
     }
 
     /*
@@ -539,7 +539,7 @@ public class DummyComponent extends AbstractComponent {
      */
     @Override
     public String getShortName() {
-        return "dc"; //$NON-NLS-1$ 
+        return "dc"; //$NON-NLS-1$
     }
 
     @Override
