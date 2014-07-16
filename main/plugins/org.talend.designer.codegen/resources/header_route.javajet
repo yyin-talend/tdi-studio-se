@@ -214,6 +214,7 @@ final Map<String, String> contentTypes = new java.util.HashMap<String, String>()
                     String uriPattern = mapping.get("URI_PATTERN");
                     String consumes = mapping.get("CONSUMES");
                     String produces = mapping.get("PRODUCES");
+                    String beanClass = mapping.get("BEAN");
 %>
         @javax.ws.rs.Path(<%=uriPattern%>)
         @javax.ws.rs.<%=httpVerb%>()
@@ -659,7 +660,15 @@ final Map<String, String> contentTypes = new java.util.HashMap<String, String>()
                 } else {
                     %>, <%
                 }
-                 String contentClass = "ANY".equals(consumes) ? "String" : "org.w3c.dom.Document";
+                String contentClass = null;
+                 if ("XML".equals(consumes) || "JSON".equals(consumes) || "XML-JSON".equals(consumes))
+                 {
+                 	contentClass = beanClass == null || beanClass.isEmpty() ? "org.w3c.dom.Document" : beanClass;
+                 }
+                 else
+                 {
+                 	contentClass = "ANY".equals(consumes) ? "String" : "org.w3c.dom.Document";
+                 }
 %>
                 <%=contentClass%> payload
 <%
