@@ -18,16 +18,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.repository.items.importexport.handlers.ImportExportHandlersManager;
 import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
@@ -56,16 +52,6 @@ public class DiDemoImportTest extends DemosImportTest {
         Assert.assertTrue(projectRecords.size() > 0);
         importManager.importItemRecords(new NullProgressMonitor(), diResManager, projectRecords, true,
                 projectRecords.toArray(new ImportItem[0]), null);
-    }
-
-    @After
-    public void afterTest() throws Exception {
-        Context ctx = CoreRuntimePlugin.getInstance().getContext();
-        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        repositoryContext.setProject(originalProject);
-        removeTempDemoProject();
-        originalProject = null;
-        tempDemoProject = null;
     }
 
     @Test

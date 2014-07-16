@@ -25,6 +25,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
@@ -51,8 +54,6 @@ import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
  */
 public abstract class DemosImportTest {
 
-    protected Project originalProject;
-
     protected Project tempDemoProject;
 
     protected DemoProjectBean currentDemo;
@@ -65,6 +66,29 @@ public abstract class DemosImportTest {
     protected String demoName;
 
     public static final String TEMP_FOLDER_SUFFIEX = ".tmp";
+
+    private static Project originalProject;
+
+    @BeforeClass
+    public static void recordOriginalProject() throws PersistenceException, CoreException, LoginException {
+        Context ctx = CoreRuntimePlugin.getInstance().getContext();
+        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        originalProject = repositoryContext.getProject();
+    }
+
+    @AfterClass
+    public static void relogonOriginalProject() throws Exception {
+        if (originalProject != null) {
+            ProxyRepositoryFactory.getInstance().logOnProject(originalProject, new NullProgressMonitor());
+        }
+        originalProject = null;
+    }
+
+    @After
+    public void afterTest() throws Exception {
+        removeTempDemoProject();
+        ProxyRepositoryFactory.getInstance().logOffProject();
+    }
 
     protected void initDemo(String pluginID) {
         List<DemoProjectBean> allDemos = ImportProjectsUtilities.getAllDemoProjects();
@@ -178,8 +202,10 @@ public abstract class DemosImportTest {
     }
 
     protected void removeTempDemoProject() throws PersistenceException, CoreException {
-        ProjectManager.getInstance().getFolders(tempDemoProject.getEmfProject()).clear();
-        final IProject project = ResourceModelUtils.getProject(tempDemoProject);
-        project.delete(true, null);
+        if (tempDemoProject != null) {
+            ProjectManager.getInstance().getFolders(tempDemoProject.getEmfProject()).clear();
+            final IProject project = ResourceModelUtils.getProject(tempDemoProject);
+            project.delete(true, null);
+        }
     }
 }

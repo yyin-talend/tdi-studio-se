@@ -12,15 +12,15 @@
 // ============================================================================
 package org.talend.repository.demo.imports;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
 
 /**
  * created by ldong on 2014-4-29 Detailled comment
- * 
+ *
  */
 public class MdmCeDemoImportTest extends DemosImportTest {
 
@@ -44,17 +44,8 @@ public class MdmCeDemoImportTest extends DemosImportTest {
         // projectRecords.toArray(new ImportItem[0]), null);
     }
 
-    @After
-    public void afterTest() throws Exception {
-        // removeTempDemoProject();
-        // Context ctx = CoreRuntimePlugin.getInstance().getContext();
-        // RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        // repositoryContext.setProject(originalProject);
-        // originalProject = null;
-        // tempDemoProject = null;
-    }
-
     @Test
+    @Ignore
     public void testMdmCeDemoImportComplete() throws Exception {
         // until now,the MDM_CE demo is overrited by MDM_EE demo,so currentDemo is null
         Assert.assertNull(currentDemo);
