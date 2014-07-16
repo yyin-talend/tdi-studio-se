@@ -41,7 +41,9 @@ String defineCharset = ElementParameterParser.getValue(node, "__DEFINE_CHARSET__
 String charset = ElementParameterParser.getValue(node, "__CHARSET__");
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
-boolean checkedScriptParameter = ElementParameterParser.getValue(node, "__SCRIPT_PARAMETER__").equals("true");
+boolean checkedScriptParameter = ("true").equals(ElementParameterParser.getValue(node, "__SCRIPT_PARAMETER__"));
+
+String passwordFieldName="__PASS__";
 
 log4jCodeGenerateUtil.infoComponentStart(node);
 //windows line separator as default
@@ -80,16 +82,16 @@ String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
 java.io.File file_<%=cid %> = new java.io.File(<%=scriptPath%>+<%=table%>+ <%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
 
 <%//build script---------------------------------------------------------%>
-try{			
+try{
 				<% if(!checkedScriptParameter){%>
-					<% 
+					<%
 						operatorLoad = "\"Operator_" + cid+"\"";
 						operatorDataConnector = "\"Connector_" + cid+"\"";
 						jobName = "\"Job_" + cid+"\"";
-						layoutName = "\"Schema_" +cid+"\"";		
+						layoutName = "\"Schema_" +cid+"\"";
 					%>
-			    <% }%>			    
-								
+			    <% }%>
+
 				java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(file_<%=cid%>);
 				fw_<%=cid %>.write("DEFINE JOB "+<%=jobName %>+"<%=lineSeparator%>");
 				fw_<%=cid %>.write("  ("+"<%=lineSeparator%>");
@@ -141,7 +143,7 @@ try{
 				fw_<%=cid %>.write("  		VARCHAR WorkingDatabase <%=lineSeparator%>");
 				fw_<%=cid %>.write("  	);<%=lineSeparator%>");
 				fw_<%=cid %>.write("  <%=lineSeparator%>");
-				<%}else if("Update".equals(operatorType) || "Stream".equals(operatorType)){ %>
+				<%}else if("Update".equals(operatorType)){ %>
 
 				fw_<%=cid %>.write("  	DEFINE OPERATOR "+<%=operatorLoad %>+"<%=lineSeparator%>");
 				fw_<%=cid %>.write("  	TYPE UPDATE<%=lineSeparator%>");
@@ -158,7 +160,24 @@ try{
 				fw_<%=cid %>.write("  		VARCHAR ARRAY ErrorTable2 <%=lineSeparator%>");
 				fw_<%=cid %>.write("  	);<%=lineSeparator%>");
 				fw_<%=cid %>.write("  <%=lineSeparator%>");
-				<%}else{}%>
+				<%}else if("Stream".equals(operatorType)){%>
+
+				fw_<%=cid %>.write("  	DEFINE OPERATOR "+<%=operatorLoad %>+"<%=lineSeparator%>");
+				fw_<%=cid %>.write("  	TYPE STREAM<%=lineSeparator%>");
+				fw_<%=cid %>.write("  	SCHEMA *<%=lineSeparator%>");
+				fw_<%=cid %>.write("  	ATTRIBUTES<%=lineSeparator%>");
+				fw_<%=cid %>.write("  	(<%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR UserName, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR UserPassword, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR TdpId, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR PrivateLogName, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ErrorTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR AppendErrorTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DropErrorTable<%=lineSeparator%>");
+				fw_<%=cid %>.write("  	);<%=lineSeparator%>");
+				fw_<%=cid %>.write("  <%=lineSeparator%>");
+			    <%}else{}%>
 
 				fw_<%=cid %>.write("  	DEFINE SCHEMA "+<%=layoutName %>+"<%=lineSeparator%>");
 				fw_<%=cid %>.write("  	(<%=lineSeparator%>");
@@ -281,7 +300,8 @@ try{
                 //builder4update end
 
                 <% if("Load".equals(operatorType) || "Inserter".equals(operatorType)){%>
-						fw_<%=cid %>.write("            'INSERT INTO "+ <%=dbname%> + "." + <%=table%>+" (<%=inserterColsStrBuilder.toString()%>) VALUES (<%=inserterValueSqlStrBuilder.toString()%>);'<%=lineSeparator%>");                <%}else if("Update".equals(operatorType) || "Stream".equals(operatorType)){%>
+						fw_<%=cid %>.write("            'INSERT INTO "+ <%=dbname%> + "." + <%=table%>+" (<%=inserterColsStrBuilder.toString()%>) VALUES (<%=inserterValueSqlStrBuilder.toString()%>);'<%=lineSeparator%>");
+				 <%}else if("Update".equals(operatorType) || "Stream".equals(operatorType)){%>
 		                <% if("Insert".equals(dmlType)){ %>
 		                    fw_<%=cid %>.write("            'INSERT INTO "+ <%=dbname%> + "." + <%=table%>+" (<%=inserterColsStrBuilder.toString()%>) VALUES (<%=inserterValueSqlStrBuilder.toString()%>);'<%=lineSeparator%>");
 		                <% } else if("Update".equals(dmlType)){ %>
@@ -309,11 +329,7 @@ try{
                 fw_<%=cid %>.write("        (<%=lineSeparator%>");
                 fw_<%=cid %>.write("            UserName = '" + <%=dbuser%> + "', <%=lineSeparator%>");
 
-                <%if (ElementParameterParser.canEncrypt(node, "__PASS__")) {%>
-                    final String decryptedPassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, "__PASS__")%>);
-                <%} else {%>
-                    final String decryptedPassword_<%=cid%> = <%= ElementParameterParser.getValue(node, "__PASS__")%>;
-                <%}%>
+				<%@ include file="../templates/password.javajet"%>
 
                 fw_<%=cid %>.write("            UserPassword = '" + decryptedPassword_<%=cid%> + "',<%=lineSeparator%>");
                 fw_<%=cid %>.write("            TdpId = '" + <%=tdpid%> + "',<%=lineSeparator%>");
@@ -322,10 +338,15 @@ try{
                 <% if("Load".equals(operatorType)){%>
                 	    fw_<%=cid %>.write("            ,TargetTable = '" + tableFullName_<%=cid%> + "'<%=lineSeparator%>");
                 	    fw_<%=cid %>.write("            ,LogTable = '" + tableFullName_<%=cid%> + "_log'<%=lineSeparator%>");
-                <%} if("Update".equals(operatorType) || "Stream".equals(operatorType)){%>
+                <%} if("Update".equals(operatorType)){%>
                		    fw_<%=cid %>.write("            ,LogTable = '" + tableFullName_<%=cid%> + "_log'<%=lineSeparator%>");
                 		fw_<%=cid %>.write("            ,TargetTable = ['" + tableFullName_<%=cid%> + "']<%=lineSeparator%>");
-                <%}%>
+                <%} if("Stream".equals(operatorType)){%>
+					    fw_<%=cid %>.write("            ,LogTable = '" + tableFullName_<%=cid%> + "_log'<%=lineSeparator%>");
+					    fw_<%=cid %>.write("            ,ErrorTable = '" + tableFullName_<%=cid%> + "_err'<%=lineSeparator%>");
+					    fw_<%=cid %>.write("            ,AppendErrorTable = 'Y'<%=lineSeparator%>");
+					    fw_<%=cid %>.write("            ,DropErrorTable = 'N'<%=lineSeparator%>");
+            <%}%>
 
                 fw_<%=cid %>.write("        )<%=lineSeparator%>");
                 fw_<%=cid %>.write("    )<%=lineSeparator%>");
