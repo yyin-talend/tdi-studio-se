@@ -147,6 +147,9 @@
 				String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 				boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
 				
+				List<Map<String, String>> decodeClns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__DECODE_COLS__");
+				boolean isEnableDecode = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DECODE__"));
+				
 				String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
 				boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
 				
@@ -195,11 +198,13 @@
 					String temp = ""; 
 				<%
 				}
+				String isDecodeNumber = "false";
 				for (int valueN=start; valueN<end; valueN++) {
 					IMetadataColumn column = listColumns.get(valueN);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					isDecodeNumber = ("true").equals(decodeClns.get(valueN).get("DECODE"))?"true":"false";
 					if(metadata.isDynamicSchema()){
 					%>
 					columnIndexWithD_<%=cid%> = <%=valueN-1%>+dynamic_column_count_<%=cid%>;
@@ -243,6 +248,7 @@
 						<%=targetConnName %>.<%=column.getLabel() %>=<%=dynamicName%>;
 					<%
 					}else{
+						
 					%>
 						temp = <%=sourceValueName%>.get(columnIndexWithD_<%=cid%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 						if(temp.length() > 0) {
@@ -267,8 +273,18 @@
 								<%
 								}
 							}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+								if (JavaTypesManager.isNumberIntType(javaType)) {
 							%>
-								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>)<%=isEnableDecode?","+isDecodeNumber:""%>);
+							<%
+								} else {
+							%>
+								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>)<%=isEnableDecode?","+isDecodeNumber:""%>);
+							<%
+								}
+							} else if (JavaTypesManager.isNumberIntType(javaType)) {
+							%>
+								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp<%=isEnableDecode?","+isDecodeNumber:""%>);
 							<%
 							} else { 
 							%>
@@ -643,6 +659,9 @@
 				String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 				boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
 				
+				List<Map<String, String>> decodeClns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__DECODE_COLS__");
+				boolean isEnableDecode = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DECODE__"));
+				
 				String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
 				boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
 				
@@ -716,11 +735,13 @@
 	                %>
 	                int columnIndexWithD_<%=cid%> = 0; //Column Index 
 	                <%
+	                String isDecodeNumber = "false";
 					for (int i=start;i<end;i++) {
 						IMetadataColumn column=columns.get(i);
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						isDecodeNumber = ("true").equals(decodeClns.get(i).get("DECODE"))?"true":"false";
 						if(metadata.isDynamicSchema()){
 						%>
 						columnIndexWithD_<%=cid%> = <%=i-1 %> + dynamic_column_count_<%=cid%>;
@@ -772,10 +793,16 @@
 											<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(<%=sourceValueName%>[columnIndexWithD_<%=cid%>], <%= patternValue %>);
 										<%
 										}
-									} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+									} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) {
+										if (JavaTypesManager.isNumberIntType(javaType)) {
+									%>
+										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(<%=sourceValueName%>[columnIndexWithD_<%=cid%>], <%= thousandsSeparator %>, <%= decimalSeparator %>)<%=isEnableDecode?","+isDecodeNumber:""%>);
+									<%
+										} else {
 									%>
 										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(<%=sourceValueName%>[columnIndexWithD_<%=cid%>], <%= thousandsSeparator %>, <%= decimalSeparator %>));
 									<%
+										}
 									}else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 									%>							
 		    							<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>[columnIndexWithD_<%=cid%>].getBytes(<%=encoding %>);
@@ -801,6 +828,10 @@
 											}
 										}
 										<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>;
+									<%
+									} else if (JavaTypesManager.isNumberIntType(javaType)) {
+									%>
+										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=sourceValueName%>[columnIndexWithD_<%=cid%>]<%=isEnableDecode?","+isDecodeNumber:""%>);
 									<%
 									}else {
 									%>
