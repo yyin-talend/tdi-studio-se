@@ -271,9 +271,10 @@ public class CamelEndpointBuilder {
 		if(name!=null) {
 			SBTool.appendExpression(sb, name);
 			// "comp:"+name
-			SBTool.appendDirectString(sb, ":");
+			//SBTool.appendDirectString(sb, ":");
+			//no trailing : after name.
 		}
-		// "component:"+name+":"
+		// "component:"+name"
 		SBTool.mergeConstantStrings(sb);
 		sb.append(buildPath()).append(buildParamQuery());
 		// comp+":"+name+":"+path+"?p="+v+"&p2="+v2
