@@ -290,6 +290,7 @@
             			} else if (!pwd_<%=ctxParam.getName()%>_value.isEmpty()) {
             				try {
             					context.<%=ctxParam.getName()%> = routines.system.PasswordEncryptUtil.decryptPassword(pwd_<%=ctxParam.getName()%>_value);
+            					context.put("<%=ctxParam.getName()%>",context.<%=ctxParam.getName()%>);
             				} catch (java.lang.RuntimeException e) {
             					//do nothing
             				}
