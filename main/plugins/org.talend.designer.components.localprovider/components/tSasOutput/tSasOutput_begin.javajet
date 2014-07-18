@@ -44,6 +44,61 @@ skeleton="../templates/db_output_bulk.skeleton"
 			String url_<%=cid %> = <%=jdbcUrl %>;
 		<%
 		}
+		public void createConnection(INode node, boolean needUserAndPassword) {
+			defineConnectionParameter(node);
+	 		if(("true").equals(useExistingConn)) {
+				String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+				String conn = "conn_" + connection;
+				%>
+				conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+				<%	
+				this.afterUseExistConnection(node);
+			} else {// "Not use exist connection"
+				this.classForName(node);
+				this.setURL(node);
+				log4jCodeGenerateUtil.debugConnectionParams(node);
+				%>
+				String dbUser_<%=cid %> = <%=dbuser%>;
+        
+        		<%
+        		String passwordFieldName = "__PASS__";
+        		%>
+        		
+        		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+        	   	
+                String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+        
+				<%
+				log4jCodeGenerateUtil.connect_begin();
+				boolean enableLibrefs = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_LIBREFS__"));
+				List<Map<String, String>> sasProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__JDBC_PARAMETERS__");
+				%>
+				java.util.Properties property_<%=cid %> = new java.util.Properties();
+				
+				<%if(enableLibrefs){%>
+					String librefs_<%=cid%> = <%=dbname%>;
+					property_<%=cid%>.setProperty("librefs", librefs_<%=cid%>);
+				<%}%>
+				property_<%=cid%>.setProperty("username", dbUser_<%=cid %>);
+				property_<%=cid%>.setProperty("password", dbPwd_<%=cid %>);
+				<%
+				if(sasProps!=null && sasProps.size()>0){
+					for(int i = 0; i < sasProps.size(); i++){
+						Map<String, String> sasProp = sasProps.get(i);
+						%>
+						property_<%=cid%>.setProperty(String.valueOf(<%=sasProp.get("KEY")%>), String.valueOf(<%=sasProp.get("VALUE")%>));
+					<%
+					}
+				}
+				%>
+				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, property_<%=cid %>);
+				<%
+				log4jCodeGenerateUtil.connect_end();
+				%>
+				resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
+			<%
+			}//end "Not use exist connection"
+		}
 	}
 	dbOutputBeginUtil = new DBOutputBeginUtil();
 %>
