@@ -54,7 +54,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
-import org.talend.designer.hl7.action.CreateHL7AttributeAction;
 import org.talend.designer.hl7.action.CreateHL7ElementAction;
 import org.talend.designer.hl7.action.DeleteHL7NodeAction;
 import org.talend.designer.hl7.action.HL7DisconnectAction;
@@ -101,8 +100,6 @@ public class HL7OutputUI extends HL7UI {
 
     private HL7FixValueAction fixValueAction;
 
-    private CreateHL7AttributeAction createAttributeAction;
-
     private ImportHL7StructureAction importAction;
 
     private SetRepetableAction setRepetableAction;
@@ -143,7 +140,7 @@ public class HL7OutputUI extends HL7UI {
 
     /**
      * Comment method "createContent".
-     * 
+     *
      * @param child
      */
     private void createContent(Composite mainComposite) {
@@ -269,7 +266,7 @@ public class HL7OutputUI extends HL7UI {
 
     /**
      * create xml viewer.
-     * 
+     *
      * @param mainComposite
      * @param form
      * @param width
@@ -315,6 +312,7 @@ public class HL7OutputUI extends HL7UI {
 
         xmlViewer.setCellModifier(new ICellModifier() {
 
+            @Override
             public boolean canModify(Object element, String property) {
                 HL7TreeNode node = (HL7TreeNode) element;
                 if (property.equals("C1")) {
@@ -330,6 +328,7 @@ public class HL7OutputUI extends HL7UI {
                 return false;
             }
 
+            @Override
             public Object getValue(Object element, String property) {
                 HL7TreeNode node = (HL7TreeNode) element;
                 if (property.equals("C1")) {
@@ -342,6 +341,7 @@ public class HL7OutputUI extends HL7UI {
                 return null;
             }
 
+            @Override
             public void modify(Object element, String property, Object value) {
                 TreeItem treeItem = (TreeItem) element;
                 HL7TreeNode node = (HL7TreeNode) treeItem.getData();
@@ -376,6 +376,7 @@ public class HL7OutputUI extends HL7UI {
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 HL7OutputUI.this.fillContextMenu(manager);
             }
@@ -384,6 +385,7 @@ public class HL7OutputUI extends HL7UI {
         xmlViewer.getControl().setMenu(menu);
         xmlViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 // TODO Auto-generated method stub
 
@@ -395,15 +397,13 @@ public class HL7OutputUI extends HL7UI {
 
     /**
      * Comment method "fillContextMenu".
-     * 
+     *
      * @param manager
      */
     protected void fillContextMenu(IMenuManager manager) {
         if (!xmlViewer.getSelection().isEmpty()) {
             manager.add(createAction);
             createAction.init();
-            manager.add(createAttributeAction);
-            createAttributeAction.init();
             manager.add(new Separator());
             manager.add(deleteAction);
             deleteAction.init();
@@ -430,7 +430,6 @@ public class HL7OutputUI extends HL7UI {
 
     private void createAction() {
         createAction = new CreateHL7ElementAction(xmlViewer, this, "Add Sub-element");
-        createAttributeAction = new CreateHL7AttributeAction(xmlViewer, this, "Add Attribute");
         deleteAction = new DeleteHL7NodeAction(xmlViewer, this, "Delete");
         disconnectAction = new HL7DisconnectAction(xmlViewer, this, "Disconnect Linker");
         fixValueAction = new HL7FixValueAction(xmlViewer, this, "Set A Fix Value");
@@ -478,7 +477,7 @@ public class HL7OutputUI extends HL7UI {
 
     /**
      * DOC gke HL7UI class global comment. Detailled comment <br/>
-     * 
+     *
      */
     class DialogErrorXMLLabelCellEditor implements ICellEditorListener {
 
@@ -488,14 +487,17 @@ public class HL7OutputUI extends HL7UI {
 
         Boolean validateLabel;
 
+        @Override
         public void applyEditorValue() {
             String text = getControl().getText();
             onValueChanged(text, true, property);
         }
 
+        @Override
         public void cancelEditor() {
         }
 
+        @Override
         public void editorValueChanged(boolean oldValidState, boolean newValidState) {
             onValueChanged(getControl().getText(), false, property);
         }

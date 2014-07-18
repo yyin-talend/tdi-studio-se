@@ -12,11 +12,17 @@
 // ============================================================================
 package org.talend.designer.hl7.action;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.data.Attribute;
@@ -27,9 +33,9 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * bqian Create a xml node. <br/>
- * 
+ *
  * $Id: CreateElementAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ *
  */
 public class CreateHL7ElementAction extends SelectionProviderAction {
 
@@ -42,7 +48,7 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
 
     /**
      * CreateNode constructor comment.
-     * 
+     *
      * @param provider
      * @param text
      */
@@ -95,18 +101,12 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
     @Override
     public void run() {
         HL7TreeNode node = (HL7TreeNode) this.getStructuredSelection().getFirstElement();
-        if (createChildNode(node)) {
-            if (hl7ui != null) {
-                hl7ui.redrawLinkers();
-            } else if (from != null) {
-                from.refreshLinks();
-            }
-        }
+        createChildNode(node);
     }
 
     /**
      * Create the child node of the input node
-     * 
+     *
      * @param node
      */
     private boolean createChildNode(final HL7TreeNode node) {
@@ -126,6 +126,7 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
             // add validator
             IInputValidator validator = new IInputValidator() {
 
+                @Override
                 public String isValid(String newText) {
                     if (newText != null) {
                         String text = newText.trim();
@@ -165,7 +166,37 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
         // if the root not have CurSchema
         if (node.getRow() == null || node.getRow().equals("")) {
             if (hl7ui != null && hl7ui.gethl7Manager() instanceof HL7OutputManager) {
-                child.setRow(((HL7OutputManager) hl7ui.gethl7Manager()).getCurrentSchema(false));
+                if (label.length() == 3) {
+                    child.setRow(label);
+                    IMetadataTable table = null;
+                    for (IMetadataTable curTable : hl7ui.gethl7Manager().getHl7Component().getMetadataList()) {
+                        if (label.equals(curTable.getLabel())) {
+                            table = curTable;
+                            break;
+                        }
+                    }
+                    if (table == null) {
+                        table = new MetadataTable();
+                        table.setLabel(label);
+                        table.setTableName(label);
+                        hl7ui.gethl7Manager().getHl7Component().getMetadataList().add(table);
+                    }
+                    List<Map<String, String>> maps = (List<Map<String, String>>) hl7ui.gethl7Manager().getHl7Component()
+                            .getElementParameter("SCHEMAS").getValue(); //$NON-NLS-1$
+                    boolean found = false;
+                    for (Map<String, String> map : maps) {
+                        if (map.get("SCHEMA").equals(table.getTableName())) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        Map<String, String> hl7Schema = new HashMap<String, String>();
+                        maps.add(hl7Schema);
+                        hl7Schema.put("SCHEMA", table.getTableName());
+                    }
+                }
+            } else if (label.length() == 3) {
+                child.setRow(label);
             }
         } else {
             child.setRow(node.getRow());
@@ -173,7 +204,6 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
 
         node.addChild(child);
         this.xmlViewer.refresh();
-        this.xmlViewer.expandAll();
         return true;
     }
 }
