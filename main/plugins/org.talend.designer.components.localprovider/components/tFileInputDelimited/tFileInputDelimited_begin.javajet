@@ -279,7 +279,7 @@
 							<%
 								} else {
 							%>
-								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>)<%=isEnableDecode?","+isDecodeNumber:""%>);
+								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 							<%
 								}
 							} else if (JavaTypesManager.isNumberIntType(javaType)) {
