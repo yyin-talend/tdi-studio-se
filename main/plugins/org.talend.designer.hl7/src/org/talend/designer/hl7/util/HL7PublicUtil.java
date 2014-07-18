@@ -39,25 +39,28 @@ import ca.uhn.hl7v2.model.Structure;
  */
 public class HL7PublicUtil {
 
-    public void initNodeOrder(HL7TreeNode node, Map<String, Integer> orderMap, int order) {
+    private int curOrder;
+
+    public void initNodeOrder(HL7TreeNode node, Map<String, Integer> orderMap) {
         if (node == null) {
             return;
         }
         HL7TreeNode parent = node.getParent();
         if (parent == null) {
+            curOrder = 1;
             node.setOrder(1);
             String path = getPath(node);
-            orderMap.put(path, order);
-            order++;
+            orderMap.put(path, curOrder);
+            curOrder++;
         }
         List<HL7TreeNode> childNode = node.getChildren();
         for (HL7TreeNode child : childNode) {
-            child.setOrder(order);
+            child.setOrder(curOrder);
             String path = getPath(child);
-            orderMap.put(path, order);
-            order++;
+            orderMap.put(path, curOrder);
+            curOrder++;
             if (child.getChildren().size() > 0) {
-                initNodeOrder(child, orderMap, order);
+                initNodeOrder(child, orderMap);
             }
         }
 
@@ -188,7 +191,6 @@ public class HL7PublicUtil {
                     childEle.setLabel(tlabel);
                     if (childEle instanceof Element) {
                         ((Element) childEle).setRow(childLabel);
-                        ((Element) childEle).setColumnName(getLabel(element, true));
                     }
 
                     node.addChild(childEle);

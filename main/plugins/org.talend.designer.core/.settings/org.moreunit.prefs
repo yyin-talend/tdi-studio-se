@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+org.moreunit.preferences.version=2
 org.moreunit.test_type=junit4
 org.moreunit.unitsourcefolder=org.talend.designer.core\:src/main/java\:org.talend.designer.core.test\:src\#org.talend.designer.core\:src/main/java\:org.talend.designer.core.test\:D\:target-5.1.0/plugins/org.apache.axis_1.4.0.v201005080400/lib
 org.moreunit.useprojectsettings=true
