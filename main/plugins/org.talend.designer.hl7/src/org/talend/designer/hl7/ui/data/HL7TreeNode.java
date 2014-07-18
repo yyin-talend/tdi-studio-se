@@ -81,7 +81,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Getter for children.
-     * 
+     *
      * @return the children
      */
     public List<HL7TreeNode> getChildren() {
@@ -90,7 +90,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Getter for parent.
-     * 
+     *
      * @return the parent
      */
     public HL7TreeNode getParent() {
@@ -99,7 +99,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Sets the parent.
-     * 
+     *
      * @param parent the parent to set
      */
     public void setParent(HL7TreeNode parent) {
@@ -108,7 +108,7 @@ public abstract class HL7TreeNode {
 
     /**
      * DOC ke Comment method "getColumnLabel".
-     * 
+     *
      * @return
      */
     public String getColumnLabel() {
@@ -145,7 +145,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Getter for schema.
-     * 
+     *
      * @return the schema
      */
     public IMetadataColumn getColumn() {
@@ -154,7 +154,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Sets the schema.
-     * 
+     *
      * @param schema the schema to set
      */
     public void setColumn(IMetadataColumn column) {
@@ -163,7 +163,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Getter for value.
-     * 
+     *
      * @return the value
      */
     public String getLabel() {
@@ -172,7 +172,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Getter for value.
-     * 
+     *
      * @return the value
      */
     public String getLabelForViewer() {
@@ -181,7 +181,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Getter for defaultValue.
-     * 
+     *
      * @return the value
      */
     public String getDefaultValue() {
@@ -190,7 +190,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Sets the defaultValue.
-     * 
+     *
      * @param value the defaultValue to set
      */
     public void setDefaultValue(String defaultValue) {
@@ -199,7 +199,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Sets the value.
-     * 
+     *
      * @param value the value to set
      */
     public void setLabel(String label) {
@@ -208,7 +208,7 @@ public abstract class HL7TreeNode {
 
     /**
      * DOC ke Comment method "addChild".
-     * 
+     *
      * @param child
      */
     public void addChild(HL7TreeNode child) {
@@ -217,9 +217,9 @@ public abstract class HL7TreeNode {
     }
 
     /**
-     * 
+     *
      * hwang Comment method "addChild".
-     * 
+     *
      * @param index
      * @param child
      */
@@ -235,7 +235,7 @@ public abstract class HL7TreeNode {
 
     /**
      * DOC ke Comment method "removeChild".
-     * 
+     *
      * @param child
      */
     public void removeChild(HL7TreeNode child) {
@@ -245,7 +245,7 @@ public abstract class HL7TreeNode {
 
     /**
      * DOC ke Comment method "hasChildren".
-     * 
+     *
      * @return
      */
     public boolean hasChildren() {
@@ -262,7 +262,7 @@ public abstract class HL7TreeNode {
 
     /**
      * DOC ke Comment method "isGroup".
-     * 
+     *
      * @return
      */
     public boolean isGroup() {
@@ -271,7 +271,7 @@ public abstract class HL7TreeNode {
 
     /**
      * DOC ke Comment method "setGroup".
-     * 
+     *
      * @param b
      */
     public void setGroup(boolean b) {
@@ -280,7 +280,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Getter for isMainNode.
-     * 
+     *
      * @return the isMainNode
      */
     public boolean isMain() {
@@ -289,7 +289,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Sets the isMainNode.
-     * 
+     *
      * @param isMainNode the isMainNode to set
      */
     public void setMain(boolean isMainNode) {
@@ -297,9 +297,9 @@ public abstract class HL7TreeNode {
     }
 
     /**
-     * 
+     *
      * hwang Comment method "getTable".
-     * 
+     *
      * @return
      */
     public IMetadataTable getTable() {
@@ -307,9 +307,9 @@ public abstract class HL7TreeNode {
     }
 
     /**
-     * 
+     *
      * hwang Comment method "setTable".
-     * 
+     *
      * @param table
      */
     public void setTable(IMetadataTable table) {
@@ -317,9 +317,9 @@ public abstract class HL7TreeNode {
     }
 
     /**
-     * 
+     *
      * hwang Comment method "getRow".
-     * 
+     *
      * @return
      */
     public String getRow() {
@@ -327,9 +327,9 @@ public abstract class HL7TreeNode {
     }
 
     /**
-     * 
+     *
      * hwang Comment method "setRow".
-     * 
+     *
      * @param row
      */
     public void setRow(String row) {
@@ -338,7 +338,7 @@ public abstract class HL7TreeNode {
 
     /**
      * hwang Comment method "getOrder".
-     * 
+     *
      * @return
      */
     public int getOrder() {
@@ -347,7 +347,7 @@ public abstract class HL7TreeNode {
 
     /**
      * hwang Comment method "setOrder".
-     * 
+     *
      * @param order
      */
     public void setOrder(int order) {
@@ -372,7 +372,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Getter for columnName.
-     * 
+     *
      * @return the columnName
      */
     public String getColumnName() {
@@ -381,7 +381,7 @@ public abstract class HL7TreeNode {
 
     /**
      * Sets the columnName.
-     * 
+     *
      * @param columnName the columnName to set
      */
     public void setColumnName(String columnName) {

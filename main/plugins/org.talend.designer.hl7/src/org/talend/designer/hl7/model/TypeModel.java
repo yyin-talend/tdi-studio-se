@@ -57,8 +57,8 @@ public class TypeModel extends AbstractStructureModel {
 
     @Override
     protected void generateDisplayName() {
-        String typeDispaly = type == null ? "" : TalendTextUtils.LBRACKET + this.type.getName() + TalendTextUtils.RBRACKET;
-        this.displayName = getParent().getName() + "-" + index + "(" + (++rep) + ")" + typeDispaly; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String typeDisplay = type == null ? "" : TalendTextUtils.LBRACKET + this.type.getName() + TalendTextUtils.RBRACKET;
+        this.displayName = getParent().getName() + "-" + index + "(1)" + typeDisplay; //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 
@@ -70,10 +70,8 @@ public class TypeModel extends AbstractStructureModel {
                 int numSubComp = Terser.numSubComponents(this.type, k);
                 for (int m = 1; m <= numSubComp; m++) {
                     Primitive p = getPrimitive(this.type, k, m);
-                    if (p.getValue() != null) {
-                        PrimitiveModel pm = new PrimitiveModel(this, p, k, m);
-                        pms.add(pm);
-                    }
+                    PrimitiveModel pm = new PrimitiveModel(this, p, k, m);
+                    pms.add(pm);
                 }
             }
             primitives = pms.toArray(new PrimitiveModel[0]);
