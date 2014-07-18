@@ -195,9 +195,9 @@ import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
  * Performs a native Drop for the talendEditor. see feature
- * 
+ *
  * $Id: TalendEditorDropTargetListener.java 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
- * 
+ *
  */
 public class TalendEditorDropTargetListener extends TemplateTransferDropTargetListener {
 
@@ -211,7 +211,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * TalendEditorDropTargetListener constructor comment.
-     * 
+     *
      * @param editor
      */
     public TalendEditorDropTargetListener(AbstractTalendEditor editor) {
@@ -599,12 +599,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * DOC ycbai Comment method "propaHadoopCfgChanges".
-     * 
+     *
      * <P>
      * Propagate the changes from hadoop cluster to M/R process when drag&drop hadoop subnode from repository view to
      * M/R process.
      * </P>
-     * 
+     *
      * @param repositoryNode
      */
     private void propaHadoopCfgChanges(IRepositoryNode repositoryNode) {
@@ -817,7 +817,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * DOC ycbai Comment method "createValidationRule".
-     * 
+     *
      * @param dragModel
      * @param targetEditPart
      */
@@ -870,7 +870,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * DOC bqian Comment method "createSchema".
-     * 
+     *
      * @param firstElement
      * @param targetEditPart
      */
@@ -963,9 +963,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * Used to store data temporarily. <br/>
-     * 
+     *
      * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
-     * 
+     *
      */
     class TempStore {
 
@@ -1166,7 +1166,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * DOC bqian Comment method "createRefreshingPropertiesCommand".
-     * 
+     *
      * @param selectedNode
      * @param node
      */
@@ -1269,7 +1269,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker
-                            .isHL7PluginLoaded())) {
+                                .isHL7PluginLoaded())) {
                 if (originalConnection instanceof HL7ConnectionImpl) {
                     if (((HL7ConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
@@ -1301,7 +1301,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
                 // fore HL7, by gcui
                 if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded()) {
-                    for (MetadataTable table : ConnectionHelper.getTables(originalConnection)) {
+                    for (MetadataTable table : ConnectionHelper.getTablesWithOrders(originalConnection)) {
                         Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS,
                                 table.getLabel(), ConvertionHelper.convert(table));
                         list.add(hl7Cmd);
@@ -1313,7 +1313,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker.isBRMSPluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker
-                            .isBRMSPluginLoaded())) {
+                                .isBRMSPluginLoaded())) {
                 if (originalConnection instanceof BRMSConnectionImpl) {
                     if (((BRMSConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> rootList = new ArrayList<Map<String, String>>();
@@ -1592,7 +1592,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * DOC bqian Comment method "getChangeMetadataCommand".
-     * 
+     *
      * @param selectedNode
      * @param node
      * @param list
@@ -1685,7 +1685,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * Added by Marvin Wang on July 12, 2012 for getting the command of SAP.
-     * 
+     *
      * @param object
      * @param connectionItem
      * @param table
@@ -1926,7 +1926,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * Extracts the components which have the same palette type as process. Added by Marvin Wang on Feb 27, 2013.
-     * 
+     *
      * @param neededComponents
      * @return
      */
@@ -1946,7 +1946,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * Let the user choose which component he would like to create.
-     * 
+     *
      * @param neededComponents
      * @param name
      * @param quickCreateInput
@@ -2137,7 +2137,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     /**
      * see issue 0002439.<br>
      * There are two types of Oracle.
-     * 
+     *
      * @param name
      * @param node
      */
@@ -2173,7 +2173,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     /**
      * Sets the editor.
-     * 
+     *
      * @param editor the editor to set
      */
     public void setEditor(AbstractTalendEditor editor) {
@@ -2223,7 +2223,7 @@ class ComponentChooseDialog extends ListDialog {
 
     /**
      * bqian ComponentChooseDialog constructor comment.
-     * 
+     *
      * @param parentShell
      */
     public ComponentChooseDialog(Shell parentShell, List<IComponent> input) {
