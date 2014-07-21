@@ -83,6 +83,26 @@
     </PARAMETER>
 	
     <PARAMETER
+      NAME="ENABLE_LIBREFS"
+      FIELD="CHECK"
+      NUM_ROW="4"
+      REQUIRED="true"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DBNAME"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="SCHEMA"
+      REQUIRED="true"
+      SHOW_IF="ENABLE_LIBREFS == 'true'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
       NAME="DRIVER_JAR"
       FIELD="MODULE_LIST"
       NUM_ROW="5"
@@ -197,6 +217,17 @@
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
+  	<PARAMETER
+       NAME="JDBC_PARAMETERS"
+       FIELD="TABLE"
+       NUM_ROW="1"
+     >
+       <ITEMS>
+         <ITEM NAME="KEY"/>
+         <ITEM NAME="VALUE"/>
+       </ITEMS>
+     </PARAMETER>
+  
   	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
