@@ -45,8 +45,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
@@ -194,6 +194,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     private String saDestinationFilePath;
 
     public static final String PETALS_EXPORT_DESTINATIONS = "org.ow2.petals.esbexport.destinations"; //$NON-NLS-1$
+
+    JavaJobScriptsExportWSWizardPagePresenter presenter = new JavaJobScriptsExportWSWizardPagePresenter(this);
 
     public JavaJobScriptsExportWSWizardPage(IStructuredSelection selection, String exportType) {
         super(selection);
@@ -1564,6 +1566,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.needOneJobSelected"));
         }
         boolean noError = getErrorMessage() == null;
+
+		// TESB-13867 Export limitations for ESB 'Jobs'
+		// add extra checks.
+		if (noError) {
+			String errorMsg = presenter.extraCheck(getCurrentExportType1(), getCheckNodes());
+			if (errorMsg != null) {
+				setErrorMessage(errorMsg);
+				return false;
+			}
+		}
+
         setPageComplete(noError);
         return noError;
     }

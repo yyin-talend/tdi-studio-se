@@ -5,6 +5,7 @@
    <extension-point id="projectsetting_page" name="Project Setting Page" schema="schema/projectsetting_page.exsd"/>
    <extension-point id="repository_menu_provider" name="Repository Menu Provider" schema="schema/repository_menu_provider.exsd"/>
       <extension-point id="after_import_project_action" name="after import project action" schema="schema/after_import_project_action.exsd"/>
+      <extension-point id="org.talend.repository.ui.wizards.exportjob.extrachecker" name="Extra Build Job Checker" schema="schema/org.talend.repository.ui.wizards.exportjob.extraBuildChecker.exsd"/>
    <extension
          point="org.eclipse.ui.views">
    <!--
@@ -2382,6 +2383,15 @@
             name="SQL Template"
             priority="normal">
       </linker>
+   </extension>
+   <extension
+         point="org.talend.repository.ui.wizards.exportjob.extrachecker">
+      <ExtraBuildChecker
+            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.BanSoapServiceJobChecker">
+      </ExtraBuildChecker>
+      <ExtraBuildChecker
+            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.LimitESBJobChecker">
+      </ExtraBuildChecker>
    </extension>
 
 </plugin>
