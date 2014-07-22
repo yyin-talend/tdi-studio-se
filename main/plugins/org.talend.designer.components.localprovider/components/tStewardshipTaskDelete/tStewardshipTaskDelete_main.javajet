@@ -17,19 +17,28 @@
     String cid = node.getUniqueName();	
 
 	boolean isDeleteById = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_BY_ID__"));
+	boolean isSpecifyTaskID = ("true").equals(ElementParameterParser.getValue(node, "__SPECIFY_TASK_ID__"));
+	String taskID = ElementParameterParser.getValue(node,"__TASK_ID__");
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if(isDeleteById){
-		if ((metadatas!=null)&&(metadatas.size()>0)) {//1
-		    IMetadataTable metadata = metadatas.get(0);
-		    if (metadata!=null) {//2
-		    	List< ? extends IConnection> conns = node.getIncomingConnections();
-		    	String idColumn = ElementParameterParser.getValue(node,"__ID_FIELD__");
-		    	for (IConnection conn : conns) {//3
-		    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
-					%>
-						TDSCWS_<%=cid%>.deleteTask(<%=conn.getName()%>.<%=idColumn%>);
-						deleted_task_<%=cid%>++;
-					<%
+		if (isSpecifyTaskID || (metadatas!=null)&&(metadatas.size()>0)) {//1
+			if(isSpecifyTaskID){
+		    %>
+				TDSCWS_<%=cid%>.deleteTask(<%=taskID%>);
+				deleted_task_<%=cid%>++;
+			<%
+		    }else{
+		    	IMetadataTable metadata = metadatas.get(0);
+		    	if (metadata!=null) {//2
+			    	List< ? extends IConnection> conns = node.getIncomingConnections();
+			    	String idColumn = ElementParameterParser.getValue(node,"__ID_FIELD__");
+			    	for (IConnection conn : conns) {//3
+			    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+						%>
+							TDSCWS_<%=cid%>.deleteTask(<%=conn.getName()%>.<%=idColumn%>);
+							deleted_task_<%=cid%>++;
+						<%
+						}
 					}
 				}
 			}
