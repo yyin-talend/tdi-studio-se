@@ -225,30 +225,6 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             } else {
                                 returnedValue = null;
                             }
-                            if (element instanceof INode) {
-                                INode node = (INode) element;
-                                if (node.getComponent().getName() != null && node.getComponent().getName().equals("tHL7Output")) {
-                                    IElementParameter rootParameter = element.getElementParameter("ROOT");
-                                    if (rootParameter != null) {
-                                        List<Map<String, String>> rootValue = (List<Map<String, String>>) rootParameter
-                                                .getValue();
-                                        if (rootValue != null) {
-                                            for (int i = 0; i < rootValue.size(); i++) {
-                                                Map<String, String> map = (Map<String, String>) rootValue.get(i);
-                                                String columnName = map.get("COLUMN");
-                                                String split[] = columnName.split(":");
-                                                if (split.length == 2 && !returnedValue.equals("<Empty>")) {
-                                                    String newName = returnedValue + ":" + split[1];
-                                                    map.put("COLUMN", newName);
-                                                } else if (split.length == 1 && !returnedValue.equals("<Empty>")) {
-                                                    String newName = (String) returnedValue;
-                                                    map.put("COLUMN", newName);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
                             return returnedValue;
                         };
 

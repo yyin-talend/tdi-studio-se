@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -39,25 +39,28 @@ import ca.uhn.hl7v2.model.Structure;
  */
 public class HL7PublicUtil {
 
-    public void initNodeOrder(HL7TreeNode node, Map<String, Integer> orderMap, int order) {
+    private int curOrder;
+
+    public void initNodeOrder(HL7TreeNode node, Map<String, Integer> orderMap) {
         if (node == null) {
             return;
         }
         HL7TreeNode parent = node.getParent();
         if (parent == null) {
+            curOrder = 1;
             node.setOrder(1);
             String path = getPath(node);
-            orderMap.put(path, order);
-            order++;
+            orderMap.put(path, curOrder);
+            curOrder++;
         }
         List<HL7TreeNode> childNode = node.getChildren();
         for (HL7TreeNode child : childNode) {
-            child.setOrder(order);
+            child.setOrder(curOrder);
             String path = getPath(child);
-            orderMap.put(path, order);
-            order++;
+            orderMap.put(path, curOrder);
+            curOrder++;
             if (child.getChildren().size() > 0) {
-                initNodeOrder(child, orderMap, order);
+                initNodeOrder(child, orderMap);
             }
         }
 
@@ -152,7 +155,7 @@ public class HL7PublicUtil {
                 HL7TreeNode childEle = cloneATreeNode(child, label);
 
                 childEle.setLabel(label);
-                if (childEle instanceof Element) {
+                if (!(child instanceof Group)) {
                     ((Element) childEle).setRow(label);
                 }
 
@@ -166,8 +169,12 @@ public class HL7PublicUtil {
         HL7TreeNode node = new Element();
         String nodeLabel = getLabel(treeNode, true);
         node.setLabel(nodeLabel);
-        if (node instanceof Element) {
-            ((Element) node).setRow(label);
+        String rowLabel = label;
+        if (treeNode instanceof SegmentModel) {
+            ((Element) node).setRow(nodeLabel);
+            rowLabel = nodeLabel;
+        } else if (!(treeNode instanceof Group)) {
+            ((Element) node).setRow(rowLabel);
         }
         node.setMain(true);
         Object[] children = getChildList(treeNode);// treeNode.getChildren();
@@ -175,12 +182,15 @@ public class HL7PublicUtil {
             for (Object element : children) {
 
                 if (getChildList(element).length > 0) {
-                    HL7TreeNode childEle = cloneATreeNode(element, label);
                     String tlabel = getLabel(element, true);
+                    String childLabel = rowLabel;
+                    HL7TreeNode childEle = cloneATreeNode(element, rowLabel);
+                    if (element instanceof SegmentModel) {
+                        childLabel = tlabel;
+                    }
                     childEle.setLabel(tlabel);
                     if (childEle instanceof Element) {
-                        ((Element) childEle).setRow(label);
-                        ((Element) childEle).setColumnName(getLabel(element, true));
+                        ((Element) childEle).setRow(childLabel);
                     }
 
                     node.addChild(childEle);

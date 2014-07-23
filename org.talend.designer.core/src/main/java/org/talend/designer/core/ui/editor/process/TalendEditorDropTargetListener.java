@@ -1260,7 +1260,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
                 // fore HL7, by gcui
                 if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded()) {
-                    for (MetadataTable table : ConnectionHelper.getTables(originalConnection)) {
+                    for (MetadataTable table : ConnectionHelper.getTablesWithOrders(originalConnection)) {
                         Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS,
                                 table.getLabel(), ConvertionHelper.convert(table));
                         list.add(hl7Cmd);

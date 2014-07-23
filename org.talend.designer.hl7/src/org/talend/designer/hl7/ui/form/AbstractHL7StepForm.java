@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.FileConnectionContextUtils.EFileParamName;
@@ -30,6 +31,8 @@ import org.talend.repository.ui.utils.OtherConnectionContextUtils.EParamName;
  * DOC gcui class global comment. Detailled comment
  */
 public abstract class AbstractHL7StepForm extends AbstractForm {
+
+    protected int maximumRowsToPreview = RepositoryManagerHelper.getMaximumRowsToPreview();
 
     protected HL7Connection connection;
 

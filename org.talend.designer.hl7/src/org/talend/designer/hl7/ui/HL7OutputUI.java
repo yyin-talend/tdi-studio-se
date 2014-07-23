@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -54,7 +54,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
-import org.talend.designer.hl7.action.CreateHL7AttributeAction;
 import org.talend.designer.hl7.action.CreateHL7ElementAction;
 import org.talend.designer.hl7.action.DeleteHL7NodeAction;
 import org.talend.designer.hl7.action.HL7DisconnectAction;
@@ -64,7 +63,6 @@ import org.talend.designer.hl7.action.SetRepetableAction;
 import org.talend.designer.hl7.action.StringUtil;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.managers.HL7OutputManager;
-import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
 import org.talend.designer.hl7.ui.data.NameSpaceNode;
 import org.talend.designer.hl7.ui.edit.HL7OutputTableViewerProvider;
@@ -102,8 +100,6 @@ public class HL7OutputUI extends HL7UI {
 
     private HL7FixValueAction fixValueAction;
 
-    private CreateHL7AttributeAction createAttributeAction;
-
     private ImportHL7StructureAction importAction;
 
     private SetRepetableAction setRepetableAction;
@@ -137,6 +133,7 @@ public class HL7OutputUI extends HL7UI {
     /**
      * bqian Comment method "init".
      */
+    @Override
     public void init() {
         createContent(hl7UIParent);
     }
@@ -175,17 +172,10 @@ public class HL7OutputUI extends HL7UI {
         linker.setManager(hl7Manager);
         initSchemaTable();
         new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
-        Tree xmlTree = xmlViewer.getTree();
-
-        if (xmlTree.getItems().length > 0) {
-            TreeItem root = xmlTree.getItem(0);
-            TableItem[] tableItems = schemaViewer.getTable().getItems();
-            redrawLinkers();
-            // initLinker(root, tableItems);
-        }
-
+        redrawLinkers();
     }
 
+    @Override
     protected void createCombo(Composite mainComposite) {
 
     }
@@ -199,62 +189,35 @@ public class HL7OutputUI extends HL7UI {
 
         if (column != null) {
             if (this.gethl7Manager().getHl7Component().isHL7Output() && treeNode.getChildren().size() <= 0) {
-                for (int i = 0; i < tableItems.length; i++) {
-                    IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
+                for (TableItem tableItem : tableItems) {
+                    IMetadataColumn mColumn = (IMetadataColumn) tableItem.getData();
                     if (mColumn.getLabel().equals(column.getLabel())) {
-                        linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode, true);
+                        linker.addLoopLink(tableItem, tableItem.getData(), xmlViewer.getTree(), treeNode, true);
                         break;
                     }
                 }
             }
-            for (int i = 0; i < tableItems.length; i++) {
-                IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
+            for (TableItem tableItem : tableItems) {
+                IMetadataColumn mColumn = (IMetadataColumn) tableItem.getData();
                 if (mColumn.getLabel().equals(column.getLabel())) {
-                    linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode, true);
+                    linker.addLoopLink(tableItem, tableItem.getData(), xmlViewer.getTree(), treeNode, true);
                     break;
                 }
             }
         }
         TreeItem[] children = node.getItems();
-        for (int i = 0; i < children.length; i++) {
-            initLinker(children[i], tableItems);
+        for (TreeItem element : children) {
+            initLinker(element, tableItems);
         }
     }
 
+    @Override
     public void redrawLinkers() {
         linker.removeAllLinks();
         if (xmlViewer.getTree().getItems().length <= 0) {
             return;
         }
-        TreeItem root = xmlViewer.getTree().getItem(0);
-        if (this.gethl7Manager().getHl7Component().isHL7Output()) {
-            if (this.hl7Manager != null) {
-                List<HL7TreeNode> treeData = this.hl7Manager.getTreeData(this.hl7Manager.getCurrentSchema(false));
-                if (treeData != null && treeData.size() > 0) {
-                    HL7TreeNode rootTreeData = treeData.get(0);
-                    if (rootTreeData != null) {
-                        for (TreeItem item : xmlViewer.getTree().getItems()) {
-                            if (rootTreeData == item.getData()) {
-                                root = item;
-                                break;
-                            } else if (item.getData() instanceof Element) {
-                                if (((Element) item.getData()).getRow().equals(rootTreeData.getRow())) {
-                                    root = item;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        TableItem[] tableItems = schemaViewer.getTable().getItems();
-        initLinker(root, tableItems);
-        if (linker.linkSize() == 0) {
-            linker.updateLinksStyleAndControlsSelection(xmlViewer.getTree(), true);
-        }
-        xmlViewer.refresh();
+        linker.createLinks();
     }
 
     public void refreshXMLViewer(HL7TreeNode targetNode) {
@@ -436,8 +399,6 @@ public class HL7OutputUI extends HL7UI {
         if (!xmlViewer.getSelection().isEmpty()) {
             manager.add(createAction);
             createAction.init();
-            manager.add(createAttributeAction);
-            createAttributeAction.init();
             manager.add(new Separator());
             manager.add(deleteAction);
             deleteAction.init();
@@ -464,7 +425,6 @@ public class HL7OutputUI extends HL7UI {
 
     private void createAction() {
         createAction = new CreateHL7ElementAction(xmlViewer, this, "Add Sub-element");
-        createAttributeAction = new CreateHL7AttributeAction(xmlViewer, this, "Add Attribute");
         deleteAction = new DeleteHL7NodeAction(xmlViewer, this, "Delete");
         disconnectAction = new HL7DisconnectAction(xmlViewer, this, "Disconnect Linker");
         fixValueAction = new HL7FixValueAction(xmlViewer, this, "Set A Fix Value");
@@ -505,6 +465,7 @@ public class HL7OutputUI extends HL7UI {
         return this.hl7UIParent;
     }
 
+    @Override
     public HL7Manager gethl7Manager() {
         return this.hl7Manager;
     }

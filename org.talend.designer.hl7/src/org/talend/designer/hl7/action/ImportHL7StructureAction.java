@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -18,22 +18,34 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.IHL7Constant;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.HL7FileNode;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.utils.NodeUtil;
+import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command;
 import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.HL7UI;
-import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
-import org.talend.designer.hl7.ui.data.NameSpaceNode;
 import org.talend.designer.hl7.ui.form.AbstractHL7StepForm;
 import org.talend.designer.hl7.ui.header.HL7Parse;
 import org.talend.designer.hl7.util.HL7PublicUtil;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 import ca.uhn.hl7v2.model.Message;
 
@@ -47,8 +59,6 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
     private HL7UI hl7ui;
 
     private AbstractHL7StepForm form;
-
-    private int order = 1;
 
     private HL7Connection hl7Connection;
 
@@ -76,7 +86,7 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
     }
 
     private List treeNodeAdapt() {
-        List<HL7TreeNode> list = new ArrayList<HL7TreeNode>();
+        List<HL7TreeNode> treeData = new ArrayList<HL7TreeNode>();
         FileDialog f = null;
         if (hl7ui != null) {
             f = new FileDialog(hl7ui.getHl7UIParent().getShell());
@@ -85,7 +95,7 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
         }
         String file = f.open();
         if (file == null) {
-            return list;
+            return treeData;
         }
         HL7Parse hl7Parse = new HL7Parse();
         List<String> msgContentList = new ArrayList<String>();
@@ -93,14 +103,6 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
         List<Message> messageList = hl7Parse.doParse(file, "'\\u000b'", "'\\u001c'");
         List<HL7TreeNode> nodeList = hl7Util.getHL7TreeNodes(messageList);
 
-        List schemaList = new ArrayList();
-
-        for (Message message : messageList) {
-            schemaList.addAll(hl7Util.getFirstLevelChild(message));
-        }
-        // for (Object obj : schemaList) {
-        //
-        // }
         if (!nodeList.isEmpty()) {
             HL7TreeNode hl7TreeNode = nodeList.get(0);
             List<HL7FileNode> table = new ArrayList<HL7FileNode>();
@@ -108,161 +110,181 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
                 EList root = hl7Connection.getRoot();
                 root.clear();
                 if (hl7TreeNode != null) {
-                    hl7Util.initNodeOrder(hl7TreeNode, orderMap, order);
+                    hl7Util.initNodeOrder(hl7TreeNode, orderMap);
                     hl7Util.tableLoader((Element) hl7TreeNode, "", root, hl7TreeNode.getDefaultValue(), orderMap);
                 }
                 table.addAll(root);
             } else {
                 if (hl7TreeNode != null) {
-                    hl7Util.initNodeOrder(hl7TreeNode, orderMap, order);
+                    hl7Util.initNodeOrder(hl7TreeNode, orderMap);
                     hl7Util.tableLoader((Element) hl7TreeNode, "", table, hl7TreeNode.getDefaultValue(), orderMap);
                 }
             }
 
-            // list.add(hl7TreeNode);
-            initXmlTreeData(schemaList, table, list);
+            List<String> schemaList = new ArrayList<String>();
+            for (HL7FileNode node : table) {
+                String columnName = node.getRelatedColumn();
+                if (columnName.contains(":")) {
+                    columnName = columnName.substring(0, columnName.indexOf(":"));
+                }
+                if (!schemaList.contains(columnName) && !"".equals(columnName)) {
+                    schemaList.add(columnName);
+                }
+            }
+            initXmlTreeData(schemaList, table, treeData);
         }
-
-        // try {
-        // ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
-        // String schemaName = getSelectedSchema();
-        // HL7TreeNode root = cloneATreeNode(treeNode, schemaName);
-        // root = ((Element) root).getElementChildren().get(0);
-        // root.setParent(null);
-        // list.add(root);
-        // } catch (Exception e) {
-        // // e.printStackTrace();
-        // ExceptionHandler.process(e);
-        // }
-        return list;
+        return treeData;
     }
 
-    private void initXmlTreeData(List schemaList, List<HL7FileNode> root, List<HL7TreeNode> list) {
+    private void initXmlTreeData(List<String> schemaList, List<HL7FileNode> root, List<HL7TreeNode> treeData) {
+        Map<String, HL7TreeNode> mapNodes = new HashMap<String, HL7TreeNode>();
+        List<? extends IConnection> incomingConnections = new ArrayList<IConnection>();
         if (hl7ui != null) {
             if (hl7ui.gethl7Manager() instanceof HL7OutputManager) {
                 ((HL7OutputManager) hl7ui.gethl7Manager()).getContents().clear();
+                incomingConnections = NodeUtil.getIncomingConnections(hl7ui.gethl7Manager().getHl7Component(),
+                        IConnectionCategory.FLOW);
             }
         }
-        for (Object obj : schemaList) {
-            List<HL7TreeNode> treeNodes = null;
-            HL7TreeNode rootNode = null;
-            HL7TreeNode current = null;
-            HL7TreeNode temp = null;
-            HL7TreeNode mainNode = null;
-            String mainPath = null;
-            String currentPath = null;
-            String defaultValue = null;
-            int nodeOrder = 0;
-            boolean haveOrder = true;
-            String schemaId = hl7Util.getLabel(obj, true) + ":";//((MetadataTable) obj).getLabel() + ":"; //$NON-NLS-1$
-            if (hl7ui != null) {
-                if (hl7ui.gethl7Manager() instanceof HL7OutputManager) {
-                    treeNodes = ((HL7OutputManager) hl7ui.gethl7Manager()).getTreeData(hl7Util.getLabel(obj, true));
-                }
-            }
-            if (treeNodes == null) {
-                treeNodes = new ArrayList<HL7TreeNode>();
-            }
-            // build root tree
-            for (int i = 0; i < root.size(); i++) {
-                HL7FileNode node = (HL7FileNode) root.get(i);
-                String newPath = node.getFilePath();
-                defaultValue = node.getDefaultValue();
-                String columnName = node.getRelatedColumn();
-                // String type = node.getType();
-                String orderValue = String.valueOf(node.getOrder());
-                if (orderValue == null || "".equals(orderValue)) {
-                    haveOrder = false;
-                }
-                if (haveOrder) {
-                    nodeOrder = node.getOrder();
-                }
-                String flag = columnName + ":"; //$NON-NLS-1$
-                if (columnName != null && columnName.length() > 0 && !flag.startsWith(schemaId)) {
-                    continue;
-                }
-                if (node.getAttribute().equals("attri")) {
-                    temp = new Attribute(newPath);
-                    temp.setDefaultValue(defaultValue);
-                    temp.setAttribute(true);
-                    // temp.setDataType(type);
-                    current.addChild(temp);
-                } else if (node.getAttribute().equals("ns")) {
-                    temp = new NameSpaceNode(newPath);
-                    temp.setDefaultValue(defaultValue);
-                    temp.setNameSpace(true);
-                    // temp.setDataType(type);
-                    current.addChild(temp);
-                } else {
-                    temp = this.addElement(current, currentPath, newPath, defaultValue);
-                    // temp.setDataType(type);
-                    if (rootNode == null) {
-                        rootNode = temp;
-                    }
-                    if (node.getAttribute().equals("main")) {
-                        temp.setMain(true);
-                        mainNode = temp;
-                        mainPath = newPath;
-                    }
-                    current = temp;
-                    currentPath = newPath;
-                }
-                if (haveOrder) {
-                    temp.setOrder(nodeOrder);
-                }
-                // if (columnName != null && columnName.length() > 0) {
-                // temp.setColumn(getColumn(columnName));
-                //
-                // }
-                temp.setRow(hl7Util.getLabel(obj, true));
-                if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                    columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
-                    // IMetadataTable iTable = ConvertionHelper.convert((MetadataTable) obj);
-                    // // temp.setColumn(iTable.getColumn(columnName));
-                    // temp.setTable(iTable);
+        IProxyRepositoryFactory factory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
+        List<MetadataTable> iMetadataTables = new ArrayList<MetadataTable>();
+        HL7TreeNode rootNode = null;
+        Map<String, IMetadataTable> schemaNameToInputTable = new HashMap<String, IMetadataTable>();
+        Map<String, MetadataTable> schemaNameToOutputTable = new HashMap<String, MetadataTable>();
+        for (String schemaName : schemaList) {
+            IMetadataTable metadataTable = null;
+            for (IConnection connection : incomingConnections) {
+                if (connection.getUniqueName().equals(schemaName)) {
+                    metadataTable = connection.getMetadataTable();
+                    metadataTable.setLabel(connection.getUniqueName());
+                    schemaNameToInputTable.put(schemaName, metadataTable);
+                    break;
                 }
             }
 
-            // build group tree
-            current = mainNode;
-            currentPath = mainPath;
-            boolean isFirst = true;
+            MetadataTable targetMetadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            targetMetadataTable.setId(factory.getNextId());
+            schemaNameToOutputTable.put(schemaName, targetMetadataTable);
+            targetMetadataTable.setLabel(schemaName);
+            iMetadataTables.add(targetMetadataTable);
+        }
 
-            // build loop tree
-            current = mainNode;
-            currentPath = mainPath;
-            isFirst = true;
-
-            if (rootNode == null) {
-                rootNode = new Element("rootTag");
+        HL7TreeNode current = null;
+        HL7TreeNode temp = null;
+        String currentPath = null;
+        String defaultValue = null;
+        int nodeOrder = 0;
+        boolean haveOrder = true;
+        // build root tree
+        for (int i = 0; i < root.size(); i++) {
+            HL7FileNode node = root.get(i);
+            String newPath = node.getFilePath();
+            defaultValue = node.getDefaultValue();
+            String columnName = node.getRelatedColumn();
+            // String type = node.getType();
+            String orderValue = String.valueOf(node.getOrder());
+            if (orderValue == null || "".equals(orderValue)) {
+                haveOrder = false;
             }
-            // rootNode.setParent(null);
             if (haveOrder) {
-                orderNode(rootNode);
+                nodeOrder = node.getOrder();
             }
-            list.add(rootNode);
-            rootNode.setRow(hl7Util.getLabel(obj, true));
-            // contents.put(((MetadataTable) obj).getLabel(), rootNode);
-            treeNodes.clear();
-            treeNodes.add(rootNode);
-            if (hl7ui != null) {
-                if (hl7ui.gethl7Manager() instanceof HL7OutputManager) {
-                    ((HL7OutputManager) hl7ui.gethl7Manager()).getContents().put(hl7Util.getLabel(obj, true), treeNodes);
-                }
+            String rowName = columnName;
+            if (columnName != null && columnName.contains(":")) {
+                String[] names = columnName.split(":");
+                rowName = names[0];
+                columnName = names[1];
+            } else {
+                columnName = null;
+            }
+            temp = this.addElement(current, currentPath, newPath, defaultValue, mapNodes);
+            if (temp == null) {
+                // should not happen
+                continue;
+            }
+            // temp.setDataType(type);
+            if (rootNode == null) {
+                rootNode = temp;
+            }
+            if (node.getAttribute().equals("main")) {
+                temp.setMain(true);
+            }
+            current = temp;
+            currentPath = newPath;
+            if (haveOrder) {
+                temp.setOrder(nodeOrder);
+            }
+            if (rowName != null && rowName.length() > 0) {
+                temp.setRow(rowName);
+            }
 
-            } else if (form != null) {
-                for (HL7TreeNode hl7Node : treeNodes) {
-                    form.getContents().put(hl7Util.getLabel(obj, true), hl7Node);
+            if (columnName != null) {
+                IMetadataTable metadataTable = schemaNameToInputTable.get(rowName);
+                // group node can not get the metadata table
+                if (metadataTable == null) {
+                    IMetadataTable metadataTableTemp = null;
+                    for (IConnection connection : incomingConnections) {
+                        metadataTableTemp = connection.getMetadataTable();
+                        String connectionName = metadataTableTemp.getLabel();
+                        if (connectionName == null) {
+                            connectionName = connection.getUniqueName();
+                        }
+                        if (columnName.startsWith(connectionName)) {
+                            break;
+                        }
+                    }
+                    temp.setColumnName(columnName);
+                    if (metadataTableTemp != null) {
+                        temp.setColumn(metadataTableTemp.getColumn(columnName));
+                        temp.setTable(metadataTableTemp);
+                    }
+                } else {
+                    temp.setColumnName(columnName);
+                    temp.setColumn(metadataTable.getColumn(columnName));
+                    temp.setTable(metadataTable);
+                }
+                //
+                if (!temp.isMain()) {
+                    MetadataColumn newColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                    newColumn.setLabel(columnName);
+                    newColumn.setName(temp.getLabel());
+                    newColumn.setLength(226);
+                    newColumn.setTalendType("id_String");
+                    schemaNameToOutputTable.get(rowName).getColumns().add(newColumn);
                 }
             }
         }
+        if (rootNode == null) {
+            rootNode = new Element("rootTag");
+        }
+        if (haveOrder) {
+            orderNode(rootNode);
+        }
+        if (rootNode != null) {
+            treeData.add(rootNode);
+        }
+        if (hl7ui != null) {
+            if (hl7ui.gethl7Manager() instanceof HL7OutputManager) {
+                ((HL7OutputManager) hl7ui.gethl7Manager()).getContents().put(rootNode.getColumnLabel(), treeData);
+            }
 
-        // if (haveOrder) {
-        // orderNode(rootNode);
-        // }
-        // treeData.add(rootNode);
-        // rootNode.setRow(metadataTable.getLabel());
-        //
+        } else if (form != null) {
+            for (HL7TreeNode hl7Node : treeData) {
+                form.getContents().put(rootNode.getColumnLabel(), hl7Node);
+            }
+        }
+        if (hl7ui != null) {
+            // execute the commands,initialize the propertiesView .
+            List<Command> commands = new ArrayList<Command>();
+            for (MetadataTable tableTemp : iMetadataTables) {
+                Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(hl7ui.gethl7Manager().getHl7Component(),
+                        IHL7Constant.TABLE_SCHEMAS, tableTemp.getLabel(), ConvertionHelper.convert(tableTemp));
+                commands.add(hl7Cmd);
+            }
+            for (Command command : commands) {
+                command.execute();
+            }
+        }
     }
 
     private void orderNode(HL7TreeNode node) {
@@ -316,40 +338,26 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
 
     }
 
-    protected HL7TreeNode addElement(HL7TreeNode current, String currentPath, String newPath, String defaultValue) {
-        String name = newPath.substring(newPath.lastIndexOf("/") + 1); //$NON-NLS-1$
-        String parentPath = newPath.substring(0, newPath.lastIndexOf("/")); //$NON-NLS-1$
-        HL7TreeNode temp = new Element(name, defaultValue);
-
-        if (current == null) {// root node
-            return temp;
-        }
-
-        if (currentPath.equals(parentPath)) {
-            current.addChild(temp);
-        } else {
-            String[] nods = currentPath.split("/"); //$NON-NLS-1$
-            String[] newNods = parentPath.split("/"); //$NON-NLS-1$
-            int parentLevel = 0;
-            int checkLength = nods.length < newNods.length ? nods.length : newNods.length;
-            for (int i = 1; i < checkLength; i++) {
-                if (nods[i].equals(newNods[i])) {
-                    parentLevel = i;
-                }
+    protected HL7TreeNode addElement(HL7TreeNode current, String currentPath, String newPath, String defaultValue,
+            Map<String, HL7TreeNode> mapNodes) {
+        HL7TreeNode temp = mapNodes.get(newPath);
+        if (temp == null) {
+            // if node is not existing, create it.
+            String name = newPath.substring(newPath.lastIndexOf("/") + 1); //$NON-NLS-1$
+            temp = new Element(name, defaultValue);
+            if (current == null) {// root node
+                mapNodes.put(newPath, temp);
+                return temp;
             }
-            HL7TreeNode parent = current;
-            for (int i = 0; i < nods.length - (parentLevel + 1); i++) {
-                HL7TreeNode tmpParent = parent.getParent();
-                if (tmpParent == null) {
-                    break;
-                }
-                parent = tmpParent;
+            mapNodes.put(newPath, temp);
+            String parentPath = newPath.substring(0, newPath.lastIndexOf("/")); //$NON-NLS-1$
+            HL7TreeNode parentNode = mapNodes.get(parentPath);
+            if (parentNode != null) {
+                parentNode.addChild(temp);
+            } else {
+                ExceptionHandler.log("Error when parsing the HL7 data, parent not existing for:" + parentPath);
             }
-
-            if (parent != null)
-                parent.addChild(temp);
         }
-
         return temp;
     }
 

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -167,48 +167,44 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
             public void run(IProgressMonitor monitor) {
 
                 TreeItem root = xmlViewer.getTree().getItem(0);
+                //
+                List<HL7TreeNode> mappableNodes = new ArrayList<HL7TreeNode>();
                 if (getManager().getHl7Component().isHL7Output()) {
                     if (getManager() instanceof HL7OutputManager) {
-                        List<HL7TreeNode> treeData = ((HL7OutputManager) getManager())
-                                .getTreeData(((HL7OutputManager) getManager()).getCurrentSchema(false));
-                        if (treeData != null && treeData.size() > 0) {
-                            HL7TreeNode rootTreeData = treeData.get(0);
-                            for (TreeItem item : xmlViewer.getTree().getItems()) {
-                                if (rootTreeData == item.getData()) {
-                                    root = item;
-                                    break;
-                                }
-                            }
+                        mappableNodes = ((HL7OutputManager) getManager()).getTreeData(""); //$NON-NLS-1$ 
+                        createLoopLinks(mappableNodes);
+                        xmlViewer.refresh();
+                        getBackgroundRefresher().refreshBackground();
+                    }
+
+                } else {
+                    List<TreeItem> allItems = TreeUtils.collectAllItems(root);
+                    monitorWrap = new EventLoopProgressMonitor(monitor);
+
+                    String taskName = Messages.getString("XmlToXPathLinker.Loop"); //$NON-NLS-1$
+                    int totalWork = allItems.size();
+
+                    monitorWrap.beginTask(taskName, totalWork);
+
+                    for (int i = 0; i < totalWork; i++) {
+
+                        if (monitorWrap.isCanceled()) {
+                            return;
                         }
+
+                        TreeItem treeItem = allItems.get(i);
+                        HL7TreeNode node = (HL7TreeNode) treeItem.getData();
+                        if (node.getColumn() == null) {
+                            continue;
+                        }
+                        // add now parameter for bug 9279
+                        createLoopLinks(node.getColumn().getLabel(), treeItem, monitorWrap, i == totalWork - 1);
+
+                        monitorWrap.worked(1);
                     }
 
+                    monitorWrap.done();
                 }
-                List<TreeItem> allItems = TreeUtils.collectAllItems(root);
-                monitorWrap = new EventLoopProgressMonitor(monitor);
-
-                String taskName = Messages.getString("XmlToXPathLinker.Loop"); //$NON-NLS-1$
-                int totalWork = allItems.size();
-
-                monitorWrap.beginTask(taskName, totalWork); //$NON-NLS-1$
-
-                for (int i = 0; i < totalWork; i++) {
-
-                    if (monitorWrap.isCanceled()) {
-                        return;
-                    }
-
-                    TreeItem treeItem = allItems.get(i);
-                    HL7TreeNode node = (HL7TreeNode) treeItem.getData();
-                    if (node.getColumn() == null) { //$NON-NLS-1$
-                        continue;
-                    }
-                    // add now parameter for bug 9279
-                    createLoopLinks(node.getColumn().getLabel(), treeItem, monitorWrap, i == totalWork - 1);
-
-                    monitorWrap.worked(1);
-                }
-
-                monitorWrap.done();
             }
         };
 
@@ -320,8 +316,33 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
 
         TableItem treeItemFromAbsoluteXPath = getItem(xPathExpression);
         if (treeItemFromAbsoluteXPath != null) {
-            addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
+            addLoopLink(treeItemFromAbsoluteXPath, treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
                     (HL7TreeNode) tableItemTarget.getData(), lastOne);
+        }
+    }
+
+    private void createLoopLinks(List<HL7TreeNode> treeData) {
+        for (HL7TreeNode treeNode : treeData) {
+            if (treeNode.getColumn() != null) {
+                TableItem tableItem = null;
+                for (TableItem curTableItem : getSource().getItems()) {
+                    if (curTableItem.getText().equals(treeNode.getColumn().getLabel())) {
+                        tableItem = curTableItem;
+                        break;
+                    }
+                }
+                if (tableItem == null) {
+                    continue;
+                }
+                String path = tableItem.getText();
+                if (path != null) {
+                    TreeItem treeItem = getTreeItem(treeNode);
+                    if (treeItem != null) {
+                        addLoopLink(tableItem, tableItem.getData(), xmlViewer.getTree(), (HL7TreeNode) treeItem.getData(), false);
+                    }
+                }
+            }
+            createLoopLinks(treeNode.getChildren());
         }
     }
 
@@ -346,7 +367,7 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
         return this.xmlViewer;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void updateLinksStyleAndControlsSelection(Control currentControl, boolean lastOne) {
         // super.updateLinksStyleAndControlsSelection(currentControl);
         boolean isTarget = false;
@@ -363,14 +384,12 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
             getTarget().deselectAll();
 
             TreeItem[] selection = getTarget().getSelection();
-            for (int i = 0; i < selection.length; i++) {
-                TreeItem tableItem = selection[i];
+            for (TreeItem tableItem : selection) {
                 selectedItems.add(tableItem.getData());
             }
         } else {
             TableItem[] selection = getSource().getSelection();
-            for (int i = 0; i < selection.length; i++) {
-                TableItem treeItem = selection[i];
+            for (TableItem treeItem : selection) {
                 selectedItems.add(treeItem.getData());
             }
         }
@@ -398,7 +417,7 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
                     styleLink = getSelectedStyleLink();
                     if (isTarget) {
 
-                        itemsToSelect.put((TableItem) otherExtremity.getGraphicalObject(), null);
+                        itemsToSelect.put(otherExtremity.getGraphicalObject(), null);
 
                     } else {
 
@@ -430,7 +449,7 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
                 for (Table table : set) {
                     ArrayList<TableItem> tableItemsToSelect = (ArrayList<TableItem>) itemsToSelect.get(table);
                     table.deselectAll();
-                    TableItem[] tableItems = (TableItem[]) tableItemsToSelect.toArray(new TableItem[0]);
+                    TableItem[] tableItems = tableItemsToSelect.toArray(new TableItem[0]);
                     table.setSelection(tableItems);
                 }
             } else {
@@ -532,4 +551,58 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
         return false;
     }
 
+    private boolean containsTreeNode(HL7TreeNode currentNode, HL7TreeNode leafNode) {
+        HL7TreeNode parentOfLeafNode = leafNode.getParent();
+        if (parentOfLeafNode != null) {
+            if (parentOfLeafNode.equals(currentNode)) {
+                return true;
+            }
+            return containsTreeNode(currentNode, parentOfLeafNode);
+        }
+        return false;
+    }
+
+    public TreeItem getTreeItem(TreeItem[] items, HL7TreeNode treeNode, boolean expandedOnly) {
+        TreeItem item = null;
+        for (TreeItem curItem : items) {
+            // call getText method since we are in a lazy tree.
+            // it will force to load this item in the GUI (since it should be displayed in all cases)
+            // without this, the data will be null, and we can't retrieve anything
+            curItem.getText();
+            if (curItem.getData() != null) {
+                if (curItem.getData().equals(treeNode)) {
+                    return curItem;
+                }
+                // will check if one of the parent of the treeNode is this one.
+                if (containsTreeNode((HL7TreeNode) curItem.getData(), treeNode)) {
+                    if (!expandedOnly || curItem.getExpanded()) {
+                        return getTreeItem(curItem.getItems(), treeNode, expandedOnly);
+                    } else {
+                        return curItem;
+                    }
+                }
+            }
+        }
+        return item;
+    }
+
+    public TreeItem getTreeItem(HL7TreeNode hl7TreeNode) {
+        TreeItem[] items = xmlViewer.getTree().getItems();
+        return getTreeItem(items, hl7TreeNode, false);
+    }
+
+    public TreeItem getFirstVisibleTreeItemOfPath(HL7TreeNode hl7TreeNode) {
+        TreeItem[] items = xmlViewer.getTree().getItems();
+        return getTreeItem(items, hl7TreeNode, true);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.linking.TableToTreeLinker#getFirstVisibleTreeItemOfPath(java.lang.Object)
+     */
+    @Override
+    protected TreeItem getFirstVisibleTreeItemOfPath(Object dataItem) {
+        return getFirstVisibleTreeItemOfPath((HL7TreeNode) dataItem);
+    }
 }

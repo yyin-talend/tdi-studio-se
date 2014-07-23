@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -215,12 +215,15 @@ public class SchemaXMLDragAndDropHandler {
                     Item targetItem = (Item) event.item;
                     if (targetItem != null) {
                         Object data = targetItem.getData();
-                        if (data instanceof HL7TreeNode) {
-                            HL7TreeNode rootElement = getRootElement((HL7TreeNode) data);
-
-                            if (rootElement != null) {// && !(rootElement instanceof HL7Root)
-                                return currentSchema.equals(rootElement.getRow());
+                        if (data != null && data instanceof HL7TreeNode) {
+                            HL7TreeNode treeNode = ((HL7TreeNode) data);
+                            if (treeNode.getParent() == null) {
+                                MessageDialog.openConfirm(event.display.getActiveShell(), "Warning", "\"" + treeNode.getLabel()
+                                        + "\" " + "is root, can not have linker,you should create sub-elements or attributes.");
+                                return false;
                             }
+                            String columnLabel = treeNode.getRow();
+                            return columnLabel != null ? columnLabel.startsWith(currentSchema) : false;
                         }
                     }
                 }
@@ -232,7 +235,7 @@ public class SchemaXMLDragAndDropHandler {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
             Item targetItem = (Item) event.item;
-            if (targetItem == null || !isEnabled(event)) {
+            if (targetItem == null) {
                 event.detail = DND.DROP_NONE;
                 return;
             }
@@ -279,7 +282,7 @@ public class SchemaXMLDragAndDropHandler {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
             Item targetItem = (Item) event.item;
-            if (targetItem == null) {
+            if (targetItem == null || !isEnabled(event)) {
                 return;
             }
 
@@ -466,8 +469,9 @@ public class SchemaXMLDragAndDropHandler {
 
     // reset all the treeNode add row to relative column
     private void setTreeNodeRow(HL7TreeNode root, String row) {
-        if (root == null)
+        if (root == null) {
             return;
+        }
         root.setRow(row);
         if (root instanceof Element) {
             Element element = (Element) root;

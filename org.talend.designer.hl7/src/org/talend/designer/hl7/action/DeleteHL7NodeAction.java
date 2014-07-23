@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -17,10 +17,8 @@ import java.util.List;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.hl7.ui.HL7UI;
-import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
-import org.talend.designer.hl7.ui.data.NameSpaceNode;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
@@ -94,19 +92,7 @@ public class DeleteHL7NodeAction extends SelectionProviderAction {
             disconnectSubTree(node);
         }
         parent.removeChild(node);
-        // if (TreeUtil.refreshTree((HL7TreeNode) xmlViewer.getTree().getItem(0).getData())) {
-        // xmlViewer.refresh();
-        // }
-        if (node.isRepetable() || node.isGroup()) {
-            // hl7ui.updateStatus();
-        }
         xmlViewer.refresh(parent);
-        xmlViewer.expandAll();
-        if (hl7ui != null) {
-            hl7ui.redrawLinkers();
-        } else if (form != null) {
-            form.refreshLinks();
-        }
     }
 
     /**
@@ -120,12 +106,6 @@ public class DeleteHL7NodeAction extends SelectionProviderAction {
         }
         if (node.hasLink()) {
             node.setColumn(null);
-        }
-        if (node instanceof Attribute) {
-            return;
-        }
-        if (node instanceof NameSpaceNode) {
-            return;
         }
         List<HL7TreeNode> children = node.getChildren();
         for (HL7TreeNode child : children) {

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -29,6 +29,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.INode;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -63,6 +64,7 @@ public class HL7InputComponent extends AbstractExternalNode {
         return null;
     }
 
+    @Override
     public IExternalData getExternalData() {
         return null;
     }
@@ -102,26 +104,24 @@ public class HL7InputComponent extends AbstractExternalNode {
     }
 
     public void renameInputConnection(String oldName, String newName) {
-        List<Map<String, String>> listRoot = (List<Map<String, String>>) this.getElementParameter(ROOT).getValue();
-        boolean flagRoot = false;
-        String schemaId = oldName + ":";
+        INode node = getOriginalNode();
+        if (oldName != null) {
+            IElementParameter elementParameter = this.getElementParameter("SCHEMAS");
+            if (elementParameter != null) {
+                Object listItemsValue = elementParameter.getValue();
+                if (listItemsValue instanceof List) {
+                    for (Object obj : (List) listItemsValue) {
+                        if (obj instanceof Map) {
+                            Object row = ((Map) obj).get("PARENT_ROW");
+                            if (oldName.equals(row)) {
+                                ((Map) obj).put("PARENT_ROW", newName);
+                            }
 
-        for (Map<String, String> map : listRoot) {
-            String rowName = map.get(COLUMN);
-            if (rowName == null) {
-                continue;
+                        }
+                    }
+                }
             }
-            if (rowName.equals(oldName)) {
-                map.put(COLUMN, newName);
-                flagRoot = true;
-            } else if (rowName.startsWith(schemaId)) {
-                rowName = newName + rowName.substring(rowName.indexOf(":"));
-                map.put(COLUMN, rowName);
-                flagRoot = true;
-            }
-        }
-        if (flagRoot) {
-            this.getElementParameter(ROOT).setValue(listRoot);
+
         }
     }
 
@@ -141,7 +141,7 @@ public class HL7InputComponent extends AbstractExternalNode {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public List<Map<String, String>> getTableList(String paraName) {
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
@@ -159,14 +159,14 @@ public class HL7InputComponent extends AbstractExternalNode {
     }
 
     public boolean istFileInputHL7() {
-        return getComponent().getName().equals("tFileInputHL7"); //$NON-NLS-1$ //$NON-NLS-2$
+        return getComponent().getName().equals("tFileInputHL7"); //$NON-NLS-1$ 
     }
 
     public boolean isHL7Output() {
         return getComponent().getName().equals("tHL7Output");//$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public boolean setTableElementParameter(List<Map<String, String>> epsl, String paraName) {
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
         boolean result = true;
@@ -190,7 +190,7 @@ public class HL7InputComponent extends AbstractExternalNode {
     }
 
     public void setValueToParameter(String paraName, Object value) {
-        IElementParameter parameter = this.getElementParameter(paraName); //$NON-NLS-N$
+        IElementParameter parameter = this.getElementParameter(paraName);
         if (parameter != null && value != null) {
             parameter.setValue(value);
         }

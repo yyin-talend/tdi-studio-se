@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.hl7.model;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import ca.uhn.hl7v2.HL7Exception;
@@ -46,30 +48,67 @@ public class SegmentModel extends AbstractStructureModel {
     private void generateDataTypes() {
         int number = this.seg.numFields();
         ArrayList<TypeModel> datatypes = new ArrayList<TypeModel>();
+        Method method = null;
         try {
-            int lastNotEmptyFiledIndex = 0;
-            for (int i = 1; i < number; i++) {
-                Type[] reps = seg.getField(i);
-                if (reps.length > 0) {
-                    lastNotEmptyFiledIndex = i;
+            for (Method curMethod : seg.getClass().getDeclaredMethods()) {
+                if (curMethod.getName().equals("createNewTypeWithoutReflection")) {
+                    method = curMethod;
+                    method.setAccessible(true);
+                    break;
                 }
             }
-            for (int i = 1; i <= lastNotEmptyFiledIndex; i++) {
-                Type[] reps = seg.getField(i);
-                if (reps.length > 0) {
-                    for (int j = 0; j < reps.length; j++) {
-                        TypeModel tm = new TypeModel(reps[j], seg, j, i);
-                        datatypes.add(tm);
-                    }
-                } else {
-                    // for empty column
-                    TypeModel tm = new TypeModel(null, seg, 0, i);
+
+            if (method != null) {
+                // only access we have to get all the types is reflection (protected method).
+                // so add test of null in case this method doesn't exist, even if it should be in every subclass.
+                for (int i = 0; i < number; i++) {
+
+                    Type type = (Type) method.invoke(seg, i);
+                    TypeModel tm = new TypeModel(type, seg, 0, i + 1);
                     datatypes.add(tm);
                 }
-
             }
-        } catch (HL7Exception e) {
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if (method == null) {
+            // use old code in case the reflection didn't work.
+            // but it means it won't get optional fields.
+            try {
+                int lastNotEmptyFiledIndex = 0;
+                for (int i = 1; i < number; i++) {
+                    Type[] reps = seg.getField(i);
+                    if (reps.length > 0) {
+                        lastNotEmptyFiledIndex = i;
+                    }
+                }
+                for (int i = 1; i <= lastNotEmptyFiledIndex; i++) {
+                    Type[] reps = seg.getField(i);
+                    if (reps.length > 0) {
+                        for (int j = 0; j < reps.length; j++) {
+                            TypeModel tm = new TypeModel(reps[j], seg, j, i);
+                            datatypes.add(tm);
+                        }
+                    } else {
+                        // for empty column
+                        TypeModel tm = new TypeModel(null, seg, 0, i);
+                        datatypes.add(tm);
+                    }
+
+                }
+            } catch (HL7Exception e) {
+                e.printStackTrace();
+            }
         }
         this.types = datatypes.toArray(new TypeModel[0]);
     }
