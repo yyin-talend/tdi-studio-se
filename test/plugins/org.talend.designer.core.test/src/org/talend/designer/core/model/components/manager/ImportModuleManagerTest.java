@@ -13,49 +13,39 @@
 package org.talend.designer.core.model.components.manager;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTSType;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 
 /**
  * created by ycbai on 2014-5-9 Detailled comment
- * 
+ *
  */
-@RunWith(PowerMockRunner.class)
 public class ImportModuleManagerTest {
 
     private ImportModuleManager manager;
 
     private IMPORTSType testImportsType;
 
-    @BeforeClass
-    public void setUp() throws Exception {
-        manager = ImportModuleManager.getInstance();
-        initTestImportsType();
-    }
-
     private void initTestImportsType() {
-        testImportsType = mock(IMPORTSType.class);
+        testImportsType = ComponentFactory.eINSTANCE.createIMPORTSType();
 
-        IMPORTType importType1 = mock(IMPORTType.class);
+        IMPORTType importType1 = ComponentFactory.eINSTANCE.createIMPORTType();
         importType1.setMODULE("test-jar1.jar"); //$NON-NLS-1$
         importType1.setREQUIREDIF("x > 0"); //$NON-NLS-1$
         testImportsType.getIMPORT().add(importType1);
-        IMPORTType importType2 = mock(IMPORTType.class);
+        IMPORTType importType2 = ComponentFactory.eINSTANCE.createIMPORTType();
         importType2.setMODULE("test-jar2.jar"); //$NON-NLS-1$
         importType2.setREQUIREDIF("y > 0"); //$NON-NLS-1$
         testImportsType.getIMPORT().add(importType2);
 
-        IMPORTSType importsType = mock(IMPORTSType.class);
+        IMPORTSType importsType = ComponentFactory.eINSTANCE.createIMPORTSType();
         importsType.setREQUIREDIF("z > 0"); //$NON-NLS-1$
-        IMPORTType importType3 = mock(IMPORTType.class);
+        IMPORTType importType3 = ComponentFactory.eINSTANCE.createIMPORTType();
         importType3.setMODULE("test-jar3.jar"); //$NON-NLS-1$
         importType3.setREQUIREDIF("(x > y)"); //$NON-NLS-1$
         importsType.getIMPORT().add(importType3);
@@ -64,6 +54,9 @@ public class ImportModuleManagerTest {
 
     @Test
     public void testGetImportTypes() {
+        manager = ImportModuleManager.getInstance();
+        initTestImportsType();
+
         List<IMPORTType> importTypes = manager.getImportTypes(testImportsType);
         assertNotNull(importTypes);
         assertTrue(importTypes.size() == 3);
