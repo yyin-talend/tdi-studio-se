@@ -140,6 +140,10 @@ public class ReadQueriesAction extends AContextualAction {
                             canWork = false;
                             break;
                         }
+                        if (EDatabaseTypeName.IMPALA.getXmlName().equalsIgnoreCase(dbType)) {
+                            canWork = false;
+                            break;
+                        }
                     }
 
                 }

@@ -205,6 +205,10 @@ public class EditQueriesAction extends AContextualAction {
                         canWork = false;
                         break;
                     }
+                    if (EDatabaseTypeName.IMPALA.getXmlName().equalsIgnoreCase(dbType)) {
+                        canWork = false;
+                        break;
+                    }
                 }
                 if (repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
                         && repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY
