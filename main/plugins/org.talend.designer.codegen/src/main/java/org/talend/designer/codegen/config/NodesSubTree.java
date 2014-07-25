@@ -124,7 +124,7 @@ public class NodesSubTree {
             allMainSubTreeConnections = new ArrayList<IConnection>();
 
             buildCamelSubTree(node, false);
-        } else if (typeGen == ETypeGen.MR) {
+        } else if (typeGen == ETypeGen.MR || typeGen == ETypeGen.STORM) {
             this.rootNode = node;
             this.name = node.getUniqueName();
             this.nodes = new ArrayList<INode>();
