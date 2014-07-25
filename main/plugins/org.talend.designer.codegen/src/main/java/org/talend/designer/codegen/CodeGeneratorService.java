@@ -73,6 +73,14 @@ public class CodeGeneratorService implements ICodeGeneratorService {
 				return service.createCodeGenerator(process, statistics, trace, options);
 			}
 		}
+		if (GlobalServiceRegister.getDefault().isServiceRegistered(IStormCodeGeneratorService.class)) {
+            IStormCodeGeneratorService service = (IStormCodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                    IStormCodeGeneratorService.class);
+            if (service.validProcess(process)) {
+                return service.createCodeGenerator(process, statistics, trace, options);
+            }
+        }
+		
         return new CodeGenerator(process, statistics, trace, options);
     }
 
