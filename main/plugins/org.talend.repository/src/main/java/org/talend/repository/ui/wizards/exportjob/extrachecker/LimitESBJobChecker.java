@@ -15,16 +15,22 @@ import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPa
  */
 public class LimitESBJobChecker extends AbstractJobNodeChecker {
 
-	/** The Constant ESB_JOB_NODES. */
-	private static final String[] ESB_JOB_NODES = {"tESBConsumer", "tRESTRequest", "tRESTClient"};
+	private static final String T_REST_REQUEST = "tRESTRequest";
+	/** The Constant ESB_CONSUMER_JOB_NODES. */
+	private static final String[] ESB_CONSUMER_JOB_NODES = {"tESBConsumer", "tRESTClient"};
 
 	@Override
 	String checkNode(JobExportType exportType, NodeType nodeType) {
 		if (exportType == JobExportType.OSGI) {
 			return null;
 		}
-		if (isESBJobNode(nodeType)) {
-			return Messages.getString("JavaJobScriptsExportWSWizardPage.limitESBJob");
+		String componentName = nodeType.getComponentName();
+		if(T_REST_REQUEST.equals(componentName)) {
+			return Messages.getString("LimitESBJobChecker.limit_tRESTRequest", componentName);
+		}
+
+		if (exportType != JobExportType.POJO && isESBConsumerComponent(componentName)) {
+			return Messages.getString("LimitESBJobChecker.limit_tRESTClient_tESBConsumer", componentName);
 		}
 		return null;
 	}
@@ -35,8 +41,8 @@ public class LimitESBJobChecker extends AbstractJobNodeChecker {
 	 * @param nodeType the node type
 	 * @return true, if checks if is esb job node
 	 */
-	private boolean isESBJobNode(NodeType nodeType) {
-		return ArrayUtils.contains(ESB_JOB_NODES, nodeType.getComponentName());
+	private boolean isESBConsumerComponent(String componentName) {
+		return ArrayUtils.contains(ESB_CONSUMER_JOB_NODES, componentName);
 	}
 
 }
