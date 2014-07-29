@@ -10,7 +10,7 @@
     <groupId>org.talend.studio</groupId>
     <artifactId>parent-pom</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>talend.studio.parent.pom/pom.xml</relativePath>
+    <relativePath>../studio-se-master/talend.studio.parent.pom/pom.xml</relativePath>
   </parent>
   <modules>
     <module>i18n/plugins/org.talend.componentdesigner.nl</module>
@@ -45,7 +45,7 @@
     <module>main/features/org.talend.designer-feature</module>
     <module>main/features/org.talend.designer.business-feature</module>
     <module>main/features/org.talend.rcp.branding.tos-feature</module>
-    <module>main/features/org.talend.rcp.branding.tos.test-feature</module>
+ <!--   <module>main/features/org.talend.rcp.branding.tos.test-feature</module>-->
     <module>main/features/org.talend.repository-feature</module>
     <module>main/features/org.talend.sbi-feature</module>
     <module>main/features/org.talend.spagic-feature</module>
