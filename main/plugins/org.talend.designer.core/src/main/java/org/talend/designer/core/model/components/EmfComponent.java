@@ -1676,6 +1676,9 @@ public class EmfComponent extends AbstractComponent {
             case TABLE:
                 param.setValue(new ArrayList<Map<String, Object>>());
                 break;
+            case TABLE_BY_ROW:
+                param.setValue(new ArrayList<Map<String, Object>>());
+                break;
             case SCHEMA_TYPE:
             case DCSCHEMA:
                 if (param.getContext() == null) {
@@ -2297,7 +2300,8 @@ public class EmfComponent extends AbstractComponent {
             if (type == EParameterFieldType.ROUTE_COMPONENT_TYPE) {
                 listItemsValue[k] = new String[] { item.getNAME(), item.getFILTER() };
                 // {component name, attributes filter}
-            } else if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
+            } else if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE
+                    && type != EParameterFieldType.TABLE_BY_ROW) {
                 listItemsValue[k] = item.getVALUE();
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
