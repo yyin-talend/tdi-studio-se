@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: org.talend.designer.codegen.test
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 5.6.0.qualifier
 Fragment-Host: org.talend.designer.codegen
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4
