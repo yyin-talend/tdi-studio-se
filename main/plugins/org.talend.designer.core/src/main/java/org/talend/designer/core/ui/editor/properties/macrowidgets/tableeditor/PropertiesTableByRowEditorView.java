@@ -32,12 +32,10 @@ import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
 import org.talend.commons.ui.swt.tableviewer.celleditor.EditableComboBoxCellEditor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.proposal.TalendProposalProvider;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -265,25 +263,6 @@ public class PropertiesTableByRowEditorView<B> extends AbstractDataTableEditorVi
                                 valueMap.put(columnName, value);
                             } else {
                                 valueMap.put(columnName, value);
-                            }
-                            //
-                            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
-                            int rowNumber = tableValues.indexOf(valueMap);
-                            if (rowNumber != -1) {
-                                tableValues.remove(rowNumber);
-                                tableValues.add(valueMap);
-                            } else {
-                                tableValues.add(valueMap);
-                            }
-                            if (param.getFieldType().equals(EParameterFieldType.TABLE_BY_ROW)) {
-                                IElementParameter paramUpdate = element.getElementParameter(EParameterName.UPDATE_COMPONENTS
-                                        .getName());
-                                if (paramUpdate != null) {
-                                    paramUpdate.setValue(Boolean.TRUE);
-                                }
-                                System.out.println("name=" + param.getName());
-                                System.out.println("name=" + param.getValue());
-                                element.setPropertyValue(param.getName(), tableValues);
                             }
                         }
                     });

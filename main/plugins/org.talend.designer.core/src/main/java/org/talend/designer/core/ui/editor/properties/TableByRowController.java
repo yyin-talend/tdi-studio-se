@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,6 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQPatternService;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -112,6 +112,7 @@ public class TableByRowController extends AbstractElementPropertySectionControll
         if (param.getValue() == null || param.getValue().equals("")) {
             param.setValue(new ArrayList<Map<String, Object>>());
         }
+        init(elem, param);
         tableEditorModel.setData(elem, param, getProcess(elem, part));
         PropertiesTableByRowEditorView<Map<String, Object>> tableEditorView = new PropertiesTableByRowEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, true, false);
@@ -184,7 +185,7 @@ public class TableByRowController extends AbstractElementPropertySectionControll
         formData.top = new FormAttachment(0, top);
 
         int toolbarSize = 0;
-        if (false) {
+        if (!param.isBasedOnSchema()) {
             Point size = tableEditorView.getExtendedToolbar().getToolbar().computeSize(SWT.DEFAULT, SWT.DEFAULT);
             toolbarSize = size.y + 5;
         }
@@ -207,26 +208,25 @@ public class TableByRowController extends AbstractElementPropertySectionControll
         return null;
     }
 
-    private void initValue(IElement elem, final IElementParameter param) {
-        if (param.getValue() != null) {
-            List<Map<String, Map<String, String>>> ret = new ArrayList<Map<String, Map<String, String>>>();
-            if (elem instanceof Node) {
-                List<IConnection> listConnection = (List<IConnection>) ((Node) elem).getInputs();
-                List<String> names = new ArrayList<String>();
-                Map rowMap = new HashMap();
-                for (IConnection con : listConnection) {
-                    List<IMetadataColumn> columns = con.getMetadataTable().getListColumns();
-                    Map columnMap = new HashMap();
-                    for (IMetadataColumn column : columns) {
-                        columnMap.put(column.getLabel(), column.getLabel());
-                    }
-                    rowMap.put(con.getName(), columnMap);
-                }
-                ret.add(rowMap);
+    // when delete the input link should delete the data in the model
+    private void init(IElement elem, final IElementParameter param) {
+        if (elem instanceof Node) {
+            List<IConnection> listConnection = (List<IConnection>) ((Node) elem).getInputs();
+            List<String> names = new ArrayList<String>();
+            for (IConnection con : listConnection) {
+                names.add(con.getName());
             }
-            param.setValue(ret);
+            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
+            for (Map<String, Object> map : tableValues) {
+                Iterator it = map.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = (String) it.next();
+                    if (!names.contains(key)) {
+                        it.remove();
+                    }
+                }
+            }
         }
-
     }
 
     /*
@@ -245,6 +245,7 @@ public class TableByRowController extends AbstractElementPropertySectionControll
         if (param.getValue() == null || param.getValue().equals("")) {
             param.setValue(new ArrayList<Map<String, Object>>());
         }
+        init(elem, param);
         tableEditorModel.setData(elem, param, part.getProcess());
         PropertiesTableByRowEditorView<Map<String, Object>> tableEditorView = new PropertiesTableByRowEditorView<Map<String, Object>>(
                 subComposite, SWT.NONE, tableEditorModel, true, false);
@@ -312,7 +313,7 @@ public class TableByRowController extends AbstractElementPropertySectionControll
 
     @SuppressWarnings("unchecked")
     private void checkAndSetDefaultValue(IElementParameter param) {
-        if (param != null && param.getFieldType() == EParameterFieldType.TABLE) {
+        if (param != null && param.getFieldType() == EParameterFieldType.TABLE_BY_ROW) {
             updateColumnList(param);
 
             Object[] itemsValue = param.getListItemsValue();
