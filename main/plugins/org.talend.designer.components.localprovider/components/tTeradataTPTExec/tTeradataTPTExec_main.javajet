@@ -82,16 +82,6 @@ String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
 java.io.File file_<%=cid %> = new java.io.File(<%=scriptPath%>+<%=table%>+ <%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
 
 String logTable_<%= cid %> = <%=dbname%> + "." +<%= logTable %>;
-<% if(!specifyLogTable){%>
-	logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
-<% }else{
-	if(logTable==null || "".equals(logTable)){
-	%>
-	  logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
-	<%
-	}
-} %>
-
 <%//build script---------------------------------------------------------%>
 try{
 				<% if(!checkedScriptParameter){%>
@@ -348,13 +338,18 @@ try{
 
                 <% if("Load".equals(operatorType)){%>
                 	    fw_<%=cid %>.write("            ,TargetTable = '" + tableFullName_<%=cid%> + "'<%=lineSeparator%>");
-                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
+                	<% if(specifyLogTable){ %>                	    
+                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");                	    
+                	<% } %>
                 <%} if("Update".equals(operatorType)){%>
-               		    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
+                	<% if(specifyLogTable){ %>                	    
+                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");                	    
+                	<% } %>
                 		fw_<%=cid %>.write("            ,TargetTable = ['" + tableFullName_<%=cid%> + "']<%=lineSeparator%>");
                 <%} if("Stream".equals(operatorType)){%>
-					    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
-					    fw_<%=cid %>.write("            ,ErrorTable = '" + tableFullName_<%=cid%> + "_err'<%=lineSeparator%>");
+                	<% if(specifyLogTable){ %>                	    
+                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");                	    
+                	<% } %>					    
 					    fw_<%=cid %>.write("            ,AppendErrorTable = 'Y'<%=lineSeparator%>");
 					    fw_<%=cid %>.write("            ,DropErrorTable = 'N'<%=lineSeparator%>");
             <%}%>
