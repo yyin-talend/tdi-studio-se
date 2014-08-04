@@ -478,19 +478,18 @@
 					String amqpUri = ElementParameterParser.getValue(node, "__AMQP_BROKER_URI__").trim();
 %>				
 				{	
-					org.apache.activemq.camel.component.ActiveMQComponent activeMQComponent = org.apache.activemq.camel.component.ActiveMQComponent.activeMQComponent();
 					try{
 						String amqpUrl = <%=amqpUri%>;
 						if(!amqpUrl.startsWith("amqp://")) {
 							amqpUrl = "amqp://" + amqpUrl;
 						}
 						javax.jms.ConnectionFactory jmsConnectionFactory = org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl.createFromURL(amqpUrl);
-						activeMQComponent.setConnectionFactory(jmsConnectionFactory);
+						org.apache.camel.component.amqp.AMQPComponent activeMQComponent = new org.apache.camel.component.amqp.AMQPComponent(jmsConnectionFactory);
+						camelContext.addComponent(<%=name%>,activeMQComponent);
 					}catch(Exception e){
 						throw new RuntimeException(e);
 					}
 					
-					camelContext.addComponent(<%=name%>,activeMQComponent);
 				}
 <%
 				}else if("MQTT".equals(mqType)){
@@ -539,19 +538,18 @@
 				name = "\"" + name + "\"";
 				%>				
 				{	
-					org.apache.activemq.camel.component.ActiveMQComponent activeMQComponent = org.apache.activemq.camel.component.ActiveMQComponent.activeMQComponent();
 					try{
 						String amqpUrl = <%=amqpUri%>;
 						if(!amqpUrl.startsWith("amqp://")) {
 							amqpUrl = "amqp://" + amqpUrl;
 						}
 						javax.jms.ConnectionFactory jmsConnectionFactory = org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl.createFromURL(amqpUrl);
-						activeMQComponent.setConnectionFactory(jmsConnectionFactory);
+						org.apache.camel.component.amqp.AMQPComponent activeMQComponent = new org.apache.camel.component.amqp.AMQPComponent(jmsConnectionFactory);
+						camelContext.addComponent(<%=name%>,activeMQComponent);
 					}catch(Exception e){
 						throw new RuntimeException(e);
 					}
 					
-					camelContext.addComponent(<%=name%>,activeMQComponent);
 				}
 <%				
 			}
