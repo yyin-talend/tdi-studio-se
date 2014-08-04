@@ -330,15 +330,18 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
             } else if (curParam.getFieldType().equals(EParameterFieldType.TABLE_BY_ROW)) {
                 List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
                 for (Map<String, Object> curLine : tableValues) {
+                    String newValue = null;
                     Iterator it = curLine.keySet().iterator();
                     while (it.hasNext()) {
                         String key = (String) it.next();
-                        if (key.equals(oldConnectionName)) {
-                            String value = (String) curLine.get(key);
-                            it.remove();
-                            curLine.put(newConnectionName, value);
+                        if (key != null) {
+                            if (key.equals(oldConnectionName)) {
+                                newValue = (String) curLine.get(key);
+                                it.remove();
+                            }
                         }
                     }
+                    curLine.put(newConnectionName, newValue);
                 }
             }
         }
