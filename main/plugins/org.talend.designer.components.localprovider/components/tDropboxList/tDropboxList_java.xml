@@ -36,21 +36,6 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
-	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="2">
-		<TABLE READONLY="true">
-			<COLUMN NAME="name" TYPE="id_String" />
-			<COLUMN NAME="path" TYPE="id_String" />
-			<COLUMN NAME="lastModified" TYPE="id_Long" />
-			<COLUMN NAME="size" TYPE="id_Long" />
-			<COLUMN NAME="content" TYPE="id_Object" />
-		</TABLE>
-	</PARAMETER>
-	
-    
-    <PARAMETER  NAME="PATH"  FIELD="TEXT"  NUM_ROW="8" >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
     
 	<PARAMETER NAME="USE_EXISTING_CONNECTION" FIELD="CHECK" NUM_ROW="14">
       <DEFAULT>false</DEFAULT>
@@ -74,6 +59,21 @@
       <DEFAULT>8087</DEFAULT>
     </PARAMETER>
     
+    <PARAMETER  NAME="PATH"  FIELD="TEXT"  NUM_ROW="48" >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="52">
+		<TABLE READONLY="true">
+			<COLUMN NAME="name" TYPE="id_String" />
+			<COLUMN NAME="path" TYPE="id_String" />
+			<COLUMN NAME="lastModified" TYPE="id_Long" />
+			<COLUMN NAME="size" TYPE="id_Long" />
+			<COLUMN NAME="content" TYPE="id_Object" />
+		</TABLE>
+	</PARAMETER>
+	
+    
    </PARAMETERS>
    
 	<ADVANCED_PARAMETERS>
@@ -91,10 +91,10 @@
    </CODEGENERATION>
 
    <RETURNS>
-   	  	<RETURN NAME="NAME" TYPE="id_String" AVAILABILITY="AFTER"/>
-  	 	<RETURN NAME="PATH" TYPE="id_String" AVAILABILITY="AFTER"/>
-  	 	<RETURN NAME="LAST_MODIFIED" TYPE="id_Long" AVAILABILITY="AFTER"/>
-  	 	<RETURN NAME="SIZE" TYPE="id_Long" AVAILABILITY="AFTER"/>
-  	 	<RETURN NAME="CONTENT" TYPE="id_Object" AVAILABILITY="AFTER"/>
+   	  	<RETURN NAME="NAME" TYPE="id_String" AVAILABILITY="FLOW"/>
+  	 	<RETURN NAME="PATH" TYPE="id_String" AVAILABILITY="FLOW"/>
+  	 	<RETURN NAME="LAST_MODIFIED" TYPE="id_Long" AVAILABILITY="FLOW"/>
+  	 	<RETURN NAME="SIZE" TYPE="id_Long" AVAILABILITY="FLOW"/>
+  	 	<RETURN NAME="CONTENT" TYPE="id_Object" AVAILABILITY="FLOW"/>
    </RETURNS>
 </COMPONENT>
