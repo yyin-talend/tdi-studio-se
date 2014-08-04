@@ -81,7 +81,9 @@ if(columnList!=null){
 String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
 java.io.File file_<%=cid %> = new java.io.File(<%=scriptPath%>+<%=table%>+ <%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
 
-String logTable_<%= cid %> = <%=dbname%> + "." +<%= logTable %>;
+<% if(specifyLogTable){ %>
+	   String logTable_<%= cid %> = <%=dbname%> + "." +<%= logTable %>;
+<% } %>
 <%//build script---------------------------------------------------------%>
 try{
 				<% if(!checkedScriptParameter){%>
