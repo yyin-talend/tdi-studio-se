@@ -61,7 +61,8 @@
                     MODULE="dropbox-core-sdk-1.7.5.jar"
                     REQUIRED="true" />
                <IMPORT NAME="jackson-core"
-                    MODULE="jackson-core-2.3.0-rc1.jar"
+                    MODULE="jackson-core-2.2.2.jar"
+                    UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/jackson-core-2.2.2.jar"
                     REQUIRED="true" />
 		</IMPORTS>
    </CODEGENERATION>
