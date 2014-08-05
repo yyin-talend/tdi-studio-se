@@ -26,7 +26,6 @@ import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -112,29 +111,6 @@ public class Connection extends Element implements IConnection, IPerformance {
      * Tells if this connection has a subjob source or not instead of a node.
      */
     private boolean isSubjobConnection;
-
-    /**
-     * For now, this varible only used to restore the metadataTable when user undo the delete action after they delete
-     * this connection(if not store the metadataTable, it will be deleted forever and can not be restored...)
-     */
-    private IMetadataTable metadataTable;
-
-    /**
-     * For now, this varible only be used to store the index of metadataTable in it's list before being deleted
-     */
-    private int metadataTableDelIndex;
-
-    /**
-     * This Object should be instanceof InputTable For now, this varible only used to restore the InputTable when user
-     * undo the delete action after they delete this connection(if not store the InputTable, it will be deleted forever
-     * and can not be restored..)
-     */
-    private Object inputTable;
-
-    /**
-     * For now, this varible only be used to store the index of inputTable in it's list before being deleted
-     */
-    private int inputTableDelIndex;
 
     public ArrayList<Integer> traceColumn = new ArrayList<Integer>();
 
@@ -1059,7 +1035,6 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     @Override
     public void reconnect() {
-        this.restoreDeletedMetadataTableIfExist();
         if (!isConnected) {
             if (lineStyle == EConnectionType.TABLE || lineStyle == EConnectionType.TABLE_REF) {
                 if (uniqueName == null) {
@@ -1125,11 +1100,6 @@ public class Connection extends Element implements IConnection, IPerformance {
                     initTraceParamters();
                 }
             }
-        }
-
-        // add ExternalNode input
-        if (target != null && target.getExternalNode() instanceof AbstractNode) {
-            ((AbstractNode) target.getExternalNode()).addInput(this);
         }
 
     }
@@ -1840,96 +1810,5 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     public ConnectionResuming getResuming() {
         return this.resuming;
-    }
-
-    /**
-     * For undo use, restore the deleted metadataTable, please see the comment on the varible > metadataTable
-     * 
-     */
-    public IMetadataTable restoreDeletedMetadataTableIfExist() {
-        if (metadataTable == null) {
-            return null;
-        }
-        IMetadataTable retTable = metadataTable;
-        INode sourceNode = this.getSource();
-        if (sourceNode != null) {
-            List<IMetadataTable> metaList = sourceNode.getMetadataList();
-            if (!metaList.contains(metadataTable)) {// In case some unknow place add the same metadataTable many times
-                sourceNode.getMetadataList().add(metadataTableDelIndex, metadataTable);
-            }
-            // delete the stored
-            metadataTable = null;
-        }
-        return retTable;
-    }
-
-    /**
-     * For now, only used to store the index of metadataTable in the list before being deleted
-     * 
-     * @param index
-     */
-    public void storeDeletedMetadataTableIndex(int index) {
-        this.metadataTableDelIndex = index;
-    }
-
-    /**
-     * For now, for delete command use, used to store the deleted metadataTable
-     * 
-     * @param metadataTable the MetadataTable wanted to restore
-     */
-    public void storeDeletedMetadataTable(IMetadataTable metaTable) {
-        this.metadataTable = metaTable;
-    }
-
-    /**
-     * For now, for delete command use, used to store the deleted InputTable
-     * 
-     * @param deletedInputTable this param <b>**must**</b> be instanceof <b>InputTable</b>!!!
-     */
-    public void storeDeletedInputTable(Object deletedInputTable) {
-        this.inputTable = deletedInputTable;
-    }
-
-    /**
-     * For undo use, restore the deleted InputTable, please see the comment on the varible > InputTable <br>
-     * This operation will set inputTable to <b>null</b>
-     * 
-     * @return An Object instanceof InputTable OR null
-     */
-    public Object restoreDeletedInputTable() {
-        Object ret = this.inputTable;
-        this.inputTable = null;
-        return ret;
-    }
-
-    /**
-     * Judge whether InputTable has been stored, in case of deletion multi times
-     * 
-     * @return
-     */
-    public boolean hasBeenStoredInputTable() {
-        if (this.inputTable != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * For now, only used to store the index of inputTable in the list before being deleted
-     * 
-     * @param index
-     */
-    public void storeDeletedInputTableIndex(int index) {
-        this.inputTableDelIndex = index;
-    }
-
-    /**
-     * For now, only used to get the index of inputTable in the list before being deleted
-     * 
-     * @return index
-     */
-    public int getInputTableDelIndex() {
-        return this.inputTableDelIndex;
     }
 }

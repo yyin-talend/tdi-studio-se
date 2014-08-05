@@ -350,16 +350,6 @@ public class DbMapComponent extends AbstractMapComponent {
     @Override
     public void removeInput(IConnection connection) {
         Connection conn = null;
-        /**
-         * In case of the same deletion be executed multi times
-         */
-        if (connection instanceof Connection) {
-            conn = (Connection) connection;
-            if (conn.hasBeenStoredInputTable()) {
-                // In case of the same deletion be executed multi times
-                return;
-            }
-        }
         DBMapData externalEmfData = (DBMapData) getExternalEmfData();
         InputTable toRemove = null;
         for (InputTable inputTable : externalEmfData.getInputTables()) {
@@ -370,10 +360,6 @@ public class DbMapComponent extends AbstractMapComponent {
         }
         if (toRemove != null) {
             EList<InputTable> inputTableList = externalEmfData.getInputTables();
-            if (conn != null) {
-                conn.storeDeletedInputTable(toRemove);
-                conn.storeDeletedInputTableIndex(inputTableList.indexOf(toRemove));
-            }
             inputTableList.remove(toRemove);
             ExternalNodeUtils.prepareExternalNodeReadyToOpen(getExternalNode());
             IODataComponentContainer iContainer = getIODataComponents();
@@ -396,28 +382,15 @@ public class DbMapComponent extends AbstractMapComponent {
         if (eData == null) {
             return;
         }
-        if (connection instanceof Connection) {
-            // for now, it just be used to restore the inputTable which was deleted
-            // so, I add this judgment
-            // more information : TDI-29941
 
-            DBMapData externalEmfData = (DBMapData) eData;
-            Connection conn = (Connection) connection;
-            Object inputTable = conn.restoreDeletedInputTable();
-            if (inputTable instanceof InputTable) {
-                EList<InputTable> inputTableList = externalEmfData.getInputTables();
-                if (!inputTableList.contains(inputTable)) {
-                    inputTableList.add(conn.getInputTableDelIndex(), (InputTable) inputTable);
-                }
-                ExternalNodeUtils.prepareExternalNodeReadyToOpen(this);
-                IODataComponentContainer iContainer = getIODataComponents();
-                if (iContainer != null) {
-                    mapperMain.initIOConnections(iContainer);
-                    mapperMain.getMapperManager().initInternalData();
-                }
-                buildExternalData(externalEmfData);
-            }
+        DBMapData externalEmfData = (DBMapData) eData;
+        ExternalNodeUtils.prepareExternalNodeReadyToOpen(this);
+        IODataComponentContainer iContainer = getIODataComponents();
+        if (iContainer != null) {
+            mapperMain.initIOConnections(iContainer);
+            mapperMain.getMapperManager().initInternalData();
         }
+        buildExternalData(externalEmfData);
     }
 
     @Override

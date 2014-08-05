@@ -1565,11 +1565,6 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         removeTargetMetaData(connection);
-
-        // remove external Input
-        if (getExternalNode() instanceof AbstractNode) {
-            ((AbstractNode) getExternalNode()).removeInput(connection);
-        }
         calculateSubtreeStartAndEnd();
         fireStructureChange(INPUTS, connection);
     }
@@ -1644,11 +1639,6 @@ public class Node extends Element implements IGraphicalNode {
                 String label = table.getLabel();
                 IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(source, label);
                 if (metadataTable != null) {
-                    if (connection instanceof Connection) {
-                        Connection conn = (Connection) connection;
-                        conn.storeDeletedMetadataTable(metadataTable);
-                        conn.storeDeletedMetadataTableIndex(source.metadataList.indexOf(metadataTable));
-                    }
                     source.metadataList.remove(metadataTable);
                 }
             }

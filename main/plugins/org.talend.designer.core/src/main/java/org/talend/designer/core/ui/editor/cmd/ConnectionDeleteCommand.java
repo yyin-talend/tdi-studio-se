@@ -12,11 +12,15 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
@@ -35,6 +39,8 @@ public class ConnectionDeleteCommand extends Command {
 
     private List<Connection> connectionList;
 
+    private Map<Connection, ConnectionDeletedInfo> connectionDeletedInfosMap;
+
     /**
      * Initialisation of the command that will delete the given connection.
      * 
@@ -47,21 +53,29 @@ public class ConnectionDeleteCommand extends Command {
 
     @Override
     public void execute() {
+        connectionDeletedInfosMap = new HashMap<Connection, ConnectionDeleteCommand.ConnectionDeletedInfo>();
         Process process = (Process) connectionList.get(0).getSource().getProcess();
         for (Connection connection : connectionList) {
             boolean re = deleteExpendNode(connection);
             if (re) {
                 return;
             }
+            ConnectionDeletedInfo deletedInfo = new ConnectionDeletedInfo();
+            connectionDeletedInfosMap.put(connection, deletedInfo);
+
+            INode source = connection.getSource();
+            if (source != null) {
+                deletedInfo.metadataTable = connection.getMetadataTable();
+                List<IMetadataTable> metaList = source.getMetadataList();
+                if (metaList != null && deletedInfo.metadataTable != null) {
+                    deletedInfo.metadataTableIndex = metaList.indexOf(deletedInfo.metadataTable);
+                }
+            }
+
             connection.disconnect();
-            {
-                /**
-                 * Have been moved those codes to Connection.disconnect()/target.removeInput()
-                 */
-                // final INode target = connection.getTarget();
-                // if (target.getExternalNode() instanceof AbstractNode) {
-                // ((AbstractNode) target.getExternalNode()).removeInput(connection);
-                // }
+            final INode target = connection.getTarget();
+            if (target.getExternalNode() instanceof AbstractNode) {
+                ((AbstractNode) target.getExternalNode()).removeInput(connection);
             }
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
             nodeConnectorSource = connection.getSourceNodeConnector();
@@ -80,16 +94,22 @@ public class ConnectionDeleteCommand extends Command {
         Process process = (Process) connectionList.get(0).getSource().getProcess();
         for (Connection connection : connectionList) {
             collpseJoblet(connection);
-            connection.reconnect();
-            {
-                /**
-                 * Have been moved those codes to Connection.reconnect()
-                 */
-                // INode target = connection.getTarget();
-                // if (target.getExternalNode() instanceof AbstractNode) {
-                // ((AbstractNode) target.getExternalNode()).addInput(connection);
-                // }
+            ConnectionDeletedInfo deletedInfo = connectionDeletedInfosMap.get(connection);
+            if (deletedInfo != null) {
+                INode source = connection.getSource();
+                if (source != null && deletedInfo.metadataTable != null) {
+                    List<IMetadataTable> metaList = source.getMetadataList();
+                    if (!metaList.contains(deletedInfo.metadataTable)) {
+                        metaList.add(deletedInfo.metadataTableIndex, deletedInfo.metadataTable);
+                    }
+                }
             }
+            connection.reconnect();
+            INode target = connection.getTarget();
+            if (target.getExternalNode() instanceof AbstractNode) {
+                ((AbstractNode) target.getExternalNode()).addInput(connection);
+            }
+
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
             nodeConnectorSource = connection.getSourceNodeConnector();
             if (nodeConnectorSource != null) {
@@ -139,5 +159,13 @@ public class ConnectionDeleteCommand extends Command {
         if ((target instanceof Node) && ((Node) target).isJoblet()) {
             ((JobletContainer) ((Node) target).getNodeContainer()).setCollapsed(true);
         }
+    }
+
+    private class ConnectionDeletedInfo {
+
+        public int metadataTableIndex = -1;
+
+        public IMetadataTable metadataTable = null;
+
     }
 }
