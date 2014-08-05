@@ -2196,6 +2196,15 @@
               name="Add the gid use string parameter if not have, value=false"
               version="5.6.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.3.0"
+              class="org.talend.repository.model.migration.ChangeUseBatchSizetoFalse4AS400"
+              description="set the checkbox:USE_BATCH_SIZE to default from old jobs"
+              id="org.talend.repository.model.migration.ChangeUseBatchSizetoFalse4AS400"
+              name="ChangeUseBatchSizetoFalse4AS400"
+              version="5.3.3">
+        </projecttask>
    </extension>
 
    <extension
