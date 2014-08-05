@@ -394,12 +394,9 @@ public class ConnectionCreateCommand extends Command {
                         monitorConnection);
             }
         } else { // in case of redo, reuse the same instance
-            /**
-             * this resume has been moved to the Connection.reconnect(...), please see TDI-29941
-             */
-            // if (newMetadata != null) {
-            // source.getMetadataList().add(newMetadata);
-            // }
+            if (newMetadata != null) {
+                source.getMetadataList().add(newMetadata);
+            }
             connection.reconnect(source, target, newLineStyle);
         }
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
