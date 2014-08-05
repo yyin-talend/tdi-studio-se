@@ -23,9 +23,11 @@
   class="ComponentPartFooter"
   skeleton="subprocess_header_java.skeleton"     
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+log = new LogUtil(node);
 IProcess process = node.getProcess();
 String startNodeCid=node.getDesignSubjobStartNode().getUniqueName();
  
@@ -228,6 +230,7 @@ if((codePart.equals(ECodePart.END))&&(stat)){
   
  }
  if (codePart.equals(ECodePart.END)) {
+ log.endWork();
 %>
 
 ok_Hash.put("<%=node.getUniqueName() %>", true);
