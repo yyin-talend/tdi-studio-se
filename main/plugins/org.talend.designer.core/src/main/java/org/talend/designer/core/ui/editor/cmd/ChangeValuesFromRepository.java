@@ -264,7 +264,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             IElementParameter propertyParam = elem.getElementParameter(propertyName);
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                if (repositoryValue == null) {
+                if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+                    continue;
+                }
+                if (repositoryValue == null || param.getRepositoryProperty() != null
+                        && !param.getRepositoryProperty().equals(propertyParamName)) {
                     continue;
                 }
                 String componentName = elem instanceof INode ? (((INode) elem).getComponent().getName()) : null;

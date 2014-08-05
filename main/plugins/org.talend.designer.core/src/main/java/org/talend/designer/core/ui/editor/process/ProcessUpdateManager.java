@@ -1689,6 +1689,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     && !param.getRepositoryProperty().equals(curPropertyParam.getName())) {
                                 continue;
                             }
+                            if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+                                continue;
+                            }
                             String repositoryValue = param.getRepositoryValue();
                             String relatedComponent = node.getComponent().getName();
                             if ((repositoryValue != null)
@@ -2037,7 +2040,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                         if (onlySimpleShow || !sameValues) {
                             result = new UpdateCheckResult(node);
-                            result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE, repositoryConnection, source);
+                            result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE, item, source);
 
                         }
                         for (IElementParameter param : node.getElementParameters()) {
