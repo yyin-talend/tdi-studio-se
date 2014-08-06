@@ -67,7 +67,9 @@ public abstract class DbGenerationManager {
 
     protected String queryColumnsName = ""; //$NON-NLS-1$
 
-    protected String tabSpaceString = ""; //$NON-NLS-1$
+    protected String tabSpaceString = DEFAULT_TAB_SPACE_STRING;
+
+    private static final String DEFAULT_TAB_SPACE_STRING = ""; //$NON-NLS-1$
 
     /**
      * DOC amaumont GenerationManager constructor comment.
@@ -231,7 +233,7 @@ public abstract class DbGenerationManager {
      * @return
      */
     public String buildSqlSelect(DbMapComponent component, String outputTableName) {
-        return buildSqlSelect(component, outputTableName, ""); //$NON-NLS-1$
+        return buildSqlSelect(component, outputTableName, DEFAULT_TAB_SPACE_STRING);
     }
 
     protected String getFormatedTableName(String tName) {
@@ -501,27 +503,28 @@ public abstract class DbGenerationManager {
                 }
             }
         }
-
-        List<String> contextList = getContextList(component);
         String sqlQuery = sb.toString();
-        boolean haveReplace = false;
-        for (String context : contextList) {
-            if (sqlQuery.contains(context)) {
-                sqlQuery = sqlQuery.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
-                haveReplace = true;
-            }
-            if (queryColumnsName.contains(context)) {
-                queryColumnsName = queryColumnsName.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-        if (!haveReplace) {
-            List<String> connContextList = getConnectionContextList(component);
-            for (String context : connContextList) {
+        if (DEFAULT_TAB_SPACE_STRING.equals(tabSpaceString)) {
+            List<String> contextList = getContextList(component);
+            boolean haveReplace = false;
+            for (String context : contextList) {
                 if (sqlQuery.contains(context)) {
-                    sqlQuery = sqlQuery.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+                    sqlQuery = sqlQuery.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    haveReplace = true;
                 }
                 if (queryColumnsName.contains(context)) {
-                    queryColumnsName = queryColumnsName.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+                    queryColumnsName = queryColumnsName.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                }
+            }
+            if (!haveReplace) {
+                List<String> connContextList = getConnectionContextList(component);
+                for (String context : connContextList) {
+                    if (sqlQuery.contains(context)) {
+                        sqlQuery = sqlQuery.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    }
+                    if (queryColumnsName.contains(context)) {
+                        queryColumnsName = queryColumnsName.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    }
                 }
             }
         }
@@ -776,7 +779,10 @@ public abstract class DbGenerationManager {
                     externalNode = (DbMapComponent) source.getExternalNode();
                 }
                 DbGenerationManager genManager = externalNode.getGenerationManager();
+
+                /* the new tabSpaceString in subquery must not be same with the parent!!! */
                 String deliveredTable = genManager.buildSqlSelect(externalNode, tableName, tabSpaceString + "  "); //$NON-NLS-1$
+
                 int begin = 1;
                 int end = deliveredTable.length() - 1;
                 if (begin <= end) {
@@ -894,7 +900,7 @@ public abstract class DbGenerationManager {
                                         String schemaValue = tableEntry.getValue();
                                         if (tableLabel.equals(metadataTable.getLabel()) && tableColneName.equals(tableLabel)) {
                                             tableName = tableName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$//$NON-NLS-2$
-                                            expression = expression.replaceFirst(tableValue, schemaValue + "." + tableName);
+                                            expression = expression.replaceFirst(tableValue, schemaValue + "." + tableName); //$NON-NLS-1$
                                         }
                                     }
 
