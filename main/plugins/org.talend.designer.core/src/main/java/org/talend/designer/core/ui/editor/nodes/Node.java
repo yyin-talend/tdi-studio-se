@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.nodes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +57,6 @@ import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.metadata.types.TypesManager;
-import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -2536,8 +2536,13 @@ public class Node extends Element implements IGraphicalNode {
                     Problems.add(ProblemStatus.INFO, this, infoValue);
                 }
             }
+            List<IElementParameter> emptyParamList = Collections.emptyList();
+            Boolean noConditionOnShow = StringUtils.isEmpty(param.getShowIf()) && StringUtils.isEmpty(param.getNotShowIf());
+            // no condition on show means if the field is displayed or hidden all the time
+
             // if the parameter is required but empty, an error will be added
-            if (param.isRequired(getElementParameters()) && !param.isShow(getElementParameters()) && this.externalNode != null) {
+            if (param.isRequired(getElementParameters()) && !param.isShow(emptyParamList) && noConditionOnShow
+                    && this.externalNode != null) {
                 if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
@@ -2557,8 +2562,6 @@ public class Node extends Element implements IGraphicalNode {
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
-                    } else if ("tELTJDBCMap".equals(component.getName())) { //$NON-NLS-1$
-                        // don't check this here.
                     } else {
                         if (tableValues == null || tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
@@ -3812,8 +3815,7 @@ public class Node extends Element implements IGraphicalNode {
             if (tableRefs != null && 0 < tableRefs.size()) {
                 isReference = true;
             }
-            // needn't to do this flush
-            // this.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+            this.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
         return isReference;
     }
