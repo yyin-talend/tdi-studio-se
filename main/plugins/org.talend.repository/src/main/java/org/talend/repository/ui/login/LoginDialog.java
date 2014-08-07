@@ -43,8 +43,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
+import org.talend.commons.exception.OperationCancelException;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.exception.ResourceNotFoundException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -86,8 +86,6 @@ public class LoginDialog extends TrayDialog {
     private StackLayout stackLayout;
 
     private TOSLoginComposite tosLoginComposite;
-
-    private final static String CANCELLD = "Revert/Commit operation of modified item cancelled";
 
     /**
      * Construct a new LoginDialog.
@@ -399,7 +397,7 @@ public class LoginDialog extends TrayDialog {
         } catch (final InvocationTargetException e) {
             if (PluginChecker.isSVNProviderPluginLoaded()) {
                 loginComposite.populateProjectList();
-                if (e.getTargetException() instanceof ResourceNotFoundException) {
+                if (e.getTargetException() instanceof OperationCancelException) {
                     Display.getDefault().syncExec(new Runnable() {
 
                         @Override
