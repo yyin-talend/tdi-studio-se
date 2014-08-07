@@ -44,6 +44,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.ResourceNotFoundException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -398,8 +399,7 @@ public class LoginDialog extends TrayDialog {
         } catch (final InvocationTargetException e) {
             if (PluginChecker.isSVNProviderPluginLoaded()) {
                 loginComposite.populateProjectList();
-                if (e.getTargetException().getLocalizedMessage() != null
-                        && e.getTargetException().getLocalizedMessage().contains(CANCELLD)) {
+                if (e.getTargetException() instanceof ResourceNotFoundException) {
                     Display.getDefault().syncExec(new Runnable() {
 
                         @Override
