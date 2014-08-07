@@ -2540,6 +2540,17 @@ public class Node extends Element implements IGraphicalNode {
             Boolean noConditionOnShow = StringUtils.isEmpty(param.getShowIf()) && StringUtils.isEmpty(param.getNotShowIf());
             // no condition on show means if the field is displayed or hidden all the time
 
+            /**
+             * ***Some explain for the following check***
+             * 
+             * "if (param.isRequired(getElementParameters()) && !param.isShow(emptyParamList)" <br>
+             * 
+             * 1. in fact it's simply for components who have a table never displayed<br>
+             * like tAdvancedOutput / tRowGenerator etc<br>
+             * 2. as long as there is any show_if / not_show_if.... means there is no point to check any error here,
+             * since the table is not displayed with the current config of the component<br>
+             * 3. if table is always hidden, then we should force some checks
+             */
             // if the parameter is required but empty, an error will be added
             if (param.isRequired(getElementParameters()) && !param.isShow(emptyParamList) && noConditionOnShow
                     && this.externalNode != null) {
