@@ -31,15 +31,17 @@ import org.talend.commons.ui.gmf.draw2d.AnimatableZoomManager;
 /**
  * Modification of the default RootEditPart to add the possibility to change the color of the background and change the
  * grid.
- * 
+ *
  * $Id: TalendScalableFreeformRootEditPart.java 7038 2007-11-15 14:05:48Z plegall $
- * 
+ *
  */
 public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEditPart {
 
     public static final String PROCESS_BACKGROUND_LAYER = "processBackgroundLayer"; //$NON-NLS-1$
 
     public static final String SUBJOB_BACKGROUND_LAYER = "processBackgroundLayer"; //$NON-NLS-1$
+
+    public static final String MAP_REDUCE_LAYER = "mapReduceLayer"; //$NON-NLS-1$
 
     private IEditorInput editorInput;
 
@@ -86,12 +88,14 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
         return gridLayer;
     }
 
+    @Override
     protected ScalableFreeformLayeredPane createScaledLayers() {
         ScalableFreeformLayeredPane layers = new ScalableFreeformLayeredPane();
         layers.add(new FreeformLayer(), SUBJOB_BACKGROUND_LAYER);
         layers.add(new FreeformLayer(), PROCESS_BACKGROUND_LAYER);
         layers.add(createGridLayer(), GRID_LAYER);
         layers.add(getPrintableLayers(), PRINTABLE_LAYERS);
+        layers.add(new FreeformLayer(), MAP_REDUCE_LAYER);
         layers.add(new FeedbackLayer(), SCALED_FEEDBACK_LAYER);
         feedbackLayer = new FeedbackLayer();
         return layers;
@@ -99,9 +103,9 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
 
     /**
      * Modification fo the default Layer. <br/>
-     * 
+     *
      * $Id: TalendScalableFreeformRootEditPart.java 7038 2007-11-15 14:05:48Z plegall $
-     * 
+     *
      */
     class FeedbackLayer extends FreeformLayer {
 

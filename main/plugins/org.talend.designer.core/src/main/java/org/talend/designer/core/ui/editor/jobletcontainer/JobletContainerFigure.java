@@ -77,13 +77,16 @@ public class JobletContainerFigure extends Figure {
 
     private int ALPHA_VALUE = 100;
 
+    private IFigure parentMRFigure;
+
     /**
      * DOC hwang JobletContainerFigure constructor comment.
-     * 
+     *
      * @param model
      */
-    public JobletContainerFigure(final JobletContainer jobletContainer) {
+    public JobletContainerFigure(final JobletContainer jobletContainer, IFigure parentMRFigure) {
         setLayoutManager(new FreeformLayout());
+        this.parentMRFigure = parentMRFigure;
         this.jobletContainer = jobletContainer;
         isSubjobDisplay = this.jobletContainer.getSubjobContainer().isDisplayed();
         outlineFigure = new RoundedRectangle();
@@ -175,8 +178,8 @@ public class JobletContainerFigure extends Figure {
                 }
             }
         }
-        super.paint(graphics);
         refreshNodes(false);
+        super.paint(graphics);
     }
 
     boolean lastJobletRedState = false;
@@ -284,7 +287,6 @@ public class JobletContainerFigure extends Figure {
                 }
 
                 if (key.startsWith("reduce_")) {
-                    // if (!"".equals(jobletContainer.getMrName()) && jobletContainer.getMrName() != null) {
                     percent = jobletContainer.getPercentReduce() * 10;
                     if (this.jobletContainer.isMRGroupContainesReduce() && isSubjobDisplay) {
                         if (!value.isVisible()) {
@@ -293,14 +295,6 @@ public class JobletContainerFigure extends Figure {
                     } else if (value.isVisible()) {
                         value.setVisible(false);
                     }
-                    // for (NodeContainer nc : this.jobletContainer.getNodeContainers()) {
-                    // if (nc.getNode().isMrContainsReduce()) {
-                    // value.setVisible(true);
-                    // break;
-                    // }
-                    // }
-
-                    // }
                 }
 
                 if (value.isVisible()) {
@@ -321,18 +315,22 @@ public class JobletContainerFigure extends Figure {
             }
 
         }
-
+        initializejobletContainer(getBounds());
     }
 
+    private Point lastLocation = null;
+
     public void initializejobletContainer(Rectangle rectangle) {
-        // disposeColors();
         Point location = this.getLocation();
+        if (location.equals(lastLocation)) {
+            // avoid to calculate locations for nothing
+            return;
+        }
         collapseFigure.setCollapsed(jobletContainer.isCollapsed());
         collapseFigure.setVisible(this.jobletContainer.getNode().isJoblet());
         titleFigure.setText("<b> " + title + "</b>"); //$NON-NLS-1$ //$NON-NLS-2$
         Dimension preferedSize = titleFigure.getPreferredSize();
         preferedSize = preferedSize.getExpanded(0, 3);
-        // rectangle.width += 32;
 
         collapseFigure.setLocation(new Point(location.x, location.y));
         collapseFigure.setSize(preferedSize.height, preferedSize.height);
@@ -461,29 +459,13 @@ public class JobletContainerFigure extends Figure {
         }
     }
 
-    public void disposeColors() {
-        if (rectFig.getForegroundColor() != null && !rectFig.getForegroundColor().isDisposed()) {
-            rectFig.getForegroundColor().dispose();
-        }
-        if (rectFig.getBackgroundColor() != null && !rectFig.getBackgroundColor().isDisposed()) {
-            rectFig.getBackgroundColor().dispose();
-        }
-        if (outlineFigure.getForegroundColor() != null && !outlineFigure.getForegroundColor().isDisposed()) {
-            outlineFigure.getForegroundColor().dispose();
-        }
-        if (outlineFigure.getBackgroundColor() != null && !outlineFigure.getBackgroundColor().isDisposed()) {
-            outlineFigure.getBackgroundColor().dispose();
-        }
-
+    public void dispose() {
         Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
         while (ite.hasNext()) {
             Entry<String, SimpleHtmlFigure> entry = ite.next();
             SimpleHtmlFigure value = entry.getValue();
-            if (value.getForegroundColor() != null && !value.getForegroundColor().isDisposed()) {
-                value.getForegroundColor().dispose();
-            }
-            if (value.getBackgroundColor() != null && !value.getBackgroundColor().isDisposed()) {
-                value.getBackgroundColor().dispose();
+            if (parentMRFigure.getChildren().contains(value)) {
+                parentMRFigure.remove(value);
             }
         }
     }
@@ -522,7 +504,7 @@ public class JobletContainerFigure extends Figure {
             while (ite.hasNext()) {
                 Entry<String, SimpleHtmlFigure> entry = ite.next();
                 SimpleHtmlFigure value = entry.getValue();
-                getChildren().remove(value);
+                parentMRFigure.remove(value);
             }
             mrFigures.clear();
         }
@@ -531,7 +513,7 @@ public class JobletContainerFigure extends Figure {
             while (ite.hasNext()) {
                 Entry<String, SimpleHtmlFigure> entry = ite.next();
                 SimpleHtmlFigure value = entry.getValue();
-                add(value, null, 2);
+                parentMRFigure.add(value);
             }
         }
 
