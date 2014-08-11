@@ -55,6 +55,10 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 
     private final String jobVersion;
 
+    protected JobExportType exportType;
+
+    private JobScriptsManager jobScriptsManager;
+
     public AbstractPublishJobAction(IRepositoryNode node, String groupId, String artifactName, String artifactVersion,
             String bundleVersion, String jobVersion) {
         this.node = node;
@@ -63,25 +67,50 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
         this.artifactVersion = artifactVersion;
         this.jobVersion = jobVersion;
         this.bundleVersion = bundleVersion;
+        this.exportType = JobExportType.OSGI;
+    }
+
+    public AbstractPublishJobAction(IRepositoryNode node, String groupId, String artifactName, String artifactVersion,
+            String bundleVersion, String jobVersion, JobExportType exportType, JobScriptsManager jobScriptsManager) {
+        this(node, groupId, artifactName, artifactVersion, bundleVersion, jobVersion);
+        this.jobScriptsManager = jobScriptsManager;
     }
 
     protected abstract void process(ProcessItem processItem, FeaturesModel featuresModel, IProgressMonitor monitor)
             throws IOException;
 
+    @Override
     public final void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         File tmpJob;
         try {
-            tmpJob = File.createTempFile("job", ".jar", null);
+            switch (exportType) {
+            case POJO:
+                tmpJob = File.createTempFile("item", ".zip", null);
+                break;
+            case OSGI:
+                tmpJob = File.createTempFile("job", ".jar", null);
+                break;
+            default:
+                tmpJob = File.createTempFile("job", ".jar", null);
+                break;
+            }
         } catch (IOException e) {
             throw new InvocationTargetException(e);
         }
-        // generate
-        JobScriptsManager manager = JobScriptsManagerFactory.createManagerInstance(
-                JobScriptsManagerFactory.getDefaultExportChoiceMap(), IContext.DEFAULT, JobScriptsManager.LAUNCHER_ALL,
-                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, JobExportType.OSGI);
-        manager.setDestinationPath(tmpJob.getAbsolutePath());
-        JobExportAction action = new JobExportAction(Collections.singletonList(node), jobVersion, bundleVersion, manager,
-                System.getProperty("java.io.tmpdir"));
+        JobExportAction action = null;
+        if (exportType == JobExportType.OSGI) {
+            jobScriptsManager = JobScriptsManagerFactory.createManagerInstance(
+                    JobScriptsManagerFactory.getDefaultExportChoiceMap(), IContext.DEFAULT, JobScriptsManager.LAUNCHER_ALL,
+                    IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, JobExportType.OSGI);
+            // generate
+            jobScriptsManager.setDestinationPath(tmpJob.getAbsolutePath());
+            action = new JobExportAction(Collections.singletonList(node), jobVersion, bundleVersion, jobScriptsManager,
+                    System.getProperty("java.io.tmpdir"));
+        } else {
+            jobScriptsManager.setDestinationPath(tmpJob.getAbsolutePath());
+            action = new JobExportAction(Collections.singletonList(node), jobVersion, jobScriptsManager, null, "job");
+        }
+
         action.run(monitor);
         if (!action.isBuildSuccessful()) {
             return;
@@ -108,8 +137,8 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 
             Collection<NodeType> tIPaasComponents = EmfModelUtils.getComponentsByName(processItem, "tActionInput",
                     "tActionOutput");
-            if (!tIPaasComponents.isEmpty()) {
-                addMissingBundles(featuresModel, ((JobJavaScriptOSGIForESBManager) manager).getExcludedModuleNeededs());
+            if (!tIPaasComponents.isEmpty() && exportType == JobExportType.OSGI) {
+                addMissingBundles(featuresModel, ((JobJavaScriptOSGIForESBManager) jobScriptsManager).getExcludedModuleNeededs());
             }
 
             process(processItem, featuresModel, monitor);
