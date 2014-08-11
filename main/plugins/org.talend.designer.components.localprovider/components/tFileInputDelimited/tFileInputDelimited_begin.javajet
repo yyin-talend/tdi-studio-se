@@ -204,7 +204,10 @@
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-					isDecodeNumber = ("true").equals(decodeClns.get(valueN).get("DECODE"))?"true":"false";
+					
+					if (decodeClns != null && decodeClns.size() > valueN) { // to avoid the wizard doesn't initialize the table
+						isDecodeNumber = ("true").equals(decodeClns.get(valueN).get("DECODE"))?"true":"false";
+					}
 					if(metadata.isDynamicSchema()){
 					%>
 					columnIndexWithD_<%=cid%> = <%=valueN-1%>+dynamic_column_count_<%=cid%>;
@@ -741,7 +744,9 @@
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-						isDecodeNumber = ("true").equals(decodeClns.get(i).get("DECODE"))?"true":"false";
+						if (decodeClns !=null && decodeClns.size() > i) { 
+							isDecodeNumber = ("true").equals(decodeClns.get(i).get("DECODE"))?"true":"false";
+						}
 						if(metadata.isDynamicSchema()){
 						%>
 						columnIndexWithD_<%=cid%> = <%=i-1 %> + dynamic_column_count_<%=cid%>;

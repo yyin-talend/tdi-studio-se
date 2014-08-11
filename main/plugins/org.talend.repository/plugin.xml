@@ -5,6 +5,7 @@
    <extension-point id="projectsetting_page" name="Project Setting Page" schema="schema/projectsetting_page.exsd"/>
    <extension-point id="repository_menu_provider" name="Repository Menu Provider" schema="schema/repository_menu_provider.exsd"/>
       <extension-point id="after_import_project_action" name="after import project action" schema="schema/after_import_project_action.exsd"/>
+      <extension-point id="org.talend.repository.ui.wizards.exportjob.extrachecker" name="Extra Build Job Checker" schema="schema/org.talend.repository.ui.wizards.exportjob.extraBuildChecker.exsd"/>
    <extension
          point="org.eclipse.ui.views">
    <!--
@@ -2195,6 +2196,15 @@
               name="Add the gid use string parameter if not have, value=false"
               version="5.6.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.3.0"
+              class="org.talend.repository.model.migration.ChangeUseBatchSizetoFalse4AS400"
+              description="set the checkbox:USE_BATCH_SIZE to default from old jobs"
+              id="org.talend.repository.model.migration.ChangeUseBatchSizetoFalse4AS400"
+              name="ChangeUseBatchSizetoFalse4AS400"
+              version="5.3.3">
+        </projecttask>
    </extension>
 
    <extension
@@ -2382,6 +2392,18 @@
             name="SQL Template"
             priority="normal">
       </linker>
+   </extension>
+   <extension
+         point="org.talend.repository.ui.wizards.exportjob.extrachecker">
+      <ExtraBuildChecker
+            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.BanSoapServiceJobChecker">
+      </ExtraBuildChecker>
+      <ExtraBuildChecker
+            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.LimitRESTRequestJobChecker">
+      </ExtraBuildChecker>
+      <ExtraBuildChecker
+            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.LimitESBConsumerJobChecker">
+      </ExtraBuildChecker>
    </extension>
 
 </plugin>

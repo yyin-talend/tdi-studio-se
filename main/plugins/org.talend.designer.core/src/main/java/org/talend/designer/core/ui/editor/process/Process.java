@@ -1058,6 +1058,23 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     pType.getElementValue().add(elementValue);
                 }
             }
+        } else if (param.getFieldType().equals(EParameterFieldType.TABLE_BY_ROW) && value != null) {
+            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
+            for (Map<String, Object> currentLine : tableValues) {
+                Iterator it = currentLine.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = (String) it.next();
+                    if (!(currentLine.get(key) instanceof String)) {
+                        continue;
+                    }
+                    String expression = (String) currentLine.get(key);
+
+                    ElementValueType elementValue = fileFact.createElementValueType();
+                    elementValue.setElementRef(key);
+                    elementValue.setValue(expression);
+                    pType.getElementValue().add(elementValue);
+                }
+            }
         } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD) && value instanceof String) {
             try {
                 pType.setValue(PasswordEncryptUtil.encryptPassword((String) value) + PasswordEncryptUtil.ENCRYPT_KEY);
@@ -1209,6 +1226,17 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                             }
                         }
 
+                        elemParam.setPropertyValue(pType.getName(), tableValues);
+                    } else if (param.getFieldType().equals(EParameterFieldType.TABLE_BY_ROW)) {
+                        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                        Map<String, Object> lineValues = null;
+                        for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
+                            if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
+                                lineValues = new HashMap<String, Object>();
+                                tableValues.add(lineValues);
+                            }
+                            lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                        }
                         elemParam.setPropertyValue(pType.getName(), tableValues);
                     } else if (param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
                         // fix for bug 2193
@@ -3357,7 +3385,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         if (editor != null && !duplicate) {
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.addCommandStackEventListener(commandStackEventListener);
-            getUpdateManager().updateAll();
+            if (!isReadOnly()) { // when readonly. don't check the modifications.
+                getUpdateManager().updateAll();
+            }
             // ProjectPreferences projectPreferences = (ProjectPreferences) Log4jPrefsSettingManager.getInstance()
             // .getLog4jPreferences(Log4jPrefsConstants.LOG4J_ENABLE_NODE, false);
             IEclipsePreferences projectPreferences = (IEclipsePreferences) Log4jPrefsSettingManager.getInstance()
@@ -3451,14 +3481,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             // this one will be reaffected to a new subjob after
             if (node == null || !node.isDesignSubjobStartNode()) {
                 // for bug 13314
-                if (node == null
-                        || !(node.getOutgoingConnections(EConnectionType.TABLE).size() != 0 || node.getIncomingConnections(
-                                EConnectionType.TABLE).size() != 0)) {
-                    elem.addAll(sjc.getNodeContainers());
-                    sjc.getNodeContainers().clear();
-                    elem.remove(sjc);
-                    subjobContainers.remove(sjc);
-                }
+                // if (node == null
+                // || !(node.getOutgoingConnections(EConnectionType.TABLE).size() != 0 || node.getIncomingConnections(
+                // EConnectionType.TABLE).size() != 0)
+                // ) {
+                elem.addAll(sjc.getNodeContainers());
+                sjc.getNodeContainers().clear();
+                elem.remove(sjc);
+                subjobContainers.remove(sjc);
+                // }
                 // subjob are never removed from the map, so if the user do any "undo"
                 // the name of the subjob or configuration will be kept.
             } else {
