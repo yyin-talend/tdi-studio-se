@@ -529,6 +529,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         } else if (elem instanceof SubjobContainer) {
             label = Messages.getString("ComponentSettingsView.subjob"); //$NON-NLS-1$
             image = ImageProvider.getImage(EImage.PASTE_ICON);
+        } else if (elem instanceof ConnectionLabel) {
+            label = ((ConnectionLabel) elem).getConnection().getElementName();
+            image = ImageProvider.getImage(EImage.RIGHT_ICON);
         }
         tabFactory.setTitle(label, image);
         super.setTitleToolTip(label);
