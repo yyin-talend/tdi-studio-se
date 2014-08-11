@@ -1546,6 +1546,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName())) {
             dir = getParameterValueWithContext(element, EConnectionParameterName.DBPATH.getName(), context);
         }
+        if (connParameters.getSchema() == null || connParameters.getSchema().equals("")) {
+            if (EDatabaseTypeName.IBMDB2.getDisplayName().equals(dbType)
+                    || EDatabaseTypeName.IBMDB2ZOS.getDisplayName().equals(dbType)) {
+                connParameters.setSchema(getParameterValueWithContext(element, EParameterName.SCHEMA_DB_DB2.getDisplayName(),
+                        context));
+            }
+        }
         connParameters.setDirectory(dir);
         connParameters.setHttps(Boolean.parseBoolean(getParameterValueWithContext(element,
                 EConnectionParameterName.HTTPS.getName(), context)));
