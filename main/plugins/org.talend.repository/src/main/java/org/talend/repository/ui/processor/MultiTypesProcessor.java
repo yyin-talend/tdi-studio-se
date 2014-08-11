@@ -12,9 +12,11 @@
 // ============================================================================
 package org.talend.repository.ui.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.talend.core.GlobalServiceRegister;
@@ -28,9 +30,8 @@ import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.nodes.IProjectRepositoryNode;
-import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
 
 /**
  * ggu class global comment. Detailled comment
@@ -38,6 +39,8 @@ import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
 public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
 
     protected String[] repositoryTypes;
+
+    protected List<ERepositoryObjectType> typesToShow;
 
     public MultiTypesProcessor(String[] repositoryTypes) {
         super();
@@ -50,9 +53,39 @@ public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
 
     protected abstract List<ERepositoryObjectType> getTypes();
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryTypeProcessor#getShowTypes()
+     */
     @Override
-    public IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode) {
-        return RecombineRepositoryNodeUtil.getFixingTypesInputRoot(projectRepoNode, getTypes());
+    public List<ERepositoryObjectType> getShowRootTypes() {
+        if (typesToShow == null) {
+            List<ERepositoryObjectType> types = getTypes();
+            typesToShow = new ArrayList<ERepositoryObjectType>();
+            // add fixed type to typesToShow
+            typesToShow.add(ERepositoryObjectType.REFERENCED_PROJECTS);
+            // add types and it's parent type to typesToShow
+            for (ERepositoryObjectType type : types) {
+                if (type != null && !typesToShow.contains(type)) {
+                    typesToShow.add(type);
+                    addParentTypes(typesToShow, type);
+                }
+            }
+        }
+
+        return typesToShow;
+    }
+
+    private void addParentTypes(List<ERepositoryObjectType> typesToShow, ERepositoryObjectType typeToCheck) {
+        if (typeToCheck.getParentTypesArray() != null) {
+            for (ERepositoryObjectType type : typeToCheck.getParentTypesArray()) {
+                if (!typesToShow.contains(type)) {
+                    typesToShow.add(type);
+                }
+                addParentTypes(typesToShow, type);
+            }
+        }
     }
 
     @Override
@@ -75,6 +108,21 @@ public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
+                if (parentElement instanceof TreePath) {
+                    parentElement = ((TreePath) parentElement).getFirstSegment();
+                }
+                if (element instanceof RepositoryNode) {
+                    RepositoryNode repNode = (RepositoryNode) element;
+                    if (repNode.getParent() instanceof ProjectRepositoryNode) {
+                        // filter root nodes by type:
+                        ERepositoryObjectType type = (ERepositoryObjectType) repNode.getProperties(EProperties.CONTENT_TYPE);
+                        if (!getShowRootTypes().contains(type)) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
                 return selectRepositoryNode(viewer, (RepositoryNode) parentElement, (RepositoryNode) element);
             }
         };
