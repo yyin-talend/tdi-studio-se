@@ -1156,7 +1156,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                                         // e.printStackTrace();
                                         ExceptionHandler.process(e);
                                     }
-                                    nameMap.clear();
                                     manager.setModified(false);
                                 }
                             });
