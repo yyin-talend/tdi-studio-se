@@ -111,7 +111,7 @@ public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
                 if (parentElement instanceof TreePath) {
                     parentElement = ((TreePath) parentElement).getFirstSegment();
                 }
-                if (element instanceof RepositoryNode) {
+                if (parentElement instanceof RepositoryNode && element instanceof RepositoryNode) {
                     RepositoryNode repNode = (RepositoryNode) element;
                     if (repNode.getParent() instanceof ProjectRepositoryNode) {
                         // filter root nodes by type:
@@ -122,8 +122,10 @@ public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
                             return true;
                         }
                     }
+                    return selectRepositoryNode(viewer, (RepositoryNode) parentElement, (RepositoryNode) element);
+                } else {
+                    return false;
                 }
-                return selectRepositoryNode(viewer, (RepositoryNode) parentElement, (RepositoryNode) element);
             }
         };
     }
