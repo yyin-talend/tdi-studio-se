@@ -371,21 +371,26 @@ public class TOSLoginComposite extends Composite {
         this.projectListViewer.setContentProvider(new TableViewerContentProvider());
         this.projectListViewer.setLabelProvider(new ILabelProvider() {
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
 
                 return false;
 
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public String getText(Object element) {
 
                 if (element != null) {
@@ -396,6 +401,7 @@ public class TOSLoginComposite extends Composite {
                 return null;
             }
 
+            @Override
             public Image getImage(Object element) {
 
                 return null;
@@ -534,7 +540,7 @@ public class TOSLoginComposite extends Composite {
                     int index = 0;
                     Collections.sort(allProjects);
                     for (int i = 0; i < allProjects.size(); i++) {
-                        String projectName = (String) allProjects.get(i);
+                        String projectName = allProjects.get(i);
                         if (project.getLabel().equals(projectName)) {
                             index = i;
                             break;
@@ -624,6 +630,7 @@ public class TOSLoginComposite extends Composite {
                 try {
                     IRunnableWithProgress op = new IRunnableWithProgress() {
 
+                        @Override
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                             try {
                                 ProxyRepositoryFactory.getInstance().initialize();
@@ -731,6 +738,7 @@ public class TOSLoginComposite extends Composite {
         this.projectListViewer.getList().removeAll();
 
         projectsMap.clear();
+        convertorMapper.clear();
         if (projects != null) {
             for (Project pro : projects) {
                 convertorMapper.put(pro.getTechnicalLabel(), pro.getLabel());
