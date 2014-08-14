@@ -764,7 +764,8 @@ public class Connection extends Element implements IConnection, IPerformance {
 
             this.name = name;
 
-            if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
+            if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.TABLE_REF)
+                    && !lineStyle.equals(EConnectionType.ITERATE)) {
                 if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
                         EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH, EConnectionType.STARTS)
@@ -791,7 +792,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             }
 
-            if (source != null && (lineStyle == EConnectionType.TABLE)) {
+            if (source != null && (lineStyle == EConnectionType.TABLE || lineStyle == EConnectionType.TABLE_REF)) {
                 IMetadataTable table = getMetadataTable();
                 table.setLabel(name);
             }
@@ -823,14 +824,19 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (sourceNodeConnector == null) {
             return;
         }
-        if (getLineStyle().equals(EConnectionType.TABLE)) {
+        if (getLineStyle() == EConnectionType.TABLE || getLineStyle() == EConnectionType.TABLE_REF) {
             if (outputId >= 0) {
                 labelText += " (" + metaName + ", order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             } else {
                 labelText += " (" + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
-        } else if (getLineStyle().equals(EConnectionType.FLOW_MAIN) || getLineStyle().equals(EConnectionType.FLOW_REF)) {
+        }
+        // else if (getLineStyle().equals(EConnectionType.TABLE_REF)) {
+        //            labelText += " (" + EConnectionType.TABLE_REF.getDefaultLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        // updateName = true;
+        // }
+        else if (getLineStyle().equals(EConnectionType.FLOW_MAIN) || getLineStyle().equals(EConnectionType.FLOW_REF)) {
             if (sourceNodeConnector.getDefaultConnectionType().equals(getLineStyle())) { // if it's the standard
                 // link
                 if (outputId >= 0) {
@@ -1030,7 +1036,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     @Override
     public void reconnect() {
         if (!isConnected) {
-            if (lineStyle.equals(EConnectionType.TABLE)) {
+            if (lineStyle == EConnectionType.TABLE || lineStyle == EConnectionType.TABLE_REF) {
                 if (uniqueName == null) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_TABLE_CONNECTION_NAME);
                 }
@@ -1061,8 +1067,8 @@ public class Connection extends Element implements IConnection, IPerformance {
                     uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
                 }
             }
-            if ((lineStyle.equals(EConnectionType.TABLE) && getSourceNodeConnector().isMultiSchema())
-                    || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
+            if (((lineStyle == EConnectionType.TABLE || lineStyle == EConnectionType.TABLE_REF) && getSourceNodeConnector()
+                    .isMultiSchema()) || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                 if (target.getJobletNode() == null && target.getProcess().checkValidConnectionName(uniqueName)) {
                     target.getProcess().addUniqueConnectionName(uniqueName);
                 } else if (source.getJobletNode() == null && source.getProcess().checkValidConnectionName(uniqueName)) {
@@ -1805,5 +1811,4 @@ public class Connection extends Element implements IConnection, IPerformance {
     public ConnectionResuming getResuming() {
         return this.resuming;
     }
-
 }

@@ -1151,6 +1151,15 @@
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.5.1"
+             class="org.talend.repository.model.migration.AddDieOnErrorOnSqoopComponents"
+             description="Add the die on error and reverse its value on Sqoop components"
+             id="org.talend.repository.model.migration.AddDieOnErrorOnSqoopComponents"
+             name="Add a option and reverse its value on FS components"
+             version="5.4.1">
+       </projecttask>
+       <projecttask
+             beforeLogon="false"
              breaks="5.1.1"
              class="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskBug8562"
              description="Change tSalesforceOutput Extened Ouput Default Value to true"
@@ -2196,6 +2205,15 @@
               name="Add the gid use string parameter if not have, value=false"
               version="5.6.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.3.0"
+              class="org.talend.repository.model.migration.ChangeUseBatchSizetoFalse4AS400"
+              description="set the checkbox:USE_BATCH_SIZE to default from old jobs"
+              id="org.talend.repository.model.migration.ChangeUseBatchSizetoFalse4AS400"
+              name="ChangeUseBatchSizetoFalse4AS400"
+              version="5.3.3">
+        </projecttask>
    </extension>
 
    <extension
@@ -2390,7 +2408,10 @@
             ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.BanSoapServiceJobChecker">
       </ExtraBuildChecker>
       <ExtraBuildChecker
-            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.LimitESBJobChecker">
+            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.LimitRESTRequestJobChecker">
+      </ExtraBuildChecker>
+      <ExtraBuildChecker
+            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.LimitESBConsumerJobChecker">
       </ExtraBuildChecker>
    </extension>
 

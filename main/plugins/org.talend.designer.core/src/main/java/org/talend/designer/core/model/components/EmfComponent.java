@@ -50,8 +50,6 @@ import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
@@ -67,7 +65,6 @@ import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.InstallModule;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -85,7 +82,6 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -95,6 +91,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.service.IComponentsLocalProviderService;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.componentsettings.ComponentsSettingsHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
@@ -131,7 +128,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
- * 
+ *
  * Component manager that read each information in a xml file with Emf. <br/>
  * $Id$
  */
@@ -419,7 +416,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC nrousseau Comment method "checkSchemaParameter".
-     * 
+     *
      * @param listParam
      */
     private void checkSchemaParameter(List<ElementParameter> listParam, INode node) {
@@ -579,7 +576,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC ycbai Comment method "addValidationRulesParameters".
-     * 
+     *
      * @param listParam
      * @param node
      */
@@ -611,7 +608,7 @@ public class EmfComponent extends AbstractComponent {
         parentParam.setNumRow(rowNb);
         parentParam.setReadOnly(false);
         parentParam.setShow(true);
-        parentParam.setShowIf(EParameterName.VALIDATION_RULES.getName() + " == 'true'"); //$NON-NLS-1$ 
+        parentParam.setShowIf(EParameterName.VALIDATION_RULES.getName() + " == 'true'"); //$NON-NLS-1$
         parentParam.setContext(context);
         parentParam.setRepositoryValue(ERepositoryCategoryType.VALIDATIONRULES.getName());
         parentParam.setValue("");
@@ -751,7 +748,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * yzhang Comment method "getSQLPatternItem".
-     * 
+     *
      * @param sqlpatternName
      * @param eltNodeName
      * @return
@@ -780,7 +777,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC bqian Comment method "getSqlPatternsByDB".
-     * 
+     *
      * @param db
      * @return
      */
@@ -808,7 +805,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * yzhang Comment method "getNodeFormatId".
-     * 
+     *
      * @param nodeLabel
      * @param nodeFamily
      * @return
@@ -1265,7 +1262,11 @@ public class EmfComponent extends AbstractComponent {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROPERTY_TYPE.getName());
-            newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+            String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME); //$NON-NLS-1$
+            if (displayName.startsWith("!!")) { //$NON-NLS-1$
+                displayName = EParameterName.PROPERTY_TYPE.getDisplayName();
+            }
+            newParam.setDisplayName(displayName);
             if (node.getComponent() != null && node.getComponent().getName().equals("tOracleConnection")) {
                 newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TEXT_TNS_FILE });
                 newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
@@ -1318,7 +1319,7 @@ public class EmfComponent extends AbstractComponent {
             boolean useInputLinkSelection = connectorUseInputLinkSelection(context);
 
             String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME); //$NON-NLS-1$
-            if (displayName.startsWith("!!")) { //$NON-NLS-1$ 
+            if (displayName.startsWith("!!")) { //$NON-NLS-1$
                 displayName = EParameterName.SCHEMA_TYPE.getDisplayName();
             }
 
@@ -1638,7 +1639,15 @@ public class EmfComponent extends AbstractComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setReadOnlyIf(xmlParam.getREADONLYIF());
             param.setNotReadOnlyIf(xmlParam.getNOTREADONLYIF());
-            param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
+            if (xmlParam.getREPOSITORYVALUE() != null) {
+                if (xmlParam.getREPOSITORYVALUE().contains("/")) { //$NON-NLS-1$
+                    String values[] = xmlParam.getREPOSITORYVALUE().split("/"); //$NON-NLS-1$
+                    param.setRepositoryProperty(values[0]);
+                    param.setRepositoryValue(values[1]);
+                } else {
+                    param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
+                }
+            }
             param.setGroup(xmlParam.getGROUP());
             param.setContext(xmlParam.getCONTEXT());
             param.setBackgroundColor(getColor(param, xmlParam.getBACKGROUND()));
@@ -1662,6 +1671,9 @@ public class EmfComponent extends AbstractComponent {
                 param.setValue(new Boolean(false));
                 break;
             case TABLE:
+                param.setValue(new ArrayList<Map<String, Object>>());
+                break;
+            case TABLE_BY_ROW:
                 param.setValue(new ArrayList<Map<String, Object>>());
                 break;
             case SCHEMA_TYPE:
@@ -1930,7 +1942,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * yzhang Comment method "getColor".
-     * 
+     *
      * @param param
      * @param color
      */
@@ -2078,7 +2090,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC nrousseau Comment method "initializePropertyParameters".
-     * 
+     *
      * @param listParam
      */
     private void initializePropertyParameters(List<ElementParameter> listParam) {
@@ -2172,7 +2184,7 @@ public class EmfComponent extends AbstractComponent {
     /**
      * Sometimes the property parameters of schema are base on other parameters,but they might be initialized after the
      * schema. So there need to initialize the schema's again.
-     * 
+     *
      * @param listParam
      */
     private void initializePropertyParametersForSchema(List<ElementParameter> listParam) {
@@ -2285,7 +2297,8 @@ public class EmfComponent extends AbstractComponent {
             if (type == EParameterFieldType.ROUTE_COMPONENT_TYPE) {
                 listItemsValue[k] = new String[] { item.getNAME(), item.getFILTER() };
                 // {component name, attributes filter}
-            } else if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
+            } else if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE
+                    && type != EParameterFieldType.TABLE_BY_ROW) {
                 listItemsValue[k] = item.getVALUE();
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
@@ -2823,24 +2836,7 @@ public class EmfComponent extends AbstractComponent {
         if (visible != null) {
             return visible;
         }
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
-
-        List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
-        for (ComponentSetting componentSetting : components) {
-            // remove the check of family since in all case the GUI won't care about the name of family in
-            // PaletteSettingPage, the components will be hidden in each family
-            if (/*
-                 * componentSetting.getFamily() != null && componentSetting.getFamily().equals(family) &&
-                 */componentSetting.getName().equals(getName())) {
-                return !componentSetting.isHidden();
-            }
-
-        }
-
-        // return compType.getHEADER().isVISIBLE();
-        return true;
+        return ComponentsSettingsHelper.isComponentVisible(this, family);
     }
 
     @Override
@@ -3077,7 +3073,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC nrousseau Comment method "loadMultipleComponentManagerFromTemplates".
-     * 
+     *
      * @return
      */
     private ArrayList<IMultipleComponentManager> createMultipleComponentManagerFromTemplates() {
@@ -3193,7 +3189,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for icon16.
-     * 
+     *
      * @return the icon16
      */
     @Override
@@ -3213,7 +3209,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for icon24.
-     * 
+     *
      * @return the icon24
      */
     @Override
@@ -3233,7 +3229,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for icon32.
-     * 
+     *
      * @return the icon32
      */
     @Override
@@ -3394,8 +3390,8 @@ public class EmfComponent extends AbstractComponent {
         EList parameters = compType.getPARAMETERS().getPARAMETER();
         for (Object parameter : parameters) {
             pType = (PARAMETERType) parameter;
-            if ("SCHEMA_TYPE".equals(pType.getFIELD()) && !pType.isREADONLY() && //$NON-NLS-1$ 
-                    (pType.getCONTEXT() == null || "FLOW".equals(pType.getCONTEXT()))) { //$NON-NLS-1$ 
+            if ("SCHEMA_TYPE".equals(pType.getFIELD()) && !pType.isREADONLY() && //$NON-NLS-1$
+                    (pType.getCONTEXT() == null || "FLOW".equals(pType.getCONTEXT()))) { //$NON-NLS-1$
                 useSchema = true;
                 break;
             }
@@ -3530,7 +3526,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * there only search in the <ADVANCEDPARAMETERS/> node, it can be a little faster.
-     * 
+     *
      * @see org.talend.core.model.components.IComponent#useImport()
      */
     @Override
@@ -3659,7 +3655,7 @@ public class EmfComponent extends AbstractComponent {
     /**
      * get this component's repository type <br>
      * see <PARAMETER NAME="PROPERTY" ...> in the component's xml definition.
-     * 
+     *
      * @return
      */
     @Override
@@ -3702,7 +3698,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * return the common ComponentResourceFactoryImpl to retreive component resource from URI
-     * 
+     *
      * @return factoryImpl
      */
     // here we are using soft references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
@@ -3718,7 +3714,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * return the common ComponentResourceFactoryImpl to retreive component resource from URI
-     * 
+     *
      * @return factoryImpl
      */
     // here we are using soft references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
@@ -3739,7 +3735,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Sets the visible.
-     * 
+     *
      * @param visible the visible to set
      */
     public void setVisible(Boolean visible) {
@@ -3748,7 +3744,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Sets the technical.
-     * 
+     *
      * @param technical the technical to set
      */
     public void setTechnical(Boolean technical) {
@@ -3783,7 +3779,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for type.
-     * 
+     *
      * @return the type
      */
     @Override
@@ -3811,7 +3807,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for reduce.
-     * 
+     *
      * @return the reduce
      */
     @Override
@@ -3844,7 +3840,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for provider.
-     * 
+     *
      * @return the provider
      */
     public AbstractComponentsProvider getProvider() {
@@ -3853,7 +3849,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Sets the provider.
-     * 
+     *
      * @param provider the provider to set
      */
     public void setProvider(AbstractComponentsProvider provider) {
@@ -3863,5 +3859,53 @@ public class EmfComponent extends AbstractComponent {
     @Override
     public boolean isSupportDbType() {
         return compType.getHEADER().isSUPPORTS_DB_TYPE();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+        result = prime * result + ((this.getPaletteType() == null) ? 0 : this.getPaletteType().hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        EmfComponent other = (EmfComponent) obj;
+        if (this.name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!this.name.equals(other.name)) {
+            return false;
+        }
+        if (this.getPaletteType() == null) {
+            if (other.getPaletteType() != null) {
+                return false;
+            }
+        } else if (!this.getPaletteType().equals(other.getPaletteType())) {
+            return false;
+        }
+        return true;
     }
 }
