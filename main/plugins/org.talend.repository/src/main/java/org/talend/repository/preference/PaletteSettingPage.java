@@ -80,6 +80,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.preference.palettesettings.ComponentPaletteItem;
 import org.talend.repository.preference.palettesettings.FolderPaletteItem;
 import org.talend.repository.preference.palettesettings.PaletteItemHelper;
+import org.talend.repository.preference.palettesettings.RootPaletteItem;
 import org.talend.repository.ui.actions.ShowStandardAction;
 
 /**
@@ -157,7 +158,56 @@ public class PaletteSettingPage extends ProjectSettingPage {
      * @param parent
      */
     private void addTreeViewer(ThreeCompositesSashForm parent) {
+        ViewerSorter sorter = new ViewerSorter() {
 
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
+             * java.lang.Object, java.lang.Object)
+             */
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2) {
+                if (e1 instanceof ComponentPaletteItem && e2 instanceof ComponentPaletteItem) {
+                    return super.compare(viewer, ((IPaletteItem) e1).getLabel(), ((IPaletteItem) e2).getLabel());
+                } else if (e1 instanceof FolderPaletteItem && e2 instanceof FolderPaletteItem) {
+                    return super.compare(viewer, ((IPaletteItem) e1).getLabel(), ((IPaletteItem) e2).getLabel());
+                } else if (e1 instanceof ComponentPaletteItem && e2 instanceof FolderPaletteItem) {
+                    return 1;
+                } else if (e1 instanceof FolderPaletteItem && e2 instanceof ComponentPaletteItem) {
+                    return -1;
+                } else if (e1 instanceof RootPaletteItem && e2 instanceof RootPaletteItem) {
+                    if (((IPaletteItem) e1).getPaletteType() == ComponentCategory.CATEGORY_4_DI) {
+                        return -1; // up
+                    } else if (((IPaletteItem) e2).getPaletteType() == ComponentCategory.CATEGORY_4_DI) {
+                        return 1; // down
+                    } else if (((IPaletteItem) e1).getPaletteType() == ComponentCategory.CATEGORY_4_CAMEL
+                            && ((IPaletteItem) e2).getPaletteType() == ComponentCategory.CATEGORY_4_MAPREDUCE) {
+                        return -1; // up
+                    } else if (((IPaletteItem) e1).getPaletteType() == ComponentCategory.CATEGORY_4_MAPREDUCE
+                            && ((IPaletteItem) e2).getPaletteType() == ComponentCategory.CATEGORY_4_CAMEL) {
+                        return 1; // down
+                    } else if (((IPaletteItem) e1).getPaletteType() == ComponentCategory.CATEGORY_4_MAPREDUCE
+                            && ((IPaletteItem) e2).getPaletteType() == ComponentCategory.CATEGORY_4_STORM) {
+                        return -1; // up
+                    } else if (((IPaletteItem) e1).getPaletteType() == ComponentCategory.CATEGORY_4_STORM
+                            && ((IPaletteItem) e2).getPaletteType() == ComponentCategory.CATEGORY_4_MAPREDUCE) {
+                        return 1; // down
+                    } else if (((IPaletteItem) e1).getPaletteType() == ComponentCategory.CATEGORY_4_CAMEL
+                            && ((IPaletteItem) e2).getPaletteType() == ComponentCategory.CATEGORY_4_STORM) {
+                        return -1; // up
+                    } else if (((IPaletteItem) e1).getPaletteType() == ComponentCategory.CATEGORY_4_STORM
+                            && ((IPaletteItem) e2).getPaletteType() == ComponentCategory.CATEGORY_4_CAMEL) {
+                        return 1; // down
+                    }
+
+                }
+                return super.compare(viewer, e1, e2);
+            }
+
+        };
+
+        List<IPaletteItem> input = getViewerInput();
         Composite leftComposite = parent.getLeftComposite();
         Label label = new Label(leftComposite, SWT.NONE);
         label.setText("Hide");
@@ -166,8 +216,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
         hiddenViewer.setContentProvider(new TalendPaletteTreeProvider());
         hiddenViewer.setLabelProvider(new TalendPaletteLabelProvider());
         hiddenViewer.addFilter(getFilterForComponent(false));
+        hiddenViewer.setSorter(sorter);
 
-        hiddenViewer.expandToLevel(2);
         hiddenViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
@@ -185,7 +235,6 @@ public class PaletteSettingPage extends ProjectSettingPage {
         displayViewer.setLabelProvider(new TalendPaletteLabelProvider());
         displayViewer.addFilter(getFilterForComponent(true));
 
-        displayViewer.expandToLevel(2);
         displayViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
@@ -193,58 +242,17 @@ public class PaletteSettingPage extends ProjectSettingPage {
                 hideCompnentsButton.setEnabled(!event.getSelection().isEmpty());
             }
         });
-        displayViewer.setSorter(new ViewerSorter() {
+        displayViewer.setSorter(sorter);
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
-             * java.lang.Object, java.lang.Object)
-             */
-            @Override
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                if (e1 instanceof ComponentPaletteItem && e2 instanceof ComponentPaletteItem) {
-                    return super.compare(viewer, ((IPaletteItem) e1).getLabel(), ((IPaletteItem) e2).getLabel());
-                } else if (e1 instanceof FolderPaletteItem && e2 instanceof FolderPaletteItem) {
-                    return super.compare(viewer, ((IPaletteItem) e1).getLabel(), ((IPaletteItem) e2).getLabel());
-                } else if (e1 instanceof ComponentPaletteItem && e2 instanceof FolderPaletteItem) {
-                    return 1;
-                } else if (e1 instanceof FolderPaletteItem && e2 instanceof ComponentPaletteItem) {
-                    return -1;
-                }
-                return super.compare(viewer, e1, e2);
-            }
-
-        });
-        displayViewer.setSorter(new ViewerSorter() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
-             * java.lang.Object, java.lang.Object)
-             */
-            @Override
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                if (e1 instanceof ComponentPaletteItem && e2 instanceof ComponentPaletteItem) {
-                    return super.compare(viewer, ((IPaletteItem) e1).getLabel(), ((IPaletteItem) e2).getLabel());
-                } else if (e1 instanceof FolderPaletteItem && e2 instanceof FolderPaletteItem) {
-                    return super.compare(viewer, ((IPaletteItem) e1).getLabel(), ((IPaletteItem) e2).getLabel());
-                } else if (e1 instanceof ComponentPaletteItem && e2 instanceof FolderPaletteItem) {
-                    return 1;
-                } else if (e1 instanceof FolderPaletteItem && e2 instanceof ComponentPaletteItem) {
-                    return -1;
-                }
-                return super.compare(viewer, e1, e2);
-            }
-        });
-
-        List<IPaletteItem> input = getViewerInput();
         getComponentsFromProject(project);
         hiddenViewer.setInput(input);
         displayViewer.setInput(input);
-        hiddenViewer.expandToLevel(2);
-        displayViewer.expandToLevel(2);
+        if (!input.isEmpty()) {
+            displayViewer.expandToLevel(input.get(0), 1);
+        }
+        if (!input.isEmpty()) {
+            hiddenViewer.expandToLevel(input.get(0), 1);
+        }
     }
 
     /**
