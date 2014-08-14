@@ -997,7 +997,7 @@
 								&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="/project/@i18n.job.values" />
 							</th>
 						</tr>
-						<xsl:for-each select="parameters/column">
+						<xsl:for-each select="column">
 							<tr>
 								<td class="FONTSTYLE" align="left">
 									<xsl:variable name="propname"
