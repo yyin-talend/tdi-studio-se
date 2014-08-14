@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.nodes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -2535,13 +2536,14 @@ public class Node extends Element implements IGraphicalNode {
                     Problems.add(ProblemStatus.INFO, this, infoValue);
                 }
             }
+            List<IElementParameter> emptyParamList = Collections.emptyList();
             Boolean noConditionOnShow = StringUtils.isEmpty(param.getShowIf()) && StringUtils.isEmpty(param.getNotShowIf());
             // no condition on show means if the field is displayed or hidden all the time
 
             /**
              * ***Some explain for the following check***
              * 
-             * "if (param.isRequired(getElementParameters()) && !param.isShow(getElementParameters())" <br>
+             * "if (param.isRequired(getElementParameters()) && !param.isShow(emptyParamList)" <br>
              * 
              * 1. in fact it's simply for components who have a table never displayed<br>
              * like tAdvancedOutput / tRowGenerator etc<br>
@@ -2550,7 +2552,7 @@ public class Node extends Element implements IGraphicalNode {
              * 3. if table is always hidden, then we should force some checks
              */
             // if the parameter is required but empty, an error will be added
-            if (param.isRequired(getElementParameters()) && !param.isShow(getElementParameters()) && noConditionOnShow
+            if (param.isRequired(getElementParameters()) && !param.isShow(emptyParamList) && noConditionOnShow
                     && this.externalNode != null) {
                 if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
