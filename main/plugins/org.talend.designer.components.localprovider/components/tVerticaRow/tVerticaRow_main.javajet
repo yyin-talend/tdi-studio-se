@@ -62,7 +62,9 @@ for(IConnection conn : outgoingConns) {
 }
 if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
-commitCounter_<%=cid%>++;
+    if(!conn_<%= cid %>.getAutoCommit()){
+        commitCounter_<%=cid%>++;
+    }
 <%
 }
 %>
@@ -208,13 +210,10 @@ try {
     
 if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
-   
-    
-        conn_<%=cid%>.commit();
-        
-        commitCounter_<%=cid%>=0;
-        
-    
+    if(!conn_<%= cid %>.getAutoCommit()){
+         conn_<%=cid%>.commit();
+         commitCounter_<%=cid%>=0;
+    }
 <%
 }
 %>
