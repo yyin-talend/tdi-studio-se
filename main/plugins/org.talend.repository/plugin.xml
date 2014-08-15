@@ -2214,6 +2214,15 @@
               name="ChangeUseBatchSizetoFalse4AS400"
               version="5.3.3">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.2"
+              class="org.talend.repository.model.migration.ChangeRecalculateFormulaValueMigrationTask"
+              description="set the checkbox:RECALCULATE_FORMULA to true for old job"
+              id="org.talend.repository.model.migration.ChangeRecalculateFormulaValueMigrationTask"
+              name="ChangeRecalculateFormulaValueMigrationTask"
+              version="5.4.3">
+        </projecttask>        
    </extension>
 
    <extension
