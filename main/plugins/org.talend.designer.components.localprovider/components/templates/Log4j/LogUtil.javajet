@@ -98,17 +98,26 @@ class LogUtil extends BasicLogUtil{
     		   		org.talend.core.model.process.EParameterFieldType.LABEL,
     		   		org.talend.core.model.process.EParameterFieldType.EXTERNAL,
     		   		org.talend.core.model.process.EParameterFieldType.MAPPING_TYPE,
-    		   		org.talend.core.model.process.EParameterFieldType.IMAGE,
-    		   		org.talend.core.model.process.EParameterFieldType.PASSWORD)
+    		   		org.talend.core.model.process.EParameterFieldType.IMAGE)
     	   	);
        		for(org.talend.core.model.process.IElementParameter ep : org.talend.core.model.utils.NodeUtil.getDisplayedParameters(node)){
        			if(ignoredParamsTypes.contains(ep.getFieldType())){
        				continue;
        			}
        			String name = ep.getName();
-       			String value = org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, ep);
-       			%>
-    			<%=var("log4jParamters")%>.append("<%=name%>" + " = " + <%=value%>);
+       			if(org.talend.core.model.process.EParameterFieldType.PASSWORD.equals(ep.getFieldType())){
+       				String epName = "__" + name + "__";
+       				String password = org.talend.core.model.process.ElementParameterParser.canEncrypt(node, epName) ? org.talend.core.model.process.ElementParameterParser.getEncryptedValue(node, epName) : "routines.system.PasswordEncryptUtil.encryptPassword(" + org.talend.core.model.process.ElementParameterParser.getValue(node, epName) + ")"; 
+       				%>
+                    <%=var("log4jParamters")%>.append("<%=name%>" + " = " + String.valueOf(<%=password%>).substring(0, 4) + "...");	
+       			<%
+       			}else{
+       				String value = org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, ep);
+       				%>
+    				<%=var("log4jParamters")%>.append("<%=name%>" + " = " + <%=value%>);
+    			<%
+    			}	
+    			%>
     			<%=var("log4jParamters")%>.append(" | ");
     		<%
        		}
