@@ -354,7 +354,7 @@ public abstract class JobScriptsManager {
         for (int i = 0; i < jobContextValues.size(); i++) {
             ContextParameterType contextParameterType = jobContextValues.get(i);
             String name = contextParameterType.getName();
-            String value = contextParameterType.getValue();
+            String value = contextParameterType.getRawValue();
             // name = TalendTextUtils.removeQuotes(name);
             // value = TalendTextUtils.removeQuotes(value);
             if (value == null) {

@@ -164,10 +164,12 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
      * 
      * @see org.talend.repository.documentation.generation.IDocumentationGenerator#getRepositoryObjectType()
      */
+    @Override
     public ERepositoryObjectType getRepositoryObjectType() {
         return this.repositoryObjectType;
     }
 
+    @Override
     public void generateHTMLFile(ExportFileResource resource) {
         generateHTMLFile(resource, null);
     }
@@ -179,6 +181,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
      * org.talend.repository.documentation.generation.IDocumentationGenerator#generateHTMLFile(org.talend.repository
      * .documentation.ExportFileResource)
      */
+    @Override
     public void generateHTMLFile(ExportFileResource resource, String cssFile) {
         try {
 
@@ -351,6 +354,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
      * org.talend.repository.documentation.generation.IDocumentationGenerator#generateDocumentation(org.talend.repository
      * .documentation.ExportFileResource, java.lang.String, java.lang.String[])
      */
+    @Override
     public void generateDocumentation(ExportFileResource resource, String targetPath, String... jobVersion) throws Exception {
         // Store all pictures' path.
         List<URL> picList = new ArrayList<URL>(5);
@@ -1050,9 +1054,9 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
                     // wzhang modified to fix bug 8058
                     if (ProjectManager.getInstance().getCurrentProject().getEmfProject().isHidePassword()
                             && PasswordEncryptUtil.isPasswordType(param.getType())) {
-                        contextParamElement.addAttribute("value", "******"); //$NON-NLS-1$ //$NON-NLS-2$
+                        contextParamElement.addAttribute("value", PasswordEncryptUtil.getPasswordDisplay(param.getRawValue())); //$NON-NLS-1$ 
                     } else {
-                        contextParamElement.addAttribute("value", HTMLDocUtils.checkString(param.getValue())); //$NON-NLS-1$
+                        contextParamElement.addAttribute("value", HTMLDocUtils.checkString(param.getRawValue())); //$NON-NLS-1$
                     }
                     // replace repository id with context label
                     if (param.getRepositoryContextId() != null) {
@@ -1255,11 +1259,11 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         if (version != null && version.length == 1) {
             jobVersion = version[0];
         }
-        if(isRouteProcess(item)){
-        	jobElement.addAttribute("type", "route");
-        	 ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-    				 .getService(ICamelDesignerCoreService.class);
-        	 camelService.appendRouteInfo2Doc(item, jobElement);
+        if (isRouteProcess(item)) {
+            jobElement.addAttribute("type", "route");
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            camelService.appendRouteInfo2Doc(item, jobElement);
         }
         jobElement.addAttribute("version", HTMLDocUtils.checkString(jobVersion)); //$NON-NLS-1$
         jobElement.addAttribute("purpose", HTMLDocUtils.checkString(property.getPurpose())); //$NON-NLS-1$
@@ -1292,7 +1296,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
                 }
             }
         }
-        descr.addCDATA(sb.toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        descr.addCDATA(sb.toString());
 
         String picName = jobName + "_" + jobVersion + IHTMLDocConstants.JOB_PREVIEW_PIC_SUFFIX; //$NON-NLS-1$
         IPath filePath = null;
@@ -1317,20 +1321,20 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         // }
         return jobElement;
     }
-    
+
     /**
-     * add by gliu for 
-     * TESB-13788
+     * add by gliu for TESB-13788
+     * 
      * @param item
      * @return
      */
-    protected boolean isRouteProcess(Item item){
-    	 if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-    		 ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-    				 .getService(ICamelDesignerCoreService.class);
-    		 return camelService.isInstanceofCamel(item);
-    	 }
-    	 return false;
+    protected boolean isRouteProcess(Item item) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            return camelService.isInstanceofCamel(item);
+        }
+        return false;
     }
 
     /**
@@ -1399,7 +1403,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         element.addAttribute("i18n.job.modification", Messages.HTMLDocGenerator_Modification); //$NON-NLS-1$
         element.addAttribute("i18n.job.extract.settings", Messages.HTMLDocGenerator_Extra_settings); //$NON-NLS-1$
         element.addAttribute("i18n.job.value", Messages.HTMLDocGenerator_Value); //$NON-NLS-1$
-        element.addAttribute("i18n.job.stats.logs", Messages.HTMLDocGenerator_Status + " & " + Messages.HTMLDocGenerator_Logs); //$NON-NLS-1$ //$NON-NLS-3$
+        element.addAttribute("i18n.job.stats.logs", Messages.HTMLDocGenerator_Status + " & " + Messages.HTMLDocGenerator_Logs); //$NON-NLS-1$ 
         element.addAttribute("i18n.job.context", Messages.HTMLDocGenerator_Context); //$NON-NLS-1$
         element.addAttribute("i18n.job.promt", Messages.HTMLDocGenerator_Prompt); //$NON-NLS-1$
         element.addAttribute("i18n.job.need.promt", Messages.HTMLDocGenerator_Need_Prompt); //$NON-NLS-1$
@@ -1413,7 +1417,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         element.addAttribute("i18n.job.label", Messages.HTMLDocGenerator_LABEL); //$NON-NLS-1$
         element.addAttribute("i18n.job.output", Messages.HTMLDocGenerator_OUTPUT); //$NON-NLS-1$
         element.addAttribute("i18n.job.component.parameters", Messages.HTMLDocGenerator_Component_Parameters); //$NON-NLS-1$
-        element.addAttribute("i18n.job.schema.for", Messages.HTMLDocGenerator_Schema_for + " "); //$NON-NLS-1$ //$NON-NLS-3$
+        element.addAttribute("i18n.job.schema.for", Messages.HTMLDocGenerator_Schema_for + " "); //$NON-NLS-1$ 
         element.addAttribute("i18n.job.column", Messages.HTMLDocGenerator_Column); //$NON-NLS-1$
         element.addAttribute("i18n.job.key", Messages.HTMLDocGenerator_Key); //$NON-NLS-1$
         element.addAttribute("i18n.job.length", Messages.HTMLDocGenerator_Length); //$NON-NLS-1$
@@ -1423,8 +1427,8 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         element.addAttribute("i18n.job.original.function.parameters", Messages.HTMLDocGenerator_Original_Function_Parameters); //$NON-NLS-1$
         element.addAttribute("i18n.job.ended", Messages.HTMLDocGenerator_ended); //$NON-NLS-1$
         element.addAttribute("i18n.job.content", Messages.HTMLDocGenerator_content); //$NON-NLS-1$
-        
-        //special for Route
+
+        // special for Route
         element.addAttribute("i18n.route.manifest.type", Messages.HTMLDocGenerator_Route_Manifest_Type); //$NON-NLS-1$
         element.addAttribute("i18n.route.manifest.value", Messages.HTMLDocGenerator_Route_Manifest_Value); //$NON-NLS-1$
         element.addAttribute("i18n.route.resource.name", Messages.HTMLDocGenerator_Route_Resource_Name); //$NON-NLS-1$
@@ -1645,6 +1649,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
 
         return new Comparator() {
 
+            @Override
             public int compare(Object arg0, Object arg1) {
 
                 if (arg0 == null || arg1 == null) {

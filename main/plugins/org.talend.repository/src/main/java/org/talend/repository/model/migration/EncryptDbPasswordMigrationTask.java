@@ -107,7 +107,8 @@ public class EncryptDbPasswordMigrationTask extends AbstractItemMigrationTask {
     }
 
     private void encryptPassword(ContextParameterType param) throws Exception {
-        String password = PasswordEncryptUtil.encryptPassword(param.getRawValue());
+        // before migration task, the value should be raw. so keep it.
+        String password = PasswordEncryptUtil.encryptPassword(param.getValue());
         param.setValue(password);
     }
 
@@ -126,7 +127,8 @@ public class EncryptDbPasswordMigrationTask extends AbstractItemMigrationTask {
                 if (paramTypes != null) {
                     for (ContextParameterType param : paramTypes) {
                         try {
-                            if (param.getRawValue() != null && PasswordEncryptUtil.isPasswordType(param.getType())) {
+                            // before migration task, the value should be raw. so keep it.
+                            if (param.getValue() != null && PasswordEncryptUtil.isPasswordType(param.getType())) {
                                 encryptPassword(param);
                                 modify = true;
                             }
@@ -155,6 +157,7 @@ public class EncryptDbPasswordMigrationTask extends AbstractItemMigrationTask {
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#getOrder()
      */
+    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 11, 27, 12, 0, 0);
         return gc.getTime();

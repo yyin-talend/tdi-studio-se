@@ -976,6 +976,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                         }
                     }
                     if (property.equals(contextParameterValue)) {
+                        // if it's passord will encrypt.
                         contextParamType.setRawValue((String) value);
                     }
                     tableViewer.refresh(contextParamType);
@@ -1124,14 +1125,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     return contextParameter.getName();
                 }
                 if (columnIndex == 1) {
-                    if (PasswordEncryptUtil.isPasswordType(contextParameter.getType())) {
-                        String rawValue = contextParameter.getRawValue();
-                        if (rawValue != null) {
-                            // always display the start *.
-                            return rawValue.replaceAll(".", "*"); //$NON-NLS-1$ //$NON-NLS-2$
-                        }
+                    String rawValue = contextParameter.getRawValue();
+                    if (rawValue != null && PasswordEncryptUtil.isPasswordType(contextParameter.getType())) {
+                        return PasswordEncryptUtil.getPasswordDisplay(rawValue);
                     }
-                    return contextParameter.getValue();
+                    return rawValue;
                 }
             }
             return ""; //$NON-NLS-1$
