@@ -328,12 +328,22 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
             return;
         }
         IElementParameter fileNameParameter = ele.getElementParameter(EJSONRepositoryToComponent.FILENAME.getParameterName());
+        // if (fileNameParameter != null) {
+        // String JSONPath = "";
+        // // metadataTable.getAdditionalProperties().get(JSONConstants.JSON_PATH);
+        // if (JSONPath != null) {
+        // fileNameParameter.setValue(TalendQuoteUtils.addQuotesIfNotExist(JSONPath));
+        // }
+        // }
         if (fileNameParameter != null) {
-            String JSONPath = "";
-            // metadataTable.getAdditionalProperties().get(JSONConstants.JSON_PATH);
-            if (JSONPath != null) {
-                fileNameParameter.setValue(TalendQuoteUtils.addQuotesIfNotExist(JSONPath));
+            Object pValue = fileNameParameter.getValue();
+            String JSONPath;
+            if (pValue == null || pValue.toString().trim().isEmpty()) {
+                JSONPath = TalendQuoteUtils.addQuotesIfNotExist(""); //$NON-NLS-1$
+            } else {
+                JSONPath = TalendQuoteUtils.addQuotesIfNotExist(pValue.toString());
             }
+            fileNameParameter.setValue(JSONPath);
         }
     }
 
