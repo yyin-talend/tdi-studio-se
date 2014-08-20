@@ -88,10 +88,10 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
                     visible = true;
                 }
                 
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                if (nodProperty != null && GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                     ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
                             .getService(ICamelDesignerCoreService.class);
-                    if(camelService.getRouteDocsType().equals(nodProperty)|| camelService.getRouteDocType().equals(nodProperty)){
+                    if(nodProperty.equals(camelService.getRouteDocsType())|| nodProperty.equals(camelService.getRouteDocType())){
                     	visible = false;
                     }
                 }
