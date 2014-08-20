@@ -72,7 +72,9 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -887,12 +889,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
             for (int i = 0; i < valueList.size(); i++) {
                 Object object = valueList.get(i);
-                ContextParameterType contextType = (ContextParameterType) object;
-                ContextParameterType createContextParameterType = TalendFileFactory.eINSTANCE.createContextParameterType();
-                createContextParameterType.setName(contextType.getName());
-                createContextParameterType.setType(contextType.getType());
-                createContextParameterType.setValue("");
-                list.add(createContextParameterType);
+                ContextParameterType contextParameterType = (ContextParameterType) object;
+                list.add(createDuplicatedContextParameter(contextParameterType, true));
             }
             return list;
         }
@@ -903,14 +901,26 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
             for (int i = 0; i < valueList.size(); i++) {
                 Object object = valueList.get(i);
-                ContextParameterType contextType = (ContextParameterType) object;
-                ContextParameterType createContextParameterType = TalendFileFactory.eINSTANCE.createContextParameterType();
-                createContextParameterType.setName(contextType.getName());
-                createContextParameterType.setType(contextType.getType());
-                createContextParameterType.setValue(contextType.getValue());
-                list.add(createContextParameterType);
+                ContextParameterType contextParameterType = (ContextParameterType) object;
+                list.add(createDuplicatedContextParameter(contextParameterType, false));
             }
             return list;
+        }
+
+        private ContextParameterType createDuplicatedContextParameter(ContextParameterType contextParameterType,
+                boolean cleanValue) {
+            // clone one from job
+            ContextParameterType createContextParameterType = TalendFileFactory.eINSTANCE.createContextParameterType();
+            createContextParameterType.setName(contextParameterType.getName());
+            createContextParameterType.setType(contextParameterType.getType());
+            createContextParameterType.setComment(contextParameterType.getComment());
+            createContextParameterType.setRepositoryContextId(contextParameterType.getRepositoryContextId());
+            if (cleanValue) {
+                createContextParameterType.setValue(""); //$NON-NLS-1$
+            } else {
+                createContextParameterType.setValue(contextParameterType.getValue());
+            }
+            return createContextParameterType;
         }
 
         @Override
@@ -952,9 +962,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                         nameList.add(name);
                     }
                     TableItem tableItem = (TableItem) element;
-                    ContextParameterType node = (ContextParameterType) tableItem.getData();
-                    if (contextEditableValuesList.contains(node)) {
-                        nameList.remove(node.getName());
+                    ContextParameterType contextParamType = (ContextParameterType) tableItem.getData();
+                    if (contextEditableValuesList.contains(contextParamType)) {
+                        nameList.remove(contextParamType.getName());
                     }
                     if (property.equals(contextParameterName)) {
                         if (value == null || "".equals(value) || nameList.contains(value)) {
@@ -962,23 +972,23 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                                     new Shell(),
                                     Messages.getString("ContextProcessSection.errorTitle"), Messages.getString("ContextProcessSection.ParameterNameIsNotValid")); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
-                            node.setName((String) value);
+                            contextParamType.setName((String) value);
                         }
                     }
                     if (property.equals(contextParameterValue)) {
-                        node.setValue((String) value);
+                        contextParamType.setRawValue((String) value);
                     }
-                    tableViewer.refresh(node);
+                    tableViewer.refresh(contextParamType);
                 }
 
                 @Override
                 public Object getValue(Object element, String property) {
-                    ContextParameterType node = (ContextParameterType) element;
+                    ContextParameterType contextParamType = (ContextParameterType) element;
                     if (property.equals(contextParameterName)) {
-                        return node.getName();
+                        return contextParamType.getName();
                     }
                     if (property.equals(contextParameterValue)) {
-                        return node.getValue();
+                        return contextParamType.getRawValue();
                     }
 
                     return null;
@@ -1047,7 +1057,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                         }
                     } while (!paramNameFound);
                     addContextParameterType.setName(paramName);
-                    addContextParameterType.setType("id_String");
+                    addContextParameterType.setType(MetadataTalendType.getDefaultTalendType());
                     addContextParameterType.setValue("");
                     contextEditableValuesList.add(addContextParameterType);
                     tableViewer.refresh(true);
@@ -1114,6 +1124,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     return contextParameter.getName();
                 }
                 if (columnIndex == 1) {
+                    if (PasswordEncryptUtil.isPasswordType(contextParameter.getType())) {
+                        String rawValue = contextParameter.getRawValue();
+                        if (rawValue != null) {
+                            // always display the start *.
+                            return rawValue.replaceAll(".", "*"); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    }
                     return contextParameter.getValue();
                 }
             }
