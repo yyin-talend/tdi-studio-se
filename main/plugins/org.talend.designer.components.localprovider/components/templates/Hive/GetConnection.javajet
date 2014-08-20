@@ -284,6 +284,12 @@ java.sql.Connection conn_<%=cid%> = null;
 				init_<%=cid%>.execute("SET yarn.resourcemanager.scheduler.address=" + <%=schedulerAddress%>);
 <%
 			}
+    		
+            if ("true".equals(ElementParameterParser.getValue(node, "__USE_DATANODE_HOSTNAME__"))) {
+                %>
+                init_<%=cid%>.execute("SET dfs.client.use.datanode.hostname=true");
+                <%
+            }
 			
     		if("true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"))) {
     			String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
