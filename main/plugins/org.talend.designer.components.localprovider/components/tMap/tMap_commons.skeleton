@@ -66,21 +66,22 @@ public class CLASS {
 	
 	}
 
-	public boolean recursiveSearchIterateForConcurrency(INode node, List<? extends INode> graphicalNodes) {
-		//System.out.println(node);
-	
+	private boolean recursiveSearchIterateForConcurrency(INode node, List<? extends INode> graphicalNodes) {
 		List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
 
 		for(IConnection connection : connections) {
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
 	            node = connection.getSource();
-				//System.out.println(connection.getName() + " connectionType=" + connectionType + " connection=" + String.valueOf(connection));
     	        return recursiveSearchIterateForConcurrency(node, graphicalNodes);
             } else if(connectionType == EConnectionType.ITERATE) {
-				//System.out.println("ITERATE return true");
 				boolean parallelIterate = "true".equals(ElementParameterParser.getValue(connection, "__ENABLE_PARALLEL__"));
-    	        return parallelIterate;
+    	        if(parallelIterate) {
+    	        	return true;
+    	        } else {
+    	        	node = connection.getSource();
+        			return recursiveSearchIterateForConcurrency(node, graphicalNodes);
+    	        }
             }else{
             	//for virtual component
             	boolean find = false;
@@ -100,7 +101,6 @@ public class CLASS {
             }
 		}
 		
-		//System.out.println("return false");
 		return false;
 	
 	}
