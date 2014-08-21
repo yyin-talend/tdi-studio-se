@@ -2240,6 +2240,15 @@
               id="org.talend.repository.model.migration.AddCDCTypeForOracleCDCMigrationTask"
               name="AddCDCTypeForOracleCDCMigrationTask"
               version="5.6.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.5.1"
+              class="org.talend.repository.model.migration.UnifyPasswordEncryption4ContextMigrationTask"
+              description="Unify the entryption for context password type"
+              id="org.talend.repository.model.migration.UnifyPasswordEncryption4ContextMigrationTask"
+              name="UnifyPasswordEncryption4ContextMigrationTask"
+              version="5.5.1">
         </projecttask> 
    </extension>
 
