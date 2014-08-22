@@ -2258,6 +2258,15 @@
               id="org.talend.repository.model.migration.UnifyPasswordEncryption4DBConnectionMigrationTask"
               name="UnifyPasswordEncryption4DBConnectionMigrationTask"
               version="5.5.1">
+        </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="5.5.1"
+              class="org.talend.repository.model.migration.UnifyPasswordEncryption4ProjectSettingsMigrationTask"
+              description="Unify the entryption for pass fields of roject settings"
+              id="org.talend.repository.model.migration.UnifyPasswordEncryption4ProjectSettingsMigrationTask"
+              name="UnifyPasswordEncryption4ProjectSettingsMigrationTask"
+              version="5.5.1">
         </projecttask>        
    </extension>
 
