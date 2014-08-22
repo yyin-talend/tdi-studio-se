@@ -2250,6 +2250,15 @@
               name="UnifyPasswordEncryption4ContextMigrationTask"
               version="5.5.1">
         </projecttask> 
+        <projecttask
+              beforeLogon="false"
+              breaks="5.5.1"
+              class="org.talend.repository.model.migration.UnifyPasswordEncryption4DBConnectionMigrationTask"
+              description="Unify the entryption for DB password field"
+              id="org.talend.repository.model.migration.UnifyPasswordEncryption4DBConnectionMigrationTask"
+              name="UnifyPasswordEncryption4DBConnectionMigrationTask"
+              version="5.5.1">
+        </projecttask>        
    </extension>
 
    <extension
