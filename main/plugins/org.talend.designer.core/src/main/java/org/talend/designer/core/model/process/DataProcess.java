@@ -2518,7 +2518,7 @@ public class DataProcess implements IGeneratingProcess {
             node.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes(dbConnection.getSID()));//$NON-NLS-1$
             node.getElementParameter("TYPE").setValue(TalendTextUtils.addQuotes(dbConnection.getDatabaseType()));//$NON-NLS-1$
             node.getElementParameter("USER").setValue(TalendTextUtils.addQuotes(dbConnection.getUsername()));//$NON-NLS-1$
-            node.getElementParameter("PASS").setValue(TalendTextUtils.addQuotes(dbConnection.getPassword()));//$NON-NLS-1$
+            node.getElementParameter("PASS").setValue(TalendTextUtils.addQuotes(dbConnection.getRawPassword()));//$NON-NLS-1$
         }
     }
 

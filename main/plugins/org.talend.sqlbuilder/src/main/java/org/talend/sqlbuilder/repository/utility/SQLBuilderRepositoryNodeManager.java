@@ -29,7 +29,6 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -765,15 +764,7 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setDatabaseType(dbType);
         connection.setUsername(parameters.getUserName());
         connection.setPort(parameters.getPort());
-        // added by hyWang,to let repository node has encrypted password
-        try {
-            String encryptedPassword = null;
-            encryptedPassword = PasswordEncryptUtil.encryptPassword(parameters.getPassword());
-            connection.setPassword(encryptedPassword);
-        } catch (Exception e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        }
+        connection.setRawPassword(parameters.getPassword());
         if (dbType != null && dbType.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())
                 && parameters.getLocalServiceName() != null && !"".equals(parameters.getLocalServiceName())) {
             connection.setSID(parameters.getLocalServiceName());

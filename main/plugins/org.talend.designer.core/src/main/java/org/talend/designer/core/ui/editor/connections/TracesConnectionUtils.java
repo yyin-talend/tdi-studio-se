@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
@@ -301,15 +299,7 @@ public class TracesConnectionUtils {
         connection.setDatabaseType(dbType);
         connection.setUsername(parameters.getUserName());
         connection.setPort(parameters.getPort());
-        // added by hyWang,to let repository node has encrypted password
-        try {
-            String encryptedPassword = null;
-            encryptedPassword = PasswordEncryptUtil.encryptPassword(parameters.getPassword());
-            connection.setPassword(encryptedPassword);
-        } catch (Exception e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        }
+        connection.setRawPassword(parameters.getPassword());
         if (dbType != null && dbType.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())
                 && parameters.getLocalServiceName() != null && !"".equals(parameters.getLocalServiceName())) {
             connection.setSID(parameters.getLocalServiceName());
