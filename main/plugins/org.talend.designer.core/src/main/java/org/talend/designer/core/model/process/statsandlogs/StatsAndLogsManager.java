@@ -136,11 +136,7 @@ public class StatsAndLogsManager {
                         process.getElementParameters());
 
         String basePath = (String) process.getElementParameter(EParameterName.FILE_PATH.getName()).getValue();
-        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
-            basePath = basePath.replace("\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
-        } else {
-            basePath = basePath.replace("\\", "/") + "+ \"/\" +"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
+        basePath = basePath.replace("\\", "/") + "+ \"/\" +"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         DataNode connectionNode = null;
         //        String connectionUID = "connectionStatsLogs";//$NON-NLS-1$
 

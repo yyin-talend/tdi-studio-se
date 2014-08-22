@@ -126,7 +126,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
-import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.process.IGeneratingProcess;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
@@ -422,6 +421,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         if (service != null) {
             param.setValue(service.getPreferenceStore().getString("vmarguments")); //$NON-NLS-1$
+            param.setDefaultValue(param.getValue());
         }
         addElementParameter(param);
 
@@ -433,6 +433,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setNumRow(99);
         param.setShow(false);
         param.setValue(false);
+        param.setDefaultValue(param.getValue());
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -512,6 +513,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setDisplayName(EParameterName.SCHEMA_OPTIONS.getDisplayName());
         param.setShow(false);
         param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(TalendDesignerPrefConstants.SCHEMA_OPTIONS));
+        param.setDefaultValue(param.getValue());
         param.setReadOnly(true);
         addElementParameter(param);
 
@@ -521,6 +523,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setFieldType(EParameterFieldType.TEXT);
         param.setShow(false);
         param.setValue("");
+        param.setDefaultValue(param.getValue());
         param.setReadOnly(false);
         addElementParameter(param);
 
@@ -531,6 +534,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setFieldType(EParameterFieldType.TEXT);
         param.setShow(false);
         param.setValue("");
+        param.setDefaultValue(param.getValue());
         param.setReadOnly(false);
         addElementParameter(param);
 
@@ -541,6 +545,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setFieldType(EParameterFieldType.TEXT);
         param.setShow(false);
         param.setValue("");
+        param.setDefaultValue(param.getValue());
         param.setReadOnly(false);
         addElementParameter(param);
 
@@ -586,6 +591,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setShow(false);
         param.setDisplayName(EParameterName.HADOOP_ADVANCED_PROPERTIES.getDisplayName());
         param.setValue(new ArrayList<Map<String, Object>>());
+        param.setDefaultValue(param.getValue());
         addElementParameter(param);
 
     }
@@ -920,6 +926,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 isJoblet = true;
             }
         }
+        if (param.isValueSetToDefault()) {
+            return;
+        }
 
         if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                 || param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
@@ -962,58 +971,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     return;
                 }
             }
-            for (IElementParameter currentParam : JobSettingsManager.getJobSettingsParameters(this)) {
-                if (!currentParam.getName().equals(EParameterName.MULTI_THREAD_EXECATION.getName())
-                        && currentParam.getName().equals(param.getName())) {
-                    if (currentParam.getValue() != null && currentParam.getValue().equals(param.getValue())) {
-                        // don't save parameter if the value is default one.
-                        return;
-                    }
-                }
-            }
         }
         if (param.getElement() instanceof Node) {
-            Node curNode = (Node) param.getElement();
-            IComponent component = ComponentsFactoryProvider.getInstance().get(curNode.getComponent().getName(),
-                    getComponentsType());
             if (param != null && param.getName().equals(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName())) {
                 return;
             }
-            if (component instanceof EmfComponent) {
-                DataNode tempNode = new DataNode();
-                tempNode.setElementParameters(new ArrayList<IElementParameter>());
-                ((EmfComponent) component).addMainParameters((List<ElementParameter>) tempNode.getElementParameters(), tempNode);
-                ((EmfComponent) component).addViewParameters((List<ElementParameter>) tempNode.getElementParameters(), tempNode);
-                IElementParameter tmpParam1 = tempNode.getElementParameter(param.getName());
-                if (tmpParam1 != null && tmpParam1.getValue() != null && tmpParam1.getValue().equals(param.getValue())) {
-                    return;
-                }
-                if (tmpParam1 != null
-                        && StringUtils.equals(tmpParam1.getValue() == null ? null : tmpParam1.getValue().toString(),
-                                param.getValue() == null ? null : param.getValue().toString())) {
-
-                    return;
-                }
-            }
-        }
-        if (param.getElement() instanceof SubjobContainer) {
-            SubjobContainer subjob = new SubjobContainer(this);
-            IElementParameter subjobParam = subjob.getElementParameter(param.getName());
-            if (subjobParam != null && subjobParam.getValue() != null && subjobParam.getValue().equals(param.getValue())) {
-                // don't save this parameter as this parameter got the default value for the component
+            if (param.isReadOnly() && param.getCategory() == EComponentCategory.TECHNICAL) {
                 return;
             }
         }
-        // always save the connections parameters.
-
-        // if (param.getElement() instanceof Connection) {
-        // Connection connection = (Connection) param.getElement();
-        // IElementParameter connectionParam = connection.getElementParameter(param.getName());
-        // if (connectionParam != null && connectionParam.getValue() != null
-        // && connectionParam.getValue().equals(param.getValue())) {
-        // return;
-        // }
-        // }
         pType = fileFact.createElementParameterType();
         if (param.getParentParameter() != null) {
             pType.setName(param.getParentParameter().getName() + ":" + param.getName()); //$NON-NLS-1$
