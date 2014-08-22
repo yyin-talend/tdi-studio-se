@@ -129,7 +129,14 @@
      	<ITEM NAME="SOURCE" />
       </ITEMS>
     </PARAMETER>  
-
+    
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="120"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
 
   <CODEGENERATION>
