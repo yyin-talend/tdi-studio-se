@@ -22,10 +22,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -34,13 +31,10 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.PropertiesFactory;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -360,14 +354,6 @@ public class ElementParameter2ParameterType {
                 processTypes.setName(pType.getName());
                 processTypes.setField(pType.getField());
                 processTypes.setValue(pType.getValue());
-
-                Property property = PropertiesFactory.eINSTANCE.createProperty();
-                property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                        .getUser());
-                property.setVersion(VersionUtils.DEFAULT_VERSION);
-                property.setStatusCode(""); //$NON-NLS-1$
-                property.setId("ID"); //$NON-NLS-1$
-                property.setLabel(Messages.getString("JobTemplateViewsAndProcessUtil.jobName"));
                 processType.getElementParameter().add(processTypes);
             }
 
