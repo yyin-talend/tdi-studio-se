@@ -2263,9 +2263,18 @@
               beforeLogon="true"
               breaks="5.5.1"
               class="org.talend.repository.model.migration.UnifyPasswordEncryption4ProjectSettingsMigrationTask"
-              description="Unify the entryption for pass fields of roject settings"
+              description="Unify the entryption for pass fields of project settings"
               id="org.talend.repository.model.migration.UnifyPasswordEncryption4ProjectSettingsMigrationTask"
               name="UnifyPasswordEncryption4ProjectSettingsMigrationTask"
+              version="5.5.1">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.5.1"
+              class="org.talend.repository.model.migration.UnifyPasswordEncryption4ParametersInJobMigrationTask"
+              description="Unify the entryption for pass fields of parameters of jobs"
+              id="org.talend.repository.model.migration.UnifyPasswordEncryption4ParametersInJobMigrationTask"
+              name="UnifyPasswordEncryption4ParametersInJobMigrationTask"
               version="5.5.1">
         </projecttask>        
    </extension>

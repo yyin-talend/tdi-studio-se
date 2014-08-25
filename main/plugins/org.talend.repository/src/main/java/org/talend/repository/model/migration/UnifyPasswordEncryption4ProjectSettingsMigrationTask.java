@@ -27,7 +27,6 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementParameterTypeImpl;
-import org.talend.utils.security.CryptoHelper;
 
 /**
  * created by ggu on Aug 21, 2014 Detailled comment
@@ -111,15 +110,10 @@ public class UnifyPasswordEncryption4ProjectSettingsMigrationTask extends Abstra
         if (index != -1) {
             value = new StringBuilder(value).replace(index, index + PasswordEncryptUtil.ENCRYPT_KEY.length(), "").toString(); //$NON-NLS-1$
             String rawValue = PasswordEncryptUtil.decryptPassword(value);
-            String encrypt = CryptoHelper.DEFAULT.encrypt(rawValue);
-            if (encrypt != null) {
-                param.setValue(encrypt);
-            } else {
-                param.setValue(rawValue);
-            }
-            return true;
+            value = rawValue;
         }
-        return false;
+        param.setValue(value, true);
+        return true;
     }
 
     /*
