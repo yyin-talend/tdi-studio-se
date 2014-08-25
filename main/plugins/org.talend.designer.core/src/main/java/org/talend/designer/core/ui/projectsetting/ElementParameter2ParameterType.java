@@ -190,7 +190,8 @@ public class ElementParameter2ParameterType {
                         }
                         if (param.getFieldType().equals(EParameterFieldType.CHECK)
                                 || param.getFieldType().equals(EParameterFieldType.RADIO)) {
-                            if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
+                            if (Boolean.FALSE.toString().equalsIgnoreCase(value)
+                                    || Boolean.TRUE.toString().equalsIgnoreCase(value) || !pType.isContextMode()) {
                                 Boolean boolean1 = new Boolean(value);
                                 elemParam.setPropertyValue(pTypeName, boolean1);
                             } else {
@@ -233,12 +234,26 @@ public class ElementParameter2ParameterType {
                                         }
                                     }
                                 }
+                                IElementParameter tmpParam = null;
+                                for (Object o : param.getListItemsValue()) {
+                                    if (o instanceof IElementParameter) {
+                                        IElementParameter tableParam = (IElementParameter) o;
+                                        if (tableParam.getName().equals(elementValue.getElementRef())) {
+                                            tmpParam = tableParam;
+                                            break;
+                                        }
+                                    }
+                                }
                                 if (found) {
                                     if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
                                         lineValues = new HashMap<String, Object>();
                                         tableValues.add(lineValues);
                                     }
-                                    lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                                    String elemValue = elementValue.getValue();
+                                    if (tmpParam != null && EParameterFieldType.PASSWORD.equals(tmpParam.getFieldType())) {
+                                        elemValue = elementValue.getRawValue();
+                                    }
+                                    lineValues.put(elementValue.getElementRef(), elemValue);
                                     if (elementValue.getType() != null) {
                                         lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE,
                                                 elementValue.getType());
@@ -246,6 +261,8 @@ public class ElementParameter2ParameterType {
                                 }
                             }
                             elemParam.setPropertyValue(pTypeName, tableValues);
+                        } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
+                            param.setValue(pType.getRawValue());
                         } else if (param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
                             // fix for bug 2193
                             boolean setToCustom = false;
@@ -373,32 +390,33 @@ public class ElementParameter2ParameterType {
     }
 
     public static ElementParameterType getElemeterParameterType(IElementParameter param) {
-        ElementParameterType pType;
-
-        TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
-        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+        if (param == null) {
             return null;
         }
-
-        pType = fileFact.createElementParameterType();
+        ElementParameterType targetPramType = TalendFileFactory.eINSTANCE.createElementParameterType();
         if (param.getParentParameter() != null) {
-            pType.setName(param.getParentParameter().getName() + ":" + param.getName()); //$NON-NLS-1$
+            targetPramType.setName(param.getParentParameter().getName() + ":" + param.getName()); //$NON-NLS-1$
         } else {
-            pType.setName(param.getName());
+            targetPramType.setName(param.getName());
         }
-        pType.setField(param.getFieldType().getName());
-        pType.setContextMode(param.isContextMode());
+        targetPramType.setField(param.getFieldType().getName());
+        targetPramType.setContextMode(param.isContextMode());
         Object value = param.getValue();
         if (param.getFieldType().equals(EParameterFieldType.TABLE) && value != null) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             for (Map<String, Object> currentLine : tableValues) {
                 for (int i = 0; i < param.getListItemsDisplayCodeName().length; i++) {
-                    ElementValueType elementValue = fileFact.createElementValueType();
+                    ElementValueType elementValue = TalendFileFactory.eINSTANCE.createElementValueType();
                     elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
                     Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
+
+                    IElementParameter tmpParam = null;
+                    Object[] listItemsValue = param.getListItemsValue();
+                    if (listItemsValue.length > i) {
+                        tmpParam = (IElementParameter) listItemsValue[i];
+                    }
                     String strValue = ""; //$NON-NLS-1$
-                    if (o instanceof Integer) {
-                        IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
+                    if (o instanceof Integer && tmpParam != null) {
                         if (tmpParam.getListItemsValue().length == 0) {
                             strValue = ""; //$NON-NLS-1$
                         } else {
@@ -413,29 +431,39 @@ public class ElementParameter2ParameterType {
                             }
                         }
                     }
-                    elementValue.setValue(strValue);
+                    if (tmpParam != null && tmpParam.getFieldType().equals(EParameterFieldType.PASSWORD)) {
+                        elementValue.setValue(strValue, true);
+                    } else {
+                        elementValue.setValue(strValue);
+                    }
                     //
                     Object object = currentLine.get(param.getListItemsDisplayCodeName()[i] + IEbcdicConstant.REF_TYPE);
                     if (object != null) {
                         elementValue.setType((String) object);
                     }
-                    pType.getElementValue().add(elementValue);
+                    targetPramType.getElementValue().add(elementValue);
                 }
             }
         } else {
             if (value == null) {
-                pType.setValue(""); //$NON-NLS-1$
+                targetPramType.setValue(""); //$NON-NLS-1$
             } else {
                 if (value instanceof Boolean) {
-                    pType.setValue(((Boolean) value).toString());
+                    targetPramType.setValue(((Boolean) value).toString());
                 } else {
                     if (value instanceof String) {
-                        pType.setValue((String) value);
+                        if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
+                            targetPramType.setValue(value.toString(), true);
+                        } else {
+                            targetPramType.setValue(value.toString());
+                        }
                     }
                 }
             }
         }
-        return pType;
+
+        return targetPramType;
+
     }
 
     /**
