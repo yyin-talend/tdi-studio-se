@@ -81,6 +81,7 @@ public class StormJobJavaScriptsManager extends JobJavaScriptsManager {
             jarbuilder.setExcludeDir(null);
 
             jarbuilder.setLibPath(getLibPath(false));
+            jarbuilder.setStorm(true);
             jarbuilder.buildJar();
             list.add(jarFile.toURI().toURL());
         } catch (IOException e) {
