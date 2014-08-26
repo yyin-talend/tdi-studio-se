@@ -16,10 +16,11 @@ imports="
 "
 skeleton="../templates/db_output_bulk.skeleton"
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();	
+	INode node = (INode)codeGenArgument.getArgument();
+        dbLog = new DBLogUtil(node);
 	String cid = node.getUniqueName();	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
@@ -134,6 +135,7 @@ Object val_<%=cid%> = null;
                 nb_line_<%=cid%>++;
             } catch(java.lang.Exception e) {                
                         System.err.print(e.getMessage());
+                        <%dbLog.logPrintedException("e.getMessage()");%>
             }
             <%
     	} else if(("UPDATE").equals(dataAction)) {
@@ -191,6 +193,7 @@ Object val_<%=cid%> = null;
                 nb_line_<%=cid%>++;
             } catch(java.lang.Exception e) {
                         System.err.print(e.getMessage());
+                        <%dbLog.logPrintedException("e.getMessage()");%>
             }
             <%
     	} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
@@ -269,6 +272,7 @@ Object val_<%=cid%> = null;
                     	.invoke("Clear");
                 } catch(java.lang.Exception e) {                    
                             System.err.print(e.getMessage());
+                            <%dbLog.logPrintedException("e.getMessage()");%>
                 }
     		} else {
     			<%
@@ -303,7 +307,8 @@ Object val_<%=cid%> = null;
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + (Integer)cmdInsert_<%=cid %>.invokeGeneric("ExecuteNonQuery");
                     cmdInsert_<%=cid%>.accessProperty("Parameters",<%=oleDbParamCollClassName%>)
                     	.invoke("Clear");
-                } catch(java.lang.Exception e) {                    
+                } catch(java.lang.Exception e) {
+                     <%dbLog.logPrintedException("e.getMessage()");%>
                             System.err.print(e.getMessage());
                 }
     		}
@@ -368,6 +373,7 @@ Object val_<%=cid%> = null;
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + updateFlag_<%=cid%>;
             } catch(java.lang.Exception e) {                
                         System.err.print(e.getMessage());
+                     <%dbLog.logPrintedException("e.getMessage()");%>
             }
             if(updateFlag_<%=cid%> == 0) {
             	<%
@@ -408,6 +414,7 @@ Object val_<%=cid%> = null;
                     		.invoke("Clear");
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + (tmp_ic_<%=cid%> == null ? 0 : tmp_ic_<%=cid%>.intValue());
                 } catch(java.lang.Exception e) {                    
+                     <%dbLog.logPrintedException("e.getMessage()");%>
                             System.err.print(e.getMessage());
                 }
             }
@@ -446,7 +453,9 @@ Object val_<%=cid%> = null;
                     	.invoke("Clear");
                deletedCount_<%=cid%> = deletedCount_<%=cid%> + (tmp_dc_<%=cid%> == null ? 0 : tmp_dc_<%=cid%>);
             } catch(java.lang.Exception e) {
+                <%dbLog.logPrintedException("e.getMessage()");%>
                         System.err.print(e.getMessage());
+                        <%dbLog.logPrintedException("e.getMessage()");%>
             }
             nb_line_<%=cid%>++;
     	<%
