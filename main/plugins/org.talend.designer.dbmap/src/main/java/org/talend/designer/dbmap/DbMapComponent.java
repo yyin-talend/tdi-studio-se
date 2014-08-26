@@ -17,11 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IComponentDocumentation;
@@ -33,6 +35,8 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
+import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.dbmap.external.converter.ExternalNodeUtils;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
@@ -345,6 +349,7 @@ public class DbMapComponent extends AbstractMapComponent {
      */
     @Override
     public void removeInput(IConnection connection) {
+        Connection conn = null;
         DBMapData externalEmfData = (DBMapData) getExternalEmfData();
         InputTable toRemove = null;
         for (InputTable inputTable : externalEmfData.getInputTables()) {
@@ -354,9 +359,38 @@ public class DbMapComponent extends AbstractMapComponent {
             }
         }
         if (toRemove != null) {
-            externalEmfData.getInputTables().remove(toRemove);
+            EList<InputTable> inputTableList = externalEmfData.getInputTables();
+            inputTableList.remove(toRemove);
+            ExternalNodeUtils.prepareExternalNodeReadyToOpen(getExternalNode());
+            IODataComponentContainer iContainer = getIODataComponents();
+            if (iContainer != null) {
+                mapperMain.initIOConnections(iContainer);
+                mapperMain.getMapperManager().initInternalData();
+            }
             buildExternalData(externalEmfData);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.AbstractNode#addInput(org.talend.core.model.process.IConnection)
+     */
+    @Override
+    public void addInput(IConnection connection) {
+        Object eData = getExternalEmfData();
+        if (eData == null) {
+            return;
+        }
+
+        DBMapData externalEmfData = (DBMapData) eData;
+        ExternalNodeUtils.prepareExternalNodeReadyToOpen(this);
+        IODataComponentContainer iContainer = getIODataComponents();
+        if (iContainer != null) {
+            mapperMain.initIOConnections(iContainer);
+            mapperMain.getMapperManager().initInternalData();
+        }
+        buildExternalData(externalEmfData);
     }
 
     @Override

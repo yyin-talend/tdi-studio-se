@@ -161,11 +161,11 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
 		<%}%>
 		<%if(ros){%> + " DIRECT"<%}%>
 		
-		<%if(rejectedDataFile!=null && !"".equals(rejectedDataFile) && !"\"\"".equals(rejectedDataFile)) {%>
+		<%if(("INSERT").equals(dataAction) && rejectedDataFile!=null && !"".equals(rejectedDataFile) && !"\"\"".equals(rejectedDataFile)) {%>
 			+ " REJECTED DATA '" + <%=rejectedDataFile%> + "'"
 		<%}%>
 		
-		<%if(exceptionFile!=null && !"".equals(exceptionFile) && !"\"\"".equals(exceptionFile)) {%>
+		<%if(("INSERT").equals(dataAction) && exceptionFile!=null && !"".equals(exceptionFile) && !"\"\"".equals(exceptionFile)) {%>
 			+ " EXCEPTIONS '" + <%=exceptionFile%> + "'"
 		<%}%>
 		;
