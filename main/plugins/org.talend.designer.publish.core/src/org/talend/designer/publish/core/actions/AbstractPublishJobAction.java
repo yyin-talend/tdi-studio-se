@@ -121,6 +121,10 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
         monitor.done();
     }
 
+    protected String getJobVersion() {
+        return jobVersion;
+    }
+
     @SuppressWarnings("serial")
     private static final Map<String, BundleModel> BUNDLE_MAPPING = new HashMap<String, BundleModel>() {{
         put("org.apache.servicemix.bundles.dom4j", new BundleModel("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.dom4j", "1.6.1_5"));
