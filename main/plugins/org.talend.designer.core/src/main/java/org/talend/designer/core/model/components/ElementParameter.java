@@ -143,6 +143,8 @@ public class ElementParameter implements IElementParameter {
 
     private String repositoryProperty;
 
+    private Object defaultValue;
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -1170,5 +1172,26 @@ public class ElementParameter implements IElementParameter {
     @Override
     public void setRepositoryProperty(String repositoryProperty) {
         this.repositoryProperty = repositoryProperty;
+    }
+
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isDefault()
+     */
+    @Override
+    public boolean isValueSetToDefault() {
+        if (defaultValue == null) {
+            if (value == null) {
+                return true;
+            }
+            return false;
+        } else {
+            return defaultValue.equals(value);
+        }
     }
 }

@@ -46,7 +46,6 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.utils.image.ColorUtils;
-import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -558,6 +557,7 @@ public class EmfComponent extends AbstractComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
+        param.setDefaultValue(param.getValue());
         listParam.add(param);
 
         param = new ElementParameter(node);
@@ -571,6 +571,7 @@ public class EmfComponent extends AbstractComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
+        param.setDefaultValue(param.getValue());
         listParam.add(param);
     }
 
@@ -592,6 +593,7 @@ public class EmfComponent extends AbstractComponent {
         param.setNumRow(1);
         param.setReadOnly(false);
         param.setRequired(false);
+        param.setDefaultValue(param.getValue());
         param.setShow(true);
         listParam.add(param);
 
@@ -902,6 +904,7 @@ public class EmfComponent extends AbstractComponent {
                 param.setValue(label);
             }
         }
+        param.setDefaultValue(param.getValue());
 
         listParam.add(param);
 
@@ -931,6 +934,7 @@ public class EmfComponent extends AbstractComponent {
                 param.setValue(label);
             }
         }
+        param.setDefaultValue(param.getValue());
 
         listParam.add(param);
 
@@ -954,20 +958,8 @@ public class EmfComponent extends AbstractComponent {
                 }
             }
         }
+        param.setDefaultValue(param.getValue());
         listParam.add(param);
-
-        // Remove show hint item in view section for feature 2389.
-        // param = new ElementParameter(node);
-        // param.setName(EParameterName.SHOW_HINT.getName());
-        // param.setValue(new Boolean(false));
-        // param.setDisplayName(EParameterName.SHOW_HINT.getDisplayName());
-        // param.setField(EParameterFieldType.CHECK);
-        // param.setCategory(EComponentCategory.VIEW);
-        // param.setNumRow(4);
-        // param.setReadOnly(false);
-        // param.setRequired(false);
-        // param.setShow(true);
-        // listParam.add(param);
     }
 
     public void addMainParameters(final List<ElementParameter> listParam, INode node) {
@@ -997,7 +989,7 @@ public class EmfComponent extends AbstractComponent {
         param.setValue(getName());
         param.setDisplayName(EParameterName.COMPONENT_NAME.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(1);
         param.setReadOnly(true);
         param.setShow(false);
@@ -1009,7 +1001,7 @@ public class EmfComponent extends AbstractComponent {
         //$NON-NLS-1$ //$NON-NLS-2$
         param.setDisplayName(EParameterName.VERSION.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(2);
         param.setReadOnly(true);
         param.setRequired(false);
@@ -1021,30 +1013,20 @@ public class EmfComponent extends AbstractComponent {
         param.setValue(getOriginalFamilyName());
         param.setDisplayName(EParameterName.FAMILY.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(3);
         param.setReadOnly(true);
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-        /*
-         * param = new ElementParameter(node); param.setName(EParameterName.LOG.getName()); param.setValue("");
-         * //$NON-NLS-1$ param.setDisplayName(EParameterName.LOG.getDisplayName()); param .setListItemsValue(new
-         * String[] { "NONE", "COUNT", "TIME", "PERF" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ param
-         * .setListItemsDisplayName(new String[] { Messages.getString("EmfComponent.None"),
-         * Messages.getString("EmfComponent.Count"), //$NON-NLS-1$ //$NON-NLS-2$
-         * Messages.getString("EmfComponent.Time"), Messages.getString("EmfComponent.Perf") }); //$NON-NLS-1$
-         * //$NON-NLS-2$ param.setField(EParameterFieldType.CLOSED_LIST); param.setCategory(EComponentCategory.MAIN);
-         * param.setNumRow(4); param.setReadOnly(false); param.setRequired(false); param.setShow(false);
-         * listParam.add(param);
-         */
+
         if (canStart()) {
             param = new ElementParameter(node);
             param.setName(EParameterName.START.getName());
             param.setValue(new Boolean(false));
             param.setDisplayName(EParameterName.START.getDisplayName());
             param.setFieldType(EParameterFieldType.CHECK);
-            param.setCategory(EComponentCategory.ADVANCED);
+            param.setCategory(EComponentCategory.TECHNICAL);
             param.setNumRow(5);
             param.setReadOnly(true);
             param.setRequired(false);
@@ -1057,7 +1039,7 @@ public class EmfComponent extends AbstractComponent {
         param.setValue(new Boolean(canStart()));
         param.setDisplayName(EParameterName.STARTABLE.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.ADVANCED);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(5);
         param.setReadOnly(true);
         param.setRequired(false);
@@ -1097,6 +1079,7 @@ public class EmfComponent extends AbstractComponent {
         param.setNumRow(5);
         param.setReadOnly(false);
         param.setRequired(false);
+        param.setDefaultValue(param.getValue());
         param.setShow(true);
         listParam.add(param);
 
@@ -1105,9 +1088,9 @@ public class EmfComponent extends AbstractComponent {
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.DUMMY.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.ADVANCED);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(5);
-        param.setReadOnly(false);
+        param.setReadOnly(true);
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
@@ -1130,6 +1113,7 @@ public class EmfComponent extends AbstractComponent {
                 param.setNumRow(199);
                 param.setReadOnly(false);
                 param.setRequired(false);
+                param.setDefaultValue(param.getValue());
                 param.setShow(tStatCatcherAvailable);
                 listParam.add(param);
             }
@@ -1140,7 +1124,7 @@ public class EmfComponent extends AbstractComponent {
         param.setValue(getTranslatedValue(PROP_HELP));
         param.setDisplayName(EParameterName.HELP.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(6);
         param.setReadOnly(true);
         param.setRequired(false);
@@ -1152,27 +1136,16 @@ public class EmfComponent extends AbstractComponent {
         param.setValue(new Boolean(false));
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.ADVANCED);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(5);
         param.setReadOnly(true);
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-
-        param = new ElementParameter(node);
-        param.setName(EParameterName.CURRENT_OS.getName());
-        param.setValue(EnvironmentUtils.getEnvOs());
-        param.setDisplayName(EParameterName.CURRENT_OS.getDisplayName());
-        param.setFieldType(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
-        param.setNumRow(1);
-        param.setReadOnly(true);
-        param.setShow(false);
-        listParam.add(param);
         //
         param = new ElementParameter(node);
         param.setName(EParameterName.IREPORT_PATH.getName());
-        param.setCategory(EComponentCategory.ADVANCED);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setDisplayName(EParameterName.IREPORT_PATH.getDisplayName());
         param.setNumRow(99);
@@ -1203,6 +1176,7 @@ public class EmfComponent extends AbstractComponent {
         param.setNumRow(99);
         param.setReadOnly(true);
         param.setShow(false);
+        param.setDefaultValue(param.getValue());
         listParam.add(param);
 
         param = new ElementParameter(node);
@@ -1214,6 +1188,7 @@ public class EmfComponent extends AbstractComponent {
         param.setNumRow(99);
         param.setReadOnly(true);
         param.setShow(false);
+        param.setDefaultValue(param.getValue());
         listParam.add(param);
 
         // These parameters is only work when TIS is loaded
@@ -1229,6 +1204,7 @@ public class EmfComponent extends AbstractComponent {
             param.setCategory(EComponentCategory.ADVANCED);
             param.setNumRow(200);
             param.setShow(true);
+            param.setDefaultValue(param.getValue());
             listParam.add(param);
 
             param = new ElementParameter(node);
@@ -1240,6 +1216,7 @@ public class EmfComponent extends AbstractComponent {
             param.setCategory(EComponentCategory.ADVANCED);
             param.setNumRow(200);
             param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'"); //$NON-NLS-1$
+            param.setDefaultValue(param.getValue());
             listParam.add(param);
 
             param = new ElementParameter(node);
@@ -1251,6 +1228,7 @@ public class EmfComponent extends AbstractComponent {
             param.setCategory(EComponentCategory.ADVANCED);
             param.setNumRow(200);
             param.setShow(false);
+            param.setDefaultValue(param.getValue());
             listParam.add(param);
         }
 
