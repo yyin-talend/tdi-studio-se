@@ -116,6 +116,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
 	private String parentRouteName;
 
+	private boolean jobShared;
+
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
             throws ProcessorException {
@@ -524,7 +526,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // unwrap JSON response (drop root element)
         endpointInfo.put("unwrapJsonResponse", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("UNWRAP_JSON_RESPONSE", restRequestComponent)); //$NON-NLS-1$
-        
+
         // Convert JSON to string (big double values)
         endpointInfo.put("convertTypesToStrings", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("CONVERT_JSON_VALUES_TO_STRING", restRequestComponent)); //$NON-NLS-1$
@@ -542,16 +544,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // use Service Locator
         endpointInfo.put("useSL", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)); //$NON-NLS-1$
-        
+
         // use Authorization
-        if (isStudioEEVersion()) { 
+        if (isStudioEEVersion()) {
             if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent))
             endpointInfo.put("useAuthorization", //$NON-NLS-1$
                     EmfModelUtils.computeCheckElementValue("NEED_AUTHORIZATION", restRequestComponent)); //$NON-NLS-1$
         } else {
             endpointInfo.put("useAuthorization", false); //$NON-NLS-1$
         }
-        
+
         // Service Locator custom properties
         Map<String, String> slCustomProperties = new HashMap<String, String>();
         ElementParameterType customPropsType = EmfModelUtils.findElementParameterByName(
@@ -583,7 +585,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // correlation id
         endpointInfo.put("useBusinesCorrelation", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("USE_BUSINESS_CORRELATION", restRequestComponent)); //$NON-NLS-1$
-        
+
         return endpointInfo;
     }
 
@@ -663,17 +665,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         	for (ConnectionType conn : connections) {
         		consumerNodes.add(conn.getTarget());
         	}
-        	
+
         	boolean isEEVersion = isStudioEEVersion();
 			for (NodeType node : cCXFs) { //$NON-NLS-1$
 	        	boolean nodeUseSAM = false;
 	        	boolean nodeUseSaml = false;
 	        	boolean nodeUseAuthz = false;
 	        	boolean nodeUseRegistry = false;
-	
+
 	            // http://jira.talendforge.org/browse/TESB-3850
 	            String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
-	            
+
 	            if (!useSAM && !"RAW".equals(format)) { //$NON-NLS-1$
 	            	nodeUseSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node) //$NON-NLS-1$
 	            	    || EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node); //$NON-NLS-1$
@@ -701,7 +703,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 	            	hasCXFSamlProvider |= nodeUseSaml | nodeUseRegistry;
 	            	hasCXFRSSamlProviderAuthz |= nodeUseAuthz;
 				}
-	        
+
 	            if (useSAM && hasCXFSamlConsumer && hasCXFSamlConsumer && (!isEEVersion || hasCXFRSSamlProviderAuthz)) {
 	            	break;
 	            }
@@ -776,9 +778,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         analyzer.setProperty(Analyzer.BUNDLE_VERSION, getBundleVersion());
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        analyzer.setProperty(Analyzer.BUNDLE_VENDOR, brandingService.getFullProductName() 
+        analyzer.setProperty(Analyzer.BUNDLE_VENDOR, brandingService.getFullProductName()
         		+ " (" //$NON-NLS-1$
-                + brandingService.getAcronym() 
+                + brandingService.getAcronym()
                 + '_'
                 + RepositoryPlugin.getDefault().getBundle().getVersion()
                 + ")"); //$NON-NLS-1$
@@ -790,9 +792,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String delim = ""; //$NON-NLS-1$
 
         exportPackage.append(delim).append(getPackageName(processItem));
+        String jobBundleVersion = getBundleVersion();
         if (parentRouteName != null) {
-        	exportPackage.append(";version=\"" + getBundleVersion() + "-" + parentRouteName + "\"");
-        }
+        	jobBundleVersion += "-" + parentRouteName;
+		}
+        exportPackage.append(";version=\"" + jobBundleVersion + "\"");
         delim = ","; //$NON-NLS-1$
         // Add Route Resource Export packages
         // http://jira.talendforge.org/browse/TESB-6227
@@ -936,7 +940,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return pkgs;
     }
 
-    private static void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource,
+    private void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource,
             ProcessItem processItem) throws IOException {
 
         IPath libPath = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME).getLocation()
@@ -946,7 +950,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 .getService(IOsgiDependenciesService.class);
         if (dependenciesService != null) {
             Map<String, String> bundleDependences = dependenciesService.getBundleDependences(processItem,
-            		analyzer.getBundleVersion());
+            		jobShared ? null : analyzer.getBundleVersion());
             // process external libs
             String externalLibs = bundleDependences.get(IOsgiDependenciesService.BUNDLE_CLASSPATH);
             String[] libs = externalLibs.split(IOsgiDependenciesService.ITEM_SEPARATOR);
@@ -1123,4 +1127,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		this.parentRouteName = parentRouteName;
 	}
 
+	public void setJobShared(boolean jobShared) {
+		this.jobShared = jobShared;
+	}
 }
