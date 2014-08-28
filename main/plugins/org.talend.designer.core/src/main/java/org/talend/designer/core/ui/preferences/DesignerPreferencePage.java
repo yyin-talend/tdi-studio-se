@@ -140,12 +140,13 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
                     openDir.trim();
                     if (openDir.length() > 0) {
                         File filePath = new File(openDir);
-                        if (filePath == null) {
+                        if (!filePath.exists()) {
                             return null;
                         }
                     }
+                    return Path.fromOSString(openDir).toPortableString();
                 }
-                return Path.fromOSString(openDir).toPortableString();
+                return null;
             }
         };
         addField(compDefaultFileDir);
