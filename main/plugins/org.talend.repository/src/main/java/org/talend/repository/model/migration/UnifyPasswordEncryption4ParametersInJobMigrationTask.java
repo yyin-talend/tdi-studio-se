@@ -103,6 +103,7 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends Abstra
      * 
      * same as UnifyPasswordEncryption4ContextMigrationTask to change the encryption.
      */
+    @SuppressWarnings("deprecation")
     protected boolean checkContext(Item item, ProcessType processType) throws Exception {
         boolean modified = false;
         // context
@@ -181,6 +182,7 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends Abstra
         return modified;
     }
 
+    @SuppressWarnings("deprecation")
     private boolean reencryptValueIfNeeded(ElementParameterType param) throws Exception {
         String value = param.getValue();
         int index = value.lastIndexOf(PasswordEncryptUtil.ENCRYPT_KEY);

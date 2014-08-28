@@ -62,11 +62,10 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
-import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
@@ -81,7 +80,6 @@ import org.talend.core.model.genhtml.HTMLHandler;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.genhtml.IJobSettingConstants;
 import org.talend.core.model.genhtml.XMLHandler;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -92,7 +90,8 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.ParameterValueUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -727,14 +726,11 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             IProcess process = service.getProcessFromProcessItem(item);
             IProcessor processor = ProcessorUtilities
                     .getProcessor(process, null, process.getContextManager().getDefaultContext());
-            if (ProjectManager.getInstance().getCurrentProject().getEmfProject().isHidePassword()) {
-                hideSourcecodePassword(process);
-            }
+            // in fact, no need to do, because will encrypt via TDI-30368
+            // hidePasswordInSourceCode4Doc(process);
             try {
                 processor.generateCode(false, true, false);
             } catch (ProcessorException e) {
-                // TODO Auto-generated catch block
-                // e.printStackTrace();
                 ExceptionHandler.process(e);
             }
             Element sourceCodeInfoElement = DocumentHelper.createElement("sourcecodes"); //$NON-NLS-1$
@@ -767,31 +763,19 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
     /**
      * DOC qwei Comment method "hideSourcecodePassword".
      */
-    private void hideSourcecodePassword(IProcess process) {
-        List<? extends IElementParameter> processParam = process.getElementParameters();
-        for (IElementParameter elementParameter : processParam) {
-            if (elementParameter.getRepositoryValue() != null && elementParameter.getRepositoryValue().contains("PASSWORD") //$NON-NLS-1$
-                    && !ContextParameterUtils.containContextVariables((String) elementParameter.getValue())) {
-                elementParameter.setValue("******"); //$NON-NLS-1$
-
-            }
-
-        }
-        List<? extends INode> nodes = process.getGraphicalNodes();
-        for (INode node : nodes) {
-            List<? extends IElementParameter> nodeParamList = node.getElementParameters();
-            for (IElementParameter nodeParam : nodeParamList) {
-                if (nodeParam.getRepositoryValue() != null && nodeParam.getRepositoryValue().contains("PASSWORD") //$NON-NLS-1$
-                        && !ContextParameterUtils.containContextVariables((String) nodeParam.getValue())) {
-                    nodeParam.setValue("******"); //$NON-NLS-1$
-
-                }
-
-            }
-
-        }
-
-    }
+    // private void hidePasswordInSourceCode4Doc(IProcess process) {
+    // List<? extends IElementParameter> processParam = process.getElementParameters();
+    // for (IElementParameter elementParameter : processParam) {
+    // elementParameter.setValue(ParameterValueUtil.getValue4Doc(elementParameter));
+    // }
+    // List<? extends INode> nodes = process.getGraphicalNodes();
+    // for (INode node : nodes) {
+    // List<? extends IElementParameter> nodeParamList = node.getElementParameters();
+    // for (IElementParameter nodeParam : nodeParamList) {
+    // nodeParam.setValue(ParameterValueUtil.getValue4Doc(nodeParam));
+    // }
+    // }
+    // }
 
     /**
      * DOC YeXiaowei Comment method "genereateJobSettingInfo".
@@ -820,7 +804,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
 
         for (int i = 0; i < params.size(); i++) {
             ElementParameterType param = (ElementParameterType) params.get(i);
-            nameValueMap.put(param.getName(), HTMLDocUtils.checkString(param.getValue()));
+            nameValueMap.put(param.getName(), ParameterValueUtil.getValue4Doc(param));
         }
         // Main settinparam info
 
@@ -829,60 +813,55 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         jobSettingInfoElement.add(extraElement);
 
         if (item instanceof JobletProcessItem) {
-            createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.STARTABLE));
+            createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.STARTABLE);
             element.add(jobSettingInfoElement);
             return;
         }
 
-        createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.COMP_DEFAULT_FILE_DIR));
+        createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.COMP_DEFAULT_FILE_DIR);
 
-        createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.MULTI_THREAD_EXECATION));
+        createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.MULTI_THREAD_EXECATION);
 
-        createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.IMPLICIT_TCONTEXTLOAD));
+        createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.IMPLICIT_TCONTEXTLOAD);
         if (StringUtils.equals(nameValueMap.get(IJobSettingConstants.IMPLICIT_TCONTEXTLOAD), "true")) { //$NON-NLS-1$
 
             if (StringUtils.equals(nameValueMap.get(IJobSettingConstants.FROM_FILE_FLAG_IMPLICIT_CONTEXT), "true")) { //$NON-NLS-1$
-                createSingleJobParameter(extraElement,
-                        makeNameValue(nameValueMap, IJobSettingConstants.FROM_FILE_FLAG_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement,
-                        makeNameValue(nameValueMap, IJobSettingConstants.IMPLICIT_TCONTEXTLOAD_FILE));
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.FROM_FILE_FLAG_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.IMPLICIT_TCONTEXTLOAD_FILE);
             }
 
             if (StringUtils.equals(nameValueMap.get(IJobSettingConstants.FROM_DATABASE_FLAG_IMPLICIT_CONTEXT), "true")) { //$NON-NLS-1$
-                createSingleJobParameter(extraElement,
-                        makeNameValue(nameValueMap, IJobSettingConstants.FROM_DATABASE_FLAG_IMPLICIT_CONTEXT));
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.FROM_DATABASE_FLAG_IMPLICIT_CONTEXT);
 
                 // some params about databse setting
-                createSingleJobParameter(extraElement,
-                        makeNameValue(nameValueMap, IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_PROPERTY_TYPE));
+                createSingleJobParameter(extraElement, nameValueMap,
+                        IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_PROPERTY_TYPE);
                 if (!StringUtils.equalsIgnoreCase(
                         nameValueMap.get(IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_PROPERTY_TYPE), "built_in")) { //$NON-NLS-1$
-                    createSingleJobParameter(
-                            extraElement,
-                            getConnectionLabelById(
-                                    makeNameValue(nameValueMap,
-                                            IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_REPOSITORY_PROPERTY_TYPE), null));
+                    restConnectionLabelById(nameValueMap,
+                            IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_REPOSITORY_PROPERTY_TYPE);
+
+                    createSingleJobParameter(extraElement, nameValueMap,
+                            IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_REPOSITORY_PROPERTY_TYPE);
                 }
 
-                createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.DB_TYPE_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.HOST_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.PORT_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.DBNAME_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement,
-                        makeNameValue(nameValueMap, IJobSettingConstants.SCHEMA_DB_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.USER_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.PASS_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.DBFILE_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.DBTABLE_IMPLICIT_CONTEXT));
-                createSingleJobParameter(extraElement,
-                        makeNameValue(nameValueMap, IJobSettingConstants.QUERY_CONDITION_IMPLICIT_CONTEXT));
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.DB_TYPE_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.HOST_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.PORT_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.DBNAME_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.SCHEMA_DB_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.USER_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.PASS_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.DBFILE_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.DBTABLE_IMPLICIT_CONTEXT);
+                createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.QUERY_CONDITION_IMPLICIT_CONTEXT);
 
             }
             // print operation
-            createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.PRINT_OPERATIONS));
+            createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.PRINT_OPERATIONS);
 
             // diable warnings
-            createSingleJobParameter(extraElement, makeNameValue(nameValueMap, IJobSettingConstants.DISABLE_WARNINGS));
+            createSingleJobParameter(extraElement, nameValueMap, IJobSettingConstants.DISABLE_WARNINGS);
 
         }
 
@@ -890,54 +869,53 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         Element statsAndLotsElement = DocumentHelper.createElement("Statslogs"); //$NON-NLS-1$
         jobSettingInfoElement.add(statsAndLotsElement);
 
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.ON_STATCATCHER_FLAG));
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.ON_LOGCATCHER_FLAG));
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.ON_METERCATCHER_FLAG));
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.ON_STATCATCHER_FLAG);
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.ON_LOGCATCHER_FLAG);
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.ON_METERCATCHER_FLAG);
 
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.ON_CONSOLE_FLAG));
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.ON_CONSOLE_FLAG);
 
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.ON_FILES_FLAG));
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.ON_FILES_FLAG);
         if (StringUtils.equals(nameValueMap.get(IJobSettingConstants.ON_FILES_FLAG), "true")) { //$NON-NLS-1$
             // add on file details
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.FILE_PATH));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.FILENAME_LOGS));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.FILENAME_METTER));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.FILENAME_STATS));
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.FILE_PATH);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.FILENAME_LOGS);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.FILENAME_METTER);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.FILENAME_STATS);
         }
 
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.ON_DATABASE_FLAG));
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.ON_DATABASE_FLAG);
         if (StringUtils.equals(nameValueMap.get(IJobSettingConstants.ON_DATABASE_FLAG), "true")) { //$NON-NLS-1$
             // add on database details
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.PROPERTY_TYPE));
-            createSingleJobParameter(statsAndLotsElement,
-                    makeNameValue(nameValueMap, IJobSettingConstants.PROPERTY_TYPE_PROPERTY_TYPE));
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.PROPERTY_TYPE);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.PROPERTY_TYPE_PROPERTY_TYPE);
             if (!StringUtils.equalsIgnoreCase(nameValueMap.get(IJobSettingConstants.PROPERTY_TYPE_PROPERTY_TYPE), "built_in")) { //$NON-NLS-1$
-                createSingleJobParameter(
-                        statsAndLotsElement,
-                        getConnectionLabelById(
-                                makeNameValue(nameValueMap, IJobSettingConstants.PROPERTY_TYPE_REPOSITORY_PROPERTY_TYPE), null));
+                restConnectionLabelById(nameValueMap, IJobSettingConstants.PROPERTY_TYPE_REPOSITORY_PROPERTY_TYPE);
+
+                createSingleJobParameter(statsAndLotsElement, nameValueMap,
+                        IJobSettingConstants.PROPERTY_TYPE_REPOSITORY_PROPERTY_TYPE);
             }
 
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.DB_TYPE));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.HOST));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.PORT));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.DBNAME));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.PROPERTIES));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.SCHEMA_DB));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.USER));
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.DB_TYPE);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.HOST);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.PORT);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.DBNAME);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.PROPERTIES);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.SCHEMA_DB);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.USER);
 
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.PASS));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.DBFILE));
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.PASS);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.DBFILE);
 
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.TABLE_LOGS));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.TABLE_METER));
-            createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.TABLE_STATS));
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.TABLE_LOGS);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.TABLE_METER);
+            createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.TABLE_STATS);
         }
 
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.CATCH_REALTIME_STATS));
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.CATCH_RUNTIME_ERRORS));
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.CATCH_USER_ERRORS));
-        createSingleJobParameter(statsAndLotsElement, makeNameValue(nameValueMap, IJobSettingConstants.CATCH_USER_WARNING));
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.CATCH_REALTIME_STATS);
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.CATCH_RUNTIME_ERRORS);
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.CATCH_USER_ERRORS);
+        createSingleJobParameter(statsAndLotsElement, nameValueMap, IJobSettingConstants.CATCH_USER_WARNING);
 
         // verson setting see job info
 
@@ -952,56 +930,29 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
      * @param nameValue
      * @return
      */
-    private Element createSingleJobParameter(final Element root, final String... nameValue) {
+    private Element createSingleJobParameter(final Element root, final Map<String, String> nameValueMap, final String name) {
         Element param = DocumentHelper.createElement("jobParameter"); //$NON-NLS-1$
 
         // Use label replace name
-        String displayName = CorePlugin.getDefault().getDesignerCoreService().getDisplayForProcessParameterFromName(nameValue[0]);
+        String displayName = CorePlugin.getDefault().getDesignerCoreService().getDisplayForProcessParameterFromName(name);
         param.addAttribute("name", displayName); //$NON-NLS-1$
-        param.addAttribute("value", nameValue[1]); //$NON-NLS-1$
+        param.addAttribute("value", HTMLDocUtils.checkString(nameValueMap.get(name))); //$NON-NLS-1$
         root.add(param);
         return param;
     }
 
-    /**
-     * 
-     * DOC YeXiaowei Comment method "getConnectionLabelById".
-     * 
-     * @param nameValue
-     * @param replaceName
-     * @return
-     */
-    private String[] getConnectionLabelById(String[] nameValue, String replaceName) {
+    private void restConnectionLabelById(Map<String, String> nameValueMap, String name) {
+        String id = nameValueMap.get(name);
 
-        String[] res = new String[2];
-
-        // Repalce attribute name
-        res[0] = replaceName == null ? nameValue[0] : replaceName;
-
-        // replace attribute value from id to label
-        ConnectionItem connItem = getConnectionItemById(nameValue[1]);
-        if (connItem != null) {
-            res[1] = connItem.getProperty().getLabel();
-        } else {
-            res[1] = nameValue[1];
-        }
-
-        return res;
-    }
-
-    /**
-     * 
-     * DOC YeXiaowei Comment method "makeNameValue".
-     * 
-     * @param map
-     * @param key
-     * @return
-     */
-    private String[] makeNameValue(Map<String, String> map, final String key) {
-        if (key.equals(IJobSettingConstants.PASS)) {
-            return new String[] { key, "******" }; //$NON-NLS-1$
-        } else {
-            return new String[] { key, map.get(key) };
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+        try {
+            IRepositoryViewObject lastVersion = factory.getLastVersion(id);
+            if (lastVersion != null) {
+                // reset the
+                nameValueMap.put(name, lastVersion.getProperty().getLabel());
+            }
+        } catch (PersistenceException e) {
+            // nothing to do
         }
     }
 
@@ -1051,13 +1002,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
                     contextParamElement.addAttribute("promptNeeded", HTMLDocUtils.checkString(Boolean.toString(param //$NON-NLS-1$
                             .isPromptNeeded())));
                     contextParamElement.addAttribute("type", HTMLDocUtils.checkString(param.getType())); //$NON-NLS-1$
-                    // wzhang modified to fix bug 8058
-                    if (ProjectManager.getInstance().getCurrentProject().getEmfProject().isHidePassword()
-                            && PasswordEncryptUtil.isPasswordType(param.getType())) {
-                        contextParamElement.addAttribute("value", PasswordEncryptUtil.getPasswordDisplay(param.getRawValue())); //$NON-NLS-1$ 
-                    } else {
-                        contextParamElement.addAttribute("value", HTMLDocUtils.checkString(param.getRawValue())); //$NON-NLS-1$
-                    }
+                    contextParamElement.addAttribute("value", ParameterValueUtil.getValue4Doc(param)); //$NON-NLS-1$ 
                     // replace repository id with context label
                     if (param.getRepositoryContextId() != null) {
                         ContextItem contextItem = ContextUtils.getContextItemById2(param.getRepositoryContextId());
@@ -1609,35 +1554,6 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         fos.write(result.toByteArray());
         fos.close();
 
-    }
-
-    /**
-     * 
-     * DOC YeXiaowei Comment method "getConnectionItemById".
-     * 
-     * @param id
-     * @return
-     */
-    private ConnectionItem getConnectionItemById(final String id) {
-
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-
-        List<ConnectionItem> connectionItems = null;
-
-        try {
-            connectionItems = factory.getMetadataConnectionsItem();
-            if (connectionItems != null && !connectionItems.isEmpty()) {
-                for (ConnectionItem item : connectionItems) {
-                    if (item.getProperty().getId().equals(id)) {
-                        return item;
-                    }
-                }
-            }
-        } catch (PersistenceException e) {
-            return null;
-        }
-
-        return null;
     }
 
     /**
