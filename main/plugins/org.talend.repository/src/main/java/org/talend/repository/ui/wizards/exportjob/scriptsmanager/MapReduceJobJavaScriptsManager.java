@@ -30,6 +30,8 @@ import org.talend.core.repository.constants.FileConstants;
  */
 public class MapReduceJobJavaScriptsManager extends JobJavaScriptsManager {
 
+    private boolean isHDI;
+
     /**
      * DOC marvin MapReduceJobJavaScriptsManager constructor comment.
      * 
@@ -70,6 +72,9 @@ public class MapReduceJobJavaScriptsManager extends JobJavaScriptsManager {
 
             // Do not remove the context from job.jar.
             jarbuilder.setExcludeDir(null);
+            if (isHDI) {
+                jarbuilder.setLibPath(getLibPath(true));
+            }
             jarbuilder.buildJar();
             list.add(jarFile.toURI().toURL());
         } catch (IOException e) {
@@ -79,6 +84,10 @@ public class MapReduceJobJavaScriptsManager extends JobJavaScriptsManager {
         }
 
         return list;
+    }
+
+    public void setHDI(boolean isHDI) {
+        this.isHDI = isHDI;
     }
 
 }

@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
@@ -189,8 +190,10 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         // IProcessor.NO_TRACES, JobExportType.POJO);
 
         // Now only support the JobExportType.POJO, means "Autonomous job".
-        JobScriptsManager jobScriptsManager = new MapReduceJobJavaScriptsManager(exportChoiceMap, processItem.getProcess()
-                .getDefaultContext(), JobScriptsManager.ALL_ENVIRONMENTS, IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
+        MapReduceJobJavaScriptsManager jobScriptsManager = new MapReduceJobJavaScriptsManager(exportChoiceMap, processItem
+                .getProcess().getDefaultContext(), JobScriptsManager.ALL_ENVIRONMENTS, IProcessor.NO_STATISTICS,
+                IProcessor.NO_TRACES);
+        jobScriptsManager.setHDI(isHDInsight());
         String codeOptions = null;
         List<ExportFileResource> exportResources = jobScriptsManager.getExportResources(exportFileResources, codeOptions);
 
@@ -277,7 +280,90 @@ public class MapReduceJavaProcessor extends JavaProcessor {
      */
     @Override
     protected List<String> makeUpCommandSegments() {
+        if (isHDInsight()) {
+            return makeUpHDICommandSegments();
+        }
         return super.makeUpCommandSegments();
+    }
+
+    private List<String> makeUpHDICommandSegments() {
+        List<String> commands = new ArrayList<String>();
+        commands.addAll(extractAheadCommandSegments());
+        commands.addAll(extractJavaCommandSegments());
+        commands.addAll(extractCPCommandSegments());
+        commands.addAll(extractHDISubmitterSegments());
+        commands.addAll(extractHDIMainClassSegments());
+        commands.addAll(extractHDIWebhcatSegments());
+        commands.addAll(extractArgumentSegments());
+        return commands;
+    }
+
+    private List<String> extractHDISubmitterSegments() {
+        List<String> commandSegments = new ArrayList<String>();
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_HDINSIGHT_SUBMITTER);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_AZURE_STORAGE_ACCOUNT);
+        String azureAccount = (String) process.getElementParameter("WASB_USERNAME").getValue();//$NON-NLS-1$
+        commandSegments.add(azureAccount);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_AZURE_STORAGE_PASSWORD);
+        String azurePassword = (String) process.getElementParameter("WASB_PASSWORD").getValue();//$NON-NLS-1$
+        commandSegments.add(azurePassword);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_AZURE_STORAGE_ADDRESS);
+        String azureAddress = (String) process.getElementParameter("WASB_HOST").getValue();//$NON-NLS-1$
+        commandSegments.add(azureAddress);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_AZURE_STORAGE_CONTAINER);
+        String azureContainer = (String) process.getElementParameter("WASB_CONTAINER").getValue();//$NON-NLS-1$
+        commandSegments.add(azureContainer);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_REMOTE);
+        String remoteFolder = (String) process.getElementParameter("REMOTE_FOLDER").getValue();//$NON-NLS-1$
+        commandSegments.add(remoteFolder);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_HDINSIGHT_USERNAME);
+        String hdiUsername = (String) process.getElementParameter("HDINSIGHT_USERNAME").getValue();//$NON-NLS-1$
+        commandSegments.add(hdiUsername);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_HDINSIGHT_PASSWORD);
+        String hdiPassword = (String) process.getElementParameter("HDINSIGHT_PASSWORD").getValue();//$NON-NLS-1$
+        commandSegments.add(hdiPassword);
+
+        return commandSegments;
+    }
+
+    private List<String> extractHDIWebhcatSegments() {
+        List<String> commandSegments = new ArrayList<String>();
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_WEBHCAT_ENDPOINT);
+        String webhcatHost = (String) process.getElementParameter("WEBHCAT_HOST").getValue();//$NON-NLS-1$
+        String webhcatPort = (String) process.getElementParameter("WEBHCAT_PORT").getValue();//$NON-NLS-1$
+        String webhcatEP = "https://" + webhcatHost + ":" + webhcatPort; //$NON-NLS-1$ //$NON-NLS-2$
+        commandSegments.add(webhcatEP);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_WEBHCAT_USERNAME);
+        String webhcatUsername = (String) process.getElementParameter("WEBHCAT_USERNAME").getValue();//$NON-NLS-1$
+        commandSegments.add(webhcatUsername);
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_STATUS);
+        String statusFolder = (String) process.getElementParameter("STATUSDIR").getValue();//$NON-NLS-1$
+        commandSegments.add(statusFolder);
+
+        return commandSegments;
+    }
+
+    private List<String> extractHDIMainClassSegments() {
+        List<String> commandSegments = new ArrayList<String>();
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_JAR);
+        commandSegments.add(makeupJobJarName());
+
+        commandSegments.add(ProcessorConstants.CMD_KEY_WORD_CLASS);
+        commandSegments.add(extractMainClassSegments());
+
+        return commandSegments;
     }
 
     @Override
@@ -459,6 +545,14 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         String version = process.getVersion();
         String jobJarName = process.getName().toLowerCase() + "_" + version.replace(".", "_") + ".jar"; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
         return jobJarName;
+    }
+
+    private boolean isHDInsight() {
+        Object distribution = process.getElementParameter("DISTRIBUTION").getValue();//$NON-NLS-1$
+        if (EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName().equals(distribution)) {
+            return true;
+        }
+        return false;
     }
 
 }
