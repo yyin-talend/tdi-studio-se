@@ -452,11 +452,7 @@ public class ElementParameter2ParameterType {
                     targetPramType.setValue(((Boolean) value).toString());
                 } else {
                     if (value instanceof String) {
-                        if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
-                            targetPramType.setValue(value.toString(), true);
-                        } else {
-                            targetPramType.setValue(value.toString());
-                        }
+                        targetPramType.setRawValue(value.toString());
                     }
                 }
             }

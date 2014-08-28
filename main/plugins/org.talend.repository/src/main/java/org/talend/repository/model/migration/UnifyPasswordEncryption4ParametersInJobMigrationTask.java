@@ -191,7 +191,7 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends Abstra
             String rawValue = PasswordEncryptUtil.decryptPassword(value);
             value = rawValue;
         }
-        param.setValue(value, true);
+        param.setRawValue(value);
         return true;
     }
 
