@@ -110,7 +110,6 @@ public class NameMainFlowOnMRInputComponent extends AbstractJobMigrationTask {
             if (ComponentUtilities.getNodeProperty(node, name) == null) {
                 ComponentUtilities.addNodeProperty(node, name, field);
                 ComponentUtilities.setNodeValue(node, name, "true"); //$NON-NLS-1$
-                ComponentUtilities.setNodeValue(node, name, "true"); //$NON-NLS-1$
             }
         }
     }
