@@ -29,7 +29,6 @@ import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.MetadataTypeImpl;
@@ -87,7 +86,7 @@ public class NameMainFlowOnMRInputComponent extends AbstractJobMigrationTask {
 
     @Override
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2014, 8, 11, 17, 00, 00);
+        GregorianCalendar gc = new GregorianCalendar(2014, 8, 28, 15, 00, 00);
         return gc.getTime();
     }
 
@@ -100,9 +99,7 @@ public class NameMainFlowOnMRInputComponent extends AbstractJobMigrationTask {
 
         private String field = "CHECK"; //$NON-NLS-1$
 
-        private String name = "FAIL_ON_ERROR"; //$NON-NLS-1$
-
-        private String mode = "USE_COMMANDLINE"; //$NON-NLS-1$
+        private String name = "DIE_ON_ERROR"; //$NON-NLS-1$
 
         public AddFailOnErrorOptionConversion() {
             super();
@@ -113,10 +110,7 @@ public class NameMainFlowOnMRInputComponent extends AbstractJobMigrationTask {
             if (ComponentUtilities.getNodeProperty(node, name) == null) {
                 ComponentUtilities.addNodeProperty(node, name, field);
                 ComponentUtilities.setNodeValue(node, name, "true"); //$NON-NLS-1$
-                ElementParameterType modeType = ComponentUtilities.getNodeProperty(node, mode);
-                if (modeType != null && "true".equals(modeType.getValue())) { //$NON-NLS-1$
-                    ComponentUtilities.setNodeValue(node, name, "true"); //$NON-NLS-1$
-                }
+                ComponentUtilities.setNodeValue(node, name, "true"); //$NON-NLS-1$
             }
         }
     }
@@ -135,7 +129,9 @@ public class NameMainFlowOnMRInputComponent extends AbstractJobMigrationTask {
         @Override
         public void transform(NodeType node) {
             EObjectContainmentEList<MetadataTypeImpl> metadata = (EObjectContainmentEList<MetadataTypeImpl>) node.getMetadata();
-            metadata.get(0).setConnector("MAIN");
+            if (metadata.get(0) != null) {
+                metadata.get(0).setConnector("MAIN"); //$NON-NLS-1$
+            }
         }
     }
 
