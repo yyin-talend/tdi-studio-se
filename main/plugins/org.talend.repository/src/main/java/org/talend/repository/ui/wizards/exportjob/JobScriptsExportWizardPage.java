@@ -1000,12 +1000,47 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     return true;
                 }
             });
+
             // set editor
             int columnCount = table.getColumnCount();
             CellEditor[] editors = new CellEditor[columnCount];
-            for (int i = 0; i < columnCount; i++) {
-                editors[i] = new TextCellEditor(table);
-            }
+            editors[0] = new TextCellEditor(table);
+            editors[1] = new TextCellEditor(table) {
+
+                String beforeType = null;
+
+                @Override
+                protected void doSetValue(Object value) {
+                    // record the style for password
+                    int oldStyle = getStyle();
+                    boolean changeControl = false;
+
+                    Object obj = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
+                    if (obj != null && obj instanceof ContextParameterType) {
+                        String type = ((ContextParameterType) obj).getType();
+                        if (type != null && !type.equals(beforeType)) {
+                            changeControl = true;
+                            beforeType = type;
+                        }
+                        // if password
+                        if (changeControl && PasswordEncryptUtil.isPasswordType(type)) {
+                            setStyle(oldStyle | SWT.PASSWORD);
+                        }
+                    }
+
+                    if (changeControl) {
+                        // remove old control
+                        dispose();
+                        // re-create
+                        create(table);
+                    }
+
+                    // reset the style
+                    setStyle(oldStyle);
+
+                    super.doSetValue(value);
+                }
+            };
             tableViewer.setCellEditors(editors);
 
             final Composite buttonsComposite = new Composite(composite, SWT.NONE);
