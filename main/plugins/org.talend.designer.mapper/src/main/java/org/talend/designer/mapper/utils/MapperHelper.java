@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
@@ -56,6 +57,12 @@ public class MapperHelper {
             List<ExternalMapperTable> inputTables = internalExternalData.getInputTables();
 
             int sizeInputTables = inputTables.size();
+
+            String isFromMRtMap = ElementParameterParser.getValue(mapperNode, "__REPLICATED_JOIN__"); //$NON-NLS-1$ 
+
+            if (isFromMRtMap != null && "false".equals(isFromMRtMap)) { //$NON-NLS-1$ 
+                return sizeInputTables > 1;
+            }
 
             HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
             for (IConnection connection : incomingConnections) {

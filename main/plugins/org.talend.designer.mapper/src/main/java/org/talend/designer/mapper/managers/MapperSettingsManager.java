@@ -24,6 +24,8 @@ public class MapperSettingsManager {
 
     public static final String DIE_ON_ERROR = "DIE_ON_ERROR"; //$NON-NLS-1$
 
+    public static final String REPLICATED_JOIN = "REPLICATED_JOIN"; //$NON-NLS-1$
+
     public static final String TEMPORARY_DATA_DIRECTORY = "TEMPORARY_DATA_DIRECTORY"; //$NON-NLS-1$
 
     public static final String ROWS_BUFFER_SIZE = "ROWS_BUFFER_SIZE"; //$NON-NLS-1$
@@ -81,6 +83,7 @@ public class MapperSettingsManager {
     private void initDefaultModel() {
         defaultModel = new MapperSettingModel();
         defaultModel.setDieOnError((Boolean) manager.getDefaultSetting().get(DIE_ON_ERROR));
+        defaultModel.setReplicateJoin((Boolean) manager.getDefaultSetting().get(REPLICATED_JOIN));
         defaultModel.setLookInParallel((Boolean) manager.getDefaultSetting().get(LOOKUP_IN_PARALLEL));
         defaultModel.setTempDataDir(String.valueOf(manager.getDefaultSetting().get(TEMPORARY_DATA_DIRECTORY)));
         defaultModel.setRowBufferSize(String.valueOf(manager.getDefaultSetting().get(ROWS_BUFFER_SIZE)));
@@ -92,6 +95,10 @@ public class MapperSettingsManager {
         IElementParameter parameter = component.getElementParameter(DIE_ON_ERROR);
         if (parameter != null && parameter.getValue() != null && parameter.getValue() instanceof Boolean) {
             currentModel.setDieOnError((Boolean) parameter.getValue());
+        }
+        parameter = component.getElementParameter(REPLICATED_JOIN);
+        if (parameter != null && parameter.getValue() != null && parameter.getValue() instanceof Boolean) {
+            currentModel.setReplicateJoin((Boolean) parameter.getValue());
         }
         parameter = component.getElementParameter(TEMPORARY_DATA_DIRECTORY);
         if (parameter != null && parameter.getValue() != null) {
@@ -138,6 +145,10 @@ public class MapperSettingsManager {
         IElementParameter parameter = component.getElementParameter(DIE_ON_ERROR);
         if (parameter != null) {
             parameter.setValue(currentModel.isDieOnError());
+        }
+        parameter = component.getElementParameter(REPLICATED_JOIN);
+        if (parameter != null) {
+            parameter.setValue(currentModel.isReplicateJoin());
         }
         parameter = component.getElementParameter(TEMPORARY_DATA_DIRECTORY);
         if (parameter != null) {

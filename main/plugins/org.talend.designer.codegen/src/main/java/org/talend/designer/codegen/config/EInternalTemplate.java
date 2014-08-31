@@ -54,8 +54,16 @@ public enum EInternalTemplate {
     MR_SUBPROCESS_HEADER("mr_subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     MR_SUBPROCESS_RUN("mr_subprocess_run", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     MR_SUBPROCESS_FOOTER("mr_subprocess_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
-
-    HEADER_ADDITIONAL("header_additional", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
+    MR_MAPPER_HEADER("mr_mapper_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_MAPPER_FOOTER("mr_mapper_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_LOOP_BEGIN("mr_loop_begin", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_LOOP_END("mr_loop_end", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_SUBTREE_BEGIN("mr_subtree_begin", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_SUBTREE_END("mr_subtree_end", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_OUTCOMPONENT_WRITE("mr_outcomponent_write", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_MAPPER_KEYVALUE("mr_mapper_keyvalue", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_CLOSE_BLOCKS_CODE("mr_close_blocks_code", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    HEADER_ADDITIONAL("header_additional", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$mr_loop_part
 
     private String templateName;
 

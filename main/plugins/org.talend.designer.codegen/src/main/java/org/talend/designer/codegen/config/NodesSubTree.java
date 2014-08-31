@@ -64,16 +64,69 @@ public class NodesSubTree {
     boolean subTreeContainsParallelIterate = false;
 
     List<INode> mergeBranchStarts;
-    
-    List<INode> mergeNodes;
 
+    List<INode> mergeNodes;
 
     boolean isRefSubTree = false;// for mr only
 
     List<INode> refNodes; // for mr only
 
+    List<INode> outNodes; // for mr only
+
+    boolean isContainReduce = false;
+
     /* display size of method code in comment */
     boolean methodSizeNeeded = false;
+
+    String mapKeyClass = null;
+
+    String mapKeyValue = null;
+
+    // List<IMetadataColumn> mapKeyMetadata = null;
+
+    public void setMapKeyClass(String outKeyClass) {
+        this.mapKeyClass = outKeyClass;
+    }
+
+    public void setMapValueClass(String outValueClass) {
+        this.mapValueClass = outValueClass;
+    }
+
+    public void setMapKeyClassValue(String outKeyClass, String outKeyValue) {
+        this.mapKeyClass = outKeyClass;
+        this.mapKeyValue = outKeyValue;
+    }
+
+    public String getMapKeyClass() {
+        if (this.mapKeyClass == null) {
+            return "Writable";
+        }
+        return this.mapKeyClass;
+    }
+
+    public String getMapKeyValue() {
+        return this.mapKeyValue;
+    }
+
+    String mapValueClass = null;
+
+    String mapValueValue = null;
+
+    public void setMapValueClassValue(String mapValueClass, String mapValueValue) {
+        this.mapValueClass = mapValueClass;
+        this.mapValueValue = mapValueValue;
+    }
+
+    public String getMapValueClass() {
+        if (this.mapValueClass == null) {
+            return "Writable";
+        }
+        return this.mapValueClass;
+    }
+
+    public String getMapValueValue() {
+        return this.mapValueValue;
+    }
 
     public boolean isMethodSizeNeeded() {
         return methodSizeNeeded;
@@ -129,9 +182,12 @@ public class NodesSubTree {
             this.rootNode = node;
             this.name = node.getUniqueName();
             this.nodes = new ArrayList<INode>();
+            this.outNodes = new ArrayList<INode>();
             afterSubProcesses = new ArrayList<String>();
             beforeSubProcesses = new ArrayList<String>();
-
+            this.visitedNodesMainCode = new HashMap<INode, Integer>();
+            this.visitedNodesBeginCode = new HashMap<INode, Integer>();
+            this.visitedNodesEndCode = new HashMap<INode, Integer>();
             allMainSubTreeConnections = new ArrayList<IConnection>();
 
             buildMRSubTree(node);
@@ -170,14 +226,14 @@ public class NodesSubTree {
             }
 
             // if the node link with the same merge node
-            for(INode mNode:mergeNodes){
-            	if (node.isActivate() && node.isSubProcessStart() && node.getLinkedMergeInfo() != null
+            for (INode mNode : mergeNodes) {
+                if (node.isActivate() && node.isSubProcessStart() && node.getLinkedMergeInfo() != null
                         && node.getLinkedMergeInfo().get(mNode) != null) {
                     mergeBranchStarts.add(node);
                     buildSubTree(node, true);
                 }
             }
-            
+
         }
     }
 
@@ -210,6 +266,11 @@ public class NodesSubTree {
                 }
             }
         }
+        if (!this.isContainReduce) {
+            if (node.isVirtualGenerateNode() || ((AbstractNode) node).isMrContainsReduce()) {
+                this.isContainReduce = true;
+            }
+        }
         for (IConnection connection : node.getOutgoingSortedConnections()) {
             if (connection.getTarget().isActivate()) {
 
@@ -227,8 +288,28 @@ public class NodesSubTree {
                 }
             }
         }
-
+        boolean isOutNode = false;
+        if (!node.isVirtualGenerateNode()) {
+            List<? extends IConnection> outConns = node.getOutgoingConnections();
+            isOutNode = true;
+            for (IConnection conn : outConns) {
+                if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    isOutNode = false;
+                    break;
+                }
+            }
+        }
+        if (isOutNode && !this.outNodes.contains(node)) {
+            this.outNodes.add(node);
+        }
+        visitedNodesMainCode.put(node, 0);
+        visitedNodesBeginCode.put(node, 0);
+        visitedNodesEndCode.put(node, 0);
         nodes.add(node);
+    }
+
+    public boolean isReduceJob() {
+        return this.isContainReduce;
     }
 
     private void buildSubTree(INode node, boolean breakWhenMerge) {
@@ -452,24 +533,24 @@ public class NodesSubTree {
 
                 @Override
                 public int compare(INode node1, INode node2) {
-                	Map<INode,Integer> mergeInfo1=node1.getLinkedMergeInfo();
-                	Map<INode,Integer> mergeInfo2=node2.getLinkedMergeInfo();
-                	for(INode mNode:mergeNodes){
-                		if (mergeInfo1.get(mNode)!=null && mergeInfo2.get(mNode)!=null) {
-                			if(mergeInfo1.get(mNode) > mergeInfo2.get(mNode)){
-                				return 1;
-                			}else{
-                				return -1;
-                			}
-                		}
-                		if (mergeInfo1.get(mNode)!=null && mergeInfo2.get(mNode)==null) {
-                			return -1;
-                		}
-                		if (mergeInfo1.get(mNode)==null && mergeInfo2.get(mNode)!=null) {
-                			return 1;
-                		}
-                	}
-                        return -1;
+                    Map<INode, Integer> mergeInfo1 = node1.getLinkedMergeInfo();
+                    Map<INode, Integer> mergeInfo2 = node2.getLinkedMergeInfo();
+                    for (INode mNode : mergeNodes) {
+                        if (mergeInfo1.get(mNode) != null && mergeInfo2.get(mNode) != null) {
+                            if (mergeInfo1.get(mNode) > mergeInfo2.get(mNode)) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
+                        }
+                        if (mergeInfo1.get(mNode) != null && mergeInfo2.get(mNode) == null) {
+                            return -1;
+                        }
+                        if (mergeInfo1.get(mNode) == null && mergeInfo2.get(mNode) != null) {
+                            return 1;
+                        }
+                    }
+                    return -1;
 
                 }
             });
@@ -481,14 +562,14 @@ public class NodesSubTree {
     public boolean isMergeSubTree() {
         return this.isMergeSubTree;
     }
-    
-    public List<INode> getMergeNodes() {
-		return mergeNodes;
-	}
 
-//    public INode getMergeNode() {
-//        return this.mergeNode;
-//    }
+    public List<INode> getMergeNodes() {
+        return mergeNodes;
+    }
+
+    // public INode getMergeNode() {
+    // return this.mergeNode;
+    // }
 
     /**
      * Getter for allMainSubTreeConnections.
@@ -550,5 +631,9 @@ public class NodesSubTree {
      */
     public void setRefNodes(List<INode> refNodes) {
         this.refNodes = refNodes;
+    }
+
+    public List<INode> getOutNodes() {
+        return this.outNodes;
     }
 }

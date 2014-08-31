@@ -154,7 +154,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     private void placeCursorToSelection() {
         String mainPart;
         if (process != null && (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType()))) {
-            mainPart = "[" + currentSelection + " mrconfig ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+            mainPart = "[" + currentSelection + " mrmain ] start"; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             mainPart = "[" + currentSelection + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
         }

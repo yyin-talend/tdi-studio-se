@@ -57,7 +57,6 @@ import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
-import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.GenerationManager;
 import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
@@ -104,6 +103,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * 
      * @see org.talend.core.model.process.AbstractExternalNode#initialize()
      */
+    @Override
     public void initialize() {
         super.initialize();
         initMapperMain(false);
@@ -120,6 +120,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#getPersistentData()
      */
+    @Override
     public IExternalData getExternalData() {
         if (this.externalData == null) {
             this.externalData = new ExternalMapperData();
@@ -213,6 +214,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     /**
      * Restore mapper model from internal stored data.
      */
+    @Override
     public void restoreMapperModelFromInternalData() {
         super.restoreMapperModelFromInternalData();
         mapperMain.loadModelFromInternalData();
@@ -225,7 +227,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     /**
      * Sort outgoingConnections for code generation as visible output zone of tMap.
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void sortOutputsConnectionsLikeVisualOrder() {
         List<IConnection> outgoingConnections = (List<IConnection>) getOutgoingConnections();
         Map<String, IConnection> connectionNameToOutgoingConnection = new HashMap<String, IConnection>();
@@ -298,6 +300,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * 
      * @see org.talend.core.model.process.INode#getMetadataList()
      */
+    @Override
     public List<IMetadataTable> getMetadataList() {
         return this.metadataListOut;
     }
@@ -307,6 +310,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * 
      * @see org.talend.core.model.process.INode#setMetadataList(java.util.List)
      */
+    @Override
     public void setMetadataList(List<IMetadataTable> metadataTablesOut) {
         this.metadataListOut = metadataTablesOut;
     }
@@ -381,6 +385,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     // }
     // }
 
+    @Override
     public void buildExternalData(AbstractExternalData abstractData) {
         externalData = new ExternalMapperData();
         if (abstractData instanceof MapperData) {
@@ -461,6 +466,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         }
     }
 
+    @Override
     public AbstractExternalData getExternalEmfData() {
         final MapperData emfMapperData = MapperFactory.eINSTANCE.createMapperData();
         initMapperMain(false);
@@ -510,6 +516,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         }
     }
 
+    @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
         if (conectionName == null || oldColumnName == null || newColumnName == null) {
             throw new NullPointerException();
@@ -607,8 +614,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         }
         TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
         // loop on all locations of current expression
-        for (int i = 0; i < tableEntryLocations.length; i++) {
-            TableEntryLocation currentLocation = tableEntryLocations[i];
+        for (TableEntryLocation currentLocation : tableEntryLocations) {
             if (tableRenamed && oldLocation.tableName.equals(currentLocation.tableName)) {
                 oldLocation.columnName = currentLocation.columnName;
                 newLocation.columnName = currentLocation.columnName;
@@ -626,6 +632,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * 
      * @see org.talend.core.model.process.AbstractExternalNode#getProblems()
      */
+    @Override
     public List<Problem> getProblems() {
         initMapperMain(false);
         ProblemsAnalyser problemsAnalyser = new ProblemsAnalyser(mapperMain.getMapperManager());
@@ -667,9 +674,11 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return this.generationManager;
     }
 
+    @Override
     public List<BlockCode> getBlocksCodeToClose() {
         if (generationManager == null) {
-            throw new IllegalStateException(Messages.getString("MapperComponent.generationNotInitial")); //$NON-NLS-1$
+            return null;
+            //            throw new IllegalStateException(Messages.getString("MapperComponent.generationNotInitial")); //$NON-NLS-1$
         }
         return this.generationManager.getBlocksCodeToClose();
     }
@@ -742,6 +751,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * @param renameAction true to rename in all expressions, false to get boolean if present in one of the expressions
      * @return
      */
+    @Override
     protected boolean hasOrRenameData(String oldName, String newName, boolean renameAction) {
         if (oldName == null || newName == null && renameAction) {
             throw new NullPointerException();
@@ -825,6 +835,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * 
      * @see org.talend.core.model.process.INode#isUseLoopOnConditionalOutput(java.lang.String)
      */
+    @Override
     public boolean isUseLoopOnConditionalOutput(String outputName) {
         for (ExternalMapperTable table : externalData.getOutputTables()) {
             if (table.getIsJoinTableOf() != null && table.getIsJoinTableOf().equals(outputName)) {
@@ -834,6 +845,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return false;
     }
 
+    @Override
     public List<String> checkNeededRoutines(List<String> possibleRoutines, String additionalString) {
         List<String> routinesToAdd = new ArrayList<String>();
         for (String routine : possibleRoutines) {
