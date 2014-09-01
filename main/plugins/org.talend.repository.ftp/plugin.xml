@@ -136,5 +136,17 @@
          </importItemsHandler>
       </importItemsProvider>
    </extension>
+   <extension
+         point="org.talend.core.migrationTask">
+      <projecttask
+            beforeLogon="false"
+            breaks="5.5.1"
+            class="org.talend.repository.ftp.repository.migration.UnifyPasswordEncryption4FtpConnectionMigrationTask"
+            description="Unify the entryption for FTP password fields"
+            id="org.talend.repository.ftp.repository.migration.UnifyPasswordEncryption4FtpConnectionMigrationTask"
+            name="UnifyPasswordEncryption4FtpConnectionMigrationTask"
+            version="5.5.1">
+      </projecttask>
+   </extension>
 
 </plugin>
