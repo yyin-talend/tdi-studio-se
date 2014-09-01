@@ -105,7 +105,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 						FeaturesModel.ESB_FEATURE_VERSION_RANGE));
 			}
 
-			Collection<NodeType> tIPaasComponents = EmfModelUtils.getComponentsByName(processItem, "tiPaaSInput", "tiPaasOutput");
+			Collection<NodeType> tIPaasComponents = EmfModelUtils.getComponentsByName(processItem, "tActionInput", "tActionOutput");
 			if(!tIPaasComponents.isEmpty()){
 				addMissingBundles(featuresModel, ((JobJavaScriptOSGIForESBManager) manager).getExcludedModuleNeededs());
 			}
