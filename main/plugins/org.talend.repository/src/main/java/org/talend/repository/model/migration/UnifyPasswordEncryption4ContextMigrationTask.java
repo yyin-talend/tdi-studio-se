@@ -72,13 +72,14 @@ public class UnifyPasswordEncryption4ContextMigrationTask extends UnifyPasswordE
             if (modify) {
                 try {
                     factory.save(item, true);
+                    return ExecutionResult.SUCCESS_NO_ALERT;
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
                     return ExecutionResult.FAILURE;
                 }
             }
         }
-        return ExecutionResult.SUCCESS_NO_ALERT;
+        return ExecutionResult.NOTHING_TO_DO;
     }
 
 }

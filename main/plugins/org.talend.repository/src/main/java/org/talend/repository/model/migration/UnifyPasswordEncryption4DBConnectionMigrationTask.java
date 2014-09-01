@@ -54,6 +54,7 @@ public class UnifyPasswordEncryption4DBConnectionMigrationTask extends UnifyPass
                         String rawPass = PasswordEncryptUtil.decryptPassword(pass);
                         dbConn.setRawPassword(rawPass);
                         factory.save(item, true);
+                        return ExecutionResult.SUCCESS_NO_ALERT;
                     }
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
@@ -61,7 +62,7 @@ public class UnifyPasswordEncryption4DBConnectionMigrationTask extends UnifyPass
                 }
             }
         }
-        return ExecutionResult.SUCCESS_NO_ALERT;
+        return ExecutionResult.NOTHING_TO_DO;
     }
 
 }
