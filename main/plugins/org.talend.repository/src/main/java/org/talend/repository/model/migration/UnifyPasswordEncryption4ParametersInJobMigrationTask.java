@@ -13,8 +13,6 @@
 package org.talend.repository.model.migration;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -23,13 +21,11 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -43,9 +39,7 @@ import org.talend.repository.model.migration.EncryptPasswordInComponentsMigratio
  * created by ggu on Aug 25, 2014 Detailled comment
  *
  */
-public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends AbstractItemMigrationTask {
-
-    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyPasswordEncryption4ItemMigrationTask {
 
     @Override
     public List<ERepositoryObjectType> getTypes() {
@@ -193,17 +187,6 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends Abstra
         }
         param.setRawValue(value);
         return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.migration.IProjectMigrationTask#getOrder()
-     */
-    @Override
-    public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2014, 8, 25, 12, 0, 0);
-        return gc.getTime();
     }
 
 }

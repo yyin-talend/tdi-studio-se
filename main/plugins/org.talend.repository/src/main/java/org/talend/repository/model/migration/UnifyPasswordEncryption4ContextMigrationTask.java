@@ -13,18 +13,14 @@
 package org.talend.repository.model.migration;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.PasswordEncryptUtil;
-import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 
@@ -32,9 +28,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
  * created by ggu on Aug 21, 2014 Detailled comment
  *
  */
-public class UnifyPasswordEncryption4ContextMigrationTask extends AbstractItemMigrationTask {
-
-    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+public class UnifyPasswordEncryption4ContextMigrationTask extends UnifyPasswordEncryption4ItemMigrationTask {
 
     @Override
     public List<ERepositoryObjectType> getTypes() {
@@ -85,17 +79,6 @@ public class UnifyPasswordEncryption4ContextMigrationTask extends AbstractItemMi
             }
         }
         return ExecutionResult.SUCCESS_NO_ALERT;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.migration.IProjectMigrationTask#getOrder()
-     */
-    @Override
-    public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2014, 8, 21, 12, 0, 0);
-        return gc.getTime();
     }
 
 }
