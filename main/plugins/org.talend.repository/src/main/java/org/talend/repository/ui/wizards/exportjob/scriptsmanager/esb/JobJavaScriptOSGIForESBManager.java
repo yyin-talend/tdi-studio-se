@@ -114,10 +114,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private final File classesLocation = new File(getTmpFolder() + File.separator + "classes"); //$NON-NLS-1$;
 
-	private String parentRouteName;
-
-	private boolean jobShared;
-
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
             throws ProcessorException {
@@ -745,7 +741,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     private Manifest getManifest(ExportFileResource libResource, ProcessItem processItem) throws IOException {
+    	Analyzer analyzer = createAnalyzer(libResource, processItem);
+        // Calculate the manifest
+        Manifest manifest = null;
+        try {
+            manifest = analyzer.calcManifest();
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        } finally {
+            analyzer.close();
+        }
+        return manifest;
+    }
 
+    protected Analyzer createAnalyzer(ExportFileResource libResource, ProcessItem processItem) throws IOException {
         Analyzer analyzer = new Analyzer();
         Jar bin = new Jar(classesLocation);
         analyzer.setJar(bin);
@@ -757,9 +768,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             symbolicName = "${artifactID}"; //$NON-NLS-1$
         } else {
             symbolicName = processItem.getProperty().getLabel();
-            if (parentRouteName != null) {
-            	symbolicName = parentRouteName + "-" + symbolicName;
-            }
             // http://jira.talendforge.org/browse/TESB-5382 LiXiaopeng
             Project project = ProjectManager.getInstance().getCurrentProject();
             if (project != null) {
@@ -769,21 +777,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
             }
         }
-        if (parentRouteName != null) {
-        	analyzer.setProperty(Analyzer.BUNDLE_NAME, bundleName + " for " + parentRouteName);
-        } else {
-        	analyzer.setProperty(Analyzer.BUNDLE_NAME, bundleName);
-		}
+        analyzer.setProperty(Analyzer.BUNDLE_NAME, bundleName);
         analyzer.setProperty(Analyzer.BUNDLE_SYMBOLICNAME, symbolicName);
         analyzer.setProperty(Analyzer.BUNDLE_VERSION, getBundleVersion());
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        analyzer.setProperty(Analyzer.BUNDLE_VENDOR, brandingService.getFullProductName()
-        		+ " (" //$NON-NLS-1$
-                + brandingService.getAcronym()
-                + '_'
-                + RepositoryPlugin.getDefault().getBundle().getVersion()
-                + ")"); //$NON-NLS-1$
+        analyzer.setProperty(Analyzer.BUNDLE_VENDOR, brandingService.getFullProductName() + " (" //$NON-NLS-1$
+                + brandingService.getAcronym() + '_' + RepositoryPlugin.getDefault().getBundle().getVersion().toString() + ")"); //$NON-NLS-1$
 
         Collection<String> importPackages = new HashSet<String>();
         boolean hasSAM = false;
@@ -792,11 +792,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String delim = ""; //$NON-NLS-1$
 
         exportPackage.append(delim).append(getPackageName(processItem));
-        String jobBundleVersion = getBundleVersion();
-        if (parentRouteName != null) {
-        	jobBundleVersion += "-" + parentRouteName;
-		}
-        exportPackage.append(";version=\"" + jobBundleVersion + "\"");
         delim = ","; //$NON-NLS-1$
         // Add Route Resource Export packages
         // http://jira.talendforge.org/browse/TESB-6227
@@ -892,23 +887,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
 
         analyzer.setProperty(Analyzer.EXPORT_SERVICE, "routines.system.api.TalendJob;name=" + bundleName + ";type=" + itemType);
-
-        // Calculate the manifest
-        Manifest manifest = null;
-        try {
-            manifest = analyzer.calcManifest();
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        } finally {
-            analyzer.close();
-        }
-
-        return manifest;
-    }
-
-    /**
+		return analyzer;
+	}
+	/**
      * Add route resource packages.
      */
     private static Collection<String> addRouteResourcePackages(ProcessItem item) {
@@ -949,8 +930,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault()
                 .getService(IOsgiDependenciesService.class);
         if (dependenciesService != null) {
-            Map<String, String> bundleDependences = dependenciesService.getBundleDependences(processItem,
-            		jobShared ? null : analyzer.getBundleVersion());
+            Map<String, String> bundleDependences = dependenciesService.getBundleDependences(processItem);
             // process external libs
             String externalLibs = bundleDependences.get(IOsgiDependenciesService.BUNDLE_CLASSPATH);
             String[] libs = externalLibs.split(IOsgiDependenciesService.ITEM_SEPARATOR);
@@ -1123,11 +1103,4 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return providedModulesSet;
     }
 
-    public void setParentRoute(String parentRouteName) {
-		this.parentRouteName = parentRouteName;
-	}
-
-	public void setJobShared(boolean jobShared) {
-		this.jobShared = jobShared;
-	}
 }
