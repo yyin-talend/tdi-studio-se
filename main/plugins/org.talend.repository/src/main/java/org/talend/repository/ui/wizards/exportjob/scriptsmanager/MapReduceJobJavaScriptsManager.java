@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.core.hadoop.version.EHadoopDistributions;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 
@@ -44,6 +46,12 @@ public class MapReduceJobJavaScriptsManager extends JobJavaScriptsManager {
     public MapReduceJobJavaScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
             int statisticPort, int tracePort) {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+    }
+
+    @Override
+    protected List<URL> getJobScripts(ProcessItem process, String version, boolean needJob) {
+        setHDI(isHDInsight(process));
+        return super.getJobScripts(process, version, needJob);
     }
 
     /**
@@ -88,6 +96,14 @@ public class MapReduceJobJavaScriptsManager extends JobJavaScriptsManager {
 
     public void setHDI(boolean isHDI) {
         this.isHDI = isHDI;
+    }
+
+    private boolean isHDInsight(ProcessItem process) {
+        Object distribution = getProcessParameterValue(process, "DISTRIBUTION");//$NON-NLS-1$
+        if (EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName().equals(distribution)) {
+            return true;
+        }
+        return false;
     }
 
 }

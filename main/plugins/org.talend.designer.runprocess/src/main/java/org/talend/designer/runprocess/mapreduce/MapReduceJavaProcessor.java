@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
@@ -193,7 +192,6 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         MapReduceJobJavaScriptsManager jobScriptsManager = new MapReduceJobJavaScriptsManager(exportChoiceMap, processItem
                 .getProcess().getDefaultContext(), JobScriptsManager.ALL_ENVIRONMENTS, IProcessor.NO_STATISTICS,
                 IProcessor.NO_TRACES);
-        jobScriptsManager.setHDI(isHDInsight());
         String codeOptions = null;
         List<ExportFileResource> exportResources = jobScriptsManager.getExportResources(exportFileResources, codeOptions);
 
@@ -462,14 +460,6 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         String version = process.getVersion();
         String jobJarName = process.getName().toLowerCase() + "_" + version.replace(".", "_") + ".jar"; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
         return jobJarName;
-    }
-
-    private boolean isHDInsight() {
-        Object distribution = process.getElementParameter("DISTRIBUTION").getValue();//$NON-NLS-1$
-        if (EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName().equals(distribution)) {
-            return true;
-        }
-        return false;
     }
 
 }
