@@ -116,7 +116,7 @@ if(("true").equals(useExistingConn)) {
     String conn = "conn_" + connection;
     %>
     conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-    <%dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", "conn_"+cid+".getMetaData().getUserName()");%>
+    <%dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", null);%>
     <%
 } else {
     %>

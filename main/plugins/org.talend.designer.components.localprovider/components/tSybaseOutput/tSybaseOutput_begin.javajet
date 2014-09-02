@@ -141,9 +141,10 @@ if(useExistingConn){
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
 	String schema = "dbschema_" + connection;
+	String user = "user_" + connection;
 	%>
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
-	<%dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", "conn_"+cid+".getMetaData().getUserName()");%>
+	<%dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", "globalMap.get(\"" + user + "\")");%>
 	dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");
 	<%
 } else {

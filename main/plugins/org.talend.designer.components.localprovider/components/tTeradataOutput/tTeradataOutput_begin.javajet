@@ -160,11 +160,12 @@ if(useExistingConnection) {
 	String conn = "conn_" + connection;
 	String dbn = "dbname_" + connection ; 
 	String username = "username_" + connection;
+	String url = "url_" + connection;
 	%>
 	 String dbname_<%=cid%> = (String)globalMap.get("<%=dbn%>");
 	 String dbUser_<%=cid%> = (String)globalMap.get("<%=username%>");
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
-	<%dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", "conn_"+cid+".getMetaData().getUserName()");%>
+	<%dbLog.conn().useExistConn("globalMap.get(\"" + url + "\")", "conn_"+cid+".getMetaData().getUserName()");%>
 	<%
 } else {
     %>

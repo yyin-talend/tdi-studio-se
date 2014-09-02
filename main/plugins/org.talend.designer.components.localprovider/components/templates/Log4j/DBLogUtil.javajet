@@ -28,7 +28,11 @@ class DBConnLogUtil extends BasicLogUtil{
 	}
 	
 	public void useExistConn(String url, String dbUser){
-		info(str("Uses an existing connection with username '"), dbUser, str("'. Connection URL: "), url, str("."));
+		if(dbUser != null){
+			info(str("Uses an existing connection with username '"), dbUser, str("'. Connection URL: "), url, str("."));
+		}else{
+			info(str("Uses an existing connection. Connection URL: "), url, str("."));
+		}
 	}
 	
 	public void closeTry(String connCompID){

@@ -234,9 +234,9 @@ if(columnList != null && columnList.size()>0) {
             java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            	<%dbLog.table().truncateTry(dbLog.var("tableName"));%>
+            	<%dbLog.table().clearTry(dbLog.var("tableName"));%>
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
-            	<%dbLog.table().truncateDone(dbLog.var("tableName"));%>
+            	<%dbLog.table().clearDone(dbLog.var("tableName"));%>
             while(rsClearCount_<%=cid%>.next()) {
                 deletedCount_<%=cid%> += rsClearCount_<%=cid%>.getInt(1);
             }

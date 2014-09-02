@@ -132,8 +132,8 @@ if(("true").equals(useExistingConn)) {
 
     String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
     
-    java.lang.Class.forName("<%=javaDbDriver %>");
-    <%dbLog.conn().logJDBCDriver(dbLog.str("javaDbDriver"));%>
+    java.lang.Class.forName("<%=javaDbDriver%>");
+    <%dbLog.conn().logJDBCDriver(dbLog.str(javaDbDriver));%>
     <%dbLog.conn().connTry(dbLog.var("url"), dbLog.var("dbUser"));%>	
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
     <%dbLog.conn().connDone(dbLog.var("url"));%>

@@ -1709,7 +1709,7 @@ if(columnList != null && columnList.size() > 0) {
                 try {
                     nb_line_<%=cid%>++;
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-                    <%dbLog.data().insertingOnDuplicateKeyUpdating(dbLog.var("nb_line"));%>
+                    <%dbLog.data().insertingIgnore(dbLog.var("nb_line"));%>
                 } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
@@ -1743,7 +1743,7 @@ if(columnList != null && columnList.size() > 0) {
                 <%
     	}
     	
-		
+		dbLog.traceData(incomingConnName, columnList, dbLog.var("nb_line"));
         if(outgoingConns != null && outgoingConns.size() > 0) {
             %>
             if(!whetherReject_<%=cid%>) {

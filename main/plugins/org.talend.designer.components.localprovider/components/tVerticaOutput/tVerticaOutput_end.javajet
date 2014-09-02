@@ -167,20 +167,24 @@ imports="
 		try {
 			java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
 				<%if("VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){%>
-			com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
-			vcs_<%=cid%>.start();
-			vcs_<%=cid%>.addStream(bais_<%=cid%>);
-			vcs_<%=cid%>.execute();
-			vcs_<%=cid%>.finish();
-			copiedCount_<%=cid%> +=vcs_<%=cid%>.getRowCount();
-			vcs_<%=cid%> = null;
+					<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
+        			com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
+        			vcs_<%=cid%>.start();
+        			vcs_<%=cid%>.addStream(bais_<%=cid%>);
+        			vcs_<%=cid%>.execute();
+        			vcs_<%=cid%>.finish();
+        			copiedCount_<%=cid%> +=vcs_<%=cid%>.getRowCount();
+        			vcs_<%=cid%> = null;
+					<%dbLog.batch().executeDone(dbLog.str(dataAction));%>
 				<%}else{%>
-			((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
-			copiedCount_<%=cid%> +=stmt_<%=cid %>.getUpdateCount(); 
-			if (stmt_<%=cid%> != null) {
-				stmt_<%=cid%>.close();
-				stmt_<%=cid%> = null;
-			}
+					<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
+        			((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
+        			<%dbLog.batch().executeDone(dbLog.str(dataAction));%>
+        			copiedCount_<%=cid%> +=stmt_<%=cid %>.getUpdateCount(); 
+        			if (stmt_<%=cid%> != null) {
+        				stmt_<%=cid%>.close();
+        				stmt_<%=cid%> = null;
+        			}
 				<%}%>
 			if (bais_<%=cid%> != null ) {
 				bais_<%=cid%>.close();
