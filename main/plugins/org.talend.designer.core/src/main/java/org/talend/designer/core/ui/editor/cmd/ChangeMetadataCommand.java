@@ -809,10 +809,10 @@ public class ChangeMetadataCommand extends Command {
     }
 
     private void refreshMetadataChanged() {
-        if (inputNode != null) {
+        if (inputNode != null && inputNode.getExternalNode() != null) {
             inputNode.getExternalNode().metadataOutputChanged(currentInputMetadata);
         }
-        if (node != null) {
+        if (node != null && node.getExternalNode() != null) {
             node.getExternalNode().metadataOutputChanged(currentOutputMetadata);
         }
     }
