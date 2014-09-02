@@ -33,33 +33,4 @@ public interface ProcessorConstants {
 
     String CMD_KEY_WORD_SLASH = "/";//$NON-NLS-1$
 
-    /************ HD Insight Arguments ************/
-
-    String CMD_KEY_WORD_HDINSIGHT_SUBMITTER = "org.talend.webhcat.executor.job.mapreduce.SubmitMRJobByWebHCatHDInsight"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_AZURE_STORAGE_ACCOUNT = "-azureStorageAccount"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_AZURE_STORAGE_PASSWORD = "-azureStoragePassword"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_AZURE_STORAGE_ADDRESS = "-azureStorageAddress"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_AZURE_STORAGE_CONTAINER = "-azureStorageContainer"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_REMOTE = "-remote"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_STATUS = "-status"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_JAR = "-jar"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_CLASS = "-class"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_WEBHCAT_ENDPOINT = "-webhcat"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_WEBHCAT_USERNAME = "-webhcatUsername"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_HDINSIGHT_USERNAME = "-hdInsightUsername"; //$NON-NLS-1$
-
-    String CMD_KEY_WORD_HDINSIGHT_PASSWORD = "-hdInsightPassword"; //$NON-NLS-1$
-
-    /************************************************/
 }
