@@ -100,7 +100,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 
-    private static final String PACKAGE_SEPARATOR = "."; //$NON-NLS-1$
+    private static final char PACKAGE_SEPARATOR = '.';
 
     private static final String JAVA = "java"; //$NON-NLS-1$
 
@@ -448,9 +448,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             jobName = "${artifactID}"; //$NON-NLS-1$
         }
         jobInfo.put("name", jobName);
-        if (!isTalendStepTemplate) {
-            jobInfo.put("version", processItem.getProperty().getVersion()); //$NON-NLS-1$
-        }
+        jobInfo.put("version", processItem.getProperty().getVersion()); //$NON-NLS-1$
         jobInfo.put("className", className); //$NON-NLS-1$
 
         // additional Talend job interfaces (ESB related)
