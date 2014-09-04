@@ -20,7 +20,7 @@ Require-Bundle: org.talend.model,
  org.eclipse.jdt.core,
  org.eclipse.xsd,
  org.talend.datatools.xml,
- org.apache.commons.lang;bundle-version="2.4.0",
+ org.apache.commons.lang,
  org.talend.libraries.dom4j-jaxen
 Eclipse-LazyStart: true
 Export-Package: org.talend.componentdesigner,
