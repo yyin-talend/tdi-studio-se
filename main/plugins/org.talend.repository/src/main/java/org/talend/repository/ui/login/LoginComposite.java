@@ -41,6 +41,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -882,6 +884,15 @@ public class LoginComposite extends Composite {
         branchesViewer.setContentProvider(new ArrayContentProvider());
         branchesViewer.setLabelProvider(new LabelProvider());
         branchesViewer.getControl().setVisible(false);
+        branchesViewer.setComparator(new ViewerComparator() {
+
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2) {
+                String s1 = (String) e1;
+                String s2 = (String) e2;
+                return s1.compareTo(s2);
+            }
+        });
 
         Label tosProjectLabel = toolkit.createLabel(tosProjectComposite, Messages.getString("LoginComposite.projectTitle")); //$NON-NLS-1$
 
