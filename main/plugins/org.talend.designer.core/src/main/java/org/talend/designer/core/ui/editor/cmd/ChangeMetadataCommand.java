@@ -429,11 +429,20 @@ public class ChangeMetadataCommand extends Command {
             }
         } else {
             if (!node.getOutgoingConnections().isEmpty()) {
+                IMetadataTable relativeOldOutputMetadata = null;
+                IMetadataTable relativeNewOutputMetadata = null;
+                if (isExecute) {
+                    relativeOldOutputMetadata = oldOutputMetadata;
+                    relativeNewOutputMetadata = newOutputMetadata;
+                } else {
+                    relativeOldOutputMetadata = newOutputMetadata;
+                    relativeNewOutputMetadata = oldOutputMetadata;
+                }
                 for (IConnection outgoingConnection : node.getOutgoingConnections()) {
                     final Node target = (Node) outgoingConnection.getTarget();
                     if (target != null && target.getExternalNode() != null) {
-                        List<IMetadataColumn> oldListColumns = oldOutputMetadata.getListColumns();
-                        List<IMetadataColumn> newListColumns = newOutputMetadata.getListColumns();
+                        List<IMetadataColumn> oldListColumns = relativeOldOutputMetadata.getListColumns();
+                        List<IMetadataColumn> newListColumns = relativeNewOutputMetadata.getListColumns();
                         List<ColumnNameChanged> columnNameChanges = new ArrayList<ColumnNameChanged>();
                         int size = oldListColumns.size();
                         int newSize = newListColumns.size();
@@ -456,7 +465,7 @@ public class ChangeMetadataCommand extends Command {
                             final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
                                     IXmlMapService.class);
                             if (service.isXmlMapComponent(target.getExternalNode())) {
-                                IODataComponent output = new IODataComponent(outgoingConnection, newOutputMetadata);
+                                IODataComponent output = new IODataComponent(outgoingConnection, relativeNewOutputMetadata);
                                 output.setColumnNameChanged(columnNameChanges);
                                 target.metadataInputChanged(output, outgoingConnection.getName());
                             }
@@ -466,7 +475,7 @@ public class ChangeMetadataCommand extends Command {
                             final IDbMapService service = (IDbMapService) GlobalServiceRegister.getDefault().getService(
                                     IDbMapService.class);
                             if (service.isDbMapComponent(target.getExternalNode())) {
-                                IODataComponent output = new IODataComponent(outgoingConnection, newOutputMetadata);
+                                IODataComponent output = new IODataComponent(outgoingConnection, relativeNewOutputMetadata);
                                 // TDI-25307:should setColumNameChanged here for ELtDbMap in case the propagate schema
                                 // does not affect it.
                                 output.setColumnNameChanged(columnNameChanges);
