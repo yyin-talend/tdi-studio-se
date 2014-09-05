@@ -53,10 +53,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	
 	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
-	
-	dbLog.startWork();
-	dbLog.logCompSetting();
-
 %>
 
 <%

@@ -66,9 +66,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean savePoint = ("true").equals(ElementParameterParser.getValue(node,"__SAVE_POINT__"));
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-	
-	dbLog.startWork();
-	dbLog.logCompSetting();
 %>
 
 <%

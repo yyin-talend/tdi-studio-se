@@ -92,4 +92,3 @@ imports="
     }
 	%>
 <%@ include file="../templates/DB/Output/DBOutputEndGlobalVars.javajet"%>
-<%dbLog.endWork();%>

@@ -53,8 +53,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-    dbLog.startWork();
-    dbLog.logCompSetting();
 %>
 	String url_<%=cid %> = null;
 <%

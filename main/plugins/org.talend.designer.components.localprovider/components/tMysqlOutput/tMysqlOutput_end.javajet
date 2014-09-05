@@ -525,4 +525,3 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 <%@ include file="../templates/DB/Output/DBOutputEndGlobalVars.javajet"%>
     
-<%dbLog.endWork();%>

@@ -311,4 +311,3 @@ if(rejectConns != null && rejectConns.size() > 0) {
 }
 %>
 <%@ include file="../templates/DB/Output/DBOutputEndGlobalVars.javajet"%>
-<%dbLog.endWork();%>

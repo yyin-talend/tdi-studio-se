@@ -65,9 +65,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean useBatchInsertOptimization = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_INSERT_OPTIMIZATION__"));
 	
 	String tableSchema = ElementParameterParser.getValue(node,"__SCHEMA_DB__");
-	
-    dbLog.startWork();
-    dbLog.logCompSetting();
 %>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;

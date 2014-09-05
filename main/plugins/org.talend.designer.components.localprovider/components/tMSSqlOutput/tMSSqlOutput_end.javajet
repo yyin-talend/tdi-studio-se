@@ -459,4 +459,3 @@ if(("true").equals(identityInsert)){
     %>
     
 <%@ include file="../templates/DB/Output/DBOutputEndGlobalVars.javajet"%>
-<%dbLog.endWork();%>

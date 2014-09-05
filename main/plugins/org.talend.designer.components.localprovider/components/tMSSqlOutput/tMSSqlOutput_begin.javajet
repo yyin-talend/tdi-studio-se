@@ -69,8 +69,6 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean usingStatsLogs=cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB");
     String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
-    dbLog.startWork();
-    dbLog.logCompSetting();
 %>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;

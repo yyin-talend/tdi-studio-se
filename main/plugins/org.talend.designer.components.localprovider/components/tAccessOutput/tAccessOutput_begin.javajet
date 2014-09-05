@@ -47,8 +47,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	
 	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
-    dbLog.startWork();
-    dbLog.logCompSetting();
 %>
 
 <%

@@ -52,9 +52,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 		
 	String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
-	
-    dbLog.startWork();
-    dbLog.logCompSetting();
 %>
 
 <%

@@ -130,4 +130,3 @@ imports="
 
 	int rejectedCount_<%=cid%> = 0;
 <%@ include file="../templates/DB/Output/DBOutputEndGlobalVars.javajet"%>
-<%dbLog.endWork();%>

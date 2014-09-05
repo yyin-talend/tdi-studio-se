@@ -1180,7 +1180,6 @@ IMetadataColumn talendDynCol = null;
     		}%>
     	<%
     	}
-    	dbLog.traceData(incomingConnName, columnList, dbLog.var("nb_line"));
         if(outgoingConns != null && outgoingConns.size() > 0) {
             %>
             if(!whetherReject_<%=cid%>) {

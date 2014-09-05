@@ -13,7 +13,7 @@ class BasicLogUtil{
 		this.node = node;
 		this.cid = this.node.getUniqueName();
 		this.log4jEnabled = ("true").equals(org.talend.core.model.process.ElementParameterParser.getValue(this.node.getProcess(), "__LOG4J_ACTIVATE__"));
-		this.logID = "\"" + this.cid + " - \"";
+		this.logID = this.cid;
 	}
 	
 	public String var(String varName){
@@ -50,7 +50,7 @@ class BasicLogUtil{
 	private void log4j(String level, String... messages){
 		if(this.log4jEnabled){
 		%>
-			log.<%=level%>(<%=logID%> <%for(String message : messages){%> + <%=message%> <%}%>);
+			log.<%=level%>("<%=logID%> - " <%for(String message : messages){%> + <%=message%> <%}%>);
 		<%
 		}
 	}

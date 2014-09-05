@@ -53,8 +53,6 @@
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	boolean useStatement = ("true").equals(ElementParameterParser.getValue(node,"__USE_STATEMENT__"));
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-    dbLog.startWork();
-    dbLog.logCompSetting();
 %>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;

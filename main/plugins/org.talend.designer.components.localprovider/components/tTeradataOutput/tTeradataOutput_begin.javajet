@@ -59,9 +59,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	
-	dbLog.startWork();
-	dbLog.logCompSetting();
 %>
 
 int nb_line_<%=cid%> = 0;
