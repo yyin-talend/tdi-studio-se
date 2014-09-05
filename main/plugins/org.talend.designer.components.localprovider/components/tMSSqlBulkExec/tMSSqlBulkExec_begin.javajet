@@ -13,11 +13,12 @@ imports="
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+dbLog = new DBLogUtil(node); 
 String action = ElementParameterParser.getValue(node, "__ACTION__");
 String outputAction = ElementParameterParser.getValue(node, "__OUTPUT__");
 
@@ -36,10 +37,12 @@ String table = ElementParameterParser.getValue(node, "__TABLE__");
 String codePage = ElementParameterParser.getValue(node, "__CODE_PAGE__");
 String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
 boolean convertToUppercase = false; // not active this function
-%>int deletedCount_<%=cid%>=0;<%
+%>
+int deletedCount_<%=cid%>=0;
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
+<%
 if(("EXPORT").equals(action)) {
 %>
-<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 	log4jCodeGenerateUtil.infoComponentStart(node);
 	String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
