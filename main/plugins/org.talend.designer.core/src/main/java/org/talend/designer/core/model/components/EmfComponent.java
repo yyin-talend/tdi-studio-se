@@ -839,6 +839,27 @@ public class EmfComponent extends AbstractComponent {
                 }
             }
 
+            label = IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL;
+            for (String id : idArray) {
+                if (id.contains(label)) {
+                    return IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL;
+                }
+            }
+
+            label = IComponentsLocalProviderService.PREFERENCE_TYPE_HINT;
+            for (String id : idArray) {
+                if (id.contains(label)) {
+                    return IComponentsLocalProviderService.PREFERENCE_TYPE_HINT;
+                }
+            }
+
+            label = IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION;
+            for (String id : idArray) {
+                if (id.contains(label)) {
+                    return IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION;
+                }
+            }
+
             if (nodeFamily.contains("/")) { //$NON-NLS-1$
                 String rootFamily = nodeFamily.split("/")[0]; //$NON-NLS-1$
                 label = rootFamily + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE;
@@ -891,8 +912,7 @@ public class EmfComponent extends AbstractComponent {
             param.setValue(formatTypeInXML.getLABEL());
         } else if (formatId != null) {
             if (localComponentProviderStore != null) {
-                String label = localComponentProviderStore.getString(formatId
-                        + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
+                String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
                 if (!"".equals(label)) { //$NON-NLS-1$
                     param.setValue(label);
                 }
@@ -921,8 +941,7 @@ public class EmfComponent extends AbstractComponent {
             param.setValue(formatTypeInXML.getHINT());
         } else if (formatId != null) {
             if (localComponentProviderStore != null) {
-                String label = localComponentProviderStore.getString(formatId
-                        + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
+                String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
                 if (!"".equals(label)) { //$NON-NLS-1$
                     param.setValue(label);
                 }
@@ -951,8 +970,7 @@ public class EmfComponent extends AbstractComponent {
             param.setValue(formatTypeInXML.getCONNECTION());
         } else if (formatId != null) {
             if (localComponentProviderStore != null) {
-                String label = localComponentProviderStore.getString(formatId
-                        + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
+                String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
                 if (!"".equals(label)) { //$NON-NLS-1$
                     param.setValue(label);
                 }
