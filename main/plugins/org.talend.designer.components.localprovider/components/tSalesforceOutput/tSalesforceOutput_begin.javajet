@@ -3,17 +3,14 @@ imports="
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser
     	org.talend.designer.codegen.config.CodeGeneratorArgument
-    	org.talend.core.model.process.IProcess
 		"
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 	<%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();    	
-	
-	IProcess process = node.getProcess();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+	log = new LogUtil(node);
 	
 	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 
@@ -31,9 +28,6 @@ imports="
 	String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
 	// if the extended insert is disabled set the commit level to 1
 	if (!extendedInsert) commitLevel = "1";
-	
-   	log4jFileUtil.componentStartInfo(node);
-	log4jFileUtil.logParameters(node);
 	
 	String passwordFieldName = "";
 	
@@ -54,9 +48,7 @@ imports="
         if(globalMap.get("conn_<%=connection%>") == null){
 			throw new RuntimeException("Get null connection from <%=connection%>");
 		}
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - use exsit connection : <%=connection%>");
-		<%}%>
+		<%log.info(log.str("use exsit connection : " + connection + "."));%>
 		sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>"); 	
 	<%
 	}else{
@@ -80,31 +72,24 @@ imports="
     		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
     		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
 			%>
-			try{
-				sforceConn_<%=cid%> = 
-        			new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
-        				<%
-        				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
-        				%>
-            				.setTokenFilePath(<%=tokenFile%>)
-        				<%
-        				}
-        				%>
-        				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
-                    	<%
-                    	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
-                    	%>
-                    		.setClientID(<%=clientID%>);
-                    	<%
-                    	}
-                    	%>
-                    	.build();
-    		}catch(Exception e){
-    			<%if(isLog4jEnabled){%>
-    				log.warn("<%=cid%> - Login failed, error message: " + e.getMessage());
-    			<%}%>	
-    			throw e;
-    		}
+			sforceConn_<%=cid%> = 
+    			new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
+    				<%
+    				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+    				%>
+        				.setTokenFilePath(<%=tokenFile%>)
+    				<%
+    				}
+    				%>
+    				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
+                	<%
+                	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
+                	%>
+                		.setClientID(<%=clientID%>);
+                	<%
+                	}
+                	%>
+                	.build();
 		<%
 		}else{
 		%>
@@ -115,31 +100,20 @@ imports="
 
 			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		
-	        try{
-				sforceConn_<%=cid%> = 
-        			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, decryptedPassword_<%=cid%>)
-        				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
-                    	<%
-                    	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
-                    	%>
-                    		.setClientID(<%=clientID%>);
-                    	<%
-                    	}
-                    	%>
-                    	.build();
-			}catch(Exception e){
-				<%if(isLog4jEnabled){%>
-					log.warn("<%=cid%> - Login failed, error message: " + e.getMessage());
-				<%}%>	
-				throw e;
-			}
+			sforceConn_<%=cid%> = 
+    			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, decryptedPassword_<%=cid%>)
+    				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
+                	<%
+                	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
+                	%>
+                		.setClientID(<%=clientID%>);
+                	<%
+                	}
+                	%>
+                	.build();
     	<%
     	}
-    	%>
-    	<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Login successful");
-		<%}%>	
-    <%
+    	log.info(log.str("Login successful."));
     }
     %>
     org.talend.salesforce.SforceManagement sforceManagement_<%=cid%> = new org.talend.salesforce.SforceManagementImpl(sforceConn_<%=cid%>);

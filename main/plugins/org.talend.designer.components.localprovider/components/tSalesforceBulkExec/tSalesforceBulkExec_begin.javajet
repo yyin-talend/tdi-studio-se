@@ -11,20 +11,14 @@ imports="
 		org.talend.core.model.metadata.types.JavaType	
 		org.talend.core.model.utils.TalendTextUtils	
 		java.util.List
-		org.talend.core.model.process.IProcess
 		"
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 	<%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();    	
-	
-	log4jFileUtil.componentStartInfo(node);
-	log4jFileUtil.logParameters(node);
-	
-	IProcess process = node.getProcess();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+	log = new LogUtil(node);
 	
 	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 	String apiVersion = ElementParameterParser.getValue(node, "__API_VERSION__");
@@ -81,9 +75,7 @@ imports="
 			throw new RuntimeException("Get null connection from <%=connection %>");
 		}
 		sforceConn_<%=cid%> = (org.talend.salesforceBulk.SforceBulkConnection)globalMap.get("conn_<%=connection %>");
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - use exsit connection : <%=connection%>");
-		<%}%>
+		<%log.info(log.str("use exsit connection : " + connection + "."));%>
 	<%
 	}else{
 		if(useOAuth){
@@ -148,18 +140,13 @@ imports="
     				.build();
 		<%
 		}
-		if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Login successful");
-		<%}
+		log.info(log.str("Login successful."));
 	}
 	%>
 	org.talend.salesforceBulk.SalesforceBulkAPI	sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI(sforceConn_<%=cid%>);
 	sforceBulk_<%=cid%>.setConcurrencyMode("<%=concurrencyMode%>");
 	sforceBulk_<%=cid%>.setAwaitTime(<%=awaitTime%>);
-	
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Start to <%=action%> records in bulk.");
-	<%}%>
+	<%log.info(log.str("Start to " + action + " records in bulk."));%>
 	sforceBulk_<%=cid%>.executeBulk(<%=sObject%>,"<%=action%>",<%=externalId%>,"<%=contentType%>",<%=bulkFileName%>,<%=maxBytes%>,<%=maxRows%>);
 
 	<%
@@ -193,9 +180,7 @@ imports="
 					%>	
 					if("true".equals(resultMessage_<%=cid%>.get("Success"))){
 						nb_success_<%=cid %>++;
-						<%if(isLog4jEnabled){%>
-							log.debug("<%=cid%> - <%=action%> record " + nb_line_<%=cid%> + " successful");
-						<%}%> 
+						<%log.debug(log.str(action + " record "), log.var("nb_line"), log.str(" successful."));%>
 						<%
 						if (connsSuccess != null && connsSuccess.size() == 1) {
 							IConnection connSuccess = connsSuccess.get(0);
@@ -204,9 +189,7 @@ imports="
 								<%=connSuccess.getName() %> = new <%=connSuccess.getName() %>Struct();
 		
 								<%=connSuccess.getName() %>.salesforce_created = resultMessage_<%=cid%>.get("Created");
-								<%log4jFileUtil.collectRetriveData(connSuccess.getName() + ".salesforce_created");%>
 								<%=connSuccess.getName() %>.salesforce_id = resultMessage_<%=cid%>.get("Id");
-								<%log4jFileUtil.collectRetriveData(connSuccess.getName() + ".salesforce_id");%>
 								<%
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -234,22 +217,13 @@ imports="
 										<%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
 									<%
 									}
-									log4jFileUtil.collectRetriveData(connSuccess.getName() + "." + column.getLabel());											
 								}
-								if(isLog4jEnabled){
-								%>
-									log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
-									log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-								<%
-								} 
 							}
 						}
 						%>
 					}else{
 						nb_reject_<%=cid%>++;
-						<%if(isLog4jEnabled){%>
-							log.debug("<%=cid%> - <%=action%> record " + nb_line_<%=cid%> + " failed");
-						<%}%> 
+						<%log.debug(log.str(action + " record "), log.var("nb_line"), log.str(" failed"));%>
 						<%
 						if (connsReject != null && connsReject.size() == 1) {
 							IConnection connReject = connsReject.get(0);
@@ -257,7 +231,6 @@ imports="
 							%>
 								<%=connReject.getName() %> = new <%=connReject.getName() %>Struct();
 								<%=connReject.getName() %>.error = resultMessage_<%=cid%>.get("Error");
-								<%log4jFileUtil.collectRetriveData(connReject.getName() + ".error");%>
 								<%
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -285,21 +258,13 @@ imports="
 										<%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
 									<%
 									}
-									log4jFileUtil.collectRetriveData(connReject.getName() + "." + column.getLabel());
 								}
-								if(isLog4jEnabled){
-								%>
-									log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
-									log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-								<%
-								} 
 							}
 						}else{
 						%>
-							System.err.print("Row "+j_<%=cid%>+":"+resultMessage_<%=cid%>.get("Error"));
-							<%if(isLog4jEnabled){%>
-								log.error("Row "+j_<%=cid%>+":"+resultMessage_<%=cid%>.get("Error"));
-							<%}%> 
+							String errorMessage_<%=cid%> = "Row "+j_<%=cid%>+":"+resultMessage_<%=cid%>.get("Error"); 
+							System.err.println(errorMessage_<%=cid%>);
+							<%log.logPrintedException(log.var("errorMessage"));%>
 						<%
 						}
 						%>

@@ -12,18 +12,14 @@ imports="
         org.talend.core.model.process.INode
         org.talend.designer.codegen.config.CodeGeneratorArgument
         org.talend.core.model.utils.TalendTextUtils	
-        org.talend.core.model.process.IProcess
 		"
 %>
-<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
-	IProcess process = node.getProcess();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
-	
+	log = new LogUtil(node);	
 	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
@@ -31,9 +27,6 @@ imports="
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 
    	String limit = ElementParameterParser.getValue(node,"__LIMIT__");
-   	
-   	log4jFileUtil.componentStartInfo(node);
-   	log4jFileUtil.logParameters(node);
    	
    	String passwordFieldName = "";
 	%>
@@ -89,9 +82,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					if(globalMap.get("conn_<%=connection%>") == null){
 						throw new RuntimeException("Get null connection from <%=connection%>");
 					}
-					<%if(isLog4jEnabled){%>
-						log.info("<%=cid%> - use exsit connection : <%=connection%>");
-					<%}%>
+					<%log.info(log.str("use exsit connection : " + connection + "."));%>
 					sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>"); 
 				<%
 				}else{
@@ -115,31 +106,24 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
                 		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
 						%>
-						try{
-							sforceConn_<%=cid%> = 
-    							new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
-                    				<%
-                    				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
-                    				%>
-                        				.setTokenFilePath(<%=tokenFile%>)
-                    				<%
-                    				}
-                    				%>
-                    				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
-                                	<%
-                                	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
-                                	%>
-                                		.setClientID(<%=clientID%>);
-                                	<%
-                                	}
-                                	%>
-                                	.build();
-						}catch(Exception e){
-							<%if(isLog4jEnabled){%>
-								log.warn("<%=cid%> - Login failed, error message: " + e.getMessage());
-							<%}%>	
-							throw e;
-						}
+						sforceConn_<%=cid%> = 
+							new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
+                				<%
+                				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+                				%>
+                    				.setTokenFilePath(<%=tokenFile%>)
+                				<%
+                				}
+                				%>
+                				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
+                            	<%
+                            	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
+                            	%>
+                            		.setClientID(<%=clientID%>);
+                            	<%
+                            	}
+                            	%>
+                            	.build();
 					<%
 					}else{
 						if(useProxy){
@@ -167,31 +151,20 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
             			%>
         
         				<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-						try{
-							sforceConn_<%=cid%> = 
-                    			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, decryptedPassword_<%=cid%>)
-                    				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
-                                	<%
-                                	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
-                                	%>
-                                		.setClientID(<%=clientID%>);
-                                	<%
-                                	}
-                                	%>
-                                	.build();
-						}catch(Exception e){
-							<%if(isLog4jEnabled){%>
-								log.warn("<%=cid%> - Login failed, error message: " + e.getMessage());
-							<%}%>	
-							throw e;
-						}
+						sforceConn_<%=cid%> = 
+                			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, decryptedPassword_<%=cid%>)
+                				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
+                            	<%
+                            	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
+                            	%>
+                            		.setClientID(<%=clientID%>);
+                            	<%
+                            	}
+                            	%>
+                            	.build();
 					<%
 					}
-					%>
-					<%if(isLog4jEnabled){%>
-						log.info("<%=cid%> - Login successful");
-					<%}%>	
-				<%
+					log.info(log.str("Login successful."));
 				}
 				%>
 				org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl(sforceConn_<%=cid%>);
@@ -206,9 +179,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						throw new RuntimeException("Get null connection from <%=connection %>");
 					}
 					sforceConn_<%=cid%> = (org.talend.salesforceBulk.SforceBulkConnection)globalMap.get("conn_<%=connection %>");
-					<%if(isLog4jEnabled){%>
-						log.info("<%=cid%> - use exsit connection : <%=connection%>");
-					<%}%>
+					<%log.info(log.str("use exsit connection : " + connection + "."));%>
 				<%
 				}else{
 					if(useOAuth){
@@ -277,11 +248,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 				.build();
 					<%
 					}
-					%>
-					<%if(isLog4jEnabled){%>
-						log.info("<%=cid%> - Login successful");
-					<%}%>	
-				<%
+					log.info(log.str("Login successful."));
 				}
 				%>
 				org.talend.salesforceBulk.SalesforceBulkAPI	sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI(sforceConn_<%=cid%>); 
@@ -329,11 +296,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				<%
 				}
 				%>
-				<%if(isLog4jEnabled){%>
-					log.debug("<%=cid%> - SOQL is : " + sql_<%=cid%>);
-				<%}%>
+				<%log.debug(log.str("SOQL is: "), log.var("sql"), log.str("."));%>
 				<%
-				log4jFileUtil.startRetriveDataInfo();
+				log.info(log.str("Retrieving records from the datasource."));
 				if("soap".equals(api)){%>	
 					com.salesforce.soap.partner.QueryResult qr_<%=cid %> = null; 
 					<%
@@ -420,10 +385,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 								} else {
 									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 								}
-								<%
-								log4jFileUtil.collectRetriveData("value_" + cid);
+							<%
 							}
-							log4jFileUtil.debugRetriveData(node);
+							log.debug(log.str("Retrieving the record "), log.var("nb_line"), log.str("."));
 			}// end 1
 		}
 	}

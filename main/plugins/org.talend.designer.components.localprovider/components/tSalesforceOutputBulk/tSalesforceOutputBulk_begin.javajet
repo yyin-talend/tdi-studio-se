@@ -9,22 +9,16 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
 		java.util.Map
-        org.talend.core.model.process.IProcess		
 	"
 %>
-<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
-IProcess process = node.getProcess();
-boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+log = new LogUtil(node);
 
 List<Map<String, String>> relationshipMappings = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__UPSERT_RELATION__");
-
-log4jFileUtil.componentStartInfo(node);
-log4jFileUtil.logParameters(node);
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null) && (metadatas.size()>0)){
@@ -35,13 +29,9 @@ if ((metadatas!=null) && (metadatas.size()>0)){
 		%>
 		int nb_line_<%=cid%> = 0;
 		java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
-		<%if(isLog4jEnabled){%>		
-		log.info("<%=cid%> - Creating directory for file '" + file_<%=cid%>.getCanonicalPath() +"', if the directory not exist.");
-		<%}%>
+		<%log.info(log.str("Creating directory for file '"), "file_" + cid + ".getCanonicalPath()", log.str("', if the directory not exist."));%>
 		file_<%=cid%>.getParentFile().mkdirs();
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - The directory of the file '" + file_<%=cid%>.getCanonicalPath() +"' has been prepared");
-		<%}%>
+		<%log.info(log.str("The directory of the file '"), "file_" + cid + ".getCanonicalPath()", log.str("' has been prepared."));%>
 		com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
 		        new java.io.FileOutputStream(file_<%=cid%>, <%=isAppend%>), "UTF-8")));
 		resourceMap.put("csvWriter_<%=cid%>", csvWriter_<%=cid%>); 
@@ -89,9 +79,7 @@ if ((metadatas!=null) && (metadatas.size()>0)){
 							}
 						}
 						%>
-						<%if(isLog4jEnabled){%>
-							log.trace("<%=cid%> - Written header : " + java.util.Arrays.asList(header_<%=cid%>));
-						<%}%>	
+						<%log.trace(log.str("Written header: "), "java.util.Arrays.asList(header_" + cid + ")");%>
 						csvWriter_<%=cid%>.writeNext(header_<%=cid%>);	
 					}	
 				<%

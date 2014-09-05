@@ -2,16 +2,14 @@
 imports="
     	org.talend.core.model.process.INode    
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.process.IProcess
-    	org.talend.core.model.process.ElementParameterParser 
 		" 
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	IProcess process = node.getProcess();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));	
+	log = new LogUtil(node);
 %> 
  	
  	}
@@ -21,8 +19,5 @@ imports="
  	globalMap.put("<%=cid %>_NB_SUCCESS",nb_success_<%=cid %>);
 	globalMap.put("<%=cid %>_NB_REJECT",nb_reject_<%=cid %>);             
     
-    <%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - " + nb_success_<%=cid%> + " records successful.");
-		log.info("<%=cid%> - Has rejected " + nb_reject_<%=cid%> + " records.");
-		log.info("<%=cid%> - Done.");
-	<%}%>          
+    <%log.info(log.var("nb_success"), log.str(" records successful."));%>
+    <%log.info(log.str("Has rejected "), log.var("nb_reject"), log.str(" records."));%>

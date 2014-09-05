@@ -6,19 +6,16 @@ imports="
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
         java.util.List
-		org.talend.core.model.process.IProcess
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 " 
 %>
-<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
-IProcess process = node.getProcess();
-boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+log = new LogUtil(node);
 String endpoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
 String action = ElementParameterParser.getValue(node,"__ACTION__");
 String soapMessageStr = ElementParameterParser.getValue(node,"__SOAPMESSAGE__");
@@ -101,18 +98,12 @@ if(useMessageFromSchema && (connName==null || schemaEmpty)){
 		javax.security.auth.Subject subject_<%=cid%> = (javax.security.auth.Subject)globalMap.get("kerberos_subject_<%=kerberosConfiguration%>");
 		if(subject_<%=cid%>==null){
 			System.err.println("Subject for Kerberos is null!");
-			<%if(isLog4jEnabled){%>
-				log.error("<%=cid%> - Subject for Kerberos is null!");
-			<%}%>
+			<%log.logPrintedException(log.str("Subject for Kerberos is null!"));%>
 		}
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Prepare to send soap request to endpoint.");
-		<%}%>
+		<%log.info(log.str("Prepare to send soap request to endpoint."));%>
 		TalendPrivilegedAction talendPrivilegedAction_<%=cid%> = new TalendPrivilegedAction(<%=useMessageFromSchema?connName+", ":""%>soapVersion_<%=cid%>);
 		javax.security.auth.Subject.doAs(subject_<%=cid%>,talendPrivilegedAction_<%=cid%>);
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Have sent soap request to endpoint.");
-		<%}%>
+		<%log.info(log.str("Have sent soap request to endpoint."));%>
 		<%
 		if(outputDocument){
 		%>
@@ -123,9 +114,7 @@ if(useMessageFromSchema && (connName==null || schemaEmpty)){
 	<%
 	}else{	
 	%>
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Prepare to send soap request to endpoint.");
-		<%}%>		
+		<%log.info(log.str("Prepare to send soap request to endpoint."));%>
 		<%
 		if(outputDocument){
 		%>
@@ -137,9 +126,7 @@ if(useMessageFromSchema && (connName==null || schemaEmpty)){
 		<%
 		}
 		%>
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Have sent soap request to endpoint.");
-		<%}%>
+		<%log.info(log.str("Have sent soap request to endpoint."));%>
 	<%
 	}
 	%>
@@ -164,15 +151,6 @@ if(useMessageFromSchema && (connName==null || schemaEmpty)){
 					}else{
 						<%=conn.getName()%>.Body = soapUtil_<%=cid%>.getReBodyMessage();
 					}
-				<%		
-				}
-				for(IMetadataColumn column : columnList){
-					log4jFileUtil.collectRetriveData(conn.getName() + "." + column.getLabel());
-				}
-				if(isLog4jEnabled){
-				%>
-					log.trace("<%=cid%> - Content of the response: " + log4jSb_<%=cid%>);
-					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 				<%		
 				}
 			}//3
