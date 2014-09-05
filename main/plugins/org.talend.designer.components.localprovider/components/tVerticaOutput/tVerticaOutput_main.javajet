@@ -1258,7 +1258,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		if("COPY".equals(dataAction) && rejectConnName == null){//TODO why no nb_line++ when rejectConnName == null, if fix on dataActionMore, remove it on this condition
 			dbLog.data().addingToBatch(dbLog.var("nb_line"), dbLog.str(dataAction));
 		}
-    	dbLog.traceData(incomingConnName, columnList, dbLog.var("nb_line"));
+    	
 		if(outgoingConns != null && outgoingConns.size() > 0) {
 			%>
 			if(!whetherReject_<%=cid%>) {

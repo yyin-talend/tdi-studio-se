@@ -52,8 +52,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 	
 	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
-    dbLog.startWork();
-    dbLog.logCompSetting();
 %>
 
 int nb_line_<%=cid%> = 0;

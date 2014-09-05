@@ -55,8 +55,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-    dbLog.startWork();
-    dbLog.logCompSetting();
 	boolean extendedInsert = false;
 	
 	String dbVersion = "" ;

@@ -1504,7 +1504,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
             }
         <%
         }  // end of insert if not exist 
-    	dbLog.traceData(incomingConnName, columnList, dbLog.var("nb_line"));
+    	
         if(outgoingConns != null && outgoingConns.size() > 0) {
             %>
             if(!whetherReject_<%=cid%>) {

@@ -35,9 +35,6 @@ String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
 String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
-    
-dbLog.startWork();
-dbLog.logCompSetting();
 
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;

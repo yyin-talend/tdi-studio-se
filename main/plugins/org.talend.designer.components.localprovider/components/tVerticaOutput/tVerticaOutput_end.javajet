@@ -230,4 +230,3 @@ imports="
 
 	nb_line_copied_<%=cid%>=nb_line_copied_<%=cid%> + copiedCount_<%=cid%>;
 	globalMap.put("<%=cid %>_NB_LINE_COPIED",nb_line_copied_<%=cid%>);
-<%dbLog.endWork();%>

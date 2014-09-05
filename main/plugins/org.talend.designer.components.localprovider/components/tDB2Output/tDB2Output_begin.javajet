@@ -39,9 +39,6 @@ boolean convertToUppercase = ("true").equals(ElementParameterParser.getValue(nod
 boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
 String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
-
-dbLog.startWork();
-dbLog.logCompSetting();
 %>
 
 <%

@@ -36,8 +36,6 @@ boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MOD
 boolean enableLibrefs = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_LIBREFS__")); 
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 List<Map<String, String>> sasProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__JDBC_PARAMETERS__"); 
-dbLog.startWork();
-dbLog.logCompSetting();
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {
