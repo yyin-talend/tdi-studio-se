@@ -2243,39 +2243,39 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
-              breaks="5.5.1"
+              breaks="5.6.0"
               class="org.talend.repository.model.migration.UnifyPasswordEncryption4ContextMigrationTask"
               description="Unify the entryption for context password type"
               id="org.talend.repository.model.migration.UnifyPasswordEncryption4ContextMigrationTask"
               name="UnifyPasswordEncryption4ContextMigrationTask"
-              version="5.5.1">
+              version="5.6.0">
         </projecttask> 
         <projecttask
               beforeLogon="false"
-              breaks="5.5.1"
+              breaks="5.6.0"
               class="org.talend.repository.model.migration.UnifyPasswordEncryption4DBConnectionMigrationTask"
               description="Unify the entryption for DB password field"
               id="org.talend.repository.model.migration.UnifyPasswordEncryption4DBConnectionMigrationTask"
               name="UnifyPasswordEncryption4DBConnectionMigrationTask"
-              version="5.5.1">
+              version="5.6.0">
         </projecttask>
         <projecttask
               beforeLogon="true"
-              breaks="5.5.1"
+              breaks="5.6.0"
               class="org.talend.repository.model.migration.UnifyPasswordEncryption4ProjectSettingsMigrationTask"
               description="Unify the entryption for pass fields of project settings"
               id="org.talend.repository.model.migration.UnifyPasswordEncryption4ProjectSettingsMigrationTask"
               name="UnifyPasswordEncryption4ProjectSettingsMigrationTask"
-              version="5.5.1">
+              version="5.6.0">
         </projecttask>
         <projecttask
               beforeLogon="false"
-              breaks="5.5.1"
+              breaks="5.6.0"
               class="org.talend.repository.model.migration.UnifyPasswordEncryption4ParametersInJobMigrationTask"
               description="Unify the entryption for pass fields of parameters of jobs"
               id="org.talend.repository.model.migration.UnifyPasswordEncryption4ParametersInJobMigrationTask"
               name="UnifyPasswordEncryption4ParametersInJobMigrationTask"
-              version="5.5.1">
+              version="5.6.0">
         </projecttask>        
    </extension>
 
