@@ -137,6 +137,12 @@
             %>               
                 return sb;
             }
+            
+            public boolean isTableEmpty(){
+            	if (list.size() > 1)
+            		return false;
+            	return true;
+            }
         }
         Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
         util_<%=cid %>.setTableName("<%=label%>");
