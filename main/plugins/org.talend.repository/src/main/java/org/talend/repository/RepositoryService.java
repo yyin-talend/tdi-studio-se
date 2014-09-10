@@ -718,6 +718,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                         .toOSString();
                 return path;
             } catch (SystemException e) {
+                //
             }
         }
         return "";
