@@ -171,8 +171,8 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
         return featuresModel;
     }
 
-    protected String getJobVersion() {
-        return jobVersion;
+    protected String getArtifactVersion() {
+        return artifactVersion;
     }
 
     @SuppressWarnings("serial")
