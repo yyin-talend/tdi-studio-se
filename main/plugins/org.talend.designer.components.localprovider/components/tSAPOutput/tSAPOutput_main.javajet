@@ -169,7 +169,7 @@
             
 			for(Map<String, String> configRow : sapMapping){			
 				schemaUtil.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), configRow.get("SAP_PARAMETER_VALUE"));
-				if(true){
+				if(false){
 				System.out.println(configRow.get("SCHEMA_COLUMN") + " " + configRow.get("SAP_PARAMETER_TYPE") + " " + configRow.get("SAP_TABLE_NAME") + " " + configRow.get("SAP_PARAMETER_NAME") + " " + configRow.get("SAP_PARAMETER_VALUE"));
 				}				
 			}
