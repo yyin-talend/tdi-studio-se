@@ -427,12 +427,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return targetFile.toURI().toURL();
     }
 
-    // private String getPluginResourceUri(String resourcePath) throws IOException {
-    // final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-    // return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
-    // }
-
-    private static Map<String, Object> collectJobInfo(ProcessItem processItem, IProcess process) {
+    private Map<String, Object> collectJobInfo(ProcessItem processItem, IProcess process) {
         // velocity template context
         Map<String, Object> jobInfo = new HashMap<String, Object>();
 
@@ -448,7 +443,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             jobName = "${artifactID}"; //$NON-NLS-1$
         }
         jobInfo.put("name", jobName);
-        jobInfo.put("version", processItem.getProperty().getVersion()); //$NON-NLS-1$
+        jobInfo.put("version", getBundleVersion()); //$NON-NLS-1$
         jobInfo.put("className", className); //$NON-NLS-1$
 
         // additional Talend job interfaces (ESB related)
