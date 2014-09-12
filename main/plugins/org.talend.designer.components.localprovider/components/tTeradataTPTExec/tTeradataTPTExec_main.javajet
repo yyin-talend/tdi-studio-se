@@ -225,19 +225,19 @@ fw_<%=cid %>.close();
 
 <%//run tbuild (TPT) command----------------------------------------------------%>
 <%if("true".equals(defineCharset)) {
-	if(!("".equals(charset))) {
-		if("Windows".equals(execution)){%>
-			String[] sb_<%=cid%>= {"cmd","/c","tbuild -f "+<%=charset%>+" \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1"};
-		<%}else{%>
-			String[] sb_<%=cid%>= {"sh","-c","tbuild -f "+<%=charset%>+" \""+<%=scriptPath%>+<%=table%>+".scr\" > \""+<%=errorFile%>+"\" 2>&1"};
-		<%}
-	}
+    if(!("".equals(charset))) {
+        if("Windows".equals(execution)){%>
+            String[] sb_<%=cid%>= {"cmd","/c","tbuild -f \""+<%=scriptPath%>+<%=table%>+".script\" -e "+<%=charset%>+" > \""+<%=errorFile%>+"\" 2>&1"};
+        <%}else{%>
+            String[] sb_<%=cid%>= {"sh","-c","tbuild -f \""+<%=scriptPath%>+<%=table%>+".scr\" -e "+<%=charset%>+" > \""+<%=errorFile%>+"\" 2>&1"};
+        <%}
+    }
 } else {
-	if("Windows".equals(execution)){%>
-		String[] sb_<%=cid%>= {"cmd","/c","tbuild -f \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1"};
-	<%}else{%>
-		String[] sb_<%=cid%>= {"sh","-c","tbuild -f \""+<%=scriptPath%>+<%=table%>+".scr\" > \""+<%=errorFile%>+"\" 2>&1"};
-	<%}
+    if("Windows".equals(execution)){%>
+        String[] sb_<%=cid%>= {"cmd","/c","tbuild -f \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1"};
+    <%}else{%>
+        String[] sb_<%=cid%>= {"sh","-c","tbuild -f \""+<%=scriptPath%>+<%=table%>+".scr\" > \""+<%=errorFile%>+"\" 2>&1"};
+    <%}
 }%>
 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 Thread normal_<%=cid %> = new Thread() {
