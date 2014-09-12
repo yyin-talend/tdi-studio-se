@@ -4,17 +4,14 @@ imports="
         org.talend.core.model.process.INode
         org.talend.designer.codegen.config.CodeGeneratorArgument
         org.talend.core.model.utils.TalendTextUtils	
-        org.talend.core.model.process.IProcess
 		"
 %>
-<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
-IProcess process = node.getProcess();
-boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+log = new LogUtil(node);
 
 String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 String username = ElementParameterParser.getValue(node, "__USER__");
@@ -35,9 +32,6 @@ String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
 %>
 System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 <%
-log4jFileUtil.componentStartInfo(node);
-log4jFileUtil.logParameters(node);
-
 String passwordFieldName = "";
 
 String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
@@ -110,10 +104,7 @@ if(bulkConnection){
 	<%
 	}
 	%>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Login successful");
-	<%}%>
-	globalMap.put("conn_<%=cid%>", sforceConn_<%=cid%>);
+	
 <%
 }else{
 %>
@@ -197,12 +188,9 @@ if(bulkConnection){
 	<%
 	}
 	%>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Login successful");
-	<%}%>	
-	globalMap.put("conn_<%=cid%>", sforceConn_<%=cid%>);
 <%
 }
 %>			
-			
+<%log.info(log.str("Login successful."));%>
+globalMap.put("conn_<%=cid%>", sforceConn_<%=cid%>);		
 

@@ -11,17 +11,14 @@ imports="
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
 		java.util.Map
-		org.talend.core.model.process.IProcess
 		"
 %>
-<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();    	
-IProcess process = node.getProcess();
-boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
-	
+log = new LogUtil(node);
 boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
@@ -106,9 +103,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
 
 Object[] resultMessageObj_<%=cid%> = null;
-<%if(isLog4jEnabled){%>
-	log.debug("<%=cid%> - Prepare to <%=action%> record " + (nb_line_<%=cid%> + 1));
-<%}%>		
+<%log.debug(log.str("Prepare to " + action + " record "), "(nb_line_" + cid + " + 1)", log.str("."));%>
 <%
  if ("insert".equals(action) || "update".equals(action) || "upsert".equals(action)) {//************
 %>
@@ -174,7 +169,6 @@ Object[] resultMessageObj_<%=cid%> = null;
 						}
     				}//TD512
     				
-    				log4jFileUtil.collectRetriveData(conn.getName() + "." + column.getLabel());
     				//make sure to filter the schema "Id", when updating (but not when upserting)
   			        if(("Id".equals(column.getLabel()) && (!("upsert".equals(action)) || ("upsert".equals(action) && !"Id".equals(upsertkey)))) || generateFinished) continue;
     				
@@ -239,7 +233,6 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.upsert(<%=modulename %>, 
     			
 <%
 	} else if ("delete".equals(action)) {//*************	
-		log4jFileUtil.collectRetriveData(conn.getName() + ".Id");
 %>
 
 resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%=conn.getName() %>.Id);    			
@@ -249,10 +242,6 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%=conn.getName() 
 %>     			
     			
 			nb_line_<%=cid%>++;
-			<%if(isLog4jEnabled){%>
-				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
-				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-			<%}%> 
 			<%
 			if(!extendedInsert){ 
 			%>
@@ -260,9 +249,7 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%=conn.getName() 
 				if(resultMessage_<%=cid%>!=null){
 					if("true".equals(resultMessage_<%=cid%>.get("success"))){
 						nb_success_<%=cid %>++;
-						<%if(isLog4jEnabled){%>
-							log.debug("<%=cid%> - <%=action%> record " + nb_line_<%=cid%> + " successful");
-						<%}%> 
+						<%log.debug(log.str(action + " record "), log.var("nb_line"), log.str(" successful."));%>
 						<%
 						if (connsSuccess != null && connsSuccess.size() == 1) {
 							IConnection connSuccess = connsSuccess.get(0);
@@ -287,9 +274,7 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%=conn.getName() 
 						%>
 					}else{
 						nb_reject_<%=cid %>++;
-						<%if(isLog4jEnabled){%>
-							log.debug("<%=cid%> - <%=action%> record " + nb_line_<%=cid%> + " failed");
-						<%}%> 
+						<%log.debug(log.str(action + " record "), log.var("nb_line"), log.str(" failed."));%>
 						<%
 						if (connsReject != null && connsReject.size() == 1) {
 							IConnection connReject = connsReject.get(0);
@@ -314,9 +299,7 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%=conn.getName() 
 			}else{//batch start
 			%>
 				nb_success_<%=cid %>++;
-				<%if(isLog4jEnabled){%>
-					log.debug("<%=cid%> - <%=action%> record " + nb_line_<%=cid%> + " to batch");
-				<%}%> 	
+				<%log.debug(log.str(action + " record "), log.var("nb_line"), log.str(" to batch."));%>
 				<%
 				if (connsSuccess != null && connsSuccess.size() == 1) {
 					IConnection connSuccess = connsSuccess.get(0);

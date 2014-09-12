@@ -17,11 +17,14 @@ imports="
 "
 skeleton="../templates/slowly_change_dimension.skeleton"
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+dbLog = new DBLogUtil(node); 
+
 List<IMetadataColumn> inputSchema = getInputSchema(node);
 List<IMetadataColumn> outputSchema = getOutputSchema(node);
 
