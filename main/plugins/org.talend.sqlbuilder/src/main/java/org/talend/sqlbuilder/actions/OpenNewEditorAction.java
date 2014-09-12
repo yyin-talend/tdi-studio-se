@@ -69,7 +69,7 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         init();
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void init() {
         RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection()).toList()
                 .toArray(new RepositoryNode[] {});
@@ -115,6 +115,7 @@ public class OpenNewEditorAction extends SelectionProviderAction {
             isQuery = false;
         } else {
             connParam.setEditorTitle(TextUtil.getNewQueryLabel());
+            connParam.setQueryObject(null);
         }
         dialog.openEditor(firstNode, repositoryNames, connParam, false);
     }
