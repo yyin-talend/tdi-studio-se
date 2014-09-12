@@ -104,8 +104,14 @@ String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
-conn_<%=cid%>.setAutoCommit(false);
-	
+
+    <% 
+        if(!("").equals(commitEvery) && !("0").equals(commitEvery)){
+                %>
+                     conn_<%=cid%>.setAutoCommit(false);
+                <%
+    }
+    %>
 <%
 if(columnList != null && columnList.size()>0) {
     if(!isParallelize && !("NONE").equals(tableAction)) {
