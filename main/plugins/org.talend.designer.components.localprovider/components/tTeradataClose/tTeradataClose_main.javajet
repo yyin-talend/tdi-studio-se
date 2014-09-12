@@ -8,9 +8,11 @@ imports="
 "
 %>
 <%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
+          dbLog = new DBLogUtil(node);
     String cid = node.getUniqueName();
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
@@ -30,6 +32,7 @@ imports="
                  conn_<%=cid%>.createStatement().execute("SET QUERY_BAND = NONE FOR SESSION");               
                  conn_<%=cid%>.createStatement().execute("END QUERY LOGGING ON ALL");                 
              }catch(Exception e){
+                <%dbLog.logPrintedException("e.getMessage()");%>
                  System.err.println(e.getMessage());
              }
 

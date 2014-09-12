@@ -56,12 +56,10 @@ imports="
 
 		public void infoComponentStart(INode node) {
 			beforeComponentProcess(node);
-			logInfo(node,"info",cid+" - Start to work.");
 		}
 
 		public void infoComponentEnd(INode node) {
 			beforeComponentProcess(node);
-			logInfo(node,"info",cid+" - Done.");
 		}
 
 		public void initDbDebugRowBuffer() {
