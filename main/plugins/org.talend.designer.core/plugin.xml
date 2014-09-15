@@ -28,6 +28,9 @@
    </extension>
    <extension  point="org.eclipse.ui.startup">
 	   <startup class="org.eclipse.update.internal.scheduler.SchedulerStartup"/>
+    <startup
+          class="org.talend.designer.core.ui.editor.ProcessShowJobStartup">
+    </startup>
 	</extension>
    <extension
          point="org.eclipse.ui.preferencePages">
