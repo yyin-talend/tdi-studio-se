@@ -46,7 +46,7 @@
 			<DEFAULT>"org.jdbc4olap.jdbc.OlapDriver"</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="CODE" FIELD="MEMO_JAVA" REQUIRED="false"
+		<PARAMETER NAME="CODE" FIELD="MEMO_JAVA" RAW="true" REQUIRED="false"
 			NUM_ROW="60" SHOW="false">
 			<DEFAULT></DEFAULT>
 		</PARAMETER>

@@ -88,7 +88,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+    <!-- no need to add RAW="true" in BUFFER_SIZE as the accepted value is int -->
 	<PARAMETER
       NAME="BUFFER_SIZE"
       FIELD="OPENED_LIST"
