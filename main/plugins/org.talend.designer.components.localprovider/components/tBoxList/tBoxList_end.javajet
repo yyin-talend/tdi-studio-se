@@ -21,4 +21,3 @@
   //globalMap.put("<%=cid%>_NB_FILE", NB_FILE<%=cid%>);
   
  
-  <%log4jFileUtil.componentFinishInfo(node);%>
