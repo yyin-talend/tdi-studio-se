@@ -10,4 +10,35 @@
   </parent>
   <artifactId>org.talend.libraries.jboss</artifactId>
   <packaging>eclipse-plugin</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/lib</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>${basedir}/../org.talend.libraries.jboss.jars/lib</directory>
+					<includes> 
+						<include>jboss-serialization.jar</include> 
+						<include>trove.jar</include> 
+						<include>trove_licence</include> 
+					</includes>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>              
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
