@@ -142,10 +142,6 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
 		}
 %>
 
-<%if(isLog4jEnabled && !advanced) {%>
-final java.util.List columnValuesForLog_<%=cid%> = new java.util.ArrayList(); 
-<%}%>
-
 class PositionalUtil_<%=cid%>{
 <%
 String firstConnName = "";
@@ -345,17 +341,9 @@ if (conns!=null) {
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
 	                    <%=firstConnName %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>];
-	                    
-                        <%if(isLog4jEnabled) {%>
-                        columnValuesForLog_<%=cid%>.add(<%=firstConnName %>.<%=column.getLabel() %>);
-                        <%}%>
 <%
 					}else if("id_Dynamic".equals(column.getTalendType())){
-%>
-						<%if(isLog4jEnabled) {%>
-						columnValuesForLog_<%=cid%>.add(globalMap.get("<%=dyn%>"));
-						<%}%>
-<%
+					
 					} else {
 %>
 	                    if(columnValue<%=cid %>[<%=valueN%>].length() > 0) {
@@ -387,10 +375,6 @@ if (conns!=null) {
                         }else{
         	                <%=firstConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
                         }
-                        
-                        <%if(isLog4jEnabled) {%>
-                        columnValuesForLog_<%=cid%>.add(<%=firstConnName %>.<%=column.getLabel() %>);
-                        <%}%>
 <%
         			}
 %>
@@ -937,12 +921,6 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 	List<IMetadataColumn> listColumns = metadata.getListColumns();
 	int sizeListColumns = listColumns.size();
 	
-	if(isLog4jEnabled) {
-%>
-		columnValuesForLog_<%=cid%>.clear();
-<%
-	}
-	
 	for (int valueN=0; valueN<sizeListColumns; valueN++) {	
 		if(valueN%100==0){
 %>
@@ -959,18 +937,6 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 			
 <%		
 		}
-		
-		if(isLog4jEnabled) {
-%>
-			java.util.Iterator iterator_<%=cid%> = columnValuesForLog_<%=cid%>.iterator();
-			while(iterator_<%=cid%>.hasNext()) {
-				log4jSb_<%=cid%>.append(iterator_<%=cid%>.next());
-				if(iterator_<%=cid%>.hasNext()) {
-					log4jSb_<%=cid%>.append("|");
-				}
-			}
-<%
-		}
     }
     
     log4jFileUtil.debugRetriveData(node,false);
@@ -986,10 +952,6 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
             throw(e);
             <%
         } else {
-        	if(isLog4jEnabled){%>
-			log.error("<%=cid%> - " +e.getMessage());
-			log4jSb_<%=cid%>.setLength(0);
-			<%}
             if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
@@ -1005,6 +967,11 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
                 <%=firstConnName %> = null;
                 <%
             } else if(("").equals(rejectConnName)){
+	        	if(isLog4jEnabled){
+	        	%>
+				log.error("<%=cid%> - " +e.getMessage());
+				<%
+				}
                 %>
                 System.err.println(e.getMessage());
                 <%=firstConnName %> = null;
