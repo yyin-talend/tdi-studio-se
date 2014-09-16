@@ -3,5 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jars
 Bundle-SymbolicName: org.talend.libraries.jboss.jars
 Bundle-Version: 5.6.0.qualifier
-Fragment-Host: org.talend.libraries.jboss;bundle-version="1.0.0"
+Fragment-Host: org.talend.libraries.jboss
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
