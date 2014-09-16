@@ -2520,6 +2520,18 @@ public class Node extends Element implements IGraphicalNode {
                                 }
                             }
                         }
+                        Object type = tabMap.get("TYPE");
+                        if (type != null && type.toString().equals("SINGLE")) {
+                            Object code = tabMap.get("SCHEMA");
+                            IMetadataTable metaTable = this.getMetadataTable(code.toString());
+                            if (metaTable != null) {
+                                if (metaTable.getListColumns(true).size() > 1) {
+                                    String warnMessage = Messages.getString("Node.hasMoreThenOneColumn", metaTable.getLabel()); //$NON-NLS-1$
+                                    Problems.add(ProblemStatus.WARNING, this, warnMessage);
+                                }
+                            }
+                        }
+
                     }
                 }
                 if (inexistentColumns.length() > 0) {
