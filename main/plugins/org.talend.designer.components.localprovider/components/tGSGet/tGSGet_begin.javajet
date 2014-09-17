@@ -8,7 +8,6 @@ imports="
 	java.util.Map
 " 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -24,8 +23,6 @@ imports="
 	String delimiter=ElementParameterParser.getValue(node,"__DELIMITER__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	
-	log4jFileUtil.componentStartInfo(node);
 	
 	String outputsDir = ElementParameterParser.getValue(node, "__DIRECTORY__");
 	List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");

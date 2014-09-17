@@ -5,7 +5,6 @@ imports="
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -18,7 +17,6 @@ imports="
 	String projectID=ElementParameterParser.getValue(node,"__PROJECT_ID__");
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
-	log4jFileUtil.componentStartInfo(node);
 	%>
 	int nb_bucket_<%=cid%> = 0;
 	org.jets3t.service.model.GSBucket[] buckets_<%=cid%> = new org.jets3t.service.model.GSBucket[] {};

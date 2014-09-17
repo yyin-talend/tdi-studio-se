@@ -8,7 +8,6 @@
 		java.util.Map
 	" 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -23,8 +22,6 @@
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	boolean isUseFilesList=("true").equals(ElementParameterParser.getValue(node, "__USE_FILES_LIST__"));
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	
-	log4jFileUtil.componentStartInfo(node);
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");	
