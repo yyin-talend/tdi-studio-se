@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.CorePlugin;
@@ -317,6 +318,10 @@ public class TracesConnectionUtils {
         }
         connection.setLabel(parameters.getDbName());
         connection.setDatasourceName(parameters.getDatasource());
+        if (parameters.getDbType().equals(EDatabaseTypeName.GODBC.getDisplayName())
+                && StringUtils.isEmpty(parameters.getDatasource())) {
+            connection.setDatasourceName(parameters.getDbName());
+        }
         if ("".equals(connection.getLabel())) { //$NON-NLS-1$
             connection.setLabel(parameters.getDatasource());
         }
