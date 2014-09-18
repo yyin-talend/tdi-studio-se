@@ -5,7 +5,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -18,6 +18,9 @@
 	String xqueryFile = ElementParameterParser.getValue(node, "__XQUERY__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+
+	dbLog = new DBLogUtil(node);
+
 	if(("true").equals(useExistingConn)){
 		String col= "col_" + connection;
 %>
@@ -26,6 +29,7 @@
 	}else{
 %>
 		Class cl_<%=cid%> = Class.forName(<%=driver%>);
+		<%dbLog.conn().logJDBCDriver(driver);%>
 	    org.xmldb.api.base.Database database_<%=cid%> = (org.xmldb.api.base.Database) cl_<%=cid%>.newInstance();
 	    database_<%=cid%>.setProperty("create-database", "true");
 	    org.xmldb.api.DatabaseManager.registerDatabase(database_<%=cid%>);
@@ -35,8 +39,9 @@
 		%>
 		
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-	   	
+	   	<%dbLog.conn().connTry(uri,user);%>
 	    org.xmldb.api.base.Collection col_<%=cid%> = org.xmldb.api.DatabaseManager.getCollection(<%=uri%> + <%=collection%>,<%=user%>,decryptedPassword_<%=cid%>);
+		<%dbLog.conn().connDone(uri);%>
 <%
 	}
 %>

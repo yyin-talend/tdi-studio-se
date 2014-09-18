@@ -21,7 +21,9 @@ imports="
     	
     	
     %>
+	<%dbLog.conn().closeTry(null);%>
     conn_<%=cid%>.invoke("Close");
+	<%dbLog.conn().closeDone(null);%>
 	<%
 	String rejectConnName = null;
 	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");

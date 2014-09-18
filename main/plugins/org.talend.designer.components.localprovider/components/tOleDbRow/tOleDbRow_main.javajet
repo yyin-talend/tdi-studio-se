@@ -14,11 +14,12 @@
 	"
 	
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid =  node.getUniqueName();
+	   dbLog = new DBLogUtil(node);
 String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String propagateRecordset = ElementParameterParser.getValue(node,"__PROPAGATE_RECORD_SET__");
@@ -171,6 +172,7 @@ whetherReject_<%=cid%> = false;
 <%
          } else {
 %>
+			<%dbLog.logPrintedException("e.getMessage()");%>
          	System.err.print(e.getMessage());
 <%
          }

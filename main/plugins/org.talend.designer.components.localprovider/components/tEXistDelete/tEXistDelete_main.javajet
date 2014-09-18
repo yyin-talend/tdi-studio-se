@@ -7,7 +7,7 @@
         java.util.Map
 	"
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -19,6 +19,7 @@
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String targetType = ElementParameterParser.getValue(node, "__TARGETTYPE__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
+	dbLog = new DBLogUtil(node);
 %>
    	java.util.Set<String> keySet_<%=cid%> = map_<%=cid%>.keySet();
   	for(String key_<%=cid%> : keySet_<%=cid%>){
