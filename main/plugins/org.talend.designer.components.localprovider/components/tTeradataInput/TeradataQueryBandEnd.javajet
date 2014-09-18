@@ -17,6 +17,7 @@ imports="
          conn_<%=cid%>.createStatement().execute("SET QUERY_BAND = NONE FOR SESSION");       
          conn_<%=cid%>.createStatement().execute("END QUERY LOGGING ON ALL");        
      }catch(Exception e){
+         <%dbLog.logPrintedException("e.getMessage()");%>
          System.err.println(e.getMessage());
      }
 <%}%>
