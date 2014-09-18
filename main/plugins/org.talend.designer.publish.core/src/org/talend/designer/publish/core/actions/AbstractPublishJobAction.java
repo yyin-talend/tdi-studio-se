@@ -127,7 +127,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
             if (!tIPaasComponents.isEmpty() && exportType == JobExportType.OSGI) {
                 addMissingBundles(featuresModel, ((JobJavaScriptOSGIForESBManager) jobScriptsManager).getExcludedModuleNeededs());
             }
-            process(processItem, getFeatureModel(tmpJob), monitor);
+            process(processItem, featuresModel, monitor);
         } catch (IOException e) {
             throw new InvocationTargetException(e);
         } finally {
