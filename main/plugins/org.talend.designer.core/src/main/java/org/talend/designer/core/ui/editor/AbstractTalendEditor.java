@@ -150,6 +150,7 @@ import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.service.IMRProcessService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -515,6 +516,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         monitor.beginTask("begin save job...", 100); //$NON-NLS-1$
         monitor.worked(10);
         savePreviewPictures();
+
+        // generate the MR infor parameter.
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+            IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                    IMRProcessService.class);
+            mrService.generateMRInfosParameter(getProcess());
+        }
 
         try {
             if (getEditorInput() instanceof JobEditorInput) {
