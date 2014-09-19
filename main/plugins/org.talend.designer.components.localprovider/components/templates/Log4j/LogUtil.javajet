@@ -107,9 +107,18 @@ class LogUtil extends BasicLogUtil{
        			String name = ep.getName();
        			if(org.talend.core.model.process.EParameterFieldType.PASSWORD.equals(ep.getFieldType())){
        				String epName = "__" + name + "__";
-       				String password = org.talend.core.model.process.ElementParameterParser.canEncrypt(node, epName) ? org.talend.core.model.process.ElementParameterParser.getEncryptedValue(node, epName) : "routines.system.PasswordEncryptUtil.encryptPassword(" + org.talend.core.model.process.ElementParameterParser.getValue(node, epName) + ")"; 
+       				String password = "";
+       				if(org.talend.core.model.process.ElementParameterParser.canEncrypt(node, epName)){
+       					password = org.talend.core.model.process.ElementParameterParser.getEncryptedValue(node, epName);
+       				}else{
+       					String passwordValue = org.talend.core.model.process.ElementParameterParser.getValue(node, epName);
+       					if (passwordValue == null || "".equals(passwordValue.trim())) {// for the value which empty
+                            passwordValue = "\"\"";
+                        } 
+       				    password = "routines.system.PasswordEncryptUtil.encryptPassword(" + passwordValue + ")";
+       				} 
        				%>
-                    <%=var("log4jParamters")%>.append("<%=name%>" + " = " + String.valueOf(<%=password%>).substring(0, 4) + "...");	
+                    <%=var("log4jParamters")%>.append("<%=name%>" + " = " + String.valueOf(<%=password%>).substring(0, 4) + "...");		
        			<%
        			}else{
        				String value = org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, ep);
