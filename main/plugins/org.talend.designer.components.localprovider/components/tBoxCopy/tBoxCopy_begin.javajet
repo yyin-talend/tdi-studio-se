@@ -28,20 +28,19 @@ imports="
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	    String connectionKey = "\"conn_" + connection+"\"";
 		
-		String path = ElementParameterParser.getValue(node, "__PATH__");
-		String filelistType = ElementParameterParser.getValue(node, "__LIST_MODE__");
-		boolean includeSubDirectories = "true".equals(ElementParameterParser.getValue(node, "__INCLUDSUBDIR__"));
+		String fileName = ElementParameterParser.getValue(node, "__FILE_NAME__");
+		boolean moveDirectory = "true".equals(ElementParameterParser.getValue(node, "__MOVE_DIRECTORY__"));
+		String sourceDirectory = ElementParameterParser.getValue(node, "__SOURCE_DIRECTORY__");
+		String destinationDirectory = ElementParameterParser.getValue(node, "__DESTINATION_DIRECTORY__");
+		boolean rename = "true".equals(ElementParameterParser.getValue(node, "__RENAME__"));
+		String destinationFileName = ElementParameterParser.getValue(node, "__DESTINATION_FILE_NAME__");
+		boolean removeSource = "true".equals(ElementParameterParser.getValue(node, "__REMOVE_SOURCE_FILE__"));
+		
 		boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 				log4jFileUtil.componentStartInfo(node);
-		
-		List<IMetadataTable> metadatas = node.getMetadataList();
-		IMetadataTable metadata = null;
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-			metadata = metadatas.get(0);    
-	    }
-		
+				
 		List< ? extends IConnection> outputConnections = node.getOutgoingSortedConnections();
 		
         String dataOutputConnection = null;	
@@ -51,7 +50,6 @@ imports="
 	        	break;
 	        } // if(conn) end
 	    } // for(conns) end
-		
 %>
 <%
 if(!"true".equals(useExistingConn)){
@@ -73,23 +71,31 @@ if(!"true".equals(useExistingConn)){
 <%
 	}
 %>
-	com.box.boxjavalibv2.BoxClient <%=cid%>_client = new com.box.boxjavalibv2.BoxClient(<%=clientId%>, <%=clientSecret%>, null, null, <%=cid%>_httpClient, new com.box.boxjavalibv2.BoxConfigBuilder().build());
-if((<%=accessToken%> == null || "".equals(<%=accessToken%>.trim())) && (<%=refreshToken%> == null || "".equals(<%=refreshToken%>.trim()))) {
-	throw new Exception("One of Access token or Refresh token should be provided");
-} else {
-	java.util.Map<String, Object> <%=cid%>_map = new java.util.HashMap<String, Object>();
-<%if (accessToken != null && !accessToken.isEmpty()  && !accessToken.trim().matches("\"?\"?") && refreshToken != null && !refreshToken.isEmpty() && !refreshToken.trim().matches("\"?\"?")) { %>
-	<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=accessToken%>);
-	<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=refreshToken%>);
-    <%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
-<% } else if (accessToken != null && !accessToken.isEmpty() && !accessToken.trim().matches("\"?\"?")) { %>
-    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=accessToken%>);
-<% } else if (refreshToken != null && !"".equals(refreshToken.trim()) && !refreshToken.trim().matches("\"?\"?")) { %>
-    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=refreshToken%>);
-    <%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
-<% } %>  
-    <%=cid%>_client.authenticate(new com.box.boxjavalibv2.dao.BoxOAuthToken(<%=cid%>_map));
-}
+	com.box.boxjavalibv2.BoxClient <%=cid%>_client = null;
+	if(globalMap.get("copy_<%=cid%>") == null)
+	{
+		<%=cid%>_client = new com.box.boxjavalibv2.BoxClient(<%=clientId%>, <%=clientSecret%>, null, null, <%=cid%>_httpClient, new com.box.boxjavalibv2.BoxConfigBuilder().build());
+	
+		if((<%=accessToken%> == null || "".equals(<%=accessToken%>.trim())) && (<%=refreshToken%> == null || "".equals(<%=refreshToken%>.trim()))) {
+			throw new Exception("One of Access token or Refresh token should be provided");
+		} else {
+			java.util.Map<String, Object> <%=cid%>_map = new java.util.HashMap<String, Object>();
+		<%if (accessToken != null && !accessToken.isEmpty()  && !accessToken.trim().matches("\"?\"?") && refreshToken != null && !refreshToken.isEmpty() && !refreshToken.trim().matches("\"?\"?")) { %>
+			<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=accessToken%>);
+			<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=refreshToken%>);
+		    <%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
+		<% } else if (accessToken != null && !accessToken.isEmpty() && !accessToken.trim().matches("\"?\"?")) { %>
+		    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=accessToken%>);
+		<% } else if (refreshToken != null && !"".equals(refreshToken.trim()) && !refreshToken.trim().matches("\"?\"?")) { %>
+		    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=refreshToken%>);
+		    <%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
+		<% } %> 
+		    <%=cid%>_client.authenticate(new com.box.boxjavalibv2.dao.BoxOAuthToken(<%=cid%>_map));
+		    globalMap.put("copy_<%=cid%>", <%=cid%>_client);
+		}
+	} else {
+		<%=cid%>_client = (com.box.boxjavalibv2.BoxClient)globalMap.get("copy_<%=cid%>");
+	}
 <%
 	} else {
 %>
@@ -97,9 +103,3 @@ if((<%=accessToken%> == null || "".equals(<%=accessToken%>.trim())) && (<%=refre
 <%
 }
 %>
-
-	
-		
-		
-			
-			
