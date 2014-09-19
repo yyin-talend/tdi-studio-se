@@ -29,7 +29,7 @@ String execution= ElementParameterParser.getValue(node, "__EXECUTION__");
 String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
-String beginLoad= ElementParameterParser.getValue(node, "__BEGINLOAD_ADVANCEDPARAM__");
+
 boolean returnCodeDie= ElementParameterParser.getValue(node, "__RETURN_CODE_DIE__").equals("true");
 String returnCode= ElementParameterParser.getValue(node, "__RETURN_CODE__");
 boolean specifyLogTable= ElementParameterParser.getValue(node, "__SPECIFY_LOG_TABLE__").equals("true");
@@ -63,6 +63,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
 java.io.File file_<%=cid %> = new java.io.File(<%=scriptPath%>+<%=table%>+ <%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
+
+String logTable_<%= cid %> = <%=dbname%> + "." +<%= logTable %>;
+<% if(!specifyLogTable){%>
+	logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
+<% }else{
+	if(logTable==null || "".equals(logTable)){
+	%>
+	  logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
+	<%
+	}
+} %>
 
 <%//build script---------------------------------------------------------%>
 
@@ -199,7 +210,7 @@ String passwordFieldName = "__PASS__";
 %>
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 fw_<%=cid %>.write("/* 93 */  			UserPassword = '" + decryptedPassword_<%=cid%> + "', <%=lineSeparator%>");
-fw_<%=cid %>.write("/* 94 */  			LogTable = '" + tableFullName_<%=cid%> + "_log',<%=lineSeparator%>"); 
+fw_<%=cid %>.write("/* 94 */  			LogTable = '" + logTable_<%= cid %> + "',<%=lineSeparator%>"); 
 fw_<%=cid %>.write("/* 95 */  			TargetTable = '" + tableFullName_<%=cid%> + "', <%=lineSeparator%>");
 fw_<%=cid %>.write("/* 96 */  			TdpId = '" + <%=tdpid%> + "'<%=lineSeparator%>");
 fw_<%=cid %>.write("/* 97 */  		)<%=lineSeparator%>");
