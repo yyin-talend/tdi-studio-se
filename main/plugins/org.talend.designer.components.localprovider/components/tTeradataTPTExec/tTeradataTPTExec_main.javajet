@@ -64,6 +64,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
 java.io.File file_<%=cid %> = new java.io.File(<%=scriptPath%>+<%=table%>+ <%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
 
+String logTable_<%= cid %> = <%=dbname%> + "." +<%= logTable %>;
+<% if(!specifyLogTable){%>
+	logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
+<% }else{
+	if(logTable==null || "".equals(logTable)){
+	%>
+	  logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
+	<%
+	}
+} %>
+
 <%//build script---------------------------------------------------------%>
 
 try{
@@ -199,7 +210,7 @@ String passwordFieldName = "__PASS__";
 %>
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 fw_<%=cid %>.write("/* 93 */  			UserPassword = '" + decryptedPassword_<%=cid%> + "', <%=lineSeparator%>");
-fw_<%=cid %>.write("/* 94 */  			LogTable = '" + tableFullName_<%=cid%> + "_log',<%=lineSeparator%>"); 
+fw_<%=cid %>.write("/* 94 */  			LogTable = '" + logTable_<%= cid %> + "',<%=lineSeparator%>"); 
 fw_<%=cid %>.write("/* 95 */  			TargetTable = '" + tableFullName_<%=cid%> + "', <%=lineSeparator%>");
 fw_<%=cid %>.write("/* 96 */  			TdpId = '" + <%=tdpid%> + "'<%=lineSeparator%>");
 fw_<%=cid %>.write("/* 97 */  		)<%=lineSeparator%>");
