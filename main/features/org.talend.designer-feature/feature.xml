@@ -254,7 +254,6 @@
       <import plugin="org.talend.model.migration"/>
       <import plugin="org.eclipse.m2m.atl.core"/>
       <import plugin="org.talend.metadata.managment.ui"/>
-      <import plugin="org.talend.libraries.uniserv"/>
       <import plugin="org.talend.libraries.mozilla"/>
       <import plugin="org.hamcrest.core" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.talend.libraries.jexcel"/>
@@ -1396,12 +1395,6 @@
 
    <plugin
          id="org.talend.libraries.mozilla"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.talend.libraries.uniserv"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
