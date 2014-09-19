@@ -24,6 +24,7 @@ imports="
 	    String connectionKey = "\"conn_" + connection+"\"";
 		String path = ElementParameterParser.getValue(node, "__PATH__");
 		String includeSubDir = ElementParameterParser.getValue(node, "__INCLUDSUBDIR__");
+		String listMode = ElementParameterParser.getValue(node, "__LIST_MODE__");
 %>
 <%
 if(!"true".equals(useExistingConn)){
@@ -63,25 +64,41 @@ if(!"true".equals(useExistingConn)){
 	if (!<%=cid%>_files.isEmpty()) {
 		com.dropbox.core.DbxEntry <%=cid%>_child = null;
 		while( (<%=cid%>_child = <%=cid%>_files.poll()) != null) {
-			if (!<%=cid%>_child.isFile()) {
-				<%if("true".equals(includeSubDir)){%>
-					com.dropbox.core.DbxEntry.WithChildren tmp = <%=cid%>_client.getMetadataWithChildren(<%=cid%>_child.path);
-					if(tmp != null && tmp.children != null){
-						<%=cid%>_files.addAll(tmp.children);
+			<%if("true".equals(includeSubDir)){%>
+				if (!<%=cid%>_child.isFile()) {
+						com.dropbox.core.DbxEntry.WithChildren tmp = <%=cid%>_client.getMetadataWithChildren(<%=cid%>_child.path);
+						if(tmp != null && tmp.children != null){
+							<%=cid%>_files.addAll(tmp.children);
+						}
+				}
+			<%}%>
+			com.dropbox.core.DbxClient.Downloader <%=cid%>_downloader = null;
+			<%if("FILES".equals(listMode)){%>
+				if (!<%=cid%>_child.isFile()) {
+					continue;
+				}
+				<%=cid%>_downloader = <%=cid%>_client.startGetFile(<%=cid%>_child.path, null);
+				globalMap.put("<%=cid%>_LAST_MODIFIED",<%=cid%>_child.asFile().lastModified.getTime());
+				globalMap.put("<%=cid%>_SIZE",<%=cid%>_child.asFile().numBytes);
+				if (<%=cid%>_downloader != null) {
+					globalMap.put("<%=cid%>_CONTENT",<%=cid%>_downloader.body);
+				}
+			<%}else if("DIRECTORIES".equals(listMode)){%>
+				if (<%=cid%>_child.isFile()) {
+					continue;
+				}
+			<%}else{%>
+				if(<%=cid%>_child.isFile()){
+					<%=cid%>_downloader = <%=cid%>_client.startGetFile(<%=cid%>_child.path, null);
+					globalMap.put("<%=cid%>_LAST_MODIFIED",<%=cid%>_child.asFile().lastModified.getTime());
+					globalMap.put("<%=cid%>_SIZE",<%=cid%>_child.asFile().numBytes);
+					if (<%=cid%>_downloader != null) {
+						globalMap.put("<%=cid%>_CONTENT",<%=cid%>_downloader.body);
 					}
-				<%}%>
-				continue;
-			}
-			
-			com.dropbox.core.DbxClient.Downloader <%=cid%>_downloader = <%=cid%>_client.startGetFile(<%=cid%>_child.path, null);
+				}
+			<%}%>
 			globalMap.put("<%=cid%>_NAME",<%=cid%>_child.name);
 			globalMap.put("<%=cid%>_PATH",<%=cid%>_child.path);
-			globalMap.put("<%=cid%>_LAST_MODIFIED",<%=cid%>_child.asFile().lastModified.getTime());
-			globalMap.put("<%=cid%>_SIZE",<%=cid%>_child.asFile().numBytes);
-			if (<%=cid%>_downloader != null) {
-				globalMap.put("<%=cid%>_CONTENT",<%=cid%>_downloader.body);
-			}
+			globalMap.put("<%=cid%>_IS_FILE",<%=cid%>_child.isFile());
+			
 			try{
-			
-			
-			
