@@ -1020,21 +1020,21 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      * @return the sapFunctionName
      */
     public String getSapFunctionLabel() {
-        // Use the first function
-        if (this.sapFunctionLabel == null) {
-
-            if (connection == null) {
-                return null;
-            }
-
-            if (!(connection instanceof SAPConnection)) {
-                return null;
-            }
-            SAPConnection sapConn = (SAPConnection) connection;
-            if (sapConn.getFuntions() != null && !sapConn.getFuntions().isEmpty()) {
-                return sapConn.getFuntions().get(0).getLabel();
-            }
-        }
+        // // Use the first function
+        // if (this.sapFunctionLabel == null) {
+        //
+        // if (connection == null) {
+        // return null;
+        // }
+        //
+        // if (!(connection instanceof SAPConnection)) {
+        // return null;
+        // }
+        // SAPConnection sapConn = (SAPConnection) connection;
+        // if (sapConn.getFuntions() != null && !sapConn.getFuntions().isEmpty()) {
+        // return sapConn.getFuntions().get(0).getLabel();
+        // }
+        // }
         return this.sapFunctionLabel;
     }
 
