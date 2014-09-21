@@ -1138,13 +1138,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     boolean inputSame = true;
                     sapNodeParam = node.getElementParameter("MAPPING_INPUT"); //$NON-NLS-1$
-                    if (sapNodeParam != null && sapNodeParam.getValue() != null) {
+                    if (sapNodeParam != null && sapNodeParam.getRepositoryValue() != null && sapNodeParam.getValue() != null) {
                         inputSame = SAPConnectionUtils.sameParamterTableWith(function,
                                 (List<Map<String, Object>>) sapNodeParam.getValue(), true);
                     }
                     boolean outputSame = true;
                     sapNodeParam = node.getElementParameter("MAPPING_OUTPUT"); //$NON-NLS-1$
-                    if (sapNodeParam != null && sapNodeParam.getValue() != null) {
+                    if (sapNodeParam != null && sapNodeParam.getRepositoryValue() != null && sapNodeParam.getValue() != null) {
                         outputSame = SAPConnectionUtils.sameParamterTableWith(function,
                                 (List<Map<String, Object>>) sapNodeParam.getValue(), false);
                     }
