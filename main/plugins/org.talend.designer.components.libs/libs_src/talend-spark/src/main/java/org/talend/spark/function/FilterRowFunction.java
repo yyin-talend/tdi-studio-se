@@ -13,6 +13,8 @@
 package org.talend.spark.function;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.spark.api.java.function.Function;
 import org.talend.spark.utils.FilterObject;
@@ -34,27 +36,51 @@ public class FilterRowFunction implements Function<List<Object>, Boolean> {
 		for (int i = 0; i < filters.size(); i++) {
 			FilterObject filter = filters.get(i);
 			boolean tempResult = true;
-			if(row.get(filter.idCol)==null && !filter.isNullable) {
-				throw new Exception("Null value found in a non-nullable column.");
+			if (row.get(filter.idCol) == null && !filter.isNullable) {
+				throw new Exception(
+						"Null value found in a non-nullable column.");
 			}
 			switch (filter.op) {
 			case EQUAL:
-				tempResult = (Utils.compareTo(row.get(filter.idCol), filter.value, filter.javaType) == 0);
+				tempResult = (Utils.compareTo(row.get(filter.idCol),
+						filter.value, filter.javaType) == 0);
 				break;
-			case DIFF:
-				tempResult = (Utils.compareTo(row.get(filter.idCol), filter.value, filter.javaType) != 0);
+			case NEQUAL:
+				tempResult = (Utils.compareTo(row.get(filter.idCol),
+						filter.value, filter.javaType) != 0);
 				break;
-			case SUP:
-				tempResult = (Utils.compareTo(row.get(filter.idCol), filter.value, filter.javaType) > 0);
+			case GREATER:
+				tempResult = (Utils.compareTo(row.get(filter.idCol),
+						filter.value, filter.javaType) > 0);
 				break;
-			case SUP_EQUAL:
-				tempResult = (Utils.compareTo(row.get(filter.idCol), filter.value, filter.javaType) >= 0);
+			case GREATER_EQUAL:
+				tempResult = (Utils.compareTo(row.get(filter.idCol),
+						filter.value, filter.javaType) >= 0);
 				break;
-			case INF:
-				tempResult = (Utils.compareTo(row.get(filter.idCol), filter.value, filter.javaType) < 0);
+			case LESS:
+				tempResult = (Utils.compareTo(row.get(filter.idCol),
+						filter.value, filter.javaType) < 0);
 				break;
-			case INF_EQUAL:
-				tempResult = (Utils.compareTo(row.get(filter.idCol), filter.value, filter.javaType) <= 0);
+			case LESS_EQUAL:
+				tempResult = (Utils.compareTo(row.get(filter.idCol),
+						filter.value, filter.javaType) <= 0);
+				break;
+			case STARTS_WITH:
+				tempResult = ((String) row.get(filter.idCol))
+						.startsWith(filter.value.toString());
+				break;
+			case ENDS_WITH:
+				tempResult = ((String) row.get(filter.idCol))
+						.endsWith(filter.value.toString());
+				break;
+			case CONTAINS:
+				tempResult = ((String) row.get(filter.idCol))
+						.contains(filter.value.toString());
+				break;
+			case MATCHES:
+				Pattern pattern = Pattern.compile(filter.value.toString());
+				Matcher matcher = pattern.matcher((String) row.get(filter.idCol));
+				tempResult = matcher.matches();
 				break;
 			}
 			if (i == 0) {

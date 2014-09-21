@@ -27,7 +27,7 @@ public class FilterObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum Operator {
-        EQUAL, DIFF, SUP, SUP_EQUAL, INF, INF_EQUAL
+        EQUAL, NEQUAL, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, STARTS_WITH, ENDS_WITH, CONTAINS, MATCHES
     }
 
     public enum LogicOp {
