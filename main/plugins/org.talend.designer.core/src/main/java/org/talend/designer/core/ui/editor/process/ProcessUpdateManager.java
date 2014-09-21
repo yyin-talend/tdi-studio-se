@@ -1277,7 +1277,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
                                 if (table != null) {
                                     String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
-                                            + UpdatesConstants.SEGMENT_LINE + table.getLabel();
+                                            + UpdatesConstants.SEGMENT_LINE + schemaName;
 
                                     final IMetadataTable copyOfrepositoryMetadata = table.clone();
                                     copyOfrepositoryMetadata.setTableName(uniqueName);

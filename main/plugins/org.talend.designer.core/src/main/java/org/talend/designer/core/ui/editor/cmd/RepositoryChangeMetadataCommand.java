@@ -84,6 +84,20 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     @Override
     public void execute() {
         node.setPropertyValue(propName, newPropValue);
+        if ((EParameterName.SCHEMA + ":" + EParameterName.REPOSITORY_SCHEMA_TYPE).equals(propName)) {
+            IElementParameter elementParameter = node.getElementParameter(propName);
+            if (elementParameter != null) {
+                IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
+                        .get(EParameterName.SCHEMA_TYPE.getName());
+                if (schemaTypeParam != null) {
+                    if (newPropValue != null && !"".equals(newPropValue)) {
+                        schemaTypeParam.setValue(EmfComponent.REPOSITORY);
+                    } else {
+                        schemaTypeParam.setValue(EmfComponent.BUILTIN);
+                    }
+                }
+            }
+        }
 
         if (node.isExternalNode() && !node.isELTComponent()) {
             for (IElementParameter parameter : node.getElementParameters()) {
@@ -226,6 +240,16 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 .getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         if (newRepositoryIdValue != null) {
             repositorySchemaTypeParameter.setValue(oldRepositoryIdValue);
+        }
+        IElementParameter elementParameter = node.getElementParameter(propName);
+        IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
+                .get(EParameterName.SCHEMA_TYPE.getName());
+        if (schemaTypeParam != null) {
+            if (oldPropValue != null && !"".equals(oldPropValue)) {
+                schemaTypeParam.setValue(EmfComponent.REPOSITORY);
+            } else {
+                schemaTypeParam.setValue(EmfComponent.BUILTIN);
+            }
         }
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         super.undo();

@@ -48,7 +48,7 @@ public class MetadataEmfFactory {
 
     MetadataType metadataType;
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void setMetadataTable(final IMetadataTable metadataTable) {
         this.metadataTable = metadataTable;
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
@@ -61,6 +61,7 @@ public class MetadataEmfFactory {
         metadataType.setName(metadataTable.getTableName());
         metadataType.setLabel(metadataTable.getLabel());
         metadataType.setConnector(metadataTable.getAttachedConnector());
+        metadataType.setType(metadataTable.getTableType());
         listColType = metadataType.getColumn();
 
         if (metadataTable.getListColumns(true) != null) {
@@ -123,6 +124,7 @@ public class MetadataEmfFactory {
         metadataTable.setComment(metadataType.getComment());
         metadataTable.setTableName(metadataType.getName());
         metadataTable.setLabel(metadataType.getLabel());
+        metadataTable.setTableType(metadataType.getType());
         if (metadataType.getConnector() != null) {
             metadataTable.setAttachedConnector(metadataType.getConnector());
         } else {
@@ -196,7 +198,7 @@ public class MetadataEmfFactory {
         return metadataTable;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public OutputStream getOutputStream() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
