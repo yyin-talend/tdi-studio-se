@@ -16,7 +16,6 @@ imports="
 
     String conn = "conn_" + connection;
 	
-    log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");

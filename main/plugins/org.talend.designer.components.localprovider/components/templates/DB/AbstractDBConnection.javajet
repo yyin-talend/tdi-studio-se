@@ -43,7 +43,6 @@ imports="
 	java.sql.Connection conn_<%=cid%> = null;
 	<%@ include file="../Log4j/Log4jDBConnUtil.javajet"%>
 <%
-	log4jCodeGenerateUtil.infoComponentStart(node);
 	if(isUseSharedConnection){
 %>
 	<%connUtil.useShareConnection(node);%>
@@ -79,5 +78,4 @@ imports="
 	}
 <%
 	connUtil.afterComponentProcess(node);
-	log4jCodeGenerateUtil.infoComponentEnd(node);
 %>

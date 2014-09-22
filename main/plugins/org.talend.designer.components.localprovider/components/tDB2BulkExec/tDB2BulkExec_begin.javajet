@@ -39,7 +39,6 @@ String timeformat = ElementParameterParser.getValue(node, "__TIME_FORMAT__");
 String timestampformat = ElementParameterParser.getValue(node, "__TIMESTAMP_FORMAT__");
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 boolean removeLoadPending = ("true").equals(ElementParameterParser.getValue(node,"__REMOVE_LODA_PENDING__"));
-log4jCodeGenerateUtil.infoComponentStart(node);
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 Manager manager = null;
@@ -202,7 +201,6 @@ Character field_separator_<%=cid %> = (<%=field_separator%>).charAt(0);
 			%>
 			int keyCount_<%=cid%> = <%=keyCount%>;
 			if(keyCount_<%=cid%> == 0) {
-				<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - For bulk update, Schema must have a key at least.");%>
 				throw new RuntimeException("For bulk update, Schema must have a key at least.");
 			}
 			String tmpTableName_<%=cid%> = tableName_<%=cid%>;

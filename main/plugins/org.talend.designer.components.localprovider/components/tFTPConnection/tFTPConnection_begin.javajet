@@ -30,7 +30,6 @@ String sEncoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String securityMode = ElementParameterParser.getValue(node, "__SECURITY_MODE__");
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node); 
 String passwordFieldName = "";
 
 if (useProxy) {

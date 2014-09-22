@@ -21,7 +21,6 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	log4jCodeGenerateUtil.infoComponentStart(node);
 	String host = ElementParameterParser.getValue(node, "__SERVER__");
 	String batchRow=ElementParameterParser.getValue(node,"__BATCHROW__");
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
@@ -504,7 +503,6 @@
 			boolean deletedOK = f.delete();
 
 			if (!deletedOK ){
-				<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - Failed to delete \" + sqlFileAndPath_"+ cid+"+\".");%>
 				throw new IllegalArgumentException("Failed to delete " + sqlFileAndPath_<%=cid %>);
 			}
 			<%
@@ -520,7 +518,6 @@
 			deletedOK = f.delete();
 
 			if (!deletedOK ){
-				<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - Failed to delete \" + executableFilePath_"+ cid+"+\".");%>
 				throw new IllegalArgumentException("Failed to delete " + executableFilePath_<%=cid %>);
 			}
 			<%
@@ -537,4 +534,3 @@
 	<%
 	}
 	%>
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

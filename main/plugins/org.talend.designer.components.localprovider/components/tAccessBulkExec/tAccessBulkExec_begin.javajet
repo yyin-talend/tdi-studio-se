@@ -27,7 +27,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
 	boolean includeHeader = "true".equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jCodeGenerateUtil.infoComponentStart(node);
 	List<IMetadataColumn> columnList = getColumnList(node);
 %>
 	String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
@@ -131,6 +130,5 @@ skeleton="../templates/db_output_bulk.skeleton"
 	{
 		log4jCodeGenerateUtil.close(node);
 	}
-	log4jCodeGenerateUtil.infoComponentEnd(node);
     %>
 

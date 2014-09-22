@@ -219,7 +219,6 @@ if(("UPDATE").equals(dataAction)) {
         %>
         int keyCount_<%=cid%> = <%=keyCount%>;
         if(keyCount_<%=cid%> == 0) {
-        	<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - For bulk update, Schema must have a key at least.");%>
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
         
@@ -302,6 +301,5 @@ if(("UPDATE").equals(dataAction)) {
 	if(!useExistingConnection) {
 		log4jCodeGenerateUtil.close(node);
 	}
-	log4jCodeGenerateUtil.infoComponentEnd(node);
 %>
 

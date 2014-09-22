@@ -31,7 +31,6 @@ imports="
 	
 	boolean useParquet = "true".equals(ElementParameterParser.getValue(node,"__USE_PARQUET__"));
 	
-	log4jCodeGenerateUtil.infoComponentStart(node);
 	boolean isExecutedThroughWebHCat = "MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
 	if("true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"))) {
 		isExecutedThroughWebHCat = false;

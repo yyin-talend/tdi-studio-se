@@ -187,9 +187,6 @@ if(isExecutedThroughWebHCat) {
 	        <%
 	        if (("true").equals(dieOnError)) {
 	            %>
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e.getMessage());
-				<%}%>
 	            throw(e);
 	            <%
 	        } else {

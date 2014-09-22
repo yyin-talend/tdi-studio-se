@@ -40,7 +40,6 @@ String fileName = ElementParameterParser.getValue(node, "__FILENAME__") ;
 String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__") ;
 
 boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
-log4jCodeGenerateUtil.infoComponentStart(node);
 
 List<IMetadataColumn> columnList = getColumnList(node);
 
@@ -229,5 +228,4 @@ if(!useExistingConn){
     }
 <%
 }
-log4jCodeGenerateUtil.infoComponentEnd(node);
 %>

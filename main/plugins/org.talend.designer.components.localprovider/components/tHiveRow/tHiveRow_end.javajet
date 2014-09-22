@@ -66,9 +66,6 @@ imports="
 		}
 		%>
 		
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Done.");
-		<%}%>
 
 		String currentClientPathSeparator_<%=cid%> = (String)globalMap.get("current_client_path_separator");
 		if(currentClientPathSeparator_<%=cid%>!=null) {
