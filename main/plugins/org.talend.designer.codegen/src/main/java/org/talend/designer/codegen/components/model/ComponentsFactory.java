@@ -673,7 +673,7 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     @Override
-    public int size() {
+    public synchronized int size() {
         if (componentList == null) {
             init(false);
         }
@@ -681,7 +681,7 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     @Override
-    public IComponent get(String name) {
+    public synchronized IComponent get(String name) {
         if (componentList == null) {
             init(false);
         }
@@ -701,7 +701,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#get(java.lang.String, java.lang.String)
      */
     @Override
-    public IComponent get(String name, String paletteType) {
+    public synchronized IComponent get(String name, String paletteType) {
         if (componentList == null) {
             init(false);
         }
