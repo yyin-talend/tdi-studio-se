@@ -87,7 +87,7 @@
 		</PARAMETER>
 
 
-		<PARAMETER NAME="ADVANCED_COND" FIELD="MEMO_JAVA" NUM_ROW="5" NB_LINES="5" NOT_SHOW_IF="(USE_ADVANCED=='false')">
+		<PARAMETER NAME="ADVANCED_COND" FIELD="MEMO_JAVA" RAW="true" NUM_ROW="5" NB_LINES="5" NOT_SHOW_IF="(USE_ADVANCED=='false')">
 			<DEFAULT>// code sample : use input_row to define the condition.
 // input_row.columnName1.equals("foo") ||!(input_row.columnName2.equals("bar"))
 // replace the following expression by your own filter condition 

@@ -54,7 +54,7 @@ COMPATIBILITY="ALL"
    
     <PARAMETER NAME="THRESHLODS" FIELD="TABLE" NUM_ROW="5" NB_LINES="5" >
       <ITEMS>
-        <ITEM NAME="LABEL" VALUE="newline"/>
+        <ITEM NAME="LABEL" RAW="true" VALUE="newline"/>
         <ITEM NAME="BOTTOM" VALUE="0"/>
         <ITEM NAME="TOP" VALUE="80"/>
         <ITEM NAME="COLOR" FIELD="COLOR"/>

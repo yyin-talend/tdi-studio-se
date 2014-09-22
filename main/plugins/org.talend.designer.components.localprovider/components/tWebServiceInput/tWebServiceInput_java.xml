@@ -127,7 +127,7 @@
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="CODE" FIELD="MEMO_JAVA"  SHOW_IF="ADVANCED_USE == 'true'" REQUIRED="false" NUM_ROW="50" NB_LINES="9" CONTEXT="begin">
+		<PARAMETER NAME="CODE" FIELD="MEMO_JAVA" RAW="true" SHOW_IF="ADVANCED_USE == 'true'" REQUIRED="false" NUM_ROW="50" NB_LINES="9" CONTEXT="begin">
 		    <DEFAULT>
 //==============================================================================
 //example code for : http://www.deeptraining.com/webservices/weather.asmx?WSDL

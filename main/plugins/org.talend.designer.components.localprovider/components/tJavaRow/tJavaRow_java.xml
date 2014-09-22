@@ -40,7 +40,7 @@
       <DEFAULT/>
     </PARAMETER>
 
-    <PARAMETER NAME="CODE" FIELD="MEMO_JAVA" NUM_ROW="3" NB_LINES="10">
+    <PARAMETER NAME="CODE" FIELD="MEMO_JAVA" RAW="true" NUM_ROW="3" NB_LINES="10">
       <DEFAULT>// code sample:
 //
 // multiply by 2 the row identifier
@@ -54,7 +54,7 @@
   </PARAMETERS>
   
    <ADVANCED_PARAMETERS>
-	  <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" NUM_ROW="1" NB_LINES="3">
+	  <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" RAW="true" REQUIRED="false" NUM_ROW="1" NB_LINES="3">
 	    <DEFAULT>//import java.util.List;</DEFAULT>
 	  </PARAMETER>   
    </ADVANCED_PARAMETERS>  
