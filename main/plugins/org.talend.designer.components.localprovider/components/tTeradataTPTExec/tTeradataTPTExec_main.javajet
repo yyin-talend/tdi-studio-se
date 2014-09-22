@@ -64,14 +64,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
 java.io.File file_<%=cid %> = new java.io.File(<%=scriptPath%>+<%=table%>+ <%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
 
-String logTable_<%= cid %> = <%=dbname%> + "." +<%= logTable %>;
 <% if(!specifyLogTable){%>
-	logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
+		String logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
 <% }else{
-	if(logTable==null || "".equals(logTable)){
-	%>
-	  logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
-	<%
+	if(logTable==null || "\"\"".equals(logTable) || "".equals(logTable)){
+		%>
+		  String logTable_<%= cid %> = tableFullName_<%=cid%>+"_log";
+		<%
+	}else{
+		%>
+		  String logTable_<%= cid %> = <%=dbname%> + "." +<%= logTable %>;
+		<%
 	}
 } %>
 
