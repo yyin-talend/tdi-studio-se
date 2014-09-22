@@ -67,6 +67,10 @@ public class ConnectionCreateAction extends SelectionAction {
 
     private static final String NEW_OUTPUT = "*New Output*"; //$NON-NLS-1$
 
+    private final String ISINPUT = "isinput";
+
+    private final String TRUE = "true";
+
     /**
      * Define the type of the connection and the workbench part who will manage the connection.
      * 
@@ -169,6 +173,10 @@ public class ConnectionCreateAction extends SelectionAction {
             if (curNodeConnector.isMultiSchema()) {
                 for (int i = 0; i < node.getMetadataList().size(); i++) {
                     IMetadataTable table = (node.getMetadataList().get(i));
+                    String value = table.getAdditionalProperties().get(ISINPUT);
+                    if (value != null && value.equals(TRUE)) {
+                        continue;
+                    }
                     String name = table.getTableName();
                     if (name.equals(node.getUniqueName())) {
                         continue;

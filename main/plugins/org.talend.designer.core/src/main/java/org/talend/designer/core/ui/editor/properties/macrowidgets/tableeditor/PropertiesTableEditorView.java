@@ -56,6 +56,7 @@ import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.IRuleConstant;
+import org.talend.core.model.metadata.ISAPConstant;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -66,6 +67,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.service.IEBCDICProviderService;
+import org.talend.core.service.ISAPProviderService;
 import org.talend.core.ui.metadata.celleditor.ModuleListCellEditor;
 import org.talend.core.ui.metadata.celleditor.RuleCellEditor;
 import org.talend.core.ui.metadata.celleditor.SchemaCellEditor;
@@ -85,6 +87,10 @@ import org.talend.designer.core.ui.event.CheckColumnSelectionListener;
  * @param <B>
  */
 public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B> {
+
+    private final String SINGLE = "SINGLE";
+
+    private final String STRUCTURE = "STRUCTURE";
 
     /**
      * DOC amaumont MetadataTableEditorView constructor comment.
@@ -452,6 +458,64 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     column.setCellEditor(schemaEditor);
                     break;
 
+                case SAP_SCHEMA_TYPE:
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!currentParam.isReadOnly()));
+                    final INode sapNode = (INode) element;
+
+                    column.setLabelProvider(new IColumnLabelProvider() {
+
+                        @Override
+                        public String getLabel(Object bean) {
+                            if (bean instanceof Map) {
+                                Map<String, Object> valueMap = (Map<String, Object>) bean;
+                                String value = (String) valueMap.get(IEbcdicConstant.FIELD_SCHEMA);
+                                if (value != null && !"".equals(value)) { //$NON-NLS-1$
+                                    IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNodeTableName(sapNode,
+                                            value);
+                                    if (metadataTable != null) {
+                                        if (isEBCDICNode(sapNode)) {
+                                            if (isRepositorySchemaLine(sapNode, valueMap)) {
+                                                return "Repository (" + metadataTable.getTableName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                            } else {
+                                                return "Built-In (" + metadataTable.getTableName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                            }
+                                        } else if (isSAPNode(sapNode)) {
+                                            Object type = valueMap.get(ISAPConstant.TYPE);
+                                            if (type instanceof Integer) {
+                                                return "";
+                                            }
+                                            if (type.toString().equals(SINGLE) || type.toString().equals(STRUCTURE)) {
+                                                List<IMetadataColumn> columns = metadataTable.getListColumns(true);
+                                                StringBuffer values = new StringBuffer();
+                                                values.append(metadataTable.getTableName() + ":");
+                                                if (metadataTable.getListColumns(true).size() > 0) {
+                                                    for (IMetadataColumn column : columns) {
+                                                        values.append(column.getDefault() + ",");
+                                                    }
+                                                    String ret = values.toString();
+                                                    return ret.substring(0, ret.length() - 1);
+                                                }
+                                            } else {
+                                                return metadataTable.getTableName();
+                                            }
+                                        } else {
+                                            return metadataTable.getTableName();
+                                        }
+                                    } else {
+                                        return value;
+                                    }
+                                }
+                            }
+                            return ""; //$NON-NLS-1$
+                        }
+                    });
+
+                    schemaEditor = new SchemaCellEditor(table, sapNode);
+                    schemaEditor.setTableEditorView(this);
+                    column.setCellEditor(schemaEditor);
+                    break;
+
                 // hywang add for feature 6484
                 case RULE_TYPE:
                     column.setTitle("Rule"); //$NON-NLS-1$
@@ -738,6 +802,17 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     IEBCDICProviderService.class);
             if (service != null) {
                 return service.isEbcdicNode(node);
+            }
+        }
+        return false;
+    }
+
+    private boolean isSAPNode(INode node) {
+        if (PluginChecker.isSAPWizardPluginLoaded()) {
+            ISAPProviderService service = (ISAPProviderService) GlobalServiceRegister.getDefault().getService(
+                    ISAPProviderService.class);
+            if (service != null) {
+                return service.isSAPNode(node);
             }
         }
         return false;
