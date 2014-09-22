@@ -2342,6 +2342,9 @@ public class EmfComponent extends AbstractComponent {
                 case SCHEMA_TYPE:
                     newParam.setValue(""); //$NON-NLS-1$
                     break;
+                case SAP_SCHEMA_TYPE:
+                    newParam.setValue(""); //$NON-NLS-1$
+                    break;
                 case SCHEMA_XPATH_QUERYS:
                     newParam.setValue(""); //$NON-NLS-1$
                     break;
