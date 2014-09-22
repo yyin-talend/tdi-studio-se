@@ -25,8 +25,6 @@
 		if(isLog4jEnabled){
 			%>
 			log.debug("<%=cid%> - Retrieving the record " + nb_email_<%=cid %> + ".");
-			log.trace("<%=cid%> - Name of the email " + nb_email_<%=cid %> + ": " + log4jSb_<%=cid%>);
-			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 			<%		
 		}
 		
@@ -41,9 +39,6 @@
 		} else {%>
 			} catch (javax.mail.MessagingException me) {
 				if (!"Cannot load header".equals(me.getMessage())) {
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - " + me.getMessage());
-					<%}%>
       				throw me;
 				}else{ 
 					<%if(isLog4jEnabled){%>
@@ -77,5 +72,4 @@
 
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Retrived "+nb_email_<%=cid %> + " mails.");
-		log.info("<%=cid%> - Done.");
 	<%}%>

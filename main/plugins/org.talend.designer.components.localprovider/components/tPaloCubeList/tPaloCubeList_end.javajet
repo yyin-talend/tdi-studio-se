@@ -68,5 +68,4 @@ globalMap.put("<%=cid%>_NB_CUBES", NB_CUBES<%=cid%>);
 
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - List cubes count " + NB_CUBES<%=cid%> + " .");
-		log.info("<%=cid%> - Done.");
 	<%}%>

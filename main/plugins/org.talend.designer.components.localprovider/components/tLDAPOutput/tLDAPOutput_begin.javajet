@@ -21,7 +21,6 @@ class="LDAPInput"
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 	String insertMode =ElementParameterParser.getValue(node, "__INSERT_MODE__");
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node);
 if(("false").equals(useExistingConn)){
 	String host=ElementParameterParser.getValue(node, "__HOST__");
 	String port=ElementParameterParser.getValue(node, "__PORT__");

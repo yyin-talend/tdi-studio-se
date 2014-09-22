@@ -19,8 +19,6 @@
 			}
 			<%if(isLog4jEnabled){%>
 				log.debug("<%=cid%> - Retrieving the record " + tos_count_<%=cid%> + ".");
-				log.trace("<%=cid%> - Content of the record " + tos_count_<%=cid%> + ": " + log4jSb_<%=cid%>);
-				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 			<%}%>
 		}
 <%
@@ -30,8 +28,6 @@
 %>
 				<%if(isLog4jEnabled){%>
 					log.debug("<%=cid%> - Retrieving the record " + tos_count_<%=cid%> + ".");
-					log.trace("<%=cid%> - Content of the record " + tos_count_<%=cid%> + ": " + log4jSb_<%=cid%>);
-					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 				<%}%>
 				}
 				fs_<%=cid %>.close();

@@ -11,7 +11,6 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node);
  
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
@@ -89,9 +88,6 @@ if(useExistingConnection){
 org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
 org.talend.jpalo.palodatabase pDB_<%=cid %>= pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>); 
 if(pDB_<%=cid %> == null){
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - Database '" + <%=sDatabaseName%> + "' not found.");
-	<%}%>
 	 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 	
 }
@@ -155,9 +151,6 @@ if(("NONE").equals(sDimensionAction)){
 		pDIM_<%=cid %> = pDIMs_<%=cid %>.getDimension(<%=sDimensionName%>);
 	}
 	else {
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - Dimension '" + <%=sDimensionName%> + "' not found in database '" + <%=sDatabaseName%> + "' ." );
-		<%}%>
 		 throw new RuntimeException ("Dimension '" + <%=sDimensionName%> + "' not found in database '" + <%=sDatabaseName%> + "'. exiting..." );
 	}
 <%

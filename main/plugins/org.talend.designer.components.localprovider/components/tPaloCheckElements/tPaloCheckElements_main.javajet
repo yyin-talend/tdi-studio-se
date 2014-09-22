@@ -87,9 +87,6 @@
 
 					if(ElementParameterParser.getObjectValue(node, "__ERROR_HANDLING__").equals("DIE_ON_MISSING_ELEMENT")){
 					%>
-						<%if(isLog4jEnabled){%>
-							log.fatal("<%=cid%> - " + pDIMs_<%=cid %>.getDimension(<%=iCount%>).getName() +" does not contain "+<%=strInputConnectionName%>.<%=strElement%>);
-						<%}%>
  						throw(new org.talend.jpalo.paloexception(pDIMs_<%=cid %>.getDimension(<%=iCount%>).getName()+" does not contain "+<%=strInputConnectionName%>.<%=strElement%>));
 					<%
 					}
@@ -121,12 +118,6 @@
 			    		for (int i = 0; i < sizeColumns; i++) {
 			    			IMetadataColumn column = columns.get(i);
 					%>
-							<%if(isLog4jEnabled){%>
-								log4jSb_<%=cid%>.append(<%=strInputConnectionName%>.<%=column.getLabel()%> );
-				                <%if(i < sizeColumns-1){%>
-				                	log4jSb_<%=cid%>.append("|");
-			    	            <%}
-							}%>
 							<%=strOutputConnectionName%>.<%=column.getLabel()%>=<%=strInputConnectionName%>.<%=column.getLabel()%>;
 							<%
 						}
@@ -138,12 +129,6 @@
 <%
 
 			}
-		}
-		if(isLog4jEnabled){
-%>
-			log.trace("<%=cid%> - Content of the record : " + log4jSb_<%=cid%> + " .");
-			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-<%		
 		}
 
 		if(strInputConnectionName.length()>0 && rejectConnName.length()>0){

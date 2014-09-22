@@ -14,7 +14,6 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node); 
 
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
@@ -107,9 +106,6 @@ org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
 org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
 
 if(pDB_<%=cid %> == null){
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - Database '" + <%=sDatabaseName%> + "' not found.");
-	<%}%>
 	 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 }
 
@@ -135,17 +131,6 @@ for(int i_<%=cid %>=0;i_<%=cid %><4;i_<%=cid %>++){
 			<%=outputConnName%>.cube_filled_cells=pCUB_<%=cid %>.getNumberOfFilledCells();
 			<%=outputConnName%>.cube_status=pCUB_<%=cid %>.getCubeStatus();
 			<%=outputConnName%>.cube_type=pCUB_<%=cid %>.getCubeType();
-			<%if(isLog4jEnabled){%>
-				log4jSb_<%=cid%>.append("cube_id is :" + <%=outputConnName%>.cube_id + " | ");
-				log4jSb_<%=cid%>.append("cube_name is :" + <%=outputConnName%>.cube_name + " | ");
-				log4jSb_<%=cid%>.append("cube_dimensions is :" + <%=outputConnName%>.cube_dimensions + " | ");
-				log4jSb_<%=cid%>.append("cube_cells is :" + <%=outputConnName%>.cube_cells + " | ");
-				log4jSb_<%=cid%>.append("cube_filled_cells is :" + <%=outputConnName%>.cube_filled_cells + " | ");
-				log4jSb_<%=cid%>.append("cube_status is :" + <%=outputConnName%>.cube_status + " | ");
-				log4jSb_<%=cid%>.append("cube_type is :" + <%=outputConnName%>.cube_type);
-				log.trace("<%=cid%> - Content of the cube info " + NB_CUBES<%=cid%> + ": " + log4jSb_<%=cid%>);
-				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-			<%}%>
 <%
 		}
 		if(bIterate){

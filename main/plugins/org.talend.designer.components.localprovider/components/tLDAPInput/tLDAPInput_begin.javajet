@@ -44,7 +44,6 @@ imports="
 				String exConnBaseDN = "connBaseDN_" + connection;
 				String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 				boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-				log4jFileUtil.componentStartInfo(node); 
 %>
 String baseDN_<%=cid%> = "";
 	int <%=cid%>_NB_LINE = 0;
@@ -394,10 +393,6 @@ do {
 							if("dn".equals(column.getLabel().toLowerCase())){
 %>
 								<%=conn.getName()%>.<%=column.getLabel()%> = ("".equals(sr_<%=cid%>.getName())?sr_<%=cid%>.getName():(sr_<%=cid%>.getName()+ ",")) + baseDN_<%=cid%>;
-								<%if(isLog4jEnabled){%>
-									log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-									log4jSb_<%=cid%>.append("|");								
-								<%}%>
 <%
 							}else{
 %>
@@ -451,10 +446,6 @@ do {
 							} else {
 								<%=conn.getName() %>.<%=column.getLabel() %> = null;
 							}
-							<%if(isLog4jEnabled){%>
-								log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-								log4jSb_<%=cid%>.append("|");								
-							<%}%>
 <%
 								}
 							}
@@ -467,9 +458,6 @@ do {
 <%
         if (dieOnError) {
 %>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
         	throw(e);
 <%
         } else {

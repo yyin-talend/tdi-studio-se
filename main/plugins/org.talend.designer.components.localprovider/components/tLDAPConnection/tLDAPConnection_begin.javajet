@@ -27,7 +27,6 @@ String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
 String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
 String baseDN=ElementParameterParser.getValue(node, "__BASEDN__");
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node); 
 %>
 java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
 env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
