@@ -9,12 +9,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.talend.commons.ui.utils.Log4jUtil;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
+import org.talend.repository.utils.Log4jUtil;
 
 public class Log4jSettingPage extends ProjectSettingPage {
 

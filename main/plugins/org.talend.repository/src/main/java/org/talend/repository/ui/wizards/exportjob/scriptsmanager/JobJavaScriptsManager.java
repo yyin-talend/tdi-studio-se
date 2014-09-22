@@ -62,7 +62,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.utils.Log4jUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -117,6 +116,7 @@ import org.talend.repository.preference.constants.IExportJobPrefConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.EsbConfigUtils;
+import org.talend.repository.utils.Log4jUtil;
 import org.talend.resource.IExportJobResourcesService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
