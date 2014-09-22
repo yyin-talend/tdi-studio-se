@@ -65,7 +65,6 @@ imports="
 		public void initDbDebugRowBuffer() {
 			if (isLog4jEnabled) {
 			%>
-				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
 				String dataOperationPrefix_<%=cid%> = "";
 			<%
 			}
@@ -254,18 +253,6 @@ imports="
 	    public void debugRecord(INode node,java.util.List<org.talend.core.model.metadata.IMetadataColumn> columnList,String incomingConnName,boolean addBatchLog){
 	    	beforeComponentProcess(node);
 	    	if(isLog4jEnabled){
-				int count = 0;
-				for(org.talend.core.model.metadata.IMetadataColumn column : columnList) {
-					count++;
-					%>
-					log4jSb_<%=cid%>.append(<%=incomingConnName%>.<%=column.getLabel()%>);
-					<%
-					if(count < columnList.size()){
-					%>
-						log4jSb_<%=cid%>.append("|");
-					<%
-					}
-				}
 				if (addBatchLog) {
 				%>
 					log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + " to the <%=dataAction%> batch.");
@@ -276,8 +263,6 @@ imports="
 				<%
 				}
 				%>
-				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%> + ".");
-				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 				<%
 			}
 	    }
