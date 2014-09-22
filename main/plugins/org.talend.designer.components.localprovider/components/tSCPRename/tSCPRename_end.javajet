@@ -24,7 +24,3 @@ imports="
 		<%}%>
 	<%
 	}%>
-
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Done.");
-	<%}%>

@@ -29,6 +29,5 @@ imports="
 	globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Truncated files count: "+nb_file_<%=cid%> + " .");
-		log.info("<%=cid%> - Done.");
 	<%}%>
 			

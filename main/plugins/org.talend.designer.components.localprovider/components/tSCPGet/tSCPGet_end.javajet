@@ -26,5 +26,4 @@ imports="
 			
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Downloaded files count: " + nb_file_<%=cid%>  + ".");
-			log.info("<%=cid%> - Done.");
 		<%}%>

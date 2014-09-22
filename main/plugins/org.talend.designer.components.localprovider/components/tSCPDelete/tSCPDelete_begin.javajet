@@ -77,11 +77,11 @@ imports="
 %>
               /* Now connect */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' with the username '" + username_<%=cid%> + "'.");
+			log.info("<%=cid%> - Attempt to connect to '" + hostname_<%=cid%> + "' with the username '" + username_<%=cid%> + "'.");
 		<%}%>
         conn_<%=cid%>.connect();
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to '" + hostname_<%=cid%> + "' has succeeded.");
+			log.info("<%=cid%> - Connect to '" + hostname_<%=cid%> + "' has succeeded.");
 		<%}%>
 <%        
         if (("PUBLICKEY").equals(authMethod)) {
@@ -146,7 +146,6 @@ imports="
 	        				String instruction, int numPrompts,
 	        				String[] prompt, boolean[] echo)
 	        				throws java.lang.Exception {
-	        			// TODO Auto-generated method stub
 	        			String[] reply = new String[numPrompts];
 	        			
                         <%

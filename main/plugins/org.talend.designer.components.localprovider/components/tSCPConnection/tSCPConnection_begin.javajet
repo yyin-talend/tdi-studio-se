@@ -11,8 +11,7 @@ imports="
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));    
-	log4jFileUtil.componentStartInfo(node);
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     String cid = node.getUniqueName();
     String host = ElementParameterParser.getValue(node, "__HOST__");
     String port = ElementParameterParser.getValue(node, "__PORT__");
@@ -38,11 +37,11 @@ imports="
 %>
               /* Now connect */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' with the username '" + <%=user%> + "'.");
+			log.info("<%=cid%> - Attempt to connect to '" + hostname_<%=cid%> + "' with username '" + <%=user%> + "'.");
 		<%}%>
         conn_<%=cid%>.connect();
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to '" + hostname_<%=cid%> + "' has succeeded.");
+			log.info("<%=cid%> - Connect to '" + hostname_<%=cid%> + "' has succeeded.");
 		<%}%>
 <%        
         if (("PUBLICKEY").equals(authMethod)) {
@@ -106,7 +105,6 @@ imports="
 	        				String instruction, int numPrompts,
 	        				String[] prompt, boolean[] echo)
 	        				throws java.lang.Exception {
-	        			// TODO Auto-generated method stub
 	        			String[] reply = new String[numPrompts];
 	        			
                         <%
@@ -135,6 +133,3 @@ imports="
 <%
         }%>
 		globalMap.put("conn_<%=cid%>",conn_<%=cid %>);
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Done.");	
-		<%}%>

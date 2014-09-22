@@ -48,5 +48,4 @@ imports="
 			globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
 			<%if(isLog4jEnabled){%>
 				log.info("<%=cid%> - Listed files count: "+nb_line_<%=cid%> + " .");
-				log.info("<%=cid%> - Done.");
 			<%}%>
