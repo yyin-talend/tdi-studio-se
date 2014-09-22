@@ -144,7 +144,7 @@
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
-        <PARAMETER NAME="DESTINATION" FIELD="TEXT" NUM_ROW="20"
+        <PARAMETER NAME="DESTINATION" FIELD="TEXT" RAW="true" NUM_ROW="20"
             REQUIRED="true">
             <DEFAULT>tWriteXMLFieldOut_1</DEFAULT>
         </PARAMETER>

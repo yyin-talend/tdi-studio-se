@@ -35,6 +35,7 @@
 	    <PARAMETER
 	    	NAME="DESTINATION"
 	    	FIELD="TEXT"
+	    	RAW="true"
 	    	NUM_ROW="2"
 	    	SHOW="false"
 	    	>

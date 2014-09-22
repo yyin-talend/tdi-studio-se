@@ -36,6 +36,7 @@
     <PARAMETER
       NAME="ORIGIN"
       FIELD="TEXT"
+      RAW="true"
       NUM_ROW="2"
       REQUIRED="true"
     >

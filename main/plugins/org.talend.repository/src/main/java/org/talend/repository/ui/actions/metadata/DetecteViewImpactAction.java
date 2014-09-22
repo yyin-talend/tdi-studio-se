@@ -13,29 +13,23 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
-import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
-import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.Query;
-import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
-import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
-import org.talend.core.repository.model.ISubRepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.repository.ProjectManager;
@@ -201,48 +195,8 @@ public class DetecteViewImpactAction extends AContextualAction {
         if (node == null) {
             return;
         }
+        IStructuredSelection selection = new StructuredSelection(node);
         // try to check via extension point first.
-        UpdateManagerProviderDetector.INSTANCE.updateForRepository(node, true);
-
-        if (node.getObject() instanceof ISubRepositoryObject) {
-            ISubRepositoryObject subObject = (ISubRepositoryObject) node.getObject();
-            if (subObject != null) {
-                // schema
-                AbstractMetadataObject metadataObject = subObject.getAbstractMetadataObject();
-                if (metadataObject instanceof MetadataTable) {
-                    RepositoryUpdateManager.updateSchema((MetadataTable) metadataObject, node, false, isOnlySimpleShow());
-                } else
-                // query
-                if (metadataObject instanceof Query) {
-                    RepositoryUpdateManager.updateQuery((Query) metadataObject, node, false, isOnlySimpleShow());
-                } else
-                // sap function
-                if (metadataObject instanceof SAPFunctionUnit) {
-                    RepositoryUpdateManager.updateSAPFunction((SAPFunctionUnit) metadataObject, false, isOnlySimpleShow());
-                }
-            }
-        } else if (node.getObject() instanceof IRepositoryViewObject) {
-            IRepositoryViewObject object = node.getObject();
-            if (object != null) {
-                Item item = object.getProperty().getItem();
-                if (item != null) {
-                    // context
-                    if (item instanceof ContextItem) {
-                        RepositoryUpdateManager.updateContext((ContextItem) item, false, isOnlySimpleShow());
-                    } else
-                    // connection
-                    if (item instanceof ConnectionItem) {
-                        Connection connection = ((ConnectionItem) item).getConnection();
-                        if (connection instanceof DatabaseConnection) {
-                            RepositoryUpdateManager.updateDBConnection((ConnectionItem) item, false, isOnlySimpleShow());
-                        } else {
-                            RepositoryUpdateManager.updateFileConnection((ConnectionItem) item, false, isOnlySimpleShow());
-                        }
-                    }
-
-                }
-            }
-        }
-
+        UpdateManagerProviderDetector.INSTANCE.updateForRepository(selection, true);
     }
 }
