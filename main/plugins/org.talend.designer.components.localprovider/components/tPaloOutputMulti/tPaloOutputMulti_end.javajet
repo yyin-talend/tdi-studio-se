@@ -38,9 +38,6 @@
 		<%
 			if(bDieOnError){
 		%>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + plE_<%=cid %>.getMessage());
-			<%}%>
 				throw(plE_<%=cid %>);
 		<%
 			}else{
@@ -70,6 +67,3 @@
 	}
 %>
 
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Done.");
-	<%}%>

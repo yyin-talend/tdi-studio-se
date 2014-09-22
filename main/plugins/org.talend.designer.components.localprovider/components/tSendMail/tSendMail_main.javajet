@@ -29,7 +29,6 @@ boolean setLocalhost = "true".equals(ElementParameterParser.getValue(node, "__SE
 String localhost = ElementParameterParser.getValue(node, "__LOCALHOST__");  
 boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node); 
 	//Bug12952, move all begin part to here below
 	String smtpHost    = ElementParameterParser.getValue(node, "__SMTP_HOST__");
 	String smtpPort    = ElementParameterParser.getValue(node, "__SMTP_PORT__");
@@ -214,9 +213,6 @@ log4jFileUtil.componentStartInfo(node);
 		javax.mail.Transport.send(msg_<%=cid %>);
 	} catch(java.lang.Exception e){
   		<%if (isDieOnError){%>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.toString());
-			<%}%>
 			throw(e);
 		<%}else{%>
 			<%if(isLog4jEnabled){%>
@@ -225,6 +221,3 @@ log4jFileUtil.componentStartInfo(node);
   			System.err.println(e.toString());
 		<%}%>
 	}
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Done.");
-	<%}%>

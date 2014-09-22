@@ -26,7 +26,6 @@ List<Map<String, String>> filterList = (List<Map<String,String>>)ElementParamete
 String condition = ElementParameterParser.getValue(node, "__FILTER_RELATION__");
 boolean useSSL = "true".equals(ElementParameterParser.getValue(node, "__USE_SSL__"));
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node); 
 %>  
 	String server_<%=cid %> = <%=host %>;
 	String mbox_<%=cid%> = "INBOX";
@@ -88,18 +87,12 @@ log4jFileUtil.componentStartInfo(node);
   		folder_<%=cid %> = store_<%=cid %>.getDefaultFolder();
 
   		if (folder_<%=cid %> == null) {
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - No default folder.");
-			<%}%>
     		throw new RuntimeException("No default folder");
   		}
 		// its INBOX
 		folder_<%=cid %> = folder_<%=cid %>.getFolder(mbox_<%=cid%>);
 
   		if (folder_<%=cid %> == null){
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - No POP3 INBOX.");
-			<%}%>
 		    throw new RuntimeException("No POP3 INBOX");
 		}
 <%
@@ -214,9 +207,6 @@ log4jFileUtil.componentStartInfo(node);
    				 //for bug TDI-21323
 %> 
 			    message_<%=cid %>.writeTo(os_<%=cid %>);
-				<%if(isLog4jEnabled){%>
-					log4jSb_<%=cid%>.append(filename_<%=cid %>);
-			    <%}%>
 			    os_<%=cid %>.close();
 			    nb_email_<%=cid %>++;
 			    globalMap.put("<%=cid %>_CURRENT_FILE", filename_<%=cid %>);

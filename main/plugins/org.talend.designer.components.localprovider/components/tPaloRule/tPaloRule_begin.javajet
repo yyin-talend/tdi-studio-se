@@ -13,7 +13,6 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node); 
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     String sServer = ElementParameterParser.getValue(node, "__SERVER__");
     String sServerport = ElementParameterParser.getValue(node, "__SERVERPORT__");
@@ -76,9 +75,6 @@ org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
 org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
 
 if(pDB_<%=cid %> == null){
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - Database '" + <%=sDatabaseName%> + "' not found.");
-	<%}%>
 	 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 }
 
@@ -87,9 +83,6 @@ org.talend.jpalo.palocubes pCBs_<%=cid %> = pDB_<%=cid %>.getCubes(org.talend.jp
 org.talend.jpalo.palocube pCB_<%=cid %> = pCBs_<%=cid %>.getCube(<%=sCubeName%>);
 
 if(pCB_<%=cid %> == null){
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "' ." );
-	<%}%>
 	 throw new RuntimeException ("Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "'. exiting..." );
 }
 

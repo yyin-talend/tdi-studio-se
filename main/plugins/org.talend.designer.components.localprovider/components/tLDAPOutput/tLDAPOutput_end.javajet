@@ -29,5 +29,4 @@ globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
 globalMap.put("<%=cid %>_NB_LINE_REJECTED",nb_line_rejected_<%=cid%>);
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Written records count: " + nb_line_<%=cid %> + ".");
-	log.info("<%=cid%> - Done.");	
 <%}%>
