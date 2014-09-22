@@ -50,6 +50,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
                 boolean bAddEmptyAttr = "true".equals(ElementParameterParser.getValue(node, "__ADD_EMPTY_ATTRIBUTE__"));
                 boolean bAddUnmappedAttr = "true".equals(ElementParameterParser.getValue(node, "__ADD_UNMAPPED_ATTRIBUTE__"));
+                boolean isSaveDocAsNode = ("true").equals(ElementParameterParser.getValue(node,"__ADD_DOCUMENT_AS_NODE__"));
                 
                 String outputAsXSD = ElementParameterParser.getValue(node, "__OUTPUT_AS_XSD__");
                 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
@@ -99,6 +100,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 tool.thousandsSeparator=thousandsSeparator;
                 tool.decimalSeparator=decimalSeparator;
                 tool.cid=cid;
+                tool.isAppend = !useStream && isMerge;
                 
                 // change tables to a tree 
 				Object[] treeObjs = getTree(rootTable, groupTable, loopTable, metadata.getListColumns());
@@ -129,7 +131,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					if(isOptimizeCode){
 						if(colNum%schemaOptNum==0){
 %>
-	advancedXMLUtil_<%=cid%>.putValue_<%=colNum/schemaOptNum%>(<%=tool.connName%>,valueMap_<%=cid%>);
+	advancedXMLUtil_<%=cid%>.putValue_<%=colNum/schemaOptNum%>(<%=tool.connName%>,valueMap_<%=cid%><%if(tool.isAppend){%>,compactFormat_<%=cid%><%}%>);
 <%
 						}
 					}else{
@@ -154,6 +156,7 @@ if(("Dom4j").equals(mode)){
     }
     generateToolByDom4j.bAddEmptyAttr = bAddEmptyAttr;
     generateToolByDom4j.bAddUnmappedAttr = bAddUnmappedAttr;
+    generateToolByDom4j.isSaveDocAsNode = isSaveDocAsNode;
     generateToolByDom4j.cid = cid;
     generateToolByDom4j.touchXMLNode.cid = cid;
     generateToolByDom4j.bigMethodHelper.cid = cid;
@@ -216,6 +219,7 @@ if(groupTable.size()>0){					//init the generate tool.
 			GenerateExprCmpByDom4j generateExprCmpByDom4j = new GenerateExprCmpByDom4j();
 			generateExprCmpByDom4j.tool = tool;
 			generateExprCmpByDom4j.groupNode = groupNode;
+			generateExprCmpByDom4j.isSaveDocAsNode = isSaveDocAsNode;
 			generateExprCmpByDom4j.needEmptyNode = ("true").equals(allowEmpty);
 %>
 		if(bl_<%=cid %>==false){
