@@ -91,7 +91,7 @@ java.sql.Connection conn_<%=cid%> = null;
 		String dbUser_<%=cid %> = <%=user%>;
 		String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 	<%
-		log4jCodeGenerateUtil.connect();
+		log4jCodeGenerateUtil.connect(node);
 	}
 	%>
 <%

@@ -77,7 +77,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
 
     private Button createNewButton;
 
-    private final String msg = org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError"); //$NON-NLS-1$
+    private final String msg = Messages.getString("PropertiesWizardPage.NameFormatError"); //$NON-NLS-1$
 
     private final String title = Messages.getString("ContextRepositoryReviewDialog.conflictError"); //$NON-NLS-1$
 
@@ -185,7 +185,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
                         boolean nameAvaliabe = repositoryFactory.isNameAvailable(createProperty.getItem(),
                                 contextNameText.getText());
                         if (!nameAvaliabe) {
-                            MessageDialog.openError(getShell(), "Context", org.talend.core.i18n.Messages //$NON-NLS-1$
+                            MessageDialog.openError(getShell(), "Context", Messages //$NON-NLS-1$
                                     .getString("PropertiesWizardPage.ItemExistsError")); //$NON-NLS-1$
                             return;
                         }

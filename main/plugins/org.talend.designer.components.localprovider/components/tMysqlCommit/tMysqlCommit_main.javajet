@@ -48,10 +48,10 @@ if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
 	<%if(close){%>
 		try{
 	<%}%>
-			<%log4jCodeGenerateUtil.commit();%>
+			<%log4jCodeGenerateUtil.commit(node);%>
 	<%if(close){%>
 		}finally{
-			<%log4jCodeGenerateUtil.close();%>
+			<%log4jCodeGenerateUtil.close(node);%>
 	    }
 	<%}%>
 }

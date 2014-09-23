@@ -36,6 +36,6 @@ imports="
              }
 
         <%}%>
-		<%log4jCodeGenerateUtil.close();%>
+		<%log4jCodeGenerateUtil.close(node);%>
 	}
 
