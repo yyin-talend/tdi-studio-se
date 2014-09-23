@@ -17,6 +17,7 @@ import org.eclipse.gef.rulers.RulerProvider;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -30,19 +31,9 @@ public class JobletContainerPart extends NodeContainerPart {
 
     @Override
     protected IFigure createFigure() {
-        JobletContainerFigure JobletContainerFigure = new JobletContainerFigure((JobletContainer) this.getModel());
-        // Node node = ((NodeContainer) getModel()).getNode();
-        // if (node.isActivate()) {
-        // JobletContainerFigure.setAlpha(-1);
-        // } else {
-        // JobletContainerFigure.setAlpha(Node.ALPHA_VALUE);
-        // }
-        // IElementParameter param = node.getElementParameter(EParameterName.INFORMATION.getName());
-        // if (param != null) {
-        // boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
-        // JobletContainerFigure.updateStatus(node.getStatus(), showInfoFlag);
-        // JobletContainerFigure.setInfoHint(node.getShowHintText());
-        // }
+        IFigure layoutFigure = getLayer(TalendScalableFreeformRootEditPart.MAP_REDUCE_LAYER);
+
+        JobletContainerFigure JobletContainerFigure = new JobletContainerFigure((JobletContainer) this.getModel(), layoutFigure);
         Node node = ((NodeContainer) getModel()).getNode();
         JobletContainerFigure.updateStatus(node.getStatus());
 
@@ -52,7 +43,9 @@ public class JobletContainerPart extends NodeContainerPart {
     @Override
     protected void unregisterVisuals() {
         super.unregisterVisuals();
-        // ((JobletContainerFigure) getFigure()).disposeColors();
+        if (getFigure() instanceof JobletContainerFigure) {
+            ((JobletContainerFigure) getFigure()).dispose();
+        }
     }
 
     @Override
@@ -64,8 +57,6 @@ public class JobletContainerPart extends NodeContainerPart {
     public void activate() {
         super.activate();
         ((JobletContainer) getModel()).addPropertyChangeListener(this);
-        // Node node = ((JobletContainer) getModel()).getNode();
-        // node.addPropertyChangeListener(this);
     }
 
     @Override
@@ -88,29 +79,6 @@ public class JobletContainerPart extends NodeContainerPart {
         return null;
     }
 
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
-    // */
-    // @Override
-    // protected IFigure createFigure() {
-    // JobletContainerFigure JobletContainerFigure = new JobletContainerFigure((NodeContainer) this.getModel());
-    // Node node = ((NodeContainer) getModel()).getNode();
-    // if (node.isActivate()) {
-    // JobletContainerFigure.setAlpha(-1);
-    // } else {
-    // JobletContainerFigure.setAlpha(Node.ALPHA_VALUE);
-    // }
-    // IElementParameter param = node.getElementParameter(EParameterName.INFORMATION.getName());
-    // if (param != null) {
-    // boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
-    // JobletContainerFigure.updateStatus(node.getStatus(), showInfoFlag);
-    // JobletContainerFigure.setInfoHint(node.getShowHintText());
-    // }
-    // return JobletContainerFigure;
-    // }
-
     /*
      * (non-Javadoc)
      * 
@@ -123,19 +91,9 @@ public class JobletContainerPart extends NodeContainerPart {
 
     @Override
     protected void refreshVisuals() {
-        Boolean isDisplayJoblet = ((JobletContainer) this.getModel()).isDisplayed();
         if (getParent() == null) {// || !isDisplayJoblet
             return;
         }
-        // Rectangle rectangle = ((JobletContainer) this.getModel()).getSubjobContainerRectangle();
-        // if (rectangle == null) {
-        // return;
-        // }
-        // ((SubjobContainerFigure) getFigure()).initializeSubjobContainer(rectangle);
-        // // added for bug 4005
-        // if (getFigure().getParent() != null) {
-        // ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
-        // }
 
         Rectangle rectangle = ((JobletContainer) this.getModel()).getJobletContainerRectangle();
         if (rectangle == null) {
@@ -149,7 +107,7 @@ public class JobletContainerPart extends NodeContainerPart {
             }
         }
 
-        ((JobletContainerFigure) getFigure()).initializejobletContainer(rectangle);
+        // ((JobletContainerFigure) getFigure()).initializejobletContainer(rectangle);
 
     }
 
