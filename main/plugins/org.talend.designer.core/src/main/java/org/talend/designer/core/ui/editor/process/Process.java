@@ -1309,12 +1309,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
         ProcessType processType = createProcessType(fileFact);
+        processType.setParameters(fileFact.createParametersType());
 
-        ParametersType params = fileFact.createParametersType();
-        processType.setParameters(params);
-
-        saveElementParameters(fileFact, this.getElementParameters(), processType.getParameters().getElementParameter(),
-                processType);
+        saveProcessElementParameters(processType);
         saveRoutinesDependencies(processType);
 
         EList nList = processType.getNode();
@@ -1644,6 +1641,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             }
         }
+    }
+
+    protected void saveProcessElementParameters(ProcessType processType) {
+        saveElementParameters(TalendFileFactory.eINSTANCE, this.getElementParameters(), processType.getParameters()
+                .getElementParameter(), processType);
     }
 
     private void saveRoutinesDependencies(ProcessType process) {
