@@ -515,7 +515,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     } else {
                         // For SAP
                         String paramName = param.getName();
-                        if ("MAPPING_INPUT".equals(paramName)
+                        if ("SAP_PROPERTIES".equals(paramName)
+                                || "MAPPING_INPUT".equals(paramName)
                                 || "SAP_FUNCTION".equals(paramName) // INPUT_PARAMS should be MAPPING_INPUT,bug16426
                                 || "OUTPUT_PARAMS".equals(paramName) || "SAP_ITERATE_OUT_TYPE".equals(paramName)
                                 || "SAP_ITERATE_OUT_TABLENAME".equals(paramName)) {
