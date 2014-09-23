@@ -1855,8 +1855,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                         }
                                                     }
                                                 }
-                                            } else if (param.getName().equals("HBASE_PARAMETERS") && oldList != null //$NON-NLS-1$
-                                                    && objectValue instanceof List) {
+                                            } else if ((param.getName().equals("SAP_PROPERTIES") || param.getName().equals(//$NON-NLS-1$
+                                                    "HBASE_PARAMETERS"))//$NON-NLS-1$
+                                                    && oldList != null && objectValue instanceof List) {
                                                 List objectList = (List) objectValue;
                                                 if (oldList.size() != objectList.size()) {
                                                     sameValues = false;
