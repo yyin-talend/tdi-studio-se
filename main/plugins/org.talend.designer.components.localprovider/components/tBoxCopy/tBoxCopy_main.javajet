@@ -69,7 +69,6 @@ imports="
 		<%=cid%>_boxFolderTo = searchFolder(<%=cid%>_client, <%=cid%>_destinationFolderPath, <%=cid%>_destinationFolderName);
 		if (<%=cid%>_boxFolderTo == null)
 			throw new Exception("No destination folder found under path " + <%=cid%>_destinationFolderPath);
-		System.out.println("Destination Folder Found - " + <%=cid%>_boxFolderTo.getName());
 	}
 	catch (java.lang.Exception e)
 	{
@@ -151,13 +150,11 @@ imports="
 	{
 %>
 		com.box.restclientv2.requestsbase.BoxDefaultRequestObject <%=cid%>_requestObject = new com.box.restclientv2.requestsbase.BoxDefaultRequestObject();
-		System.out.println("Searching for file " + <%=cid%>_filePath);
 		try
 		{
 			<%=cid%>_boxFile = searchFile(<%=cid%>_client, <%=cid%>_filePath, <%=cid%>_fileName);
 			if (<%=cid%>_boxFile == null)
 				throw new Exception("No file found with path " + <%=cid%>_filePath);
-			System.out.println("Found file at " + <%=cid%>_filePath);
 		}
 		catch (java.lang.Exception e)
 		{
@@ -236,9 +233,6 @@ imports="
 <%
 	}
 %>
-
-	//System.out.println(<%=cid%>_client.getAuthData().getRefreshToken());
-    //System.out.println(<%=cid%>_client.getAuthData().getAccessToken());
     
 <%
 		if(dataOutputConnection != null) {
