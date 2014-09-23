@@ -65,20 +65,13 @@ imports="
 
 	<%if(dataInputConnection != null)
 	{%>
-		<%=cid%>_filePath = <%=fileName%>;
-		String <%=cid%>_fileName = getFolderFromPath(<%=cid%>_filePath);
 		Object <%=cid%>_content = <%=dataInputConnection%>.content;
 		java.io.InputStream <%=cid%>_InputStream = null;
 		try
 		{
-			if(<%=cid%>_fileName == null || "".equals(<%=cid%>_fileName.trim())){
-				throw new Exception("The Uploaded Box file name can't be null");
-			}
-		
 			if(<%=cid%>_content == null){
 				throw new Exception("The Uploaded Box file Content can't be null");
 			}
-			
 			
 			if(<%=cid%>_content instanceof byte[]){
 				<%=cid%>_InputStream = new java.io.ByteArrayInputStream((byte[])<%=cid%>_content);
@@ -103,15 +96,14 @@ imports="
 				{
 					throw new Exception("Remote path should start with " + "\"" + "All Files" + "\"");
 				}
-				<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length()));
+				<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length() - <%=cid%>_remoteName.length()));
 			}
 			
 			if (<%=cid%>_boxFolder == null)
 				throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
-			com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_fileName, <%=cid%>_InputStream);
+			com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_InputStream);
 			<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
 			<%if(dataOutputConnection != null){%>
-			<%=dataOutputConnection%>.fileName = <%=cid%>_fileName;
 			<%=dataOutputConnection%>.content = <%=cid%>_content;
 			<%}%>
 		}
@@ -150,10 +142,6 @@ imports="
 	
 	try
 	{
-		if(<%=cid%>_filePath == null || "".equals(<%=cid%>_filePath.trim()))
-		{
-			throw new Exception("The Uploaded Box file path can't be null");
-		}
 		java.io.File <%=cid%>_fileToUpload = new java.io.File(<%=cid%>_filePath);
 		if(!<%=cid%>_fileToUpload.exists())
 		{
@@ -178,14 +166,13 @@ imports="
 			{
 				throw new Exception("Remote path should start with " + "\"" + "All Files" + "\"");
 			}
-			<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length()));
+			<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length() - <%=cid%>_remoteName.length()));
 		}
 		if (<%=cid%>_boxFolder == null)
 			throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
-		com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_fileToUpload.getName(), <%=cid%>_InputStream);
+		com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_InputStream);
 		<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
 		<%if(dataOutputConnection != null){%>
-		<%=dataOutputConnection%>.fileName = <%=cid%>_fileToUpload.getName();
 		<%=dataOutputConnection%>.content = <%=cid%>_InputStream;
 	<%}%>
 	}
@@ -221,7 +208,3 @@ imports="
 <%
 }
 %>
-//close exposeOutputstream if
-
-	//System.out.println(<%=cid%>_client.getAuthData().getRefreshToken());
-    //System.out.println(<%=cid%>_client.getAuthData().getAccessToken());

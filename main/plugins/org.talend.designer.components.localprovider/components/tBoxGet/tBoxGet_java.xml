@@ -69,7 +69,7 @@
     </PARAMETER>
     
     <PARAMETER NAME="PATH"  FIELD="TEXT"  NUM_ROW="54" REQUIRED="true">
-      <DEFAULT>"All Files/"</DEFAULT>
+      <DEFAULT>"All Files/file.txt"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="STORE_TO_LOCAL"  FIELD="CHECK"  NUM_ROW="56" REQUIRED="true">
