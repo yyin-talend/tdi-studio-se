@@ -26,8 +26,7 @@ imports="
 				log4jFileUtil.componentStartInfo(node);
 %>
 <%if("true".equals(exposeOutput)){%>
-	String <%=cid%>_fileName = <%=fileName%>;
-	if(<%=cid%>_fileName == null || <%=cid%>_fileName.isEmpty())
+	if(<%=cid%>_remoteName == null || <%=cid%>_remoteName.isEmpty())
 	{
 		throw new Exception("File name can not be empty");
 	}
@@ -46,12 +45,12 @@ imports="
 			{
 				throw new Exception("Remote path should start with " + "\"" + "All Files" + "\"");
 			}
-			<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length()));
+			<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length() - <%=cid%>_remoteName.length()));
 		}
 		
 		if (<%=cid%>_boxFolder == null)
 			throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
-		com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_fileName, <%=cid%>_uploader_input);
+		com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_uploader_input);
 		<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
 	}
 	catch (java.lang.Exception e)

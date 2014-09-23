@@ -28,8 +28,7 @@ imports="
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	    String connectionKey = "\"conn_" + connection+"\"";
 		
-		String filePath = ElementParameterParser.getValue(node, "__FILE__");
-		String folderPath = ElementParameterParser.getValue(node, "__FOLDER__");
+		String filePath = ElementParameterParser.getValue(node, "__PATH__");
 		boolean deleteFolder = "true".equals(ElementParameterParser.getValue(node, "__DELETE_FOLDER__"));
 		boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 		
@@ -47,97 +46,31 @@ imports="
 
 %>
 
-<%if(dataInputConnection != null)
-{%>
 	try
 	{
-		String <%=cid%>_filePath = <%=dataInputConnection%>.filePath;
-		String <%=cid%>_type = <%=dataInputConnection%>.type;
+		String <%=cid%>_filePath = <%=filePath%>;
 		if (<%=cid%>_filePath == null || "".equals(<%=cid%>_filePath.trim()))
 		{
 			throw new Exception("File path can not be null");
 		}
-		if (<%=cid%>_type == null || "".equals(<%=cid%>_type.trim()))
-		{
-			throw new Exception("Type can not be null");
-		}
-		if(!<%=cid%>_type.equalsIgnoreCase("file") || !<%=cid%>_type.equalsIgnoreCase("folder"))
-		{
-			throw new Exception("Type should be one of "\"" + "file" + "\"" + " or " + "\"" + "folder "\"");
-		}
-		if(<%=cid%>_type.equalsIgnoreCase("file"))
-		{
-			String <%=cid%>_remoteFilePath = normalizePath(<%=cid%>_filePath);
-			String <%=cid%>_remoteFileName = getFolderFromPath(<%=cid%>_remoteFilePath);
-			com.box.boxjavalibv2.dao.BoxFile <%=cid%>_boxFile = null;
-			<%=cid%>_boxFile = searchFile(<%=cid%>_client, <%=cid%>_remoteFilePath, <%=cid%>_remoteFileName);
-			if (<%=cid%>_boxFile == null)
-			{
-				throw new Exception("No file found under " + <%=cid%>_remoteFilePath);
-			}
-			<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_boxFile.getId(), null);
-			globalMap.put("<%=cid %>_REMOVED_PATH", getBoxItemPath(<%=cid%>_boxFile));
-		}
-		else if (<%=cid%>_type.equalsIgnoreCase("folder"))
-		{
-			String <%=cid%>_remoteFolderPath = normalizePath(<%=cid%>_filePath);
-			if (<%=cid%>_remoteFolderPath.equals("All Files"))
-			{
-				throw new Exception("Can not delete root folder");
-			}
-			String <%=cid%>_remoteFolderName = getFolderFromPath(<%=cid%>_remoteFolderPath);
-			com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_boxFolder = null;
-			<%=cid%>_boxFolder = searchFolder(<%=cid%>_client, <%=cid%>_remoteFolderPath, <%=cid%>_remoteFolderName);
-			if (<%=cid%>_boxFolder == null)
-			{
-				throw new Exception("No folder found under " + <%=cid%>_remoteFolderPath);
-			}
-			com.box.boxjavalibv2.requests.requestobjects.BoxFolderDeleteRequestObject <%=cid%>_delObject = com.box.boxjavalibv2.requests.requestobjects.BoxFolderDeleteRequestObject.deleteFolderRequestObject(true);
-	        <%=cid%>_client.getFoldersManager().deleteFolder(<%=cid%>_boxFolder.getId(), <%=cid%>_delObject);
-	        globalMap.put("<%=cid %>_REMOVED_PATH", getBoxItemPath(<%=cid%>_boxFolder));
-		}
-	}
-	catch (java.lang.Exception e)
-	{
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-<%
-			if(isLog4jEnabled){
-%>
-				log.error("<%=cid%> - " +e.getMessage());
-<%
-			}
-%>
-			System.err.println(e);
-<%
-		}
-%>
-	}
-<%}%>
-<% else if(!deleteFolder)
-{
-%>
-	try
-	{
-		if(<%=filePath%> == null || "".equals(<%=filePath%>.trim()))
-		{
-			throw new Exception("File path can not be null");
-		}
-		String <%=cid%>_remoteFilePath = normalizePath(<%=filePath%>);
+		String <%=cid%>_remoteFilePath = normalizePath(<%=cid%>_filePath);
 		String <%=cid%>_remoteFileName = getFolderFromPath(<%=cid%>_remoteFilePath);
-		com.box.boxjavalibv2.dao.BoxFile <%=cid%>_boxFile = null;
-		<%=cid%>_boxFile = searchFile(<%=cid%>_client, <%=cid%>_remoteFilePath, <%=cid%>_remoteFileName);
-		if (<%=cid%>_boxFile == null)
+		com.box.boxjavalibv2.dao.BoxItem <%=cid%>_boxItem = null;
+		<%=cid%>_boxItem = searchItem(<%=cid%>_client, <%=cid%>_remoteFileName);
+		if (<%=cid%>_boxItem == null)
 		{
-			throw new Exception("No file found under " + <%=cid%>_remoteFilePath);
+			throw new Exception("Nothing found under path " + <%=cid%>_filePath);
 		}
-		<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_boxFile.getId(), null);
-		globalMap.put("<%=cid %>_REMOVED_PATH", getBoxItemPath(<%=cid%>_boxFile));
+		if (<%=cid%>_boxItem.getType().equalsIgnoreCase("file"))
+		{
+			<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_boxItem.getId(), null);
+		}
+		else if (<%=cid%>_boxItem.getType().equalsIgnoreCase("folder"))
+		{
+			com.box.boxjavalibv2.requests.requestobjects.BoxFolderDeleteRequestObject <%=cid%>_delObject = com.box.boxjavalibv2.requests.requestobjects.BoxFolderDeleteRequestObject.deleteFolderRequestObject(true);
+	       	<%=cid%>_client.getFoldersManager().deleteFolder(<%=cid%>_boxItem.getId(), <%=cid%>_delObject);
+		}
+		globalMap.put("<%=cid %>_REMOVED_PATH", getBoxItemPath(<%=cid%>_boxItem));
 	}
 	catch (java.lang.Exception e)
 	{
@@ -160,55 +93,5 @@ imports="
 		}
 %>
 	}
-<%
-} else {
-%>
-	try
-	{
-		if(<%=folderPath%> == null || "".equals(<%=folderPath%>.trim()))
-		{
-			throw new Exception("Folder path can not be null");
-		}
-		String <%=cid%>_remoteFolderPath = normalizePath(<%=folderPath%>);
-		if (<%=cid%>_remoteFolderPath.equals("All Files"))
-		{
-			throw new Exception("Can not delete root folder");
-		}
-		String <%=cid%>_remoteFolderName = getFolderFromPath(<%=cid%>_remoteFolderPath);
-		com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_boxFolder = null;
-		<%=cid%>_boxFolder = searchFolder(<%=cid%>_client, <%=cid%>_remoteFolderPath, <%=cid%>_remoteFolderName);
-		if (<%=cid%>_boxFolder == null)
-		{
-			throw new Exception("No folder found under " + <%=cid%>_remoteFolderPath);
-		}
-		com.box.boxjavalibv2.requests.requestobjects.BoxFolderDeleteRequestObject <%=cid%>_delObject = com.box.boxjavalibv2.requests.requestobjects.BoxFolderDeleteRequestObject.deleteFolderRequestObject(true);
-        <%=cid%>_client.getFoldersManager().deleteFolder(<%=cid%>_boxFolder.getId(), <%=cid%>_delObject);
-        globalMap.put("<%=cid %>_REMOVED_PATH", getBoxItemPath(<%=cid%>_boxFolder));
-	}
-	catch (java.lang.Exception e)
-	{
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-<%
-			if(isLog4jEnabled){
-%>
-				log.error("<%=cid%> - " +e.getMessage());
-<%
-			}
-%>
-			System.err.println(e);
-<%
-		}
-%>
-	}
-<%
-}
-%>
-	//System.out.println(<%=cid%>_client.getAuthData().getRefreshToken());
-    //System.out.println(<%=cid%>_client.getAuthData().getAccessToken());
+
 			

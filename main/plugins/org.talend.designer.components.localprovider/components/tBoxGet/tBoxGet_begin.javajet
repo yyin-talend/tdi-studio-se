@@ -102,7 +102,6 @@ if(!"true".equals(useExistingConn)){
 
 	com.box.boxjavalibv2.dao.BoxFile <%=cid%>_boxFile = null;
 	com.box.restclientv2.requestsbase.BoxDefaultRequestObject <%=cid%>_requestObject = new com.box.restclientv2.requestsbase.BoxDefaultRequestObject();
-	//System.out.println("Searching for file in " + <%=cid%>_path);
 	try
 	{
 		com.box.boxjavalibv2.dao.BoxCollection <%=cid%>_searchResults = <%=cid%>_client.getSearchManager().search(<%=cid%>_name, <%=cid%>_requestObject);
@@ -121,8 +120,6 @@ if(!"true".equals(useExistingConn)){
 					<%=cid%>_sBuilder.append(<%=cid%>_obj.getValue("name") + "/");
 				}
 				<%=cid%>_sBuilder.append(((com.box.boxjavalibv2.dao.BoxFile) <%=cid%>_entry).getName());
-				//System.out.println("FOUND - " + <%=cid%>_sBuilder.toString());
-				//System.out.println("NEED - " + <%=cid%>_path);
 				if (<%=cid%>_sBuilder.toString().equals(<%=cid%>_path))
 				{
 					<%=cid%>_boxFile = (com.box.boxjavalibv2.dao.BoxFile) <%=cid%>_entry;
@@ -183,8 +180,7 @@ if(!"true".equals(useExistingConn)){
 		}
 %>
 	}
-	//System.out.println(<%=cid%>_client.getAuthData().getRefreshToken());
-    //System.out.println(<%=cid%>_client.getAuthData().getAccessToken());
+
 	if (<%=cid%>_boxFile == null && !<%=cid%>_hasError) {
 <%
 		if(dieOnError) {
