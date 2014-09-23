@@ -348,7 +348,6 @@ if(incomingConnName != null && columnList != null){
         {
             <%
             if (("true").equals(dieOnError)) {
-                log4jCodeGenerateUtil.logError(node,"fatal");
                 %>
                 throw(e);
                 <%
@@ -408,7 +407,6 @@ if(incomingConnName != null && columnList != null){
         {
             <%
             if (("true").equals(dieOnError)) {
-                log4jCodeGenerateUtil.logError(node,"fatal");
                 %>
                 throw(e);
                 <%
@@ -483,7 +481,6 @@ if(incomingConnName != null && columnList != null){
 			{
 	            <%
 	            if (("true").equals(dieOnError)) {
-	               log4jCodeGenerateUtil.logError(node,"fatal");
 	                %>
 	                throw(e);
 	                <%
@@ -524,7 +521,6 @@ if(incomingConnName != null && columnList != null){
 			{
 	            <%
 	            if (("true").equals(dieOnError)) {
-	               log4jCodeGenerateUtil.logError(node,"fatal");
 	                %>
 	                throw(e);
 	                <%
@@ -588,7 +584,6 @@ if(incomingConnName != null && columnList != null){
 	{
         <%
         if (("true").equals(dieOnError)) {
-            log4jCodeGenerateUtil.logError(node,"fatal");
             %>
             throw(e);
             <%
@@ -632,7 +627,6 @@ if(incomingConnName != null && columnList != null){
 		{
             <%
             if (("true").equals(dieOnError)) {
-                log4jCodeGenerateUtil.logError(node,"fatal");
                 %>
                 throw(e);
                 <%
@@ -682,7 +676,6 @@ if(incomingConnName != null && columnList != null){
 		{
             <%
             if (("true").equals(dieOnError)) {
-                log4jCodeGenerateUtil.logError(node,"fatal");
                 %>
                 throw(e);
                 <%
@@ -708,19 +701,6 @@ if(incomingConnName != null && columnList != null){
 	<%
 	}
 	
-	if(isLog4jEnabled){
-			int count = 0;
-			for(IMetadataColumn column : columnList) {
-				count++;
-		%>
-                log4jSb_<%=cid%>.append(<%=incomingConnName%>.<%=column.getLabel()%>);
-                <%if(count < columnList.size()){%>
-                	log4jSb_<%=cid%>.append("|");
-                <%}
-            }%>
-			log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>+".");
-			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-	<%}
 	if(outgoingConns != null && outgoingConns.size() > 0) {
 	    for(IConnection outgoingConn : outgoingConns) {
 	        if(!outgoingConn.getName().equals(rejectConnName) &&

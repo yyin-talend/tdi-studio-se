@@ -62,7 +62,6 @@
             }
 					<%if(isLog4jEnabled){%>
 						log.info("<%=cid%>- Retrieved records count: "+ nb_line_<%=cid%> + ".");
-						log.info("<%=cid%> - Done.");
 					<%}%>
         }
 <%
@@ -80,7 +79,6 @@
                 	globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
 					<%if(isLog4jEnabled){%>
 						log.info("<%=cid%> - Retrieved records count: "+ fid_<%=cid %>.getRowNumber() + ".");
-						log.info("<%=cid%> - Done.");
 					<%}%>
                 }
 			}

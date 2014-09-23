@@ -67,12 +67,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				}
 %>
 				<%@ include file="./putValue.javajet"%>
-				<%if(isLog4jEnabled){%>
-	                log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-	                <%if(i < sizeColumns-1){%>
-	                	log4jSb_<%=cid%>.append("|");
-	                <%}
-				}%>
 <%
 				}
 %>
@@ -102,12 +96,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	        		}
 %>
 				<%@ include file="./putValue2007.javajet"%>
-				<%if(isLog4jEnabled){%>
-	                log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-	                <%if(i < sizeColumns-1){%>
-	                	log4jSb_<%=cid%>.append("|");
-	                <%}
-				}%>
 <%
     			}
     			%>

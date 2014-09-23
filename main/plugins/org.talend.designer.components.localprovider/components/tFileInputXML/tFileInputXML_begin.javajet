@@ -54,43 +54,8 @@ if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schema
 }
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-/* Build the Log4J message for the different parameters */
-
-if(isLog4jEnabled) {
-%>
-	String log4jFileInputXMLParameters_<%=cid%> = "";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "FILENAME = " + <%=ElementParameterParser.getValue(node, "__FILENAME__")%> + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "LOOP_QUERY = " + <%=ElementParameterParser.getValue(node, "__LOOP_QUERY__")%> + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "LIMIT = " + <%="".equals(ElementParameterParser.getValue(node, "__LIMIT__"))?"\"\"":ElementParameterParser.getValue(node, "__LIMIT__")%> + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "IGNORE_DTD = " + <%=ElementParameterParser.getValue(node, "__IGNORE_DTD__")%> + " | ";
-	<% if("true".equals(ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__"))) {%>
-		log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "THOUSANDS_SEPARATOR = " + <%=ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__")%> + " | ";
-		log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "DECIMAL_SEPARATOR = " + <%=ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__")%> + " | ";
-	<% } %>
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "GENERATION_MODE = " + "<%=ElementParameterParser.getValue(node, "__GENERATION_MODE__")%>" + " | ";
-	<% if("DOM4J".equalsIgnoreCase(ElementParameterParser.getValue(node, "__GENERATION_MODE__"))) {%>
-		log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "IGNORE_NS = " + <%=ElementParameterParser.getValue(node, "__IGNORE_NS__")%> + " | ";
-		<% if("true".equals(ElementParameterParser.getValue(node, "__IGNORE_NS__"))) {%>
-			log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "TMP_FILENAME = " + <%=ElementParameterParser.getValue(node, "__TMP_FILENAME__")%> + " | ";
-		<% } %>
-	<% } %>
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "USE_SEPARATOR_FOR_XERCES = " + <%=ElementParameterParser.getValue(node, "__USE_SEPARATOR__")%> + " | ";
-	<% if("true".equals(ElementParameterParser.getValue(node, "__USE_SEPARATOR__"))) {%>
-		log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "FIELD_SEPARATOR = " + <%=ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__")%> + " | ";
-	<% } %>
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "ENCODING_TYPE = " + "<%=ElementParameterParser.getValue(node, "__ENCODING_TYPE__")%>" + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "CHECK_DATE = " + <%=ElementParameterParser.getValue(node, "__CHECK_DATE__")%> + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "DIE_ON_ERROR = " + <%=ElementParameterParser.getValue(node, "__DIE_ON_ERROR__")%> + " | ";
-
-	
-	log4jFileInputXMLParameters_<%=cid%> = "<%=cid%> - Parameters:" + log4jFileInputXMLParameters_<%=cid%>;
-	log.debug(log4jFileInputXMLParameters_<%=cid%>);
-<%
-}
 		
 /* -------------------------- */
-
-log4jFileUtil.componentStartInfo(node);
 %>
 int nb_line_<%=cid%> = 0;
 
@@ -378,9 +343,6 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 	<%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -411,9 +373,6 @@ try{
     }
 }catch(java.lang.Exception e){
 <%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 <%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -635,9 +594,6 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 	<%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -675,9 +631,6 @@ try {
 	output_<%=cid %>.close();
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 	<%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -710,9 +663,6 @@ try{
 	}
 }catch(java.lang.Exception e){
 <%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 <%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -825,9 +775,6 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 	<%if(isLog4jEnabled){%>
 		log.error("<%=cid%> - " + e.getMessage());
@@ -904,9 +851,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if(("SAX").equals(mode)){
 				varsMap.put("row_"+cid,"java.util.Map<String, String>");
 				varsMap.put("node_"+cid,"String[]");
-			}
-			if(isLog4jEnabled){
-				varsMap.put("log4jSb_"+cid,"StringBuffer");
 			}
 			class RowUtil extends DefaultRowUtil{
 				public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, int start , int end){
@@ -985,9 +929,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							if(isWrongConfig) {
 %>
 	if(true) {
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - Error Config: \"Get Nodes\" should be checked when type is \"Document\"");
-		<%}%>
 		throw new RuntimeException("Error Config: \"Get Nodes\" should be checked when type is \"Document\"");
 	}
 <%
@@ -1081,12 +1022,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
 <%
 										}
-										if(isLog4jEnabled){%>
-										log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-										<%if(i < mapping.size()-1){%>
-											log4jSb_<%=cid%>.append("|");
-										<%}
-									}
 										continue;
 									}
 									if(javaType == JavaTypesManager.STRING){
@@ -1153,16 +1088,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%=cid %>);
 <%
 									}
-									if(isLog4jEnabled){
-%>
-										log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-<%
-										if(i < mapping.size()-1){
-%>
-									log4jSb_<%=cid%>.append("|");
-<%
-										}
-									}
 %>
 	}
 <%
@@ -1209,9 +1134,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         if (dieOnError) {
             %>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
             throw(e);
             <%
         } else {
