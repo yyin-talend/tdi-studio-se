@@ -35,12 +35,6 @@
 	
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
-	if(isLog4jEnabled){
-%>
-		log.info("<%=cid%> - Start to work.");
-		StringBuffer log4jSb_<%=cid%> = new StringBuffer();
-<%
-	} 
 	
 	if(array_command){
 		List<Map<String,String>> list_data = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ARRAY_COMMAND__");
@@ -279,10 +273,6 @@ if(("NORMAL_OUTPUT").equals(outputAction)||("NORMAL_OUTPUT").equals(errorOuput))
 %>
 							<%=conn.getName()%>.<%=column.getLabel()%> = tmp_<%=cid %>;				
 <%
-			                if(isLog4jEnabled){%>
-									log4jSb_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%>);
-<%
-							}
 						}
 					}
 				}

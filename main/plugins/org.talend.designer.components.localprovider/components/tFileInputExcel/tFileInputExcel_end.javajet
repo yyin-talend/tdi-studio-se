@@ -27,9 +27,6 @@
 			} catch(java.lang.Exception e_<%=cid%>) {
 				if(!(e_<%=cid%>.getCause() instanceof com.talend.excel.xssf.event.EnoughDataException))
 				<% if(dieOnError) { %>
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-					<%}%>
 				throw(e_<%=cid%>);
 				<% } else { %>
 					<%if(isLog4jEnabled){%>

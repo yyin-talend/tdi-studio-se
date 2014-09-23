@@ -133,9 +133,6 @@ String inputConnName = null;
 		useIndependentProcess = true;
 		%>
 		if(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>)==null){
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid %> - The child job named " + <%=dynamicJobName%> + " is not in the job list.");
-			<%}%>
 			throw new RuntimeException("The child job named "+<%=dynamicJobName%>+" is not in the job list.");
 		}
 		paraList_<%=cid %>.addAll(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
@@ -385,9 +382,6 @@ String inputConnName = null;
 	  
 			<%if (dieOnError) { %> 
 				if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - The child job '<%if(!useDynamicJob){%><%=childJob %><%}else{%>"+<%=dynamicJobName%>+"<%}%>' has failed.");
-					<%}%>
 	        		throw new RuntimeException("Child job running failed");
 				}
 			<%}
@@ -533,9 +527,6 @@ String inputConnName = null;
 		if(result_<%=cid %> != 0){
    			globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE",errorMsg_<%=cid %>.toString());
 			<%if (dieOnError) { %>  
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid %> - Child job returns " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
-				<%}%>
 	    		throw new RuntimeException("Child job returns " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
 			<%}else{%>
 				<%if(isLog4jEnabled){%>
@@ -567,6 +558,3 @@ String inputConnName = null;
 		}//b  
 	}//AAAAAAAAAAAA
 	%>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Done.");
-	<%}%>

@@ -17,7 +17,6 @@
     String cid = node.getUniqueName();
 	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 	String errorOutput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	if(("NORMAL_OUTPUT").equals(outputAction)||("NORMAL_OUTPUT").equals(errorOutput)){
     	List<IMetadataTable> metadatas = node.getMetadataList();
         if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -29,12 +28,6 @@
         			IConnection conn = conns.get(0);  
 					if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
-						<%if(isLog4jEnabled){%>
-							if(log4jSb_<%=cid%>!=null && log4jSb_<%=cid%>.toString().length()>0){ 
-								log.trace("<%=cid%> - Content of the output sent to the schema: " + log4jSb_<%=cid%>);
-								log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-							}
-						<%}%>
 }			
 <%
 					}
@@ -44,6 +37,3 @@
 	}
 %>
 globalMap.put("<%=cid %>_EXIT_VALUE", ps_<%=cid %>.exitValue());
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Done.");
-<%}%>

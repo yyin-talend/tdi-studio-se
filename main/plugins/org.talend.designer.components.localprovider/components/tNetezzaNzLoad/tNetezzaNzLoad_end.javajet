@@ -128,7 +128,4 @@ skeleton="../templates/db_output_bulk.skeleton"
 				}
 				%>
 				// end "show log output"
-				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Done.");
-				<%}%>
 				

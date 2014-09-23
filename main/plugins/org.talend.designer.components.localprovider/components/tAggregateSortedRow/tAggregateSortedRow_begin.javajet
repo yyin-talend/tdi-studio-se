@@ -31,7 +31,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		break;
 		}
 	}
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     if (metadata != null && inMetadata != null) { 
     	List<IMetadataColumn> inColumns = inMetadata.getListColumns();
 		List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
@@ -75,9 +74,6 @@ emmitArray_<%=cid %>[1] = new <%=conn.getName() %>Struct();
 			}
 		}
 %>
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Start to work.");
-<%}%>
 int nb_line_<%=cid%> = 0;
 int currentRowIndex_<%=cid%> = 0;
 boolean  flag_<%=cid%> = true;//flag for the encounter of first row.
@@ -109,9 +105,6 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 			if((javaType == JavaTypesManager.LIST || javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.BYTE_ARRAY) && (("min").equals(functions[i]) || ("max").equals(functions[i]))){
 %>
 if(true){
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
-	<%}%>
 	throw new RuntimeException("Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
 }
 <%
@@ -161,9 +154,6 @@ if(column_op[i].isNullable()){%>null<%
 				}else{
 %>
 if(true){
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
-	<%}%>
 	throw new RuntimeException("Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
 }
 <%
@@ -181,9 +171,6 @@ if(true){
 			}else{
 %>
 if(true){
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
-	<%}%>
 	throw new RuntimeException("Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
 }
 <%

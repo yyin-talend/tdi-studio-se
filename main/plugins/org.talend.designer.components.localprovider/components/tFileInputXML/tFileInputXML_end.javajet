@@ -30,9 +30,6 @@ if(("Xerces").equals(mode) || ("Dom4j").equals(mode)){
 	} catch(java.lang.Exception e) {
 		if(!(e.getCause() instanceof org.talend.xml.sax.exception.EnoughDataException))
 	<% if(dieOnError) { %>
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - " +  e.getMessage());
-		<%}%>
 		throw(e);
 	<% } else { %>
 		<%if(isLog4jEnabled){%>

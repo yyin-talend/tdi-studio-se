@@ -92,7 +92,6 @@ if(applyOptionalAttributes){
 }
 //end
 
-log4jCodeGenerateUtil.infoComponentStart(node);
 //windows line separator as default
 String lineSeparator = "\\r\\n";
 if("Unix".equals(execution)){
@@ -614,9 +613,6 @@ try{
                 if(returnCodeDie) {
                 %>
                     if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
-                        <%if(isLog4jEnabled){%>
-                            log.fatal("<%=cid%> - "+"TPT returned exit code "+process_<%=cid %>.exitValue()+".");
-                        <%}%>
                         throw new RuntimeException("TPT returned exit code "+process_<%=cid %>.exitValue());
                     }
                 <%
@@ -632,4 +628,3 @@ try{
         <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
 	}
 }
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

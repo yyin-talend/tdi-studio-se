@@ -63,7 +63,6 @@ imports="
 %>
 
 <%
-log4jCodeGenerateUtil.infoComponentStart(node);
 	if(useExistingConn) {
 	    String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
 	    String conn = "conn_" + connection;
@@ -355,5 +354,4 @@ globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
 
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Processed records count: " + nb_line_<%=cid%> + ". Inserted records count: " + nb_line_inserted_<%=cid%> + ". Updated records count: " + nb_line_update_<%=cid%> + ". Deleted records count: " + nb_line_deleted_<%=cid%> + ".");
-		log.info("<%=cid%> - Done.");
 	<%}%>

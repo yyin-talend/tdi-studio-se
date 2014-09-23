@@ -16,5 +16,4 @@
 globalMap.put("<%=node.getUniqueName() %>_NB_LINE",nb_line_<%=node.getUniqueName() %>);
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Generated records count:" + nb_line_<%=cid%> + " .");
-	log.info("<%=cid%> - Done.");
 <%}%>

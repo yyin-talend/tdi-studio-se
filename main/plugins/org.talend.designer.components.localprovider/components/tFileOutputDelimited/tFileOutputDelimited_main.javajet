@@ -340,7 +340,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		        %>
 					<%if(isLog4jEnabled){%>
 						log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + ".");
-						log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + sb_<%=cid %>);
 					<%}%>
 					
     		        <% 
@@ -737,15 +736,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			}
             			%>
 						<%if(isLog4jEnabled){%>
-							for(int i = 0;i<row<%=cid%>.length;i++){
-								log4jSb_<%=cid%>.append(row<%=cid%>[i]);
-								if(i!=row<%=cid%>.length-1){
-									log4jSb_<%=cid%>.append("|");
-								}
-							}
 							log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + ".");
-							log.debug("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
-							log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 						<%}%>
 						
 <% 
