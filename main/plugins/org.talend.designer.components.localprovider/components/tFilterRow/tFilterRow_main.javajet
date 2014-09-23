@@ -121,7 +121,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
               for (IMetadataColumn column: metadata.getListColumns()) {
               %>
                <%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
-            	%>
               <%
 	          }
 				if(isLog4jEnabled){
