@@ -77,7 +77,7 @@ Manager manager = null;
 		String schema_<%=cid%> = <%=dbschema%>;
 		java.sql.Connection conn_<%=cid%> = null;
 		<%
-		log4jCodeGenerateUtil.connect();
+		log4jCodeGenerateUtil.connect(node);
 	}
 %>
 		String tableName_<%=cid%> = null;

@@ -115,7 +115,7 @@ imports="
 			commit();
 		}
 
-		public void commit(){
+		private void commit(){
 			commit_begin();
 			%>
 			conn_<%=cid%>.commit();
@@ -123,14 +123,14 @@ imports="
 			commit_end();
 		}
 
-		public void commit_begin(){
+		private void commit_begin(){
 			if(logCommitCounter){
 				logInfo(node,"debug",cid+" - Connection "+connection+"starting to commit \" + commitCounter_"+cid+"+ \" records.");
 			}else{
 				logInfo(node,"debug",cid+" - Connection "+connection+"starting to commit.");
 			}
 		}
-		public void commit_end(){
+		private void commit_end(){
 			logInfo(node,"debug",cid+" - Connection "+connection+"commit has succeeded.");
 		}
 
@@ -139,7 +139,7 @@ imports="
 			close();
 		}
 
-		public void close(){
+		private void close(){
 			close_begin();
 			%>
 			conn_<%=cid%>.close();
