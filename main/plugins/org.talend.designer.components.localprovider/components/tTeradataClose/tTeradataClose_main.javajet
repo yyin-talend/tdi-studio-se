@@ -16,7 +16,6 @@ imports="
     String cid = node.getUniqueName();
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
-	log4jCodeGenerateUtil.infoComponentStart(node);
     INode tTeradataConnection = NodeUtil.getNodeByUniqueName(node.getProcess(), connection);
     boolean useQueryBanding = "true".equals(ElementParameterParser.getValue(tTeradataConnection, "__QUERY_BAND__"));
 %>
@@ -40,4 +39,3 @@ imports="
 		<%log4jCodeGenerateUtil.close();%>
 	}
 
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

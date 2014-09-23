@@ -54,22 +54,6 @@ imports="
 			hasInit = true;
 		}
 
-		public void infoComponentStart(INode node) {
-			beforeComponentProcess(node);
-		}
-
-		public void infoComponentEnd(INode node) {
-			beforeComponentProcess(node);
-		}
-
-		public void initDbDebugRowBuffer() {
-			if (isLog4jEnabled) {
-			%>
-				String dataOperationPrefix_<%=cid%> = "";
-			<%
-			}
-		}
-
 		public void debugDriverClassName() {
 			logInfo(node,"debug",cid+" - Driver ClassName: \"+driverClass_"+cid+"+\".");
 		}
@@ -77,10 +61,6 @@ imports="
 		public void debugConnectionParams(INode node) {
 			beforeComponentProcess(node);
 			debugDriverClassName();
-		}
-
-		public void dbConnectionParamsForELT(INode previousNode){
-			cid = previousNode.getUniqueName();
 		}
 
 		public void useExistConnection(INode node){
@@ -249,33 +229,6 @@ imports="
 				logInfo(node,"debug",cid+" - The "+dataAction+" batch execution has succeeded.");
 			}
 		}
-
-	    public void debugRecord(INode node,java.util.List<org.talend.core.model.metadata.IMetadataColumn> columnList,String incomingConnName,boolean addBatchLog){
-	    	beforeComponentProcess(node);
-	    	if(isLog4jEnabled){
-				if (addBatchLog) {
-				%>
-					log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + " to the <%=dataAction%> batch.");
-				<%
-				}else{
-				%>
-					log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + ".");
-				<%
-				}
-				%>
-				<%
-			}
-	    }
-
-		public void defineDataOperationPrefix(INode node,String operation){
-			beforeComponentProcess(node);
-			if(isLog4jEnabled) {
-			%>
-				dataOperationPrefix_<%=cid%> = "<%=operation%>";
-			<%
-			}
-		}
-
 	}
 
 	DefaultLog4jCodeGenerateUtil log4jCodeGenerateUtil = new DefaultLog4jCodeGenerateUtil();

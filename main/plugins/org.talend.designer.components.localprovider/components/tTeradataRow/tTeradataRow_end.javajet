@@ -55,5 +55,4 @@ imports="
 	   log4jCodeGenerateUtil.close(node);
 	}
 
-    log4jCodeGenerateUtil.infoComponentEnd(node);
 %>

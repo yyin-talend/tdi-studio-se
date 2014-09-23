@@ -103,9 +103,6 @@ imports="
         	
             boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, decryptedPassword_<%=cid%>);
 			if (isAuthenticated_<%=cid%> == false){
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Authentication failed.");
-				<%}%>
                 throw new RuntimeException("Authentication failed.");
 			}
 			<%if(isLog4jEnabled){%>
@@ -127,9 +124,6 @@ imports="
 			
 	        boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, decryptedPassword_<%=cid%>);
 	        if (isAuthenticated_<%=cid%> == false){
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Authentication failed.");
-				<%}%>
 	            throw new RuntimeException("Authentication failed.");
 	        }
 			<%if(isLog4jEnabled){%>
@@ -166,9 +160,6 @@ imports="
 	        	}	
 	        );
 	        if (isAuthenticated_<%=cid%> == false){
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Authentication failed.");
-				<%}%>
 	            throw new RuntimeException("Authentication failed.");
 	        }
 			<%if(isLog4jEnabled){%>

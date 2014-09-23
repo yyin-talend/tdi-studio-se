@@ -21,7 +21,6 @@ imports="
 	 }
 
     String conn = "conn_" + connection;
-	log4jCodeGenerateUtil.infoComponentStart(node);
 	if(!isExecutedThroughWebHCat) {
 %>
 		java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
@@ -32,4 +31,3 @@ imports="
 <%
 	}
 %>
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>
