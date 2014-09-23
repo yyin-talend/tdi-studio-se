@@ -116,7 +116,6 @@
     			}
 				<%if(isLog4jEnabled){%>
 					log.info("<%=cid%> - Retrieved records count: "+ nb_line_<%=cid %> + ".");
-					log.info("<%=cid%> - Done.");
 				<%}%>
 			}
 <%

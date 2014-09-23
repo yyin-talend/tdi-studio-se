@@ -53,12 +53,7 @@
 	}catch(org.jets3t.service.ServiceException e_<%=cid%>) {
 		<%
 		if (("true").equals(dieOnError)) {
-			if(isLog4jEnabled){
-			%>
-				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-			<%
-			}
-			%>
+		%>
 			throw(e_<%=cid%>);
 		<%
 		} else {

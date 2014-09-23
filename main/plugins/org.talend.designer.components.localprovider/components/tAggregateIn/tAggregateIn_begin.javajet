@@ -16,20 +16,6 @@ INode node = (INode)codeGenArgument.getArgument();
 String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 String cid = origin;
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	List<IMetadataTable> mestadataTableListOut = node.getMetadataList();
-
-	if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain_AggR_600
-		IMetadataTable metadataTableOutput = mestadataTableListOut.get(0);
-		if (metadataTableOutput!=null) { // T_InMain_AggR_601
-			List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
-			for(int g = 0; g < groupbys.size(); g++){ // T_InMain_AggR_605
-				Map<String, String> groupby = groupbys.get(g);
-				String inputColumn = groupby.get("INPUT_COLUMN");
-				String outputGroupColumn = groupby.get("OUTPUT_COLUMN");
-			}
-		}
-	}
-}
 %>
 
 

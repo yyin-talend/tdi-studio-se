@@ -88,7 +88,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 		gploadExePath = "\"gpload\"";
 	}
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jCodeGenerateUtil.initDbDebugRowBuffer();	
 	
 %>
 	int deletedCount_<%=cid%> = 0;

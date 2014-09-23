@@ -28,12 +28,7 @@ imports="
 				}catch(com.amazonaws.AmazonClientException e_<%=cid%>){
 					<%
 					if (("true").equals(dieOnError)) {
-						if(isLog4jEnabled){
-						%>
-							log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-						<%
-						}
-						%>
+					%>
 						throw(e_<%=cid%>);
 					<%
 					} else {
@@ -58,12 +53,7 @@ imports="
 	}catch(com.amazonaws.AmazonClientException e_<%=cid%>){
 		<%
 		if (("true").equals(dieOnError)) {
-			if(isLog4jEnabled){
-			%>
-				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-			<%
-			}
-			%>
+		%>
 			throw(e_<%=cid%>);
 		<%
 		} else {

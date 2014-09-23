@@ -263,6 +263,3 @@ if (!sftp && !ftps) { // *** ftp *** //
 <%
 }
 %>
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Done.");
-<%}%>

@@ -62,9 +62,6 @@ imports="
 		            		if(file_<%=cid%>.length() == 0){
 		            			file_<%=cid%>.delete();
 		            		}
-							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-							<%}%>
 		            		throw e_<%=cid%>;
 						} finally {
 		                	if(out_<%=cid %> != null){
@@ -135,9 +132,6 @@ imports="
 		                		if(file_<%=cid%>.length() == 0){
 		                			file_<%=cid%>.delete();
 		                		}
-								<%if(isLog4jEnabled){%>
-									log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-								<%}%>
 		                		throw e_<%=cid%>;
 		    				} finally {
 		                    	if(out_<%=cid %> != null){
@@ -165,8 +159,5 @@ imports="
 		%>
 	}catch(java.lang.Exception e_<%=cid%>){
 		globalMap.put("<%=cid %>_STATUS", "File get fail.");
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - "  + e_<%=cid%>.getMessage());
-		<%}%>
 		throw e_<%=cid%>;
 	}
