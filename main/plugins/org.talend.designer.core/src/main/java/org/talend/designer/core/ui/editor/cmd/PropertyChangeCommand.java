@@ -57,9 +57,9 @@ import org.talend.designer.runprocess.ItemCacheManager;
 /**
  * Command that changes a given property. It will call the set or get property value in an element. This element can be
  * either a node, a connection or a process. <br/>
- *
+ * 
  * $Id$
- *
+ * 
  */
 public class PropertyChangeCommand extends Command {
 
@@ -95,7 +95,7 @@ public class PropertyChangeCommand extends Command {
 
     /**
      * The property is defined in an element, which can be either a node or a connection.
-     *
+     * 
      * @param elem
      * @param propName
      * @param propValue
@@ -460,7 +460,7 @@ public class PropertyChangeCommand extends Command {
 
     /**
      * Set the values to default if needed.
-     *
+     * 
      * @param currentParam Current parameter that has been modified in the interface
      * @param testedParam Tested parameter, to know if there is a link for the default values between this parameter and
      * the current.
@@ -576,7 +576,7 @@ public class PropertyChangeCommand extends Command {
                     if (isBuiltIn || elementParameter == null) {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         testedParam.setValueToDefault(node.getElementParameters());
-                        newMetadataTable = (IMetadataTable) testedParam.getValue();
+                        newMetadataTable = ((IMetadataTable) testedParam.getValue()).clone(true);
                     } else {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         if (testedParam.getName().equals("SCHEMA")) {//$NON-NLS-1$
