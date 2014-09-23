@@ -22,7 +22,6 @@ imports="
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 	dbRowBeginUtil.beforeComponentProcess(node);
 	log4jCodeGenerateUtil = dbRowBeginUtil.log4jCodeGenerateUtil;
-    log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 	java.sql.Connection conn_<%=cid%> = null;
 	String query_<%=cid %> = "";

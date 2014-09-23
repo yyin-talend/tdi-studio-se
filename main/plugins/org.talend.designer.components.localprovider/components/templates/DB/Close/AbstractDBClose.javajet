@@ -23,4 +23,3 @@ imports="
 		<%log4jCodeGenerateUtil.close();%>
 	}
 	
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

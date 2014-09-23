@@ -37,7 +37,6 @@ boolean explicitIDs = ("true").equals(ElementParameterParser.getValue(node, "__E
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String logLevel= ElementParameterParser.getValue(node, "__LOG_LEVEL__");
 String logFile= ElementParameterParser.getValue(node, "__LOG_FILE__");
-log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 String tableName_<%=cid%> = null;
 String dbschema_<%=cid%> = null;
@@ -265,5 +264,4 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction))
 	if(!useExistingConnection) {
 		log4jCodeGenerateUtil.close(node);
 	}
-	log4jCodeGenerateUtil.infoComponentEnd(node);
 %>

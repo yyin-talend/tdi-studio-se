@@ -49,7 +49,6 @@ if (("true").equals(useExistingConn)) {
   sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 }
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node);
 String passwordFieldName = "";
 
 %>

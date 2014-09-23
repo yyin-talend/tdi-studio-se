@@ -17,7 +17,6 @@ imports="
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
     String conn = "conn_" + connection;
-    log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 
@@ -64,5 +63,4 @@ if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
 	}
 	%>
 }
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>
 

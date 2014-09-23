@@ -44,7 +44,6 @@ String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 boolean convertToUppercase = false; // not active this function
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 int deletedCount_<%=cid%>=0;
 String dbschema_<%=cid%>= <%=dbschema%>; 
@@ -61,7 +60,6 @@ if(("UPDATE").equals(dataAction)) {
         %>
         int keyCount_<%=cid%> = <%=keyCount%>;
         if(keyCount_<%=cid%> == 0) {
-        	<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - For bulk update, Schema must have a key at least.");%>
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
         <%
@@ -278,6 +276,5 @@ error_<%=cid%>.interrupt();
 	log.info("<%=cid%> - Excute command: '" + command_<%=cid %> + "' has finished.");
 <%
 }
-log4jCodeGenerateUtil.infoComponentEnd(node);
 %>
 

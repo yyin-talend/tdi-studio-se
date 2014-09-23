@@ -16,7 +16,6 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String inputConnName = null;
 	Set<String> inputCols = new HashSet<String>();
 	if (node.getIncomingConnections()!=null) {
@@ -54,22 +53,13 @@ if(rs_<%=cid %>.next()){
 			if(type.equals("id_Long")){
 %>
 				<%=conn.getName() %>.last_insert_id = rs_<%=cid %>.getLong(1);
-				<%if(isLog4jEnabled){%>
-                    log.trace("<%=cid%> - Last insert id:"+<%=conn.getName() %>.last_insert_id);
-                <%}%>
 <%
 			}else if(type.equals("id_Integer")){
 %>
 				<%=conn.getName() %>.last_insert_id = rs_<%=cid %>.getInt(1);
-				<%if(isLog4jEnabled){%>
-                    log.trace("<%=cid%> - Last insert id:"+<%=conn.getName() %>.last_insert_id);
-                <%}%>
 <%
 			}else{
 %>
-                <%if(isLog4jEnabled){%>
-                    log.fatal("<%=cid%> - Data type of \"last_insert_id\": <%=type.substring(3)%> is not supported,please choose Integer or Long!");
-                <%}%>
 				throw new RuntimeException("Data type of \"last_insert_id\": <%=type.substring(3)%> is not supported,please choose Integer or Long!");
 <%
 			}

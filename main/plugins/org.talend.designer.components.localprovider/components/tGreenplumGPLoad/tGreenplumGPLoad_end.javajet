@@ -70,11 +70,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 				log.info("<%=cid%> - Loaded records count:"+insertedCount_<%=cid%> + ".");
 			<%}
 	}
-	if(isLog4jEnabled){
-	%>
-		log.info("<%=cid%> - Done.");
-	<%
-	}
 %>
 	globalMap.put("<%=cid%>_GPLOAD_OUTPUT", gploadOutput_<%=cid%>.toString());
 	globalMap.put("<%=cid%>_NB_LINE", insertedCount_<%=cid%>);

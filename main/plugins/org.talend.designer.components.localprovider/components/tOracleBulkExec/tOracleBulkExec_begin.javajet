@@ -62,7 +62,6 @@ if(thousandsSeparator.length() > 2){
 	noThousandsSeparator = true;
 }
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 
 <%
@@ -77,7 +76,6 @@ if(("UPDATE").equals(data_action)) {
         %>
         int keyCount_<%=cid%> = <%=keyCount%>;
         if(keyCount_<%=cid%> == 0) {
-        	<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - For bulk update, Schema must have a key at least.");%>
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
         <%
@@ -704,7 +702,6 @@ normal_<%=cid %>.interrupt();
 error_<%=cid %>.interrupt();
 
 if ("true".equals((String)globalMap.get("<%=cid%>_SQLLOAD_ERROR"))) {
-	<%log4jCodeGenerateUtil.logInfo(node,"fatal","SQL load error!");%>
 	throw new TalendException(new java.lang.Exception() , "<%=cid%>" , globalMap);
 } 
 <%
