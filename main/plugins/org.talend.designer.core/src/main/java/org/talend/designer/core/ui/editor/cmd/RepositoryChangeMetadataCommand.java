@@ -152,14 +152,15 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             if (addMap.get(TaggedValueHelper.SYSTEMTABLENAME) != null && node.getComponent().getName().equals("tAS400CDC")) {
                 setDBTableFieldValue(node, addMap.get(TaggedValueHelper.SYSTEMTABLENAME), oldOutputMetadata.getTableName());
             } else if (isXstreamCdcTypeMode) {
-                oldOutputMetadata.getListColumns().clear();
-                newOutputMetadata.getListColumns().clear();
                 IElementParameter elementParameter = node.getElementParameter(propName);
                 if (elementParameter != null) {
                     IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
                             .get(EParameterName.SCHEMA_TYPE.getName());
+                    IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                     if (schemaTypeParam != null) {
                         schemaTypeParam.setValue(EmfComponent.BUILTIN);
+                        newOutputMetadata
+                                .setListColumns((((IMetadataTable) schemaParam.getValue()).clone(true)).getListColumns());
                     }
                 }
                 setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());

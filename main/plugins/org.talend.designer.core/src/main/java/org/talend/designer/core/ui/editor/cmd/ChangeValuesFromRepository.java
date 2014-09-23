@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnect
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
+import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -71,9 +72,9 @@ import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
- *
+ * 
  * $Id$
- *
+ * 
  */
 public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
@@ -574,6 +575,20 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
 
         if (elem instanceof Node) {
+            // Xstream Cdc Type Mode
+            boolean isXstreamCdcTypeMode = false;
+            if (connection != null && connection instanceof DatabaseConnection) {
+                String cdcTypeMode = ((DatabaseConnection) connection).getCdcTypeMode();
+                if (CDCTypeMode.XSTREAM_MODE == CDCTypeMode.indexOf(cdcTypeMode)) {
+                    isXstreamCdcTypeMode = true;
+                }
+            }
+            if (isXstreamCdcTypeMode && ((Node) elem).getComponent().getName().equals("tOracleCDC")) {//$NON-NLS-1$
+                IMetadataTable table = ((Node) elem).getMetadataList().get(0);
+                IElementParameter schemaParam = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                schemaParam.setValueToDefault(elem.getElementParameters());
+                table.setListColumns((((IMetadataTable) schemaParam.getValue()).clone(true)).getListColumns());
+            }
             ((Process) ((Node) elem).getProcess()).checkProcess();
         }
     }
@@ -912,7 +927,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     /**
      * qzhang Comment method "getTake".
-     *
+     * 
      * @return
      */
     private Boolean take = null;
@@ -990,7 +1005,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     /**
      * Sets a sets of maps.
-     *
+     * 
      * @param tablesmap
      * @param queriesmap
      * @param repositoryTableMap
@@ -1000,11 +1015,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     }
 
     /**
-     *
+     * 
      * ggu Comment method "isGuessQuery".
-     *
+     * 
      * for guess query
-     *
+     * 
      * @return
      */
     public boolean isGuessQuery() {
@@ -1017,7 +1032,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     /**
      * Getter for sapFunctionName.
-     *
+     * 
      * @return the sapFunctionName
      */
     public String getSapFunctionLabel() {
@@ -1041,7 +1056,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     /**
      * Sets the sapFunctionName.
-     *
+     * 
      * @param sapFunctionName the sapFunctionName to set
      */
     public void setSapFunctionLabel(String sapFunctionName) {
