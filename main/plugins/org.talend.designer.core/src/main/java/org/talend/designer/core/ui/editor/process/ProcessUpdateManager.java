@@ -327,8 +327,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     if (!renamed) {
                         // update
-                        // final ContextItem contextItem = ContextUtils.getContextItemById(allContextItem, source);
-                        final Item contextItem = ContextUtils.getContextItemById3(source);
+                        final Item contextItem = ContextUtils.getRepositoryContextItemById(source);
                         boolean builtin = true;
                         if (contextItem != null) {
                             if (contextItem instanceof ContextItem) {
