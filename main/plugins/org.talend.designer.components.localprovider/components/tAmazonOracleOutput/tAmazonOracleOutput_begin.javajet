@@ -449,15 +449,9 @@ if(columnList != null && columnList.size()>0) {
 				// Close the temporary CLOB
 				tempClob.close();
 			} catch( java.sql.SQLException sqlexp){
-				<%if(isLog4jEnabled){%>
-					log.error("<%=cid %> - " + sqlexp.getMessage());
-				<%}%>
 				tempClob.freeTemporary();
 				sqlexp.printStackTrace();
 			} catch(java.lang.Exception exp){
-				<%if(isLog4jEnabled){%>
-					log.error("<%=cid %> - " + exp.getMessage());
-				<%}%>
 				tempClob.freeTemporary();
 				exp.printStackTrace();
 			}
