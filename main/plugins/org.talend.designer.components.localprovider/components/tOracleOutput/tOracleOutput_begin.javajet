@@ -108,10 +108,12 @@ skeleton="../templates/db_output_bulk.skeleton"
     		column.setSqlStmt("XMLType(?)");
     		xmlTypeExist = true;
     	}
-		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-		if (column.getColumn()!= null && "CLOB".equals(column.getColumn().getType()) && typeToGenerate.equals("Object") && !column.isDynamic()) {
-			clobTypeExist = true;
-		}
+    	if (column.getColumn()!= null) {
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+    		if ("CLOB".equals(column.getColumn().getType()) && typeToGenerate.equals("Object") && !column.isDynamic()) {
+    			clobTypeExist = true;
+    		}
+    	}
     }
     %>
     
