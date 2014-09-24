@@ -31,7 +31,6 @@ imports="
 		String boxPath = ElementParameterParser.getValue(node, "__PATH__");
 		String outputFolder = ElementParameterParser.getValue(node, "__OUTPUT__");
 		String storeToLocal = ElementParameterParser.getValue(node, "__STORE_TO_LOCAL__");
-		boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 				log4jFileUtil.componentStartInfo(node);
@@ -102,8 +101,6 @@ if(!"true".equals(useExistingConn)){
 
 	com.box.boxjavalibv2.dao.BoxFile <%=cid%>_boxFile = null;
 	com.box.restclientv2.requestsbase.BoxDefaultRequestObject <%=cid%>_requestObject = new com.box.restclientv2.requestsbase.BoxDefaultRequestObject();
-	try
-	{
 		com.box.boxjavalibv2.dao.BoxCollection <%=cid%>_searchResults = <%=cid%>_client.getSearchManager().search(<%=cid%>_name, <%=cid%>_requestObject);
 		for (com.box.boxjavalibv2.dao.BoxTypedObject <%=cid%>_entry : <%=cid%>_searchResults.getEntries())
 		{
@@ -136,70 +133,14 @@ if(!"true".equals(useExistingConn)){
 				<%=cid%>_sBuilder.append(((com.box.boxjavalibv2.dao.BoxFolder) <%=cid%>_entry).getName());
 				if (<%=cid%>_sBuilder.toString().equals(<%=cid%>_path))
 				{
-<%
-					if(dieOnError) {
-%>
-						throw new Exception(<%=boxPath%> + " exists but is a directory");
-<%
-					} else {
-%>
-<%
-						if(isLog4jEnabled){
-%>
-							log.error(<%=boxPath%> + " exists but is a directory");
-<%
-						}
-%>
-						System.err.println(<%=boxPath%> + " exists but is a directory");
-<%
-					}
-%>					
 					<%=cid%>_hasError = true;
+					throw new Exception(<%=boxPath%> + " exists but is a directory");				
 				}
 			}
 		}
-	}
-	catch (java.lang.Exception e)
-	{
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-<%
-			if(isLog4jEnabled){
-%>
-				log.error("<%=cid%> - " +e.getMessage());
-<%
-			}
-%>
-			System.err.println(e);
-<%
-		}
-%>
-	}
 
 	if (<%=cid%>_boxFile == null && !<%=cid%>_hasError) {
-<%
-		if(dieOnError) {
-%>
-			throw new Exception("No file found in " + <%=boxPath%>);
-<%
-		} else {
-%>
-<%
-			if(isLog4jEnabled){
-%>
-				log.error("<%=cid%> - " + "No file found in " + <%=boxPath%>);
-<%
-			}
-%>
-			System.err.println("No file found in " + <%=boxPath%>);
-<%
-		}
-%>
+		throw new Exception("No file found in " + <%=boxPath%>);
 	} else if (<%=cid%>_boxFile == null && <%=cid%>_hasError) {
 	//Do Nothing, error already occured
 	} else {
@@ -237,25 +178,6 @@ if(!"true".equals(useExistingConn)){
 <%}
 }%>
 			
-		} catch (java.lang.Exception e) {
-<%
-			if(dieOnError) {
-%>
-				throw e;
-<%
-			} else {
-%>
-<%
-				if(isLog4jEnabled){
-%>
-					log.error("<%=cid%> - " + e.getMessage());
-<%
-				}
-%>
-				System.err.println("<%=cid%> - " + e.getMessage());
-<%
-			}
-%>
 		} finally {
 			if(<%=cid%>_fos != null){
 				try {

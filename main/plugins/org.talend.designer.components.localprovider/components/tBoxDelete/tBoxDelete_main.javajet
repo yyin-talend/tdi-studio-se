@@ -46,8 +46,6 @@ imports="
 
 %>
 
-	try
-	{
 		String <%=cid%>_filePath = <%=filePath%>;
 		if (<%=cid%>_filePath == null || "".equals(<%=cid%>_filePath.trim()))
 		{
@@ -71,27 +69,5 @@ imports="
 	       	<%=cid%>_client.getFoldersManager().deleteFolder(<%=cid%>_boxItem.getId(), <%=cid%>_delObject);
 		}
 		globalMap.put("<%=cid %>_REMOVED_PATH", getBoxItemPath(<%=cid%>_boxItem));
-	}
-	catch (java.lang.Exception e)
-	{
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-<%
-			if(isLog4jEnabled){
-%>
-				log.error("<%=cid%> - " +e.getMessage());
-<%
-			}
-%>
-			System.err.println(e);
-<%
-		}
-%>
-	}
 
 			

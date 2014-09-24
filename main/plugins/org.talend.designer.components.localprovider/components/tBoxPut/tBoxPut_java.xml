@@ -93,10 +93,6 @@
 			<COLUMN NAME="content" TYPE="id_Object" />
 		</TABLE>
 	</PARAMETER>
-    
-    <PARAMETER NAME="DIE_ON_ERROR" FIELD="CHECK" NUM_ROW="84">
-		<DEFAULT>false</DEFAULT>
-	</PARAMETER>
 	
  	 </PARAMETERS>
  	 
