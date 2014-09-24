@@ -20,7 +20,6 @@ imports="
 		
 		String exposeOutput = ElementParameterParser.getValue(node, "__EXPOSE_OUTPUT_STREAM__");
 		String fileName = ElementParameterParser.getValue(node, "__FILE_NAME__");
-		boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 				log4jFileUtil.componentStartInfo(node);
@@ -52,29 +51,7 @@ imports="
 			throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
 		com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_uploader_input);
 		<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
-	}
-	catch (java.lang.Exception e)
-	{
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-<%
-			if(isLog4jEnabled){
-%>
-				log.error("<%=cid%> - " +e.getMessage());
-<%
-			}
-%>
-			System.err.println(e);
-<%
-		}
-%>
-	}
-	finally {
+	} finally {
 		if (<%=cid%>_uploader_input != null)
 			try {
 				<%=cid%>_uploader_input.close();

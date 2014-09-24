@@ -31,7 +31,6 @@ imports="
 		String path = ElementParameterParser.getValue(node, "__PATH__");
 		String filelistType = ElementParameterParser.getValue(node, "__LIST_MODE__");
 		boolean includeSubDirectories = "true".equals(ElementParameterParser.getValue(node, "__INCLUDSUBDIR__"));
-		boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 				log4jFileUtil.componentStartInfo(node);
@@ -109,8 +108,6 @@ if((<%=accessToken%> == null || "".equals(<%=accessToken%>.trim())) && (<%=refre
 	else
 	{
 		com.box.restclientv2.requestsbase.BoxDefaultRequestObject <%=cid%>_requestObject = new com.box.restclientv2.requestsbase.BoxDefaultRequestObject();
-		try
-		{
 			if (<%=cid%>_name.equals("All Files") || <%=cid%>_path.equals("All Files"))
 			{
 				<%=cid%>_boxFolder = <%=cid%>_client.getFoldersManager().getFolder("0", null);
@@ -155,50 +152,11 @@ if((<%=accessToken%> == null || "".equals(<%=accessToken%>.trim())) && (<%=refre
 					}
 				}
 			}
-		}
-		catch (java.lang.Exception e)
-		{
-<%
-			if(dieOnError) {
-%>
-				throw e;
-<%
-			} else {
-%>
-<%
-				if(isLog4jEnabled){
-%>
-					log.error("<%=cid%> - " +e.getMessage());
-<%
-				}
-%>
-				System.err.println(e);
-<%
-			}
-%>
-		}
 	}
 
 	if (<%=cid%>_boxFile == null && <%=cid%>_boxFolder == null)
 	{
-<%
-		if(dieOnError) {
-%>
-			throw new Exception("<%=cid%> - " + "No file or directory found in " + <%=path%>);
-<%
-			} else {
-%>
-<%
-			if(isLog4jEnabled){
-%>
-				log.error("<%=cid%> - " + "No file or directory found in " + <%=path%>);
-<%
-			}
-%>
-			System.err.println("<%=cid%> - " + "No file or directory found in " + <%=path%>);
-<%
-		}
-%>	
+		throw new Exception("<%=cid%> - " + "No file or directory found in " + <%=path%>);
 	}
 	else if (<%=cid%>_boxFolder != null)
 	{

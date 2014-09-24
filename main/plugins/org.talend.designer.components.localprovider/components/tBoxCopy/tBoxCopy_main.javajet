@@ -38,8 +38,6 @@ imports="
 		String destinationFileName = ElementParameterParser.getValue(node, "__DESTINATION_FILE_NAME__");
 		boolean removeSource = "true".equals(ElementParameterParser.getValue(node, "__REMOVE_SOURCE_FILE__"));
 		
-		boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
-		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 				log4jFileUtil.componentStartInfo(node);
 				
@@ -64,33 +62,9 @@ imports="
 	com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_boxFolderTo = null;
 	com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_boxFolderFrom = null;
 	
-	try
-	{
 		<%=cid%>_boxFolderTo = searchFolder(<%=cid%>_client, <%=cid%>_destinationFolderPath, <%=cid%>_destinationFolderName);
 		if (<%=cid%>_boxFolderTo == null)
 			throw new Exception("No destination folder found under path " + <%=cid%>_destinationFolderPath);
-	}
-	catch (java.lang.Exception e)
-	{
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-<%
-			if(isLog4jEnabled){
-%>
-				log.error("<%=cid%> - " +e.getMessage());
-<%
-			}
-%>
-			System.err.println(e);
-<%
-		}
-%>
-	}
 <%
 	if(moveDirectory || copyDirectory)
 	{
@@ -98,8 +72,6 @@ imports="
 		String <%=cid%>_sourceFolderPath = normalizePath(<%=sourceDirectory%>);
 		String <%=cid%>_sourceFolderName = getFolderFromPath(<%=cid%>_sourceFolderPath);
 		
-		try
-		{
 			<%=cid%>_boxFolderFrom = searchFolder(<%=cid%>_client, <%=cid%>_sourceFolderPath, <%=cid%>_sourceFolderName);
 			if (<%=cid%>_boxFolderFrom == null)
 				throw new Exception("No source folder found under path " + <%=cid%>_sourceFolderPath);
@@ -122,65 +94,19 @@ imports="
         		<%}
         		}%>
 			}
-		}
-		catch (java.lang.Exception e)
-		{
-<%
-			if(dieOnError) {
-%>
-				throw e;
-<%
-			} else {
-%>
-<%
-				if(isLog4jEnabled){
-%>
-					log.error("<%=cid%> - " +e.getMessage());
-<%
-				}
-%>
-				System.err.println(e);
-<%
-			}
-%>
-		}
 <%	
 	}
 	else
 	{
 %>
 		com.box.restclientv2.requestsbase.BoxDefaultRequestObject <%=cid%>_requestObject = new com.box.restclientv2.requestsbase.BoxDefaultRequestObject();
-		try
-		{
+
 			<%=cid%>_boxFile = searchFile(<%=cid%>_client, <%=cid%>_filePath, <%=cid%>_fileName);
 			if (<%=cid%>_boxFile == null)
 				throw new Exception("No file found with path " + <%=cid%>_filePath);
-		}
-		catch (java.lang.Exception e)
-		{
-<%
-			if(dieOnError) {
-%>
-				throw e;
-<%
-			} else {
-%>
-<%
-				if(isLog4jEnabled){
-%>
-					log.error("<%=cid%> - " +e.getMessage());
-<%
-				}
-%>
-				System.err.println(e);
-<%
-			}
-%>
-		}
+		
 		if (<%=cid%>_boxFolderTo != null)
 		{
-			try
-			{
 				String <%=cid%>_boxFilePath = getBoxItemPath(<%=cid%>_boxFile);
 				// Check for not ot copy in the same directory
 				if(!getBoxItemPath(<%=cid%>_boxFile).equals(getBoxItemPath(<%=cid%>_boxFolderTo) + <%=cid%>_boxFolderTo.getName()))
@@ -206,29 +132,7 @@ imports="
         			<%=cid%>_boxFileNew = <%=cid%>_client.getFilesManager().updateFileInfo(<%=cid%>_boxFile.getId(), <%=cid%>_fileRequestObject);
 <%		
 			}
-%>
-		    }
-			catch (java.lang.Exception e)
-			{
-<%
-				if(dieOnError) {
-%>
-					throw e;
-<%
-				} else {
-%>
-<%
-					if(isLog4jEnabled){
-%>
-						log.error("<%=cid%> - " +e.getMessage());
-<%
-					}
-%>
-					System.err.println(e);
-<%
-				}
-%>
-			}        
+%>   
 		}
 <%
 	}
