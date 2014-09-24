@@ -165,9 +165,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				        java.util.Queue<java.util.Map> listGroupby_<%=cid%> = (java.util.Queue<java.util.Map>) globalMap.get("queue_<%=cid%>");
 					<%
 				    }else{
+				    	if(istWriteJSONField){
+				    %>
+				    	java.util.Queue<<%= rowStructNameOutput %>> listGroupby_<%=cid%> = (java.util.Queue<<%= rowStructNameOutput %>>) globalMap.get("queue_<%=cid%>");
+				    <%
+				    	} else {
 					%>
 						java.util.Queue<String> listGroupby_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
 					<%
+						}
 				    }
 					if(storeFlow){
 					%>
