@@ -13,11 +13,9 @@ imports="
 " 
 %>
 <%@ include file="../templates/DB/Input/HelpClass.javajet"%>
-<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
   <%
    	 CodeGeneratorArgument codeGenArgumentX = (CodeGeneratorArgument) argument;
 	 INode nodeX = (INode)codeGenArgumentX.getArgument();
-	 dbLog = new DBLogUtil(nodeX);
   %>
 <%
 
