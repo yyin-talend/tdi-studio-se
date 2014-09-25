@@ -617,7 +617,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         String uniqueName = nodeContainer.getNode().getUniqueName();
         removeUniqueNodeName(uniqueName);
         if (nodeContainer instanceof JobletContainer) {
-            removeUniqueNodeNamesInJoblet((JobletContainer) nodeContainer);
+            // use readedContainers to record the containers alreay be read, in case of falling into dead loop
+            Set<NodeContainer> readedContainers = new HashSet<NodeContainer>();
+            removeUniqueNodeNamesInJoblet((JobletContainer) nodeContainer, readedContainers);
         }
         removeNode(uniqueName);
         Element toRemove = nodeContainer;
@@ -642,16 +644,20 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         // fireStructureChange(NEED_UPDATE_JOB, elem);
     }
 
-    private void removeUniqueNodeNamesInJoblet(JobletContainer jobletContainer) {
+    private void removeUniqueNodeNamesInJoblet(JobletContainer jobletContainer, Set<NodeContainer> readedContainers) {
         List<NodeContainer> nodeContainers = jobletContainer.getNodeContainers();
         if (nodeContainers == null) {
             return;
         }
         Iterator<NodeContainer> iter = nodeContainers.iterator();
+        // object is unique in Set
+        readedContainers.add(jobletContainer);
         while (iter.hasNext()) {
             NodeContainer nodeContainer = iter.next();
             if (nodeContainer instanceof JobletContainer) {
-                removeUniqueNodeNamesInJoblet((JobletContainer) nodeContainer);
+                if (!readedContainers.contains(nodeContainer)) {
+                    removeUniqueNodeNamesInJoblet((JobletContainer) nodeContainer, readedContainers);
+                }
             } else {
                 String uniqueName = nodeContainer.getNode().getUniqueName();
                 removeUniqueNodeName(uniqueName);
