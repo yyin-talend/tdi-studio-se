@@ -231,6 +231,9 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction))
 %>
 	<%@ include file="../templates/_tableActionForBulk.javajet"%>	
 <%
+}else{//TDI-29007
+	manager = getManager(dbmsId, cid);
+	manager.setNode(node);
 }
     %>
     java.sql.Statement stmtBulk_<%=cid %> = conn_<%=cid %>.createStatement();
