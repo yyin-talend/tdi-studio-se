@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -89,5 +90,13 @@ public class JobTypeProcessor extends SingleTypeProcessor {
     @Override
     public String getDialogTitle() {
         return Messages.getString("OpenJobSelectionDialog.findJob"); //$NON-NLS-1$
+    }
+
+    @Override
+    protected List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> list = new ArrayList<ERepositoryObjectType>(50);
+        list.add(ERepositoryObjectType.PROCESS);
+        list.add(ERepositoryObjectType.PROCESS_MR);
+        return list;
     }
 }
