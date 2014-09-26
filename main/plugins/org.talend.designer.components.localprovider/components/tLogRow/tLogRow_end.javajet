@@ -7,10 +7,11 @@
 		java.util.List 
 	"
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-
+	log = new LogUtil(node);
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     IMetadataTable metadata = metadatas.get(0);
@@ -44,6 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 %>
 //////
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+<%log.info(log.str("Printed row count: "), log.var("nb_line"), log.str("."));%>
 
 ///////////////////////    			
 <%

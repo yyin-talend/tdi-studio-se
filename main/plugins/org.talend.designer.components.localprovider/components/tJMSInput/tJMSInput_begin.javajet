@@ -11,12 +11,13 @@ imports="
 	java.util.Map
 " 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+log = new LogUtil(node);
 String contextProvider=ElementParameterParser.getValue(node, "__CONTEXT_PROVIDER__");
 String connFacName=ElementParameterParser.getValue(node, "__CONN_FACTORY_NAME__");
 String url=ElementParameterParser.getValue(node, "__SERVER_URL__");
@@ -70,12 +71,15 @@ if(advProps.size() > 0){
 
 	System.out.println("Ready to receive message");
 	System.out.println("Waiting...");
+	<%log.info(log.str("Ready to receive message."));%>
+	<%log.info(log.str("Waiting..."));%>
 
 	javax.jms.Message message_<%=cid%>;
 
 	int nbline_<%=cid %> = 0;
 
 	while ((message_<%=cid%> = consumer_<%=cid%>.receive(<%="-1".equals(timeout)?0:timeout%>*1000)) != null) {
+		<%log.debug(log.str("Retrieving the message "), "(nbline_" + cid + "+1)", log.str("."));%>
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	List<IMetadataColumn> columnLists = metadata.getListColumns();
