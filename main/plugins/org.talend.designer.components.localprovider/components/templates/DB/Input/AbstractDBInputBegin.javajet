@@ -14,12 +14,11 @@ imports="
 		java.util.Map
 		"
 %>
-<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	dbLog = new DBLogUtil(node);
+
 	String type = ElementParameterParser.getValue(node, "__TYPE__");
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
@@ -57,7 +56,6 @@ imports="
 		        String conn = "conn_" + connection;
 %>
 		        conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-		        <% dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", "conn_"+cid+".getMetaData().getUserName()"); %>
 <%
                 INode connectionNode = null;
                 for (INode processNode : node.getProcess().getGeneratingNodes()) {
@@ -90,8 +88,6 @@ imports="
 <%
 				}
 		    }
-
-			dbLog.commit().logAutoCommit("conn_"+cid+".getAutoCommit()");
 %>
 		    <%dbInputBeginUtil.createStatement(node);%>
 
