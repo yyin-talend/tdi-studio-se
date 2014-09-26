@@ -463,7 +463,14 @@ public class ElementParameter implements IElementParameter {
     }
 
     public void setValueToDefault(List<? extends IElementParameter> listParam) {
-        for (IElementParameterDefaultValue defaultValue : defaultValues) {
+        if (defaultValues == null) {
+            return;
+        }
+        int size = defaultValues.size();
+        // a performance improvement, and keep the result like before.
+        // for (IElementParameterDefaultValue defaultValue : defaultValues) {
+        for (int i = size - 1; 0 <= i; i--) {
+            IElementParameterDefaultValue defaultValue = defaultValues.get(i);
             boolean setDefaultValue = false;
             String conditionIf = defaultValue.getIfCondition();
             String conditionNotIf = defaultValue.getNotIfCondition();
@@ -481,6 +488,7 @@ public class ElementParameter implements IElementParameter {
                 } else {
                     setValue(defaultValue.getDefaultValue());
                 }
+                break;
             }
         }
     }
