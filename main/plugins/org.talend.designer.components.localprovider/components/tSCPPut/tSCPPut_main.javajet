@@ -52,7 +52,6 @@ imports="
     		e.printStackTrace();
     		<%if(isLog4jEnabled){%>
                 log.error(e.getMessage());
-    			log.warn("<%=cid%> - File upload failed.");
     		<%}%>
     		globalMap.put("<%=cid %>_STATUS", "File put fail.");
     }
