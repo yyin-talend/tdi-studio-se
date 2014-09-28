@@ -156,7 +156,11 @@ imports="
 			if((new java.io.File(<%=file.get("SOURCE") %>).exists()) 
 			&& (new java.io.File(<%=file.get("SOURCE") %>).isFile())){
 				sourceList_<%=cid %>.add(<%=file.get("SOURCE") %>);
-			}
+			}else{
+                  <%if(isLog4jEnabled){%>
+                        log.warn("<%=cid%> - "+<%= file.get("SOURCE") %>+" doesn't exist or it isn't a file.");
+                  <%}%>
+        }
 <%
         }
 %>   

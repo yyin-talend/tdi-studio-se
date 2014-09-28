@@ -5,11 +5,10 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 "
 %>
-<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
+
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-          dbLog = new DBLogUtil(node);
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     String cid = node.getUniqueName();      
     String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
@@ -50,10 +49,10 @@ imports="
         	globalMap.put("<%=cid %>_STATUS", "No file transfered.");
         }
     }catch(java.lang.Exception e){
-            <% dbLog.logPrintedException("e.getMessage()"); %>
     		e.printStackTrace();
     		<%if(isLog4jEnabled){%>
-    			log.warn("<%=cid%> - File uploading has failed.");
+                log.error(e.getMessage());
+    			log.warn("<%=cid%> - File upload failed.");
     		<%}%>
     		globalMap.put("<%=cid %>_STATUS", "File put fail.");
     }
