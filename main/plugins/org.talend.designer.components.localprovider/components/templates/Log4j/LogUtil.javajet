@@ -54,6 +54,10 @@ class BasicLogUtil{
 		<%
 		}
 	}
+	
+	public boolean isActive(){
+		return this.log4jEnabled;
+	}
 }
 
 class LogUtil extends BasicLogUtil{
@@ -94,6 +98,7 @@ class LogUtil extends BasicLogUtil{
     	   	java.util.Set<org.talend.core.model.process.EParameterFieldType> ignoredParamsTypes = new java.util.HashSet<org.talend.core.model.process.EParameterFieldType>(); 
     	   	ignoredParamsTypes.addAll(
     	   		java.util.Arrays.asList(
+    	   			org.talend.core.model.process.EParameterFieldType.SCHEMA_TYPE,
     		   		org.talend.core.model.process.EParameterFieldType.LABEL,
     		   		org.talend.core.model.process.EParameterFieldType.EXTERNAL,
     		   		org.talend.core.model.process.EParameterFieldType.MAPPING_TYPE,
