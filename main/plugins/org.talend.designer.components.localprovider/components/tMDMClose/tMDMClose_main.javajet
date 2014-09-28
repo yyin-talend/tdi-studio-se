@@ -16,7 +16,7 @@ imports="
 
     String conn = "xtentisWS_" + connection;
 %>
-	org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort)globalMap.get("<%=conn%>");
+	org.talend.mdm.webservice.XtentisPort_PortType xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort_PortType)globalMap.get("<%=conn%>");
 	if(xtentisWS_<%=cid %> != null)
 	{
 		xtentisWS_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
