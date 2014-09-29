@@ -16,10 +16,14 @@ imports="
 "
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+final boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 String field = ElementParameterParser.getValue(node, "__FIELD__");
 boolean ignoreSourceNull="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__IGNORE_SOURCE_NULL__"));
@@ -264,6 +268,9 @@ try{
 	}
 %>
 	nb_line_<%=cid%>++;
+<%
+	log4jFileUtil.logCurrentRowNumberInfo();
+%>
 }catch(java.lang.Exception ex_<%=cid %>){
 <%
 	if(dieOnError){
@@ -285,6 +292,11 @@ try{
     <%=firstConnName %> = null;
 <%
 		} else if(("").equals(rejectConnName)){
+			if(isLog4jEnabled) {
+%>
+	log.error("<%=cid%> - " + ex_<%=cid %>.getMessage());
+<%
+			}
 %>
     System.err.println(ex_<%=cid %>.getMessage());
     <%=firstConnName %> = null;

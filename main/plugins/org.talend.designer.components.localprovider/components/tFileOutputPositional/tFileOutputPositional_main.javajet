@@ -11,6 +11,9 @@
 		java.util.Map
 	"
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -109,6 +112,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			%> 						
 			nb_line_<%=cid %>++;
 <%
+			log4jFileUtil.debugWriteData(node);
 		}
 	}
     }

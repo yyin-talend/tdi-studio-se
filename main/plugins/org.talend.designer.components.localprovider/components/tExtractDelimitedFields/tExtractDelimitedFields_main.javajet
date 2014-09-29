@@ -14,7 +14,7 @@ imports="
     java.util.ArrayList
 "
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -45,6 +45,8 @@ boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equal
 
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
+
+boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
@@ -256,6 +258,9 @@ int sizeColumns=outputMetadataTable.getListColumns().size();
 	}
 %>
 	nb_line_<%=cid%>++;
+<%
+	log4jFileUtil.logCurrentRowNumberInfo();
+%>
 }catch(java.lang.Exception ex_<%=cid %>){
 <%
 	if(dieOnError){
@@ -286,6 +291,11 @@ int sizeColumns=outputMetadataTable.getListColumns().size();
     <%=firstConnName %> = null;
 <%
 		} else if(("").equals(rejectConnName)){
+			if(isLog4jEnabled) {
+%>
+	log.error("<%=cid%> - " + ex_<%=cid %>.getMessage());
+<%
+			}
 %>
     System.err.println(ex_<%=cid %>.getMessage());
     <%=firstConnName %> = null;
