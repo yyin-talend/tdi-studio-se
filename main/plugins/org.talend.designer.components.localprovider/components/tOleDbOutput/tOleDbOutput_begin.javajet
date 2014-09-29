@@ -13,10 +13,11 @@
 	"
 	skeleton="../templates/db_output_bulk.skeleton"
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();	
+    LogUtil logtpl = new LogUtil(node);
 	String cid = node.getUniqueName();	
     String dbmsId = "MSODBC";
     
@@ -96,9 +97,13 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
     }
 }
 %> 
-
+<% logtpl.info("\"Try to create an OleDb instance with assembly name: \"",assemblyName,"\", driver class name: \"",className,"\", database name: \"",dbname,"\".\""); %>
 org.talend.net.Object conn_<%=cid%> = org.talend.net.Object.createInstance(<%=assemblyName%>,<%=className%>,new java.lang.Object[]{<%=dbname%>});
+<% logtpl.info("\"Created an OleDb instance successfully.\""); %>
+
+<% logtpl.info("\"Try to open an OleDb connection.\""); %>
 conn_<%=cid%>.invokeGeneric("Open");
+<% logtpl.info("\"Open an OleDb connection successfully.\""); %>
 
 
 
@@ -110,9 +115,13 @@ if(("true").equals(tableAction)) {
     	"DELETE FROM "+<%=tableName%>,
     	conn_<%=cid%>
     	});
+        <% 
+            logtpl.info("\"Try to clear table: \"",tableName,"\".\"");
+        %>
    	deletedCount_<%=cid%> = deletedCount_<%=cid%> + (Integer)delCmd_<%=cid%>.invokeGeneric("ExecuteNonQuery");
     
-    <%	
+    <%
+           logtpl.info("\"Clear table done.\"");
 }
 %>
 <%
@@ -127,12 +136,12 @@ if(columnList != null && columnList.size() > 0) {
 	if(("INSERT").equals(dataAction)) {
 	    %>
 	    String insert_<%=cid%> = "INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
-	    org.talend.net.Object cmd_<%=cid%> = org.talend.net.Object.createInstance(<%=assemblyName%>,
+            org.talend.net.Object cmd_<%=cid%> = org.talend.net.Object.createInstance(<%=assemblyName%>,
     		"System.Data.OleDb.OleDbCommand",new java.lang.Object[] {
     		insert_<%=cid%>,
     		conn_<%=cid%>
     	});
-	    <%
+    <% logtpl.debug("\"Data action: \"",logtpl.str(dataAction),"\", Insert SQL: \"",logtpl.var("insert"),"\".\"");
 	} else if (("UPDATE").equals(dataAction)) {
 	    %>
 	    String update_<%=cid%> = "UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
@@ -141,10 +150,9 @@ if(columnList != null && columnList.size() > 0) {
     		update_<%=cid%>,
     		conn_<%=cid%>
     	});
-	    <%		
+	    <% logtpl.debug("\"Data action: \"",logtpl.str(dataAction),"\", Update SQL: \"",logtpl.var("update"),"\".\"");
 	} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
 	    %>
-	    
 	    org.talend.net.Object cmd_<%=cid%> = org.talend.net.Object.createInstance(<%=assemblyName%>,
     		"System.Data.OleDb.OleDbCommand",new java.lang.Object[] {
     		"SELECT COUNT(1) FROM " + <%=tableName%> + " WHERE <%=updateWhereStmt.toString()%>",
@@ -163,6 +171,7 @@ if(columnList != null && columnList.size() > 0) {
     		conn_<%=cid%>
     	});
 	    <%
+        logtpl.debug("\"Data action: \"",logtpl.str(dataAction),"\", Insert SQL: \"",logtpl.var("insert"),"\", Update SQL: \"",logtpl.var("update"),"\".\"");
 	} else if (("UPDATE_OR_INSERT").equals(dataAction)) {
 	    %>
 	    String update_<%=cid%> = "UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
@@ -177,7 +186,8 @@ if(columnList != null && columnList.size() > 0) {
     		insert_<%=cid%>,
     		conn_<%=cid%>
     	});		
-	    <%			
+	    <%
+        logtpl.debug("\"Data action: \"",logtpl.str(dataAction),"\", Update SQL: \"",logtpl.var("update"),"\", Insert SQL: \"",logtpl.var("insert"),"\".\"");
 	} else if (("DELETE").equals(dataAction)) {
 	    %>
 	    String delete_<%=cid%> = "DELETE  FROM " + <%=tableName%> + " WHERE <%=deleteWhereStmt.toString()%>";
@@ -186,7 +196,8 @@ if(columnList != null && columnList.size() > 0) {
     		delete_<%=cid%>,
     		conn_<%=cid%>
     	});
-	    <%		
+	    <%
+        logtpl.debug("\"Data action: \"",logtpl.str(dataAction),"\", Delete SQL: \"",logtpl.var("delete"),"\".\"");
 	}
     if(isEnableDebug) {
         %>
