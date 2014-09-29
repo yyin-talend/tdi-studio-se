@@ -48,7 +48,7 @@ imports="
 		globalMap.put("<%=cid %>_STATUS","File rename OK");
 	}else{
 		<%if(isLog4jEnabled){%>
-			log.warn("<%=cid%> - Failed to rename '" + <%=fromName%> + "' to '" + <%=toName%> + "':" + stringStderr_<%=cid %>.toString());
+			log.warn("<%=cid%> - Fail to rename '" + <%=fromName%> + "' to '" + <%=toName%> + "':" + stringStderr_<%=cid %>.toString());
 		<%}%>
 		globalMap.put("<%=cid %>_STATUS",stringStderr_<%=cid %>.toString());
 	}

@@ -14,11 +14,9 @@ imports="
 "
 %>
 <%@ include file="../../Log4j/Log4jDBConnUtil.javajet"%>
-<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-	  dbLog = new DBLogUtil(node);
 String cid =  node.getUniqueName();
 String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
@@ -190,7 +188,6 @@ try {
 				<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 				<%
 			} else {
-				dbLog.logPrintedException("e.getMessage()");
 				%>
 				System.err.print(e.getMessage());
 				<%

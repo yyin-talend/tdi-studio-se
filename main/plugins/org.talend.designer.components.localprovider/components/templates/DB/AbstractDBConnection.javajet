@@ -39,6 +39,7 @@ imports="
 	<%}%>
 
 	java.sql.Connection conn_<%=cid%> = null;
+	<%@ include file="../Log4j/Log4jDBConnUtil.javajet"%>
 <%
 	if(isUseSharedConnection){
 %>
@@ -54,9 +55,12 @@ imports="
 <%
 		}
 %>
+		<%connUtil.classForName(node);%>
 		<%
-		connUtil.classForName(node);
+		log4jCodeGenerateUtil.debugConnectionParams(node);
+		log4jCodeGenerateUtil.connect_begin();
 		connUtil.createConnection(node);
+		log4jCodeGenerateUtil.connect_end();
 		%>
 
 		globalMap.put("conn_<%=cid%>", conn_<%=cid%>);

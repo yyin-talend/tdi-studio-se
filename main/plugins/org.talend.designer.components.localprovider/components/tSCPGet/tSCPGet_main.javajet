@@ -147,11 +147,11 @@ imports="
 							<%if(isLog4jEnabled){%>
 								log.debug("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
 								<% if(isDefaultAction){ %>
-									 log.info("<%= cid %> - Overwrited or appended to "+sourceFile_<%=cid %>+" at local directory "+<%= localdir %>+" successfully.");
+									 log.info("<%= cid %> - Overwrote or appended to "+sourceFile_<%=cid %>+" at local directory "+<%= localdir %>+" successfully.");
 								<%
 								}else{
 								%>
-									 log.info("<%= cid %> - Overwrited to "+sourceFile_<%=cid %>+" at local directory "+<%= localdir %>+" successfully.");
+									 log.info("<%= cid %> - Overwrote to "+sourceFile_<%=cid %>+" at local directory "+<%= localdir %>+" successfully.");
 								<%
 								}
 							}%>

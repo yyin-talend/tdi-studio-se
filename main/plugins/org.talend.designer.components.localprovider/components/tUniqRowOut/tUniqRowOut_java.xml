@@ -82,6 +82,7 @@
 	<PARAMETER
       NAME="BUFFER_SIZE"
       FIELD="OPENED_LIST"
+      RAW="true"
       NUM_ROW="18"
     >
       <ITEMS DEFAULT="M">
