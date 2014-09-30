@@ -159,7 +159,6 @@ Character field_separator_<%=cid %> = (<%=field_separator%>).charAt(0);
 						 action_<%=cid%> +" INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>";
 		<%
 		if(isLog4jEnabled_tableAction){
-			log4jCodeGenerateUtil.logInfo(node,"debug",cid+" - Bulk SQL:CALL SYSPROC.ADMIN_CMD(\"+param_"+cid+"+\").");
 			%>
 				log.debug("<%=cid%> - Bulk SQL:CALL SYSPROC.ADMIN_CMD("+param_<%=cid%>+").");
 			<%
