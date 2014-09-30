@@ -214,7 +214,7 @@ if (canGenerate) {
 		%>
 		statement_<%=cid%>.execute();
 		<%
-		dbLog.info(dbLog.str("The store procedure:"),spName,dbLog.str(" executed successed."));
+		dbLog.info(dbLog.str("The store procedure:"),spName,dbLog.str(" executed successfully."));
 		List<? extends IConnection> outConnections = node.getOutgoingConnections();
 		IConnection firstOutConnection = null;
 		

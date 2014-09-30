@@ -4,11 +4,12 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	LogUtil logtpl = new LogUtil(node);//(tpl short for template)
 %>
 oBool_<%=cid%> = (Boolean)reader_<%=cid%>.invokeGeneric("Read");
 bool_<%=cid%> = oBool_<%=cid%> != null && oBool_<%=cid%>.booleanValue();
@@ -16,5 +17,4 @@ bool_<%=cid%> = oBool_<%=cid%> != null && oBool_<%=cid%>.booleanValue();
 //stmt_<%=cid %>.close();
 //conn_<%=cid %> .close();
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
-
-
+<% logtpl.info(logtpl.var("nb_line"),"\" records retrieved.\""); %>

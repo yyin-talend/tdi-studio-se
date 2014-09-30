@@ -19,7 +19,7 @@ imports="
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed())
 	{
-            <%dbLog.conn().closeTry(cid);%>
+            <%dbLog.conn().closeTry(dbLog.str(conn));%>
         conn_<%=cid%>.close();
-            <%dbLog.conn().closeDone(cid);%>
+            <%dbLog.conn().closeDone(dbLog.str(conn));%>
 	}
