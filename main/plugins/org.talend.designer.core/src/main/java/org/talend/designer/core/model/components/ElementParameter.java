@@ -470,10 +470,10 @@ public class ElementParameter implements IElementParameter {
         // a performance improvement, and keep the result like before.
         // for (IElementParameterDefaultValue defaultValue : defaultValues) {
         for (int i = size - 1; 0 <= i; i--) {
-            IElementParameterDefaultValue defaultValue = defaultValues.get(i);
+            IElementParameterDefaultValue iDefaultValue = defaultValues.get(i);
             boolean setDefaultValue = false;
-            String conditionIf = defaultValue.getIfCondition();
-            String conditionNotIf = defaultValue.getNotIfCondition();
+            String conditionIf = iDefaultValue.getIfCondition();
+            String conditionNotIf = iDefaultValue.getNotIfCondition();
 
             if ((conditionIf != null) || (conditionNotIf != null)) {
                 if (conditionIf != null) {
@@ -484,9 +484,9 @@ public class ElementParameter implements IElementParameter {
             }
             if (setDefaultValue) {
                 if (this.field.equals(EParameterFieldType.CHECK) || this.field.equals(EParameterFieldType.RADIO)) {
-                    setValue(new Boolean(defaultValue.getDefaultValue().toString()));
+                    setValue(new Boolean(iDefaultValue.getDefaultValue().toString()));
                 } else {
-                    setValue(defaultValue.getDefaultValue());
+                    setValue(iDefaultValue.getDefaultValue());
                 }
                 break;
             }

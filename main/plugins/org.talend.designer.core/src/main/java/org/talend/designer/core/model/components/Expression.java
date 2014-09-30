@@ -322,11 +322,7 @@ public final class Expression {
                         }
                     }
                 }
-                // This method can also be called by 'ElementParameter.isCondition(...)' which is called in
-                // initializePropertyParameters(...);
-                // if elementParameters of one node is null, maybe mean it is initializing, so the related node should
-                // have not been set yet
-                if (node != null && node.getElementParameters() != null) {
+                if (node != null) {
                     String relatedNodeName = ElementParameterParser.getValue(node, "__" + varNames[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$
                     List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
                     for (INode aNode : generatingNodes) {
