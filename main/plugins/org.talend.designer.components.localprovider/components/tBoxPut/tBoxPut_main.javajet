@@ -34,6 +34,7 @@ imports="
 		String exposeOutput = ElementParameterParser.getValue(node, "__EXPOSE_OUTPUT_STREAM__");
 		String uploadLocalFile = ElementParameterParser.getValue(node, "__UPLOAD_LOCAL_FILE__");
 		String readContentFromInput = ElementParameterParser.getValue(node, "__READ_CONTENT_FROM_INPUT__");
+		String overwrite = ElementParameterParser.getValue(node, "__REPLACE_IF_EXIST__");
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 		log4jFileUtil.componentStartInfo(node);
@@ -100,7 +101,31 @@ imports="
 			if (<%=cid%>_boxFolder == null)
 				throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
 			com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_InputStream);
-			<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+			boolean <%=cid%>_exists = false;
+			String <%=cid%>_fileId = null;
+	        for (com.box.boxjavalibv2.dao.BoxTypedObject obj : <%=cid%>_boxFolder.getItemCollection().getEntries())
+	        {
+	        	if (obj.getType().equals("file") && obj.getValue("name").equals(<%=cid%>_remoteName))
+	        	{
+	        		<%=cid%>_exists = true;
+	        		<%=cid%>_fileId = obj.getId();
+	        		break;
+	        	}
+	        }
+	        if (<%=cid%>_exists)
+	        {
+				<% if ("true".equals(overwrite))
+				{ %>
+					<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_fileId, null);
+					<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+				<%} else {%>
+					throw new Exception("File with the same name already exist");
+				<%}%>
+			}
+			else
+			{
+				<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+			}
 			<%if(dataOutputConnection != null){%>
 			<%=dataOutputConnection%>.content = <%=cid%>_content;
 			<%}%>
@@ -146,7 +171,31 @@ imports="
 		if (<%=cid%>_boxFolder == null)
 			throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
 		com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_InputStream);
-		<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+		boolean <%=cid%>_exists = false;
+		String <%=cid%>_fileId = null;
+        for (com.box.boxjavalibv2.dao.BoxTypedObject obj : <%=cid%>_boxFolder.getItemCollection().getEntries())
+        {
+        	if (obj.getType().equals("file") && obj.getValue("name").equals(<%=cid%>_remoteName))
+        	{
+        		<%=cid%>_exists = true;
+        		<%=cid%>_fileId = obj.getId();
+        		break;
+        	}
+        }
+        if (<%=cid%>_exists)
+        {
+			<% if ("true".equals(overwrite))
+			{ %>
+				<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_fileId, null);
+				<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+			<%} else {%>
+				throw new Exception("File with the same name already exist");
+			<%}%>
+		}
+		else
+		{
+			<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+		}
 		<%if(dataOutputConnection != null){%>
 		<%=dataOutputConnection%>.content = <%=cid%>_InputStream;
 	<%}%>
