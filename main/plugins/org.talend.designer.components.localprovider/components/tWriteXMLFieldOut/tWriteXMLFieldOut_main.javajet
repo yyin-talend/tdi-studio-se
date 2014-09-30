@@ -649,9 +649,11 @@ if(("Dom4j").equals(mode)){
 					      for(Map<String,String> map : groupbys){
 								String groupByColumnName = map.get("INPUT_COLUMN");
 								String outputColumnName = map.get("OUTPUT_COLUMN");
+								if (!outputColumnName.equals(jsonField)) {
 								%>
 								row_<%= cid %>.<%= outputColumnName %> = rowStructOutput_<%= cid %>.<%= groupByColumnName %>;
 								<%
+								}
 					     }
 					%>
 					     		row_<%= cid %>.<%= jsonField %> = strWriter_<%=cid %>.toString();
