@@ -49,14 +49,28 @@ imports="
 	    } // for(conns) end
 
 %>
-	
+<%if(!exposeOutput){%>
 	com.google.api.services.drive.model.File <%=cid%>_file = new com.google.api.services.drive.model.File();
 	com.google.api.client.http.AbstractInputStreamContent <%=cid%>_fContent = null;
 <%
-		String destFolderId = helper.getStringParam("__DESTINATION_FOLDERID__");
-		if(!destFolderId.matches("\\s*\"?\"?\\s*")){
+		String destFolderName = helper.getStringParam("__DESTINATION_FOLDER_NAME__");
+		if(!destFolderName.matches("\\s*\"?\"?\\s*")){
 %>
-	<%=cid%>_file.setParents(java.util.Arrays.asList(new com.google.api.services.drive.model.ParentReference().setId(<%=destFolderId%>)));
+	com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
+	<%=cid%>_listRequest.setQ("title = '" + <%=destFolderName%> + "' and mimeType = 'application/vnd.google-apps.folder'");
+	com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
+	if (<%=cid%>_files.getItems().size() > 1)
+	{
+		throw new Exception("More then one folder found with name \"" + <%=destFolderName%> + "\" ");
+	}
+	else if (<%=cid%>_files.getItems().isEmpty())
+	{
+		throw new Exception("No folder found with name \"" + <%=destFolderName%> + "\" ");
+	}
+	else
+	{
+		String <%=cid%>_folderId = <%=cid%>_files.getItems().get(0).getId();
+		<%=cid%>_file.setParents(java.util.Arrays.asList(new com.google.api.services.drive.model.ParentReference().setId(<%=cid%>_folderId)));
 <%
 		}
 %>	
@@ -83,6 +97,7 @@ imports="
 	}else{
 		<%=cid%>_fContent = new com.google.api.client.http.ByteArrayContent(null, <%=cid%>_content.toString().getBytes());
 	}
+	<%=cid%>_file = <%=cid%>_client.files().insert(<%=cid%>_file, <%=cid%>_fContent).execute();
 <%
 				if(dataOutputConnection != null){
 %>
@@ -93,11 +108,11 @@ imports="
 		}else if(uploadLocalFile){
 %>
 	<%=cid%>_fContent = new com.google.api.client.http.FileContent(null, new java.io.File(<%=helper.getStringParam("__LOCAL_FILE_PATH__")%>));
+	<%=cid%>_file = <%=cid%>_client.files().insert(<%=cid%>_file, <%=cid%>_fContent).execute();
 <%
 		}
 %>
-	<%=cid%>_file = <%=cid%>_client.files().insert(<%=cid%>_file, <%=cid%>_fContent).execute();
-	
+	}
 	}catch(Exception e){
 <%
 		if(dieOnError) {
@@ -111,3 +126,4 @@ imports="
 		}
 %>
 	}
+<%}%>
