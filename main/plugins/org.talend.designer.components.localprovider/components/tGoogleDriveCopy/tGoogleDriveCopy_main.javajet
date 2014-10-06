@@ -40,9 +40,9 @@ String dataOutputConnection = null;
     } // for(conns) end
 
 
-String fileId = ElementParameterParser.getValue(node, "__FILE_ID__");
-String dest_folderId = ElementParameterParser.getValue(node, "__DESTINATION_FOLDERID__");
-String source_folderId = ElementParameterParser.getValue(node, "__SOURCE_FOLDERID__");
+String fileName = ElementParameterParser.getValue(node, "__FILE_NAME__");
+String folderName = ElementParameterParser.getValue(node, "__FOLDER_NAME__");
+String dest_folderName = ElementParameterParser.getValue(node, "__DESTINATION_FOLDER_NAME__");
 String dest_fieName = ElementParameterParser.getValue(node,  "__DESTINATION_FILE_NAME__");
 
 boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
@@ -104,20 +104,62 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 
 	try
 	{
-		if(<%=fileId%> == null || "".equals(<%=fileId%>.trim()) || <%=dest_folderId%> == null || "".equals(<%=dest_folderId%>.trim()) )
+		com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
+		<%
+        if (isFile) {
+        %>
+        if(<%=fileName%> == null || "".equals(<%=fileName%>.trim()) || <%=dest_folderName%> == null || "".equals(<%=dest_folderName%>.trim()) )
 		{
-			throw new Exception("File/folder id can not be null");
+			throw new Exception("File/folder name can not be null");
 		}
-        com.google.api.services.drive.model.File file = <%=cid%>_client.files().get(<%=fileId%>).execute();
-		com.google.api.services.drive.model.File resultFile = new com.google.api.services.drive.model.File();
-        if (<%=isFile%> && file.getMimeType().equals("application/vnd.google-apps.folder")) {
-					throw new Exception("It is not file but folder.");
+		<%=cid%>_listRequest.setQ("title = '" + <%=fileName%> + "' and mimeType != 'application/vnd.google-apps.folder'");
+		<%} else {%>
+		if(<%=folderName%> == null || "".equals(<%=folderName%>.trim()) || <%=dest_folderName%> == null || "".equals(<%=dest_folderName%>.trim()) )
+		{
+			throw new Exception("File/folder name can not be null");
 		}
+		<%=cid%>_listRequest.setQ("title = '" + <%=folderName%> + "' and mimeType = 'application/vnd.google-apps.folder'");
+		<%}%>
+		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
+		if (<%=cid%>_files.getItems().size() > 1)
+		{
+		<%if (isFile) {
+        %>
+			throw new Exception("More then one file found with name \"" + <%=fileName%> + "\" ");
+		<%} else {%>
+			throw new Exception("More then one folder found with name \"" + <%=folderName%> + "\" ");
+		<%}%>
+		}
+		else if (<%=cid%>_files.getItems().isEmpty())
+		{
+		<%if (isFile) {
+        %>
+			throw new Exception("No file found with name \"" + <%=fileName%> + "\" ");
+		<%} else {%>
+			throw new Exception("No folder found with name \"" + <%=folderName%> + "\" ");
+		<%}%>
+		}
+		else
+		{
+			com.google.api.services.drive.model.File <%=cid%>_sourceFile = <%=cid%>_files.getItems().get(0);
+			String <%=cid%>_fileId = <%=cid%>_sourceFile.getId();
+        	com.google.api.services.drive.model.File file = <%=cid%>_client.files().get(<%=cid%>_fileId).execute();
+			com.google.api.services.drive.model.File resultFile = new com.google.api.services.drive.model.File();
 
-        if (!<%=isFile%> && !file.getMimeType().equals("application/vnd.google-apps.folder")) {
-					throw new Exception("It is not folder.");
-		}
-
+			<%=cid%>_listRequest =  <%=cid%>_client.files().list();
+			<%=cid%>_listRequest.setQ("title = '" + <%=dest_folderName%> + "' and mimeType = 'application/vnd.google-apps.folder'");
+			com.google.api.services.drive.model.FileList <%=cid%>_destFolders = <%=cid%>_listRequest.execute();
+			if (<%=cid%>_destFolders.getItems().size() > 1)
+			{
+				throw new Exception("More then one folder found with name \"" + <%=dest_folderName%> + "\" ");
+			}
+			else if (<%=cid%>_destFolders.getItems().isEmpty())
+			{
+				throw new Exception("No folder found with name \"" + <%=dest_folderName%> + "\" ");
+			}
+			else
+			{
+			String <%=cid%>_destFolderId = <%=cid%>_destFolders.getItems().get(0).getId();
         <%
         if (isFile) {
         %> 
@@ -129,12 +171,12 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 		        <%
 				}
 		        %>
-		        copiedFile.setParents(java.util.Arrays.asList(new com.google.api.services.drive.model.ParentReference().setId(<%=dest_folderId%>)));
-			    resultFile = <%=cid%>_client.files().copy(<%=fileId%>, copiedFile).execute();
+		        copiedFile.setParents(java.util.Arrays.asList(new com.google.api.services.drive.model.ParentReference().setId(<%=cid%>_destFolderId)));
+			    resultFile = <%=cid%>_client.files().copy(<%=cid%>_fileId, copiedFile).execute();
 		        <%
 				if (remove) {
 		        %>
-				     <%=cid%>_client.files().delete(<%=fileId%>).execute();
+				     <%=cid%>_client.files().delete(<%=cid%>_fileId).execute();
 		        <%
 				}
 		}else{
@@ -142,24 +184,31 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 		        %>
 				   com.google.api.services.drive.model.File filePatch = new com.google.api.services.drive.model.File();
                    filePatch.setTitle(<%=dest_fieName%>);
-                   com.google.api.services.drive.Drive.Files.Patch patchRequest = <%=cid%>_client.files().patch(<%=fileId%>, filePatch);
+                   com.google.api.services.drive.Drive.Files.Patch patchRequest = <%=cid%>_client.files().patch(<%=cid%>_fileId, filePatch);
                    patchRequest.setFields("title");
                    patchRequest.execute();
 		        <%
 				}
 		        %>
-               <%=cid%>_client.parents().insert(<%=fileId%>, new com.google.api.services.drive.model.ParentReference().setId(<%=dest_folderId%>)).execute();
-			   <%=cid%>_client.parents().delete(<%=fileId%>, <%=source_folderId%>).execute();
-			   resultFile = file;
+		        if (<%=cid%>_sourceFile.getParents().size() > 1)
+		        {
+		        	throw new Exception("Failed to delete (this folder has more then one parent)");
+		        }
+				String <%=cid%>_sourceFolderId = <%=cid%>_sourceFile.getParents().get(0).getId();
+               	<%=cid%>_client.parents().insert(<%=cid%>_fileId, new com.google.api.services.drive.model.ParentReference().setId(<%=cid%>_destFolderId)).execute();
+			   	<%=cid%>_client.parents().delete(<%=cid%>_fileId, <%=cid%>_sourceFolderId).execute();
+			   	resultFile = file;
 		<%}	
 
 		if(dataOutputConnection != null) {
         %>
-			<%=dataOutputConnection%>.sourceFileID = <%=fileId%>;
+			<%=dataOutputConnection%>.sourceFileID = <%=cid%>_fileId;
 			<%=dataOutputConnection%>.destinationFileID =  resultFile.getId();
         <%}%>
-		globalMap.put("<%=cid%>_SOURCE_FILEID", <%=fileId%>);
+		globalMap.put("<%=cid%>_SOURCE_FILEID", <%=cid%>_fileId);
 		globalMap.put("<%=cid%>_DESTINATION_FILEID", resultFile.getId());
+		}
+	}
 	}
 	catch (java.lang.Exception e)
 	{
