@@ -23,7 +23,7 @@ imports="
 	String connection = helper.getStringParam("__CONNECTION__");
     String connectionKey = "\"conn_" + connection+"\"";
 	
-	String fileId = helper.getStringParam("__FILE_ID__");
+	String fileName = helper.getStringParam("__FILE_NAME__");
 	boolean useTrash = helper.getBoolParam("__USE_TRASH__");
 	boolean dieOnError = helper.getBoolParam("__DIE_ON_ERROR__");
 	
@@ -93,12 +93,26 @@ if(!useExistingConn) {
 %>
 try
 {
-    String fileId = <%=fileId%>;
-	if(fileId == null || "".equals(fileId))
+    String fileName = <%=fileName%>;
+	if(fileName == null || "".equals(fileName))
 	{
-		throw new Exception("File/folder id can not be null");
+		throw new Exception("File/folder name can not be null");
 	}
-	<%=cid%>_client.files().
+	com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
+	<%=cid%>_listRequest.setQ("title = '" + fileName + "'");
+	com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
+	if (<%=cid%>_files.getItems().size() > 1)
+	{
+		throw new Exception("More then one file found with name \"" + <%=fileName%> + "\" ");
+	}
+	else if (<%=cid%>_files.getItems().isEmpty())
+	{
+		throw new Exception("No file found with name \"" + <%=fileName%> + "\" ");
+	}
+	else
+	{
+		String <%=cid%>_fileId = <%=cid%>_files.getItems().get(0).getId();
+		<%=cid%>_client.files().
 <%
   if(useTrash){
 %>
@@ -110,8 +124,9 @@ try
 <%
   }
 	%>
-		(fileId).execute();
-	globalMap.put("<%=cid%>_FILEID", fileId);	
+		(<%=cid%>_fileId).execute();
+		globalMap.put("<%=cid%>_FILEID", <%=cid%>_fileId);	
+	}
 }
 catch (java.lang.Exception e)
 {

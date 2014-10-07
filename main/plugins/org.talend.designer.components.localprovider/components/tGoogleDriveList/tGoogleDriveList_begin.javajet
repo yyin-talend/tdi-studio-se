@@ -19,7 +19,7 @@ NodeParamsHelper helper = new NodeParamsHelper(node);
 
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 String accessToken = helper.getStringParam("__ACCESS_TOKEN__");
-String folderID = helper.getStringParam("__FOLDERID__");
+String folderName = helper.getStringParam("__FOLDER_NAME__");
 boolean useProxy = helper.getBoolParam("__USE_PROXY__");
 boolean useSSL = helper.getBoolParam("__USE_SSL__");
 
@@ -88,24 +88,47 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 <%}%>
     java.util.List<com.google.api.services.drive.model.File> <%=cid%>_result = new java.util.ArrayList<com.google.api.services.drive.model.File>();
     com.google.api.services.drive.Drive.Files.List <%=cid%>_request = <%=cid%>_client.files().list();
+    
 	<%
-    if(folderID.startsWith("\"")){
-		folderID = folderID.substring(1);
+    if(folderName.startsWith("\"")){
+		folderName = folderName.substring(1);
 	}
-	if(folderID.endsWith("\"")){
-		folderID = folderID.substring(0, folderID.length() - 1);
+	if(folderName.endsWith("\"")){
+		folderName = folderName.substring(0, folderName.length() - 1);
     }
 	if ("false".equals(helper.getStringParam("__INCLUDSUBDIR__"))) { %> //without subfolders
     do {
       try {
-	  <%if ("BOTH".equals(helper.getStringParam("__LIST_MODE__"))) {%>
-		    <%=cid%>_request.setQ("'<%=folderID%>' in parents");
-      <%} else if ("FILES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
-            <%=cid%>_request.setQ("'<%=folderID%>' in parents and mimeType != 'application/vnd.google-apps.folder'");
+      <% if(!folderName.equals("root")) {%>
+      		<%=cid%>_request.setQ("title = '<%=folderName%>' and mimeType = 'application/vnd.google-apps.folder'");
       <%} else {%>
-		    <%=cid%>_request.setQ("'<%=folderID%>' in parents and mimeType = 'application/vnd.google-apps.folder'");
+      
+	  	<%if ("BOTH".equals(helper.getStringParam("__LIST_MODE__"))) {%>
+	  		<%=cid%>_request.setQ("'<%=folderName%>' in parents");
+      	<%} else if ("FILES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
+      		<%=cid%>_request.setQ("'<%=folderName%>' in parents and mimeType != 'application/vnd.google-apps.folder'");
+      	<%} else {%>
+      		<%=cid%>_request.setQ("'<%=folderName%>' in parents and mimeType = 'application/vnd.google-apps.folder'");
+      	<%}%>
       <%}%>
         com.google.api.services.drive.model.FileList files = <%=cid%>_request.execute();
+        <% if(!folderName.equals("root")) {%>
+        if (files.getItems().size() > 1) {
+        	throw new Exception("More then one folder with name " + "\"<%=folderName%>\" found!");
+        } else if (files.getItems().isEmpty()) {
+        	throw new Exception("No folder with name " + "\"<%=folderName%>\" found!");
+        } else {
+        	<%=cid%>_request = <%=cid%>_client.files().list();
+        	<%if ("BOTH".equals(helper.getStringParam("__LIST_MODE__"))) {%>
+        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents");
+        	<%} else if ("FILES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
+        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents and mimeType != 'application/vnd.google-apps.folder'");
+        	<%} else {%>
+        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents and mimeType = 'application/vnd.google-apps.folder'");
+        	<%}%>
+        	files = <%=cid%>_request.execute();
+        }
+        <%}%>
         <%=cid%>_result.addAll(files.getItems());
         <%=cid%>_request.setPageToken(files.getNextPageToken());
       } catch (IOException e) {
@@ -116,16 +139,30 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
              <%=cid%>_request.getPageToken().length() > 0);
    <%} else {%>
     java.util.List<String> subfolders = new java.util.ArrayList<String>(); 
-	subfolders.add("<%=folderID%>");
+    <% if(!folderName.equals("root")) {%>
+   		<%=cid%>_request.setQ("title = '<%=folderName%>' and mimeType = 'application/vnd.google-apps.folder'");
+   		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_request.execute();
+   		if (<%=cid%>_files.getItems().size() > 1) {
+        	throw new Exception("More then one folder with name " + "\"<%=folderName%>\" found!");
+        } else if (<%=cid%>_files.getItems().isEmpty()) {
+        	throw new Exception("No folder with name " + "\"<%=folderName%>\" found!");
+        } else {
+        	subfolders.add(<%=cid%>_files.getItems().get(0).getId());
+   		}
+   		<%=cid%>_request = <%=cid%>_client.files().list();
+    <%} else {%>
+	subfolders.add("<%=folderName%>");
+	<%}%>
 	while (subfolders.size()>0) {
     do {
       try {
-	  <%if ("DIRECTORIES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
-	  		    <%=cid%>_request.setQ("'"+subfolders.get(0)+"' in parents and mimeType = 'application/vnd.google-apps.folder'");
-      <%} else {%>
-			    <%=cid%>_request.setQ("'"+subfolders.get(0)+"' in parents"); // check all files and folders
-      <%}%>
+	  	<%if ("DIRECTORIES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
+	  		<%=cid%>_request.setQ("'"+subfolders.get(0)+"' in parents and mimeType = 'application/vnd.google-apps.folder'");
+     	<%} else {%>
+      		<%=cid%>_request.setQ("'"+subfolders.get(0)+"' in parents"); // check all files and folders
+      	<%}%>
         com.google.api.services.drive.model.FileList files = <%=cid%>_request.execute();
+       
 		for (com.google.api.services.drive.model.File file : files.getItems()) {
 		  if (file.getMimeType().equals("application/vnd.google-apps.folder")) {
 			subfolders.add(file.getId());
@@ -163,17 +200,17 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 			<%=dataOutputConnection%>.id = <%=cid%>_temp.getId();
 			<%=dataOutputConnection%>.title = <%=cid%>_temp.getTitle();
 			<%=dataOutputConnection%>.mimeType = <%=cid%>_temp.getMimeType;
-			<%=dataOutputConnection%>.lastModified = <%=cid%>_temp.getModifiedDate();			
+			<%=dataOutputConnection%>.lastModified = <%=cid%>_temp.getModifiedDate().toStringRfc3339();			
 			<%=dataOutputConnection%>.size = <%=cid%>_temp.getFileSize();	
 			<%=dataOutputConnection%>.selfLink = <%=cid%>_temp.getSelfLink();	
 			<%=dataOutputConnection%>.parents = <%=cid%>_temp.getParents();			
 <%}%>
 			globalMap.put("<%=cid%>_ID",<%=cid%>_temp.getId());
 			globalMap.put("<%=cid%>_TITLE",<%=cid%>_temp.getTitle());
-			globalMap.put("<%=cid%>_MIMETYPE",<%=cid%>_temp.getMimeType());
-			globalMap.put("<%=cid%>_LASTMODIFIED",<%=cid%>_temp.getModifiedDate());
+			globalMap.put("<%=cid%>_MIME_TYPE",<%=cid%>_temp.getMimeType());
+			globalMap.put("<%=cid%>_LAST_MODIFIED",<%=cid%>_temp.getModifiedDate().toStringRfc3339());
 			globalMap.put("<%=cid%>_SIZE",<%=cid%>_temp.getFileSize());
-			globalMap.put("<%=cid%>_SELFLINK",<%=cid%>_temp.getSelfLink());
+			globalMap.put("<%=cid%>_SELF_LINK",<%=cid%>_temp.getSelfLink());
 			globalMap.put("<%=cid%>_PARENTS",<%=cid%>_temp.getParents());
 			try{
 

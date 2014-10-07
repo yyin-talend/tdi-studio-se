@@ -81,11 +81,11 @@
     </PARAMETER>
     
     <PARAMETER NAME="SOURCE_DIRECTORY"  FIELD="TEXT"  NUM_ROW="60" REQUIRED="true"  SHOW_IF=" (MOVE_DIRECTORY == 'true') OR (COPY_DIRECTORY == 'true')">
-      <DEFAULT>"All Files/"</DEFAULT>
+      <DEFAULT>"All Files/source"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="DESTINATION_DIRECTORY"  FIELD="TEXT"  NUM_ROW="62" REQUIRED="true">
-      <DEFAULT>"All Files/"</DEFAULT>
+      <DEFAULT>"All Files/destination"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="RENAME" FIELD="CHECK" NUM_ROW="64"  SHOW_IF=" (MOVE_DIRECTORY == 'false')">

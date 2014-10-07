@@ -23,7 +23,7 @@ imports="
 		String connection = helper.getStringParam("__CONNECTION__");
 	    String connectionKey = "\"conn_" + connection+"\"";
 
-		String fileId = helper.getStringParam("__FILE_ID__");
+		String fileName = helper.getStringParam("__FILE_NAME__");
 
 		boolean storeToLocal = helper.getBoolParam("__STORE_TO_LOCAL__");
 		String outputFile = helper.getStringParam("__OUTPUT__");
@@ -94,31 +94,46 @@ com.google.api.services.drive.Drive <%=cid%>_client;
 		}
 %>
 	try{
-		com.google.api.services.drive.model.File <%=cid%>_file = <%=cid%>_client.files().get(<%=fileId%>).execute();
-		com.google.api.client.http.HttpResponse resp = <%=cid%>_client.getRequestFactory().buildGetRequest(new com.google.api.client.http.GenericUrl(<%=cid%>_file.getDownloadUrl())).execute();
+		com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
+		<%=cid%>_listRequest.setQ("title = '" + <%=fileName%> + "' and mimeType != 'application/vnd.google-apps.folder'");
+		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
+		if (<%=cid%>_files.getItems().size() > 1)
+		{
+			throw new Exception("More then one file found with name \"" + <%=fileName%> + "\" ");
+		}
+		else if (<%=cid%>_files.getItems().isEmpty())
+		{
+			throw new Exception("No file found with name \"" + <%=fileName%> + "\" ");
+		}
+		else
+		{
+			String <%=cid%>_fileId = <%=cid%>_files.getItems().get(0).getId();
+			com.google.api.services.drive.model.File <%=cid%>_file = <%=cid%>_client.files().get(<%=cid%>_fileId).execute();
+			com.google.api.client.http.HttpResponse resp = <%=cid%>_client.getRequestFactory().buildGetRequest(new com.google.api.client.http.GenericUrl(<%=cid%>_file.getDownloadUrl())).execute();
 <%
 		if (storeToLocal){
 %>
-		java.io.File <%=cid%>_outputFile = new java.io.File(<%=outputFile%>);
-		java.io.FileOutputStream <%=cid%>_outputStream = new java.io.FileOutputStream(<%=cid%>_outputFile);
-		resp.download(<%=cid%>_outputStream);
+			java.io.File <%=cid%>_outputFile = new java.io.File(<%=outputFile%>);
+			java.io.FileOutputStream <%=cid%>_outputStream = new java.io.FileOutputStream(<%=cid%>_outputFile);
+			resp.download(<%=cid%>_outputStream);
 <%
 		}
 		if(dataOutputConnection != null){
 %>
-		<%=dataOutputConnection%>.content = 
+			<%=dataOutputConnection%>.content = 
 <%
 			if(storeToLocal){
 %>
-			new java.io.FileInputStream(<%=cid%>_outputFile);
+				new java.io.FileInputStream(<%=cid%>_outputFile);
 <%
 			}else{
 %>
-			resp.getContent();
+				resp.getContent();
 <%
 			}
 		}
 %>
+		}
 	}catch (java.lang.Exception e)
 	{
 <%
