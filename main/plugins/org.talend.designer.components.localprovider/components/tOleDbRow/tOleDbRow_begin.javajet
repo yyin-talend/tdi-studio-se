@@ -21,7 +21,7 @@
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 %>
 
-<% logtpl.info("\"Try to create an OleDb instance with assembly name: \"",assemblyName,"\", driver class name: \"",className,"\", database name: \"",dbname,"\".\""); %>
+<% logtpl.info("\"Try to create an OleDb instance with assembly name: \"",assemblyName,"\", driver class name: \"",className,"\", connection string: \"",dbname,"\".\""); %>
 org.talend.net.Object conn_<%=cid%> = org.talend.net.Object.createInstance(<%=assemblyName%>,<%=className%>,new java.lang.Object[] {<%=dbname%>});
 <% logtpl.info("\"Created an OleDb instance successfully.\""); %>
 

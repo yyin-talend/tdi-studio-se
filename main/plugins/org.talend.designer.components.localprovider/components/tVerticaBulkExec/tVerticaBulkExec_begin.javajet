@@ -168,7 +168,8 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
 		;
 		
 		<%if(isLog4jEnabled){%>
-            log.info("<%=cid%> - Bulk inserting." );
+			log.debug("<%=cid%> - Bulk SQL:"+sql_<%=cid%>+".");
+			log.info("<%=cid%> - Bulk inserting data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>." );
         <%}%>
     	fis_<%=cid %> = new java.io.FileInputStream(new java.io.File(<%=file%>));
 <%
@@ -180,7 +181,7 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
 		vcs_<%=cid%>.execute();
 		vcs_<%=cid%>.finish();
 		<%if(isLog4jEnabled){%>
-            log.info("<%=cid%> - Bulk load finished.");
+            log.info("<%=cid%> - Bulk insert data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has finished.");
         <%}%>
 		long copyNumber_<%=cid%> = vcs_<%=cid%>.getRowCount();
 		
@@ -202,12 +203,12 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
 		stmt_accept_reject_<%=cid %>.close();
 		
 		if(<%=exitOnNoRows%> && copyNumber_<%=cid%> <= 0){
-			throw new RuntimeException("No record was loaded into component <%=cid %>");
+			throw new RuntimeException("No record was inserted into component <%=cid %>");
 		}else{
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Number of records loaded into table " + tableName_<%=cid %> + " by <%=cid %>: " + (copyNumber_<%=cid%>)+".");
+				log.info("<%=cid%> - Number of records inserted into table <%=manager.getLProtectedChar()%>" + tableName_<%=cid %> + "<%=manager.getRProtectedChar()%> by <%=cid %>: " + (copyNumber_<%=cid%>)+".");
 			<%}%>
-			System.out.println("Number of records loaded into table " + tableName_<%=cid %> + " by <%=cid %>: " + (copyNumber_<%=cid%>));
+			System.out.println("Number of records inserted into table <%=manager.getLProtectedChar()%>" + tableName_<%=cid %> + "<%=manager.getRProtectedChar()%> by <%=cid %>: " + (copyNumber_<%=cid%>));
 		}
 		
 		globalMap.put("<%=globalCid %>_ACCEPTED_ROW_NUMBER",accetpedRowNumber_<%=cid %>);
@@ -225,7 +226,7 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
 	    ((com.vertica.PGStatement) stmt_<%=cid %>).addStreamToCopyIn(fis_<%=cid %>);
 	    ((com.vertica.PGStatement) stmt_<%=cid %>).finishCopyIn();
 	    <%if(isLog4jEnabled){%>
-            log.info("<%=cid%> - Bulk load finished.");
+            log.info("<%=cid%> - Bulk insert data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has finished.");
         <%}%>
 		rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
 	    int nbLineAfterLoad_<%=cid %> = 0;
@@ -234,12 +235,12 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
 		}
 		stmt_<%=cid %>.close();
 		if(<%=exitOnNoRows%> && nbLineBeforeLoad_<%=cid %> >= nbLineAfterLoad_<%=cid %>){
-			throw new RuntimeException("No record was loaded in component <%=cid %>");
+			throw new RuntimeException("No record was inserted in component <%=cid %>");
 		}else{
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Number of records loaded to table " + tableName_<%=cid %> + " by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>)+".");
+				log.info("<%=cid%> - Number of records inserted to table <%=manager.getLProtectedChar()%>" + tableName_<%=cid %> + "<%=manager.getRProtectedChar()%> by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>)+".");
 			<%}%>
-			System.out.println("Number of records loaded to table " + tableName_<%=cid %> + " by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>));
+			System.out.println("Number of records inserted to table <%=manager.getLProtectedChar()%>" + tableName_<%=cid %> + "<%=manager.getRProtectedChar()%> by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>));
 		}
 		
 		globalMap.put("<%=globalCid %>_ACCEPTED_ROW_NUMBER",nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>);

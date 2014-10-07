@@ -28,7 +28,7 @@
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
     List<IMetadataTable> metadatas = node.getMetadataList();
 %>
-<% logtpl.info("\"Try to create an OleDb instance with assembly name: \"",assemblyName,"\", driver class name: \"",className,"\", connUrl: \"","\", connUrl\"","\".\""); %>
+<% logtpl.info("\"Try to create an OleDb instance with assembly name: \"",assemblyName,"\", driver class name: \"",className,"\", connection string: \"",connUrl,"\".\""); %>
 org.talend.net.Object conn_<%=cid%> = org.talend.net.Object.createInstance(<%=assemblyName%>,<%=className%>, 
 new java.lang.Object[] { 
 <%=connUrl%> 

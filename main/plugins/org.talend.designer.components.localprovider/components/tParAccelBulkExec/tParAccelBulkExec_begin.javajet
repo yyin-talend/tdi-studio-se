@@ -248,7 +248,7 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction))
     java.sql.Statement stmtXPX_<%=cid %> = conn_<%=cid %>.createStatement();
     stmtXPX_<%=cid %>.execute(xpxSQL_<%=cid%>);
     <%if(isLog4jEnabled){%>
-		log.debug("<%=cid%> - Execute parallel bulk SQL finished.");
+		log.debug("<%=cid%> - Execute parallel bulk SQL has finished.");
 	<%}%>
     stmtXPX_<%=cid %>.close();    
 <%
