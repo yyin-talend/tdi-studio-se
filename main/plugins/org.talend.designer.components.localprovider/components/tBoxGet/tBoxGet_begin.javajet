@@ -149,17 +149,15 @@ if(!"true".equals(useExistingConn)){
 		try {
 <% if("true".equals(storeToLocal)) { %>
 		    java.io.File <%=cid%>_f = new java.io.File(<%=outputFolder%>);
-			if (!<%=cid%>_f.exists())
-			{
-				<%=cid%>_f.mkdirs();
+			if(!<%=cid%>_f.getParentFile().exists()){
+				<%=cid%>_f.getParentFile().mkdirs();
 			}
-			String <%=cid%>_outputPath = <%=cid%>_f.getAbsolutePath() + java.io.File.separator + <%=cid%>_boxFile.getName();
-			<%=cid%>_fos = new java.io.FileOutputStream(<%=cid%>_outputPath);
+			<%=cid%>_fos = new java.io.FileOutputStream(<%=cid%>_f);
 			<%=cid%>_client.getFilesManager().downloadFile(<%=cid%>_boxFile.getId(), new java.io.OutputStream[] {<%=cid%>_fos}, null, new com.box.restclientv2.requestsbase.BoxDefaultRequestObject());
 			
 	<%if(dataOutputConnection != null){%>			
-			<%=dataOutputConnection%>.fileName = <%=cid%>_boxFile.getName();
-			<%=dataOutputConnection%>.content = new java.io.FileInputStream(<%=cid%>_outputPath);
+			<%=dataOutputConnection%>.fileName = <%=cid%>_f.getName();
+			<%=dataOutputConnection%>.content = new java.io.FileInputStream(<%=cid%>_f);
 	<%} else {%>
 			globalMap.put("<%=cid %>_INPUT_STREAM", new java.io.FileInputStream(<%=cid%>_outputPath));
 			globalMap.put("<%=cid %>_OUTPUT_PATH",<%=cid%>_outputPath);
