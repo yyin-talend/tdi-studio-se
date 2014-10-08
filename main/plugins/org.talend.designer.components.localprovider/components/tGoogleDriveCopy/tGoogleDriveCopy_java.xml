@@ -116,10 +116,6 @@
 			<COLUMN NAME="destinationFileID" TYPE="id_String" />
 		</TABLE>
 	</PARAMETER>
-    
-    <PARAMETER NAME="DIE_ON_ERROR" FIELD="CHECK" NUM_ROW="100">
-		<DEFAULT>false</DEFAULT>
-	</PARAMETER>
 
    </PARAMETERS>
    

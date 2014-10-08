@@ -93,7 +93,6 @@ com.google.api.services.drive.Drive <%=cid%>_client;
 <%
 		}
 %>
-	try{
 		com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
 		<%=cid%>_listRequest.setQ("title = '" + <%=fileName%> + "' and mimeType != 'application/vnd.google-apps.folder'");
 		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
@@ -134,17 +133,3 @@ com.google.api.services.drive.Drive <%=cid%>_client;
 		}
 %>
 		}
-	}catch (java.lang.Exception e)
-	{
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-			System.err.println(e);
-<%
-		}
-%>
-	}
