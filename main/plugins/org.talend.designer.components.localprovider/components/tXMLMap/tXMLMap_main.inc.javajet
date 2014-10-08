@@ -151,7 +151,7 @@ skeleton="tXMLMap_java.skeleton"
 	<%
 	for(IConnection conn : inputConnections) { // find the input main table
 		EConnectionType connectionType = conn.getLineStyle();
-		if (connectionType == EConnectionType.FLOW_MAIN) {
+		if (connectionType == EConnectionType.FLOW_MAIN && !inputTables.isEmpty()) {
 			InputXmlTree inputTable = inputTables.get(0);
 			if(!inputTable.isLookup()) { // lookup is used to sign it is lookup table
     			mainInputTable = inputTable;
