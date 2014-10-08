@@ -158,9 +158,6 @@ if(!"true".equals(useExistingConn)){
 	<%if(dataOutputConnection != null){%>			
 			<%=dataOutputConnection%>.fileName = <%=cid%>_f.getName();
 			<%=dataOutputConnection%>.content = new java.io.FileInputStream(<%=cid%>_f);
-	<%} else {%>
-			globalMap.put("<%=cid %>_INPUT_STREAM", new java.io.FileInputStream(<%=cid%>_outputPath));
-			globalMap.put("<%=cid %>_OUTPUT_PATH",<%=cid%>_outputPath);
 	<%}%>
 <%} else {%>
 			<%=cid%>_fos = new java.io.ByteArrayOutputStream();
@@ -173,6 +170,7 @@ if(!"true".equals(useExistingConn)){
 			<%=dataOutputConnection%>.content = <%=cid%>_bais;	
 <%} else {%>
 			globalMap.put("<%=cid %>_INPUT_STREAM", <%=cid%>_bais);
+			globalMap.put("<%=cid %>_FILE_NAME", <%=cid%>_boxFile.getName());
 <%}
 }%>
 			
