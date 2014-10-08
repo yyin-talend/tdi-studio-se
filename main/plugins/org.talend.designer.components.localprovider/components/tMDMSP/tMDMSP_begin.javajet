@@ -25,7 +25,7 @@ imports="
 	<%if(!useExistingConn){%>
 		org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new org.talend.mdm.webservice.XtentisServiceLocator();
 		xtentisService_<%=cid %>.setXtentisPortEndpointAddress(<%=mdmUrl %>);
-		org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = xtentisService_<%=cid %>.getXtentisPort();    
+		org.talend.mdm.webservice.XtentisPort_PortType xtentisWS_<%=cid %> = xtentisService_<%=cid %>.getXtentisPort();    
 		org.talend.mdm.webservice.XtentisBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.XtentisBindingStub)xtentisWS_<%=cid %>;
 	
 		// Authentification
@@ -45,7 +45,7 @@ imports="
 <%
 	}else{
 %>
-		org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort)globalMap.get("<%=conn%>");
+		org.talend.mdm.webservice.XtentisPort_PortType xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort_PortType)globalMap.get("<%=conn%>");
 <%
 	}
 %>
