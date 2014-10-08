@@ -101,19 +101,7 @@ imports="
 				com.google.api.client.http.InputStreamContent <%=cid%>_upload_content = new com.google.api.client.http.InputStreamContent(null, <%=cid%>_uploader_input);
 				<%=cid%>_file = <%=cid%>_client.files().insert(<%=cid%>_file, <%=cid%>_upload_content).execute();
 			}
-	}catch(Exception e){
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-			System.err.println(e);
-<%
-		}
-%>
-	} finally {
+	}finally {
 		if (<%=cid%>_uploader_input != null)
 		{
 			<%=cid%>_uploader_input.close();

@@ -91,8 +91,6 @@ if(!useExistingConn) {
 <%
 }
 %>
-try
-{
     String fileName = <%=fileName%>;
 	if(fileName == null || "".equals(fileName))
 	{
@@ -127,19 +125,4 @@ try
 		(<%=cid%>_fileId).execute();
 		globalMap.put("<%=cid%>_FILEID", <%=cid%>_fileId);	
 	}
-}
-catch (java.lang.Exception e)
-{
-<%
-	if(dieOnError) {
-%>
-	throw e;
-<%
-	} else {
-%>
-	System.err.println(e);
-<%
-	}
-%>
-}
 			

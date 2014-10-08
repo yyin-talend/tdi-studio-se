@@ -102,8 +102,6 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 	<%=cid%>_client = (com.google.api.services.drive.Drive)globalMap.get(<%=connectionKey%>);
 <%}%>
 
-	try
-	{
 		com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
 		<%
         if (isFile) {
@@ -208,20 +206,5 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 		globalMap.put("<%=cid%>_SOURCE_FILEID", <%=cid%>_fileId);
 		globalMap.put("<%=cid%>_DESTINATION_FILEID", resultFile.getId());
 		}
-	}
-	}
-	catch (java.lang.Exception e)
-	{
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-			System.err.println(e);
-<%
-		}
-%>
 	}
 			

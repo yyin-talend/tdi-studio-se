@@ -137,17 +137,6 @@ imports="
 		}
 %>
 	}
-	}catch(Exception e){
-<%
-		if(dieOnError) {
-%>
-			throw e;
-<%
-		} else {
-%>
-			System.err.println(e);
-<%
-		}
-%>
+	}finally{
 	}
 <%}%>
