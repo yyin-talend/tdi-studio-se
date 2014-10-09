@@ -1579,6 +1579,7 @@ public class DataProcess implements IGeneratingProcess {
     @Override
     public void buildFromGraphicalProcess(List<INode> graphicalNodeList) {
         initialize();
+
         if (graphicalNodeList.size() == 0) {
             return;
         }
@@ -1770,6 +1771,7 @@ public class DataProcess implements IGeneratingProcess {
             dataNodeList.remove(preStaLogConNode);
             dataNodeList.add(0, preStaLogConNode);
         }
+
         checkRefList = null;
         checkMultipleMap = null;
         checktUniteMap = null;
@@ -3004,7 +3006,7 @@ public class DataProcess implements IGeneratingProcess {
         ((Process) duplicatedProcess).setComponentsType(process.getComponentsType());
         duplicatedProcess.setDuplicate(true);
         duplicatedProcess.setActivate(false);
-        ((Process) duplicatedProcess).setGeneratingProcess(this);
+        // ((Process) duplicatedProcess).setGeneratingProcess(this);
         ((Process) duplicatedProcess).setProcessModified(false);
         ((Process) duplicatedProcess).setNeededRoutines(process.getNeededRoutines());
         ((Process) duplicatedProcess).setNeededPigudf(process.getNeededPigudf());
