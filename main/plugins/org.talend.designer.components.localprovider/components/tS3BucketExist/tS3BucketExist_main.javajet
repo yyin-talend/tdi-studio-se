@@ -21,7 +21,11 @@ imports="
 		<%
 		if(isLog4jEnabled){
 		%>	
-			log.info("<%=cid%> - Bucket "+<%=bucket%>+" is exists.");
+			if(bucketExist_<%=cid%>){
+				log.info("<%=cid%> - Bucket "+<%=bucket%>+" exists.");
+			}else{
+				log.info("<%=cid%> - Bucket "+<%=bucket%>+" does not exist.");
+			}
 		<%
 		}
 		%>

@@ -7,10 +7,11 @@ imports="
     java.util.List
 " 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+LogUtil logtpl = new LogUtil(node);
 String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -34,7 +35,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);		
 		<%if(isCreateDir) {%>
-		file_<%=cid %>.getParentFile().mkdirs();
+        java.io.File parentFile_<%= cid %> = file_<%=cid %>.getParentFile();
+        if(parentFile_<%= cid %> != null && !parentFile_<%= cid %>.exists()){
+            String absolutePath_<%= cid %> = parentFile_<%= cid %>.getAbsolutePath();
+            <% logtpl.info("\"The directory '\"",logtpl.var("absolutePath"),"\"' doesn't exist,try to create it.\""); %>
+            if(parentFile_<%= cid %>.mkdirs()){
+                <% logtpl.info("\"The directory '\"",logtpl.var("absolutePath"),"\"' has been created successfully.\""); %>
+                System.out.println("The directory '"+absolutePath_<%=cid%>+"' has been created successfully.");
+            }else{
+                <% logtpl.error("\"Fail to create directory '\"",logtpl.var("absolutePath"),"\"'.\""); %>
+                System.err.println("Fail to create directory '"+absolutePath_<%=cid%>+"'.");
+            }
+        }
 		<%}%>
 				
 		com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
