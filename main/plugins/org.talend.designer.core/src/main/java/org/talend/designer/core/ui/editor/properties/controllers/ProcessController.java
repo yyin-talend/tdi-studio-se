@@ -484,6 +484,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         } else {
             List<ERepositoryObjectType> repObjectTypes = new ArrayList<ERepositoryObjectType>();
             repObjectTypes.add(ERepositoryObjectType.PROCESS);
+            repObjectTypes.add(ERepositoryObjectType.PROCESS_MR);
             RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), repObjectTypes, procssId);
 
             // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful

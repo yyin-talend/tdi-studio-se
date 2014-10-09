@@ -385,7 +385,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 							<%}%>
 	                        dir_<%=cid%>.mkdirs();
 	                    	<%if(isLog4jEnabled){%>
-								log.info("<%=cid%> - The directoy '"+ dir_<%=cid%>.getCanonicalPath() + "' has been created successfully.");
+								log.info("<%=cid%> - The directory '"+ dir_<%=cid%>.getCanonicalPath() + "' has been created successfully.");
 							<%}%>
 	                    }
 	                }

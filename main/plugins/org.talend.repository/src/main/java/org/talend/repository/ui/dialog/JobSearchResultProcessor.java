@@ -103,6 +103,7 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
     protected List<ERepositoryObjectType> getTypes() {
         List<ERepositoryObjectType> list = new ArrayList<ERepositoryObjectType>(50);
         list.add(ERepositoryObjectType.PROCESS);
+        list.add(ERepositoryObjectType.PROCESS_MR);
         return list;
     }
 }

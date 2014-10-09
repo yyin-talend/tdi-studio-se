@@ -8,24 +8,20 @@ imports="
 	java.util.Map
 "
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+log = new LogUtil(node);
 
 String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 String cid = origin;
-boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
-
-
 java.util.Collection<AggOperationStruct_<%=cid %>> values_<%=cid %> = hash_<%=cid %>.values();
 
 globalMap.put("<%=cid %>_NB_LINE", values_<%=cid %>.size());
 
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Retrieving the aggregation results.");
-<%}%>
+<%log.info(log.str("Retrieving the aggregation results."));%>
 for(AggOperationStruct_<%=cid %> aggregated_row_<%=cid %> : values_<%=cid %>) { // G_AggR_600
 
 

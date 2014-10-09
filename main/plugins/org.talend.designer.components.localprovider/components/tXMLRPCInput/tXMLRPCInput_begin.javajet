@@ -13,9 +13,11 @@ imports="
   	java.util.Map
 "
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+log = new LogUtil(node);
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -68,7 +70,9 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
         };  
         Object[] results_<%=cid %> = null;
 	    int nb_line_<%=cid %> = 0;	 
+	    <%log.debug(log.str("Invoking the method " + method + "."));%>
         Object reValue<%=cid%> = client<%=cid%>.execute(<%=method%>, params_<%=cid %>);
+        <%log.debug(log.str("Invoke the method " + method + " successful."));%>
         
         Object[] tempArray_<%=cid %> = null;
 		if (reValue<%=cid%> instanceof Object[]) {			
