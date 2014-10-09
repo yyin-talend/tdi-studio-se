@@ -33,7 +33,8 @@ public class KeyByFunction implements PairFunction<List<Object>, List<Object>, L
 		if (colsId != null && colsId.size() > 0) {
 			key = new ArrayList<Object>(colsId.size());
 			for (int i = 0; i < colsId.size(); i++) {
-				key.add(i, d.get(colsId.get(i)));
+			    Object tmp = d.get(colsId.get(i));
+				key.add(i, tmp!=null?String.valueOf(tmp):tmp);
 			}
 		}
 
