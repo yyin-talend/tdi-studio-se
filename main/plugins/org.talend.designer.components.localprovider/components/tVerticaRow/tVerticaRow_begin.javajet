@@ -64,7 +64,7 @@ imports="
 boolean whetherReject_<%=cid%> = false;
 
 <%
-if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
+if(!("true").equals(useExistingConn) && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 
 int commitEvery_<%=cid%> = <%=commitEvery%>;
