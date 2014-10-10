@@ -13,9 +13,11 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -449,23 +451,51 @@ public class ChangeMetadataCommand extends Command {
                         if (newSize < size) {
                             size = newSize;
                         }
+                        IODataComponent output = new IODataComponent(outgoingConnection, relativeNewOutputMetadata);
+                        if (newListColumns != null) {
+                            List<ColumnNameChanged> newColumnsList = output.getNewMetadataColumns();
+                            // new added columns list
+                            Set<String> newAddedColumns = new HashSet<String>();
+                            // newest columns after user changed
+                            Set<String> newestColumns = new HashSet<String>();
 
-                        for (int i = 0; i < size; i++) {
-                            IMetadataColumn metadataColumn = oldListColumns.get(i);
-                            IMetadataColumn newMetadataColumn = newListColumns.get(i);
-                            if (metadataColumn != null && newMetadataColumn != null) {
-                                String oldLabel = metadataColumn.getLabel();
-                                String newLabel = newMetadataColumn.getLabel();
-                                if (oldLabel != null && !oldLabel.equals(newLabel)) {
-                                    columnNameChanges.add(new ColumnNameChanged(oldLabel, newLabel));
+                            // init
+                            if (newColumnsList != null) {
+                                for (ColumnNameChanged columnChanged : newColumnsList) {
+                                    newAddedColumns.add(columnChanged.getNewName());
+                                }
+                            }
+                            for (IMetadataColumn metadataColumn : newListColumns) {
+                                newestColumns.add(metadataColumn.getLabel());
+                            }
+
+                            // check
+                            for (int i = 0; i < size; i++) {
+                                IMetadataColumn oldMetadataColumn = oldListColumns.get(i);
+                                String columnName = oldMetadataColumn.getLabel();
+                                // if this column(before changing) is not exists in the new columns(after changing),
+                                // there are two possible truth: 1. this column has been renamed; 2. this column has
+                                // been removed
+                                if (!newestColumns.contains(columnName)) {
+                                    IMetadataColumn newMetadataColumn = newListColumns.get(i);
+                                    String newColumnNameAtThisIndex = newMetadataColumn.getLabel();
+                                    // if the column at the same position in new table is a new column(two possible
+                                    // truth: 1. an old column's name has been changed; 2. user add a new column);
+                                    // For now, Seems it is very hard to judge whether it is a renamed column or a new
+                                    // column, so we suppose the more possible truth is that it is a renamed column
+                                    if (newAddedColumns.contains(newColumnNameAtThisIndex)) {
+                                        columnNameChanges.add(new ColumnNameChanged(columnName, newColumnNameAtThisIndex));
+                                    }
                                 }
                             }
                         }
+
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IXmlMapService.class)) {
                             final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
                                     IXmlMapService.class);
                             if (service.isXmlMapComponent(target.getExternalNode())) {
-                                IODataComponent output = new IODataComponent(outgoingConnection, relativeNewOutputMetadata);
+                                // IODataComponent output = new IODataComponent(outgoingConnection,
+                                // relativeNewOutputMetadata);
                                 output.setColumnNameChanged(columnNameChanges);
                                 target.metadataInputChanged(output, outgoingConnection.getName());
                             }
@@ -475,7 +505,6 @@ public class ChangeMetadataCommand extends Command {
                             final IDbMapService service = (IDbMapService) GlobalServiceRegister.getDefault().getService(
                                     IDbMapService.class);
                             if (service.isDbMapComponent(target.getExternalNode())) {
-                                IODataComponent output = new IODataComponent(outgoingConnection, relativeNewOutputMetadata);
                                 // TDI-25307:should setColumNameChanged here for ELtDbMap in case the propagate schema
                                 // does not affect it.
                                 output.setColumnNameChanged(columnNameChanges);
