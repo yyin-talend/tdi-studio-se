@@ -180,7 +180,7 @@ imports="
 					%>	
 					if("true".equals(resultMessage_<%=cid%>.get("Success"))){
 						nb_success_<%=cid %>++;
-						<%log.debug(log.str(action + " record "), log.var("nb_line"), log.str(" successful."));%>
+						<%log.debug(log.str(logHelper.upperFirstChar(action) + " record "), log.var("nb_line"), log.str(" successfully."));%>
 						<%
 						if (connsSuccess != null && connsSuccess.size() == 1) {
 							IConnection connSuccess = connsSuccess.get(0);
@@ -223,7 +223,7 @@ imports="
 						%>
 					}else{
 						nb_reject_<%=cid%>++;
-						<%log.debug(log.str(action + " record "), log.var("nb_line"), log.str(" failed"));%>
+						<%log.debug(log.str("Failed to " + action + " record "), log.var("nb_line"), log.str("."));%>
 						<%
 						if (connsReject != null && connsReject.size() == 1) {
 							IConnection connReject = connsReject.get(0);

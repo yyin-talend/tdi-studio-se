@@ -192,5 +192,28 @@ class LogUtil extends BasicLogUtil{
 	<%
     }
 }
+
+class LogHelper{
+	
+	java.util.Map<String, String> pastDict = null;
+	
+	public LogHelper(){
+		pastDict = new java.util.HashMap<String, String>();
+		pastDict.put("insert", "inserted");
+		pastDict.put("update", "updated");
+		pastDict.put("delete", "deleted");
+		pastDict.put("upsert", "upserted");
+	}	
+	
+	public String upperFirstChar(String data){ 
+		return data.substring(0, 1).toUpperCase() + data.substring(1);
+	}
+	
+	public String toPastTense(String data){
+		return pastDict.get(data);
+	}
+}
+LogHelper logHelper = new LogHelper();
+
 LogUtil log = null;
 %>

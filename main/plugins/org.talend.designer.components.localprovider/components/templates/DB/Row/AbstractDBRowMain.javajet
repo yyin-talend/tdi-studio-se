@@ -187,7 +187,7 @@ try {
 				<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 				<%
 			} else {
-				log4jCodeGenerateUtil.logError(node,"e");
+				log4jCodeGenerateUtil.logError(node,"error");
 				%>
 				System.err.print(e.getMessage());
 				<%
