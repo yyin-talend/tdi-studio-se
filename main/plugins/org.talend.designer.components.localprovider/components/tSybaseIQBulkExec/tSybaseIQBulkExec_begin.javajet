@@ -128,6 +128,7 @@ if(columnList != null && columnList.size() > 0) {
 }
 if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) || "TRUNCATE".equals(tableAction)){
 %>
+int deletedCount_<%=cid%> = 0;
 <%@ include file="../templates/_tableActionForBulk.javajet"%>	
 <%   
 }else{//TDI-29007

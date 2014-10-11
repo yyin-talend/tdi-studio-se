@@ -35,13 +35,7 @@ imports="
 				return "com.vertica.Driver";
 			}
 		}
-		
-		public void setCommit(INode node){
-			//always set auto commit to 'false'.
-			useExistingConn="";
-			super.setCommit(node);
-		}
-		
+
 		public void afterConnection(INode node){
 			String use_NB_Line = ElementParameterParser.getValue(node, "__USE_NB_LINE__");
 			if ("NB_LINE_INSERTED".equals(use_NB_Line)) {

@@ -58,6 +58,13 @@
     	
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hadoop.cloudera.cdh5.1"
+        	id="hadoop-core-cdh5.1-lastest"           
+         	name="hadoop-core-2.3.0-mr1-cdh5.1.2.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5.1/lib/hadoop-core-2.3.0-mr1-cdh5.1.2.jar">
+    	</libraryNeeded>
+    	
+	   	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.cloudera.cdh5.1"
         	id="avro-cdh5.1-lastest"       
          	name="avro-1.7.5-cdh5.1.2.jar"
          	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5.1/lib/avro-1.7.5-cdh5.1.2.jar">
@@ -868,6 +875,66 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
+	    <libraryNeededGroup
+	            description="The lastest MR1 libraries of CDH 5.1"
+	            id="MAPREDUCE-MR1-LIB-CDH_5_1_LASTEST"
+	            name="MAPREDUCE-MR1-LIB-CDH_5_1_LASTEST">
+	         <library
+	            id="hadoop-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-core-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="avro-1.5.4.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="guava-11.0.2.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
 		<libraryNeededGroup
 	            description="The lastest Map Reduce libraries of MAPR40X"
 	            id="MAPREDUCE-LIB-MAPR40X_LASTEST"
@@ -1190,6 +1257,69 @@
 	    </libraryNeededGroup>
 	    
 	    <libraryNeededGroup
+	            description="The lastest Sqoop MR1 libraries of CDH 5.1"
+	            id="SQOOP-MR1-LIB-CDH_5_1_LASTEST"
+	            name="SQOOP-MR1-LIB-CDH_5_1_LASTEST">
+	         <library
+	            id="sqoop-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hadoop-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-core-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="avro-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-io-2.4.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="guava-11.0.2.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
 	            description="The lastest Sqoop libraries of MAPR40X"
 	            id="SQOOP-LIB-MAPR40X_LASTEST"
 	            name="SQOOP-LIB-MAPR40X_LASTEST">
@@ -1316,6 +1446,69 @@
 	         </library>
 	         <library
 	             id="hadoop-yarn-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="avro-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	         <library
+	             id="snappy-java-1.0.5.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+	            description="The lastest Pig with MR1 libraries of CDH 5.1"
+	            id="PIG-MR1-LIB-CDH_5_1_LASTEST"
+	            name="PIG-MR1-LIB-CDH_5_1_LASTEST">
+	         <library
+	            id="pig-withouthadoop-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hadoop-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-core-cdh5.1-lastest">
 	         </library>
 	         <library
 	             id="avro-cdh5.1-lastest">
@@ -1673,6 +1866,114 @@
 	         </library>
 	         <library
 	             id="hadoop-yarn-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="avro-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-httpclient-3.0.1.jar">
+	         </library>
+	         <library
+	             id="httpcore-4.2.5.jar">
+	         </library>
+	         <library
+	             id="httpclient-4.2.5.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	         <library
+	             id="commons-io-2.4.jar">
+	         </library>
+	         <library
+	             id="antlr-runtime-3.4.jar">
+	         </library>
+	         <library
+	             id="datanucleus-api-jdo-3.2.1.jar">
+	         </library>
+	         <library
+	             id="datanucleus-core-3.2.2.jar">
+	         </library>
+	         <library
+	             id="datanucleus-rdbms-3.2.1.jar">
+	         </library>
+	         <library
+	             id="derby-10.4.2.0.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+	            description="The lastest Hive MR1 libraries of CDH 5.1"
+	            id="HIVE-MR1-LIB-CDH_5_1_LASTEST"
+	            name="HIVE-MR1-LIB-CDH_5_1_LASTEST">
+	         <library
+	            id="hive-metastore-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hive-exec-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hive-jdbc-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hive-service-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="jdo-api-3.0.1.jar">
+	         </library>
+	         <library
+	             id="libthrift-0.9.0.cloudera.2.jar">
+	         </library>
+	         <library
+	             id="libfb303-0.9.0.jar">
+	         </library>
+	         <library
+	             id="guava-11.0.2.jar">
+	         </library>
+	         <library
+	            id="hadoop-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-core-cdh5.1-lastest">
 	         </library>
 	         <library
 	             id="avro-cdh5.1-lastest">

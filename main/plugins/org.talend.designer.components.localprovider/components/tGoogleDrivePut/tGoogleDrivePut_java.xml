@@ -117,31 +117,30 @@
       	<!-- same as tGoogleDriveConnection -->
     		   <IMPORT NAME="google-api-client"
                     MODULE="google-api-client-1.19.0.jar"
-                    UrlPath="platform:/plugin/org.talend.designer.components.localprovider/components/tGoogleDriveConnection/google-api-client-1.19.0.jar"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.google/lib/google-api-client-1.19.0.jar"
                     REQUIRED="true" />
                <IMPORT NAME="google-api-services-drive-v2"
                     MODULE="google-api-services-drive-v2-rev144-1.19.0.jar"
-                    UrlPath="platform:/plugin/org.talend.designer.components.localprovider/components/tGoogleDriveConnection/google-api-services-drive-v2-rev144-1.19.0.jar"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.google/lib/google-api-services-drive-v2-rev144-1.19.0.jar"
                     REQUIRED="true" />
                <IMPORT NAME="google-http-client"
                     MODULE="google-http-client-1.19.0.jar"
-                    UrlPath="platform:/plugin/org.talend.designer.components.localprovider/components/tGoogleDriveConnection/google-http-client-1.19.0.jar"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.google/lib/google-http-client-1.19.0.jar"
                     REQUIRED="true" />
                <IMPORT NAME="google-http-client-jackson2"
                     MODULE="google-http-client-jackson2-1.19.0.jar"
-                    UrlPath="platform:/plugin/org.talend.designer.components.localprovider/components/tGoogleDriveConnection/google-http-client-jackson2-1.19.0.jar"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.google/lib/google-http-client-jackson2-1.19.0.jar"
                     REQUIRED="true" />
                <IMPORT NAME="google-oauth-client"
                     MODULE="google-oauth-client-1.19.0.jar"
-                    UrlPath="platform:/plugin/org.talend.designer.components.localprovider/components/tGoogleDriveConnection/google-oauth-client-1.19.0.jar"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.google/lib/google-oauth-client-1.19.0.jar"
                     REQUIRED="true" />
                <IMPORT NAME="guava-jdk5"
                     MODULE="guava-jdk5-13.0.jar"
-                    UrlPath="platform:/plugin/org.talend.designer.components.localprovider/components/tGoogleDriveConnection/guava-jdk5-13.0.jar"
+                    UrlPath="platform:/plugin/org.talend.libraries.guava/lib/guava-jdk5-13.0.jar"
                     REQUIRED="true" />
                <IMPORT NAME="jsr305-"
                     MODULE="jsr305-1.3.9.jar"
-                    UrlPath="platform:/plugin/org.talend.designer.components.localprovider/components/tGoogleDriveConnection/jsr305-1.3.9.jar"
                     REQUIRED="true" />
 
                <IMPORT NAME="jackson-core"
