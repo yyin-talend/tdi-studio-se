@@ -662,6 +662,14 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         }
                         if (itemsValue[curCol] instanceof IElementParameter) {
                             IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
+                            boolean hideValue = false;
+                            if (!tmpParam.isReadOnly()) {
+                                if ((tmpParam.getReadOnlyIf() != null || tmpParam.getNotReadOnlyIf() != null)
+                                        && tmpParam.isReadOnly(element.getElementParameters())) {
+                                    hideValue = true;
+                                }
+                            }
+
                             switch (tmpParam.getFieldType()) {
                             case CONTEXT_PARAM_NAME_LIST:
                             case CLOSED_LIST:
@@ -671,6 +679,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             case LOOKUP_COLUMN_LIST:
                             case PREV_COLUMN_LIST:
                             case DBTYPE_LIST:
+                                if (hideValue) {
+                                    return "";//$NON-NLS-1$
+                                }
                                 String[] namesSet = tmpParam.getListItemsDisplayName();
                                 if (namesSet.length == 0) {
                                     return tmpParam.getDefaultClosedListValue();
@@ -692,11 +703,17 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 }
                                 return null;
                             case CHECK:
+                                if (hideValue) {
+                                    return false;
+                                }
                                 if (value instanceof String) {
                                     return new Boolean((String) value);
                                 }
                                 return value;
                             case RADIO:
+                                if (hideValue) {
+                                    return false;
+                                }
                                 if (value instanceof String) {
                                     return new Boolean((String) value);
                                 }
@@ -707,6 +724,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 }
                                 return value; // already RGB
                             default: // TEXT
+                                if (hideValue) {
+                                    return "";//$NON-NLS-1$
+                                }
                                 return value;
                             }
                         }
