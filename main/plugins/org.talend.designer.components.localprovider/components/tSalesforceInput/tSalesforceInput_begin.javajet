@@ -82,7 +82,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					if(globalMap.get("conn_<%=connection%>") == null){
 						throw new RuntimeException("Get null connection from <%=connection%>");
 					}
-					<%log.info(log.str("use exsit connection : " + connection + "."));%>
+					<%log.info(log.str("Use exist connection : " + connection + "."));%>
 					sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>"); 
 				<%
 				}else{
@@ -179,7 +179,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						throw new RuntimeException("Get null connection from <%=connection %>");
 					}
 					sforceConn_<%=cid%> = (org.talend.salesforceBulk.SforceBulkConnection)globalMap.get("conn_<%=connection %>");
-					<%log.info(log.str("use exsit connection : " + connection + "."));%>
+					<%log.info(log.str("Use exist connection : " + connection + "."));%>
 				<%
 				}else{
 					if(useOAuth){
