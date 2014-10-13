@@ -3065,7 +3065,7 @@ public class DataProcess implements IGeneratingProcess {
         ((Process) duplicatedProcess).setComponentsType(process.getComponentsType());
         duplicatedProcess.setDuplicate(true);
         duplicatedProcess.setActivate(false);
-        // ((Process) duplicatedProcess).setGeneratingProcess(this);
+        ((Process) duplicatedProcess).setGeneratingProcess(this);
         ((Process) duplicatedProcess).setProcessModified(false);
         ((Process) duplicatedProcess).setNeededRoutines(process.getNeededRoutines());
         ((Process) duplicatedProcess).setNeededPigudf(process.getNeededPigudf());
