@@ -1,6 +1,7 @@
 <%@ jet 
 imports="
-    org.talend.core.model.process.INode 
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
 "
 %>
@@ -12,5 +13,9 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 %>
-globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-<%log4jFileUtil.logDataCountInfo();%>
+
+globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
+
+<%
+log4jFileUtil.logDataCountInfo();
+%>

@@ -14,6 +14,7 @@
     	java.util.Map		
 	" 
 %>
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -307,6 +308,8 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 <%
 			}
 		}
+		
+	log4jFileUtil.startRetriveDataInfo();
 %>
 	
 	while (reader_<%=cid %>.readRecord()) {
