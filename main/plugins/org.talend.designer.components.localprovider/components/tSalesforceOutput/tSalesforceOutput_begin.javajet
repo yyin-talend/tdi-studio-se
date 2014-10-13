@@ -48,7 +48,7 @@ imports="
         if(globalMap.get("conn_<%=connection%>") == null){
 			throw new RuntimeException("Get null connection from <%=connection%>");
 		}
-		<%log.info(log.str("use exsit connection : " + connection + "."));%>
+		<%log.info(log.str("Use exist connection : " + connection + "."));%>
 		sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>"); 	
 	<%
 	}else{

@@ -58,25 +58,39 @@ org.talend.mdm.webservice.WSItemPK wsPK_<%=cid %> = new org.talend.mdm.webservic
 ///////////////////////	
 
 try{
-<%
-if(isDropItem){
-%>
-	org.talend.mdm.webservice.WSDropItem item_<%=cid %> = new org.talend.mdm.webservice.WSDropItem(wsPK_<%=cid %>,<%=partPath %>,false);
-	xtentisWS_<%=cid %>.dropItem(item_<%=cid %>);
+	<%
+	if(isDropItem){
+	%>
+		org.talend.mdm.webservice.WSDropItem item_<%=cid %> = new org.talend.mdm.webservice.WSDropItem();
+		item_<%=cid %>.setPartPath(<%=partPath %>);
 	<%
 	}else{
-		if (!isStaging && withReport) {
-		%>
-		org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>,false,true,<%=sourceName%>,<%=needCheck%>);
-		<%
-		}else{
-		%>
-		org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>,false,false,null,false);
-		<%
-		}
-		%>
+	%>
+		org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem();
+	<%
+	}
+	%>
+	item_<%=cid %>.setWsItemPK(wsPK_<%=cid %>);
+	item_<%=cid %>.setOverride(false);
+	<%
+	if (!isStaging && withReport) {
+	%>
+		item_<%=cid %>.setWithReport(true);
+		item_<%=cid %>.setSource(<%=sourceName%>);
+		item_<%=cid %>.setInvokeBeforeDeleting(<%=needCheck%>);
+	<%
+	}
+	if(isDropItem){
+	%>
+		
+		xtentisWS_<%=cid %>.dropItem(item_<%=cid %>);
+	<%
+	}else{
+	%>
 		xtentisWS_<%=cid %>.deleteItem(item_<%=cid %>);
-    <%}%>
+    <%
+    }
+    %>
 }catch(java.lang.Exception e){
 <%
 if(dieOnError){

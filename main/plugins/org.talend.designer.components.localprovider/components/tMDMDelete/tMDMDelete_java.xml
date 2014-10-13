@@ -135,7 +135,7 @@
           </ITEMS>
         </PARAMETER>
         
-        <PARAMETER NAME="WITHREPORT" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" SHOW_IF="(USE_ITEMS=='false') AND (CONTAINER_TYPE=='MASTER') AND (USE_DROP_ITEM=='false') ">
+        <PARAMETER NAME="WITHREPORT" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" SHOW_IF="(USE_ITEMS=='false') AND (CONTAINER_TYPE=='MASTER') ">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
@@ -148,11 +148,11 @@
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
         
-	    <PARAMETER NAME="USE_DROP_ITEM" FIELD="CHECK" NUM_ROW="70" SHOW_IF="(USE_ITEMS=='false') AND (WITHREPORT=='false')">
+	    <PARAMETER NAME="USE_DROP_ITEM" FIELD="CHECK" NUM_ROW="70" SHOW_IF="(USE_ITEMS=='false')">
 	    	<DEFAULT>false</DEFAULT>
 	    </PARAMETER>
 
-	    <PARAMETER NAME="PART_PATH" FIELD="TEXT" NUM_ROW="70" SHOW_IF="(USE_DROP_ITEM=='true') AND (USE_ITEMS=='false') AND (WITHREPORT=='false')">
+	    <PARAMETER NAME="PART_PATH" FIELD="TEXT" NUM_ROW="70" SHOW_IF="(USE_DROP_ITEM=='true') AND (USE_ITEMS=='false')">
 	    	<DEFAULT>"/"</DEFAULT>
 	    </PARAMETER>
 
@@ -167,7 +167,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="MDM-Webservice" MODULE="mdm_webservice.jar" REQUIRED="true" />
+      <IMPORT NAME="MDM-Webservice" MODULE="mdm_webservice.jar" UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar" BundleID="" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc-api" MODULE="jaxrpc-api.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc-api.jar" REQUIRED="true" />

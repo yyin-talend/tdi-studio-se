@@ -75,7 +75,7 @@ imports="
 			throw new RuntimeException("Get null connection from <%=connection %>");
 		}
 		sforceConn_<%=cid%> = (org.talend.salesforceBulk.SforceBulkConnection)globalMap.get("conn_<%=connection %>");
-		<%log.info(log.str("use exsit connection : " + connection + "."));%>
+		<%log.info(log.str("Use exist connection : " + connection + "."));%>
 	<%
 	}else{
 		if(useOAuth){
