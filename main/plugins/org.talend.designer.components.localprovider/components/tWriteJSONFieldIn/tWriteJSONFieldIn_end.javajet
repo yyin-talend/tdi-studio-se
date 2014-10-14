@@ -11,7 +11,7 @@ imports="
 	org.talend.core.model.process.EConnectionType
 "
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -78,3 +78,6 @@ else{
 }
 %>
 globalMap.put("<%=strJobCid %>_NB_LINE",nb_line_<%=cid %>);
+<%
+log4jFileUtil.logDataCountInfo();
+%>

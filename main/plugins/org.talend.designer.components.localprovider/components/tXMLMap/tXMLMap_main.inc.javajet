@@ -50,7 +50,9 @@ skeleton="tXMLMap_java.skeleton"
 	String cr = "\n";
 	
 	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
-
+	
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
 	boolean isVirtual = false;
 	int closeWhileCountForMultiResult = 0;
 	String loopKey = null;
@@ -258,7 +260,6 @@ skeleton="tXMLMap_java.skeleton"
 		%>
 
 <%
-	//	System.out.println("size of vartable begin:" + varTables.size());
 	TreeUtil treeUtil = new TreeUtil();
 	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {
 		hasOutgoingConnection = false;//reset the var for every lookup table 
@@ -522,6 +523,9 @@ skeleton="tXMLMap_java.skeleton"
 
 	                if (outputTableEntries != null && (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
 	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax)) {
+						if(isLog4jEnabled){
+							sb.append(cr + "count_" + outputTableName + "_" + cid + "++;" + cr);
+						}
 						boolean hasDocument = false;
 	                    for (OutputTreeNode outputTableEntry : outputTableEntries) {
 	                        String outputColumnName = outputTableEntry.getName();
@@ -600,10 +604,13 @@ skeleton="tXMLMap_java.skeleton"
 								sb.append("if(nb_line_"+uniqueNameComponent+">=nodeList_"+uniqueNameComponent+".size())");
 							}
 							sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
-							if(hasDocument)
+							if(hasDocument) {
 								sb.append(cr + outputTableName + "_save = " + outputTableName + "_tmp;");
+							}
 							
-							
+							if(isLog4jEnabled){
+								sb.append(cr + "log.debug(\"" + cid + " - Outputting the record \" + count_" + outputTableName + "_" + cid + " + \" of the output table '" + outputTableName + "'.\");" + cr);
+							}
 	                    }
 	                        
 	                                                
@@ -614,8 +621,6 @@ skeleton="tXMLMap_java.skeleton"
 				}
 				lastValueReject = currentIsReject || currentIsRejectInnerJoin;
 			}
-
-			// System.out.println("Output table: (2)" + outputTableName);
 
 			boolean isLastTable = indexCurrentTable == lstSizeOutputs - 1;
 			if (closeTestInnerJoinConditionsBracket 
