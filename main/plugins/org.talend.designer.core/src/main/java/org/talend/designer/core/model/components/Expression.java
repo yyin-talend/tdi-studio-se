@@ -324,15 +324,18 @@ public final class Expression {
                 }
                 if (node != null) {
                     String relatedNodeName = ElementParameterParser.getValue(node, "__" + varNames[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$
-                    List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
-                    for (INode aNode : generatingNodes) {
-                        if (aNode.getUniqueName().equals(relatedNodeName)) {
-                            simpleExpression = simpleExpression.replace(varNames[0] + "." + varNames[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
-                            List<? extends IElementParameter> elementParameters = aNode.getElementParameters();
-                            // let's supose the currentParam = null, there won't want deal with the TABLE field, only
-                            // deal with LIST/CHECKBOX
-                            return evaluate(simpleExpression, elementParameters);
+                    // if relatedNodeName is empty, maybe means this property have not been setted
+                    if (relatedNodeName != null && !relatedNodeName.trim().isEmpty()) {
+                        List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
+                        for (INode aNode : generatingNodes) {
+                            if (aNode.getUniqueName().equals(relatedNodeName)) {
+                                simpleExpression = simpleExpression.replace(varNames[0] + "." + varNames[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+                                List<? extends IElementParameter> elementParameters = aNode.getElementParameters();
+                                // let's supose the currentParam = null, there won't want deal with the TABLE field,
+                                // only deal with LIST/CHECKBOX
+                                return evaluate(simpleExpression, elementParameters);
 
+                            }
                         }
                     }
 
