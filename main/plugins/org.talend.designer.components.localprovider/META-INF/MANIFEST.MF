@@ -18,3 +18,4 @@ Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Bundle-ClassPath: .
 Export-Package: org.talend.designer.components.lookup.common
+Eclipse-BundleShape: dir

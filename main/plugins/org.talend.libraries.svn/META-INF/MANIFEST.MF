@@ -13,3 +13,4 @@ Export-Package: org.tigris.subversion.javahl,
  org.tmatesoft.svn.core.javahl
 Require-Bundle: org.talend.libraries.sequence;bundle-version="1.0.0";resolution:=optional
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

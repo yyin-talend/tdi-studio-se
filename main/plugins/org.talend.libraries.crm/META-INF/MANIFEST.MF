@@ -4,3 +4,4 @@ Bundle-Name: Crm
 Bundle-SymbolicName: org.talend.libraries.crm
 Bundle-Version: 5.6.0.qualifier
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

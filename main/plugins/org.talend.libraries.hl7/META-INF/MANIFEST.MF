@@ -75,3 +75,4 @@ Export-Package: ca.uhn.hl7v2,
 Require-Bundle: org.talend.libraries.apache,
  org.apache.commons.logging
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

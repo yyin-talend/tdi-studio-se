@@ -4,3 +4,4 @@ Bundle-Name: Jersey
 Bundle-SymbolicName: org.talend.libraries.jersey
 Bundle-Version: 5.6.0.qualifier
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

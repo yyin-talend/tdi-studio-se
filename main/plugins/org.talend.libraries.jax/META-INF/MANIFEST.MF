@@ -4,3 +4,4 @@ Bundle-Name: Jax
 Bundle-SymbolicName: org.talend.libraries.jax
 Bundle-Version: 5.6.0.qualifier
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

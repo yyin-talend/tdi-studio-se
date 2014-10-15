@@ -31,3 +31,4 @@ Export-Package: org.talend.designer.codegen,
 Bundle-Vendor: .Talend SA.
 Bundle-Activator: org.talend.designer.codegen.CodeGeneratorActivator
 Import-Package: org.apache.commons.lang
+Eclipse-BundleShape: dir

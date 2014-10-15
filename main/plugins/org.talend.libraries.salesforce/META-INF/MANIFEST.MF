@@ -24,3 +24,4 @@ Export-Package: com.salesforce.soap.partner,
  org.talend.salesforce,
  org.talend.salesforce.oauth
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir
