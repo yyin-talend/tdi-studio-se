@@ -460,6 +460,10 @@ for (VarTable varsTable : varsTables) {
 					//only current output table has ouput generate
 	                if (isCurrentOutputTable && outputTableEntries != null && (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
 	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax)) {
+	                    if(isLog4jEnabled){
+							sb.append(cr + "count_" + outputTableName + "_" + cid + "++;" + cr);
+						}
+						
 						if(!utilXML.tableHasADocument(outputTableEntries)) {
 							sb.append(cr + cr + outputTableName + "_tmp = new " + outputTableName + "Struct();");
 						}
@@ -666,6 +670,10 @@ for (VarTable varsTable : varsTables) {
 							if(flat) {
 								sb.append("allOutsForAggregate_" + uniqueNameComponent + ".add(" + outputTableName + "_tmp);" + cr);
 							}
+							
+							if(isLog4jEnabled){
+								sb.append(cr + "log.debug(\"" + uniqueNameComponent + " - Outputting the record \" + count_" + outputTableName + "_" + cid + " + \" of the output table '" + outputTableName + "'.\");" + cr);
+							}
 	                    }
 	                }
 					if (closeFilterOrRejectBracket) {
@@ -675,8 +683,6 @@ for (VarTable varsTable : varsTables) {
 				lastValueReject = currentIsReject || currentIsRejectInnerJoin;
 				
 			}//TD12580
-
-			// System.out.println("Output table: (2)" + outputTableName);
 
 			if (isCurrentOutputTable && (hasAggregateColumn || isAllInOne)) {
 				boolean checkNull = false;

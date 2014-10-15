@@ -18,6 +18,7 @@ imports="
 "
 skeleton="tWriteXMLFieldOut_java.skeleton"
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 //==========common part 1 begin===================================================================
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -562,6 +563,9 @@ if (inConn != null) {
 				}
 %>
 	nb_line_<%=cid%>++;
+<%
+	log4jFileUtil.logCurrentRowNumberInfo();
+%>
 	valueMap_<%=cid%>.clear();
 <%
 				for(IMetadataColumn column :inputColumns){
