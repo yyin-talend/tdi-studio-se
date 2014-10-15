@@ -26,6 +26,7 @@ String connDuplicateName = null;
 boolean onlyOnceEachDuplicatedKey = ("true").equals(ElementParameterParser.getValue(node, "__ONLY_ONCE_EACH_DUPLICATED_KEY__"));
 List<? extends IConnection> connsUnique = node.getOutgoingConnections("UNIQUE");
 List<? extends IConnection> connsDuplicate = node.getOutgoingConnections("DUPLICATE");
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if(connsUnique.size() > 0){
 	connUniqName = connsUnique.get(0).getName();
 	if(connsDuplicate.size() > 0){
@@ -105,13 +106,34 @@ if(mode == UNIQUE){//HSS_____0
 
                     java.util.Arrays.<rowStruct_<%=cid %>> sort(buffer_2_<%=cid %>, 0, bufferSize_2_<%=cid %>, comparator_2_<%=cid %>);
                     java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_uniq_" + files_2_<%=cid %>.size());
+                    <%
+					if (isLog4jEnabled) {
+					%>
+						log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+					<%
+					}
+					%>
                     file.deleteOnExit();
                     java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                             new java.io.FileOutputStream(file)));
+                	<%
+					if (isLog4jEnabled) {
+					%>
+						log.info("<%=cid%> - Writing the data into: "+file.getPath());
+					<%
+					}
+					%>
                     for (int i = 0; i < bufferSize_2_<%=cid %>; i++) {
                         buffer_2_<%=cid %>[i].writeData(rw);
                     }
                     rw.close();
+					<%
+					if (isLog4jEnabled) {
+					%>
+						log.info("<%=cid%> - Wrote successfully.");
+					<%
+					}
+					%>
 
                     files_2_<%=cid %>.add(file);
 
@@ -162,16 +184,40 @@ if(mode == UNIQUE){//HSS_____0
                 
                 java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_uniq_" + files_2_<%=cid %>.size());
                 
+                <%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+				<%
+				}
+				%>
+                
                 file.deleteOnExit();
                 
                 java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                         new java.io.FileOutputStream(file)));
+                        
+            	<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Writing the data into: "+file.getPath());
+				<%
+				}
+				%>
                 
                 for (int i = 0; i < rowsInBuffer_2_<%=cid %>; i++) {
                     buffer_2_<%=cid %>[i].writeData(rw);
                 }
                 
                 rw.close();
+                
+             	<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Wrote successfully.");
+				<%
+				}
+				%>
 
                 files_2_<%=cid %>.add(file);
 
@@ -211,7 +257,12 @@ if(mode == UNIQUE){//HSS_____0
                     rowFileList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                     rowList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the unique record " + (nb_uniq_<%=cid %>+1) + " into <%=connUniqName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connUniqName %>.<%=column.getLabel() %> = current.<%=column.getLabel() %>;
@@ -280,13 +331,34 @@ if(mode == UNIQUE){//HSS_____0
                             bufferSize_2_<%=cid %>, comparator_2_<%=cid %>);
                     java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_uniq_"
                             + files_2_<%=cid %>.size());
+                   	<%
+					if (isLog4jEnabled) {
+					%>
+						log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+					<%
+					}
+					%>
                     file.deleteOnExit();
                     java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                             new java.io.FileOutputStream(file)));
+                	<%
+					if (isLog4jEnabled) {
+					%>
+						log.info("<%=cid%> - Writing the data into: "+file.getPath());
+					<%
+					}
+					%>
                     for (int i = 0; i < bufferSize_2_<%=cid %>; i++) {
                         buffer_2_<%=cid %>[i].writeData(rw);
                     }
                     rw.close();
+	             	<%
+					if (isLog4jEnabled) {
+					%>
+						log.info("<%=cid%> - Wrote successfully.");
+					<%
+					}
+					%>
 
                     files_2_<%=cid %>.add(file);
 
@@ -314,13 +386,34 @@ if(mode == UNIQUE){//HSS_____0
                                     bufferSize_3_<%=cid %>, comparator_3_<%=cid %>);
                             java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
                                     + files_3_<%=cid %>.size());
+                            <%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+							<%
+							}
+							%>
                             file.deleteOnExit();
                             java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                                     new java.io.FileOutputStream(file)));
+                        	<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Writing the data into: "+file.getPath());
+							<%
+							}
+							%>
                             for (int j = 0; j < bufferSize_3_<%=cid %>; j++) {
                                 buffer_3_<%=cid %>[j].writeData(rw);
                             }
                             rw.close();
+			             	<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Wrote successfully.");
+							<%
+							}
+							%>
 
                             files_3_<%=cid %>.add(file);
 
@@ -343,13 +436,34 @@ if(mode == UNIQUE){//HSS_____0
                                             bufferSize_3_<%=cid %>, comparator_3_<%=cid %>);
                                     java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
                                             + files_3_<%=cid %>.size());
+                                    <%
+									if (isLog4jEnabled) {
+									%>
+										log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+									<%
+									}
+									%>
                                     file.deleteOnExit();
                                     java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(
                                             new java.io.BufferedOutputStream(new java.io.FileOutputStream(file)));
+		                        	<%
+									if (isLog4jEnabled) {
+									%>
+										log.info("<%=cid%> - Writing the data into: "+file.getPath());
+									<%
+									}
+									%>
                                     for (int j = 0; j < bufferSize_3_<%=cid %>; j++) {
                                         buffer_3_<%=cid %>[j].writeData(rw);
                                     }
                                     rw.close();
+					             	<%
+									if (isLog4jEnabled) {
+									%>
+										log.info("<%=cid%> - Wrote successfully.");
+									<%
+									}
+									%>
 
                                     files_3_<%=cid %>.add(file);
 
@@ -382,16 +496,38 @@ if(mode == UNIQUE){//HSS_____0
                 java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_uniq_"
                         + files_2_<%=cid %>.size());
 
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+				<%
+				}
+				%>
                 file.deleteOnExit();
 
                 java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                         new java.io.FileOutputStream(file)));
+                        
+            	<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Writing the data into: "+file.getPath());
+				<%
+				}
+				%>
 
                 for (int i = 0; i < rowsInBuffer_2_<%=cid %>; i++) {
                     buffer_2_<%=cid %>[i].writeData(rw);
                 }
 
                 rw.close();
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Wrote successfully.");
+				<%
+				}
+				%>
 
                 files_2_<%=cid %>.add(file);
 
@@ -406,14 +542,34 @@ if(mode == UNIQUE){//HSS_____0
                         rowsInBuffer_3_<%=cid %>, comparator_3_<%=cid %>);
                 java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
                         + files_3_<%=cid %>.size());
+                <%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+				<%
+				}
+				%>
                 file.deleteOnExit();
                 java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                         new java.io.FileOutputStream(file)));
+            	<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Writing the data into: "+file.getPath());
+				<%
+				}
+				%>
                 for (int j = 0; j < rowsInBuffer_3_<%=cid %>; j++) {
                     buffer_3_<%=cid %>[j].writeData(rw);
                 }
                 rw.close();
-
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Wrote successfully.");
+				<%
+				}
+				%>
                 files_3_<%=cid %>.add(file);
 
                 rowsInBuffer_3_<%=cid %> = 0;
@@ -495,7 +651,12 @@ if(mode == UNIQUE){//HSS_____0
                         break;
                     }else{
                         <%=connDuplicateName %> = new <%=connDuplicateName %>Struct();
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the duplicate record " + (nb_duplicate_<%=cid %>+1) + " into <%=connDuplicateName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connDuplicateName %>.<%=column.getLabel() %> = duplicate_<%=cid %>.<%=column.getLabel() %>;
@@ -529,7 +690,12 @@ if(mode == UNIQUE){//HSS_____0
                     if(duplicate_<%=cid %> == null){
                         <%=connUniqName %> = new <%=connUniqName %>Struct();
                         
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the unique record " + (nb_uniq_<%=cid %>+1) + " into <%=connUniqName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connUniqName %>.<%=column.getLabel() %> = uniq_<%=cid %>.<%=column.getLabel() %>;
@@ -565,7 +731,12 @@ if(mode == UNIQUE){//HSS_____0
                         if(uniq_<%=cid %>.id_<%=cid %> < duplicate_<%=cid %>.id_<%=cid %>){
                         <%=connUniqName %> = new <%=connUniqName %>Struct();
                         
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the unique record " + (nb_uniq_<%=cid %>+1) + " into <%=connUniqName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connUniqName %>.<%=column.getLabel() %> = uniq_<%=cid %>.<%=column.getLabel() %>;
@@ -599,7 +770,12 @@ if(mode == UNIQUE){//HSS_____0
                             }
                         }else{
                         <%=connDuplicateName %> = new <%=connDuplicateName %>Struct();
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the duplicate record " + (nb_duplicate_<%=cid %>+1) + " into <%=connDuplicateName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connDuplicateName %>.<%=column.getLabel() %> = duplicate_<%=cid %>.<%=column.getLabel() %>;
@@ -696,13 +872,34 @@ if(mode == UNIQUE){//HSS_____0
 	                                bufferSize_2_<%=cid %>, comparator_2_<%=cid %>);
 	                        java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_unique_"
 	                                + files_2_<%=cid %>.size());
+	                        <%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+							<%
+							}
+							%>
 	                        file.deleteOnExit();
 	                        java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
 	                                new java.io.FileOutputStream(file)));
+                        	<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Writing the data into: "+file.getPath());
+							<%
+							}
+							%>
 	                        for (int i = 0; i < bufferSize_2_<%=cid %>; i++) {
 	                            buffer_2_<%=cid %>[i].writeData(rw);
 	                        }
 	                        rw.close();
+							<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Wrote successfully.");
+							<%
+							}
+							%>
 	
 	                        files_2_<%=cid %>.add(file);
 	
@@ -725,13 +922,35 @@ if(mode == UNIQUE){//HSS_____0
 	                                bufferSize_3_<%=cid %>, comparator_3_<%=cid %>);
 	                        java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
 	                                + files_3_<%=cid %>.size());
+	                        <%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+							<%
+							}
+							%>
 	                        file.deleteOnExit();
+	                        
 	                        java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
 	                                new java.io.FileOutputStream(file)));
+                        	<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Writing the data into: "+file.getPath());
+							<%
+							}
+							%>
 	                        for (int i = 0; i < bufferSize_3_<%=cid %>; i++) {
 	                            buffer_3_<%=cid %>[i].writeData(rw);
 	                        }
 	                        rw.close();
+							<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Wrote successfully.");
+							<%
+							}
+							%>
 	
 	                        files_3_<%=cid %>.add(file);
 	
@@ -783,13 +1002,34 @@ if(mode == UNIQUE){//HSS_____0
                                 bufferSize_2_<%=cid %>, comparator_2_<%=cid %>);
                         java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_unique_"
                                 + files_2_<%=cid %>.size());
+                        <%
+						if (isLog4jEnabled) {
+						%>
+							log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+						<%
+						}
+						%>
                         file.deleteOnExit();
                         java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                                 new java.io.FileOutputStream(file)));
+                    	<%
+						if (isLog4jEnabled) {
+						%>
+							log.info("<%=cid%> - Writing the data into: "+file.getPath());
+						<%
+						}
+						%>
                         for (int i = 0; i < bufferSize_2_<%=cid %>; i++) {
                             buffer_2_<%=cid %>[i].writeData(rw);
                         }
                         rw.close();
+						<%
+						if (isLog4jEnabled) {
+						%>
+							log.info("<%=cid%> - Wrote successfully.");
+						<%
+						}
+						%>
 
                         files_2_<%=cid %>.add(file);
 
@@ -817,17 +1057,40 @@ if(mode == UNIQUE){//HSS_____0
 
                 java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_uniq_"
                         + files_2_<%=cid %>.size());
+                        
+                <%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+				<%
+				}
+				%>
 
                 file.deleteOnExit();
 
                 java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                         new java.io.FileOutputStream(file)));
+                        
+            	<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Writing the data into: "+file.getPath());
+				<%
+				}
+				%>
 
                 for (int i = 0; i < rowsInBuffer_2_<%=cid %>; i++) {
                     buffer_2_<%=cid %>[i].writeData(rw);
                 }
 
                 rw.close();
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Wrote successfully.");
+				<%
+				}
+				%>
 
                 files_2_<%=cid %>.add(file);
 
@@ -842,13 +1105,34 @@ if(mode == UNIQUE){//HSS_____0
                         rowsInBuffer_3_<%=cid %>, comparator_3_<%=cid %>);
                 java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
                         + files_3_<%=cid %>.size());
+                <%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+				<%
+				}
+				%>
                 file.deleteOnExit();
                 java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                         new java.io.FileOutputStream(file)));
+            	<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Writing the data into: "+file.getPath());
+				<%
+				}
+				%>
                 for (int j = 0; j < rowsInBuffer_3_<%=cid %>; j++) {
                     buffer_3_<%=cid %>[j].writeData(rw);
                 }
                 rw.close();
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Wrote successfully.");
+				<%
+				}
+				%>
 
                 files_3_<%=cid %>.add(file);
 
@@ -931,7 +1215,12 @@ if(mode == UNIQUE){//HSS_____0
                         break;
                     }else{
                         <%=connDuplicateName %> = new <%=connDuplicateName %>Struct();
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the duplicate record " + (nb_duplicate_<%=cid %>+1) + " into <%=connDuplicateName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connDuplicateName %>.<%=column.getLabel() %> = duplicate_<%=cid %>.<%=column.getLabel() %>;
@@ -965,7 +1254,12 @@ if(mode == UNIQUE){//HSS_____0
                     if(duplicate_<%=cid %> == null){
                         <%=connUniqName %> = new <%=connUniqName %>Struct();
                         
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the unique record " + (nb_uniq_<%=cid %>+1) + " into <%=connUniqName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connUniqName %>.<%=column.getLabel() %> = uniq_<%=cid %>.<%=column.getLabel() %>;
@@ -1001,7 +1295,12 @@ if(mode == UNIQUE){//HSS_____0
                         if(uniq_<%=cid %>.id_<%=cid %> < duplicate_<%=cid %>.id_<%=cid %>){
                         <%=connUniqName %> = new <%=connUniqName %>Struct();
                         
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the unique record " + (nb_uniq_<%=cid %>+1) + " into <%=connUniqName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connUniqName %>.<%=column.getLabel() %> = uniq_<%=cid %>.<%=column.getLabel() %>;
@@ -1035,7 +1334,12 @@ if(mode == UNIQUE){//HSS_____0
                             }
                         }else{
                         <%=connDuplicateName %> = new <%=connDuplicateName %>Struct();
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the duplicate record " + (nb_duplicate_<%=cid %>+1) + " into <%=connDuplicateName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connDuplicateName %>.<%=column.getLabel() %> = duplicate_<%=cid %>.<%=column.getLabel() %>;
@@ -1135,13 +1439,34 @@ if(mode == UNIQUE){//HSS_____0
                                     bufferSize_3_<%=cid %>, comparator_3_<%=cid %>);
                             java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
                                     + files_3_<%=cid %>.size());
+                            <%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+							<%
+							}
+							%>
                             file.deleteOnExit();
                             java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                                     new java.io.FileOutputStream(file)));
+                        	<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Writing the data into: "+file.getPath());
+							<%
+							}
+							%>
                             for (int j = 0; j < bufferSize_3_<%=cid %>; j++) {
                                 buffer_3_<%=cid %>[j].writeData(rw);
                             }
                             rw.close();
+							<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Wrote successfully.");
+							<%
+							}
+							%>
 
                             files_3_<%=cid %>.add(file);
 
@@ -1164,13 +1489,34 @@ if(mode == UNIQUE){//HSS_____0
                                             bufferSize_3_<%=cid %>, comparator_3_<%=cid %>);
                                     java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
                                             + files_3_<%=cid %>.size());
+                                    <%
+									if (isLog4jEnabled) {
+									%>
+										log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+									<%
+									}
+									%>
                                     file.deleteOnExit();
                                     java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(
                                             new java.io.BufferedOutputStream(new java.io.FileOutputStream(file)));
+                                    <%
+									if (isLog4jEnabled) {
+									%>
+										log.info("<%=cid%> - Writing the data into: "+file.getPath());
+									<%
+									}
+									%>
                                     for (int j = 0; j < bufferSize_3_<%=cid %>; j++) {
                                         buffer_3_<%=cid %>[j].writeData(rw);
                                     }
                                     rw.close();
+									<%
+									if (isLog4jEnabled) {
+									%>
+										log.info("<%=cid%> - Wrote successfully.");
+									<%
+									}
+									%>
 
                                     files_3_<%=cid %>.add(file);
 
@@ -1202,13 +1548,34 @@ if(mode == UNIQUE){//HSS_____0
                         rowsInBuffer_3_<%=cid %>, comparator_3_<%=cid %>);
                 java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
                         + files_3_<%=cid %>.size());
+                <%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+				<%
+				}
+				%>
                 file.deleteOnExit();
                 java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                         new java.io.FileOutputStream(file)));
+              	<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Writing the data into: "+file.getPath());
+				<%
+				}
+				%>
                 for (int j = 0; j < rowsInBuffer_3_<%=cid %>; j++) {
                     buffer_3_<%=cid %>[j].writeData(rw);
                 }
                 rw.close();
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Wrote successfully.");
+				<%
+				}
+				%>
 
                 files_3_<%=cid %>.add(file);
 
@@ -1253,7 +1620,12 @@ if(mode == UNIQUE){//HSS_____0
                     rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                     rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the duplicate record " + (nb_duplicate_<%=cid %>+1) + " into <%=connDuplicateName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connDuplicateName %>.<%=column.getLabel() %> = current.<%=column.getLabel() %>;
@@ -1329,14 +1701,34 @@ if(mode == UNIQUE){//HSS_____0
 	                                bufferSize_3_<%=cid %>, comparator_3_<%=cid %>);
 	                        java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
 	                                + files_3_<%=cid %>.size());
+	                        <%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+							<%
+							}
+							%>
 	                        file.deleteOnExit();
 	                        java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
 	                                new java.io.FileOutputStream(file)));
+                        	<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Writing the data into: "+file.getPath());
+							<%
+							}
+							%>
 	                        for (int i = 0; i < bufferSize_3_<%=cid %>; i++) {
 	                            buffer_3_<%=cid %>[i].writeData(rw);
 	                        }
 	                        rw.close();
-	
+							<%
+							if (isLog4jEnabled) {
+							%>
+								log.info("<%=cid%> - Wrote successfully.");
+							<%
+							}
+							%>
 	                        files_3_<%=cid %>.add(file);
 	
 	                        rowsInBuffer_3_<%=cid %> = 0;
@@ -1401,13 +1793,34 @@ if(mode == UNIQUE){//HSS_____0
                         rowsInBuffer_3_<%=cid %>, comparator_3_<%=cid %>);
                 java.io.File file = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_duplicate_"
                         + files_3_<%=cid %>.size());
+                <%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Delete file: "+file.getPath()+" When VM exit.");
+				<%
+				}
+				%>
                 file.deleteOnExit();
                 java.io.ObjectOutputStream rw = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                         new java.io.FileOutputStream(file)));
+            	<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Writing the data into: "+file.getPath());
+				<%
+				}
+				%>
                 for (int j = 0; j < rowsInBuffer_3_<%=cid %>; j++) {
                     buffer_3_<%=cid %>[j].writeData(rw);
                 }
                 rw.close();
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Wrote successfully.");
+				<%
+				}
+				%>
 
                 files_3_<%=cid %>.add(file);
 
@@ -1451,7 +1864,12 @@ if(mode == UNIQUE){//HSS_____0
                     rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                     rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
-<%
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the duplicate record " + (nb_duplicate_<%=cid %>+1) + " into <%=connDuplicateName %>.");
+	<%
+	}
     for(IMetadataColumn column : columnList){//HSS_____0_____1
     	%>
 				<%=connDuplicateName %>.<%=column.getLabel() %> = current.<%=column.getLabel() %>;

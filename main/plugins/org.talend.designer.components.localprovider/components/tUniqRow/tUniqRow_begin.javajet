@@ -19,6 +19,7 @@ String cid = node.getUniqueName();
 String onlyOnceEachDuplicatedKey = ElementParameterParser.getValue(node, "__ONLY_ONCE_EACH_DUPLICATED_KEY__");
 List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
 boolean changeHashAndEqualsForBigDecimal = "true".equals(ElementParameterParser.getValue(node, "__CHANGE_HASH_AND_EQUALS_FOR_BIGDECIMAL__"));
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 boolean hasKey = false;
 for(Map<String, String> keyColumn:keyColumns){
@@ -164,6 +165,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 int nb_uniques_<%=cid %> = 0;
 int nb_duplicates_<%=cid %> = 0;
 <%
+if (isLog4jEnabled) {
+%>
+	log.info("<%=cid%> - Start to process the data from datasource.");
+<%
+}
 if(hasKey){%>
 KeyStruct_<%=cid %> finder_<%=cid %> = new KeyStruct_<%=cid %>();
 java.util.Set<KeyStruct_<%=cid %>> keys<%=cid %> = new java.util.HashSet<KeyStruct_<%=cid %>>();
