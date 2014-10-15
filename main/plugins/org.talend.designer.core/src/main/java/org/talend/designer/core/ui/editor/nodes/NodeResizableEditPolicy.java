@@ -16,6 +16,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
+import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 import org.talend.designer.core.ui.editor.cmd.ResizeNodeCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 
@@ -35,8 +36,10 @@ public class NodeResizableEditPolicy extends ResizableEditPolicy {
             return null;
         }
 
-        return new ResizeNodeCommand(node, new Dimension(node.getSize().width + request.getSizeDelta().width,
-                node.getSize().height + request.getSizeDelta().height));
+        TalendScalableFreeformRootEditPart rootEditPart= (TalendScalableFreeformRootEditPart) getHost().getRoot();
+        double scale = 1/rootEditPart.getZoomManager().getZoom();
+        return new ResizeNodeCommand(node, new Dimension(node.getSize().width + request.getSizeDelta().getScaled(scale).width,
+                node.getSize().height + request.getSizeDelta().getScaled(scale).height));
     }
 
 }
