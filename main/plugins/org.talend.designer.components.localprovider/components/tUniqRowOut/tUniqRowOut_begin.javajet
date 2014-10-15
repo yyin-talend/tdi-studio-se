@@ -19,6 +19,7 @@ INode node = (INode)codeGenArgument.getArgument();
 
 String directory = ElementParameterParser.getValue(node, "__TEMP_DIRECTORY__");
 String buffer = ElementParameterParser.getValue(node, "__BUFFER_SIZE__");
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String bufferSize = "1000000";
 if(("S").equals(buffer)){
 	bufferSize = "500000";
@@ -62,7 +63,13 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
 int nb_<%=cid %> = 0;
 
 int bufferSize_<%=cid %> = <%=bufferSize %>;
-
+<%
+if (isLog4jEnabled) {
+%>
+	log.info("<%=cid%> - Start to process the data from datasource.");
+<%
+}
+%>
 class rowStruct_<%=cid %> extends <%=connName %>Struct {
 
     int id_<%=cid %>;

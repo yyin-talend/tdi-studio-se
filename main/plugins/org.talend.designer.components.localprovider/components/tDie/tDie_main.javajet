@@ -14,23 +14,31 @@
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	boolean exitJVM = ("true").equals(ElementParameterParser.getValue(node, "__EXIT_JVM__"));
 	String code = ElementParameterParser.getValue(node, "__CODE__");
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 
 <%
-			if (node.getProcess().getNodesOfType("tLogCatcher").size() > 0) {
-				List<INode> logCatchers = (List<INode>)node.getProcess().getNodesOfType("tLogCatcher");
-				for (INode logCatcher : logCatchers) {
-					if (("true").equals(ElementParameterParser.getValue(logCatcher, "__CATCH_TDIE__"))) {
-						%>
-						<%=logCatcher.getUniqueName() %>.addMessage("tDie", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
-						<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-						<%
-					}
-				}
+	if (node.getProcess().getNodesOfType("tLogCatcher").size() > 0) {
+		List<INode> logCatchers = (List<INode>)node.getProcess().getNodesOfType("tLogCatcher");
+		for (INode logCatcher : logCatchers) {
+			if (("true").equals(ElementParameterParser.getValue(logCatcher, "__CATCH_TDIE__"))) {
+				%>
+				<%=logCatcher.getUniqueName() %>.addMessage("tDie", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
+				<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+				<%
 			}
+		}
+	}
 %>
 	globalMap.put("<%=cid %>_DIE_PRIORITY", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>);
 	System.err.println(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.error("<%=cid%> - The die message: "+<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
+	<%
+	}
+	%>
 	globalMap.put("<%=cid %>_DIE_MESSAGE", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	globalMap.put("<%=cid %>_DIE_MESSAGES", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	currentComponent = "<%=cid %>";
@@ -52,6 +60,13 @@
     %>
     
 <% if(exitJVM) {%>
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.fatal("<%=cid%> - Exiting the VM.");
+	<%
+	}
+	%>
 	System.exit(<%=code %>);
 <%}else{%>
 	if(true){	
