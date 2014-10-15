@@ -27,15 +27,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.utils.PathUtils;
-import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.ftp.i18n.Messages;
 import org.talend.repository.ftp.ui.wizards.pags.FTPPage;
 import org.talend.repository.ui.swt.utils.AbstractForm;
@@ -298,14 +295,8 @@ public class FTPForm extends AbstractForm {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                if (ftpPasswordText.getText() != null) {
-                    try {
-                        String password = PasswordEncryptUtil.encryptPassword(ftpPasswordText.getText());
-                        getConnection().setPassword(password + PasswordEncryptUtil.ENCRYPT_KEY);
-                    } catch (Exception ex) {
-                        ExceptionHandler.process(ex);
-                    }
-                }
+                FTPConnection conn = getConnection();
+                conn.setPassword(conn.getValue(ftpPasswordText.getText(), true));
                 checkFieldsValue();
             }
         });
@@ -336,14 +327,8 @@ public class FTPForm extends AbstractForm {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                if (proxyPasswordText.getText() != null) {
-                    try {
-                        String password = PasswordEncryptUtil.encryptPassword(proxyPasswordText.getText());
-                        getConnection().setProxypassword(password + PasswordEncryptUtil.ENCRYPT_KEY);
-                    } catch (Exception ex) {
-                        ExceptionHandler.process(ex);
-                    }
-                }
+                FTPConnection conn = getConnection();
+                conn.setProxypassword(conn.getValue(proxyPasswordText.getText(), true));
             }
         });
         proxyPortText.addModifyListener(new ModifyListener() {
@@ -372,14 +357,8 @@ public class FTPForm extends AbstractForm {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                if (keyPasswordText.getText() != null) {
-                    try {
-                        String password = PasswordEncryptUtil.encryptPassword(keyPasswordText.getText());
-                        getConnection().setKeystorePassword(password + PasswordEncryptUtil.ENCRYPT_KEY);
-                    } catch (Exception ex) {
-                        ExceptionHandler.process(ex);
-                    }
-                }
+                FTPConnection conn = getConnection();
+                conn.setKeystorePassword(conn.getValue(keyPasswordText.getText(), true));
             }
         });
         connModelCombo.addModifyListener(new ModifyListener() {
@@ -417,18 +396,14 @@ public class FTPForm extends AbstractForm {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                getConnection().setMethod(methodCombo.getText());
-                if (PUBLIC_KEY.equals(getConnection().getMethod())) {
+                FTPConnection conn = getConnection();
+                conn.setMethod(methodCombo.getText());
+                if (PUBLIC_KEY.equals(conn.getMethod())) {
                     privatekeyText.setVisible(true);
                     passphraseText.setVisible(true);
-                    privatekeyText.setText(getConnection().getPrivatekey() != null ? getConnection().getPrivatekey() : ""); //$NON-NLS-1$
+                    privatekeyText.setText(conn.getPrivatekey() != null ? conn.getPrivatekey() : ""); //$NON-NLS-1$
                     // decrypt password
-                    try {
-                        passphraseText.setText(PasswordEncryptUtil.decryptPassword(getConnection().getPassphrase()));
-                    } catch (Exception ex) {
-                        String pwd = ConnectionHelper.getDecryptPassword(getConnection().getPassphrase());
-                        passphraseText.setText(pwd != null ? pwd : getConnection().getPassphrase());
-                    }
+                    passphraseText.setText(conn.getValue(conn.getPassphrase(), false));
                 } else {
                     privatekeyText.setVisible(false);
                     passphraseText.setVisible(false);
@@ -450,14 +425,8 @@ public class FTPForm extends AbstractForm {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                if (passphraseText.getText() != null) {
-                    try {
-                        String password = PasswordEncryptUtil.encryptPassword(passphraseText.getText());
-                        getConnection().setPassphrase(password + PasswordEncryptUtil.ENCRYPT_KEY);
-                    } catch (Exception ex) {
-                        ExceptionHandler.process(ex);
-                    }
-                }
+                FTPConnection conn = getConnection();
+                conn.setPassphrase(conn.getValue(passphraseText.getText(), true));
             }
         });
     }
@@ -626,29 +595,25 @@ public class FTPForm extends AbstractForm {
 
     @Override
     protected void initialize() {
-        ftpUsernameText.setText(getConnection().getUsername());
+        FTPConnection conn = getConnection();
+        ftpUsernameText.setText(conn.getUsername());
         // decrypt password
-        try {
-            ftpPasswordText.setText(PasswordEncryptUtil.decryptPassword(getConnection().getPassword()));
-        } catch (Exception e) {
-            String pwd = ConnectionHelper.getDecryptPassword(getConnection().getPassword());
-            ftpPasswordText.setText(pwd != null ? pwd : getConnection().getPassword());
-        }
-        ftpPortText.setText(getConnection().getPort());
-        ftpHostText.setText(getConnection().getHost());
-        encodeCombo.setText(getConnection().getEcoding());
+        ftpPasswordText.setText(conn.getValue(conn.getPassword(), false));
+        ftpPortText.setText(conn.getPort());
+        ftpHostText.setText(conn.getHost());
+        encodeCombo.setText(conn.getEcoding());
         if (CUSTOM.equals(encodeCombo.getText())) {
             customText.setVisible(true);
         } else {
             customText.setVisible(false);
         }
-        if (getConnection().getCustomEncode() == null) {
+        if (conn.getCustomEncode() == null) {
             customText.setText(ENCODING);
         } else {
-            customText.setText(getConnection().getCustomEncode());
+            customText.setText(conn.getCustomEncode());
         }
-        connModelCombo.setText(getConnection().getMode());
-        if (getConnection().isSFTP()) {
+        connModelCombo.setText(conn.getMode());
+        if (conn.isSFTP()) {
             sftpChildComGridData.exclude = false;
             ftpsChildComGridData.exclude = true;
             sftpChildCom.setVisible(true);
@@ -658,19 +623,14 @@ public class FTPForm extends AbstractForm {
             tetsCom.layout();
             buildGroup.layout();
             connModelCombo.setEnabled(false);
-            sftpSuppBut.setSelection(getConnection().isSFTP());
-            methodCombo.setText(getConnection().getMethod());
-            if (PUBLIC_KEY.equals(getConnection().getMethod())) {
+            sftpSuppBut.setSelection(conn.isSFTP());
+            methodCombo.setText(conn.getMethod());
+            if (PUBLIC_KEY.equals(conn.getMethod())) {
                 privatekeyText.setVisible(true);
                 passphraseText.setVisible(true);
-                privatekeyText.setText(getConnection().getPrivatekey() != null ? getConnection().getPrivatekey() : "");//$NON-NLS-1$
+                privatekeyText.setText(conn.getPrivatekey() != null ? conn.getPrivatekey() : "");//$NON-NLS-1$
                 // decrypt password
-                try {
-                    passphraseText.setText(PasswordEncryptUtil.decryptPassword(getConnection().getPassphrase()));
-                } catch (Exception e) {
-                    String pwd = ConnectionHelper.getDecryptPassword(getConnection().getPassphrase());
-                    passphraseText.setText(pwd != null ? pwd : getConnection().getPassphrase());
-                }
+                passphraseText.setText(conn.getValue(conn.getPassphrase(), false));
             } else {
                 privatekeyText.setVisible(false);
                 passphraseText.setVisible(false);
@@ -682,7 +642,7 @@ public class FTPForm extends AbstractForm {
             tetsCom.layout();
             buildGroup.layout();
         }
-        if (getConnection().isFTPS()) {
+        if (conn.isFTPS()) {
             ftpsChildComGridData.exclude = false;
             sftpChildComGridData.exclude = true;
             sftpChildCom.setVisible(false);
@@ -692,15 +652,10 @@ public class FTPForm extends AbstractForm {
             tetsCom.layout();
             buildGroup.layout();
             connModelCombo.setEnabled(false);
-            ftpsSuppBut.setSelection(getConnection().isFTPS());
-            keyFileText.setText(getConnection().getKeystoreFile());
+            ftpsSuppBut.setSelection(conn.isFTPS());
+            keyFileText.setText(conn.getKeystoreFile());
             // decrypt password
-            try {
-                keyPasswordText.setText(PasswordEncryptUtil.decryptPassword(getConnection().getKeystorePassword()));
-            } catch (Exception e) {
-                String pwd = ConnectionHelper.getDecryptPassword(getConnection().getKeystorePassword());
-                keyPasswordText.setText(pwd != null ? pwd : getConnection().getKeystorePassword());
-            }
+            keyPasswordText.setText(conn.getValue(conn.getKeystorePassword(), false));
         } else {
             ftpsChildComGridData.exclude = true;
             ftpsChildCom.setVisible(false);
@@ -708,24 +663,19 @@ public class FTPForm extends AbstractForm {
             tetsCom.layout();
             buildGroup.layout();
         }
-        if (getConnection().isUsesocks()) {
+        if (conn.isUsesocks()) {
             proxyChildComGridData.exclude = false;
             proxyChildCom.setVisible(true);
             proxyChildCom.layout();
             proxyCom.layout();
             buildGroup.layout();
             this.layout();
-            useSocksBut.setSelection(getConnection().isUsesocks());
-            proxyHostText.setText(getConnection().getProxyhost());
-            proxyPortText.setText(getConnection().getProxyport());
-            proxyUsernameText.setText(getConnection().getProxyuser());
+            useSocksBut.setSelection(conn.isUsesocks());
+            proxyHostText.setText(conn.getProxyhost());
+            proxyPortText.setText(conn.getProxyport());
+            proxyUsernameText.setText(conn.getProxyuser());
             // decrypt password
-            try {
-                proxyPasswordText.setText(PasswordEncryptUtil.decryptPassword(getConnection().getProxypassword()));
-            } catch (Exception e) {
-                String pwd = ConnectionHelper.getDecryptPassword(getConnection().getProxypassword());
-                proxyPasswordText.setText(pwd != null ? pwd : getConnection().getProxypassword());
-            }
+            proxyPasswordText.setText(conn.getValue(conn.getProxypassword(), false));
         } else {
             proxyChildComGridData.exclude = true;
             proxyChildCom.setVisible(false);
@@ -737,44 +687,45 @@ public class FTPForm extends AbstractForm {
     }
 
     public void removeHideValue() {
+        FTPConnection conn = getConnection();
         if (!connModelCombo.getCombo().isVisible()) {
-            getConnection().setMode(""); //$NON-NLS-1$
+            conn.setMode(""); //$NON-NLS-1$
         }
         if (!sftpSuppBut.isVisible()) {
-            getConnection().setSFTP(false);
+            conn.setSFTP(false);
         }
         if (!ftpsSuppBut.isVisible()) {
-            getConnection().setFTPS(false);
+            conn.setFTPS(false);
         }
         if (!useSocksBut.isVisible()) {
-            getConnection().setUsesocks(false);
+            conn.setUsesocks(false);
         }
         if (!methodCombo.getCombo().isVisible()) {
-            getConnection().setMethod(""); //$NON-NLS-1$
+            conn.setMethod(""); //$NON-NLS-1$
         }
         if (!keyPasswordText.getTextControl().isVisible()) {
-            getConnection().setKeystorePassword(""); //$NON-NLS-1$
+            conn.setKeystorePassword(""); //$NON-NLS-1$
         }
         if (!keyFileText.getTextControl().isVisible()) {
-            getConnection().setKeystoreFile(""); //$NON-NLS-1$
+            conn.setKeystoreFile(""); //$NON-NLS-1$
         }
         if (!proxyHostText.getTextControl().isVisible()) {
-            getConnection().setProxyhost(""); //$NON-NLS-1$
+            conn.setProxyhost(""); //$NON-NLS-1$
         }
         if (!proxyPortText.getTextControl().isVisible()) {
-            getConnection().setProxyport(""); //$NON-NLS-1$
+            conn.setProxyport(""); //$NON-NLS-1$
         }
         if (!proxyPasswordText.getTextControl().isVisible()) {
-            getConnection().setProxypassword(""); //$NON-NLS-1$
+            conn.setProxypassword(""); //$NON-NLS-1$
         }
         if (!proxyUsernameText.getTextControl().isVisible()) {
-            getConnection().setProxyuser(""); //$NON-NLS-1$
+            conn.setProxyuser(""); //$NON-NLS-1$
         }
         if (!customText.isVisible()) {
-            getConnection().setCustomEncode(ENCODING);
+            conn.setCustomEncode(ENCODING);
         }
-        if (getConnection().getCustomEncode() == null || "".equals(getConnection().getCustomEncode())) { //$NON-NLS-1$
-            getConnection().setCustomEncode(ENCODING);
+        if (conn.getCustomEncode() == null || "".equals(conn.getCustomEncode())) { //$NON-NLS-1$
+            conn.setCustomEncode(ENCODING);
         }
     }
 

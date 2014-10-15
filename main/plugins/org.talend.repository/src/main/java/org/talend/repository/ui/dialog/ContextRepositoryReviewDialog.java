@@ -30,8 +30,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -46,7 +46,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.ui.context.ContextManagerHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -68,7 +67,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
     // added by hyWang
     private final IContextManager contextManager;
 
-    private ContextManagerHelper helper;
+    // private ContextManagerHelper helper;
 
     private final List<IContextParameter> params;
 
@@ -95,7 +94,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         super(parentShell, type);
         this.params = params;
         this.contextManager = contextManager;
-        this.helper = new ContextManagerHelper(contextManager);
+        // this.helper = new ContextManagerHelper(contextManager);
     }
 
     /*

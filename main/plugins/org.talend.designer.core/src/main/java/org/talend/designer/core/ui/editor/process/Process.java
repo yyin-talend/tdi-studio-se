@@ -65,7 +65,6 @@ import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils;
-import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -1025,8 +1024,12 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
                     Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
                     String strValue = ""; //$NON-NLS-1$
-                    if (o instanceof Integer) {
-                        IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
+                    IElementParameter tmpParam = null;
+                    Object[] listItemsValue = param.getListItemsValue();
+                    if (listItemsValue.length > i) {
+                        tmpParam = (IElementParameter) listItemsValue[i];
+                    }
+                    if (o instanceof Integer && tmpParam != null) {
                         if (tmpParam.getListItemsValue().length == 0) {
                             strValue = ""; //$NON-NLS-1$
                         } else {
@@ -1041,7 +1044,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                             }
                         }
                     }
-                    elementValue.setValue(strValue);
+                    if (tmpParam != null && tmpParam.getFieldType().equals(EParameterFieldType.PASSWORD)) {
+                        elementValue.setValue(strValue, true);
+                    } else {
+                        elementValue.setValue(strValue);
+                    }
                     //
                     Object object = currentLine.get(param.getListItemsDisplayCodeName()[i] + IEbcdicConstant.REF_TYPE);
                     if (object != null) {
@@ -1068,14 +1075,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             }
         } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD) && value instanceof String) {
-            try {
-                pType.setValue(PasswordEncryptUtil.encryptPassword((String) value) + PasswordEncryptUtil.ENCRYPT_KEY);
-            } catch (Exception e) {
-                pType.setValue((String) value);
-            }
-        }
-
-        else {
+            pType.setRawValue((String) value);
+        } else {
             if (value == null) {
                 pType.setValue(""); //$NON-NLS-1$
             } else {
@@ -1186,21 +1187,27 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                     tableValues.add(lineValues);
                                 }
                                 boolean needRemoveQuotes = false;
+                                IElementParameter tmpParam = null;
                                 for (Object o : param.getListItemsValue()) {
                                     if (o instanceof IElementParameter) {
                                         IElementParameter tableParam = (IElementParameter) o;
-                                        if (tableParam.getName().equals(elementValue.getElementRef())
-                                                && (tableParam.getFieldType() == EParameterFieldType.CONNECTION_LIST)) {
-                                            needRemoveQuotes = true;
+                                        if (tableParam.getName().equals(elementValue.getElementRef())) {
+                                            tmpParam = tableParam;
+                                            if (tableParam.getFieldType() == EParameterFieldType.CONNECTION_LIST) {
+                                                needRemoveQuotes = true;
+                                            }
                                         }
                                     }
                                 }
 
+                                String elemValue = elementValue.getValue();
+                                if (tmpParam != null && EParameterFieldType.PASSWORD.equals(tmpParam.getFieldType())) {
+                                    elemValue = elementValue.getRawValue();
+                                }
                                 if (needRemoveQuotes) {
-                                    lineValues.put(elementValue.getElementRef(),
-                                            TalendTextUtils.removeQuotes(elementValue.getValue()));
+                                    lineValues.put(elementValue.getElementRef(), TalendTextUtils.removeQuotes(elemValue));
                                 } else {
-                                    lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                                    lineValues.put(elementValue.getElementRef(), elemValue);
                                 }
                                 if (elementValue.getType() != null) {
                                     lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE,
@@ -1255,24 +1262,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
                     } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
-                        boolean encrypted = true;
-                        try {
-                            int ind = value.lastIndexOf(PasswordEncryptUtil.ENCRYPT_KEY);
-                            if (ind == -1) {
-                                encrypted = false;
-                            } else {
-                                String encryptedPart = new StringBuilder(value).replace(ind,
-                                        ind + PasswordEncryptUtil.ENCRYPT_KEY.length(), "").toString(); //$NON-NLS-1$
-                                String decryptedValue = PasswordEncryptUtil.decryptPassword(encryptedPart);
-                                param.setValue(decryptedValue);
-                            }
-                        } catch (Exception e) {
-                            encrypted = false;
-                        }
-
-                        if (!encrypted) {
-                            param.setValue(value);
-                        }
+                        param.setValue(pType.getRawValue());
                     } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
                             if (value != null && value.length() > 2) {

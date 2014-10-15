@@ -54,8 +54,6 @@ public class EncryptDbPasswordforItemFileMigrationTask extends AbstractItemMigra
                         String rawPass = dbConn.getRawPassword();
                         if (pass != null && pass.equals(rawPass)) {
                             encryptPassword(dbConn);
-                            dbConn.getPassword();
-                            dbConn.getRawPassword();
                             factory.save(item, true);
                         }
                     }
@@ -69,7 +67,7 @@ public class EncryptDbPasswordforItemFileMigrationTask extends AbstractItemMigra
     }
 
     public void encryptPassword(DatabaseConnection dbConn) throws Exception {
-        String password = PasswordEncryptUtil.encryptPassword(dbConn.getRawPassword());
+        String password = PasswordEncryptUtil.encryptPassword(dbConn.getPassword());
         dbConn.setPassword(password);
     }
 
@@ -85,6 +83,7 @@ public class EncryptDbPasswordforItemFileMigrationTask extends AbstractItemMigra
      * 
      * @see org.talend.migration.IProjectMigrationTask#getOrder()
      */
+    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2010, 10, 28, 12, 0, 0);
         return gc.getTime();
