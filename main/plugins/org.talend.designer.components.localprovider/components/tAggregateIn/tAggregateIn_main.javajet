@@ -417,7 +417,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
                                 
     							
     						} // T_InMain_AggR_636
-							log.debug(log.str("Operation function: '" + function + "' on the column '" + inOperation + "'. Output column: '"), outputConn.getName() + "." + outOperation, log.str("'. Column value is: "), outputConn.getName() + "." + outOperation);
+							log.debug(log.str("Operation function: '" + function + "' on the column '" + inOperation + "'."));
                 			continue next_column;                			
                 		} // T_InMain_AggR_616
 
