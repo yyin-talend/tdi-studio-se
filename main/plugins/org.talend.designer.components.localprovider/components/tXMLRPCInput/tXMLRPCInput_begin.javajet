@@ -70,9 +70,9 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
         };  
         Object[] results_<%=cid %> = null;
 	    int nb_line_<%=cid %> = 0;	 
-	    <%log.debug(log.str("Invoking the method " + method + "."));%>
+	    <%log.debug(log.str("Invoking the method "), method, log.str("."));%>
         Object reValue<%=cid%> = client<%=cid%>.execute(<%=method%>, params_<%=cid %>);
-        <%log.debug(log.str("Invoke the method " + method + " successful."));%>
+        <%log.debug(log.str("Invoke the method "), method, log.str(" has succeeded."));%>
         
         Object[] tempArray_<%=cid %> = null;
 		if (reValue<%=cid%> instanceof Object[]) {			
