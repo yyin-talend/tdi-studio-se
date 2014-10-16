@@ -44,6 +44,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
     		String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			boolean targetRecordOnly = ("true").equals(ElementParameterParser.getValue(node,"__TARGET_RECORD_ONLY__"));
+			final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 			
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -62,8 +63,22 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 }});
 				
 				java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");
+				<%
+				if(isLog4jEnabled){
+				%>	
+					log.info("<%=cid%> - Attempt to get a task retrieve service from: " + wsdlUrl_<%=cid%> + ".");
+				<%
+				}
+				%>
 				org.talend.datastewardship.server.ws.TDSCWS_Service service_<%=cid%> = new org.talend.datastewardship.server.ws.TDSCWS_Service(wsdlUrl_<%=cid%>);
 				org.talend.datastewardship.server.ws.TDSCWS TDSCWS_<%=cid%> = service_<%=cid%>.getTDSCWSImplPort();
+				<%
+				if(isLog4jEnabled){
+				%>	
+					log.info("<%=cid%> - Got successfully.");
+				<%
+				}
+				%>
 				
 				String startDateString_<%=cid%> = <%=startDate.equals("")?null:startDate%>;
 				String endDateString_<%=cid%> = <%=endDate.equals("")?null:endDate%>;
@@ -84,7 +99,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     java.util.GregorianCalendar endDate_<%=cid%> = (java.util.GregorianCalendar) endCal_<%=cid%>;
 					endXMLGregorianCalendar_<%=cid%> = factory_<%=cid%>.newXMLGregorianCalendar(endDate_<%=cid%>);
 				}
-				
+				<%
+				if(isLog4jEnabled){
+				%>
+					log.info("<%=cid%> - Start to retrieve tasks from server.");
+				<%
+				}
+				%>
 				java.util.List<net.java.dev.jaxb.array.StringArray> tasksResult_<%=cid%> = TDSCWS_<%=cid%>.searchTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>,<%=status.equals("null")?null:"\""+status+"\""%>);
 				for(net.java.dev.jaxb.array.StringArray taskResult_<%=cid%>:tasksResult_<%=cid%>){
 					java.util.List<String> taskCols_<%=cid%> = taskResult_<%=cid%>.getItem();
@@ -123,7 +144,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			            }
 		            <%}%>
 		            for(java.util.Map<String,String> record_<%=cid%> : records_<%=cid%>){
-		            
+		            	<%
+		            	if(isLog4jEnabled){
+						%>
+							log.debug("<%=cid%> - Retrieving the task " + (nb_line_<%=cid%>+1) + ".");
+						<%
+						}
+		            	%>
 		            	<%=outgoingConn.getName()%>.TASK_ID = taskCols_<%=cid%>.get(0);
 						<%=outgoingConn.getName()%>.TASK_TYPE = taskCols_<%=cid%>.get(1);
 						<%=outgoingConn.getName()%>.TASK_CREATEDBY = taskCols_<%=cid%>.get(2);
@@ -176,7 +203,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							}
 						}
 						%>
-<%
+			<%
 			}
 		}
 	}
