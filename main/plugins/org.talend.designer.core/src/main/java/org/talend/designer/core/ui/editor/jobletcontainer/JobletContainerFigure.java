@@ -190,7 +190,10 @@ public class JobletContainerFigure extends Figure {
                 }
             }
         }
-        refreshNodes(false);
+        if (this.jobletContainer.getNode().isJoblet()) {
+            refreshForJoblet();
+        }
+        initializejobletContainer(getBounds());
         super.paint(graphics);
     }
 
@@ -198,43 +201,7 @@ public class JobletContainerFigure extends Figure {
 
     public void refreshNodes(boolean isClear) {
         if (this.jobletContainer.getNode().isJoblet()) {
-            boolean isRed = new JobletUtil().isRed(this.jobletContainer);
-            Project refProject = ProjectManager.getInstance().getProject(
-                    this.jobletContainer.getProcess().getProperty().getItem());
-            if (!ProjectManager.getInstance().isInCurrentMainProject(refProject)) {
-                if (!this.jobletContainer.isCollapsed()) {
-                    isRed = true;
-                }
-            }
-            if (this.jobletContainer.isCollapsed() && lastJobletRedState == isRed) {
-                return;
-            }
-            lastJobletRedState = isRed;
-            if (isSubjobDisplay) {
-                if (isRed && rectFig != null) {
-                    rectFig.setBackgroundColor(ColorUtils.getCacheColor(red));
-                } else if (rectFig != null) {
-                    rectFig.setBackgroundColor(ColorUtils.getCacheColor(green));
-                }
-            } else {
-                if (rectFig != null) {
-                    rectFig.setBackgroundColor(ColorUtils.getCacheColor(white));
-                }
-            }
-
-            if (isRed && outlineFigure != null) {
-                outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(red));
-            } else if (outlineFigure != null) {
-                outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(green));
-            }
-
-            if (!jobletContainer.isCollapsed()) {
-                for (Object ele : jobletContainer.getElements()) {
-                    if (ele instanceof Node) {
-                        ((Node) ele).setReadOnly(isRed);
-                    }
-                }
-            }
+            refreshForJoblet();
         } else if (this.jobletContainer.getNode().isMapReduce()) {
             if (this.jobletContainer.getNode().isMapReduceStart() && mrFigures.isEmpty()) {
                 initMRFigures();
@@ -257,9 +224,6 @@ public class JobletContainerFigure extends Figure {
                 }
                 return;
             }
-            // if (this.jobletContainer.getNodeContainers().isEmpty()) {
-            // this.jobletContainer.updateJobletNodes(true);
-            // }
 
             if (rectFig != null) {
                 if (isSubjobDisplay) {
@@ -327,7 +291,48 @@ public class JobletContainerFigure extends Figure {
             }
 
         }
-        initializejobletContainer(getBounds());
+    }
+
+    /**
+     * DOC nrousseau Comment method "refreshForJoblet".
+     */
+    private void refreshForJoblet() {
+        boolean isRed = new JobletUtil().isRed(this.jobletContainer);
+        Project refProject = ProjectManager.getInstance().getProject(this.jobletContainer.getProcess().getProperty().getItem());
+        if (!ProjectManager.getInstance().isInCurrentMainProject(refProject)) {
+            if (!this.jobletContainer.isCollapsed()) {
+                isRed = true;
+            }
+        }
+        if (this.jobletContainer.isCollapsed() && lastJobletRedState == isRed) {
+            return;
+        }
+        lastJobletRedState = isRed;
+        if (isSubjobDisplay) {
+            if (isRed && rectFig != null) {
+                rectFig.setBackgroundColor(ColorUtils.getCacheColor(red));
+            } else if (rectFig != null) {
+                rectFig.setBackgroundColor(ColorUtils.getCacheColor(green));
+            }
+        } else {
+            if (rectFig != null) {
+                rectFig.setBackgroundColor(ColorUtils.getCacheColor(white));
+            }
+        }
+
+        if (isRed && outlineFigure != null) {
+            outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(red));
+        } else if (outlineFigure != null) {
+            outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(green));
+        }
+
+        if (!jobletContainer.isCollapsed()) {
+            for (Object ele : jobletContainer.getElements()) {
+                if (ele instanceof Node) {
+                    ((Node) ele).setReadOnly(isRed);
+                }
+            }
+        }
     }
 
     private Point lastLocation = null;
@@ -338,6 +343,7 @@ public class JobletContainerFigure extends Figure {
             // avoid to calculate locations for nothing
             return;
         }
+        lastLocation = location;
         collapseFigure.setCollapsed(jobletContainer.isCollapsed());
         collapseFigure.setVisible(this.jobletContainer.getNode().isJoblet());
         titleFigure.setText("<b> " + title + "</b>"); //$NON-NLS-1$ //$NON-NLS-2$
