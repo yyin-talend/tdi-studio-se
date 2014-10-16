@@ -48,7 +48,7 @@ imports="
 			com.google.api.client.http.AbstractInputStreamContent <%=cid%>_fContent = null;
 		<%
 				String destFolderName = helper.getStringParam("__DESTINATION_FOLDER_NAME__");
-				if(!destFolderName.matches("\\s*\"?\"?\\s*")){
+				if(!destFolderName.matches("\\s*\"?\"?\\s*") && !destFolderName.equals("\"root\"")){
 		%>
 			com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
 			<%=cid%>_listRequest.setQ("title = '" + <%=destFolderName%> + "' and mimeType = 'application/vnd.google-apps.folder'");
@@ -100,7 +100,12 @@ imports="
 				<%=cid%>_uploader_input  = new java.io.ByteArrayInputStream(<%=cid%>_uploader_output.toByteArray());
 				com.google.api.client.http.InputStreamContent <%=cid%>_upload_content = new com.google.api.client.http.InputStreamContent(null, <%=cid%>_uploader_input);
 				<%=cid%>_file = <%=cid%>_client.files().insert(<%=cid%>_file, <%=cid%>_upload_content).execute();
+			<%
+				
+				if(!destFolderName.matches("\\s*\"?\"?\\s*") && !destFolderName.equals("\"root\"")){%>
+		
 			}
+				<%}%>
 	}finally {
 		if (<%=cid%>_uploader_input != null)
 		{
