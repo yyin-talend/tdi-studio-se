@@ -425,8 +425,9 @@ globalMap.put("<%=cid_original %>_NB_LINE",nb_line_<%=cid %>);
 		Object[] treeObjs = getTree(rootTable, groupTable, loopTable, metadatas.get(0).getListColumns());
     	List<XMLNode> mainList = (ArrayList<XMLNode>)treeObjs[0];
         XMLNode root = mainList.get(0);
-
-        if(!("true").equals(allowEmpty)){
+        
+		boolean isAppend = "true".equals(ElementParameterParser.getValue(node, "__MERGE__")); 
+        if(!"true".equals(allowEmpty) && !(groupTable.size()>0 && isAppend)){
         	removeEmptyElement(root);
         }
 
