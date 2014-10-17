@@ -471,6 +471,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // job OSGi DataSources
         jobInfo.put("dataSources", DataSourceConfig.getAliases(process)); //$NON-NLS-1$
 
+        jobInfo.put("hasDestroyMethod",
+                !"MR".equals(ERepositoryObjectType.getItemType(processItem).getAlias()));
+
         return jobInfo;
     }
 
