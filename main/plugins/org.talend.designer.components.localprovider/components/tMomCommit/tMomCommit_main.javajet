@@ -19,38 +19,100 @@ imports="
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 	
 	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
-%>
+	%>
 		javax.jms.Session session_<%=cid%> = (javax.jms.Session)globalMap.get("session_<%=connectionCid%>");
 		javax.jms.Connection connection_<%=cid%> = (javax.jms.Connection)globalMap.get("connection_<%=connectionCid%>");
 		javax.jms.MessageProducer producer_<%=cid%> = (javax.jms.MessageProducer)globalMap.get("producer_<%=connectionCid%>");
 		if(session_<%=cid%> != null && connection_<%=cid %> != null) {
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Committing the session...");
+			<%
+			}
+			%>
 			session_<%=cid%>.commit();
-<%  
-		if(close){
-%>
-		    if (producer_<%=cid %> != null) { producer_<%=cid %>.close(); }
-	        session_<%=cid %>.close();
-	        connection_<%=cid %>.close();
-<% 
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Commit successfully.");
+			<%
+			}
+			if(close){
+			%>
+			    if (producer_<%=cid %> != null) { 
+			    	<%
+			    	if (isLog4jEnabled) {
+					%>
+						log.info("<%=cid%> - Closing producer...");
+					<%
+					}
+					%>
+			    	producer_<%=cid %>.close(); 
+			    	<%
+					if (isLog4jEnabled) {
+					%>
+						log.info("<%=cid%> - Closed successfully.");
+					<%
+					}
+					%>
+			    }
+			    <%
+			   	if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Closing connection...");
+				<%
+				}
+			    %>
+		        session_<%=cid %>.close();
+		        connection_<%=cid %>.close();
+				<% 
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Closed successfully.");
+				<%
+				}
+			}
+			%>
 		}
-%>
-		}
-<%
+	<%
 	} else {
-%>
+	%>
 		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = (com.ibm.mq.MQQueueManager)globalMap.get("qMgr_<%=connectionCid%>");
 	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = (com.ibm.mq.MQQueue)globalMap.get("remoteQ_<%=connectionCid%>");
 		if(qMgr_<%=cid%> != null && remoteQ_<%=cid%> != null) {
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Committing ...");
+			<%
+			}
+			%>
 			qMgr_<%=cid%>.commit();
-<%  
-		if(close){
-%>
-			remoteQ_<%=cid%>.close();
-		    qMgr_<%=cid%>.disconnect();;
-<% 
+			<%  
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Commit successfully.");
+			<%
+			}
+			if(close){
+			   	if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Closing connection...");
+				<%
+				}
+			    %>
+				remoteQ_<%=cid%>.close();
+			    qMgr_<%=cid%>.disconnect();;
+				<% 
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Closed successfully.");
+				<%
+				}
+			}
+			%>
 		}
-%>
-		}
-<%
+	<%
 	}
-%>
+	%>
