@@ -14,7 +14,7 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
-String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+	String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
 String outputConnName = null;
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -52,7 +52,10 @@ if (outputConnName != null){
 		<%=outputConnName%>.number_of_variables=(long)<%=cid%>_sf.getNumberOfVariables();
 		<%=outputConnName%>.number_of_cases=(long)<%=cid%>_sf.getNumberOfCases();
 		<%=cid%>_bIsValidFile=true;
-	
+		
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Retrieving the record.");
+		<%}%>
 <%
 }
 %>
