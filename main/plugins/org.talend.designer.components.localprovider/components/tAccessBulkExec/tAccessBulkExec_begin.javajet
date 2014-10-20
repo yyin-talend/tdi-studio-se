@@ -27,7 +27,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
 	boolean includeHeader = "true".equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jCodeGenerateUtil.infoComponentStart(node);
 	List<IMetadataColumn> columnList = getColumnList(node);
 %>
 	String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
@@ -117,13 +116,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 		java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
 		<%if(isLog4jEnabled){%>
     		log.debug("<%=cid%> - Bulk SQL:"+bulkInsert_<%=cid%>+".");
-    		log.info("<%=cid%> - Bulk inserting data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>." );
+    		log.info("<%=cid%> - Bulk inserting data into " + tableName_<%=cid%> + "." );
 		<%}%>
 		stmt_<%=cid%>.execute(bulkInsert_<%=cid%>);
 
 		stmt_<%=cid%>.close();
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Bulk insert data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has finished.");
+			log.info("<%=cid%> - Bulk insert data into " + tableName_<%=cid%> + " has finished.");
     	<%}%>
 	<%
 	}
@@ -131,6 +130,5 @@ skeleton="../templates/db_output_bulk.skeleton"
 	{
 		log4jCodeGenerateUtil.close(node);
 	}
-	log4jCodeGenerateUtil.infoComponentEnd(node);
     %>
 

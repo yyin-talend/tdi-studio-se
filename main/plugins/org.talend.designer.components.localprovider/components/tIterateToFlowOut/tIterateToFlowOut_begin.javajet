@@ -11,12 +11,12 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 "
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+log = new LogUtil(node);
 IProcess currentProcess = node.getProcess();
 
 boolean isInThread = false;
@@ -43,6 +43,11 @@ OnSubjobOkStruct<%=destination%> struct_<%=cid%> = new OnSubjobOkStruct<%=destin
 for (Map<String, String> mappingColumn : mapping) {
 %>
 struct_<%=cid%>.<%=mappingColumn.get("SCHEMA_COLUMN")%>  = <%=mappingColumn.get("VALUE")%>;
+<%
+}
+if(log.isActive()){
+%>
+	log.trace("struct_<%=cid%> - " + struct_<%=cid%>.toLogString());
 <%
 }
 %>

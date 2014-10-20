@@ -11,7 +11,6 @@ imports="
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
@@ -47,13 +46,6 @@ if (outputConnName != null){
 	
 	if(<%=cid%>_spVar.hasLabels()) <%=outputConnName%>.Values=<%=cid%>_spVar.getSPSSValueLable().getValuesAsString();
 	
-	<% 	
-		if(isLog4jEnabled) {
-	%>
-			log4jSb_<%=cid%>.append(<%=outputConnName%>.Name + "|" +<%=outputConnName%>.Type + "|" + <%=outputConnName%>.Width + "|" + <%=outputConnName%>.Decimals + "|" + <%=outputConnName%>.Lable + "|" + <%=outputConnName%>.Values + "|" + 	<%=outputConnName%>.Missing + "|" + <%=outputConnName%>.Columns + "|" + <%=outputConnName%>.Align + "|" + <%=outputConnName%>.Measure);
-	<%
-		}
-	%>
 
 <%
 }

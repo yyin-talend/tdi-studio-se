@@ -28,6 +28,9 @@
    </extension>
    <extension  point="org.eclipse.ui.startup">
 	   <startup class="org.eclipse.update.internal.scheduler.SchedulerStartup"/>
+    <startup
+          class="org.talend.designer.core.ui.editor.ProcessShowJobStartup">
+    </startup>
 	</extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -575,6 +578,11 @@
         class="org.talend.designer.core.ui.editor.properties.controllers.generator.TableByRowGenerator"
         mapping="TABLE_BY_ROW"
         name="Table by row">
+  </generator>
+  <generator
+        class="org.talend.designer.core.ui.editor.properties.controllers.generator.SapSchemaTypeGenerator"
+        mapping="SAP_SCHEMA_TYPE"
+        name="Sap Schema Type">
   </generator>   
    </extension>
    <extension

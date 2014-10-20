@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
  * @author ocarbone
  * @deprecated by cli
  */
+@Deprecated
 public class DataStringConnection {
 
     private final DataConnection[] dataConnection;
@@ -583,7 +584,7 @@ public class DataStringConnection {
         }
         DataStringConnection dataStrConn = new DataStringConnection();
         dataStrConn.getString(getDBTypes().indexOf(conn.getDatabaseType()), conn.getServerName(), conn.getUsername(),
-                conn.getPassword(), conn.getPort(), conn.getSID(), conn.getFileFieldName(), conn.getDatasourceName(),
+                conn.getRawPassword(), conn.getPort(), conn.getSID(), conn.getFileFieldName(), conn.getDatasourceName(),
                 conn.getDBRootPath(), conn.getAdditionalParams());
         return dataStrConn.getUrlConnectionStr();
     }

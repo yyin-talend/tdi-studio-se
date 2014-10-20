@@ -48,6 +48,3 @@ imports="
 	<%}%>
 	globalMap.put("<%=cid %>_EXIT_CODE",sess_<%=cid%>.getExitStatus());
 	
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Done.");
-		<%}%>

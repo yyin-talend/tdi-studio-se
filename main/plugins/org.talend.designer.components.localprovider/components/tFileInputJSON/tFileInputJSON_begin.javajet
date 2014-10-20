@@ -19,8 +19,6 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node); 
-log4jFileUtil.logParameters(node); 
 
 String cid = node.getUniqueName();
 
@@ -133,9 +131,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                         String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
                                         if(defaultValue == null) {
 %>
-											<%if(isLog4jEnabled){%>
-												log.fatal("<%=cid%> Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
-											<%}%>
 			                                throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
                                         } else {
@@ -146,9 +141,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                         }
 %>
 		                             }
-									<%if(isLog4jEnabled){%>
-										log4jSb_<%=cid%>.append(<%=firstConnName %>.<%=column.getLabel() %> + "|");
-									<%}%>
 <%
 
                                 }
@@ -213,16 +205,10 @@ if (jsEngine_<%=cid%> == null) {
 	<%}%>
 		jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
 		if(jsonText_<%=cid%> == null) {
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - Fail to parse the json file : " + <%if(!isUseUrl) {%> <%=filename %> <%} else {%> <%=urlpath %> <%}%>);
-			<%}%>
 			throw new RuntimeException("fail to parse the json file : " + <%if(!isUseUrl) {%> <%=filename %> <%} else {%> <%=urlpath %> <%}%>);
 		}
 	} catch(java.lang.Exception e_<%=cid%>) {
 	<%if (dieOnError) {%>
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-		<%}%>
 		throw e_<%=cid%>;
 	<%} else {%>
 		<%if(isLog4jEnabled){%>
@@ -312,9 +298,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
                         if (dieOnError) {
 %>
-							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - " + e.getMessage());
-							<%}%>
                             throw(e);
 <%
                         } else {
@@ -561,9 +544,6 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
 <%
 			if (dieOnError) {
 %>
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-				<%}%>
             	throw(e_<%=cid%>);
 <%			
 			}else{
@@ -629,9 +609,6 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
 <%
             if (dieOnError) {
 %>
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-				<%}%>
                 throw(e_<%=cid%>);
 <%
             }else{
@@ -866,9 +843,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
                                             }
 <%
-									if(isLog4jEnabled){%>
-										log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %> + "|");
-									<%}
                                 } //S_if_1_2
                             } // S_if_1_1
                         } // S_for_1_0
@@ -887,9 +861,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
                     if (dieOnError) {
 %>
-						<%if(isLog4jEnabled){%>
-							log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-						<%}%>
                         throw(e_<%=cid%>);
 <%
                     } else {

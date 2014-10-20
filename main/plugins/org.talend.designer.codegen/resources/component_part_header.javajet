@@ -195,12 +195,14 @@
 	Set<IConnection> connSetForLog =  new HashSet<IConnection>();
 	connSetForLog.addAll(node.getIncomingConnections(EConnectionType.FLOW_MAIN));
 	connSetForLog.addAll(node.getIncomingConnections(EConnectionType.FLOW_MERGE));
-	if((codePart.equals(ECodePart.MAIN))&isLog4jEnabled&connSetForLog.size()>0){
-		for(IConnection con:connSetForLog){
-		%>
-			log.trace("<%=con.getUniqueName()%> - " + <%=con.getUniqueName()%>.toLogString());
-		<%
-		}
+	if((codePart.equals(ECodePart.MAIN)) && isLog4jEnabled && connSetForLog.size()>0){
+		if(!(node.isVirtualGenerateNode() && node.getVirtualLinkTo()==null)){//ignore the connector in virtual component
+    		for(IConnection con:connSetForLog){
+    		%>
+    			log.trace("<%=con.getUniqueName()%> - " + <%=con.getUniqueName()%>.toLogString());
+    		<%
+    		}
+    	}
 	}
 	if(codePart.equals(ECodePart.BEGIN)){ 
 	%>

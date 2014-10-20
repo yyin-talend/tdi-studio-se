@@ -14,16 +14,15 @@ imports="
 	if(!("true").equals(useExistingConn)){%>
 	/* Close the connection */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Closing the connection 'conn_<%=cid%>' to the server.");
+			log.info("<%=cid%> - Closing the connection to the server.");
 		<%}%>
 	    conn_<%=cid%>.close();
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection 'conn_<%=cid%>' to the server closed.");
+			log.info("<%=cid%> - Connection to the server closed.");
 		<%}%>
 <%			
 	}%>
 		globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Deleted files count: "+nb_file_<%=cid%> + " .");
-			log.info("<%=cid%> - Done.");
 		<%}%>

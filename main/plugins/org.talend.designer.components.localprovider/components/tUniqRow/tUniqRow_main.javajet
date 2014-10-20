@@ -23,6 +23,7 @@ if (node.getIncomingConnections().size()==1) {
 	IConnection conn = node.getIncomingConnections().get(0);
 	connName = conn.getName();
 }
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -127,6 +128,13 @@ new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
 				IConnection conn = connsUnique.get(i);
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>if(<%=conn.getName() %> == null){ 
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the unique record " + (nb_uniques_<%=cid %>+1) + " into <%=conn.getName() %>.");
+	<%
+	}
+	%>
 	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
 }
 <%
@@ -185,6 +193,13 @@ new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
 					}
 %>
 if(<%=conn.getName() %> == null){ 
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Writing the duplicate record " + (nb_duplicates_<%=cid %>+1) + " into <%=conn.getName() %>.");
+	<%
+	}
+	%>
 	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
 }				
 <%

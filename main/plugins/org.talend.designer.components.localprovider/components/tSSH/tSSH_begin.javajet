@@ -67,11 +67,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String standardOutput  = ElementParameterParser.getValue(node, "__STANDARDOUTPUT__");
 		String errorOuput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
-		if (isLog4jEnabled) {
-%>
-			log.info("<%=cid%> - Start to work.");
-<%
-		}
 		if (("NORMAL_OUTPUT").equals(standardOutput)||("NORMAL_OUTPUT").equals(errorOuput)) {
 %>
 			final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
@@ -128,9 +123,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
 		    boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, decryptedPassword_<%=cid%>);
 			  if (isAuthenticated_<%=cid%> == false){
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - Authentication failed.");
-					<%}%>
 			      throw new RuntimeException("Authentication failed.");
 			  }
 <%
@@ -149,9 +141,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, decryptedPassword_<%=cid%>);
 			if (isAuthenticated_<%=cid%> == false){
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Authentication failed.");
-				<%}%>
 				throw new RuntimeException("Authentication failed.");
 			}
 <%
@@ -187,9 +176,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	}	
         );
         	if (isAuthenticated_<%=cid%> == false){
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Authentication failed.");
-				<%}%>
             	throw new RuntimeException("Authentication failed.");
         	}
 <%

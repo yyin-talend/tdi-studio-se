@@ -14,9 +14,6 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node);
-	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASS")); 
-	log4jFileUtil.logParameters(node); 
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     String sServer = ElementParameterParser.getValue(node, "__SERVER__");
     String sServerport = ElementParameterParser.getValue(node, "__SERVERPORT__");
@@ -104,9 +101,6 @@
 	org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
 	org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
 	if(pDB_<%=cid %> == null){
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - Database '" + <%=sDatabaseName%> + "' not found.");
-		<%}%>
 		 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 	}
 
@@ -123,9 +117,6 @@
 		if(null!=pCUB_<%=cid %>	) {
 			break;
 		}else{
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "' ." );
-			<%}%>
 			throw new RuntimeException ("Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "'. exiting..." );
 		} 
 	}
@@ -149,15 +140,6 @@
 				<%=outputConnName%>.rule_extern_id=pRUL_<%=cid %>.getExtern_Id();
 				<%=outputConnName%>.rule_comment=pRUL_<%=cid %>.getComment();
 				<%=outputConnName%>.rule_activated=pRUL_<%=cid %>.getActivated();
-				<%if(isLog4jEnabled){%>
-					log4jSb_<%=cid%>.append("rule_identifier is :" + <%=outputConnName%>.rule_identifier + " | ");
-					log4jSb_<%=cid%>.append("rule_definition :" + <%=outputConnName%>.rule_definition + " | ");
-					log4jSb_<%=cid%>.append("rule_extern_id is :" + <%=outputConnName%>.rule_extern_id + " | ");
-					log4jSb_<%=cid%>.append("rule_comment is :" + <%=outputConnName%>.rule_comment + " | ");
-					log4jSb_<%=cid%>.append("rule_activated is :" + <%=outputConnName%>.rule_activated);
-					log.trace("<%=cid%> - Content of the rule info " + NB_RULES<%=cid%>+ ": " + log4jSb_<%=cid%>);
-					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-				<%}%>
 <%
 			}
 			if(bIterate){

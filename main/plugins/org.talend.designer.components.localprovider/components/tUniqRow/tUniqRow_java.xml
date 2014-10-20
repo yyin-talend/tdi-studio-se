@@ -88,10 +88,11 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
 	<PARAMETER
       NAME="BUFFER_SIZE"
       FIELD="OPENED_LIST"
+      RAW="true"
       NUM_ROW="8"
       REQUIRED="true"
       SHOW_IF="IS_VIRTUAL_COMPONENT == 'true'"

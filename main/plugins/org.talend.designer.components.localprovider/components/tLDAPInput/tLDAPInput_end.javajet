@@ -21,8 +21,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)&&(metadatas.get(0) != null)) {
 %>
 		<%if(isLog4jEnabled){%>
 			log.debug("<%=cid%> - Retrieving the record " + <%=cid%>_NB_LINE + ".");
-			log.trace("<%=cid%> - Content of the record " + <%=cid%>_NB_LINE + ": " + log4jSb_<%=cid%>  + " .");
-			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 		<%}%>
 	}//a
 	
@@ -46,9 +44,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)&&(metadatas.get(0) != null)) {
 <%
         if (dieOnError) {
 %>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
         	throw new java.lang.Exception(e);
 <%
         } else {
@@ -80,7 +75,6 @@ if(("false").equals(useExistingConn)){
 globalMap.put("<%=cid%>_NB_LINE", <%=cid%>_NB_LINE);
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Retrieved records count: " + <%=cid%>_NB_LINE + " .");
-	log.info("<%=cid%> - Done.");	
 <%}%>
 
 <%

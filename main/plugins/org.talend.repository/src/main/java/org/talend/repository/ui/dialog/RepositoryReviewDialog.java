@@ -19,7 +19,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -38,7 +37,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.navigator.CommonViewerSorter;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.GlobalServiceRegister;
@@ -60,7 +58,6 @@ import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.processor.ContextTypeProcessor;
 import org.talend.repository.ui.processor.HeaderFooterTypeProcessor;
 import org.talend.repository.ui.processor.JobTypeProcessor;
@@ -72,8 +69,7 @@ import org.talend.repository.ui.processor.SchemaTypeProcessor;
 import org.talend.repository.ui.processor.SingleSelectedInMultiTypesProcessor;
 import org.talend.repository.ui.processor.ValidationRuleTypeProcessor;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.viewer.ui.provider.RepositoryViewerProvider;
-import org.talend.repository.viewer.ui.viewer.RepositoryTreeViewer;
+import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
 
 /**
  * bqian check the content of the repository view. <br/>
@@ -110,7 +106,7 @@ public class RepositoryReviewDialog extends Dialog {
 
     ViewerTextFilter textFilter = new ViewerTextFilter();
 
-    private RepositoryTreeViewer repositoryTreeViewer;
+    private TreeViewer repositoryTreeViewer;
 
     private IRepositoryView repView;
 
@@ -228,7 +224,7 @@ public class RepositoryReviewDialog extends Dialog {
         this.typeProcessor = typeProcessor;
     }
 
-    protected RepositoryTreeViewer getRepositoryTreeViewer() {
+    protected TreeViewer getRepositoryTreeViewer() {
         return repositoryTreeViewer;
     }
 
@@ -358,39 +354,7 @@ public class RepositoryReviewDialog extends Dialog {
         viewContainer.setLayout(new GridLayout());
         viewContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        RepositoryViewerProvider provider = new RepositoryViewerProvider() {
-
-            @Override
-            protected IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode) {
-                return typeProcessor.getInputRoot(projectRepoNode);
-            }
-
-            @Override
-            protected TreeViewer createTreeViewer(Composite parent, int style) {
-                return new RepositoryTreeViewer(parent, style);
-            }
-
-            @Override
-            protected void checkSorter(TreeViewer treeViewer) {
-                treeViewer.setSorter(new CommonViewerSorter());
-            }
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.talend.repository.viewer.ui.provider.RepositoryViewerProvider#getLabelProvider()
-             */
-            @Override
-            protected ILabelProvider getLabelProvider() {
-                if (typeProcessor.getLabelProvider(elem) != null) {
-                    return typeProcessor.getLabelProvider(elem);
-                }
-                return super.getLabelProvider();
-            }
-
-        };
-
-        repositoryTreeViewer = (RepositoryTreeViewer) provider.createViewer(viewContainer);
+        repositoryTreeViewer = RepoCommonViewerProvider.NORMAL.createViewer(viewContainer);
 
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finshed createViewer"); //$NON-NLS-1$
 

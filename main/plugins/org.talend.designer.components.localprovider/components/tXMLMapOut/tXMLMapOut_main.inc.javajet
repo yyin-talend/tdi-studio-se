@@ -155,7 +155,6 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 		%>
 
 <%
-	//	System.out.println("size of vartable begin:" + varTables.size());
 	TreeUtil treeUtil = new TreeUtil();
 	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {
 		hasOutgoingConnection = false;//reset the var for every lookup table 
@@ -397,6 +396,10 @@ for (VarTable varsTable : varsTables) {
 
 	                if (outputTableEntries != null && (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
 	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax)) {
+						if(isLog4jEnabled){
+							sb.append(cr + "count_" + outputTableName + "_" + cid + "++;" + cr);
+						}
+						
 						if(!utilXML.tableHasADocument(outputTableEntries)) {
 							sb.append(cr + cr + outputTableName + "_tmp = new " + outputTableName + "Struct();");
 						}
@@ -595,6 +598,10 @@ for (VarTable varsTable : varsTables) {
 							if(flat) {
 								sb.append("allOutsForAggregate_" + uniqueNameComponent + ".add(" + outputTableName + "_tmp);" + cr);
 							}
+							
+							if(isLog4jEnabled){
+								sb.append(cr + "log.debug(\"" + uniqueNameComponent + " - Outputting the record \" + count_" + outputTableName + "_" + cid + " + \" of the output table '" + outputTableName + "'.\");" + cr);
+							}
 	                    }
 	                }
 					if (closeFilterOrRejectBracket) {
@@ -603,8 +610,6 @@ for (VarTable varsTable : varsTables) {
 				}
 				lastValueReject = currentIsReject || currentIsRejectInnerJoin;
 			}//TD12580
-
-			// System.out.println("Output table: (2)" + outputTableName);
 
 			if (hasAggregateColumn || isAllInOne) {
 				boolean checkNull = false;

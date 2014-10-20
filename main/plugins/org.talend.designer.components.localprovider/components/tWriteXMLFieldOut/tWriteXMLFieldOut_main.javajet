@@ -14,15 +14,19 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 	org.talend.core.model.utils.NodeUtil
+	org.talend.core.model.process.EConnectionType
 "
 skeleton="tWriteXMLFieldOut_java.skeleton"
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 //==========common part 1 begin===================================================================
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+String jsonField = ElementParameterParser.getValue(node, "__JSONFIELD__");
+String destination4JSON = ElementParameterParser.getValue(node, "__DESTINATION__");
+boolean istWriteJSONField = destination4JSON == null ? false : destination4JSON.contains("tWriteJSONField_");
 boolean isCompactFormat = ("true").equals(ElementParameterParser.getValue(node, "__COMPACT_FORMAT__"));
 final String whiteSpace;
 final String rowSeparator;
@@ -465,8 +469,21 @@ if (inConn != null) {
 	metadata = inConn.getMetadataTable();
     if (metadata!=null) {
     	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	List< ? extends IConnection> connsOut = NodeUtil.getOutgoingConnections(node,EConnectionType.ON_COMPONENT_OK);
+    	String rowStructNameOutput = null;
+    	if (connsOut != null && connsOut.size() > 0 && istWriteJSONField) {
+    		List< ? extends IConnection> connsTarget = connsOut.get(0).getTarget().getOutgoingConnections();
+			if(connsTarget != null && connsTarget.size()>0){
+				rowStructNameOutput = connsTarget.get(0).getName();
+	    		rowStructNameOutput += "Struct";
+			}
+    	}
+    	String rowNameInput = null;
+    	String rowStructNameInput = null;
     	if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
+    		rowNameInput = conn.getName();
+    		rowStructNameInput = rowNameInput + "Struct";
     		if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
     		
             	List<Map<String, String>> rootTable = 
@@ -546,6 +563,9 @@ if (inConn != null) {
 				}
 %>
 	nb_line_<%=cid%>++;
+<%
+	log4jFileUtil.logCurrentRowNumberInfo();
+%>
 	valueMap_<%=cid%>.clear();
 <%
 				for(IMetadataColumn column :inputColumns){
@@ -572,6 +592,13 @@ if (inConn != null) {
 %>
 	if(strCompCache_<%=cid %>==null){
 		strCompCache_<%=cid %>=strTemp_<%=cid %>;
+		<%
+		     if(istWriteJSONField){
+						%>
+						      rowStructOutput_<%= cid %> = <%= rowNameInput %>;
+						<%
+		 }
+		%>
 	}else{
 <%
 // ------------------- *** Common code end *** ------------------- //
@@ -619,9 +646,28 @@ if(("Dom4j").equals(mode)){
                 listGroupby_<%=cid %>.add(map_<%=cid%>);
 <%
             }else{
-%>
-		    listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
-<%
+				if(istWriteJSONField){
+					%>
+				  		  <%= rowStructNameOutput %> row_<%= cid %> = new <%= rowStructNameOutput %>();
+						  <%
+					      for(Map<String,String> map : groupbys){
+								String groupByColumnName = map.get("INPUT_COLUMN");
+								String outputColumnName = map.get("OUTPUT_COLUMN");
+								if (!outputColumnName.equals(jsonField)) {
+								%>
+								row_<%= cid %>.<%= outputColumnName %> = rowStructOutput_<%= cid %>.<%= groupByColumnName %>;
+								<%
+								}
+					     }
+					%>
+					     		row_<%= cid %>.<%= jsonField %> = strWriter_<%=cid %>.toString();
+					     		listGroupby_<%=cid %>.add(row_<%= cid %>);
+					<%
+				}else{
+								%>
+										    listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+								<%
+				}
             }
 		}
 %>
@@ -636,6 +682,11 @@ if(("Dom4j").equals(mode)){
 			}
 			strCompCache_<%=cid %>=strTemp_<%=cid %>;
 <%
+		if(istWriteJSONField){
+			%>
+				rowStructOutput_<%= cid %> = <%= rowNameInput %>;
+			<%
+		}
 		if(inputKeysColumns.size() !=0){
 %>
 		}

@@ -21,6 +21,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 List<IMetadataTable> metadatas = node.getMetadataList();
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if ((metadatas!=null)&&(metadatas.size()>0)) {
 
     IMetadataTable metadata = metadatas.get(0);
@@ -161,6 +162,11 @@ java.util.Map<<%=typesMap.get(groupColumns.get(i)) %>, DenormalizeStruct<%=cid %
 //end
 %>();
 <%
+	}
+	if (isLog4jEnabled) {
+	%>
+		log.info("<%=cid%> - Start to denormalize the data from datasource.");
+	<%
 	}
 }
 

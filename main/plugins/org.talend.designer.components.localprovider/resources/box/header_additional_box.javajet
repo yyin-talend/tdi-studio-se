@@ -188,6 +188,21 @@ if(hasBox){
 		}
 		return list;
 	}
+	
+	public static com.box.boxjavalibv2.dao.BoxItem searchItem(com.box.boxjavalibv2.BoxClient client, String name) throws Exception
+	{
+		com.box.boxjavalibv2.dao.BoxItem boxItem = null;
+		com.box.boxjavalibv2.dao.BoxCollection searchResults = client.getSearchManager().search(name, null);
+		for (com.box.boxjavalibv2.dao.BoxTypedObject entry : searchResults.getEntries())
+		{
+			if (((com.box.boxjavalibv2.dao.BoxItem) entry).getName().equals(name))
+			{
+				boxItem = (com.box.boxjavalibv2.dao.BoxItem) entry;
+				return boxItem;
+			}
+		}
+		return null;
+	}
 
 <%
 }
@@ -196,7 +211,7 @@ if(hasBox){
 {%>
 	private com.box.boxjavalibv2.dao.BoxFolder createSubDirectories(com.box.boxjavalibv2.BoxClient client, com.box.boxjavalibv2.dao.BoxFolder folder, String path) throws Exception
 	{
-		com.box.boxjavalibv2.dao.BoxFolder destinationFolder = null;
+		com.box.boxjavalibv2.dao.BoxFolder destinationFolder = folder;
 		if (path != null && !path.isEmpty())
 		{
 			String[] parts = path.split("/");

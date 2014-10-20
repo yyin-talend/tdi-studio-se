@@ -25,7 +25,6 @@ if (metadatas != null && metadatas.size() > 0) {
     
     <%if(isLog4jEnabled){%>
     	log.info("<%=cid%> - Processed records count:" + nb_line_<%=cid%> + ". Matched records count:" + nb_line_ok_<%=cid%> + ". Rejected records count:" + nb_line_reject_<%=cid%> + ".");
-    	log.info("<%=cid%> - Done.");
     <%}%>
   <%
   }

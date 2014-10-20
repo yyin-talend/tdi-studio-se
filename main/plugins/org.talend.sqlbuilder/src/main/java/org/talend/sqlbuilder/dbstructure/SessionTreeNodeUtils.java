@@ -115,7 +115,7 @@ public class SessionTreeNodeUtils {
         }
 
         ISQLAlias alias = createSQLAlias("Repository Name", url, dbconnection.getUsername(), dbconnection //$NON-NLS-1$
-                .getPassword(),
+                .getRawPassword(),
         // fix bug for 7014,added by hyWang
                 dbconnection.getSID() == null || dbconnection.getSID().length() == 0 ? (dbconnection.getDatasourceName() == null
                         || dbconnection.getDatasourceName().length() == 0 ? "Database" //$NON-NLS-1$  
@@ -129,10 +129,10 @@ public class SessionTreeNodeUtils {
                         || iMetadataConnection.getDbType().equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName()) || iMetadataConnection
                         .getDbType().equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()))) {
             session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null,
-                    dbconnection.getPassword(), repositoryNode, wapperDriver);
+                    dbconnection.getRawPassword(), repositoryNode, wapperDriver);
         } else {
             session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null,
-                    dbconnection.getPassword(), repositoryNode);
+                    dbconnection.getRawPassword(), repositoryNode);
         }
         return session;
     }

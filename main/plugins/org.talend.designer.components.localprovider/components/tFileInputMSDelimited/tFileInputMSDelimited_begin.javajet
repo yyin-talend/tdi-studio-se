@@ -14,6 +14,9 @@
 		java.util.Map
 	" 
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -29,6 +32,9 @@ if(conns!=null){
 	    }
 	}
 }
+
+final boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
 List<Map<String, String>> schemas_o = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
 List<Map<String, String>> schemas = new java.util.ArrayList<Map<String, String>>();
 for(Map<String, String> schema_o : schemas_o){
@@ -79,6 +85,9 @@ String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__D
 
 if (hasDataLink) {//FIM_000
 ////////////////////////
+
+log4jFileUtil.startRetriveDataInfo();
+
 if(useMulSeprators==false && ("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {//FIM_0000
 	List<String> connections = new java.util.ArrayList<String>();
     Map<String, List<IMetadataColumn>> connectionMapColumnList = new java.util.HashMap<String, List<IMetadataColumn>>();
@@ -306,6 +315,11 @@ while (fid_<%=cid %>.nextRecord()) {
             throw(e);
             <%
         } else {
+			if(isLog4jEnabled) {
+%>
+		log.error("<%=cid%> - " + e.getMessage());
+<%
+			}
 %>
         System.err.println(e.getMessage());
 <%
@@ -700,6 +714,11 @@ if(useMulSeprators==false){
             throw(e);
             <%
         } else {
+			if(isLog4jEnabled) {
+%>
+		log.error("<%=cid%> - " + e.getMessage());
+<%
+			}
 %>
         System.err.println(e.getMessage());
 <%

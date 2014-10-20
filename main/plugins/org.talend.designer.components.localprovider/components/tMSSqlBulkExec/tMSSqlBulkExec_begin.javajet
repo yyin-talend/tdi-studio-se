@@ -44,7 +44,6 @@ int deletedCount_<%=cid%>=0;
 if(("EXPORT").equals(action)) {
 %>
 <%
-	log4jCodeGenerateUtil.infoComponentStart(node);
 	String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
 	String server = ElementParameterParser.getValue(node, "__SERVER__");
 	String query_statement = ElementParameterParser.getValue(node, "__QUERY__");
@@ -171,7 +170,6 @@ if(("EXPORT").equals(action)) {
 	error_<%=cid%>.interrupt();
 	<%
 	log4jCodeGenerateUtil.logInfo(node,"info",cid+" - Excute '\"+ command_" + cid + "+\"' successfully.");
-	log4jCodeGenerateUtil.infoComponentEnd(node);
 } else {
 	List<IMetadataColumn> columnList = getColumnList(node);	
 	%>
@@ -224,7 +222,6 @@ if(("EXPORT").equals(action)) {
     			%>
     			int keyCount_<%=cid%> = <%=keyCount%>;
     			if(keyCount_<%=cid%> == 0) {
-    				<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - For bulk update, Schema must have a key at least.");%>
     				throw new RuntimeException("For bulk update, Schema must have a key at least."); 
     			}
     			String tmpTableName_<%=cid%> = tableName_<%=cid%>;
@@ -281,6 +278,5 @@ if(("EXPORT").equals(action)) {
 		}
 		<%
 	}
-	log4jCodeGenerateUtil.infoComponentEnd(node);
 }
 %>

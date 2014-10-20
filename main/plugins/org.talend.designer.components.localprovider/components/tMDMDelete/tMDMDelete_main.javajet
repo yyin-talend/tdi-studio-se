@@ -26,6 +26,12 @@ List<Map<String,String>> keyValues = (List<Map<String,String>>)ElementParameterP
 boolean useMultConditions = ("true").equals(ElementParameterParser.getValue(node, "__USE_ITEMS__"));
 List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
 String spellThrehold = ElementParameterParser.getValue(node, "__SPELLTHREHOLD__");
+
+boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
+boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
+String sourceName = ElementParameterParser.getValue(node,"__SOURCE__");
+String needCheck = ElementParameterParser.getValue(node,"__ISINVOKE__");
+
 if(spellThrehold==null || ("").equals(spellThrehold)){
 	spellThrehold = "0";
 } 
@@ -52,15 +58,39 @@ org.talend.mdm.webservice.WSItemPK wsPK_<%=cid %> = new org.talend.mdm.webservic
 ///////////////////////	
 
 try{
-<%
-if(isDropItem){
-%>
-	org.talend.mdm.webservice.WSDropItem item_<%=cid %> = new org.talend.mdm.webservice.WSDropItem(wsPK_<%=cid %>,<%=partPath %>,false);
-	xtentisWS_<%=cid %>.dropItem(item_<%=cid %>);
-<%}else{%>
-	org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>,false);
-	xtentisWS_<%=cid %>.deleteItem(item_<%=cid %>);
-<%}%>
+	<%
+	if(isDropItem){
+	%>
+		org.talend.mdm.webservice.WSDropItem item_<%=cid %> = new org.talend.mdm.webservice.WSDropItem();
+		item_<%=cid %>.setPartPath(<%=partPath %>);
+	<%
+	}else{
+	%>
+		org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem();
+	<%
+	}
+	%>
+	item_<%=cid %>.setWsItemPK(wsPK_<%=cid %>);
+	item_<%=cid %>.setOverride(false);
+	<%
+	if (!isStaging && withReport) {
+	%>
+		item_<%=cid %>.setWithReport(true);
+		item_<%=cid %>.setSource(<%=sourceName%>);
+		item_<%=cid %>.setInvokeBeforeDeleting(<%=needCheck%>);
+	<%
+	}
+	if(isDropItem){
+	%>
+		
+		xtentisWS_<%=cid %>.dropItem(item_<%=cid %>);
+	<%
+	}else{
+	%>
+		xtentisWS_<%=cid %>.deleteItem(item_<%=cid %>);
+    <%
+    }
+    %>
 }catch(java.lang.Exception e){
 <%
 if(dieOnError){

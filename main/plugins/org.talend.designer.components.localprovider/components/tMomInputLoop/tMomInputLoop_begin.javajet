@@ -14,8 +14,8 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	cid = cid.replaceAll("_Loop", "");
-        boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
-        String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
+    boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+    String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
@@ -34,6 +34,7 @@ imports="
 	List<Map<String,String>> additionalOpts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADDITIONAL_OPTIONS__");
 	
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 
 	String strHost = null;
@@ -62,41 +63,70 @@ imports="
 		columns = metadata.getListColumns();
 	} %>
 
-int nb_line_<%=cid%> = 0;
-javax.jms.Connection connection_<%=cid %> = null;
-try {
+	int nb_line_<%=cid%> = 0;
+	javax.jms.Connection connection_<%=cid %> = null;
+	try {
 
         <% if (isUseConnection) { %>
-	    connection_<%=cid %> = null;
-	    javax.jms.Session session_<%=cid %> = null;
+		    connection_<%=cid %> = null;
+		    javax.jms.Session session_<%=cid %> = null;
             try {
-	        connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
-                connection_<%=cid %>.start();
-		session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
-	    } catch (NullPointerException npe) {
-	    throw new RuntimeException("<%=connectionComponentName%> still not initialized. Try to redesign job.");
-	    }
-	    javax.jms.Destination des_<%=cid %> = null;
-		<%
-		if (("Queue").equals(msgType)) {
-		%>
-			des_<%=cid %> = session_<%=cid %>.createQueue(<%=from %>);
-		<%
-		} else {
-		%>
-	    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=from %>);
-		<%
-		}
-		%>
+	            <%
+				if(isLog4jEnabled){
+				%>	
+					log.info("<%=cid%> - Get a connection from component: <%=connectionComponentName%> .");
+				<%
+				}
+				%>
+		        connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
+		        <%
+				if(isLog4jEnabled){
+				%>	
+					log.info("<%=cid%> - Activating the connection...");
+				<%
+				}
+				%>
+	            connection_<%=cid %>.start();
+	            <%
+				if(isLog4jEnabled){
+				%>	
+					log.info("<%=cid%> - Activate successfully.");
+					log.info("<%=cid%> - Get a  session from component: <%=connectionComponentName%> .");
+				<%
+				}
+				%>
+				session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
+		    } catch (NullPointerException npe) {
+		    	<%
+				if(isLog4jEnabled){
+				%>	
+					log.error("<%=cid%> - Got connection unsuccessfully.");
+				<%
+				}
+				%>
+		    	throw new RuntimeException("<%=connectionComponentName%> still not initialized. Try to redesign job.");
+		    }
+	    	javax.jms.Destination des_<%=cid %> = null;
+			<%
+			if (("Queue").equals(msgType)) {
+			%>
+				des_<%=cid %> = session_<%=cid %>.createQueue(<%=from %>);
+			<%
+			} else {
+			%>
+		    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=from %>);
+			<%
+			}
+			%>
 
-		javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
-		replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-		javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
-
-		globalMap.put("session_<%=cid %>",session_<%=cid %>);
-		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
+			javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
+			replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+			javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
+	
+			globalMap.put("session_<%=cid %>",session_<%=cid %>);
+			globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
 		
-		// Receive message
+			// Receive message
 			<% boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
 			String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
 			String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
@@ -107,11 +137,11 @@ try {
 				while ((message_<%=cid%> = consumer_<%=cid %>.receive()) != null) {
 
 
-		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
-        	try {   // For rollback
-		<%
-		}
-		%>
+				<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+		        	try {   // For rollback
+				<%
+				}
+				%>
 			<%
 			}else if (useMax) {
 			%>
@@ -119,12 +149,12 @@ try {
 				System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
 				for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
 
-		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
-        	try {   // For rollback
-
-		<%
-		}
-		%>
+				<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+		        	try {   // For rollback
+		
+				<%
+				}
+				%>
 			        javax.jms.Message message_<%=cid%> = consumer_<%=cid %>.receive();
 			        if (message_<%=cid%> != null) {
 		            	i_<%=cid %>++;
@@ -135,345 +165,394 @@ try {
 			    javax.jms.Message message_<%=cid%>;
 			    while ((message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
 
-		<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
-        	try {   // For rollback
-
-		<%
-		}
-		%>
+				<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
+		        	try {   // For rollback
+		
+				<%
+				}
+				%>
 			<%
 			} %>
 			    
-		/*-----------------------------------------------------------4.judge message body type---------------------------------------*/
-		<%
-		if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
-		%>
-			if (message_<%=cid%> instanceof javax.jms.MapMessage) {
-				javax.jms.MapMessage txtMsg_<%=cid%> = (javax.jms.MapMessage) message_<%=cid%>;
-				String msg_<%=cid %> = txtMsg_<%=cid%>.getString(<%=msgId%>);
-				if(msg_<%=cid %> !=null){
+			/*-----------------------------------------------------------4.judge message body type---------------------------------------*/
+			<%
+			if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
+			%>
+				if (message_<%=cid%> instanceof javax.jms.MapMessage) {
+					javax.jms.MapMessage txtMsg_<%=cid%> = (javax.jms.MapMessage) message_<%=cid%>;
+					String msg_<%=cid %> = txtMsg_<%=cid%>.getString(<%=msgId%>);
+					if(msg_<%=cid %> !=null){
+	
+			<%
+			}else{
+				if ("Text".equals(msgBobyType)) {
+				%>
+					javax.jms.TextMessage txtMsg_<%=cid%> = (javax.jms.TextMessage) message_<%=cid%>;
+					String msg_<%=cid %> = txtMsg_<%=cid%>.getText();
+				
+				<%
+				} else if ("Bytes".equals(msgBobyType)) {
+				%>
+					javax.jms.BytesMessage bytesMsg_<%=cid%> = (javax.jms.BytesMessage) message_<%=cid%>;
+					byte[] bytesMsgBody_<%=cid%> = new byte[(int)bytesMsg_<%=cid%>.getBodyLength()];
+					bytesMsg_<%=cid%>.readBytes(bytesMsgBody_<%=cid%>);
+				<%
+				    if(!"id_byte[]".equals(metadata.getColumn("message").getTalendType())){
+				%>
+					String msg_<%=cid %> = new String(bytesMsgBody_<%=cid%>);
+				<%
+				    }
+				} else if ("Map".equals(msgBobyType)) {
+				%>
+					javax.jms.MapMessage  msg_<%=cid %>  = (javax.jms.MapMessage) message_<%=cid%>;
+				<%
+				}
+			}
+			%>
 
-		<%
-		}else{
-			if ("Text".equals(msgBobyType)) {
-			%>
-				javax.jms.TextMessage txtMsg_<%=cid%> = (javax.jms.TextMessage) message_<%=cid%>;
-				String msg_<%=cid %> = txtMsg_<%=cid%>.getText();
 			
-			<%
-			} else if ("Bytes".equals(msgBobyType)) {
+		<%} else if (("JBoss").equals(serverType)||("ActiveMQ").equals(serverType)) {
+	
+			/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
+			if(("JBoss").equals(serverType) ){ // server judgement
 			%>
-				javax.jms.BytesMessage bytesMsg_<%=cid%> = (javax.jms.BytesMessage) message_<%=cid%>;
-				byte[] bytesMsgBody_<%=cid%> = new byte[(int)bytesMsg_<%=cid%>.getBodyLength()];
-				bytesMsg_<%=cid%>.readBytes(bytesMsgBody_<%=cid%>);
-			<%
-			    if(!"id_byte[]".equals(metadata.getColumn("message").getTalendType())){
-			%>
-				String msg_<%=cid %> = new String(bytesMsgBody_<%=cid%>);
-			<%
-			    }
-			} else if ("Map".equals(msgBobyType)) {
-			%>
-				javax.jms.MapMessage  msg_<%=cid %>  = (javax.jms.MapMessage) message_<%=cid%>;
+				java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
+				props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
+				props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
+				props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
+				props_<%=cid%>.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.naming");
+				props_<%=cid%>.put("java.naming.factory.url.pkgs","org.jboss.naming:org.jnp.interfaces");	
+				
+				javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
+				javax.jms.ConnectionFactory factory_<%=cid%>=(javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
+			<%		
+			}else if(("ActiveMQ").equals(serverType)){
+				boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
+				%>
+				String url_<%=cid %> ="";
+	      		<%if(failover){%>
+					url_<%=cid %> = "failover:(";
+					<%
+					int i=0;
+					for(Map<String, String> serversMap : servers) {
+						strHost = serversMap.get("SERVERS_HOST");
+						strPort = serversMap.get("SERVERS_PORT");
+	
+						if(i>0) {
+						%>
+						url_<%=cid %> = url_<%=cid %> +",";
+						<%
+						}
+						%>
+						url_<%=cid %> = url_<%=cid %> +"tcp://";
+						url_<%=cid %> = url_<%=cid %> +<%=strHost%>;
+						url_<%=cid %> = url_<%=cid %> +":";
+						url_<%=cid %> = url_<%=cid %> +<%=strPort%>;
+						<%
+						i++;
+					}
+					%>
+					url_<%=cid %> = url_<%=cid %> +")?randomize=false";
+					<%
+					for(Map<String, String> optrion : additionalOpts) {
+					%>
+						url_<%=cid %> = url_<%=cid %> +"&"+<%=optrion.get("OPTION_NAME")%>+"="+<%=optrion.get("OPTION_VALUE")%>;
+					<%
+					}
+				}else{%>
+					url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
+				<%}%>			
+	
+				<%
+				if(startServer){
+				%>
+					org.apache.activemq.broker.BrokerService broker_<%=cid %> = new org.apache.activemq.broker.BrokerService();
+					broker_<%=cid %>.setUseJmx(true);
+					broker_<%=cid %>.addConnector(url_<%=cid %>);
+					broker_<%=cid %>.start();
+				<%
+				}
+				%>
+				System.out.println("Connecting to URL: " + url_<%=cid %>);
+				System.out.println("Consuming " + (<%="Topic".equals(msgType)%> ? "topic" : "queue") + ": " + <%=from%>);
+				<%
+				if(isLog4jEnabled){
+				%>	
+					log.info("<%=cid%> - Attempt to create connection from URL: " + url_<%=cid %> + ".");
+				<%
+				}
+				%>
+				org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
 			<%
 			}
-	}
-		%>
-
 			
-<%      } else if (("JBoss").equals(serverType)||("ActiveMQ").equals(serverType)) {
-	
-		/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
-		if(("JBoss").equals(serverType) ){ // server judgement
-		%>
-			java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
-			props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
-			props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
-			props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
-			props_<%=cid%>.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.naming");
-			props_<%=cid%>.put("java.naming.factory.url.pkgs","org.jboss.naming:org.jnp.interfaces");	
+			/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
 			
-			javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
-			javax.jms.ConnectionFactory factory_<%=cid%>=(javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
-		<%		
-		}else if(("ActiveMQ").equals(serverType)){
-			boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
+			if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) {
 			%>
-			String url_<%=cid %> ="";
-      <%if(failover){%>
-			url_<%=cid %> = "failover:(";
+				connection_<%=cid %> = factory_<%=cid %>.createConnection();
 			<%
-				int i=0;
-				for(Map<String, String> serversMap : servers) {
-					strHost = serversMap.get("SERVERS_HOST");
-					strPort = serversMap.get("SERVERS_PORT");
-
-					if(i>0) {
-					%>
-					url_<%=cid %> = url_<%=cid %> +",";
+			} else {
+			%>
+			
+				<%
+				String passwordFieldName = "__PASS__";
+				%>
+	
+				<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+			
+				connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,decryptedPassword_<%=cid%>);
+			<%
+			}
+			if(isLog4jEnabled){
+			%>	
+				log.info("<%=cid%> - Created connection successfully.");
+				log.info("<%=cid%> - Activating the connection...");
+			<%
+			}
+			%>
+			connection_<%=cid %>.start();
+			<%
+			if(isLog4jEnabled){
+			%>	
+				log.info("<%=cid%> - Activate successfully.");
+				log.info("<%=cid%> - Creating a session...");
+			<%
+			}
+			%>
+			javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
+			<%
+			if(isLog4jEnabled){
+			%>	
+				log.info("<%=cid%> - Created session successfully.");
+			<%
+			}
+			%>
+			javax.jms.Destination des_<%=cid %> = null;
+	
+	
+	
+			<%
+			if (("Queue").equals(msgType)) {
+			%>
+				des_<%=cid %> = session_<%=cid %>.createQueue(<%=from %>);
+			<%
+			} else {
+			%>
+		    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=from %>);
+			<%
+			}
+			%>
+			javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
+			replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+				
+			javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
+			
+			<%	//put session to global map
+			if( ("ActiveMQ").equals(serverType)) {
+			%>
+				globalMap.put("session_<%=cid %>",session_<%=cid %>);
+				globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
+	       	<%
+			}
+			%>
+	
+			<%		
+			/*---------------------------------------3.recevice message form server ---------------------------------*/ 	
+			if(("JBoss").equals(serverType) ){ 
+				if(isLog4jEnabled){
+				%>	
+					log.info("<%=cid%> - Ready to receive message.");
+					log.info("<%=cid%> - Waiting...");
+				<%
+				}
+				%>					
+				System.out.println("Ready to receive message");
+				System.out.println("Waiting...");	
+				javax.jms.Message message_<%=cid%>;
+			
+				while((message_<%=cid%>=consumer_<%=cid %>.receive())!=null){
+	
+			<%		
+			}else if(("ActiveMQ").equals(serverType)){
+				boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
+				String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
+				String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
+				if(("true").equals(kListen)){
+					if(isLog4jEnabled){
+					%>	
+						log.info("<%=cid%> - Listening to receive messages...");
 					<%
 					}
 					%>
-					url_<%=cid %> = url_<%=cid %> +"tcp://";
-					url_<%=cid %> = url_<%=cid %> +<%=strHost%>;
-					url_<%=cid %> = url_<%=cid %> +":";
-					url_<%=cid %> = url_<%=cid %> +<%=strPort%>;
+					System.out.println("We will consume messages while they continue to be delivered ");
+					javax.jms.Message message_<%=cid%>;
+					while ((message_<%=cid%> = consumer_<%=cid %>.receive()) != null) {
+	
+					<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
+			        	try {   // For rollback
+			
 					<%
-					i++;
-				}
-				%>
-				url_<%=cid %> = url_<%=cid %> +")?randomize=false";
+					}
+					%>
 				<%
-				for(Map<String, String> optrion : additionalOpts) {
-				%>
-					url_<%=cid %> = url_<%=cid %> +"&"+<%=optrion.get("OPTION_NAME")%>+"="+<%=optrion.get("OPTION_VALUE")%>;
+				}else if (useMax) {
+					if(isLog4jEnabled){
+					%>	
+						log.info("<%=cid%> - Listening to receive messages...");
+						log.info("<%=cid%> - Consume max message number:  " + maxMsg_<%=cid %>);
+					<%
+					}
+					%>
+					int maxMsg_<%=cid %> = <%=maxiumMessages %>;
+					System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
+					for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
+	
+					<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+			        	try {   // For rollback
+			
+					<%
+					}
+					%>
+				        javax.jms.Message message_<%=cid%> = consumer_<%=cid %>.receive();
+				        if (message_<%=cid%> != null) {
+			            	i_<%=cid %>++;
+				<%
+				}else {
+					if(isLog4jEnabled){
+					%>	
+						log.info("<%=cid%> - Listening to receive messages...");
+						log.info("<%=cid%> - Listening time last for:  " + <%=receiveTimeOut%>*1000 + " ms, and then stop.");
+					<%
+					}
+					%>
+				    System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
+				    javax.jms.Message message_<%=cid%>;
+				    while ((message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
+	
+					<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
+			        	try {   // For rollback
+					<%
+					}
+					%>
 				<%
 				}
-			}else{%>
-				url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
-			<%}%>			
-
-			<%
-			if(startServer){
-			%>
-				org.apache.activemq.broker.BrokerService broker_<%=cid %> = new org.apache.activemq.broker.BrokerService();
-				broker_<%=cid %>.setUseJmx(true);
-				broker_<%=cid %>.addConnector(url_<%=cid %>);
-				broker_<%=cid %>.start();
-			<%
 			}
+			/*-----------------------------------------------------------4.judge message body type---------------------------------------*/
+			if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
 			%>
-			System.out.println("Connecting to URL: " + url_<%=cid %>);
-			System.out.println("Consuming " + (<%="Topic".equals(msgType)%> ? "topic" : "queue") + ": " + <%=from%>);
-			
-			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
-		<%
-		}
-		
-		/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
-		%>		
-		<%	
-		if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) {
-		%>
-			connection_<%=cid %> = factory_<%=cid %>.createConnection();
-		<%
-		} else {
-		%>
-		
-			<%
-			String passwordFieldName = "__PASS__";
-			%>
-
-			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-		
-			connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,decryptedPassword_<%=cid%>);
-		<%
-		}
-		%>
-		connection_<%=cid %>.start();
-		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
-		javax.jms.Destination des_<%=cid %> = null;
-
-
-
-		<%
-		if (("Queue").equals(msgType)) {
-		%>
-			des_<%=cid %> = session_<%=cid %>.createQueue(<%=from %>);
-		<%
-		} else {
-		%>
-	    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=from %>);
-		<%
-		}
-		%>
-		javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
-		replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-			
-		javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
-		
-		<%	//put session to global map
-		if( ("ActiveMQ").equals(serverType)) {
-		%>
-		globalMap.put("session_<%=cid %>",session_<%=cid %>);
-		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
-                <%
-		}
-		%>
-
-		<%		
-		/*---------------------------------------3.recevice message form server ---------------------------------*/ 	
-		if(("JBoss").equals(serverType) ){ 
-		%>					
-			System.out.println("Ready to receive message");
-			System.out.println("Waiting...");	
-			javax.jms.Message message_<%=cid%>;
-		
-			while((message_<%=cid%>=consumer_<%=cid %>.receive())!=null){
-
-		<%		
-		}else if(("ActiveMQ").equals(serverType)){
-			boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
-			String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
-			String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
-			if(("true").equals(kListen)){
-			%>
-				System.out.println("We will consume messages while they continue to be delivered ");
-				javax.jms.Message message_<%=cid%>;
-				while ((message_<%=cid%> = consumer_<%=cid %>.receive()) != null) {
-
-		<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
-        	try {   // For rollback
-
-		<%
-		}
-		%>
-			<%
-			}else if (useMax) {
-			%>
-				int maxMsg_<%=cid %> = <%=maxiumMessages %>;
-				System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
-				for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
-
-		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
-        	try {   // For rollback
-
-		<%
-		}
-		%>
-			        javax.jms.Message message_<%=cid%> = consumer_<%=cid %>.receive();
-			        if (message_<%=cid%> != null) {
-		            	i_<%=cid %>++;
-			<%
-			}else {
-			%>
-			    System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
-			    javax.jms.Message message_<%=cid%>;
-			    while ((message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
-
-		<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
-        	try {   // For rollback
-		<%
-		}
-		%>
-			<%
-			}
-		}
-		/*-----------------------------------------------------------4.judge message body type---------------------------------------*/
-		if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
-		%>
-			if (message_<%=cid%> instanceof javax.jms.MapMessage) {
-				javax.jms.MapMessage txtMsg_<%=cid%> = (javax.jms.MapMessage) message_<%=cid%>;
-				String msg_<%=cid %> = txtMsg_<%=cid%>.getString(<%=msgId%>);
-				if(msg_<%=cid %> !=null){
-
-		<%
-		}else{
-			if ("Text".equals(msgBobyType)) {
-			%>
-				javax.jms.TextMessage txtMsg_<%=cid%> = (javax.jms.TextMessage) message_<%=cid%>;
-				String msg_<%=cid %> = txtMsg_<%=cid%>.getText();
-			
-			<%
-			} else if ("Bytes".equals(msgBobyType)) {
-			%>
-				javax.jms.BytesMessage bytesMsg_<%=cid%> = (javax.jms.BytesMessage) message_<%=cid%>;
-				byte[] bytesMsgBody_<%=cid%> = new byte[(int)bytesMsg_<%=cid%>.getBodyLength()];
-				bytesMsg_<%=cid%>.readBytes(bytesMsgBody_<%=cid%>);
-			<%
-			    if(!"id_byte[]".equals(metadata.getColumn("message").getTalendType())){
-			%>
-				String msg_<%=cid %> = new String(bytesMsgBody_<%=cid%>);
-			<%
-			    }
-			} else if ("Map".equals(msgBobyType)) {
-			%>
-				javax.jms.MapMessage  msg_<%=cid %>  = (javax.jms.MapMessage) message_<%=cid%>;
-			<%
-			}
-		}
-		%>
+				if (message_<%=cid%> instanceof javax.jms.MapMessage) {
+					javax.jms.MapMessage txtMsg_<%=cid%> = (javax.jms.MapMessage) message_<%=cid%>;
+					String msg_<%=cid %> = txtMsg_<%=cid%>.getString(<%=msgId%>);
+					if(msg_<%=cid %> !=null){
 	
-	<%
-	} else { //server judgement   /***WebSphere MQ*****/
-		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
-		String qm=ElementParameterParser.getValue(node, "__QM__");
-		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
-		boolean isRollback = ("true").equals(ElementParameterParser.getValue(node, "__ROLLBACK__"));
-		boolean isCommit = ("true").equals(ElementParameterParser.getValue(node, "__COMMIT__"));
-		boolean isBrowse = ("true").equals(ElementParameterParser.getValue(node,"__BROWSE__"));
-		boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
-		String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
-		isCommit = isCommit && !isBrowse;
-		isBrowse = isBrowse && !isRollback && !isCommit;
-		%>
-		java.util.Hashtable properties<%=cid%>=new java.util.Hashtable();
-		properties<%=cid%>.put("hostname", <%=host%>);
-		properties<%=cid%>.put("port", Integer.valueOf(<%=port%>));
-		properties<%=cid%>.put("channel", <%=channel%>);
-		properties<%=cid%>.put("CCSID", new Integer(1208));
-		properties<%=cid%>.put("transport","MQSeries");
-		<%
-		if(needSSLCipher){
-		%>
-			com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
-		<%
-		}
-		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
-		%>
-			properties<%=cid%>.put("userID",<%=dbuser%>);
-			
 			<%
-			String passwordFieldName = "__PASS__";
-			%>
-
-			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>			
-			
-			properties<%=cid%>.put("password",decryptedPassword_<%=cid%>);
-		<%
-		}
-		%>
-
-		com.ibm.mq.MQQueueManager qMgr<%=cid%>=null;
-		com.ibm.mq.MQQueue remoteQ<%=cid%>=null;
-		<%
-		if(("true").equals(useMsgId)){
-		%>
-			String msgId_<%=cid%> = <%=msgId%>;
-	    	if (msgId_<%=cid%> != null & !("").equals(msgId_<%=cid%>)) {
-				String padding_<%=cid%> = new String();
-		       	int padlen_<%=cid%> = 24;
-		 
-		       	int len_<%=cid%> = Math.abs(padlen_<%=cid%>) - msgId_<%=cid%>.toString().length();
-		       	if (len_<%=cid%> > 0) {
-		        	for (int i = 0 ; i < len_<%=cid%> ; i++) {
-		           		padding_<%=cid%> = padding_<%=cid%> + " ";
-		         	}
-		        	msgId_<%=cid%> = msgId_<%=cid%> + padding_<%=cid%>;
-		        }
+			}else{
+				if ("Text".equals(msgBobyType)) {
+				%>
+					javax.jms.TextMessage txtMsg_<%=cid%> = (javax.jms.TextMessage) message_<%=cid%>;
+					String msg_<%=cid %> = txtMsg_<%=cid%>.getText();
+				
+				<%
+				} else if ("Bytes".equals(msgBobyType)) {
+				%>
+					javax.jms.BytesMessage bytesMsg_<%=cid%> = (javax.jms.BytesMessage) message_<%=cid%>;
+					byte[] bytesMsgBody_<%=cid%> = new byte[(int)bytesMsg_<%=cid%>.getBodyLength()];
+					bytesMsg_<%=cid%>.readBytes(bytesMsgBody_<%=cid%>);
+				<%
+				    if(!"id_byte[]".equals(metadata.getColumn("message").getTalendType())){
+				%>
+					String msg_<%=cid %> = new String(bytesMsgBody_<%=cid%>);
+				<%
+				    }
+				} else if ("Map".equals(msgBobyType)) {
+				%>
+					javax.jms.MapMessage  msg_<%=cid %>  = (javax.jms.MapMessage) message_<%=cid%>;
+				<%
+				}
 			}
+			%>
+		
 		<%
-		}
-		%>
-		try{
+		} else { //server judgement   /***WebSphere MQ*****/
+			String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
+			String qm=ElementParameterParser.getValue(node, "__QM__");
+			String queue = ElementParameterParser.getValue(node, "__QUEUE__");
+			boolean isRollback = ("true").equals(ElementParameterParser.getValue(node, "__ROLLBACK__"));
+			boolean isCommit = ("true").equals(ElementParameterParser.getValue(node, "__COMMIT__"));
+			boolean isBrowse = ("true").equals(ElementParameterParser.getValue(node,"__BROWSE__"));
+			boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
+			String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
+			isCommit = isCommit && !isBrowse;
+			isBrowse = isBrowse && !isRollback && !isCommit;
+			%>
+			java.util.Hashtable properties<%=cid%>=new java.util.Hashtable();
+			properties<%=cid%>.put("hostname", <%=host%>);
+			properties<%=cid%>.put("port", Integer.valueOf(<%=port%>));
+			properties<%=cid%>.put("channel", <%=channel%>);
+			properties<%=cid%>.put("CCSID", new Integer(1208));
+			properties<%=cid%>.put("transport","MQSeries");
+			<%
+			if(needSSLCipher){
+			%>
+				com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
+			<%
+			}
+			if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
+			%>
+				properties<%=cid%>.put("userID",<%=dbuser%>);
+				
+				<%
+				String passwordFieldName = "__PASS__";
+				%>
 	
-			int openOptions<%=cid%>=com.ibm.mq.MQC.MQOO_INPUT_SHARED | com.ibm.mq.MQC.MQOO_FAIL_IF_QUIESCING | com.ibm.mq.MQC.MQOO_INQUIRE<%if(isBrowse){%> | com.ibm.mq.MQC.MQOO_BROWSE<%}%>;
-		
-			com.ibm.mq.MQGetMessageOptions gmo<%=cid%>=new com.ibm.mq.MQGetMessageOptions();
-			<%if(isBrowse){%>
-				gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_BROWSE_FIRST;
-				int browseCursor_<%=cid%> = 0;
-			<%}else{%>
-				gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
-			<%}%>
-			gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(("false").equals(kListen)){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
-			gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
-			gmo<%=cid%>.waitInterval=com.ibm.mq.MQC.MQWI_UNLIMITED;
-			com.ibm.mq.MQException.log = null;
-			boolean flag<%=cid%>=true;
-		
-			qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
-			remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
+				<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>			
+				
+				properties<%=cid%>.put("password",decryptedPassword_<%=cid%>);
+			<%
+			}
+			%>
+	
+			com.ibm.mq.MQQueueManager qMgr<%=cid%>=null;
+			com.ibm.mq.MQQueue remoteQ<%=cid%>=null;
+			<%
+			if(("true").equals(useMsgId)){
+			%>
+				String msgId_<%=cid%> = <%=msgId%>;
+		    	if (msgId_<%=cid%> != null & !("").equals(msgId_<%=cid%>)) {
+					String padding_<%=cid%> = new String();
+			       	int padlen_<%=cid%> = 24;
+			 
+			       	int len_<%=cid%> = Math.abs(padlen_<%=cid%>) - msgId_<%=cid%>.toString().length();
+			       	if (len_<%=cid%> > 0) {
+			        	for (int i = 0 ; i < len_<%=cid%> ; i++) {
+			           		padding_<%=cid%> = padding_<%=cid%> + " ";
+			         	}
+			        	msgId_<%=cid%> = msgId_<%=cid%> + padding_<%=cid%>;
+			        }
+				}
+			<%
+			}
+			%>
+			try{
+	
+				int openOptions<%=cid%>=com.ibm.mq.MQC.MQOO_INPUT_SHARED | com.ibm.mq.MQC.MQOO_FAIL_IF_QUIESCING | com.ibm.mq.MQC.MQOO_INQUIRE<%if(isBrowse){%> | com.ibm.mq.MQC.MQOO_BROWSE<%}%>;
+			
+				com.ibm.mq.MQGetMessageOptions gmo<%=cid%>=new com.ibm.mq.MQGetMessageOptions();
+				<%if(isBrowse){%>
+					gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_BROWSE_FIRST;
+					int browseCursor_<%=cid%> = 0;
+				<%}else{%>
+					gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
+				<%}%>
+				gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(("false").equals(kListen)){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
+				gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
+				gmo<%=cid%>.waitInterval=com.ibm.mq.MQC.MQWI_UNLIMITED;
+				com.ibm.mq.MQException.log = null;
+				boolean flag<%=cid%>=true;
+			
+				qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
+				remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
 	
 			<%
 			if(("false").equals(kListen)) {
@@ -484,93 +563,97 @@ try {
 				} 	
 			<%
 			}	
+			if(isLog4jEnabled){
 			%>	
-			System.out.println("Ready to receive message");
-			System.out.println("Waiting...");	
-			while(flag<%=cid%>){
-				<%
-				if(("false").equals(kListen)){
-				%>
-					if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(1))
-					{
-						flag<%=cid%>= false;
-					} 			
-				<%
+				log.info("<%=cid%> - Ready to receive message.");
+				log.info("<%=cid%> - Waiting...");
+			<%
+			}
+			%>	
+				System.out.println("Ready to receive message");
+				System.out.println("Waiting...");	
+				while(flag<%=cid%>){
+			<%
+			if(("false").equals(kListen)){
+			%>
+				if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(1))
+				{
+					flag<%=cid%>= false;
+				} 			
+			<%
+			}
+			if(isBrowse){
+			%>
+				if(browseCursor_<%=cid%> > 0){
+					gmo<%=cid%>.options=com.ibm.mq.MQC.MQGMO_BROWSE_NEXT; 
+					gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(("false").equals(kListen)){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
+					gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
 				}
-				%>
-				<%
-				if(isBrowse){
-				%>
-					if(browseCursor_<%=cid%> > 0){
-						gmo<%=cid%>.options=com.ibm.mq.MQC.MQGMO_BROWSE_NEXT; 
-						gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(("false").equals(kListen)){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
-						gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
-					}
-					browseCursor_<%=cid%>++;
-				<%
-				}
-				%>
-				com.ibm.mq.MQMessage inMessage<%=cid%>=new com.ibm.mq.MQMessage();
-				<%
-				if(("true").equals(useMsgId)&& !"Map".equals(msgBobyType)){
-				%>
-					inMessage<%=cid%>.messageId = msgId_<%=cid%>.getBytes("ISO-8859-15");
-				<%
-				}
-				if(("false").equals(kListen) && ("true").equals(useMsgId) && !"Map".equals(msgBobyType) ){
-				%>		
-					try{
-						remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
-					}catch (com.ibm.mq.MQException me_<%=cid%>) {   
-			            if (me_<%=cid%>.reasonCode == com.ibm.mq.MQException.MQRC_NO_MSG_AVAILABLE) {
-			            	break;   
-			            }else{
-			            	throw me_<%=cid%>;
-			            }   
-	     			}
-				<%
-				} else {
-				%>
+				browseCursor_<%=cid%>++;
+			<%
+			}
+			%>
+			com.ibm.mq.MQMessage inMessage<%=cid%>=new com.ibm.mq.MQMessage();
+			<%
+			if(("true").equals(useMsgId)&& !"Map".equals(msgBobyType)){
+			%>
+				inMessage<%=cid%>.messageId = msgId_<%=cid%>.getBytes("ISO-8859-15");
+			<%
+			}
+			if(("false").equals(kListen) && ("true").equals(useMsgId) && !"Map".equals(msgBobyType) ){
+			%>		
+				try{
 					remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
-				<%
-				}
-				%>
-				
-				<%
-				if (useMqHeader) {
-				%>				
-				org.talend.mq.headers.rfh2.MQRFH2 mqrfh2_<%=cid %> = new org.talend.mq.headers.rfh2.MQRFH2(inMessage<%=cid %>);
-				
-				<%}%>
+				}catch (com.ibm.mq.MQException me_<%=cid%>) {   
+		            if (me_<%=cid%>.reasonCode == com.ibm.mq.MQException.MQRC_NO_MSG_AVAILABLE) {
+		            	break;   
+		            }else{
+		            	throw me_<%=cid%>;
+		            }   
+     			}
+			<%
+			} else {
+			%>
+				remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
+			<%
+			}
+			%>
+			
+			<%
+			if (useMqHeader) {
+			%>				
+			org.talend.mq.headers.rfh2.MQRFH2 mqrfh2_<%=cid %> = new org.talend.mq.headers.rfh2.MQRFH2(inMessage<%=cid %>);
+			
+			<%}%>
 
-				<%		
-				if ("Text".equals(msgBobyType)) {
-				%>
-		    		String msg_<%=cid%>=inMessage<%=cid%>.readStringOfByteLength(inMessage<%=cid%>.getDataLength());
-				<%
-				} else if ("Bytes".equals(msgBobyType)) {
-				%>
-					byte[] bytesMsgBody_<%=cid%> = new byte[inMessage<%=cid%>.getDataLength()];
-					inMessage<%=cid%>.readFully(bytesMsgBody_<%=cid%>);
-				<%
-			    	if(!"id_byte[]".equals(metadata.getColumn("message").getTalendType())){
-				%>
-					String msg_<%=cid%> = new String(bytesMsgBody_<%=cid%>);
-				<%
-			    	}
-				} else if ("Map".equals(msgBobyType)) {
-				%>
-					java.util.Map msg_<%=cid%> = (java.util.Map)inMessage<%=cid%>.readObject();			  
-				<%
-				}
-				if(isCommit){
-				%>
-					qMgr<%=cid%>.commit();
-				<%
-				}
+			<%		
+			if ("Text".equals(msgBobyType)) {
+			%>
+	    		String msg_<%=cid%>=inMessage<%=cid%>.readStringOfByteLength(inMessage<%=cid%>.getDataLength());
+			<%
+			} else if ("Bytes".equals(msgBobyType)) {
+			%>
+				byte[] bytesMsgBody_<%=cid%> = new byte[inMessage<%=cid%>.getDataLength()];
+				inMessage<%=cid%>.readFully(bytesMsgBody_<%=cid%>);
+			<%
+		    	if(!"id_byte[]".equals(metadata.getColumn("message").getTalendType())){
+			%>
+				String msg_<%=cid%> = new String(bytesMsgBody_<%=cid%>);
+			<%
+		    	}
+			} else if ("Map".equals(msgBobyType)) {
+			%>
+				java.util.Map msg_<%=cid%> = (java.util.Map)inMessage<%=cid%>.readObject();			  
+			<%
+			}
+			if(isCommit){
+			%>
+				qMgr<%=cid%>.commit();
+			<%
+			}
 				
-	}
-	%>
+		}
+		%>
 
 
 		

@@ -10,12 +10,12 @@
 		java.lang.StringBuilder
 	"
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
+	log = new LogUtil(node);
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -74,6 +74,7 @@
 	    if (node.getProcess().getNodesOfType("tFlowMeterCatcher").size() > 0) {
 			List<INode> meterCatchers = (List<INode>)node.getProcess().getNodesOfType("tFlowMeterCatcher");
 			for (INode meterCatcher : meterCatchers) {
+				log.debug(log.str("Sending message to " + meterCatcher.getUniqueName() + "."));
 %>
 	<%=meterCatcher.getUniqueName() %>.addMessage(<%=label%>, new Integer(count_<%=cid%>), "<%=reference%>", "<%=shreshlods_str%>", "<%=cid%>");
 <%      

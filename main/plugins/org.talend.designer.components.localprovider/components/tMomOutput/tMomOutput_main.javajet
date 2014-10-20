@@ -49,6 +49,8 @@ class="MomInput"
 	boolean useMqRFH2_usr = "true".equals(ElementParameterParser.getValue(node, "__USE_MQRFH2_USR__"));
 	List<Map<String,String>> mqrfh2usrFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQRFH2_USR_FIELD__");
 
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
@@ -57,7 +59,11 @@ class="MomInput"
 		if((conns!=null)&&(conns.size()>0)) {
 			IConnection conn = conns.get(0);
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-			
+				if(isLog4jEnabled){
+				%>
+					log.debug("<%=cid%> - Writing the record: " + (nb_line_<%=cid%>+1) + ".");
+				<%
+				}
 				if (isUseSharedConnection || ("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
 				
 					/*-------------------1.is use message id.this functions just use map message type-------------------------------------*/

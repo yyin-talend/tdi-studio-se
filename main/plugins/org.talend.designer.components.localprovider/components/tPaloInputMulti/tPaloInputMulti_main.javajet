@@ -46,12 +46,6 @@
 					IMetadataColumn column = columns.get(i);
 %>
 					<%=strOutputConnectionName%>.<%=column.getLabel()%> = strKey[<%=i%>];
-					<%if(isLog4jEnabled){%>
-						log4jSb_<%=cid%>.append(<%=strOutputConnectionName%>.<%=column.getLabel()%> );
-		                <%if(i < columns.size()-3){%>
-		                	log4jSb_<%=cid%>.append("|");
-	    	            <%}
-					}%>
 <%
 				}
 			}

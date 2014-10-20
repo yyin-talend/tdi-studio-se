@@ -11,11 +11,5 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
-String cid = ElementParameterParser.getValue(node, "__ORIGIN__");
-
-boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 } // G_AggR_600
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Done.");
-<%}%>

@@ -21,9 +21,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.JobContextParameter;
@@ -89,14 +86,7 @@ public final class ContextParameterExtractor {
                     ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
-                        ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
-                        String replaceCode = ""; //$NON-NLS-1$
-                        if (curLanguage == ECodeLanguage.PERL) {
-                            replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
-                                    .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
-                        } else {
-                            replaceCode = ContextParameterUtils.getNewScriptCode(parameter.getName(), curLanguage);
-                        }
+                        String replaceCode = ContextParameterUtils.getNewScriptCode(parameter.getName());
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
                                 ((Text) text).setText(replaceCode);

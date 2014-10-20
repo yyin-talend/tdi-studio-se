@@ -8,7 +8,6 @@ imports="
 	java.util.Map
 " 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -24,10 +23,6 @@ imports="
 	String delimiter=ElementParameterParser.getValue(node,"__DELIMITER__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	
-	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("BUCKETS","KEYS"));
-	log4jFileUtil.componentStartInfo(node);
-	log4jFileUtil.logParameters(node);
 	
 	String outputsDir = ElementParameterParser.getValue(node, "__DIRECTORY__");
 	List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
@@ -146,12 +141,7 @@ imports="
 			}catch(org.jets3t.service.ServiceException e_<%=cid%>){
 				<%
 				if (("true").equals(dieOnError)) {
-					if(isLog4jEnabled){
-					%>
-						log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-					<%
-					}
-					%>
+				%>
 					throw(e_<%=cid%>);
 				<%
 				} else {
@@ -208,12 +198,7 @@ imports="
 				}catch(org.jets3t.service.ServiceException e_<%=cid%>){
 					<%
 					if (("true").equals(dieOnError)) {
-						if(isLog4jEnabled){
-						%>
-							log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-						<%
-						}
-						%>
+					%>
 						throw(e_<%=cid%>);
 					<%
 					} else {

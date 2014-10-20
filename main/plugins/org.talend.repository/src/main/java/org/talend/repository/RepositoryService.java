@@ -75,6 +75,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -227,12 +228,16 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     // see DataBaseWizard, DatabaseTableWizard, AContextualAction
     @Override
     public void notifySQLBuilder(List<IRepositoryViewObject> list) {
-        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getRepositoryView();
-        removeRepositoryChangedListener(listener);
+        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getDIRepositoryView(false);
+        if (listener != null) {
+            removeRepositoryChangedListener(listener);
+        }
         for (IRepositoryViewObject element : list) {
             repositoryChanged(new RepositoryElementDelta(element));
         }
-        registerRepositoryChangedListenerAsFirst(listener);
+        if (listener != null) {
+            registerRepositoryChangedListenerAsFirst(listener);
+        }
     }
 
     /*
@@ -627,10 +632,13 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
      * ERepositoryObjectType, java.lang.String)
      */
     @Override
-    public void openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType, List<IContextParameter> params,
-            IContextManager contextManager) {
+    public ContextItem openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType,
+            List<IContextParameter> params, IContextManager contextManager) {
         ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params, contextManager);
-        dialog.open();
+        if (dialog.open() == Window.OK) {
+            return dialog.getItem();
+        }
+        return null;
     }
 
     /**
@@ -732,9 +740,10 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                         .toOSString();
                 return path;
             } catch (SystemException e) {
+                // no thing to do
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     @Override
@@ -786,10 +795,10 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
         }
         File file = new File(url.getFile());
         // String librariesPath = LibrariesManagerUtils.getLibrariesPath(ECodeLanguage.JAVA) + "/";
-        String librariesPath = processor.getCodeProject().getLocation() + "/lib/";
+        String librariesPath = processor.getCodeProject().getLocation() + "/lib/"; //$NON-NLS-1$
         String targetFileName = JobJavaScriptsManager.USERPIGUDF_JAR;
         if (!isExport) {
-            targetFileName = property.getLabel() + "_" + property.getVersion() + "_" + JobJavaScriptsManager.USERPIGUDF_JAR;
+            targetFileName = property.getLabel() + '_' + property.getVersion() + '_' + JobJavaScriptsManager.USERPIGUDF_JAR;
         }
         File target = new File(librariesPath + targetFileName);
         try {

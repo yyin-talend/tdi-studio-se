@@ -746,6 +746,7 @@ public class TableController extends AbstractElementPropertySectionController {
             line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
             break;
         case SCHEMA_TYPE:
+        case SAP_SCHEMA_TYPE:
         case COLOR:
         case CHECK:
             line.put(items[0], tmpParam.getValue());

@@ -73,7 +73,6 @@ import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
-import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
@@ -1790,12 +1789,13 @@ public class Node extends Element implements IGraphicalNode {
                         refreshNodeContainer();
                     }
                 } else {
-                    IConnection[] conns = process.getAllConnections(null);
-                    for (IConnection conn : conns) {
-                        if (conn instanceof IPerformance) {
-                            ((IPerformance) conn).setPerformanceData(""); //$NON-NLS-1$
-                        }
-                    }
+                    // Fix for TDI-30185:statistics should not be cleard on preoperty change
+                    // IConnection[] conns = process.getAllConnections(null);
+                    // for (IConnection conn : conns) {
+                    // if (conn instanceof IPerformance) {
+                    //                            ((IPerformance) conn).setPerformanceData(""); //$NON-NLS-1$
+                    // }
+                    // }
                 }
             }
         }
@@ -2520,6 +2520,18 @@ public class Node extends Element implements IGraphicalNode {
                                 }
                             }
                         }
+                        Object type = tabMap.get("TYPE");
+                        if (type != null && type.toString().equals("SINGLE")) {
+                            Object code = tabMap.get("SCHEMA");
+                            IMetadataTable metaTable = this.getMetadataTable(code.toString());
+                            if (metaTable != null) {
+                                if (metaTable.getListColumns(true).size() > 1) {
+                                    String warnMessage = Messages.getString("Node.hasMoreThenOneColumn", metaTable.getLabel()); //$NON-NLS-1$
+                                    Problems.add(ProblemStatus.WARNING, this, warnMessage);
+                                }
+                            }
+                        }
+
                     }
                 }
                 if (inexistentColumns.length() > 0) {
@@ -3362,8 +3374,10 @@ public class Node extends Element implements IGraphicalNode {
                 if (getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0 && noSchema) {
                     if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0)
                             || (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) > 0)) {
-                        String errorMessage = Messages.getString("Node.outputNeedInputLink"); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        if (!this.getComponent().getName().equals("tSAPBapi")) {
+                            String errorMessage = Messages.getString("Node.outputNeedInputLink"); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
                     }
                 }
             }

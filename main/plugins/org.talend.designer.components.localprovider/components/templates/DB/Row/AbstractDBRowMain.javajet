@@ -165,12 +165,10 @@ try {
 		whetherReject_<%=cid%> = true;
 		<%
 		if (("true").equals(dieOnError)) {
-			log4jCodeGenerateUtil.logError(node,"fatal");
 			%>
 			throw(e);
 			<%
 		} else {
-			log4jCodeGenerateUtil.logError(node,"error");
 			if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
 				%>
 				<%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -189,6 +187,7 @@ try {
 				<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 				<%
 			} else {
+				log4jCodeGenerateUtil.logError(node,"error");
 				%>
 				System.err.print(e.getMessage());
 				<%

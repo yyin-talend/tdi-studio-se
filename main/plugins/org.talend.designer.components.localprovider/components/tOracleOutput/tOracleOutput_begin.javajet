@@ -5,6 +5,7 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
         org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.types.JavaTypesManager
         org.talend.core.model.metadata.MappingTypeRetriever
         org.talend.core.model.metadata.MetadataTalendType
 		java.util.List
@@ -100,11 +101,18 @@ skeleton="../templates/db_output_bulk.skeleton"
         }    
     }
     boolean xmlTypeExist = false;
+    boolean clobTypeExist = false;
     for(Column column : stmtStructure) {
     	//when use Additional column column.getColumn() == null
     	if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getType()) && !column.isDynamic()) {
     		column.setSqlStmt("XMLType(?)");
     		xmlTypeExist = true;
+    	}
+    	if (column.getColumn()!= null) {
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+    		if ("CLOB".equals(column.getColumn().getType()) && typeToGenerate.equals("Object") && !column.isDynamic()) {
+    			clobTypeExist = true;
+    		}
     	}
     }
     %>
@@ -458,45 +466,53 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
             }
     	}
-    	
-    	if (xmlTypeExist) {
-    	%>
-        	class XMLTypeUtil_<%=cid%> {
-        		public oracle.sql.CLOB getCLOB(String xmlData, java.sql.Connection conn) throws java.sql.SQLException{
-        		  oracle.sql.CLOB tempClob = null;
-        		  try{
-        		    // If the temporary CLOB has not yet been created, create one
-        		    tempClob = oracle.sql.CLOB.createTemporary(conn, true, oracle.sql.CLOB.DURATION_SESSION); 
-        		 
-        		    // Open the temporary CLOB in readwrite mode, to enable writing
-        		    tempClob.open(oracle.sql.CLOB.MODE_READWRITE); 
-        		    // Get the output stream to write
-        		    java.io.Writer tempClobWriter = tempClob.getCharacterOutputStream(); 
-        		    // Write the data into the temporary CLOB
-        		    tempClobWriter.write(xmlData); 
-        		 
-        		    // Flush and close the stream
-        		    tempClobWriter.flush();
-        		    tempClobWriter.close(); 
-        		 
-        		    // Close the temporary CLOB 
-        		    tempClob.close();    
-        		  } catch( java.sql.SQLException sqlexp){
-        		  	<%dbLog.logPrintedException("sqlexp.getMessage()");%>
-        		    tempClob.freeTemporary(); 
-        		    sqlexp.printStackTrace();
-        		  } catch(java.lang.Exception exp){
-        		  	<%dbLog.logPrintedException("exp.getMessage()");%>
-        		    tempClob.freeTemporary(); 
-        		    exp.printStackTrace();
-        		  }
-        		  return tempClob; 
-        		}
-        	}
-        	XMLTypeUtil_<%=cid%> xmlTypeUtil_<%=cid%> = null;
-        	xmlTypeUtil_<%=cid%> = new XMLTypeUtil_<%=cid%>();
-    	<%
-    	}
+	}
+	if (xmlTypeExist || clobTypeExist) {
+	%>
+    		
+		class ClobTypeUtil_<%=cid%> {
+			public Object getCLOB(Object data, java.sql.Connection conn) throws java.sql.SQLException{
+				oracle.sql.CLOB tempClob = null;
+				try{
+					// If the temporary CLOB has not yet been created, create one
+					tempClob = oracle.sql.CLOB.createTemporary(conn, true, oracle.sql.CLOB.DURATION_SESSION);
+					// Open the temporary CLOB in readwrite mode, to enable writing
+					tempClob.open(oracle.sql.CLOB.MODE_READWRITE);
+					// Get the output stream to write
+					java.io.Writer tempClobWriter = tempClob.getCharacterOutputStream();
+					if(data instanceof oracle.sql.CLOB) {
+						oracle.sql.CLOB inClob = (oracle.sql.CLOB) data;
+				        java.io.Reader inReader = inClob.getCharacterStream();
+				        char[] chs = new char[128];
+				       	int len = 0;
+						while ((len = inReader.read(chs)) != -1) {
+				        	tempClobWriter.write(chs, 0, len);
+				        }
+				    }else if(data instanceof String) {
+				       // Write the data into the temporary CLOB
+						tempClobWriter.write((String)data);
+					}else{
+						return data;
+					}
+					// Flush and close the stream
+					tempClobWriter.flush();
+					tempClobWriter.close();
+					// Close the temporary CLOB
+					tempClob.close();
+				} catch( java.sql.SQLException sqlexp){
+    		  	<%dbLog.logPrintedException("sqlexp.getMessage()");%>
+					tempClob.freeTemporary();
+					sqlexp.printStackTrace();
+				} catch(java.lang.Exception exp){
+    		  	<%dbLog.logPrintedException("exp.getMessage()");%>
+					tempClob.freeTemporary();
+					exp.printStackTrace();
+				}
+				return tempClob;
+			}
+		}
+		ClobTypeUtil_<%=cid%> clobTypeUtil_<%=cid%>=new ClobTypeUtil_<%=cid%>();
+	<%
     }
     
     if(isDynamic) {

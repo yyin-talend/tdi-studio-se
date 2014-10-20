@@ -29,52 +29,28 @@
 	String cid = node.getUniqueName();
 	
 	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
-
-	boolean isXpath = false;	
-	boolean isPlainNode = true;
-	boolean outputHasDocument = false;
+	
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
 	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
-	EList<VarTable> varTables = xmlMapData.getVarTables();
-	EList<InputXmlTree> inputTables = xmlMapData.getInputTrees();
-	if(inputTables.size()>0) {
-		InputXmlTree mainInputTable = inputTables.get(0);
-		for(TreeNode tmpNode : mainInputTable.getNodes()){
-			if(tmpNode.getType().equals("id_Document"))
-				isPlainNode = false;
+	
+	List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
+	Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
+    for (IConnection connection : outputConnections) {
+		nameToOutputConnection.put(connection.getName(), connection);
+	}
+	
+    for (OutputXmlTree table : outputTables) {
+        EList<OutputTreeNode> tableEntries = table.getNodes();
+        if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
+            continue;
+        }
+        String outputTableName = table.getName();
+        
+		if(isLog4jEnabled) {
+%>
+		log.debug("<%=cid%> - Written records count in the table '<%=outputTableName%>': " + count_<%=outputTableName%>_<%=cid%> + ".");
+<%
 		}
-	}
-
-for (OutputXmlTree table : outputTables) {
-
-    
-    EList<OutputTreeNode> tableEntries = table.getNodes();
-    if (tableEntries == null ) {
-        continue;
     }
-    for(OutputTreeNode tableEntry : tableEntries) {
-        	if(!("id_Document").equals(tableEntry.getType())){
-
-        		String resultExpression = tableEntry.getExpression();
-        		if(null !=resultExpression && resultExpression.indexOf("/") != -1)
-        		   isXpath = true;        	
-			} else {
-					outputHasDocument = true;
-			}
-	}
-}
 %>
-
-
-<%
-	if((!outputHasDocument && isPlainNode) || (!isPlainNode &&  !outputHasDocument) || (isPlainNode && outputHasDocument) || (!isPlainNode && outputHasDocument)) {
-		// Nothing to generate
-	}
-
-	if(false){
-%>
-		} // for input xml loop 
-<%
-	}
-%>
-
-

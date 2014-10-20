@@ -23,8 +23,6 @@ boolean MD5 = new Boolean(ElementParameterParser.getValue(node, "__MD5__"));
 final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 log4jFileUtil.componentStartInfo(node);
-log4jFileUtil.logParameters(node);
-
 String outputConnName = null;
 IConnection outputConn = null;
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -71,29 +69,6 @@ if(file_<%=cid %>.exists()) {
 		<%=outputConnName %>.md5 =String.format("%032x", new java.math.BigInteger(1, dgs_<%=cid %>.digest()));
 		is_<%=cid %>.close();
 	<%}%>
-	
-<% 	
-	if(isLog4jEnabled) {
-		org.talend.core.model.metadata.IMetadataTable metadata = outputConn.getMetadataTable();
-		java.util.Iterator<org.talend.core.model.metadata.IMetadataColumn> iterator = metadata.getListColumns().iterator();
-		while(iterator.hasNext()) {
-			org.talend.core.model.metadata.IMetadataColumn column = iterator.next();
-%>
-				log4jSb_<%=cid%>.append(<%=outputConn.getName()%>.<%=column.getLabel()%>);
-<%
-			if(iterator.hasNext()) {
-%>
-				log4jSb_<%=cid%>.append("|");
-<%
-			}
-		}
-%>
-		log.debug("<%=cid%> - Retrieving the record.");
-		log.trace("<%=cid%> - Content of the record : " + log4jSb_<%=cid%>);
-		log4jSb_<%=cid%>.setLength(0);
-<%
-	}
-%>
 }
 <%
     if(isLog4jEnabled) {
@@ -105,5 +80,4 @@ if(file_<%=cid %>.exists()) {
     }
 }
 
-log4jFileUtil.componentFinishInfo(node);
 %>

@@ -118,25 +118,14 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 <%=conn.getName() %> = new <%=conn.getName() %>Struct();
               }
               <%
-				int curCount = 0;
               for (IMetadataColumn column: metadata.getListColumns()) {
               %>
                <%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
-                 <%if(isLog4jEnabled){%>
-					log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-					<%if(curCount < metadata.getListColumns().size()-1){%>
-						log4jSb_<%=cid%>.append("|");
-					<%}
-				}
-            	curCount ++;
-            	%>
               <%
 	          }
 				if(isLog4jEnabled){
 				%>
 					log.debug("<%=cid%> - Process the record " + (nb_line_<%=cid%>+1) + ".");
-					log.trace("<%=cid%> - Content of the record " + (nb_line_<%=cid%>+1) + ": " + log4jSb_<%=cid%> + ".");
-					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 					<%
 				}
             }
@@ -159,7 +148,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
               <%=sRejectConnName%> = new <%=sRejectConnName%>Struct();
             }
             <%
-				int curCount = 0;
             for (IMetadataColumn column: conn.getMetadataTable().getListColumns()) {
               String columnName = column.getLabel();
               
@@ -171,21 +159,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
               %>
                 <%=sRejectConnName%>.<%=column.getLabel() %> = <%=connName%>.<%=column.getLabel() %>;
               <%
-                 if(isLog4jEnabled){%>
-					log4jSb_<%=cid%>.append(<%=sRejectConnName%>.<%=column.getLabel() %>);
-					<%if(curCount < conn.getMetadataTable().getListColumns().size()-2){%>
-						log4jSb_<%=cid%>.append("|");
-					<%}
-				 }
               }
-            	curCount ++;
 	        }
 				if(isLog4jEnabled){
 				%>
 					log.debug("<%=cid%> - Process the record " + (nb_line_<%=cid%>+1) + ".");
-					log.trace("<%=cid%> - Content of the record " + (nb_line_<%=cid%>+1) + ": " + log4jSb_<%=cid%> + ".");
 					log.debug("<%=cid%> - Reject the record " + (nb_line_<%=cid%>+1) + ". Caused by: " + <%=sRejectConnName%>.errorMessage+ ".");
-					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 					<%
 				}
           }

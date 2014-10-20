@@ -1579,6 +1579,7 @@ public class DataProcess implements IGeneratingProcess {
     @Override
     public void buildFromGraphicalProcess(List<INode> graphicalNodeList) {
         initialize();
+
         if (graphicalNodeList.size() == 0) {
             return;
         }
@@ -1770,6 +1771,7 @@ public class DataProcess implements IGeneratingProcess {
             dataNodeList.remove(preStaLogConNode);
             dataNodeList.add(0, preStaLogConNode);
         }
+
         checkRefList = null;
         checkMultipleMap = null;
         checktUniteMap = null;
@@ -2516,7 +2518,7 @@ public class DataProcess implements IGeneratingProcess {
             node.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes(dbConnection.getSID()));//$NON-NLS-1$
             node.getElementParameter("TYPE").setValue(TalendTextUtils.addQuotes(dbConnection.getDatabaseType()));//$NON-NLS-1$
             node.getElementParameter("USER").setValue(TalendTextUtils.addQuotes(dbConnection.getUsername()));//$NON-NLS-1$
-            node.getElementParameter("PASS").setValue(TalendTextUtils.addQuotes(dbConnection.getPassword()));//$NON-NLS-1$
+            node.getElementParameter("PASS").setValue(TalendTextUtils.addQuotes(dbConnection.getRawPassword()));//$NON-NLS-1$
         }
     }
 

@@ -2088,15 +2088,6 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
-              breaks="5.6.0"
-              class="org.talend.repository.model.migration.mr.NameMainFlowOnMRInputComponent"
-              description="Add Fail on error option or MR input component, value=false"
-              id="org.talend.repository.model.migration.mr.NameMainFlowOnMRInputComponent"
-              name="Add Fail on error option or MR input component, value=false"
-              version="5.6.0">
-        </projecttask>
-        <projecttask
-              beforeLogon="false"
               breaks="5.2.3"
               class="org.talend.repository.model.migration.ChangeDefaultEncodingMigrationTask"
               description="As custom encoding not work,change tSybaseBulkExec,tOracleBulkExec default encoding"
@@ -2129,6 +2120,15 @@
               description="Correct tTeradataTPTExec Inserter Operator to Load"
               id="org.talend.repository.model.migration.CorrectTeradataTPTExecInserterOperatorToLoad"
               name="CorrectTeradataTPTExecInserterOperatorToLoad"
+              version="5.6.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.0"
+              class="org.talend.repository.model.migration.SetDefaultValue4tWriteJSONFieldGroupByOutput"
+              description="Set default value for tWriteJSONFieldGroupByOutput"
+              id="org.talend.repository.model.migration.SetDefaultValue4tWriteJSONFieldGroupByOutput"
+              name="SetDefaultValue4tWriteJSONFieldGroupByOutput"
               version="5.6.0">
         </projecttask>
         <projecttask
@@ -2240,7 +2240,43 @@
               id="org.talend.repository.model.migration.AddCDCTypeForOracleCDCMigrationTask"
               name="AddCDCTypeForOracleCDCMigrationTask"
               version="5.6.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.0"
+              class="org.talend.repository.model.migration.UnifyPasswordEncryption4ContextMigrationTask"
+              description="Unify the entryption for context password type"
+              id="org.talend.repository.model.migration.UnifyPasswordEncryption4ContextMigrationTask"
+              name="UnifyPasswordEncryption4ContextMigrationTask"
+              version="5.6.0">
         </projecttask> 
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.0"
+              class="org.talend.repository.model.migration.UnifyPasswordEncryption4DBConnectionMigrationTask"
+              description="Unify the entryption for DB password field"
+              id="org.talend.repository.model.migration.UnifyPasswordEncryption4DBConnectionMigrationTask"
+              name="UnifyPasswordEncryption4DBConnectionMigrationTask"
+              version="5.6.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="5.6.0"
+              class="org.talend.repository.model.migration.UnifyPasswordEncryption4ProjectSettingsMigrationTask"
+              description="Unify the entryption for pass fields of project settings"
+              id="org.talend.repository.model.migration.UnifyPasswordEncryption4ProjectSettingsMigrationTask"
+              name="UnifyPasswordEncryption4ProjectSettingsMigrationTask"
+              version="5.6.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.0"
+              class="org.talend.repository.model.migration.UnifyPasswordEncryption4ParametersInJobMigrationTask"
+              description="Unify the entryption for pass fields of parameters of jobs"
+              id="org.talend.repository.model.migration.UnifyPasswordEncryption4ParametersInJobMigrationTask"
+              name="UnifyPasswordEncryption4ParametersInJobMigrationTask"
+              version="5.6.0">
+        </projecttask>        
    </extension>
 
    <extension

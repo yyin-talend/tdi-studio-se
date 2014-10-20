@@ -92,7 +92,6 @@ if(applyOptionalAttributes){
 }
 //end
 
-log4jCodeGenerateUtil.infoComponentStart(node);
 //windows line separator as default
 String lineSeparator = "\\r\\n";
 if("Unix".equals(execution)){
@@ -559,7 +558,8 @@ try{
                     <%}
                 }%>
                 <%if(isLog4jEnabled){%>
-                    log.info("<%=cid%> - Executing command '" + sb_<%=cid%> + "'.");
+                	String cmdStr_<%= cid %> = java.util.Arrays.toString(sb_<%=cid%>);
+                    log.info("<%=cid%> - Executing command: '" + cmdStr_<%= cid %> + "'.");
                 <%}%>
                 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>);
                 Thread normal_<%=cid %> = new Thread() {
@@ -614,16 +614,13 @@ try{
                 if(returnCodeDie) {
                 %>
                     if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
-                        <%if(isLog4jEnabled){%>
-                            log.fatal("<%=cid%> - "+"TPT returned exit code "+process_<%=cid %>.exitValue()+".");
-                        <%}%>
                         throw new RuntimeException("TPT returned exit code "+process_<%=cid %>.exitValue());
                     }
                 <%
                 }
                 %>
                 <%if(isLog4jEnabled){%>
-                    log.info("<%=cid%> - Excute '" + sb_<%=cid%> + "' has finished.");
+                    log.info("<%=cid%> - Excute command:'" + cmdStr_<%= cid %> + "' has finished.");
                 <%}%>
 }finally{
 	try{
@@ -632,4 +629,3 @@ try{
         <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
 	}
 }
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

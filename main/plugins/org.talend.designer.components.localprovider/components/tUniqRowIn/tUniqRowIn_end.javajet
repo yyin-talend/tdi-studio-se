@@ -25,6 +25,7 @@ String connDuplicateName = null;
 boolean onlyOnceEachDuplicatedKey = ("true").equals(ElementParameterParser.getValue(node, "__ONLY_ONCE_EACH_DUPLICATED_KEY__"));
 List<? extends IConnection> connsUnique = node.getOutgoingConnections("UNIQUE");
 List<? extends IConnection> connsDuplicate = node.getOutgoingConnections("DUPLICATE");
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if(connsUnique.size() > 0){
 	connUniqName = connsUnique.get(0).getName();
 	if(connsDuplicate.size() > 0){
@@ -59,18 +60,42 @@ if(mode == UNIQUE){//HSS_____0
             }
             globalMap.put("<%=cid %>_NB_UNIQUES",nb_uniq_<%=cid %>);
             globalMap.put("<%=cid %>_NB_DUPLICATES",nb_<%=cid %> - nb_uniq_<%=cid %>);
+            <%
+			if(isLog4jEnabled){
+			%>
+				log.info("<%=cid%> - Unique records count: " + (nb_uniq_<%=cid %>)+" .");
+				log.info("<%=cid%> - Duplicate records count: " + (nb_<%=cid %> - nb_uniq_<%=cid %>)+" .");
+			<%
+			}
+			%>
 <%
 }else if(mode == UNIQUE_AND_DUPLICATE_ONCE || mode == UNIQUE_AND_DUPLICATE){//HSS_____0
 %>
             }
             globalMap.put("<%=cid %>_NB_UNIQUES", nb_uniq_<%=cid %>);
             globalMap.put("<%=cid %>_NB_DUPLICATES", nb_duplicate_<%=cid %>);
+            <%
+			if(isLog4jEnabled){
+			%>
+				log.info("<%=cid%> - Unique records count: " + (nb_uniq_<%=cid %>)+" .");
+				log.info("<%=cid%> - Duplicate records count: " + (nb_duplicate_<%=cid %>)+" .");
+			<%
+			}
+			%>
 <%
 }else if(mode == DUPLICATE_ONCE || mode == DUPLICATE){//HSS_____0
 %>
             }
             globalMap.put("<%=cid %>_NB_UNIQUES", nb_<%=cid %> - nb_duplicate_<%=cid %>);
             globalMap.put("<%=cid %>_NB_DUPLICATES", nb_duplicate_<%=cid %>);
+            <%
+			if(isLog4jEnabled){
+			%>
+				log.info("<%=cid%> - Unique records count: " + (nb_<%=cid %> - nb_duplicate_<%=cid %>)+" .");
+				log.info("<%=cid%> - Duplicate records count: " + (nb_duplicate_<%=cid %>)+" .");
+			<%
+			}
+			%>
 <%
 }//HSS_____0
 

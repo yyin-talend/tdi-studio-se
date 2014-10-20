@@ -4,4 +4,3 @@ Bundle-Name: Jars
 Bundle-SymbolicName: org.talend.libraries.jboss.jars
 Bundle-Version: 6.0.0.qualifier
 Fragment-Host: org.talend.libraries.jboss
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7

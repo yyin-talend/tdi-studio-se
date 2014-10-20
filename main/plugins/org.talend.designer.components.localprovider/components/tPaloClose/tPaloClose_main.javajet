@@ -17,7 +17,6 @@ imports="
     String conn = "pConn_" + connection;
     
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node); 
 %>
 	org.talend.jpalo.paloconnection pConn_<%=cid %> = (org.talend.jpalo.paloconnection)globalMap.get("<%=conn%>");
 	
@@ -30,4 +29,3 @@ imports="
 			log.info("<%=cid%> - Connection to the server closed.");
 		<%}%>
 	}
-	<%log4jFileUtil.componentFinishInfo(node);%>

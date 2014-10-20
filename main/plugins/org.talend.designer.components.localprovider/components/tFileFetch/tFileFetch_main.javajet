@@ -13,9 +13,6 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node);
-log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("SMB_PASSWORD","PROXY_PASSWORD","AUTH_PASSWORD"));
-log4jFileUtil.logParameters(node); 
 String cid = node.getUniqueName();
 String protocol = ElementParameterParser.getValue(node, "__PROTO__");
 String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
@@ -100,9 +97,6 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 				throws java.io.IOException, java.net.UnknownHostException, org.apache.commons.httpclient.ConnectTimeoutException {
 
 				if (params == null) {
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - Parameters may not be null");
-					<%}%>
 					throw new IllegalArgumentException("Parameters may not be null");
 				}
 				int timeout = params.getConnectionTimeout();
@@ -323,9 +317,6 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 				} else if (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_OK) {
 					redirect_<%=cid%> = false;
 				} else {
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - Method failed: " + method_<%=cid%>.getStatusLine());
-					<%}%>
 					throw new java.lang.Exception("Method failed: " + method_<%=cid%>.getStatusLine());
 				}
 			}
@@ -356,9 +347,6 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 		if (!redirect) {
 		%>
 			if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {      
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Method failed: " + method_<%=cid%>.getStatusLine());
-				<%}%>      
 				throw new java.lang.Exception("Method failed: " + method_<%=cid%>.getStatusLine());
 			}
 		<%
@@ -366,9 +354,6 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 		%>
 	} catch(java.lang.Exception e) {
 		<%if (bDieOnError) {%>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
 			throw(e);
 		<%} else {%>   
 			<%if(isLog4jEnabled){%>
@@ -541,9 +526,6 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 			in_<%=cid%> = new java.io.DataInputStream(conn_<%=cid %>.getInputStream());
 		} catch(java.lang.Exception e) {
 			<% if (bDieOnError) {%>    
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e.getMessage());
-				<%}%>
 				throw(e);
 			<%} else {%>
 				<%if(isLog4jEnabled){%>
@@ -637,4 +619,3 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 	}
 <%}%>
 globalMap.put("<%=cid%>_INPUT_STREAM", retIS_<%=cid%>);
-<%log4jFileUtil.componentFinishInfo(node);%>

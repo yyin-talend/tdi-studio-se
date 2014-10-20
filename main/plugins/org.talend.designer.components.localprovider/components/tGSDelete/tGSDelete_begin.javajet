@@ -8,7 +8,6 @@
 		java.util.Map
 	" 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -23,9 +22,6 @@
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
-	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("BUCKETS"));
-	log4jFileUtil.componentStartInfo(node);
-	log4jFileUtil.logParameters(node);
 	%>
 	int nb_line_<%=cid%> = 0;
 	org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=cid%> = null;
@@ -113,12 +109,7 @@
 			}catch(org.jets3t.service.ServiceException e_<%=cid%>){
 				<%
 				if (("true").equals(dieOnError)) {
-					if(isLog4jEnabled){
-					%>
-						log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-					<%
-					}
-					%>
+				%>
 					throw(e_<%=cid%>);
 				<%
 				} else {

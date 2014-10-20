@@ -15,7 +15,7 @@ imports="
     java.util.Set
 " 
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -274,5 +274,6 @@ if(nb_line_<%=cid %> == 0){
 <%}%>
 
 <%
+	log4jFileUtil.writeDataFinishInfo(node);
 }//HSS_____0
 %>

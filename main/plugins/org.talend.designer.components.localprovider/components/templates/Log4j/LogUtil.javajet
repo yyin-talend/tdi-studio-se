@@ -54,6 +54,10 @@ class BasicLogUtil{
 		<%
 		}
 	}
+	
+	public boolean isActive(){
+		return this.log4jEnabled;
+	}
 }
 
 class LogUtil extends BasicLogUtil{
@@ -94,11 +98,32 @@ class LogUtil extends BasicLogUtil{
     	   	java.util.Set<org.talend.core.model.process.EParameterFieldType> ignoredParamsTypes = new java.util.HashSet<org.talend.core.model.process.EParameterFieldType>(); 
     	   	ignoredParamsTypes.addAll(
     	   		java.util.Arrays.asList(
-    		   		org.talend.core.model.process.EParameterFieldType.SCHEMA_TYPE,
+    	   			org.talend.core.model.process.EParameterFieldType.SCHEMA_TYPE,
     		   		org.talend.core.model.process.EParameterFieldType.LABEL,
     		   		org.talend.core.model.process.EParameterFieldType.EXTERNAL,
     		   		org.talend.core.model.process.EParameterFieldType.MAPPING_TYPE,
-    		   		org.talend.core.model.process.EParameterFieldType.IMAGE)
+    		   		org.talend.core.model.process.EParameterFieldType.IMAGE,
+    		   		org.talend.core.model.process.EParameterFieldType.TNS_EDITOR,
+    		   		org.talend.core.model.process.EParameterFieldType.WSDL2JAVA,
+    		   		org.talend.core.model.process.EParameterFieldType.GENERATEGRAMMARCONTROLLER,
+    		   		org.talend.core.model.process.EParameterFieldType.GENERATE_SURVIVORSHIP_RULES_CONTROLLER,
+    		   		org.talend.core.model.process.EParameterFieldType.REFRESH_REPORTS,
+    		   		org.talend.core.model.process.EParameterFieldType.BROWSE_REPORTS,
+    		   		org.talend.core.model.process.EParameterFieldType.PALO_DIM_SELECTION,
+    		   		org.talend.core.model.process.EParameterFieldType.GUESS_SCHEMA,
+    		   		org.talend.core.model.process.EParameterFieldType.MATCH_RULE_IMEX_CONTROLLER,
+    		   		org.talend.core.model.process.EParameterFieldType.MEMO_PERL,
+    		   		org.talend.core.model.process.EParameterFieldType.DBTYPE_LIST,
+    		   		org.talend.core.model.process.EParameterFieldType.VERSION,
+    		   		org.talend.core.model.process.EParameterFieldType.TECHNICAL,
+    		   		org.talend.core.model.process.EParameterFieldType.ICON_SELECTION,
+    		   		org.talend.core.model.process.EParameterFieldType.JAVA_COMMAND,
+    		   		org.talend.core.model.process.EParameterFieldType.TREE_TABLE,
+    		   		org.talend.core.model.process.EParameterFieldType.VALIDATION_RULE_TYPE,
+    		   		org.talend.core.model.process.EParameterFieldType.DCSCHEMA,
+    		   		org.talend.core.model.process.EParameterFieldType.SURVIVOR_RELATION,
+    		   		org.talend.core.model.process.EParameterFieldType.REST_RESPONSE_SCHEMA_TYPE
+    		   		)
     	   	);
        		for(org.talend.core.model.process.IElementParameter ep : org.talend.core.model.utils.NodeUtil.getDisplayedParameters(node)){
        			if(ignoredParamsTypes.contains(ep.getFieldType())){
@@ -107,9 +132,18 @@ class LogUtil extends BasicLogUtil{
        			String name = ep.getName();
        			if(org.talend.core.model.process.EParameterFieldType.PASSWORD.equals(ep.getFieldType())){
        				String epName = "__" + name + "__";
-       				String password = org.talend.core.model.process.ElementParameterParser.canEncrypt(node, epName) ? org.talend.core.model.process.ElementParameterParser.getEncryptedValue(node, epName) : "routines.system.PasswordEncryptUtil.encryptPassword(" + org.talend.core.model.process.ElementParameterParser.getValue(node, epName) + ")"; 
+       				String password = "";
+       				if(org.talend.core.model.process.ElementParameterParser.canEncrypt(node, epName)){
+       					password = org.talend.core.model.process.ElementParameterParser.getEncryptedValue(node, epName);
+       				}else{
+       					String passwordValue = org.talend.core.model.process.ElementParameterParser.getValue(node, epName);
+       					if (passwordValue == null || "".equals(passwordValue.trim())) {// for the value which empty
+                            passwordValue = "\"\"";
+                        } 
+       				    password = "routines.system.PasswordEncryptUtil.encryptPassword(" + passwordValue + ")";
+       				} 
        				%>
-                    <%=var("log4jParamters")%>.append("<%=name%>" + " = " + String.valueOf(<%=password%>).substring(0, 4) + "...");	
+                    <%=var("log4jParamters")%>.append("<%=name%>" + " = " + String.valueOf(<%=password%>).substring(0, 4) + "...");		
        			<%
        			}else{
        				String value = org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, ep);
@@ -158,5 +192,28 @@ class LogUtil extends BasicLogUtil{
 	<%
     }
 }
+
+class LogHelper{
+	
+	java.util.Map<String, String> pastDict = null;
+	
+	public LogHelper(){
+		pastDict = new java.util.HashMap<String, String>();
+		pastDict.put("insert", "inserted");
+		pastDict.put("update", "updated");
+		pastDict.put("delete", "deleted");
+		pastDict.put("upsert", "upserted");
+	}	
+	
+	public String upperFirstChar(String data){ 
+		return data.substring(0, 1).toUpperCase() + data.substring(1);
+	}
+	
+	public String toPastTense(String data){
+		return pastDict.get(data);
+	}
+}
+LogHelper logHelper = new LogHelper();
+
 LogUtil log = null;
 %>

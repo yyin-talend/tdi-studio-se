@@ -6,11 +6,12 @@
 		java.util.List
 	"
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	log = new LogUtil(node);
 %>
 	
 <%
@@ -36,6 +37,7 @@ if(priority.equals("1")){
 				List<INode> logCatchers = (List<INode>)node.getProcess().getNodesOfType("tLogCatcher");
 				for (INode logCatcher : logCatchers) {
 					if (("true").equals(ElementParameterParser.getValue(logCatcher, "__CATCH_TWARN__"))) {
+						log.debug(log.str("Sending message to " + logCatcher.getUniqueName() + "."));
 %>
 	<%=logCatcher.getUniqueName() %>.addMessage("tWarn", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
 	<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);

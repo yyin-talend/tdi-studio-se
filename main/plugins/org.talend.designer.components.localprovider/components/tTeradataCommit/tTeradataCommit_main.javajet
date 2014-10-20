@@ -7,14 +7,15 @@ imports="
 " 
 %>
 <%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
+          dbLog = new DBLogUtil(node);
     String cid = node.getUniqueName();
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
     String conn = "conn_" + connection;
-    log4jCodeGenerateUtil.infoComponentStart(node);
 
     INode tTeradataConnection = NodeUtil.getNodeByUniqueName(node.getProcess(), connection);
     boolean useQueryBanding = "true".equals(ElementParameterParser.getValue(tTeradataConnection, "__QUERY_BAND__"));
@@ -25,7 +26,7 @@ if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed())
 <%  if(close){%>
 	try{
 <% }%>
-		<%log4jCodeGenerateUtil.commit();%>
+		<%log4jCodeGenerateUtil.commit(node);%>
 <%  if(close){%>
 	}finally{
         <%if(useQueryBanding){%>
@@ -36,12 +37,12 @@ if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed())
                  conn_<%=cid%>.createStatement().execute("SET QUERY_BAND = NONE FOR SESSION");               
                  conn_<%=cid%>.createStatement().execute("END QUERY LOGGING ON ALL");                 
              }catch(Exception e){
-                 e.printStackTrace();
+                    <%dbLog.logPrintedException("e.getMessage()");%>
+                    System.err.println(e.getMessage());
              }
 
         <%}%>
-		<%log4jCodeGenerateUtil.close();%>
+		<%log4jCodeGenerateUtil.close(node);%>
     }
 <% }%>
 }
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

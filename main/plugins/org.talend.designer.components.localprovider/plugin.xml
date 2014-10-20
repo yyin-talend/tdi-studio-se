@@ -58,6 +58,13 @@
     	
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hadoop.cloudera.cdh5.1"
+        	id="hadoop-core-cdh5.1-lastest"           
+         	name="hadoop-core-2.3.0-mr1-cdh5.1.2.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5.1/lib/hadoop-core-2.3.0-mr1-cdh5.1.2.jar">
+    	</libraryNeeded>
+    	
+	   	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.cloudera.cdh5.1"
         	id="avro-cdh5.1-lastest"       
          	name="avro-1.7.5-cdh5.1.2.jar"
          	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5.1/lib/avro-1.7.5-cdh5.1.2.jar">
@@ -231,6 +238,186 @@
          	uripath="platform:/plugin/org.talend.libraries.sqoop/lib/sqoop-1.4.4-cdh5.1.2.jar">
     	</libraryNeeded>
     	
+    	<!-- MAPR 40X libraries-->
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="maprfs-4.0.X-lastest"       
+         	name="maprfs-4.0.1-mapr.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="mapr-hbase-4.0.X-lastest"       
+         	name="mapr-hbase-4.0.1-mapr.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-common-mapr-4.0.X-lastest"       
+         	name="hadoop-common-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-common-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-auth-mapr-4.0.X-lastest"       
+         	name="hadoop-auth-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-auth-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-hdfs-mapr-4.0.X-lastest"       
+         	name="hadoop-hdfs-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-hdfs-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-mapreduce-client-common-mapr-4.0.X-lastest"       
+         	name="hadoop-mapreduce-client-common-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-mapreduce-client-common-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-mapreduce-client-core-mapr-4.0.X-lastest"       
+         	name="hadoop-mapreduce-client-core-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-mapreduce-client-core-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-mapreduce-client-jobclient-mapr-4.0.X-lastest"       
+         	name="hadoop-mapreduce-client-jobclient-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-mapreduce-client-jobclient-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-yarn-api-mapr-4.0.X-lastest"       
+         	name="hadoop-yarn-api-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-yarn-api-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-yarn-client-mapr-4.0.X-lastest"       
+         	name="hadoop-yarn-client-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-yarn-client-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hadoop-yarn-common-mapr-4.0.X-lastest"       
+         	name="hadoop-yarn-common-2.4.1-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hadoop-yarn-common-2.4.1-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.zookeeper"
+        	id="zookeeper-mapr-4.0.X-lastest"       
+         	name="zookeeper-3.4.5-mapr-1406.jar"
+         	uripath="platform:/plugin/org.talend.libraries.zookeeper/lib/zookeeper-3.4.5-mapr-1406.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hbase-mapr-4.0.X-lastest"       
+         	name="hbase-0.94.21-mapr-1407.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hbase-0.94.21-mapr-1407.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hive-hbase-handler-mapr-4.0.X-lastest"       
+         	name="hive-hbase-handler-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hive-hbase-handler-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.pig"
+        	id="pig-withouthadoop-mapr-4.0.X-lastest"       
+         	name="pig-withouthadoop-0.12.1-mapr-1408-h2.jar"
+         	uripath="platform:/plugin/org.talend.libraries.pig/lib/pig-withouthadoop-0.12.1-mapr-1408-h2.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.pig"
+        	id="libprotodefs-mapr-4.0.X-lastest"       
+         	name="libprotodefs-4.0.1-mapr.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hcatalog"
+        	id="hive-hcatalog-core-mapr-4.0.X-lastest"       
+         	name="hive-hcatalog-core-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hcatalog/lib/hive-hcatalog-core-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hcatalog"
+        	id="hive-hcatalog-pig-adapter-mapr-4.0.X-lastest"       
+         	name="hive-hcatalog-pig-adapter-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hcatalog/lib/hive-hcatalog-pig-adapter-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hcatalog"
+        	id="hive-hcatalog-server-extensions-mapr-4.0.X-lastest"       
+         	name="hive-hcatalog-server-extensions-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hcatalog/lib/hive-hcatalog-server-extensions-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hive-exec-mapr-4.0.X-lastest"       
+         	name="hive-exec-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hive-exec-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hive-metastore-mapr-4.0.X-lastest"       
+         	name="hive-metastore-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hive-metastore-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hive-jdbc-mapr-4.0.X-lastest"       
+         	name="hive-jdbc-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hive-jdbc-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hive-service-mapr-4.0.X-lastest"       
+         	name="hive-service-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hive-service-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hive-common-mapr-4.0.X-lastest"       
+         	name="hive-common-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hive-common-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="hive-serde-mapr-4.0.X-lastest"       
+         	name="hive-serde-0.13.0-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/hive-serde-0.13.0-mapr-1408.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.sqoop"
+        	id="sqoop-mapr-4.0.X-lastest"       
+         	name="sqoop-1.4.4-mapr-1408.jar"
+         	uripath="platform:/plugin/org.talend.libraries.sqoop/lib/sqoop-1.4.4-mapr-1408.jar">
+    	</libraryNeeded>
+    	
     	<!-- common libraries -->
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.apache.common"
@@ -393,6 +580,13 @@
     	</libraryNeeded>
     	
     	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.hdp.1.2"
+        	id="libthrift-0.9.0.jar"       
+         	name="libthrift-0.9.0.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.1.2/lib/libthrift-0.9.0.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hadoop.hdp.2.0"
         	id="jdo-api-3.0.1.jar"       
          	name="jdo-api-3.0.1.jar"
@@ -476,6 +670,41 @@
          	uripath="platform:/plugin/org.talend.libraries.servlet/lib/servlet-api-2.5-20081211.jar">
     	</libraryNeeded>
     	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.guava"
+        	id="guava-13.0.1.jar"       
+         	name="guava-13.0.1.jar"
+         	uripath="platform:/plugin/org.talend.libraries.guava/lib/guava-13.0.1.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.3.1.0"
+        	id="json-20080701.jar"       
+         	name="json-20080701.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.3.1.0/lib/json-20080701.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="amazon-s3.jar"       
+         	name="amazon-s3.jar"
+         	uripath="platform:/plugin/org.talend.designer.components.bigdata/components/tPigLoad/amazon-s3.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.s3"
+        	id="aws-java-sdk-1.5.4.jar"       
+         	name="aws-java-sdk-1.5.4.jar"
+         	uripath="platform:/plugin/org.talend.libraries.s3/lib/aws-java-sdk-1.5.4.jar">
+    	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+        	id="avro-1.7.4.jar"       
+         	name="avro-1.7.4.jar"
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/avro-1.7.4.jar">
+    	</libraryNeeded>
+    	
     	<!-- group of hdfs libraries -->
 		<libraryNeededGroup
 	            description="The lastest HDFS libraries of CDH 5.1"
@@ -522,6 +751,51 @@
 	         </library>
 	         <library
 	             id="jersey-core-1.9.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+		<libraryNeededGroup
+	            description="The lastest HDFS libraries of MAPR40X"
+	            id="HDFS-LIB-MAPR40X_LASTEST"
+	            name="HDFS-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="maprfs-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="json-20080701.jar">
+	         </library>
+	         <library
+	             id="guava-13.0.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
 	         </library>
 	    </libraryNeededGroup>
 
@@ -601,6 +875,150 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
+	    <libraryNeededGroup
+	            description="The lastest MR1 libraries of CDH 5.1"
+	            id="MAPREDUCE-MR1-LIB-CDH_5_1_LASTEST"
+	            name="MAPREDUCE-MR1-LIB-CDH_5_1_LASTEST">
+	         <library
+	            id="hadoop-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-core-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="avro-1.5.4.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="guava-11.0.2.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+		<libraryNeededGroup
+	            description="The lastest Map Reduce libraries of MAPR40X"
+	            id="MAPREDUCE-LIB-MAPR40X_LASTEST"
+	            name="MAPREDUCE-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="hadoop-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="maprfs-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-mapreduce-client-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-mapreduce-client-core-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-mapreduce-client-jobclient-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-yarn-api-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-yarn-client-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-yarn-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="json-20080701.jar">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="avro-1.5.4.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="guava-13.0.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
 	    <!-- group of talend mapreduce&hbase libraries -->
 		<libraryNeededGroup
 	            description="The lastest talend mapreduce hbase storage libraries of CDH 5.1"
@@ -623,6 +1041,18 @@
 	         </library>
 	         <library
 	             id="htrace-core-2.04.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+		<libraryNeededGroup
+	            description="The lastest talend mapreduce hbase storage libraries of MAPR40X"
+	            id="MAPREDUCE-HBASE-LIB-MAPR40X_LASTEST"
+	            name="MAPREDUCE-HBASE-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="hbase-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
 	         </library>
 	    </libraryNeededGroup>
 	    
@@ -678,6 +1108,60 @@
 	         </library>
 	         <library
 	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+	            description="The lastest HBase libraries of MAPR 4.0.X"
+	            id="HBASE-LIB-MAPR40X_LASTEST"
+	            name="HBASE-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="hbase-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="mapr-hbase-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="maprfs-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	            id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	            id="guava-11.0.2.jar">
 	         </library>
 	         <library
 	             id="protobuf-java-2.5.0.jar">
@@ -754,6 +1238,162 @@
 	         </library>
 	         <library
 	             id="guava-11.0.2.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+	            description="The lastest Sqoop MR1 libraries of CDH 5.1"
+	            id="SQOOP-MR1-LIB-CDH_5_1_LASTEST"
+	            name="SQOOP-MR1-LIB-CDH_5_1_LASTEST">
+	         <library
+	            id="sqoop-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hadoop-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-core-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="avro-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-io-2.4.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="guava-11.0.2.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+	            description="The lastest Sqoop libraries of MAPR40X"
+	            id="SQOOP-LIB-MAPR40X_LASTEST"
+	            name="SQOOP-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="sqoop-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-hdfs-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="maprfs-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="libprotodefs-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-mapreduce-client-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-mapreduce-client-core-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-mapreduce-client-jobclient-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-yarn-api-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-yarn-client-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-yarn-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="json-20080701.jar">
+	         </library>
+	         <library
+	             id="guava-13.0.1.jar">
+	         </library>
+	         <library
+	             id="commons-io-2.4.jar">
+	         </library>
+	         <library
+	             id="avro-1.7.4.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
 	         </library>
 	         <library
 	             id="slf4j-api-1.7.5.jar">
@@ -851,6 +1491,159 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
+	    <libraryNeededGroup
+	            description="The lastest Pig with MR1 libraries of CDH 5.1"
+	            id="PIG-MR1-LIB-CDH_5_1_LASTEST"
+	            name="PIG-MR1-LIB-CDH_5_1_LASTEST">
+	         <library
+	            id="pig-withouthadoop-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hadoop-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-core-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="avro-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	         <library
+	             id="snappy-java-1.0.5.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+	            description="The lastest Pig libraries of MAPR40X"
+	            id="PIG-LIB-MAPR40X_LASTEST"
+	            name="PIG-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="pig-withouthadoop-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="maprfs-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="libprotodefs-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-mapreduce-client-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-mapreduce-client-core-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-mapreduce-client-jobclient-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-yarn-api-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-yarn-client-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-yarn-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="json-20080701.jar">
+	         </library>
+	         <library
+	             id="avro-1.7.4.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	         <library
+	             id="snappy-java-1.0.5.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
 	    <!-- group of pig hcat storage libraries -->
 		<libraryNeededGroup
 	            description="The lastest pig hcat storage libraries of CDH 5.1"
@@ -876,6 +1669,36 @@
 	         </library>
 	         <library
 	             id="libthrift-0.9.0.cloudera.2.jar">
+	         </library>
+	         <library
+	             id="libfb303-0.9.0.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+		<libraryNeededGroup
+	            description="The lastest pig hcat storage libraries of MAPR40X"
+	            id="PIG-HCAT-LIB-MAPR40X_LASTEST"
+	            name="PIG-HCAT-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="hive-hcatalog-core-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hive-hcatalog-pig-adapter-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hive-hcatalog-server-extensions-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hive-metastore-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hive-exec-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="jdo-api-3.0.1.jar">
+	         </library>
+	         <library
+	             id="libthrift-0.9.0.jar">
 	         </library>
 	         <library
 	             id="libfb303-0.9.0.jar">
@@ -913,6 +1736,18 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
+	    <libraryNeededGroup
+	            description="The lastest pig hbase storage libraries of MAPR40X"
+	            id="PIG-HBASE-LIB-MAPR40X_LASTEST"
+	            name="PIG-HBASE-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="hbase-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
+	         </library>
+	    </libraryNeededGroup>
+	    
 	    <!-- group of pig rc file storage libraries -->
 		<libraryNeededGroup
 	            description="The lastest pig rc file storage libraries of CDH 5.1"
@@ -929,6 +1764,21 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
+	    <libraryNeededGroup
+	            description="The lastest pig rc file storage libraries of MAPR40X"
+	            id="PIG-RCFILE-LIB-MAPR40X_LASTEST"
+	            name="PIG-RCFILE-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="hive-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hive-serde-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hive-exec-mapr-4.0.X-lastest">
+	         </library>
+	    </libraryNeededGroup>
+	    
 	    <!-- group of pig avro storage libraries -->
 		<libraryNeededGroup
 	            description="The lastest pig avro storage libraries of CDH 5.1"
@@ -942,6 +1792,21 @@
 	         </library>
 	         <library
 	             id="avro-cdh5.1-lastest">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+	            description="The lastest pig avro storage libraries of MAPR40X"
+	            id="PIG-AVRO-LIB-MAPR40X_LASTEST"
+	            name="PIG-AVRO-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="piggybank-cdh5.1.jar">
+	         </library>
+	         <library
+	             id="commons-io-2.4.jar">
+	         </library>
+	         <library
+	             id="avro-1.7.4.jar">
 	         </library>
 	    </libraryNeededGroup>
 	    
@@ -1070,6 +1935,243 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
+	    <libraryNeededGroup
+	            description="The lastest Hive MR1 libraries of CDH 5.1"
+	            id="HIVE-MR1-LIB-CDH_5_1_LASTEST"
+	            name="HIVE-MR1-LIB-CDH_5_1_LASTEST">
+	         <library
+	            id="hive-metastore-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hive-exec-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hive-jdbc-cdh5.1-lastest">
+	         </library>
+	         <library
+	            id="hive-service-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="jdo-api-3.0.1.jar">
+	         </library>
+	         <library
+	             id="libthrift-0.9.0.cloudera.2.jar">
+	         </library>
+	         <library
+	             id="libfb303-0.9.0.jar">
+	         </library>
+	         <library
+	             id="guava-11.0.2.jar">
+	         </library>
+	         <library
+	            id="hadoop-common-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="hadoop-core-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="avro-cdh5.1-lastest">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-httpclient-3.0.1.jar">
+	         </library>
+	         <library
+	             id="httpcore-4.2.5.jar">
+	         </library>
+	         <library
+	             id="httpclient-4.2.5.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	         <library
+	             id="commons-io-2.4.jar">
+	         </library>
+	         <library
+	             id="antlr-runtime-3.4.jar">
+	         </library>
+	         <library
+	             id="datanucleus-api-jdo-3.2.1.jar">
+	         </library>
+	         <library
+	             id="datanucleus-core-3.2.2.jar">
+	         </library>
+	         <library
+	             id="datanucleus-rdbms-3.2.1.jar">
+	         </library>
+	         <library
+	             id="derby-10.4.2.0.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+	            description="The lastest Hive libraries of MAPR40X"
+	            id="HIVE-LIB-MAPR40X_LASTEST"
+	            name="HIVE-LIB-MAPR40X_LASTEST">
+	         <library
+	            id="hive-metastore-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hive-exec-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hive-jdbc-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hive-service-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="jdo-api-3.0.1.jar">
+	         </library>
+	         <library
+	             id="libthrift-0.9.0.jar">
+	         </library>
+	         <library
+	             id="libfb303-0.9.0.jar">
+	         </library>
+	         <library
+	             id="guava-13.0.1.jar">
+	         </library>
+	         <library
+	            id="hadoop-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="maprfs-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-hdfs-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-auth-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-mapreduce-client-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-mapreduce-client-core-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-mapreduce-client-jobclient-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hadoop-yarn-api-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-yarn-client-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="hadoop-yarn-common-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="avro-1.7.4.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
+	         </library>
+	         <library
+	             id="commons-httpclient-3.0.1.jar">
+	         </library>
+	         <library
+	             id="httpcore-4.2.5.jar">
+	         </library>
+	         <library
+	             id="httpclient-4.2.5.jar">
+	         </library>
+	         <library
+	             id="commons-lang-2.6.jar">
+	         </library>
+	         <library
+	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-cli-1.2.jar">
+	         </library>
+	         <library
+	             id="commons-codec-1.4.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="protobuf-java-2.5.0.jar">
+	         </library>
+	         <library
+	             id="slf4j-api-1.7.5.jar">
+	         </library>
+	         <library
+	             id="slf4j-log4j12-1.7.5.jar">
+	         </library>
+	         <library
+	             id="jackson-mapper-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="jackson-core-asl-1.8.8.jar">
+	         </library>
+	         <library
+	             id="log4j-1.2.17.jar">
+	         </library>
+	         <library
+	             id="commons-io-2.4.jar">
+	         </library>
+	         <library
+	             id="antlr-runtime-3.4.jar">
+	         </library>
+	         <library
+	             id="datanucleus-api-jdo-3.2.1.jar">
+	         </library>
+	         <library
+	             id="datanucleus-core-3.2.2.jar">
+	         </library>
+	         <library
+	             id="datanucleus-rdbms-3.2.1.jar">
+	         </library>
+	         <library
+	             id="derby-10.4.2.0.jar">
+	         </library>
+	    </libraryNeededGroup>
+	    
 	    <!-- group of hive hbase storage libraries -->
 		<libraryNeededGroup
 	            description="The lastest Hive hbase storage libraries of CDH 5.1"
@@ -1105,6 +2207,21 @@
 	         <library
 	             id="servlet-api-2.5-20081211.jar">
 	         </library>		  
+	    </libraryNeededGroup>
+	    
+		<libraryNeededGroup
+	            description="The lastest Hive hbase storage libraries of MAPR40X"
+	            id="HIVE-HBASE-LIB-MAPR40X_LASTEST"
+	            name="HIVE-HBASE-LIB-MAPR40X_LASTEST">
+	         <library
+	             id="hive-hbase-handler-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	            id="hbase-mapr-4.0.X-lastest">
+	         </library>
+	         <library
+	             id="zookeeper-mapr-4.0.X-lastest">
+	         </library>
 	    </libraryNeededGroup>
 	    
 	</extension>

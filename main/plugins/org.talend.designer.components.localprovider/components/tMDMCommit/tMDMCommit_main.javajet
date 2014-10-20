@@ -20,7 +20,7 @@ imports="
     String mdmTransaction = "mdmTransaction_" + connection;
 %>
 
-org.talend.mdm.webservice.XtentisPort conn_<%=cid%> = (org.talend.mdm.webservice.XtentisPort)globalMap.get("<%=conn%>");
+org.talend.mdm.webservice.XtentisPort_PortType conn_<%=cid%> = (org.talend.mdm.webservice.XtentisPort_PortType)globalMap.get("<%=conn%>");
 if(conn_<%=cid%> != null)
 {
 	com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = (com.talend.mdm.transaction.client.MDMTransaction)globalMap.get("<%=mdmTransaction%>");

@@ -236,8 +236,8 @@ public abstract class DbGenerationManager {
         return buildSqlSelect(component, outputTableName, DEFAULT_TAB_SPACE_STRING);
     }
 
-    protected String getFormatedTableName(String tName) {
-        return tName;
+    protected String getAliasOf(String tableName) {
+        return tableName;
     }
 
     /**
@@ -307,8 +307,10 @@ public abstract class DbGenerationManager {
                     // break;
                     // }
                     // }
-                    expression += DbMapSqlConstants.SPACE + DbMapSqlConstants.AS + DbMapSqlConstants.SPACE
-                            + getFormatedTableName(dbMapEntry.getName());
+                    if (!DEFAULT_TAB_SPACE_STRING.equals(this.tabSpaceString)) {
+                        expression += DbMapSqlConstants.SPACE + DbMapSqlConstants.AS + DbMapSqlConstants.SPACE
+                                + getAliasOf(dbMapEntry.getName());
+                    }
                     if (i > 0) {
                         sb.append(DbMapSqlConstants.COMMA);
                         sb.append(DbMapSqlConstants.SPACE);

@@ -295,18 +295,23 @@ if (!isParallelize) {
 		%>
             java.sql.Statement stmtTruncCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsTruncCount_<%=cid%> = stmtTruncCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
+            int rsTruncCountNumber_<%=cid%> = 0;
+            if(rsTruncCount_<%=cid%>.next()) {
+				rsTruncCountNumber_<%=cid%> = rsTruncCount_<%=cid%>.getInt(1);
+            }
+            rsTruncCount_<%=cid%>.close();
+            stmtTruncCount_<%=cid%>.close();
             java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
 			<%dbLog.table().truncateTry(dbLog.var("tableName"));%>
 			<%if(DB2.equalsIgnoreCase(dbmsId)){%>
 				conn_<%=cid%>.commit();
 			<%}%>
             stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+            <%if(INFORMIX.equalsIgnoreCase(dbmsId)){%>
+            	conn_<%=cid%>.commit();
+            <%}%>
    	    	<%dbLog.table().truncateDone(dbLog.var("tableName"));%>
-            while(rsTruncCount_<%=cid%>.next()) {
-                deletedCount_<%=cid%> += rsTruncCount_<%=cid%>.getInt(1);
-            }
-            rsTruncCount_<%=cid%>.close();
-            stmtTruncCount_<%=cid%>.close();
+   	    	deletedCount_<%=cid%> += rsTruncCountNumber_<%=cid%>;
             stmtTrunc_<%=cid%>.close();            
 		<%
 		} else if(("TRUNCATE_REUSE_STORAGE").equals(tableAction)) {

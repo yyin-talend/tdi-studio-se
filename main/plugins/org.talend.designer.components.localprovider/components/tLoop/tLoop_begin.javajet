@@ -16,11 +16,6 @@ boolean forLoop = ("true").equals(ElementParameterParser.getValue(node,"__FORLOO
 boolean whileLoop = ("true").equals(ElementParameterParser.getValue(node,"__WHILELOOP__"));
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	if(isLog4jEnabled){
-%>
-		log.info("<%=cid%> - Start to work.");
-<%
-	}
 %>
 int current_iteration_<%=cid%> = 0;
 <%

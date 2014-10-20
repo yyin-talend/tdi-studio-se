@@ -63,5 +63,4 @@ if(!useExistingConn) {
 	    }
     <%}
 }
-log4jCodeGenerateUtil.infoComponentEnd(node);
 %>

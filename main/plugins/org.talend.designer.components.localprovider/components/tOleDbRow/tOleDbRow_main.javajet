@@ -14,11 +14,12 @@
 	"
 	
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid =  node.getUniqueName();
+LogUtil logtpl = new LogUtil(node);
 String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String propagateRecordset = ElementParameterParser.getValue(node,"__PROPAGATE_RECORD_SET__");
@@ -101,6 +102,8 @@ whetherReject_<%=cid%> = false;
 %>
     try {
 <%
+	logtpl.info("\"Try to execute query.\"");
+	logtpl.debug("\"Query string: \"",logtpl.var("query"),"\".\"");
 	if (usePrepareStatement){
 	%>
 	org.talend.net.Object param_<%=cid%>;
@@ -144,6 +147,7 @@ whetherReject_<%=cid%> = false;
 <%
 		}
 	}
+	logtpl.info("\"Execute query successfully.\"");
 %>
     } catch (java.lang.Exception e) {        
 		whetherReject_<%=cid%> = true;
@@ -171,6 +175,7 @@ whetherReject_<%=cid%> = false;
 <%
          } else {
 %>
+			<%logtpl.logPrintedException("e.getMessage()");%>
          	System.err.print(e.getMessage());
 <%
          }

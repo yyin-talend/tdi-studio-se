@@ -89,7 +89,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			<%
 		}
 				if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Execute '"+command_<%=cid %>.toString()+"' finished.");
+					log.info("<%=cid%> - Execute '"+command_<%=cid %>.toString()+"' has finished.");
 				<%}
 	}
 %>
@@ -128,7 +128,4 @@ skeleton="../templates/db_output_bulk.skeleton"
 				}
 				%>
 				// end "show log output"
-				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Done.");
-				<%}%>
 				

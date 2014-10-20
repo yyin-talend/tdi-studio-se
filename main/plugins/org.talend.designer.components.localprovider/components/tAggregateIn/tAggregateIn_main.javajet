@@ -13,11 +13,11 @@ imports="
 	org.talend.core.model.metadata.types.JavaType
 "
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log = new LogUtil(node);
 String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 String cid = origin;
 
@@ -344,12 +344,8 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 
     								%>
     								if(aggregated_row_<%=cid %>.<%=outOperation %>_<%=function %> != null) {
-    								<%
-    								
-	    								%><%= outputConn.getName() %>.<%=outOperation %> = aggregated_row_<%=cid %>.<%=outOperation %>_<%=function %>.<%=primitiveOutputType%>Value();
-										<%
-
-    								%>
+    								<%= outputConn.getName() %>.<%=outOperation %> = aggregated_row_<%=cid %>.<%=outOperation %>_<%=function %>.<%=primitiveOutputType%>Value();
+										
     								}else{
     								<%
     									if(!JavaTypesManager.isJavaPrimitiveType(outputJavaType, outputColumn.isNullable())){// is Object%>
@@ -421,9 +417,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
                                 
     							
     						} // T_InMain_AggR_636
-							if(isLog4jEnabled){%>
-								log.debug("<%=cid%> - Operation function: '<%=function%>' on the column '<%=inOperation%>'. Output column: '<%= outputConn.getName() %>.<%=outOperation %>'. Column value is: " +  <%= outputConn.getName() %>.<%=outOperation %>);
-							<%}
+							log.debug(log.str("Operation function: '" + function + "' on the column '" + inOperation + "'."));
                 			continue next_column;                			
                 		} // T_InMain_AggR_616
 

@@ -15,7 +15,6 @@ imports="
     java.util.Set
 " 
 %>
-
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();

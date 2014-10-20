@@ -19,17 +19,10 @@ imports="
  		boolean logCommitCounter = false;
 
 		public DefaultLog4jCodeGenerateUtil(){
-			ignoreLogParameter();
-		}
-
-		public void ignoreLogParameter(){
-			ignoredParamsList = new java.util.ArrayList<String>();
-			ignoredParamsList.add("PASS");
 		}
 
 		public DefaultLog4jCodeGenerateUtil(INode node) {
 			super(node);
-			ignoreLogParameter();
 	    	init();
 		}
 
@@ -61,25 +54,6 @@ imports="
 			hasInit = true;
 		}
 
-		public void infoComponentStart(INode node) {
-			beforeComponentProcess(node);
-			logInfo(node,"info",cid+" - Start to work.");
-		}
-
-		public void infoComponentEnd(INode node) {
-			beforeComponentProcess(node);
-			logInfo(node,"info",cid+" - Done.");
-		}
-
-		public void initDbDebugRowBuffer() {
-			if (isLog4jEnabled) {
-			%>
-				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
-				String dataOperationPrefix_<%=cid%> = "";
-			<%
-			}
-		}
-
 		public void debugDriverClassName() {
 			logInfo(node,"debug",cid+" - Driver ClassName: \"+driverClass_"+cid+"+\".");
 		}
@@ -87,11 +61,6 @@ imports="
 		public void debugConnectionParams(INode node) {
 			beforeComponentProcess(node);
 			debugDriverClassName();
-			super.logParameters(node);
-		}
-
-		public void dbConnectionParamsForELT(INode previousNode){
-			cid = previousNode.getUniqueName();
 		}
 
 		public void useExistConnection(INode node){
@@ -146,7 +115,7 @@ imports="
 			commit();
 		}
 
-		public void commit(){
+		private void commit(){
 			commit_begin();
 			%>
 			conn_<%=cid%>.commit();
@@ -154,14 +123,14 @@ imports="
 			commit_end();
 		}
 
-		public void commit_begin(){
+		private void commit_begin(){
 			if(logCommitCounter){
 				logInfo(node,"debug",cid+" - Connection "+connection+"starting to commit \" + commitCounter_"+cid+"+ \" records.");
 			}else{
 				logInfo(node,"debug",cid+" - Connection "+connection+"starting to commit.");
 			}
 		}
-		public void commit_end(){
+		private void commit_end(){
 			logInfo(node,"debug",cid+" - Connection "+connection+"commit has succeeded.");
 		}
 
@@ -170,7 +139,7 @@ imports="
 			close();
 		}
 
-		public void close(){
+		private void close(){
 			close_begin();
 			%>
 			conn_<%=cid%>.close();
@@ -260,47 +229,6 @@ imports="
 				logInfo(node,"debug",cid+" - The "+dataAction+" batch execution has succeeded.");
 			}
 		}
-
-	    public void debugRecord(INode node,java.util.List<org.talend.core.model.metadata.IMetadataColumn> columnList,String incomingConnName,boolean addBatchLog){
-	    	beforeComponentProcess(node);
-	    	if(isLog4jEnabled){
-				int count = 0;
-				for(org.talend.core.model.metadata.IMetadataColumn column : columnList) {
-					count++;
-					%>
-					log4jSb_<%=cid%>.append(<%=incomingConnName%>.<%=column.getLabel()%>);
-					<%
-					if(count < columnList.size()){
-					%>
-						log4jSb_<%=cid%>.append("|");
-					<%
-					}
-				}
-				if (addBatchLog) {
-				%>
-					log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + " to the <%=dataAction%> batch.");
-				<%
-				}else{
-				%>
-					log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + ".");
-				<%
-				}
-				%>
-				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%> + ".");
-				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-				<%
-			}
-	    }
-
-		public void defineDataOperationPrefix(INode node,String operation){
-			beforeComponentProcess(node);
-			if(isLog4jEnabled) {
-			%>
-				dataOperationPrefix_<%=cid%> = "<%=operation%>";
-			<%
-			}
-		}
-
 	}
 
 	DefaultLog4jCodeGenerateUtil log4jCodeGenerateUtil = new DefaultLog4jCodeGenerateUtil();

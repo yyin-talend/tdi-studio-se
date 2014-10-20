@@ -127,7 +127,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
- *
+ * 
  * Component manager that read each information in a xml file with Emf. <br/>
  * $Id$
  */
@@ -415,7 +415,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC nrousseau Comment method "checkSchemaParameter".
-     *
+     * 
      * @param listParam
      */
     private void checkSchemaParameter(List<ElementParameter> listParam, INode node) {
@@ -577,7 +577,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC ycbai Comment method "addValidationRulesParameters".
-     *
+     * 
      * @param listParam
      * @param node
      */
@@ -750,7 +750,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * yzhang Comment method "getSQLPatternItem".
-     *
+     * 
      * @param sqlpatternName
      * @param eltNodeName
      * @return
@@ -779,7 +779,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC bqian Comment method "getSqlPatternsByDB".
-     *
+     * 
      * @param db
      * @return
      */
@@ -807,7 +807,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * yzhang Comment method "getNodeFormatId".
-     *
+     * 
      * @param nodeLabel
      * @param nodeFamily
      * @return
@@ -836,6 +836,27 @@ public class EmfComponent extends AbstractComponent {
             for (String id : idArray) {
                 if (id.contains(label)) {
                     return nodeFamily + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE;
+                }
+            }
+
+            label = IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL;
+            for (String id : idArray) {
+                if (id.contains(label)) {
+                    return IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL;
+                }
+            }
+
+            label = IComponentsLocalProviderService.PREFERENCE_TYPE_HINT;
+            for (String id : idArray) {
+                if (id.contains(label)) {
+                    return IComponentsLocalProviderService.PREFERENCE_TYPE_HINT;
+                }
+            }
+
+            label = IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION;
+            for (String id : idArray) {
+                if (id.contains(label)) {
+                    return IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION;
                 }
             }
 
@@ -891,8 +912,7 @@ public class EmfComponent extends AbstractComponent {
             param.setValue(formatTypeInXML.getLABEL());
         } else if (formatId != null) {
             if (localComponentProviderStore != null) {
-                String label = localComponentProviderStore.getString(formatId
-                        + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
+                String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
                 if (!"".equals(label)) { //$NON-NLS-1$
                     param.setValue(label);
                 }
@@ -921,8 +941,7 @@ public class EmfComponent extends AbstractComponent {
             param.setValue(formatTypeInXML.getHINT());
         } else if (formatId != null) {
             if (localComponentProviderStore != null) {
-                String label = localComponentProviderStore.getString(formatId
-                        + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
+                String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
                 if (!"".equals(label)) { //$NON-NLS-1$
                     param.setValue(label);
                 }
@@ -951,8 +970,7 @@ public class EmfComponent extends AbstractComponent {
             param.setValue(formatTypeInXML.getCONNECTION());
         } else if (formatId != null) {
             if (localComponentProviderStore != null) {
-                String label = localComponentProviderStore.getString(formatId
-                        + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
+                String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
                 if (!"".equals(label)) { //$NON-NLS-1$
                     param.setValue(label);
                 }
@@ -1086,11 +1104,12 @@ public class EmfComponent extends AbstractComponent {
         param = new ElementParameter(node);
         param.setName(EParameterName.DUMMY.getName());
         param.setValue(Boolean.FALSE);
+        param.setDefaultValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.DUMMY.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(5);
-        param.setReadOnly(true);
+        param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
@@ -1635,6 +1654,7 @@ public class EmfComponent extends AbstractComponent {
             if (xmlParam.isSetMAXLENGTH()) {
                 param.setMaxLength(xmlParam.getMAXLENGTH());
             }
+            param.setRaw(xmlParam.isRAW());
             switch (type) {
             case COLOR:
                 param.setValue(DEFAULT_COLOR);
@@ -1920,7 +1940,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * yzhang Comment method "getColor".
-     *
+     * 
      * @param param
      * @param color
      */
@@ -2068,7 +2088,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC nrousseau Comment method "initializePropertyParameters".
-     *
+     * 
      * @param listParam
      */
     private void initializePropertyParameters(List<ElementParameter> listParam) {
@@ -2162,7 +2182,7 @@ public class EmfComponent extends AbstractComponent {
     /**
      * Sometimes the property parameters of schema are base on other parameters,but they might be initialized after the
      * schema. So there need to initialize the schema's again.
-     *
+     * 
      * @param listParam
      */
     private void initializePropertyParametersForSchema(List<ElementParameter> listParam) {
@@ -2291,6 +2311,7 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setReadOnlyIf(item.getREADONLYIF());
                 newParam.setNotReadOnlyIf(item.getNOTREADONLYIF());
                 newParam.setNoContextAssist(item.isNOCONTEXTASSIST());
+                newParam.setRaw(item.isRAW());
                 if (item.isSetREADONLY()) {
                     newParam.setReadOnly(item.isREADONLY());
                 }
@@ -2320,6 +2341,9 @@ public class EmfComponent extends AbstractComponent {
                     }
                     break;
                 case SCHEMA_TYPE:
+                    newParam.setValue(""); //$NON-NLS-1$
+                    break;
+                case SAP_SCHEMA_TYPE:
                     newParam.setValue(""); //$NON-NLS-1$
                     break;
                 case SCHEMA_XPATH_QUERYS:
@@ -3051,7 +3075,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * DOC nrousseau Comment method "loadMultipleComponentManagerFromTemplates".
-     *
+     * 
      * @return
      */
     private ArrayList<IMultipleComponentManager> createMultipleComponentManagerFromTemplates() {
@@ -3167,7 +3191,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for icon16.
-     *
+     * 
      * @return the icon16
      */
     @Override
@@ -3187,7 +3211,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for icon24.
-     *
+     * 
      * @return the icon24
      */
     @Override
@@ -3207,7 +3231,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for icon32.
-     *
+     * 
      * @return the icon32
      */
     @Override
@@ -3504,7 +3528,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * there only search in the <ADVANCEDPARAMETERS/> node, it can be a little faster.
-     *
+     * 
      * @see org.talend.core.model.components.IComponent#useImport()
      */
     @Override
@@ -3633,7 +3657,7 @@ public class EmfComponent extends AbstractComponent {
     /**
      * get this component's repository type <br>
      * see <PARAMETER NAME="PROPERTY" ...> in the component's xml definition.
-     *
+     * 
      * @return
      */
     @Override
@@ -3676,7 +3700,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * return the common ComponentResourceFactoryImpl to retreive component resource from URI
-     *
+     * 
      * @return factoryImpl
      */
     // here we are using soft references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
@@ -3692,7 +3716,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * return the common ComponentResourceFactoryImpl to retreive component resource from URI
-     *
+     * 
      * @return factoryImpl
      */
     // here we are using soft references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
@@ -3713,7 +3737,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Sets the visible.
-     *
+     * 
      * @param visible the visible to set
      */
     public void setVisible(Boolean visible) {
@@ -3722,7 +3746,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Sets the technical.
-     *
+     * 
      * @param technical the technical to set
      */
     public void setTechnical(Boolean technical) {
@@ -3757,7 +3781,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for type.
-     *
+     * 
      * @return the type
      */
     @Override
@@ -3785,7 +3809,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for reduce.
-     *
+     * 
      * @return the reduce
      */
     @Override
@@ -3818,7 +3842,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Getter for provider.
-     *
+     * 
      * @return the provider
      */
     public AbstractComponentsProvider getProvider() {
@@ -3827,7 +3851,7 @@ public class EmfComponent extends AbstractComponent {
 
     /**
      * Sets the provider.
-     *
+     * 
      * @param provider the provider to set
      */
     public void setProvider(AbstractComponentsProvider provider) {

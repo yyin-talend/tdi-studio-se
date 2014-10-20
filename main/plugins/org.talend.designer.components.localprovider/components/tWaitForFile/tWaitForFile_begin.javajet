@@ -29,7 +29,6 @@
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     if(isLog4jEnabled){
 %>
-		log.info("<%=cid%> - Start to work.");
 		log.debug("<%=cid%> - Start to scan the folder '" + <%=directoryToScan%> + "'" + <%=incldSubdir?"\" including subdirectories.\"":"\".\""%>);
 		log.debug("<%=cid%> - Filemask : '" + <%=usedFileMask%> + "'." + <%=isCaseSensitive?"\" The filemask is case sensitive.\"":"\"\""%>);
 <%

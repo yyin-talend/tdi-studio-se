@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.utils.Log4jUtil;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.repository.model.ResourceModelUtils;
@@ -30,6 +29,7 @@ import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.utils.Log4jUtil;
 
 public class Log4jPrefsSettingManager {
 
@@ -66,17 +66,21 @@ public class Log4jPrefsSettingManager {
 
         try {
             IProject project = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
-            if (create)
+            if (create) {
                 return new ProjectScope(project).getNode(Log4jPrefsConstants.LOG4J_RESOURCES).node(log4jPrefsNode);
+            }
             Preferences node = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
-            if (!node.nodeExists(project.getName()))
+            if (!node.nodeExists(project.getName())) {
                 return null;
+            }
             node = node.node(project.getName());
-            if (!node.nodeExists(Log4jPrefsConstants.LOG4J_RESOURCES))
+            if (!node.nodeExists(Log4jPrefsConstants.LOG4J_RESOURCES)) {
                 return null;
+            }
             node = node.node(Log4jPrefsConstants.LOG4J_RESOURCES);
-            if (!node.nodeExists(log4jPrefsNode))
+            if (!node.nodeExists(log4jPrefsNode)) {
                 return null;
+            }
             return node.node(log4jPrefsNode);
         } catch (BackingStoreException e) {
         } catch (PersistenceException e) {

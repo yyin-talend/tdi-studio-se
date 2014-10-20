@@ -17,9 +17,6 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node);
-log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PWD"));
-log4jFileUtil.logParameters(node); 
 String cid = node.getUniqueName();
 
 List<? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
@@ -144,9 +141,6 @@ try{
 			<%}%>
 			System.err.println(responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
 		<%}else{%>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - Request failed:" + responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
-			<%}%>
 			throw new RuntimeException("Request failed:" + responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
 		<%}%>
 	}
@@ -190,10 +184,6 @@ try{
 		<%}%>
 		System.err.println(e.getMessage());
 	<%}else{%>
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - " + e.getMessage());
-		<%}%>
 		throw e;
 	<%}%>
 }
-<%log4jFileUtil.componentFinishInfo(node);%>

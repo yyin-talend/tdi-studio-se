@@ -7,11 +7,12 @@ imports="
 	java.util.Map
 " 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+	   dbLog = new DBLogUtil(node);
 
 String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 String dbport = ElementParameterParser.getValue(node, "__PORT__");
@@ -29,6 +30,7 @@ if(("true").equals(useExistingConn)) {
 	String conn = "conn_" + connection;
 %>
 java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%dbLog.conn().useExistConn("connection_"+cid+".getMetaData().getURL()", "connection_"+cid+".getMetaData().getUserName()");%>
 <%
 } else {       
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
@@ -43,16 +45,18 @@ java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%
 	}
 %>
 java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
-
+<%dbLog.conn().logJDBCDriver(dbLog.str("com.ibm.db2.jcc.DB2Driver"));%>
 <%
 String passwordFieldName = "__PASS__";
 %>
 
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-
+<%dbLog.conn().connTry(dbLog.var("url"), dbuser);%>
 java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=dbuser%>, decryptedPassword_<%=cid%>);
+<%dbLog.conn().connDone(dbLog.var("url"));%>
         	    <%
 			}
+dbLog.commit().logAutoCommit("connection_"+cid+".getAutoCommit()");
 %>
 
 java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call " + <%=spName%> + "(

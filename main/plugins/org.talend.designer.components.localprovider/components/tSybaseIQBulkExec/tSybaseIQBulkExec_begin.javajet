@@ -40,7 +40,6 @@ String fileName = ElementParameterParser.getValue(node, "__FILENAME__") ;
 String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__") ;
 
 boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
-log4jCodeGenerateUtil.infoComponentStart(node);
 
 List<IMetadataColumn> columnList = getColumnList(node);
 
@@ -129,8 +128,12 @@ if(columnList != null && columnList.size() > 0) {
 }
 if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) || "TRUNCATE".equals(tableAction)){
 %>
+int deletedCount_<%=cid%> = 0;
 <%@ include file="../templates/_tableActionForBulk.javajet"%>	
 <%   
+}else{//TDI-29007
+    manager = getManager(dbmsId, cid);
+    manager.setNode(node);
 }
 %>
 
@@ -229,5 +232,4 @@ if(!useExistingConn){
     }
 <%
 }
-log4jCodeGenerateUtil.infoComponentEnd(node);
 %>

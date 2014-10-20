@@ -70,6 +70,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.IComponentsLocalProviderService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
@@ -132,7 +133,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             String helpLink = (String) ((Node) getModel()).getPropertyValue(EParameterName.HELP.getName());
             String requiredHelpLink = ((Process) ((Node) getModel()).getProcess()).getBaseHelpLink()
                     + ((Node) getModel()).getComponent().getName();
-            if (helpLink == null || "".equals(helpLink) || !requiredHelpLink.equals(helpLink)) {
+            if (helpLink == null || "".equals(helpLink) || !requiredHelpLink.equals(helpLink)) { //$NON-NLS-1$
                 helpLink = ((Process) ((Node) getModel()).getProcess()).getBaseHelpLink()
                         + ((Node) getModel()).getComponent().getName();
             }
@@ -156,8 +157,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     ComponentSettingsView compSettings = viewer;
                     compSettings.setElement((Node) getModel());
                     if (((Node) getModel()).getComponent() instanceof DummyComponent) {
-                        MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning",
-                                "Component is not loadded");
+                        MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.getString("NodePart_warning"), //$NON-NLS-1$
+                                Messages.getString("NodePart_componentNotLoaded")); //$NON-NLS-1$
                         return;
                     }
 
@@ -170,8 +171,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                         ComponentSettingsView compSettings = viewer;
                         compSettings.setElement((Node) getModel());
                         if (((Node) getModel()).getComponent() instanceof DummyComponent) {
-                            MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning",
-                                    "Component is not loadded");
+                            MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.getString("NodePart_warning"), //$NON-NLS-1$
+                                    Messages.getString("NodePart_componentNotLoaded")); //$NON-NLS-1$
                             return;
                         }
 

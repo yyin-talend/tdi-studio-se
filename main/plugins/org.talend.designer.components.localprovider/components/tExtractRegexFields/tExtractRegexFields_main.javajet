@@ -29,6 +29,8 @@ boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true")
 String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
 boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false;
 
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
 if(inConns!=null){
@@ -259,6 +261,11 @@ String temp_<%=cid%> = null;
 		    <%=firstConnName %> = null;
 <%
         } else if(("").equals(rejectConnName)){
+			if(isLog4jEnabled){
+%>
+			log.error("<%=cid%> - " + ex_<%=cid %>.getMessage());
+<%
+    		}
 %>
 		    System.err.println(ex_<%=cid %>.getMessage());
 		    <%=firstConnName %> = null;

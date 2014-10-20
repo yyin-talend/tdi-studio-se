@@ -116,7 +116,7 @@ imports="
 	}catch (com.sun.jersey.api.client.UniformInterfaceException ue) {
         errorResponse_<%=cid%> = ue.getResponse();
     }
-	<%log.info(log.str("Have sent request to rest server."));%>
+	<%log.info(log.str("Has sent request to rest server."));%>
 	// for output
 	<%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();

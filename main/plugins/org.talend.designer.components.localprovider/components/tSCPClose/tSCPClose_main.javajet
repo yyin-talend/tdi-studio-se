@@ -13,16 +13,14 @@ imports="
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node); 
 %>
 	ch.ethz.ssh2.Connection conn_<%=cid%> = (ch.ethz.ssh2.Connection)globalMap.get("<%=conn%>");
 	if(conn_<%=cid%> != null){
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Closing the connection 'conn_<%=cid%>' to the server.");
+			log.info("<%=cid%> - Closing the connection '<%= connection %>' to the server.");
 		<%}%>
 		conn_<%=cid%>.close();
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection 'conn_<%=cid%>' to the server closed.");
+			log.info("<%=cid%> - Connection '<%= connection %>' to the server closed.");
 		<%}%>
 	}
-	<%log4jFileUtil.componentFinishInfo(node);%>

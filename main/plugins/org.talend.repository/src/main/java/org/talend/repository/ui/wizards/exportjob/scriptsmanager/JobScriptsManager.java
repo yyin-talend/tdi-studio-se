@@ -90,7 +90,7 @@ public abstract class JobScriptsManager {
 
     protected static final String JOBINFO_FILE = "jobInfo.properties";//$NON-NLS-1$
 
-    public static final String ALL_ENVIRONMENTS = Messages.getString("JobPerlScriptsManager.allInterpreter").trim(); //$NON-NLS-1$ ; //$NON-NLS-1$
+    public static final String ALL_ENVIRONMENTS = Messages.getString("JobPerlScriptsManager.allInterpreter").trim(); //$NON-NLS-1$ ; 
 
     public static final String UNIX_ENVIRONMENT = "Unix"; //$NON-NLS-1$
 
@@ -221,6 +221,7 @@ public abstract class JobScriptsManager {
         setParameterValues,
         needAntScript,
         needMavenScript,
+        jobType,
         esbQueueMessageName,
         esbServiceName,
         esbCategory,
@@ -353,7 +354,7 @@ public abstract class JobScriptsManager {
         for (int i = 0; i < jobContextValues.size(); i++) {
             ContextParameterType contextParameterType = jobContextValues.get(i);
             String name = contextParameterType.getName();
-            String value = contextParameterType.getValue();
+            String value = contextParameterType.getRawValue();
             // name = TalendTextUtils.removeQuotes(name);
             // value = TalendTextUtils.removeQuotes(value);
             if (value == null) {

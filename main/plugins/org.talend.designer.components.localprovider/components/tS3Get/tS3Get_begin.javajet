@@ -7,7 +7,6 @@ imports="
 	java.util.Map
 " 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -37,12 +36,7 @@ imports="
 	}catch(java.lang.Exception e_<%=cid%>){
 		<%
 		if (dieOnError) {
-			if(isLog4jEnabled){
-			%>
-				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-			<%
-			}
-			%>
+		%>
 			throw(e_<%=cid%>);
 		<%
 		} else {
@@ -65,6 +59,4 @@ imports="
 		}
 		%>
 	}
-	<%
-	log4jFileUtil.componentFinishInfo(node);
-	%>
+	

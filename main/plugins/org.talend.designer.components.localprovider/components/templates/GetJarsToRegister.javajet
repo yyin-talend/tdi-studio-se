@@ -35,6 +35,10 @@
 			}
 			
 			public String replaceJarPaths(String originalClassPathLine) throws Exception {
+				return replaceJarPaths(originalClassPathLine, "");
+			}
+			
+			public String replaceJarPaths(String originalClassPathLine, String scheme) throws Exception {
 				String classPathLine = "";
 				String crcMapPath = new java.io.File("../crcMap").getCanonicalPath();
 				
@@ -55,7 +59,11 @@
 						}
 					}
 				} else {
-					classPathLine = originalClassPathLine;
+					if(originalClassPathLine!=null && originalClassPathLine.startsWith(".")) {
+						classPathLine = originalClassPathLine;
+					} else {
+						classPathLine = scheme + originalClassPathLine;
+					}
 				}
 				return classPathLine;
 			}

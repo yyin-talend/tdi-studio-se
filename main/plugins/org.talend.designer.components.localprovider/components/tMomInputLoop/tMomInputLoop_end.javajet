@@ -10,7 +10,7 @@
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-        boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+    boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
 	String cid = node.getUniqueName();
 	cid = cid.replaceAll("_Loop", "");
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
@@ -20,10 +20,11 @@
 	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
 	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
 	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));	
-        String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
+    String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
 
-        boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
-	|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
+    boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
+		|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
  
 
         if (isUseConnection) {
@@ -52,7 +53,12 @@
 		}
 		if(("JBoss").equals(serverType)){
 			if("true".equals(kListen)){
-			%>
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Sleepping time(<%=timeOut%>s)...");
+				<%
+				}
+				%>
 				Thread.sleep(<%=timeOut%>*1000);
 			<%		
 			}else{
@@ -68,24 +74,95 @@
 			}
 		}
                if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
-			if (session_<%=cid%> != null && connection_<%=cid %> != null) session_<%=cid%>.commit();
+			if (session_<%=cid%> != null && connection_<%=cid %> != null) {
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Committing the session...");
+				<%
+				}
+				%>
+				session_<%=cid%>.commit();
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Commit successfully.");
+				<%
+				}
+				%>
+			}
 		}catch(java.lang.Exception ex){
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.error("<%=cid%> - A Active MQ error occurred :" + ex);
+			<%
+			}
+			%>
 			System.out.println("A Active MQ error occurred :" + ex);
-	                ex.printStackTrace();
-			if (session_<%=cid%> != null  && connection_<%=cid %> != null) session_<%=cid%>.rollback();
+	      	ex.printStackTrace();
+			if (session_<%=cid%> != null  && connection_<%=cid %> != null) {
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Rollback operations...");
+				<%
+				}
+				%>
+				session_<%=cid%>.rollback();
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Rollback successfully.");
+				<%
+				}
+				%>
+			}
 		}
                 <%}%>
 		}
 		<%if( ("ActiveMQ").equals(serverType) && !isCommitRollback && !isUseConnection){%>
- 		 if (session_<%=cid%> != null  && connection_<%=cid %> != null) session_<%=cid %>.close();
-                 if (connection_<%=cid %> != null) connection_<%=cid %>.close();
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Closing connection...");
+			<%
+			}
+			%>
+ 		 	if (session_<%=cid%> != null  && connection_<%=cid %> != null) {
+ 		 		session_<%=cid %>.close();
+ 		 	}
+            if (connection_<%=cid %> != null) {
+            	connection_<%=cid %>.close();
+            }
+            <%	
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Closed successfully.");
+			<%
+			}
+            %>
 		<%}%>
 
 		<%if( ("JBoss").equals(serverType) ){%>
- 		System.out.println("Closing connection");
-                consumer_<%=cid %>.close();
-                session_<%=cid %>.close();
-                connection_<%=cid %>.close();
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Closing connection...");
+			<%
+			}
+			%>
+ 			System.out.println("Closing connection");
+            consumer_<%=cid %>.close();
+            session_<%=cid %>.close();
+            connection_<%=cid %>.close();
+            <%	
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Closed successfully.");
+			<%
+			}
+            %>
 		<%}%>
 
 	<%		
@@ -97,6 +174,13 @@
 		%>
 		
 			}	
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Closing connection...");
+			<%
+			}
+			%>
 			System.out.println("Closing connection");
 			remoteQ<%=cid%>.close();
 			<%
@@ -107,7 +191,13 @@
 			}
 			%>
 			qMgr<%=cid%>.disconnect();
-		
+			<%	
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Closed successfully.");
+			<%
+			}
+            %>
 		}catch(com.ibm.mq.MQException ex){
 			System.out.println("A WebSphere MQ error occurred : Completion code " + ex.completionCode + " Reason code " + ex.reasonCode);
 			remoteQ<%=cid%>.close();
@@ -118,9 +208,32 @@
 
 } finally {
 //        System.out.println("close connection after loop!");
-		<%if( ("ActiveMQ").equals(serverType) && !isUseConnection){%>
-                 if (connection_<%=cid %> != null) connection_<%=cid %>.close();
-		<%}%>
+	<%if( ("ActiveMQ").equals(serverType) && !isUseConnection){%>
+		<%
+		if (isLog4jEnabled) {
+		%>
+			log.info("<%=cid%> - Closing connection after loop...");
+		<%
+		}
+		%>
+         if (connection_<%=cid %> != null) {
+         	connection_<%=cid %>.close();
+         }
+         <%
+		if (isLog4jEnabled) {
+		%>
+			log.info("<%=cid%> - Closed successfully");
+		<%
+		}
+		%>
+	<%}%>
 }
+<%
+if (isLog4jEnabled) {
+%>
+	log.info("<%=cid%> - Consumed messages count: "+ nb_line_<%=cid%> + " .");
+<%
+}
+%>
 
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

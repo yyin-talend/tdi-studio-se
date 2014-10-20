@@ -205,8 +205,8 @@ public class PostgresGenerationManager extends DbGenerationManager {
     }
 
     @Override
-    protected String getFormatedTableName(String tName) {
-        return "\\\"" + tName + "\\\""; //$NON-NLS-1$ //$NON-NLS-2$
+    protected String getAliasOf(String tableName) {
+        return "\\\"" + tableName + "\\\""; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

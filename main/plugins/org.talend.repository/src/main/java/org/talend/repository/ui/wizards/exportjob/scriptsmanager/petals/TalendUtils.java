@@ -51,17 +51,20 @@ public class TalendUtils {
         List<NodeType> components = new ArrayList<NodeType>();
         for (Iterator<?> it = selection.iterator(); it.hasNext();) {
             Object current = it.next();
-            if (!(current instanceof RepositoryNode))
+            if (!(current instanceof RepositoryNode)) {
                 continue;
+            }
 
             RepositoryNode node = (RepositoryNode) current;
-            if (!(node.getObject().getProperty().getItem() instanceof ProcessItem))
+            if (!(node.getObject().getProperty().getItem() instanceof ProcessItem)) {
                 continue;
+            }
 
             ProcessItem item = (ProcessItem) node.getObject().getProperty().getItem();
             for (Object o : item.getProcess().getNode()) {
-                if (o instanceof NodeType && componentName.equals(((NodeType) o).getComponentName()))
+                if (o instanceof NodeType && componentName.equals(((NodeType) o).getComponentName())) {
                     components.add((NodeType) o);
+                }
             }
         }
 
@@ -83,14 +86,16 @@ public class TalendUtils {
 
             for (int j = 0; result && j < nodeType.getMetadata().size(); j++) {
                 Object o = nodeType.getMetadata().get(j);
-                if (!(o instanceof MetadataType))
+                if (!(o instanceof MetadataType)) {
                     continue;
+                }
 
                 MetadataType metaDataType = (MetadataType) o;
-                if (compararisonReference == null)
+                if (compararisonReference == null) {
                     compararisonReference = metaDataType.getColumn();
-                else
+                } else {
                     result = columnsAreEquals(compararisonReference, metaDataType.getColumn());
+                }
             }
         }
 
@@ -106,24 +111,28 @@ public class TalendUtils {
      */
     private static boolean columnsAreEquals(EList<?> compararisonReference, EList<?> columns) {
 
-        if (compararisonReference == null)
+        if (compararisonReference == null) {
             return columns == null;
+        }
 
-        if (columns == null)
+        if (columns == null) {
             return false;
+        }
 
-        if (compararisonReference.size() != columns.size())
+        if (compararisonReference.size() != columns.size()) {
             return false;
+        }
 
         boolean result = true;
         for (int i = 0; result && i < columns.size(); i++) {
             Object refCol = compararisonReference.get(i);
             Object col = columns.get(i);
 
-            if (col instanceof ColumnType && refCol instanceof ColumnType)
+            if (col instanceof ColumnType && refCol instanceof ColumnType) {
                 result = columnsAreEquals((ColumnType) col, (ColumnType) refCol);
-            else
+            } else {
                 result = false;
+            }
         }
 
         return result;
@@ -139,59 +148,75 @@ public class TalendUtils {
     private static boolean columnsAreEquals(ColumnType col, ColumnType refCol) {
 
         // Simple fields
-        if (col.isNullable() != refCol.isNullable())
+        if (col.isNullable() != refCol.isNullable()) {
             return false;
+        }
 
-        if (col.isKey() != refCol.isKey())
+        if (col.isKey() != refCol.isKey()) {
             return false;
+        }
 
-        if (col.getLength() != refCol.getLength())
+        if (col.getLength() != refCol.getLength()) {
             return false;
+        }
 
-        if (col.getPrecision() != refCol.getPrecision())
+        if (col.getPrecision() != refCol.getPrecision()) {
             return false;
+        }
 
         // Default value
         if (col.getDefaultValue() == null) {
-            if (refCol.getDefaultValue() != null)
+            if (refCol.getDefaultValue() != null) {
                 return false;
-        } else if (!col.getDefaultValue().equals(refCol.getDefaultValue()))
+            }
+        } else if (!col.getDefaultValue().equals(refCol.getDefaultValue())) {
             return false;
+        }
 
         // Name
         if (col.getName() == null) {
-            if (refCol.getName() != null)
+            if (refCol.getName() != null) {
                 return false;
-        } else if (!col.getName().equals(refCol.getName()))
+            }
+        } else if (!col.getName().equals(refCol.getName())) {
             return false;
+        }
 
         // Pattern
         if (col.getPattern() == null) {
-            if (refCol.getPattern() != null)
+            if (refCol.getPattern() != null) {
                 return false;
-        } else if (!col.getPattern().equals(refCol.getPattern()))
+            }
+        } else if (!col.getPattern().equals(refCol.getPattern())) {
             return false;
+        }
 
         // Type
         if (col.getType() == null) {
-            if (refCol.getType() != null)
+            if (refCol.getType() != null) {
                 return false;
-        } else if (!col.getType().equals(refCol.getType()))
+            }
+        } else if (!col.getType().equals(refCol.getType())) {
             return false;
+        }
 
         // Original column name
         if (col.getOriginalDbColumnName() == null) {
-            if (refCol.getOriginalDbColumnName() != null)
+            if (refCol.getOriginalDbColumnName() != null) {
                 return false;
-        } else if (!col.getOriginalDbColumnName().equals(refCol.getOriginalDbColumnName()))
+            }
+        } else if (!col.getOriginalDbColumnName().equals(refCol.getOriginalDbColumnName())) {
             return false;
+        }
 
         // Source type
         if (col.getSourceType() == null) {
-            if (refCol.getSourceType() != null)
+            if (refCol.getSourceType() != null) {
                 return false;
-        } else if (!col.getSourceType().equals(refCol.getSourceType()))
+            }
+        } else if (!col.getSourceType().equals(refCol.getSourceType())) {
             return false;
+        }
 
         return true;
     }
@@ -222,10 +247,11 @@ public class TalendUtils {
 
                 // Nillable and minOccurs
                 if (col.isNullable()) {
-                    if (primitive)
+                    if (primitive) {
                         def.setMinOccurs(0);
-                    else
+                    } else {
                         def.setNillable(true);
+                    }
                 }
 
                 // Type and maxOccurs
@@ -280,15 +306,18 @@ public class TalendUtils {
 
         List<ContextTypeDefinition> result = new ArrayList<ContextTypeDefinition>();
         for (Object o : ((ProcessTypeImpl) item.getProcess()).getContext()) {
-            if (!(o instanceof ContextType))
+            if (!(o instanceof ContextType)) {
                 continue;
+            }
 
-            if (!contextName.equals(((ContextType) o).getName()))
+            if (!contextName.equals(((ContextType) o).getName())) {
                 continue;
+            }
 
             for (Object p : ((ContextType) o).getContextParameter()) {
-                if (!(p instanceof ContextParameterType))
+                if (!(p instanceof ContextParameterType)) {
                     continue;
+                }
 
                 ContextParameterType paramType = (ContextParameterType) p;
                 ContextTypeDefinition def = new ContextTypeDefinition();
@@ -300,11 +329,12 @@ public class TalendUtils {
                 String type = getXsdType(javaType);
                 typeDef.setType(type);
 
-                typeDef.setDefaultValue(paramType.getValue());
+                typeDef.setDefaultValue(paramType.getRawValue());
                 def.setDefinition(typeDef);
 
-                if (javaType == JavaTypesManager.STRING)
+                if (javaType == JavaTypesManager.STRING) {
                     def.setAttachmentSupported(true);
+                }
 
                 result.add(def);
             }

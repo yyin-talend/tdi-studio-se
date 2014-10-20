@@ -68,5 +68,4 @@ globalMap.put("<%=cid%>_NB_DATABASES", NB_DATABASES<%=cid%>);
 
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - List databases count " + NB_DATABASES<%=cid%> + " .");
-		log.info("<%=cid%> - Done.");
 	<%}%>

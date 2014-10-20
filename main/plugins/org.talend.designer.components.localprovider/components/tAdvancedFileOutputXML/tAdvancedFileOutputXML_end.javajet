@@ -14,6 +14,8 @@ imports="
 skeleton="tAdvancedFileOutputXML_java.skeleton"
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 final INode node = (INode)codeGenArgument.getArgument();
@@ -417,6 +419,8 @@ if(currentRowCount_<%=cid %> > 0){
 %>
 globalMap.put("<%=cid_original %>_NB_LINE",nb_line_<%=cid %>);
 <%
+log4jFileUtil.setCid(cid);
+log4jFileUtil.writeDataFinishInfo(node);
 
 // ------------------- *** xsd output code start *** ------------------- //
 	if(!useStream && ("true").equals(outputAsXSD)){ // add a new prerequisite:useStream to ignore generating the xsd file

@@ -242,36 +242,36 @@
 <%
 			}
 %>
-					org.talend.sap.TalendDestinationData destinationData_<%=cid%> = null;
-					<%if("ApplicationServer".equals(serverType)){%>
-						destinationData_<%=cid%> = new org.talend.sap.TalendDestinationData(<%=client%>,
-																							<%=userid%>,
-																							decryptedPassword_<%=cid%>,
-																							<%=language%>,
-																							<%=hostname%>,
-																							<%=systemnumber%>);
-					<%}else{%>			
-						destinationData_<%=cid%> = new org.talend.sap.TalendDestinationData(<%=client%>,
-																							<%=userid%>,
-																							decryptedPassword_<%=cid%>,
-																							<%=language%>,
-																							<%=hostname%>,
-																							<%=systemId %>,
-								            				 								<%=groupName%> );
-					<%}%>
-				    org.talend.sap.TalendDestinationDataProvider destinationDataProvider_<%=cid%> = org.talend.sap.TalendDestinationDataProvider.getInstance();
-				    destinationDataProvider_<%=cid%>.addDestination("SAP_SERVER_<%=cid%>", destinationData_<%=cid%>);
-				    <%if(useFtpHttp){%>
-				    destinationDataProvider_<%=cid%>.getDestinationProperties("SAP_SERVER_<%=cid%>").setProperty(com.sap.conn.jco.ext.DestinationDataProvider.JCO_USE_SAPGUI, "2");
-					com.sap.conn.jco.JCo.setMiddlewareProperty("jco.middleware.allow_start_of_programs", "ftp;sapftp;sapftpa;sapkprotp;http;saphttp;saphttpa");
-					<%}%>
-				    try {
-				    	com.sap.conn.jco.ext.Environment.registerDestinationDataProvider(destinationDataProvider_<%=cid%>);
-					} catch (java.lang.IllegalStateException ex) {
-						//ignore if the provider already registered.
-				    }
-				    dest_<%=cid%> = com.sap.conn.jco.JCoDestinationManager.getDestination("SAP_SERVER_<%=cid%>");
-				    // Begins the stateful call sequence for calls to the specified destination.
+					org.talend.sap.TSAPDestinationData destinationData_<%=cid%> = null;
+        			<%if("ApplicationServer".equals(serverType)){%>
+        				destinationData_<%=cid%> = new org.talend.sap.TSAPApplicationServerDestData.Builder(<%=client%>,
+        																					<%=userid%>,
+        																					decryptedPassword_<%=cid%>,
+        																					<%=language%>,
+        																					<%=hostname%>,
+        																					<%=systemnumber%>)
+            																				<%if(useFtpHttp){%>
+            																					.setSAPGUI("2")
+            																				<%}%>
+        																					.build();
+        			<%}else{%>			
+        				destinationData_<%=cid%> = new org.talend.sap.TSAPMessageServerDestData.Builder(<%=client%>,
+        																					<%=userid%>,
+        																					decryptedPassword_<%=cid%>,
+        																					<%=language%>,
+        																					<%=hostname%>,
+        																					<%=systemId %>,
+        						            				 								<%=groupName%>)
+        						            				 								<%if(useFtpHttp){%>
+            																					.setSAPGUI("2")
+            																				<%}%>
+            																				.build();
+        			<%}%>
+        		    <%if(useFtpHttp){%>
+        				com.sap.conn.jco.JCo.setMiddlewareProperty("jco.middleware.allow_start_of_programs", "ftp;sapftp;sapftpa;sapkprotp;http;saphttp;saphttpa");
+        			<%}%>
+        			dest_<%=cid%> = org.talend.sap.TSAPDestinationFactory.getInstance().getDestination(destinationData_<%=cid%>);
+        			// Begins the stateful call sequence for calls to the specified destination.
 		    		com.sap.conn.jco.JCoContext.begin(dest_<%=cid%>);
 <%
 			if(specify_alias){
@@ -344,7 +344,7 @@
 			input_single_map.put(configRow.get("SAP_PARAMETER_NAME"),configRow.get("SAP_PARAMETER_VALUE"));	
 		}
 		
-		if(true){
+		if(false){
 		System.out.println(configRow.get("SCHEMA_COLUMN") + " " + configRow.get("SAP_PARAMETER_TYPE") + " " + configRow.get("SAP_TABLE_NAME") + " " + configRow.get("SAP_PARAMETER_NAME") + " " + configRow.get("SAP_PARAMETER_VALUE")+ " " + configRow.get("SAP_TABLE_ROWNUMBER"));
 		}
 	}

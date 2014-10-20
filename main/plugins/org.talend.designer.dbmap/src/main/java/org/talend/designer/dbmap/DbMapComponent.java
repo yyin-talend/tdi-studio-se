@@ -23,14 +23,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.genhtml.HTMLDocUtils;
+import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.node.IExternalMapEntry;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -660,5 +664,71 @@ public class DbMapComponent extends AbstractMapComponent {
     public IExternalData getTMapExternalData() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.AbstractExternalNode#metadataInputChanged(org.talend.core.model.components.
+     * IODataComponent, java.lang.String)
+     */
+    @Override
+    public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
+        if (dataComponent == null) {
+            return;
+        }
+        super.metadataInputChanged(dataComponent, connectionToApply);
+        IMetadataTable connMetadataTable = dataComponent.getConnMetadataTable();
+        IMetadataTable newMetadataTable = dataComponent.getNewMetadataTable();
+        if (connMetadataTable == null || newMetadataTable == null) {
+            return;
+        }
+        // the "super.metadataInputChanged(...)" can handle cases if the size of listcolumns are equal.
+        if (connMetadataTable.getListColumns().size() != newMetadataTable.getListColumns().size()) {
+            inputMetadataColumnAmountChanged(dataComponent, this.getExternalNode());
+        }
+
+    }
+
+    private void inputMetadataColumnAmountChanged(IODataComponent dataComponent, IExternalNode externalNode) {
+
+        List<ColumnNameChanged> removedMetadataColumns = dataComponent.getRemoveMetadataColumns();
+        IExternalData iExternalData = externalNode.getExternalData();
+        if (iExternalData == null || removedMetadataColumns == null || removedMetadataColumns.size() == 0) {
+            return;
+        }
+        List<ExternalDbMapTable> metaTableList = (List<ExternalDbMapTable>) iExternalData.getInputTables();
+        if (metaTableList == null || metaTableList.size() == 0) {
+            return;
+        }
+        IMetadataTable connMetadataTable = dataComponent.getConnMetadataTable();
+        if (connMetadataTable == null) {
+            return;
+        }
+        String tableName = connMetadataTable.getLabel();
+        for (ExternalDbMapTable metaTable : metaTableList) {
+            if (tableName.equals(metaTable.getTableName())) {
+                List<IExternalMapEntry> externalMapEntryList = (List<IExternalMapEntry>) metaTable.returnTableEntries();
+                if (externalMapEntryList == null || externalMapEntryList.size() == 0) {
+                    continue;
+                }
+
+                if (removedMetadataColumns != null && 0 < removedMetadataColumns.size()) {
+                    for (ColumnNameChanged removedMetadataColumn : removedMetadataColumns) {
+                        if ("".equals(removedMetadataColumn.getNewName())) { //$NON-NLS-1$
+                            String columnName = removedMetadataColumn.getOldName();
+                            for (int i = externalMapEntryList.size() - 1; 0 <= i; i--) {
+                                IExternalMapEntry mapEntry = externalMapEntryList.get(i);
+                                if (columnName.equals(mapEntry.getName())) {
+                                    externalMapEntryList.remove(i);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

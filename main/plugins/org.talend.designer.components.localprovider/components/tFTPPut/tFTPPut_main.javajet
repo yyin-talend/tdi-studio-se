@@ -117,9 +117,6 @@ try{
 		            <%
         				if(("true").equals(dieOnError)){
 					%>
-							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - File permission denied: "+<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName());
-							<%}%>
            					throw(e_<%=cid%>);
 					<%
 						}else{
@@ -132,9 +129,6 @@ try{
 						}
 					%>     
 		                }catch(java.lang.Exception e_<%=cid%>){
-							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - File '" + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + "' not found?");
-							<%}%>
 		                   if(!(e_<%=cid%> instanceof com.jcraft.jsch.SftpException)) {
 		                		msg_<%=cid%>.add("file " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
 		                   		
@@ -154,14 +148,21 @@ try{
 	    	
 	    	//do rename
 	    	if(map<%=cid %>.get(key<%=cid %>) != "" && key<%=cid %> != map<%=cid %>.get(key<%=cid %>)){
+	    		<%
+        		if(("overwrite").equals(sftpoverwrite) || ("resume").equals(sftpoverwrite)){
+		        %>
+		         	try{
+		          		c_<%=cid%>.rm(<%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
+		         	}catch(com.jcraft.jsch.SftpException e_<%=cid%>){
+		         	}
+		        <%
+		        }
+		        %>
 		    	try{
 		   			c_<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 		   		}catch(com.jcraft.jsch.SftpException e_<%=cid%>){
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - File rename fail.");
-					<%}%>
 		   			throw e_<%=cid%>;
 	   			}
    			}  
@@ -313,9 +314,6 @@ try{
 		            		nb_file_<%=cid%>++;
 		      			}
 		      		}catch(com.enterprisedt.net.ftp.FTPException e_<%=cid%>){
-						<%if(isLog4jEnabled){%>
-							log.fatal("<%=cid%> - File " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
-						<%}%>
 		      				
 	  					msg_<%=cid%>.add("file " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
 	  					
@@ -444,9 +442,6 @@ try{
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 		   		}catch(it.sauronsoftware.ftp4j.FTPException e_<%=cid%>){
    					globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - File rename fail.");
-					<%}%>
 		   			throw e_<%=cid%>;
 				}
 			}
@@ -457,9 +452,6 @@ try{
 <%
         if(("true").equals(dieOnError)){
 %>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-			<%}%>
             throw(e_<%=cid%>);
 <%
 		}else{

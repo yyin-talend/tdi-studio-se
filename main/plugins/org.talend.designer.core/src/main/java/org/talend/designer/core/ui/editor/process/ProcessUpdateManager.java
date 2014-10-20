@@ -327,8 +327,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     if (!renamed) {
                         // update
-                        // final ContextItem contextItem = ContextUtils.getContextItemById(allContextItem, source);
-                        final Item contextItem = ContextUtils.getContextItemById3(source);
+                        final Item contextItem = ContextUtils.getRepositoryContextItemById(source);
                         boolean builtin = true;
                         if (contextItem != null) {
                             if (contextItem instanceof ContextItem) {
@@ -1138,13 +1137,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     boolean inputSame = true;
                     sapNodeParam = node.getElementParameter("MAPPING_INPUT"); //$NON-NLS-1$
-                    if (sapNodeParam != null && sapNodeParam.getValue() != null) {
+                    if (sapNodeParam != null && sapNodeParam.getRepositoryValue() != null && sapNodeParam.getValue() != null) {
                         inputSame = SAPConnectionUtils.sameParamterTableWith(function,
                                 (List<Map<String, Object>>) sapNodeParam.getValue(), true);
                     }
                     boolean outputSame = true;
                     sapNodeParam = node.getElementParameter("MAPPING_OUTPUT"); //$NON-NLS-1$
-                    if (sapNodeParam != null && sapNodeParam.getValue() != null) {
+                    if (sapNodeParam != null && sapNodeParam.getRepositoryValue() != null && sapNodeParam.getValue() != null) {
                         outputSame = SAPConnectionUtils.sameParamterTableWith(function,
                                 (List<Map<String, Object>>) sapNodeParam.getValue(), false);
                     }
@@ -1277,7 +1276,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
                                 if (table != null) {
                                     String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
-                                            + UpdatesConstants.SEGMENT_LINE + table.getLabel();
+                                            + UpdatesConstants.SEGMENT_LINE + schemaName;
 
                                     final IMetadataTable copyOfrepositoryMetadata = table.clone();
                                     copyOfrepositoryMetadata.setTableName(uniqueName);
@@ -1855,8 +1854,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                         }
                                                     }
                                                 }
-                                            } else if (param.getName().equals("HBASE_PARAMETERS") && oldList != null //$NON-NLS-1$
-                                                    && objectValue instanceof List) {
+                                            } else if ((param.getName().equals("SAP_PROPERTIES") || param.getName().equals(//$NON-NLS-1$
+                                                    "HBASE_PARAMETERS"))//$NON-NLS-1$
+                                                    && oldList != null && objectValue instanceof List) {
                                                 List objectList = (List) objectValue;
                                                 if (oldList.size() != objectList.size()) {
                                                     sameValues = false;

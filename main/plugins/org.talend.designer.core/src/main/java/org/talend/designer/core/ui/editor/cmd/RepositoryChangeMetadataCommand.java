@@ -23,8 +23,10 @@ import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
@@ -84,6 +86,20 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     @Override
     public void execute() {
         node.setPropertyValue(propName, newPropValue);
+        if ((EParameterName.SCHEMA + ":" + EParameterName.REPOSITORY_SCHEMA_TYPE).equals(propName)) {
+            IElementParameter elementParameter = node.getElementParameter(propName);
+            if (elementParameter != null) {
+                IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
+                        .get(EParameterName.SCHEMA_TYPE.getName());
+                if (schemaTypeParam != null) {
+                    if (newPropValue != null && !"".equals(newPropValue)) {
+                        schemaTypeParam.setValue(EmfComponent.REPOSITORY);
+                    } else {
+                        schemaTypeParam.setValue(EmfComponent.BUILTIN);
+                    }
+                }
+            }
+        }
 
         if (node.isExternalNode() && !node.isELTComponent()) {
             for (IElementParameter parameter : node.getElementParameters()) {
@@ -121,11 +137,33 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         // repositorySchemaTypeParameter.setShow(false);
         // }
 
+        // Xstream Cdc Type Mode
+        boolean isXstreamCdcTypeMode = false;
+        if (connection != null && connection instanceof DatabaseConnection) {
+            String cdcTypeMode = ((DatabaseConnection) connection).getCdcTypeMode();
+            if (CDCTypeMode.XSTREAM_MODE == CDCTypeMode.indexOf(cdcTypeMode)) {
+                isXstreamCdcTypeMode = true;
+            }
+        }
+
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         if (newOutputMetadata != null) {
             Map<String, String> addMap = newOutputMetadata.getAdditionalProperties();
             if (addMap.get(TaggedValueHelper.SYSTEMTABLENAME) != null && node.getComponent().getName().equals("tAS400CDC")) {
                 setDBTableFieldValue(node, addMap.get(TaggedValueHelper.SYSTEMTABLENAME), oldOutputMetadata.getTableName());
+            } else if (isXstreamCdcTypeMode) {
+                IElementParameter elementParameter = node.getElementParameter(propName);
+                if (elementParameter != null) {
+                    IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
+                            .get(EParameterName.SCHEMA_TYPE.getName());
+                    IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                    if (schemaTypeParam != null) {
+                        schemaTypeParam.setValue(EmfComponent.BUILTIN);
+                        newOutputMetadata
+                                .setListColumns((((IMetadataTable) schemaParam.getValue()).clone(true)).getListColumns());
+                    }
+                }
+                setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
             } else {
                 setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
             }
@@ -226,6 +264,16 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 .getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         if (newRepositoryIdValue != null) {
             repositorySchemaTypeParameter.setValue(oldRepositoryIdValue);
+        }
+        IElementParameter elementParameter = node.getElementParameter(propName);
+        IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
+                .get(EParameterName.SCHEMA_TYPE.getName());
+        if (schemaTypeParam != null) {
+            if (oldPropValue != null && !"".equals(oldPropValue)) {
+                schemaTypeParam.setValue(EmfComponent.REPOSITORY);
+            } else {
+                schemaTypeParam.setValue(EmfComponent.BUILTIN);
+            }
         }
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         super.undo();

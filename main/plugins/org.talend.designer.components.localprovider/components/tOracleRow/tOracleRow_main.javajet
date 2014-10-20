@@ -168,7 +168,6 @@ try {
 		whetherReject_<%=cid%> = true;
 		<%
 		if (("true").equals(dieOnError)) {
-			log4jCodeGenerateUtil.logError(node,"fatal");
 			%>
 			throw(e);
 			<%

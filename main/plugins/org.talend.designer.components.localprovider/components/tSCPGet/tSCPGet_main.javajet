@@ -62,9 +62,6 @@ imports="
 		            		if(file_<%=cid%>.length() == 0){
 		            			file_<%=cid%>.delete();
 		            		}
-							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-							<%}%>
 		            		throw e_<%=cid%>;
 						} finally {
 		                	if(out_<%=cid %> != null){
@@ -78,6 +75,7 @@ imports="
 						nb_file_<%=cid%> ++ ;
 						<%if(isLog4jEnabled){%>
 							log.debug("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
+							log.info("<%= cid %> - Appended to "+sourceFile_<%=cid %>+" at local directory "+<%= localdir %>+" successfully.");
 						<%}%>
 					}
 				}
@@ -89,7 +87,8 @@ imports="
 			}
 		<%
 		}else{
-			if(!("overwrite").equals(replaceOption)) {%>        
+			boolean isDefaultAction = !("overwrite").equals(replaceOption);
+			if(isDefaultAction) {%>        
 		    	String parentPath_<%=cid%> = new java.io.File(<%=localdir %>).getPath();
 				java.util.List<String> list_<%=cid%> = new java.util.ArrayList<String>();
 				for (int i_<%=cid%> = 0; i_<%=cid%> < sourceFileNames_<%=cid%>.length; i_<%=cid%>++) {
@@ -135,9 +134,6 @@ imports="
 		                		if(file_<%=cid%>.length() == 0){
 		                			file_<%=cid%>.delete();
 		                		}
-								<%if(isLog4jEnabled){%>
-									log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-								<%}%>
 		                		throw e_<%=cid%>;
 		    				} finally {
 		                    	if(out_<%=cid %> != null){
@@ -150,7 +146,15 @@ imports="
 							nb_file_<%=cid%> ++ ;
 							<%if(isLog4jEnabled){%>
 								log.debug("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
-							<%}%>
+								<% if(isDefaultAction){ %>
+									 log.info("<%= cid %> - Overwrote or appended to "+sourceFile_<%=cid %>+" at local directory "+<%= localdir %>+" successfully.");
+								<%
+								}else{
+								%>
+									 log.info("<%= cid %> - Overwrote to "+sourceFile_<%=cid %>+" at local directory "+<%= localdir %>+" successfully.");
+								<%
+								}
+							}%>
 						}
 					}
 				}
@@ -165,8 +169,5 @@ imports="
 		%>
 	}catch(java.lang.Exception e_<%=cid%>){
 		globalMap.put("<%=cid %>_STATUS", "File get fail.");
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - "  + e_<%=cid%>.getMessage());
-		<%}%>
 		throw e_<%=cid%>;
 	}

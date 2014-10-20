@@ -20,6 +20,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 int nb_line_<%=cid%> = 0;
 <%
@@ -83,7 +84,12 @@ emmitArray_<%=cid %>[1] = new <%=conn.getName() %>Struct();
 int currentRowIndex_<%=cid%> = 0;
 boolean  flag_<%=cid%> = true;//flag for the encounter of first row.
 
-<%	
+	<%	
+	if (isLog4jEnabled) {
+	%>
+		log.info("<%=cid%> - Start to denormalize the data from datasource.");
+	<%
+	}
 	//gen groups variable
 	for(IMetadataColumn column : groupColumns){
 		String type = typesMap.get(column.getLabel());
