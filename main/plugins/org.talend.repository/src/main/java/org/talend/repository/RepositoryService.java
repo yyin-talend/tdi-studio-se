@@ -228,12 +228,16 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     // see DataBaseWizard, DatabaseTableWizard, AContextualAction
     @Override
     public void notifySQLBuilder(List<IRepositoryViewObject> list) {
-        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getRepositoryView();
-        removeRepositoryChangedListener(listener);
+        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getDIRepositoryView(false);
+        if (listener != null) {
+            removeRepositoryChangedListener(listener);
+        }
         for (IRepositoryViewObject element : list) {
             repositoryChanged(new RepositoryElementDelta(element));
         }
-        registerRepositoryChangedListenerAsFirst(listener);
+        if (listener != null) {
+            registerRepositoryChangedListenerAsFirst(listener);
+        }
     }
 
     /*
