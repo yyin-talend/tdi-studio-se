@@ -17,6 +17,7 @@ imports="
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
 	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
 	%>

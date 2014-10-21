@@ -247,7 +247,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             %>
             String endDateTimeDetail_<%=cid%> = <%=endDateTimeString.length()>0?endDateTimeString:"\"\""%>;
             String datePattern_<%=cid%> = "yyyy-MM-dd";
-            if(endDateTimeDetail_<%=cid%>.length()>0 && !"null".equalsIgnoreCase(endDateTimeDetail_<%=cid%>)){
+            if(endDateTimeDetail_<%=cid%>.length()>0){
             	endDateTimeDetail_<%=cid%> = " "+endDateTimeDetail_<%=cid%>;
             	datePattern_<%=cid%> = "yyyy-MM-dd HH:mm:ss";
             }
