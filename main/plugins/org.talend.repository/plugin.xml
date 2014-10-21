@@ -2203,6 +2203,15 @@
               id="org.talend.repository.model.migration.ChangeRecalculateFormulaValueMigrationTask"
               name="ChangeRecalculateFormulaValueMigrationTask"
               version="5.3.3">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.5.1"
+              class="org.talend.repository.model.migration.ChangeParameterName4tMDMConnection"
+              description="Change parameters USER/PASS to USERNAME/PASSWORD"
+              id="org.talend.repository.model.migration.ChangeParameterName4tMDMConnection"
+              name="ChangeParameterName4tMDMConnection"
+              version="5.5.2">
         </projecttask>        
         
    </extension>
