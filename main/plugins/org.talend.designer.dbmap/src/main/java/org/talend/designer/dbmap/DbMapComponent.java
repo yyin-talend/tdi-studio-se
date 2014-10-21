@@ -683,11 +683,7 @@ public class DbMapComponent extends AbstractMapComponent {
         if (connMetadataTable == null || newMetadataTable == null) {
             return;
         }
-        // the "super.metadataInputChanged(...)" can handle cases if the size of listcolumns are equal.
-        if (connMetadataTable.getListColumns().size() != newMetadataTable.getListColumns().size()) {
-            inputMetadataColumnAmountChanged(dataComponent, this.getExternalNode());
-        }
-
+        inputMetadataColumnAmountChanged(dataComponent, this.getExternalNode());
     }
 
     private void inputMetadataColumnAmountChanged(IODataComponent dataComponent, IExternalNode externalNode) {

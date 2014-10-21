@@ -17,5 +17,4 @@ Export-Package: com.netscape.sasl,
  netscape.ldap.controls,
  netscape.ldap.factory,
  netscape.ldap.util
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-BundleShape: dir

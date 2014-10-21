@@ -62,9 +62,5 @@ if(outConn!=null){
 %>
 <%
 		}
-%>
-		//System.out.println(<%=cid%>_sr.getValuesAsString());
-		nb_line_<%=cid%> ++;
-<%
 }
 %>
