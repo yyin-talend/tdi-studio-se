@@ -12,7 +12,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
-String username = ElementParameterParser.getValue(node, "__USER__");
+String username = ElementParameterParser.getValue(node, "__USERNAME__");
 
 String universe = ElementParameterParser.getValue(node, "__UNIVERSE__");
 boolean useTransaction = "false".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
@@ -31,7 +31,7 @@ stub_<%=cid %>.setUsername(<%=universe%> + "/" + <%=username %>);
 <%}%>
 
 <%
-String passwordFieldName = "__PASS__";
+String passwordFieldName = "__PASSWORD__";
 %>
 
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>

@@ -2276,6 +2276,15 @@
               id="org.talend.repository.model.migration.UnifyPasswordEncryption4ParametersInJobMigrationTask"
               name="UnifyPasswordEncryption4ParametersInJobMigrationTask"
               version="5.6.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.5.1"
+              class="org.talend.repository.model.migration.ChangeParameterName4tMDMConnection"
+              description="Change parameters USER/PASS to USERNAME/PASSWORD"
+              id="org.talend.repository.model.migration.ChangeParameterName4tMDMConnection"
+              name="ChangeParameterName4tMDMConnection"
+              version="5.6.0">
         </projecttask>        
    </extension>
 

@@ -134,6 +134,7 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyP
 
                 // variable name used for Stat&Logs
                 if ("PASS".equals(param.getName())) { //$NON-NLS-1$
+                    param.setField(EParameterFieldType.PASSWORD.getName());
                     if (reencryptValueIfNeeded(param)) {
                         modified = true;
                     }
@@ -141,6 +142,7 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyP
 
                 // variable name used for implicit context
                 if ("PASS_IMPLICIT_CONTEXT".equals(param.getName())) { //$NON-NLS-1$
+                    param.setField(EParameterFieldType.PASSWORD.getName());
                     if (reencryptValueIfNeeded(param)) {
                         modified = true;
                     }
@@ -166,6 +168,7 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyP
                 IElementParameter paramFromEmf = fNode.getElementParameter(param.getName());
                 if (paramFromEmf != null) {
                     if (EParameterFieldType.PASSWORD.equals(paramFromEmf.getFieldType()) && param.getValue() != null) {
+                        param.setField(EParameterFieldType.PASSWORD.getName());
                         if (reencryptValueIfNeeded(param)) {
                             modified = true;
                         }
