@@ -21,6 +21,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractProjectMigrationTask;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.properties.ImplicitContextSettings;
 import org.talend.core.model.properties.StatAndLogsSettings;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -56,6 +57,7 @@ public class UnifyPasswordEncryption4ProjectSettingsMigrationTask extends Abstra
                     String name = parameterType.getName();
                     // variable name used for Stat&Logs
                     if ("PASS".equals(name)) { //$NON-NLS-1$
+                        parameterType.setField(EParameterFieldType.PASSWORD.getName());
                         try {
                             if (reencryptValueIfNeeded(parameterType)) {
                                 modified = true;
@@ -80,6 +82,7 @@ public class UnifyPasswordEncryption4ProjectSettingsMigrationTask extends Abstra
                     String name = parameterType.getName();
                     // variable name used for implicit context
                     if ("PASS_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-1$
+                        parameterType.setField(EParameterFieldType.PASSWORD.getName());
                         try {
                             if (reencryptValueIfNeeded(parameterType)) {
                                 modified = true;
