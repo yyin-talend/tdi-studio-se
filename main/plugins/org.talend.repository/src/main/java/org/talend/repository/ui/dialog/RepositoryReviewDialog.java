@@ -645,6 +645,9 @@ class DatabaseTypeFilter extends ViewerFilter {
             if (node.getType() == ENodeType.REFERENCED_PROJECT || node.getType() == ENodeType.SYSTEM_FOLDER) {
                 return true;
             }
+            if (node.getContentType() != null && node.getContentType().equals(ERepositoryObjectType.METADATA)) {
+                return true;
+            }
         } else {
             Item item = node.getObject().getProperty().getItem();
             if (item instanceof DatabaseConnectionItem) {
