@@ -67,7 +67,7 @@ if (!sftp && !ftps) { // *** ftp *** //
 	<%}%>
 	ftp_<%=cid %>.setControlEncoding(<%=sEncoding%>);
 	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' with the username '" +<%=user %>+ "'.");
+		log.info("<%=cid%> - Attempt to connect to '" + <%=host %> + "' with username '" +<%=user %>+ "'.");
 	<%}%>
 	ftp_<%=cid %>.connect();  
 	
@@ -79,7 +79,7 @@ if (!sftp && !ftps) { // *** ftp *** //
    	
 	ftp_<%=cid %>.login(<%=user %>, decryptedPassword_<%=cid%>);  
   	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+		log.info("<%=cid%> - Connect to '" + <%=host %> + "' has succeeded.");
 	<%}%>
 	globalMap.put("conn_<%=cid%>",ftp_<%=cid %>);
 <%
@@ -160,13 +160,13 @@ if (!sftp && !ftps) { // *** ftp *** //
 		}
 	<%}%>
   	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' with the username '" + <%=user%> + "'.");
+		log.info("<%=cid%> - Attempt to connect to  '" + <%=host %> + "' with username '" + <%=user%> + "'.");
 	<%}%>
 	session_<%=cid%>.connect();
 	com.jcraft.jsch. Channel channel_<%=cid%> = session_<%=cid%>.openChannel("sftp"); 
 	channel_<%=cid%>.connect();
   	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+		log.info("<%=cid%> - Connect to '" + <%=host %> + "' has succeeded.");
 	<%}%>
 	com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
 	c_<%=cid%>.setFilenameEncoding(<%=sEncoding%>);
@@ -224,11 +224,11 @@ if (!sftp && !ftps) { // *** ftp *** //
 %>
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> -FTPS security Mode is <%=securityMode%>.");
-			log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' with the username '" + <%=user %>+ "'.");
+			log.info("<%=cid%> - Attempt to connect to '" + <%=host %> + "' with username '" + <%=user %>+ "'.");
 		<%}%>
     	ftp_<%=cid %>.connect(<%=host %>,<%=port %>);
   		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+			log.info("<%=cid%> - Connect to '" + <%=host %> + "' has succeeded.");
 		<%}%>
 	        
 		<%

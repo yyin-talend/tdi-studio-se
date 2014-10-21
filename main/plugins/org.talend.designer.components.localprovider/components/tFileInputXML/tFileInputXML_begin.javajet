@@ -922,10 +922,10 @@ try {
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
 	throw(e);
-	<%if(isLog4jEnabled){%>
-		log.error("<%=cid%> - " + e.getMessage());
-	<%}%>
-	<%}else{%>
+	<%}else{
+		if(isLog4jEnabled){%>
+	log.error("<%=cid%> - " + e.getMessage());
+		<%}%>
 	System.err.println(e.getMessage());
 	<%}%>
 }
