@@ -17,18 +17,12 @@
 	if(!customSetOriginalLength){
 %>
 			}
-			<%if(isLog4jEnabled){%>
-				log.debug("<%=cid%> - Retrieving the record " + tos_count_<%=cid%> + ".");
-			<%}%>
 		}
 <%
 	}else{
 		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 			if(conns!=null && conns.size()>0){
 %>
-				<%if(isLog4jEnabled){%>
-					log.debug("<%=cid%> - Retrieving the record " + tos_count_<%=cid%> + ".");
-				<%}%>
 				}
 				fs_<%=cid %>.close();
 <%
@@ -37,5 +31,5 @@
 %>
 	globalMap.put("<%=cid%>_NB_LINE", tos_count_<%=cid%>);
 	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%>- Retrieved records count: "+ tos_count_<%=cid%> + ".");
+		log.info("<%=cid%>- Retrieved records count: "+ nb_line_<%= cid %> + ".");
 	<%}%>
