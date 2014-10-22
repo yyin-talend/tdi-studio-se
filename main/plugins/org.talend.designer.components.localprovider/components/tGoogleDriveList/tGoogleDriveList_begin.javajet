@@ -138,7 +138,7 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
     } while (<%=cid%>_request.getPageToken() != null &&
              <%=cid%>_request.getPageToken().length() > 0);
    <%} else {%>
-    java.util.List<String> subfolders = new java.util.ArrayList<String>(); 
+    java.util.List<String> subfolders_<%=cid %> = new java.util.ArrayList<String>(); 
     <% if(!folderName.equals("root")) {%>
    		<%=cid%>_request.setQ("title = '<%=folderName%>' and mimeType = 'application/vnd.google-apps.folder'");
    		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_request.execute();
@@ -147,25 +147,25 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
         } else if (<%=cid%>_files.getItems().isEmpty()) {
         	throw new Exception("No folder with name " + "\"<%=folderName%>\" found!");
         } else {
-        	subfolders.add(<%=cid%>_files.getItems().get(0).getId());
+        	subfolders_<%=cid %>.add(<%=cid%>_files.getItems().get(0).getId());
    		}
    		<%=cid%>_request = <%=cid%>_client.files().list();
     <%} else {%>
-	subfolders.add("<%=folderName%>");
+	subfolders_<%=cid %>.add("<%=folderName%>");
 	<%}%>
-	while (subfolders.size()>0) {
+	while (subfolders_<%=cid %>.size()>0) {
     do {
       try {
 	  	<%if ("DIRECTORIES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
-	  		<%=cid%>_request.setQ("'"+subfolders.get(0)+"' in parents and mimeType = 'application/vnd.google-apps.folder'");
+	  		<%=cid%>_request.setQ("'"+subfolders_<%=cid %>.get(0)+"' in parents and mimeType = 'application/vnd.google-apps.folder'");
      	<%} else {%>
-      		<%=cid%>_request.setQ("'"+subfolders.get(0)+"' in parents"); // check all files and folders
+      		<%=cid%>_request.setQ("'"+subfolders_<%=cid %>.get(0)+"' in parents"); // check all files and folders
       	<%}%>
         com.google.api.services.drive.model.FileList files = <%=cid%>_request.execute();
        
 		for (com.google.api.services.drive.model.File file : files.getItems()) {
 		  if (file.getMimeType().equals("application/vnd.google-apps.folder")) {
-			subfolders.add(file.getId());
+			subfolders_<%=cid %>.add(file.getId());
           } 
           if (
 			      "BOTH".equals("<%=helper.getStringParam("__LIST_MODE__")%>")
@@ -191,7 +191,7 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
       }
     } while (<%=cid%>_request.getPageToken() != null &&
              <%=cid%>_request.getPageToken().length() > 0);
-    subfolders.remove(0);
+    subfolders_<%=cid %>.remove(0);
 	}
      
    <%}%>
