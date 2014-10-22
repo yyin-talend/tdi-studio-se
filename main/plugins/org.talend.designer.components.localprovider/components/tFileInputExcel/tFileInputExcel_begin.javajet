@@ -167,11 +167,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         java.io.InputStream toClose_<%=cid%> = null;
         try {
             if(source_<%=cid %> instanceof java.io.InputStream){
-        		toClose_<%=cid%> = (java.io.InputStream)source_<%=cid %>;
-        		workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(toClose_<%=cid%>), workbookSettings_<%= cid %>);
+        		toClose_<%=cid%> = new java.io.BufferedInputStream((java.io.InputStream)source_<%=cid %>);
+        		workbook_<%= cid %> = jxl.Workbook.getWorkbook(toClose_<%=cid%>, workbookSettings_<%= cid %>);
             }else if(source_<%=cid %> instanceof String){
-        		toClose_<%=cid%> = new java.io.FileInputStream(source_<%=cid %>.toString());
-        		workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(toClose_<%=cid%>), workbookSettings_<%= cid %>);
+        		toClose_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(source_<%=cid %>.toString()));
+        		workbook_<%= cid %> = jxl.Workbook.getWorkbook(toClose_<%=cid%>, workbookSettings_<%= cid %>);
             }else{
             	workbook_<%= cid %> = null;
             	<%if(isLog4jEnabled){%>
