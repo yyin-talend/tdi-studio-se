@@ -3,9 +3,10 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    
     java.util.List
-    java.util.Map    
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
 "
 %>
 
@@ -14,41 +15,78 @@ imports="
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
     List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILELIST__");
+    boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 %>
-		
+		java.util.List<java.util.HashMap<String, String>> filelist_<%= cid %> = new java.util.ArrayList<java.util.HashMap<String, String>>();
+		<%
+		   int counter = 0;
+		   for(Map<String,String> map : filelist){
+		   		%>
+		   		   java.util.HashMap map_<%= cid %>_<%= counter %> = new java.util.HashMap<String,String>();
+		   		   map_<%= cid %>_<%= counter %>.put("SOURCE",<%= map.get("SOURCE") %>);
+		   		   filelist_<%= cid %>.add(map_<%= cid %>_<%= counter %>);
+		   		<%
+		   		counter++;
+			}
+		 %>
 		//initial the command
 		StringBuilder command_<%=cid %> = new StringBuilder();
 		String dir_<%=cid%> = null;
-<%
-		for (int i = 0;i<filelist.size();i++) {
-%>
-			dir_<%=cid%> = <%=filelist.get(i).get("SOURCE")%>;
+		boolean fileExists = true;
+
+		for (int i = 0;i < filelist_<%= cid %>.size();i++) {
+			fileExists = true;
+			dir_<%=cid%> = filelist_<%= cid %>.get(i).get("SOURCE");
+			ch.ethz.ssh2.Session sess_<%= cid %> = conn_<%= cid %>.openSession();
+			sess_<%= cid %>.execCommand("ls "+"'"+dir_<%=cid%>+"'");
+			java.io.InputStream inputStream_<%= cid %> = sess_<%= cid %>.getStderr();
+			java.io.BufferedReader buffReader_<%= cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream_<%= cid %>));
+			if(buffReader_<%= cid %>.readLine()!=null){
+					System.err.println("rm: cannot remove '"+dir_<%=cid%>+"': No such file or directory.");
+					fileExists = false;
+			}
+			inputStream_<%= cid %>.close();
+			buffReader_<%= cid %>.close();
+			sess_<%= cid %>.close();
 			dir_<%=cid%> = "\""+dir_<%=cid%>+"\"";
-<%
+
 			if(i==0){
-%>
-	         	command_<%=cid %>.append("rm " + dir_<%=cid%>);
-	         	nb_file_<%=cid %> ++;
-	       <%}else{%>
-	         	if(command_<%=cid %>.length() > 0){
+	         	if(fileExists){
+					command_<%=cid %>.append("rm " + dir_<%=cid%>);
+					nb_file_<%=cid %> ++;
+	            }	         	
+	         }else{
+	         	if(command_<%=cid %>.length() > 0 && fileExists){
 	         		command_<%=cid %>.append(" ");
 	         	} 
-	            command_<%=cid %>.append(dir_<%=cid%>);
-	            nb_file_<%=cid %> ++;
-            <%}
-		}
-         %>
+				if(fileExists){
+					command_<%=cid %>.append(dir_<%=cid%>);
+		            nb_file_<%=cid %> ++;
+			  }
+            }
+       }
+
 		/* Create a session */
-		ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
+		ch.ethz.ssh2.Session sessNew_<%=cid%> = conn_<%=cid%>.openSession();
 		//execute the command
-		sess_<%=cid%>.execCommand((command_<%=cid %>).toString());		
+		sessNew_<%=cid%>.execCommand(command_<%=cid %>.toString());
 		//get the return info
-		java.io.InputStream stderr_<%=cid%> = sess_<%=cid%>.getStderr();
+		java.io.InputStream stderr_<%=cid%> = sessNew_<%=cid%>.getStderr();
         java.io.BufferedReader breer_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stderr_<%=cid%>));
         String line_err_<%=cid%> = "";
         StringBuilder stringStderr_<%=cid%> =new StringBuilder();
 		while((line_err_<%=cid%> = breer_<%=cid%>.readLine()) != null) {
-			stringStderr_<%=cid%>.append(line_err_<%=cid%> + "\n");
+				String  errInfo_<%= cid %> = new String(line_err_<%=cid%>.getBytes(),"UTF-8");
+				System.err.println(errInfo_<%= cid %>);
+			<% if(dieOnError){
+				%>
+					throw new Exception("File(s) deleting failed.");
+				<%
+			}else{
+			%>
+					stringStderr_<%=cid%>.append(line_err_<%=cid%> + "\n");
+			<%
+			}%>
 		}
 		String stderrString_<%=cid %> = stringStderr_<%=cid %>.toString();
 		<%for (int i = 0;i<filelist.size();i++) {%>
@@ -60,9 +98,9 @@ imports="
 		breer_<%=cid%>.close();
 		stderr_<%=cid%>.close();
 		 /* Close this session */			
-		sess_<%=cid%>.close();
+		sessNew_<%=cid%>.close();
 		if(("").equals(stringStderr_<%=cid %>.toString()) || (stringStderr_<%=cid %>.toString() == null)){
 			globalMap.put("<%=cid %>_STATUS","File(s) deleted OK");
-		}else{
-			globalMap.put("<%=cid %>_STATUS",stringStderr_<%=cid %>.toString());
+		}else{			
+			globalMap.put("<%=cid %>_STATUS",stringStderr_<%=cid %>.toString());			
 		}

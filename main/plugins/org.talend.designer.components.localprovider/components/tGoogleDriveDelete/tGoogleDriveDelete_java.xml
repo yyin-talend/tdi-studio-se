@@ -10,9 +10,6 @@
     AUTHOR="Talend"
     RELEASE_DATE="20140417A"
     STARTABLE="true"
-    
-    SCHEMA_AUTO_PROPAGATE="false"
-    DATA_AUTO_PROPAGATE="false"
   >
     <SIGNATURE/>
   </HEADER>

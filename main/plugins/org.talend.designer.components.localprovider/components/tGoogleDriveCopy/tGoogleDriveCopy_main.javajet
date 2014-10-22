@@ -32,12 +32,12 @@ String connectionKey = "\"conn_" + connection+"\"";
 List< ? extends IConnection> outputConnections = node.getOutgoingSortedConnections();
 		
 String dataOutputConnection = null;	
-    for(IConnection conn : outputConnections) {
-        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-        	dataOutputConnection = conn.getName();
-        	break;
-        } // if(conn) end
-    } // for(conns) end
+for(IConnection conn : outputConnections) {
+    if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    	dataOutputConnection = conn.getName();
+    	break;
+    } // if(conn) end
+} // for(conns) end
 
 
 String fileName = ElementParameterParser.getValue(node, "__FILE_NAME__");
@@ -57,7 +57,7 @@ if(!"true".equals(useExistingConn)){
 %>
 {
 <%
-if(useSSL) {
+	if(useSSL) {
 %>
  	javax.net.ssl.TrustManagerFactory tmf = javax.net.ssl.TrustManagerFactory
 	.getInstance(javax.net.ssl.TrustManagerFactory
@@ -75,20 +75,22 @@ if(useSSL) {
 	javax.net.ssl.SSLContext sslContext = javax.net.ssl.SSLContext.getInstance(<%=helper.getStringParam("__SSL_ALGORITHM__")%>);
 	sslContext.init(null, tmf.getTrustManagers(), new java.security.SecureRandom());
 <%	
-}
+	}
 %>
 com.google.api.client.http.HttpTransport httpTransport = new com.google.api.client.http.javanet.NetHttpTransport.Builder()
-<%if(useProxy){
-String proxyHost = helper.getStringParam("__PROXY_HOST__");
-String proxyPort = helper.getStringParam("__PROXY_PORT__");
+<%
+    if(useProxy){
+        String proxyHost = helper.getStringParam("__PROXY_HOST__");
+        String proxyPort = helper.getStringParam("__PROXY_PORT__");
 %>
 		.setProxy(new java.net.Proxy(java.net.Proxy.Type.HTTP, java.net.InetSocketAddress.createUnresolved(<%=proxyHost%>, <%=proxyPort%>)))
-<%}
-  if(useSSL) {
+<%
+	}
+  	if(useSSL) {
 %>
 	.setSslSocketFactory(sslContext.getSocketFactory())
 <%
-  }
+  	}
 %>
 	.build();
 
@@ -100,23 +102,27 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 } else {
 %>
 	<%=cid%>_client = (com.google.api.services.drive.Drive)globalMap.get(<%=connectionKey%>);
-<%}%>
+<%
+}%>
 
 		com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
+        String destFolderName_<%=cid %> = <%=dest_folderName%>;
 		<%
         if (isFile) {
         %>
-        if(<%=fileName%> == null || "".equals(<%=fileName%>.trim()) || <%=dest_folderName%> == null || "".equals(<%=dest_folderName%>.trim()) )
+        String fileName_<%=cid %> = <%=fileName%>;
+        if(fileName_<%=cid %> == null || "".equals(fileName_<%=cid %>.trim()) || destFolderName_<%=cid %> == null || "".equals(destFolderName_<%=cid %>.trim()) )
 		{
 			throw new Exception("File/folder name can not be null");
 		}
 		<%=cid%>_listRequest.setQ("title = '" + <%=fileName%> + "' and mimeType != 'application/vnd.google-apps.folder'");
 		<%} else {%>
-		if(<%=folderName%> == null || "".equals(<%=folderName%>.trim()) || <%=dest_folderName%> == null || "".equals(<%=dest_folderName%>.trim()) )
+		String sourceFolder_<%=cid %> = <%=folderName%>; 
+		if(sourceFolder_<%=cid %> == null || "".equals(sourceFolder_<%=cid %>.trim()) || destFolderName_<%=cid %> == null || "".equals(destFolderName_<%=cid %>.trim()) )
 		{
 			throw new Exception("File/folder name can not be null");
 		}
-		<%=cid%>_listRequest.setQ("title = '" + <%=folderName%> + "' and mimeType = 'application/vnd.google-apps.folder'");
+		<%=cid%>_listRequest.setQ("title = '" + sourceFolder_<%=cid %> + "' and mimeType = 'application/vnd.google-apps.folder'");
 		<%}%>
 		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
 		if (<%=cid%>_files.getItems().size() > 1)
