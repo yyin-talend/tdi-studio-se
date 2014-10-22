@@ -93,8 +93,8 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 %>
 	<%=cid%>_client = (com.google.api.services.drive.Drive)globalMap.get(<%=connectionKey%>);
 <%}%>
-
-		if(<%=folderName%> == null || "".equals(<%=folderName%>.trim()) )
+		String parentFolder_<%=cid %> = <%=folderName%>;
+		if(parentFolder_<%=cid %> == null || "".equals(parentFolder_<%=cid %>.trim()) )
 		{
 			throw new Exception("Parent Folder Name can not be null");
 		}
