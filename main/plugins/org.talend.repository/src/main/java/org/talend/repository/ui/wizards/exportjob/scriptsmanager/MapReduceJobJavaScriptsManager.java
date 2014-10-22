@@ -26,6 +26,9 @@ import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.runtime.repository.build.BuildExportManager;
+import org.talend.designer.runprocess.ProcessorException;
+import org.talend.repository.documentation.ExportFileResource;
 
 /**
  * Created by Marvin Wang on Mar 23, 2013.
@@ -104,6 +107,22 @@ public class MapReduceJobJavaScriptsManager extends JobJavaScriptsManager {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
+            throws ProcessorException {
+        List<ExportFileResource> exportResources = super.getExportResources(processes, codeOptions);
+
+        ProcessItem processItem = null;
+        for (ExportFileResource process : processes) {
+            if (process.getItem() instanceof ProcessItem) {
+                // Explicitly add TDM's resources to the MapReduce process item.
+                BuildExportManager.getInstance().exportDependencies(process, process.getItem());
+            }
+        }
+
+        return exportResources;
     }
 
 }
