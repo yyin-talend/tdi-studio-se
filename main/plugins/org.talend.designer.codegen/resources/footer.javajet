@@ -410,8 +410,17 @@
         resumeUtil = new ResumeUtil(resuming_logs_dir_path, isChildJob, rootPid);
         resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
 
+		List<String> parametersToEncrypt = new java.util.ArrayList<String>();
+<% 		for(IContextParameter ctxParam :params) {
+        	if ("id_Password".equals(ctxParam.getType())) {
+%>
+			parametersToEncrypt.add("<%=ctxParam.getName()%>");
+<%
+        	}
+        }
+%>
         //Resume: jobStart
-        resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context));
+        resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context,parametersToEncrypt));
 
 <%
         if (stats) {
