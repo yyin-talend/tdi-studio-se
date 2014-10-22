@@ -321,7 +321,7 @@
 		<% if(!dieOnError){ %>
 			catch (java.lang.Exception e){
 				<%if(isLog4jEnabled){%>
-					log.err("<%=cid%> - " + e.getMessage());
+					log.error("<%=cid%> - " + e.getMessage());
 				<%}%>
 				//nothing to do, ignore the exception if don't die on error
 				System.err.println("Exception in component <%=cid%>: " + e.getMessage());
