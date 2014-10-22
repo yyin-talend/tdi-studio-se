@@ -927,7 +927,7 @@ public class ScdManager {
                             // routine is treated as string now
                             column.setTalendType(getType(String.class, lang));
                         } else if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
-                            column.setTalendType(getType(Integer.class, lang)); // /
+                            column.setTalendType(getType(String.class, lang)); // /
                         }
                     }
                 }
