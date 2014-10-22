@@ -86,13 +86,13 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     @Override
     public void execute() {
         node.setPropertyValue(propName, newPropValue);
-        if ((EParameterName.SCHEMA + ":" + EParameterName.REPOSITORY_SCHEMA_TYPE).equals(propName)) {
+        if ((EParameterName.SCHEMA + ":" + EParameterName.REPOSITORY_SCHEMA_TYPE).equals(propName)) { //$NON-NLS-1$
             IElementParameter elementParameter = node.getElementParameter(propName);
             if (elementParameter != null) {
                 IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
                         .get(EParameterName.SCHEMA_TYPE.getName());
                 if (schemaTypeParam != null) {
-                    if (newPropValue != null && !"".equals(newPropValue)) {
+                    if (newPropValue != null && !"".equals(newPropValue)) { //$NON-NLS-1$
                         schemaTypeParam.setValue(EmfComponent.REPOSITORY);
                     } else {
                         schemaTypeParam.setValue(EmfComponent.BUILTIN);
@@ -112,7 +112,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         }
         // ELT Input/output component need add the schema conetxt in Context Mode
         if (node.isELTComponent()) {
-            IElementParameter schemaParam = node.getElementParameter("ELT_SCHEMA_NAME");
+            IElementParameter schemaParam = node.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
             if (schemaParam != null && schemaParam.getValue() != null && newPropValue != null && connection != null
                     && connection.isContextMode()
                     && ContextParameterUtils.isContainContextParam(schemaParam.getValue().toString())) {
@@ -149,7 +149,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         if (newOutputMetadata != null) {
             Map<String, String> addMap = newOutputMetadata.getAdditionalProperties();
-            if (addMap.get(TaggedValueHelper.SYSTEMTABLENAME) != null && node.getComponent().getName().equals("tAS400CDC")) {
+            if (addMap.get(TaggedValueHelper.SYSTEMTABLENAME) != null && node.getComponent().getName().equals("tAS400CDC")) { //$NON-NLS-1$
                 setDBTableFieldValue(node, addMap.get(TaggedValueHelper.SYSTEMTABLENAME), oldOutputMetadata.getTableName());
             } else if (isXstreamCdcTypeMode) {
                 IElementParameter elementParameter = node.getElementParameter(propName);
@@ -157,7 +157,9 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                     IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
                             .get(EParameterName.SCHEMA_TYPE.getName());
                     IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                    if (schemaTypeParam != null) {
+                    String componentName = node.getComponent().getName();
+                    if (componentName != null
+                            && componentName.equals("tOracleCDC") && schemaTypeParam != null && schemaParam != null && schemaParam.getValue() != null) { //$NON-NLS-1$
                         schemaTypeParam.setValue(EmfComponent.BUILTIN);
                         newOutputMetadata
                                 .setListColumns((((IMetadataTable) schemaParam.getValue()).clone(true)).getListColumns());
@@ -167,7 +169,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             } else {
                 setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
             }
-            IElementParameter parameter = node.getElementParameter("SAP_FUNCTION");
+            IElementParameter parameter = node.getElementParameter("SAP_FUNCTION");//$NON-NLS-1$
             if (parameter != null) {
                 setSAPFunctionName(node, parameter.getValue() == null ? null : (String) parameter.getValue());
             }
@@ -186,7 +188,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 Item item = lastVersion.getProperty().getItem();
                 if (item instanceof ConnectionItem) {
                     for (IElementParameter param : node.getElementParameters()) {
-                        if (param.getRepositoryValue() != null && !param.getRepositoryValue().equals("")) {
+                        if (param.getRepositoryValue() != null && !param.getRepositoryValue().equals("")) {//$NON-NLS-1$
                             boolean isCustomSfConn = false;
                             if (item instanceof SalesforceSchemaConnectionItem) {
                                 SalesforceSchemaConnection sfConn = (SalesforceSchemaConnection) ((SalesforceSchemaConnectionItem) item)
