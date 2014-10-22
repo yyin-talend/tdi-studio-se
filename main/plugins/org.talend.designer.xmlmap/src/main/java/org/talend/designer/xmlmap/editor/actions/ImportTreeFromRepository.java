@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +46,8 @@ import org.talend.core.model.metadata.builder.connection.Concept;
 import org.talend.core.model.metadata.builder.connection.ConceptTarget;
 import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MdmConceptType;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -56,6 +59,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IMDMProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.xmlmap.XmlMapPlugin;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
@@ -96,6 +100,8 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private boolean input;
 
+    private MetadataTable metadataTable;
+
     private List schemaTargets;
 
     private String absoluteXPathQuery = "";
@@ -116,7 +122,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     TreeNode loopNode = null;
 
-    private List<String> targetAbsolutePath;
+    private Map<String, String> targetAbsolutePath;
 
     /**
      * DOC talend ImportTreeFromRepository constructor comment.
@@ -228,7 +234,9 @@ public class ImportTreeFromRepository extends SelectionAction {
 
                 }
             } else {
-                throw new FileNotFoundException();
+                // for manually created output
+                prepareEmfTreeFromConnection(connection);
+                return;
             }
             schemaNode.getChildren().clear();
             root = connection.getRoot();
@@ -248,6 +256,8 @@ public class ImportTreeFromRepository extends SelectionAction {
             if (!connection.getSchema().isEmpty() && connection.getSchema().get(0) instanceof XmlXPathLoopDescriptorImpl) {
                 absoluteXPathQuery = ((XmlXPathLoopDescriptorImpl) connection.getSchema().get(0)).getAbsoluteXPathQuery();
                 schemaTargets = ((XmlXPathLoopDescriptorImpl) connection.getSchema().get(0)).getSchemaTargets();
+                metadataTable = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0];
+
             }
 
             // fix for TDI-8707 : only import mapped elements from connection to xml map
@@ -523,17 +533,9 @@ public class ImportTreeFromRepository extends SelectionAction {
                 }
             }
             createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, label, createTreeNode.getNodeType()));
-            if (foxNode.getDataType() != null && !"".equals(foxNode.getDataType())) {
-                if (foxNode.getDataType().equals("id_Date")) {
-                    createTreeNode.setPattern("\"dd-MM-yyyy\"");//$NON-NLS-1$
-                }
-                createTreeNode.setType(foxNode.getDataType());
-            } else {
-                createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-            }
-
             // tempXpath is current xpath remove schema node xpath like: row1:newColumn1
             String tempXpath = createTreeNode.getXpath().substring(schemaNode.getXpath().length() + 1);
+
             if (createTreeNode.isChoice() || createTreeNode.isSubstitution()) {
                 if (!isMappedChoiceSubs(foxNode, xPath)) {
                     continue;
@@ -541,6 +543,23 @@ public class ImportTreeFromRepository extends SelectionAction {
 
             } else if (!ignoreMapped && !isMappedChild(tempXpath)) {
                 continue;
+            }
+
+            // get talend type from metadata table
+            String dataType = null;
+            if (targetAbsolutePath != null) {
+                dataType = targetAbsolutePath.get(tempXpath);
+            }
+            if (dataType == null) {
+                dataType = foxNode.getDataType();
+            }
+            if (dataType != null && !"".equals(dataType)) {
+                if (dataType.equals("id_Date")) {
+                    createTreeNode.setPattern("\"dd-MM-yyyy\"");//$NON-NLS-1$
+                }
+                createTreeNode.setType(dataType);
+            } else {
+                createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
             }
 
             if (tempXpath.equals(absoluteXPathQuery)) {
@@ -609,6 +628,15 @@ public class ImportTreeFromRepository extends SelectionAction {
                             return;
                         }
                         this.schemaTargets = conceptTargets;
+                        // find corresponding metadata table
+                        Set<MetadataTable> metadataTables = ConnectionHelper.getTables(connection);
+                        for (MetadataTable table : metadataTables) {
+                            if (selected.getLabel() != null && selected.getLabel().equals(table.getLabel())) {
+                                metadataTable = table;
+                                break;
+                            }
+                        }
+
                         List<FOXTreeNode> list = TreeUtil.getFoxTreeNodesForXmlMap(getTempTemplateXSDFile().getAbsolutePath(),
                                 absoluteXPathQuery);
 
@@ -682,12 +710,14 @@ public class ImportTreeFromRepository extends SelectionAction {
     }
 
     private boolean isMappedChild(String tempXpath) {
+
         if (targetAbsolutePath == null) {
-            targetAbsolutePath = new ArrayList<String>();
-            targetAbsolutePath.add(absoluteXPathQuery);
+            targetAbsolutePath = new HashMap<String, String>();
+            targetAbsolutePath.put(absoluteXPathQuery, null);
             Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE
                     | Pattern.MULTILINE);
-            for (Object obj : schemaTargets) {
+            for (int n = 0; n < schemaTargets.size(); n++) {
+                Object obj = schemaTargets.get(n);
                 String relativeXPathQuery = "";
                 if (obj instanceof SchemaTarget) {
                     relativeXPathQuery = ((SchemaTarget) obj).getRelativeXPathQuery();
@@ -721,11 +751,16 @@ public class ImportTreeFromRepository extends SelectionAction {
 
                     }
                 }
-                targetAbsolutePath.add(tempAbsolute.toString());
+                if (metadataTable != null && n < metadataTable.getColumns().size()) {
+                    MetadataColumn column = metadataTable.getColumns().get(n);
+                    targetAbsolutePath.put(tempAbsolute.toString(), column.getTalendType());
+                } else {
+                    targetAbsolutePath.put(tempAbsolute.toString(), null);
+                }
             }
         }
 
-        for (String absTarget : targetAbsolutePath) {
+        for (String absTarget : targetAbsolutePath.keySet()) {
             if (absTarget.startsWith(tempXpath)) {
                 return true;
             }
@@ -813,14 +848,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                     createTreeNode.setName(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX);
                 }
             }
-            if (foxNode.getDataType() != null && !"".equals(foxNode.getDataType())) {
-                if (foxNode.getDataType().equals("id_Date")) {
-                    createTreeNode.setPattern("\"dd-MM-yyyy\"");//$NON-NLS-1$
-                }
-                createTreeNode.setType(foxNode.getDataType());
-            } else {
-                createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-            }
+
             String xPath = XmlMapUtil.getXPath(realParent.getXpath(), label, createTreeNode.getNodeType());
             createTreeNode.setXpath(xPath);
             if (createTreeNode.isSubstitution() || createTreeNode.isChoice()) {
@@ -849,6 +877,19 @@ public class ImportTreeFromRepository extends SelectionAction {
                 if (found == null) {
                     continue;
                 } else {
+                    String dataType = found.getType();
+                    if (dataType == null || dataType.equals("")) {
+                        dataType = foxNode.getDataType();
+                    }
+                    if (dataType != null && !"".equals(dataType)) {
+                        if (dataType.equals("id_Date")) {
+                            createTreeNode.setPattern("\"dd-MM-yyyy\"");//$NON-NLS-1$
+                        }
+                        createTreeNode.setType(dataType);
+                    } else {
+                        createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                    }
+
                     addChildInOrder(parent, createTreeNode, found.getOrder());
                 }
 
@@ -944,8 +985,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     @Override
     protected boolean calculateEnabled() {
-        RepositoryNode rootNode = ((ProjectRepositoryNode) ProjectRepositoryNode.getInstance())
-                .getRootRepositoryNode(ERepositoryObjectType.METADATA);
+        RepositoryNode rootNode = ProjectRepositoryNode.getInstance().getRootRepositoryNode(ERepositoryObjectType.METADATA);
         if (getSelectedObjects().isEmpty() || rootNode == null || rootNode.getChildren().size() == 0) {
             return false;
         } else {
