@@ -22,6 +22,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.cwm.helper.ConnectionHelper;
 
 /**
  * created by ggu on Aug 21, 2014 Detailled comment
@@ -50,8 +51,15 @@ public class UnifyPasswordEncryption4DBConnectionMigrationTask extends UnifyPass
                 try {
                     if (!dbConn.isContextMode()) {
                         String pass = dbConn.getPassword();
+                        String rawPass = null;
+                        try {
+                            rawPass = PasswordEncryptUtil.decryptPassword(pass);
+                        } catch (Exception e) {
+                            // MOD xqliu 2010-07-07 bug 13826
+                            rawPass = ConnectionHelper.getDecryptPassword(pass);
+                            // ~ 13826
+                        }
                         // decrypt the old password.
-                        String rawPass = PasswordEncryptUtil.decryptPassword(pass);
                         dbConn.setRawPassword(rawPass);
                         factory.save(item, true);
                         return ExecutionResult.SUCCESS_NO_ALERT;
