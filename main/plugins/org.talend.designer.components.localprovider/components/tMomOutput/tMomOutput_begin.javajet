@@ -99,7 +99,7 @@ class="MomInput"
 			<%
 			if(isLog4jEnabled){
 			%>	
-				log.err("<%=cid%> - Got connection unsuccessfully.");
+				log.error("<%=cid%> - Got connection unsuccessfully.");
 			<%
 			}
 			%>
