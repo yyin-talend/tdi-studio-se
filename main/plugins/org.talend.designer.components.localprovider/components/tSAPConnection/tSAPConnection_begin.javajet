@@ -35,6 +35,8 @@
     String sncLibPath = ElementParameterParser.getValue(node,"__SNC_LIB_PATH__");
     boolean hasSNCLibPath = sncLibPath != null && !"".equals(sncLibPath);
     boolean hasMySNCName = mySNCName != null && !"".equals(mySNCName);
+    
+    List<Map<String, String>> sapProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SAP_PROPERTIES__");
 %>
     
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
@@ -80,6 +82,15 @@
 		<%}%>
 	<%
 	}
+	%>
+	<%
+    if(sapProps!=null) {
+		for(Map<String, String> item : sapProps){
+		%>	
+		properties_<%=cid%>.put(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
+		<% 
+		}
+    }
 	%>
 	client_<%=cid %> = com.sap.mw.jco.JCO.createClient(properties_<%=cid%>);
 	// Open the connection
@@ -128,6 +139,15 @@
         	<%
         	}
         	%>
+        	<%
+            if(sapProps!=null) {
+        		for(Map<String, String> item : sapProps){
+        		%>	
+        		properties_<%=cid%>.put(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
+        		<% 
+        		}
+            }
+        	%>
         	
 			<%if("ApplicationServer".equals(serverType)){%>
 				destinationData_<%=cid%> = new org.talend.sap.TSAPApplicationServerDestData.Builder(<%=client%>,
@@ -139,9 +159,7 @@
     																				<%if(useFtpHttp){%>
     																					.setSAPGUI("2")
     																				<%}%>
-    																				<%if(activeSNC){%>
-    																					.setCustomProp(properties_<%=cid%>)
-    																				<%}%>
+																					.setCustomProp(properties_<%=cid%>)
 																					.build();
 			<%}else{%>			
 				destinationData_<%=cid%> = new org.talend.sap.TSAPMessageServerDestData.Builder(<%=client%>,
@@ -154,9 +172,7 @@
 						            				 								<%if(useFtpHttp){%>
     																					.setSAPGUI("2")
     																				<%}%>
-    																				<%if(activeSNC){%>
-    																					.setCustomProp(properties_<%=cid%>)
-    																				<%}%>
+																					.setCustomProp(properties_<%=cid%>)
     																				.build();
 			<%}%>
 		    <%if(useFtpHttp){%>
@@ -210,7 +226,6 @@
 	}
 	%>
 	<%
-	List<Map<String, String>> sapProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SAP_PROPERTIES__");
     if(sapProps!=null) {
 		for(Map<String, String> item : sapProps){
 		%>	
