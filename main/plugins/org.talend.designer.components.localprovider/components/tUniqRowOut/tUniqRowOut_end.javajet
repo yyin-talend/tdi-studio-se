@@ -34,7 +34,7 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
                 <%
 				if (isLog4jEnabled) {
 				%>
-					log.info("<%=cid%> - Delete file: "+file_<%=cid %>.getPath()+" When VM exit.");
+					log.info("<%=cid%> - Invoke request to delete file: "+file_<%=cid %>.getPath()+" When VM exit.");
 				<%
 				}
 				%>
