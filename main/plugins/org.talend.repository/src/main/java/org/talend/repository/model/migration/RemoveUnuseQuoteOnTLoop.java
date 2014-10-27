@@ -52,10 +52,12 @@ public class RemoveUnuseQuoteOnTLoop extends AbstractJobMigrationTask {
         IComponentConversion removeQuote = new IComponentConversion() {
 
             private void removeQuote(ElementParameterType element) {
-                String dValue = element.getValue();
-                if (dValue.startsWith("\"") && dValue.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    dValue = dValue.substring(1, dValue.length() - 1);
-                    element.setValue(dValue);
+                if (element != null && element.getValue() != null) {
+                    String dValue = element.getValue();
+                    if (dValue.startsWith("\"") && dValue.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        dValue = dValue.substring(1, dValue.length() - 1);
+                        element.setValue(dValue);
+                    }
                 }
             }
 
@@ -80,7 +82,7 @@ public class RemoveUnuseQuoteOnTLoop extends AbstractJobMigrationTask {
             }
         }
 
-        return ExecutionResult.SUCCESS_WITH_ALERT;
+        return ExecutionResult.SUCCESS_NO_ALERT;
 
     }
 
