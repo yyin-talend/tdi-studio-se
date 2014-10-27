@@ -308,7 +308,9 @@ if (!isParallelize) {
 			<%}%>
             stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
             <%if(INFORMIX.equalsIgnoreCase(dbmsId)){%>
-            	conn_<%=cid%>.commit();
+                if(!conn_<%= cid %>.getAutoCommit()){
+                    conn_<%=cid%>.commit();
+                }
             <%}%>
    	    	<%dbLog.table().truncateDone(dbLog.var("tableName"));%>
    	    	deletedCount_<%=cid%> += rsTruncCountNumber_<%=cid%>;

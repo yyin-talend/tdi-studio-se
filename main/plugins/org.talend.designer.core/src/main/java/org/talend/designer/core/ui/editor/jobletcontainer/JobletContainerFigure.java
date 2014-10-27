@@ -347,7 +347,7 @@ public class JobletContainerFigure extends Figure {
         Point location = this.getLocation();
         if (location.equals(lastLocation)) {
             // avoid to calculate locations for nothing
-            return;
+//            return;
         }
         lastLocation = location;
         collapseFigure.setCollapsed(jobletContainer.isCollapsed());
