@@ -35,17 +35,17 @@ import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityMa
  */
 public class EsbDemoImportTest extends DemosImportTest {
 
-    private static final String ESB_DEMO_PLUGIN_ID = "org.talend.repository.services";
+    private static final String ESB_DEMO_PLUGIN_ID = "org.talend.repository.services"; //$NON-NLS-1$
 
     private ResourcesManager esbResManager;
 
-    String ROUTES = "ROUTES";
+    String ROUTES = "ROUTES"; //$NON-NLS-1$
 
-    String BEANS = "BEANS";
+    String BEANS = "BEANS"; //$NON-NLS-1$
 
-    String ROUTE_RESOURCES = "ROUTE_RESOURCES";
+    String ROUTE_RESOURCES = "ROUTE_RESOURCES"; //$NON-NLS-1$
 
-    String SERVICES = "SERVICES";
+    String SERVICES = "SERVICES"; //$NON-NLS-1$
 
     @Before
     public void importEsbDemo() throws Exception {
