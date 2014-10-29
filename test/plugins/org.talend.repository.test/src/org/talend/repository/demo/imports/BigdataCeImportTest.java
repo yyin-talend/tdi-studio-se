@@ -35,13 +35,16 @@ import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityMa
  */
 public class BigdataCeImportTest extends DemosImportTest {
 
-    public static final String BIG_DATA_CE_DEMO_PLUGIN_ID = "org.talend.demo.bigdata.ce";
+    public static final String BIG_DATA_CE_DEMO_PLUGIN_ID = "org.talend.demo.bigdata.ce"; //$NON-NLS-1$
 
     private ResourcesManager ceResManager;
 
     @Before
     public void importCeDemo() throws Exception {
         initDemo(BIG_DATA_CE_DEMO_PLUGIN_ID);
+        if (currentDemo == null) { // maybe license problem, the demo plugin is not loaded.
+            return;
+        }
         initTestPaths();
         initTempPro();
         Assert.assertNotNull(currentDemo);
