@@ -756,7 +756,16 @@ public class ScdManager {
                 // remove from backend
                 for (int i = columns.size() - 1; i >= 0; i--) {
                     IMetadataColumn col = columns.get(i);
-                    if (unusedFields.contains(col.getLabel()) || GENERATE_COLUMN.equals(col.getComment())) {
+                    boolean generateColumn = GENERATE_COLUMN.equals(col.getComment());
+                    // generated field from schema should be remove when DB_SEQUENCE
+                    if (surrogateKeys != null && !surrogateKeys.isEmpty()) {
+                        for (SurrogateKey key : surrogateKeys) {
+                            if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE && col.isKey()) {
+                                generateColumn = true;
+                            }
+                        }
+                    }
+                    if (unusedFields.contains(col.getLabel()) || generateColumn) {
                         // remove unused field or generated field from schema
                         table.getListColumns().remove(i);
                     } else {
@@ -791,6 +800,15 @@ public class ScdManager {
      * @param unusedFields
      */
     public void createOutputSchema() {
+        // adding the surrogate Keys column
+        Map<String, IMetadataColumn> surrogateKeysColumnMap = new HashMap<String, IMetadataColumn>();
+        List<IMetadataColumn> outputColumnsAll = getOutputColumns(component);
+        for (IMetadataColumn column : outputColumnsAll) {
+            if (column.isKey()) {
+                surrogateKeysColumnMap.put(column.getLabel(), column);
+                break;
+            }
+        }
         // the unused columns must not be present in the output schema and also
         // remove all generated column from
         // output schema
@@ -863,7 +881,8 @@ public class ScdManager {
                 }
             }
         }
-        fixKeyColumnsInOutputSchema(schema, inputColumnsMap, lang);
+
+        fixKeyColumnsInOutputSchema(schema, inputColumnsMap, surrogateKeysColumnMap, lang);
         // removed by TDI-30934
         // sort column by name
         // Collections.sort(schema.getListColumns(), new Comparator<IMetadataColumn>() {
@@ -885,7 +904,7 @@ public class ScdManager {
      * @param lang
      */
     private void fixKeyColumnsInOutputSchema(IMetadataTable schema, Map<String, IMetadataColumn> inputColumnsMap,
-            ECodeLanguage lang) {
+            Map<String, IMetadataColumn> surrogateKeysColumnMap, ECodeLanguage lang) {
         Map<String, IMetadataColumn> columnsMap = new HashMap<String, IMetadataColumn>();
         for (IMetadataColumn column : schema.getListColumns()) {
             columnsMap.put(column.getLabel(), column);
@@ -921,13 +940,34 @@ public class ScdManager {
                             schema.getListColumns().add(column);
                         }
                     } else {
-                        column = createMetadataColumn(columnsMap, schema, key.getColumn(), Integer.class, lang);
-                        column.setKey(true); // set as key in output schema
                         if (key.getCreation() == SurrogateCreationType.ROUTINE) {
+                            column = createMetadataColumn(columnsMap, schema, key.getColumn(), Integer.class, lang);
+                            column.setKey(true); // set as key in output schema
                             // routine is treated as string now
                             column.setTalendType(getType(String.class, lang));
                         } else if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
-                            column.setTalendType(getType(String.class, lang)); // /
+                            IMetadataColumn surrogateCol = surrogateKeysColumnMap.get(key.getColumn());
+                            // no change , will use the old column
+                            if (surrogateCol != null) {
+                                column = surrogateCol.clone();
+                                schema.getListColumns().add(column);
+                                columnsMap.put(column.getLabel(), column);
+                            } else if (surrogateKeysColumnMap.size() == 1) {
+                                // rename the key
+                                for (String oldKey : surrogateKeysColumnMap.keySet()) {
+                                    surrogateCol = surrogateKeysColumnMap.get(oldKey);
+                                    if (surrogateCol != null) {
+                                        column = surrogateCol.clone();
+                                        column.setLabel(key.getColumn());
+                                        column.setOriginalDbColumnName(key.getColumn());
+                                        schema.getListColumns().add(column);
+                                        columnsMap.put(column.getLabel(), column);
+                                    }
+                                }
+                            } else {
+                                column = createMetadataColumn(columnsMap, schema, key.getColumn(), Integer.class, lang);
+                                column.setKey(true); // set as key in output schema
+                            }
                         }
                     }
                 }
