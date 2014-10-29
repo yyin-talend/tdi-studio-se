@@ -136,16 +136,13 @@ public class ReadQueriesAction extends AContextualAction {
                         DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
                         DatabaseConnection dbConn = (DatabaseConnection) item.getConnection();
                         String dbType = dbConn.getDatabaseType();
-                        if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
-                            canWork = false;
-                            break;
-                        }
-                        if (EDatabaseTypeName.IMPALA.getXmlName().equalsIgnoreCase(dbType)) {
+                        if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)
+                                || EDatabaseTypeName.IMPALA.getXmlName().equalsIgnoreCase(dbType)
+                                || EDatabaseTypeName.HBASE.getXmlName().equalsIgnoreCase(dbType)) {
                             canWork = false;
                             break;
                         }
                     }
-
                 }
                 break;
             default:
