@@ -12,12 +12,10 @@
 // ============================================================================
 package org.talend.spark.function;
 
-import java.util.List;
-
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 
-public class SampleFunction implements Function<JavaRDD<List<Object>>, JavaRDD<List<Object>>> {
+public class SampleFunction<T> implements Function<JavaRDD<T>, JavaRDD<T>> {
 
 	/**
 	 * 
@@ -33,7 +31,7 @@ public class SampleFunction implements Function<JavaRDD<List<Object>>, JavaRDD<L
 		this.seed = seed;
 	}
 
-	public JavaRDD<List<Object>> call(JavaRDD<List<Object>> rdd) throws Exception {
-		return (JavaRDD<List<Object>>)rdd.sample(this.isWithReplacement, this.fraction, this.seed);
+	public JavaRDD<T> call(JavaRDD<T> rdd) throws Exception {
+		return rdd.sample(this.isWithReplacement, this.fraction, this.seed);
 	}
 }

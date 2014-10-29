@@ -232,7 +232,9 @@ public class JavaProcessUtil {
             if (needed.isRequired(node.getElementParameters())) {
                 // for MapReduce job, if the jar on Xml don't set MRREQUIRED="true", shouldn't add it to
                 // DistributedCache
+
                 if (onlyMR && !needed.isMrRequired()) {
+                    // if (!needed.isMrRequired()) {
                     continue;
                 }
                 modulesNeeded.add(needed);

@@ -159,7 +159,7 @@ try {
 			   		}
 			   		position++;
 			    }
-			    jobNamePosition = position-1;
+			    jobNamePosition = position-3;
 			    
 			    childJobName = commandLine[jobNamePosition];
 			    childJobName = childJobName.substring(childJobName.lastIndexOf(".")+1);
