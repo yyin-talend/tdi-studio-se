@@ -35,7 +35,7 @@ import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityMa
  */
 public class DqDemoImportTest extends DemosImportTest {
 
-    private static final String DQ_DEMO_PLUGIN_ID = "org.talend.dqdemo";
+    private static final String DQ_DEMO_PLUGIN_ID = "org.talend.dqdemo"; //$NON-NLS-1$
 
     private ResourcesManager dqResManager;
 

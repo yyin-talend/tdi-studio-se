@@ -101,6 +101,9 @@ public abstract class DemosImportTest {
     }
 
     protected void initTestPaths() {
+        if (currentDemo == null) { // maybe license problem, the demo plugin is not loaded.
+            return;
+        }
         String demoProjectPath = currentDemo.getDemoProjectFilePath();
         IPath path = new Path(demoProjectPath);
         path.lastSegment();
@@ -136,6 +139,9 @@ public abstract class DemosImportTest {
     }
 
     protected void initTempPro() throws PersistenceException, CoreException, LoginException {
+        if (currentDemo == null) { // maybe license problem, the demo plugin is not loaded.
+            return;
+        }
         createTempDemoProject(demoName);
         Context ctx = CoreRuntimePlugin.getInstance().getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
