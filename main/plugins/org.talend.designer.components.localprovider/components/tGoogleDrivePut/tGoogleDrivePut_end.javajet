@@ -106,13 +106,16 @@ imports="
 		
 			}
 				<%}%>
+	
+	<%}%>
 	}finally {
+	<%if(exposeOutput){%>
 		if (<%=cid%>_uploader_input != null)
 		{
 			<%=cid%>_uploader_input.close();
 		}
-	}
 	<%}%>
+	}
 		<%if(dataOutputConnection != null){%>
 			if(<%=dataOutputConnection%>.content != null){
 				try{
