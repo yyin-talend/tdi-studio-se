@@ -45,6 +45,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
@@ -201,6 +202,11 @@ public class Connection extends Element implements IConnection, IPerformance {
                     }
                 }
             }
+            // TDI-30811:tSalesforcebulkexec/tSalesforceOutput link tLogRow with main line has compile error
+            IElementParameter param = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            IMetadataTable meta = source.getMetadataFromConnector(param.getContext());
+            ChangeMetadataCommand cmd = new ChangeMetadataCommand(source, param, meta, meta);
+            cmd.execute(true);
         }
         setName(linkName);
         if (trace != null) {
