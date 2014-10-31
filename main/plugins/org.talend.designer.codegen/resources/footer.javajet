@@ -85,7 +85,6 @@
         exist_tSQLDB = true;
     }
 
-
     boolean exist_tSCP = false;
     List<INode> scpComponentsList = (List<INode>)process.getNodesOfType("tSCPConnection");
     if (scpComponentsList.size() > 0) {
@@ -209,7 +208,7 @@
 
         return bufferValue;
     }
-    
+
     public boolean hastBufferOutputComponent() {
 		boolean hastBufferOutput = false;
     	<%//For TDI-28558
@@ -641,10 +640,6 @@ this.globalResumeTicket = true;//to run tPostJob
     closeScpConnections();
 <% } %>
 
-<% if (exist_tSQLDB) { %>
-    closeSqlDbConnections();
-<% } %>
-
 <%
     if (hasSAM4RS || hasSAM4WS) {
 %>
@@ -687,6 +682,7 @@ if (execStat) {
 
   }
 
+    // only for OSGi env
     public void destroy() {
 <% if(exist_tMOM) { %>
     closeJmsConnections();
@@ -835,13 +831,13 @@ if (execStat) {
 
     private final String[][] escapeChars = {
         {"\\\\","\\"},{"\\n","\n"},{"\\'","\'"},{"\\r","\r"},
-        {"\\f","\f"},{"\\b","\b"},{"\\t","\t"}       
+        {"\\f","\f"},{"\\b","\b"},{"\\t","\t"}
         };
     private String replaceEscapeChars (String keyValue) {
 		if (keyValue == null || ("").equals(keyValue.trim())) {
 			return keyValue;
 		}
-		
+
 		StringBuilder result = new StringBuilder();
 		int currIndex = 0;
 		while (currIndex < keyValue.length()) {
@@ -850,19 +846,19 @@ if (execStat) {
 			for (String[] strArray : escapeChars) {
 				index = keyValue.indexOf(strArray[0],currIndex);
 				if (index>=0) {
-					
+
 					result.append(keyValue.substring(currIndex, index + strArray[0].length()).replace(strArray[0], strArray[1]));
 					currIndex = index + strArray[0].length();
 					break;
 				}
 			}
 			// if the left string doesn't include escape chars, append the left into the result
-			if (index < 0) { 
+			if (index < 0) {
 				result.append(keyValue.substring(currIndex));
 				currIndex = currIndex + keyValue.length();
 			}
 		}
-		
+
 		return result.toString();
     }
 
