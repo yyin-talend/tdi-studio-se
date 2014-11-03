@@ -21,19 +21,23 @@
 	String targetType = ElementParameterParser.getValue(node, "__TARGET_TYPE__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
-
+	boolean log4JActived = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	dbLog = new DBLogUtil(node);
 	
 	if(("true").equals(useExistingConn)){
 		String col= "col_" + connection;
+		dbLog.info(dbLog.str("uses an existing connection."));
 %>
 		org.xmldb.api.base.Collection col_<%=cid%> = (org.xmldb.api.base.Collection)globalMap.get("<%=col%>");
 <%
 	}else{
 %>
 		Class cl_<%=cid%> = Class.forName(<%=driver%>);
-		<%dbLog.conn().logJDBCDriver(driver);%>
+
+		<% dbLog.info(dbLog.str("Try to create a database instance.")); %>
 	    org.xmldb.api.base.Database database_<%=cid%> = (org.xmldb.api.base.Database) cl_<%=cid%>.newInstance();
+		<% dbLog.info(dbLog.str("Create the instance successed.")); %>
+
 	    database_<%=cid%>.setProperty("create-database", "true");
 	    org.xmldb.api.DatabaseManager.registerDatabase(database_<%=cid%>);
 	        
@@ -42,9 +46,9 @@
 		%>
 		
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-	   	<%dbLog.conn().connTry(uri,user);%>
+	    <% dbLog.info(dbLog.str("Try to retrieve a Collection instance from the database for the given URI: "),uri,dbLog.str(".")); %>
 	    org.xmldb.api.base.Collection col_<%=cid%> = org.xmldb.api.DatabaseManager.getCollection(<%=uri%> + <%=collection%>,<%=user%>,decryptedPassword_<%=cid%>);
-		<%dbLog.conn().connDone(uri);%>
+        <% dbLog.info(dbLog.str("Retrieves a Collection instance from the database successed.")); %>
 <%
 	}
 %>
@@ -60,7 +64,7 @@
 <%
 	}
 %>	
-
+		<% dbLog.info(dbLog.str("Try to list file which matches the filemask.")); %>
 		for(java.util.Map<String, String> map_<%=cid%> : list_<%=cid%>){
 		
 		   	java.util.Set<String> keySet_<%=cid%> = map_<%=cid%>.keySet();
@@ -96,6 +100,11 @@
 				}
 %>
 						if(contentName_<%=cid%>.matches(finalMask_<%=cid%>)){
+							<% if(log4JActived){
+								%>
+								   log.debug("<%= cid %> - '"+contentName_<%=cid%>+"' matches the raw file mask '"+filemask_<%=cid%>+"'.");
+								<%
+							} %>
 					        globalMap.put("<%=cid%>_CURRENT_FILE", contentName_<%=cid%>);
 					        globalMap.put("<%=cid%>_CURRENT_FILEPATH", <%=collection%> + contentName_<%=cid%>);
 						}

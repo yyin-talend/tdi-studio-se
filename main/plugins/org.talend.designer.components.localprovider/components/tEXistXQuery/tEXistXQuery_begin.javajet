@@ -18,30 +18,34 @@
 	String xqueryFile = ElementParameterParser.getValue(node, "__XQUERY__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
-
+	boolean log4JActived = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	dbLog = new DBLogUtil(node);
 
 	if(("true").equals(useExistingConn)){
 		String col= "col_" + connection;
+		dbLog.info("uses an existing connection.");
 %>
 		org.xmldb.api.base.Collection col_<%=cid%> = (org.xmldb.api.base.Collection)globalMap.get("<%=col%>");
 <%
 	}else{
 %>
 		Class cl_<%=cid%> = Class.forName(<%=driver%>);
-		<%dbLog.conn().logJDBCDriver(driver);%>
+
+        <% dbLog.info(dbLog.str("Try to create a database instance.")); %>
 	    org.xmldb.api.base.Database database_<%=cid%> = (org.xmldb.api.base.Database) cl_<%=cid%>.newInstance();
+        <% dbLog.info(dbLog.str("Create the instance successed.")); %>
+
 	    database_<%=cid%>.setProperty("create-database", "true");
 	    org.xmldb.api.DatabaseManager.registerDatabase(database_<%=cid%>);
-	        
+
 		<%
 		String passwordFieldName = "__PASSWORD__";
 		%>
 		
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-	   	<%dbLog.conn().connTry(uri,user);%>
+	    <% dbLog.info(dbLog.str("Try to retrieve a Collection instance from the database for the given URI: "),uri,dbLog.str(".")); %>
 	    org.xmldb.api.base.Collection col_<%=cid%> = org.xmldb.api.DatabaseManager.getCollection(<%=uri%> + <%=collection%>,<%=user%>,decryptedPassword_<%=cid%>);
-		<%dbLog.conn().connDone(uri);%>
+        <% dbLog.info(dbLog.str("Retrieves a Collection instance from the database successed.")); %>
 <%
 	}
 %>
@@ -52,11 +56,22 @@
         xml_<%=cid%>.append(line_<%=cid%>);
     f_<%=cid%>.close();
     String query_<%=cid%> = xml_<%=cid%>.toString();
+    <%
+      if(log4JActived){
+       	 %>
+       	    log.debug("<%= cid %> - the raw query string is '"+query_<%= cid %>+"'");
+       	 <%
+       } 
+     %>
     org.exist.xmldb.XQueryService service_<%=cid%> = (org.exist.xmldb.XQueryService) col_<%=cid%>.getService("XQueryService", "1.0");
     service_<%=cid%>.setProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
     service_<%=cid%>.setProperty(javax.xml.transform.OutputKeys.ENCODING, "UTF-8");
     org.xmldb.api.base.CompiledExpression compiled_<%=cid%> = service_<%=cid%>.compile(query_<%=cid%>);
+
+    <% dbLog.info(dbLog.str("Try to execute query.")); %>
     org.xmldb.api.base.ResourceSet result_<%=cid%> = service_<%=cid%>.execute(compiled_<%=cid%>);
+    <% dbLog.info(dbLog.str("Execute query successed.")); %>
+
     java.util.Properties outputProperties_<%=cid%> = new java.util.Properties();
     outputProperties_<%=cid%>.setProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
     org.exist.util.serializer.SAXSerializer serializer_<%=cid%> = (org.exist.util.serializer.SAXSerializer) org.exist.util.serializer.SerializerPool.getInstance().borrowObject(org.exist.util.serializer.SAXSerializer.class);
@@ -74,4 +89,3 @@
     org.exist.util.serializer.SerializerPool.getInstance().returnObject(consoleSerializer_<%=cid%>);
     writer_<%=cid%>.flush();
     consoleWriter_<%=cid%>.flush();
-    
