@@ -60,7 +60,12 @@ if(!"true".equals(useExistingConn)){
 	if("true".equals(useProxy)){
 %>   
 		<%=cid%>_httpClient.setConnectionTimeOut(3000);
-		org.apache.http.HttpHost <%=cid%>_proxy = new org.apache.http.HttpHost(<%=proxyHost%>, <%=proxyPort%>, "http");
+		String <%=cid%>_proxyHost = <%=proxyHost%>;
+		if (null == <%=cid%>_proxyHost || <%=cid%>_proxyHost.isEmpty())
+		{
+			throw new Exception("Proxy host can not be empty");
+		}
+		org.apache.http.HttpHost <%=cid%>_proxy = new org.apache.http.HttpHost(<%=cid%>_proxyHost, <%=proxyPort%>, "http");
 		org.apache.http.client.HttpClient <%=cid%>_cl = <%=cid%>_httpClient.getRawHttpClient();
 		<%=cid%>_cl.getParams().setParameter(org.apache.http.conn.params.ConnRoutePNames.DEFAULT_PROXY, <%=cid%>_proxy);
 <%
@@ -70,24 +75,33 @@ if(!"true".equals(useExistingConn)){
 	}
 %>
 	com.box.boxjavalibv2.BoxClient <%=cid%>_client = null;
+	String <%=cid%>_accessToken = <%=accessToken%>;
+	String <%=cid%>_refreshToken = <%=refreshToken%>;
+	String <%=cid%>_clientId = <%=clientId%>;
+	String <%=cid%>_clientSecret = <%=clientSecret%>;
+	if (null == <%=cid%>_clientId || <%=cid%>_clientId.isEmpty() || null == <%=cid%>_clientSecret || <%=cid%>_clientSecret.isEmpty()) {
+		throw new Exception("Client Id and secret can not be empty");
+	}
 	if(globalMap.get("copy_<%=cid%>") == null)
 	{
-		<%=cid%>_client = new com.box.boxjavalibv2.BoxClient(<%=clientId%>, <%=clientSecret%>, null, null, <%=cid%>_httpClient, new com.box.boxjavalibv2.BoxConfigBuilder().build());
-	
-		if((<%=accessToken%> == null || "".equals(<%=accessToken%>.trim())) && (<%=refreshToken%> == null || "".equals(<%=refreshToken%>.trim()))) {
+		
+		<%=cid%>_client = new com.box.boxjavalibv2.BoxClient(<%=cid%>_clientId, <%=cid%>_clientSecret, null, null, <%=cid%>_httpClient, new com.box.boxjavalibv2.BoxConfigBuilder().build());
+		
+		if((<%=cid%>_accessToken == null || "".equals(<%=cid%>_accessToken.trim())) && (<%=cid%>_refreshToken == null || "".equals(<%=cid%>_refreshToken.trim()))) {
 			throw new Exception("One of Access token or Refresh token should be provided");
 		} else {
 			java.util.Map<String, Object> <%=cid%>_map = new java.util.HashMap<String, Object>();
-		<%if (accessToken != null && !accessToken.isEmpty()  && !accessToken.trim().matches("\"?\"?") && refreshToken != null && !refreshToken.isEmpty() && !refreshToken.trim().matches("\"?\"?")) { %>
-			<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=accessToken%>);
-			<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=refreshToken%>);
+		if (<%=cid%>_accessToken != null && !<%=cid%>_accessToken.isEmpty()  && !<%=cid%>_accessToken.trim().matches("\"?\"?")
+		 && <%=cid%>_refreshToken != null && !<%=cid%>_refreshToken.isEmpty() && !<%=cid%>_refreshToken.trim().matches("\"?\"?")) {
+			<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=cid%>_accessToken);
+			<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=cid%>_refreshToken);
 		    <%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
-		<% } else if (accessToken != null && !accessToken.isEmpty() && !accessToken.trim().matches("\"?\"?")) { %>
-		    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=accessToken%>);
-		<% } else if (refreshToken != null && !"".equals(refreshToken.trim()) && !refreshToken.trim().matches("\"?\"?")) { %>
-		    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=refreshToken%>);
+		} else if (<%=cid%>_accessToken != null && !<%=cid%>_accessToken.isEmpty() && !<%=cid%>_accessToken.trim().matches("\"?\"?")) {
+		    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=cid%>_accessToken);
+		} else if (<%=cid%>_refreshToken != null && !"".equals(<%=cid%>_refreshToken.trim()) && !<%=cid%>_refreshToken.trim().matches("\"?\"?")) {
+		    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=cid%>_refreshToken);
 		    <%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
-		<% } %> 
+		}
 		    <%=cid%>_client.authenticate(new com.box.boxjavalibv2.dao.BoxOAuthToken(<%=cid%>_map));
 		    globalMap.put("copy_<%=cid%>", <%=cid%>_client);
 		}
