@@ -203,10 +203,14 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             }
             // TDI-30811:tSalesforcebulkexec/tSalesforceOutput link tLogRow with main line has compile error
-            IElementParameter param = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-            IMetadataTable meta = source.getMetadataFromConnector(param.getContext());
-            ChangeMetadataCommand cmd = new ChangeMetadataCommand(source, param, meta, meta);
-            cmd.execute(true);
+            IElementParameter schemaTypeParam = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            if (schemaTypeParam != null) {
+                IMetadataTable metadataTable = source.getMetadataFromConnector(schemaTypeParam.getContext());
+                if (metadataTable != null) {
+                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(source, schemaTypeParam, metadataTable, metadataTable);
+                    cmd.execute(true);
+                }
+            }
         }
         setName(linkName);
         if (trace != null) {
