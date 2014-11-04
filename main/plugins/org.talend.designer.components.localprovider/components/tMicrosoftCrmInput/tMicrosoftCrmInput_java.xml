@@ -11405,7 +11405,7 @@
             <IMPORT NAME="geronimo-stax" MODULE="geronimo-stax-api_1.0_spec-1.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/geronimo-stax-api_1.0_spec-1.0.1.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
             <IMPORT NAME="wstx-asl" MODULE="wstx-asl-3.2.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wstx-asl-3.2.4.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
             <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
-            <IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
+            <IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
             <IMPORT NAME="saajapi" MODULE="saaj-api.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-api.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
             <IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-impl.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
             <IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-api.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
