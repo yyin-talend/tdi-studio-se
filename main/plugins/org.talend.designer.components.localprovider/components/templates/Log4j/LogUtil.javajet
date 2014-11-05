@@ -67,7 +67,7 @@ class BasicLogUtil{
 	<%
 	}
 	
-	private void log4j(String level, String... messages){
+	public void log4j(String level, String... messages){
 		if(this.log4jEnabled){
 		%>
 			log.<%=level%>("<%=logID%> - " <%for(String message : messages){%> + <%=message%> <%}%>);
