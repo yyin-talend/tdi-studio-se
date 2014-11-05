@@ -5,6 +5,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser
 		java.util.List
+		org.talend.core.model.utils.NodeUtil
 	"
 %>
 <%
@@ -30,7 +31,7 @@
 	synchronized (multiThreadLockWrite) {
 <%
 	}
-	if (codeGenArgument.subTreeContainsParallelIterate()) {
+	if (NodeUtil.subBranchContainsParallelIterate(node)) {
 %>
 	synchronized (lockWrite) {
 <% 
@@ -57,7 +58,7 @@
     } 
 <%
     }
-	if (codeGenArgument.subTreeContainsParallelIterate()) {
+	if (NodeUtil.subBranchContainsParallelIterate(node)) {
 %>
 	}
 <% 
