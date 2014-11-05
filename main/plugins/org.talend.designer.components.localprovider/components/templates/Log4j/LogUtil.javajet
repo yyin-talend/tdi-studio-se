@@ -26,11 +26,23 @@ class BasicLogUtil{
 	}
 	
 	public void info(String... message){
-		log4j("info", message);
+	%>
+		if(log.isInfoEnabled()){	
+    		<%
+    		log4j("info", message);
+    		%>
+		}	
+	<%
 	}
 	
 	public void debug(String... message){
-		log4j("debug", message);
+	%>
+		if(log.isDebugEnabled()){
+    		<%
+    		log4j("debug", message);
+    		%>
+    	}		
+    <%
 	}
 	
 	public void warn(String... message){
@@ -46,7 +58,13 @@ class BasicLogUtil{
 	}
 	
 	public void trace(String... message){
-		log4j("trace", message);
+	%>
+		if(log.isTraceEnabled()){
+    		<%
+    		log4j("trace", message);
+    		%>
+    	}
+	<%
 	}
 	
 	private void log4j(String level, String... messages){
@@ -150,7 +168,7 @@ class LogUtil extends BasicLogUtil{
        			}else{
        				String value = org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, ep);
        				%>
-    				<%=var("log4jParamters")%>.append("<%=name%>" + " = " + routines.TalendString.unionString(",",<%=value%>));
+    				<%=var("log4jParamters")%>.append("<%=name%>" + " = " + <%=value%>);
     			<%
     			}	
     			%>
