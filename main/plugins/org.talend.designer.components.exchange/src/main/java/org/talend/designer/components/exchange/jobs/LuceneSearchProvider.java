@@ -24,14 +24,17 @@ import java.util.Set;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
 
 /**
  * 
@@ -43,9 +46,13 @@ public class LuceneSearchProvider<T> implements ISearchProvider<T> {
 
     private static final String FIELD_PREFIX = "field"; //$NON-NLS-1$
 
+    private static final Version LUCENE_VER = Version.LUCENE_30;
+
     // Construct a RAMDirectory to hold the in-memory representation
     // of the index.
-    RAMDirectory fIndex;
+    private RAMDirectory fIndex;
+
+    private IndexWriterConfig fWriterConfig;
 
     private IndexWriter fWriter;
 
@@ -58,6 +65,7 @@ public class LuceneSearchProvider<T> implements ISearchProvider<T> {
      * 
      * @see org.talend.designer.components.exchange.jobs.ISearchProvider#init()
      */
+    @Override
     public void init() throws IOException {
         try {
             if (fIndex != null) {
@@ -66,10 +74,14 @@ public class LuceneSearchProvider<T> implements ISearchProvider<T> {
         } catch (RuntimeException e) {
 
         }
-        fIndex = new RAMDirectory();
         fRecords = new HashMap<String, T>();
+
+        fIndex = new RAMDirectory();
+        // FIXME version is 3.5??
+
+        fWriterConfig = new IndexWriterConfig(LUCENE_VER, new StandardAnalyzer(LUCENE_VER));
         // Make an writer to create the index
-        fWriter = new IndexWriter(fIndex, new StandardAnalyzer(), true);
+        fWriter = new IndexWriter(fIndex, fWriterConfig);
     }
 
     /*
@@ -78,7 +90,7 @@ public class LuceneSearchProvider<T> implements ISearchProvider<T> {
      * @see org.talend.designer.components.exchange.jobs.ISearchProvider#addRecord(T, java.lang.String,
      * java.lang.String)
      */
-    @SuppressWarnings("deprecation")
+    @Override
     public void addRecord(T bean, String key, String... fields) throws IOException {
         Document doc = new Document();
 
@@ -92,8 +104,8 @@ public class LuceneSearchProvider<T> implements ISearchProvider<T> {
         doc.add(new Field(KEY_FIELD, key, Field.Store.YES, Field.Index.NO));
         fRecords.put(key, bean);
         // add record to index
-        if (fWriter == null) {
-            fWriter = new IndexWriter(fIndex, new StandardAnalyzer(), true);
+        if (fWriter == null) { // FIXME why need?
+            // fWriter = new IndexWriter(fIndex, new StandardAnalyzer(), true);
         }
         fWriter.addDocument(doc);
     }
@@ -103,44 +115,47 @@ public class LuceneSearchProvider<T> implements ISearchProvider<T> {
      * 
      * @see org.talend.designer.components.exchange.jobs.ISearchProvider#search(java.lang.String)
      */
-    @SuppressWarnings("deprecation")
+    @Override
     public List<T> search(String queryString) throws ParseException, IOException {
         if (fWriter != null) {
             // Optimize and close the writer to finish building the index
             fWriter.optimize();
             fWriter.close();
         }
-
         // Build an IndexSearcher using the in-memory index
-        Searcher searcher = new IndexSearcher(fIndex);
+        IndexReader reader = IndexReader.open(fIndex, true);
+        IndexSearcher searcher = new IndexSearcher(reader); // FIXME, closeReader=true, before.
 
         Set<String> keys = new HashSet<String>();
 
-        for (int f = 0; f < fFieldNum; f++) {
-            String field = FIELD_PREFIX + f;
+        try {
 
-            // Build a Query object
-            Query query = new QueryParser(field, new StandardAnalyzer()).parse(queryString);
+            for (int f = 0; f < fFieldNum; f++) {
+                String field = FIELD_PREFIX + f;
 
-            // Search for the query
-            Hits hits = searcher.search(query);
+                // Build a Query object
+                Query query = new QueryParser(LUCENE_VER, field, new StandardAnalyzer(LUCENE_VER)).parse(queryString);
 
-            // Examine the Hits object to see if there were any matches
-            int hitCount = hits.length();
-
-            // Iterate over the Documents in the Hits object
-            for (int i = 0; i < hitCount; i++) {
-                Document doc = hits.doc(i);
-                keys.add(doc.get(KEY_FIELD));
+                // Search for the query
+                TopDocs topDocs = searcher.search(query, Integer.MAX_VALUE); // means search all?
+                for (ScoreDoc sDoc : topDocs.scoreDocs) {
+                    Document doc = searcher.doc(sDoc.doc);
+                    String value = doc.get(KEY_FIELD);
+                    if (value != null) {
+                        keys.add(value);
+                    }
+                }
             }
-        }
 
-        List<T> result = new ArrayList<T>();
-        for (String key : keys) {
-            result.add(fRecords.get(key));
+            List<T> result = new ArrayList<T>();
+            for (String key : keys) {
+                result.add(fRecords.get(key));
+            }
+            return result;
+        } finally {
+            searcher.close();
+            reader.close();
         }
-        return result;
 
     }
-
 }
