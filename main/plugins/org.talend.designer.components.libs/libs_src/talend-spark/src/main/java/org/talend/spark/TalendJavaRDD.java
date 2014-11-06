@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.spark;
 
+import java.util.List;
+
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
@@ -71,10 +73,15 @@ public class TalendJavaRDD<T> extends TalendRDD<T> {
 	}
 
 	@Override
-	public void collect() {
+	public void toConsole() {
 		for (T row : this.rdd.collect()) {
 			System.out.println(row);
 		}
+	}
+	
+	@Override
+	public List<T> collect() {
+		return this.rdd.collect();
 	}
 
 	@Override

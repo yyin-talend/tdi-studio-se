@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.spark;
 
+import java.util.List;
+
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFunction;
@@ -24,7 +26,8 @@ public abstract class TalendRDD<T> {
 	public abstract TalendRDD<T> distinct();
 	public abstract TalendRDD<T> union(TalendRDD<T> rdd);
 	public abstract void saveAsTextFile(String filename);
-	public abstract void collect();
+	public abstract void toConsole();
+	public abstract List<T> collect();
 	public abstract TalendRDD<T> getTalendRDD();
 	public abstract <K2,V2> TalendPairRDD<K2, V2> mapToPair(PairFunction<T, K2, V2> func);
 	public abstract <U> TalendRDD<U> flatMap(FlatMapFunction<T, U> func);

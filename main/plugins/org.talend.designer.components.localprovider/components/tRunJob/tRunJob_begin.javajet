@@ -159,9 +159,13 @@ try {
 			   		}
 			   		position++;
 			    }
-			    jobNamePosition = position-3;
+			    jobNamePosition = position-1;
 			    
-			    childJobName = commandLine[jobNamePosition];
+				 if(commandLine[jobNamePosition - 1].startsWith("-libjars")) {
+				    childJobName = commandLine[jobNamePosition - 2];
+			    } else {
+			    	 childJobName = commandLine[jobNamePosition];
+			    }
 			    childJobName = childJobName.substring(childJobName.lastIndexOf(".")+1);
 				%>
 				childJob_commandLine_Mapper_<%=cid%>.put("<%=childJobName%>",childJob_commandLine_<%=cid%>);	

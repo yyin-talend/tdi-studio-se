@@ -14,6 +14,7 @@ package org.talend.spark;
 
 import java.util.Comparator;
 
+import org.apache.hadoop.mapred.JobConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
@@ -75,9 +76,25 @@ public class TalendDStreamPairRDD<K, V> extends TalendPairRDD<K, V> {
 	@Override
 	public <W> TalendPairRDD<K, Tuple2<V, Optional<W>>> leftOuterJoin(
 			TalendPairRDD<K, W> dataM2) {
-		return new TalendDStreamPairRDD<K, Tuple2<V, Optional<W>>>(
-				this.rdd.leftOuterJoin(((TalendDStreamPairRDD<K, W>) dataM2)
-						.getRdd()));
+		if (dataM2 instanceof TalendDStreamPairRDD) {
+			return new TalendDStreamPairRDD<K, Tuple2<V, Optional<W>>>(
+					this.rdd.leftOuterJoin(((TalendDStreamPairRDD<K, W>) dataM2)
+							.getRdd()));
+		} else {
+			final TalendJavaPairRDD<K, W> dataRDDM2 = (TalendJavaPairRDD<K, W>) dataM2;
+
+			return new TalendDStreamPairRDD<K, Tuple2<V, Optional<W>>>(
+					this.rdd.transformToPair(new Function<JavaPairRDD<K, V>, JavaPairRDD<K, Tuple2<V, Optional<W>>>>() {
+
+						private static final long serialVersionUID = 1L;
+
+						public JavaPairRDD<K, Tuple2<V, Optional<W>>> call(
+								JavaPairRDD<K, V> dataRDDM1) throws Exception {
+							return dataRDDM1.leftOuterJoin(dataRDDM2.getRdd());
+						}
+
+					}));
+		}
 	}
 
 	@Override
@@ -118,5 +135,19 @@ public class TalendDStreamPairRDD<K, V> extends TalendPairRDD<K, V> {
 	@Override
 	public TalendPairRDD<K, V> reduceByKey(Function2<V, V, V> func) {
 		return new TalendDStreamPairRDD<K, V>(this.rdd.reduceByKey(func));
+	}
+
+	@Override
+	public void saveAsHadoopDataset(JobConf conf) {
+		final JobConf config = conf;
+		this.rdd.foreachRDD(new Function<JavaPairRDD<K, V>, Void>() {
+
+			private static final long serialVersionUID = 1L;
+
+			public Void call(JavaPairRDD<K, V> v1) throws Exception {
+				v1.saveAsHadoopDataset(config);
+				return null;
+			}
+		});
 	}
 }

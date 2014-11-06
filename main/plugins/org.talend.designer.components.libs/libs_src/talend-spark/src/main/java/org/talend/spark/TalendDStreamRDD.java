@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.spark;
 
+import java.util.List;
+
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFunction;
@@ -74,9 +76,14 @@ public class TalendDStreamRDD<T> extends TalendRDD<T> {
 	}
 
 	@Override
-	public void collect() {
+	public void toConsole() {
 		this.rdd.print();
 	}
+
+	 @Override
+	 public List<T> collect() {
+	 throw new NotImplementedException();
+	 }
 
 	@Override
 	public <K2, V2> TalendPairRDD<K2, V2> mapToPair(PairFunction<T, K2, V2> func) {

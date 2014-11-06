@@ -14,6 +14,7 @@ package org.talend.spark;
 
 import java.util.Comparator;
 
+import org.apache.hadoop.mapred.JobConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
@@ -97,5 +98,10 @@ public class TalendJavaPairRDD<K, V> extends TalendPairRDD<K, V> {
 	@Override
 	public TalendPairRDD<K, V> reduceByKey(Function2<V, V, V> func) {
 		return new TalendJavaPairRDD<K, V>(this.rdd.reduceByKey(func));
+	}
+
+	@Override
+	public void saveAsHadoopDataset(JobConf conf) {
+		this.rdd.saveAsHadoopDataset(conf);		
 	}
 }
