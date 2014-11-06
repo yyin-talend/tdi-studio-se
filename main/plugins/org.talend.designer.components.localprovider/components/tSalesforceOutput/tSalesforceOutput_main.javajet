@@ -143,12 +143,14 @@ Object[] resultMessageObj_<%=cid%> = null;
 %>
 									if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
 										reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(<%=externalIdFromLookupField %>,FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) ));
+        								list_<%=cid %>.add(reference_<%=cid%>_<%=i%>_<%=j%>);
 									}
 <%
 								} else if (javaType == JavaTypesManager.BYTE_ARRAY) {
 %>
 									if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
 										reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(<%=externalIdFromLookupField %>,java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString() ));
+        								list_<%=cid %>.add(reference_<%=cid%>_<%=i%>_<%=j%>);
 									}
 <%
 								} else {//TD1024
@@ -159,12 +161,10 @@ Object[] resultMessageObj_<%=cid%> = null;
 					    			if(!"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
 					    			<%}%>
 										reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(<%=externalIdFromLookupField %>,String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>) ));
+    									list_<%=cid %>.add(reference_<%=cid%>_<%=i%>_<%=j%>);
 									}
 <%
 								}////TD1024
-%>
-								list_<%=cid %>.add(reference_<%=cid%>_<%=i%>_<%=j%>);
-<%
 							}
 						}
     				}//TD512
