@@ -26,23 +26,11 @@ class BasicLogUtil{
 	}
 	
 	public void info(String... message){
-	%>
-		if(log.isInfoEnabled()){	
-    		<%
-    		log4j("info", message);
-    		%>
-		}	
-	<%
+		log4j("info", message);
 	}
 	
 	public void debug(String... message){
-	%>
-		if(log.isDebugEnabled()){
-    		<%
-    		log4j("debug", message);
-    		%>
-    	}		
-    <%
+		log4j("debug", message);
 	}
 	
 	public void warn(String... message){
@@ -58,18 +46,17 @@ class BasicLogUtil{
 	}
 	
 	public void trace(String... message){
-	%>
-		if(log.isTraceEnabled()){
-    		<%
-    		log4j("trace", message);
-    		%>
-    	}
-	<%
+		log4j("trace", message);
 	}
-	
+	java.util.List<String> checkableList = java.util.Arrays.asList(new String[]{"info", "debug", "trace"}); 	
 	public void log4j(String level, String... messages){
 		if(this.log4jEnabled){
-		%>
+			if(checkableList.contains(level)){
+			%>
+				if(log.is<%=level.substring(0, 1).toUpperCase() + level.substring(1)%>Enabled())
+			<%
+			}
+			%>
 			log.<%=level%>("<%=logID%> - " <%for(String message : messages){%> + <%=message%> <%}%>);
 		<%
 		}
