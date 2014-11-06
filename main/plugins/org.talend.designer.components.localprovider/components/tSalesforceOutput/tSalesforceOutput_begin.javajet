@@ -55,53 +55,45 @@ imports="
     		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
     		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
 			%>
-			try{
-				sforceConn_<%=cid%> = 
-        			new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, <%=oauthSecret%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
-        				<%
-        				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
-        				%>
-            				.setTokenFilePath(<%=tokenFile%>)
-        				<%
-        				}
-        				%>
-        				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
-                    	<%
-                    	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
-                    	%>
-                    		.setClientID(<%=clientID%>);
-                    	<%
-                    	}
-                    	%>
-                    	.build();
-    		}catch(Exception e){
-    			throw e;
-    		}
+			sforceConn_<%=cid%> = 
+    			new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, <%=oauthSecret%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
+    				<%
+    				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+    				%>
+        				.setTokenFilePath(<%=tokenFile%>)
+    				<%
+    				}
+    				%>
+    				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
+                	<%
+                	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
+                	%>
+                		.setClientID(<%=clientID%>);
+                	<%
+                	}
+                	%>
+                	.build();
 		<%
 		}else{
 		%>
-	        try{
-				sforceConn_<%=cid%> = 
-        			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, <%=password%>)
-        				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
-                    	<%
-                    	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
-                    	%>
-                    		.setClientID(<%=clientID%>);
-                    	<%
-                    	}
-                    	%>
-                    	.build();
-			}catch(Exception e){
-				throw e;
-			}
+    		sforceConn_<%=cid%> = 
+    			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, <%=password%>)
+    				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
+                	<%
+                	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
+                	%>
+                		.setClientID(<%=clientID%>);
+                	<%
+                	}
+                	%>
+                	.build();
     	<%
     	}
     	%>
     <%
     }
     %>
-    org.talend.salesforce.SforceManagement sforceManagement_<%=cid%> = new org.talend.salesforce.SforceManagementImpl(sforceConn_<%=cid%>);
+    org.talend.salesforce.SforceManagement sforceManagement_<%=cid%> = new org.talend.salesforce.SforceManagementImpl(sforceConn_<%=cid%>, <%=commitLevel%>, <%=ceaseForError%>, <%=logFile%>);
     <%if("upsert".equals(action)){%>
 		org.apache.axiom.om.OMFactory fac_<%=cid%> = org.apache.axiom.om.OMAbstractFactory.getOMFactory();       
     <%}%>
