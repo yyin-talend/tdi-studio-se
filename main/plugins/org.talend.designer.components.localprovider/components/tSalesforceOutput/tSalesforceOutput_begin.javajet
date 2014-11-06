@@ -116,7 +116,7 @@ imports="
     	log.info(log.str("Login successful."));
     }
     %>
-    org.talend.salesforce.SforceManagement sforceManagement_<%=cid%> = new org.talend.salesforce.SforceManagementImpl(sforceConn_<%=cid%>);
+    org.talend.salesforce.SforceManagement sforceManagement_<%=cid%> = new org.talend.salesforce.SforceManagementImpl(sforceConn_<%=cid%>, <%=commitLevel%>, <%=ceaseForError%>, <%=logFile%>);
     <%if("upsert".equals(action)){%>
 		org.apache.axiom.om.OMFactory fac_<%=cid%> = org.apache.axiom.om.OMAbstractFactory.getOMFactory();       
     <%}%>
