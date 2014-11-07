@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -644,11 +645,11 @@ public class DbMapComponent extends AbstractMapComponent {
         if (metaTableList == null || metaTableList.size() == 0) {
             return;
         }
-        IMetadataTable connMetadataTable = dataComponent.getConnMetadataTable();
-        if (connMetadataTable == null) {
+        // in the eltmap, the input table name is same with it's input connection name
+        String tableName = dataComponent.getName();
+        if (StringUtils.isEmpty(tableName)) {
             return;
         }
-        String tableName = connMetadataTable.getLabel();
         for (ExternalDbMapTable metaTable : metaTableList) {
             if (tableName.equals(metaTable.getTableName())) {
                 List<IExternalMapEntry> externalMapEntryList = (List<IExternalMapEntry>) metaTable.returnTableEntries();
