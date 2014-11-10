@@ -83,6 +83,9 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
             } catch (Exception e) {
                 return false;
             }
+        } else if (node.getContentType().equals(ERepositoryObjectType.REFERENCED_PROJECTS)
+                || node.getContentType().equals(ERepositoryObjectType.SVN_ROOT)) {
+            return true;
         } else if (node.getObject() != null) {
             String id = node.getObject().getId();
             return jobIds.contains(id);
