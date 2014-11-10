@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CodeGen Plug-in
 Bundle-SymbolicName: org.talend.designer.codegen;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 6.0.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.talend.core.repository,
  org.eclipse.emf.codegen,
@@ -31,3 +31,4 @@ Export-Package: org.talend.designer.codegen,
 Bundle-Vendor: .Talend SA.
 Bundle-Activator: org.talend.designer.codegen.CodeGeneratorActivator
 Import-Package: org.apache.commons.lang
+Eclipse-BundleShape: dir

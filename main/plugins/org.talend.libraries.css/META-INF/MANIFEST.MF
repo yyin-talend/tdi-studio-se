@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Css
 Bundle-SymbolicName: org.talend.libraries.css;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 6.0.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ClassPath: lib/cssparser-0.9.5.jar,
@@ -12,3 +12,4 @@ Export-Package: com.steadystate.css.parser,
  org.w3c.css.sac,
  org.w3c.css.sac.helpers
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

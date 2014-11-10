@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Excel
 Bundle-SymbolicName: org.talend.libraries.excel
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 6.0.0.qualifier
 Bundle-ClassPath: .,
  lib/poi-3.10-FINAL-20140219_modified_talend.jar,
  lib/poi-ooxml-3.10-FINAL-20140219_modified_talend.jar,
@@ -72,3 +72,4 @@ Export-Package:
 Require-Bundle: org.talend.libraries.dom4j-jaxen,
  org.talend.libraries.apache.xml
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir
