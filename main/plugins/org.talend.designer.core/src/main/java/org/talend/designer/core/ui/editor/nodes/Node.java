@@ -540,6 +540,20 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
+        // TDI-30811:tSalesforcebulkexec/tSalesforceOutput link tLogRow with main line has compile error
+        if (!this.getProcess().isDuplicate()) {
+            // only apply this to init the component when create ,if it's a duplicate process, only used for code
+            // generation, no need to update any data.
+            IElementParameter schemaTypeParam = this.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            if (schemaTypeParam != null) {
+                IMetadataTable metadataTable = this.getMetadataFromConnector(schemaTypeParam.getContext());
+                if (metadataTable != null) {
+                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(this, schemaTypeParam, metadataTable, metadataTable);
+                    cmd.execute(true);
+                }
+            }
+        }
+
         for (int i = 0; i < getElementParameters().size(); i++) {
             IElementParameter param = getElementParameters().get(i);
             Object obj = param.getValue();
@@ -4583,6 +4597,16 @@ public class Node extends Element implements IGraphicalNode {
 
         }
         return false;
+    }
+
+    public boolean isProgressBarNeeded() {
+        boolean needBar = true;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+            IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                    IMRProcessService.class);
+            needBar = mrService.isProgressBarNeeded(process);
+        }
+        return needBar;
     }
 
     public void defineAsSubjobMapReduceStart() {

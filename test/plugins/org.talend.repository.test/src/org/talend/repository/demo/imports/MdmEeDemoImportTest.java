@@ -35,7 +35,7 @@ import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityMa
  */
 public class MdmEeDemoImportTest extends DemosImportTest {
 
-    private static final String MDM_EE_DEMO_PLUGIN_ID = "org.talend.mdm.demo.enterprise";
+    private static final String MDM_EE_DEMO_PLUGIN_ID = "org.talend.mdm.demo.enterprise"; //$NON-NLS-1$
 
     private ResourcesManager mdmResEeManager;
 

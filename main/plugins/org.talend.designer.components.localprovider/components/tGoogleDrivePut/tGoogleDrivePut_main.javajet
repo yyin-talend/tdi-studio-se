@@ -120,7 +120,7 @@ imports="
 	}else if(<%=cid%>_content instanceof java.io.InputStream){
 		<%=cid%>_fContent = new com.google.api.client.http.InputStreamContent(null, (java.io.InputStream)<%=cid%>_content);
 	}else{
-		<%=cid%>_fContent = new com.google.api.client.http.ByteArrayContent(null, <%=cid%>_content.toString().getBytes());
+		<%=cid%>_fContent = new com.google.api.client.http.ByteArrayContent(null, String.valueOf(<%=cid%>_content).getBytes());
 	}
 	<%=cid%>_file = <%=cid%>_client.files().insert(<%=cid%>_file, <%=cid%>_fContent).execute();
 <%
@@ -143,6 +143,6 @@ imports="
 	}
 <%		}
 %>
-	}finally{
-	}
+	//}finally{
+	//}
 <%}%>

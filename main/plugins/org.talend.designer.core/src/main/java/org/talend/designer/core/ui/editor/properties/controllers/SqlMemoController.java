@@ -132,7 +132,22 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     // built-in open query
     private Command createCommand() {
         initConnectionParameters();
-        String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        IElementParameter basePropertyParameter = null;
+        for (IElementParameter param : elem.getElementParameters()) {
+            if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+                if (param.getRepositoryValue().startsWith("DATABASE")) {
+                    basePropertyParameter = param;
+                    break;
+                }
+            }
+        }
+        String repositoryType = null;
+        if (basePropertyParameter != null) {
+            repositoryType = (String) basePropertyParameter.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName())
+                    .getValue();
+        } else {
+            repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        }
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
         ECodeLanguage lang = LanguageManager.getCurrentLanguage();

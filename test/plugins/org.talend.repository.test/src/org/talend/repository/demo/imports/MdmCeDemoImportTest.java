@@ -16,7 +16,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.talend.repository.items.importexport.manager.ResourcesManager;
 
 /**
  * created by ldong on 2014-4-29 Detailled comment
@@ -24,9 +23,9 @@ import org.talend.repository.items.importexport.manager.ResourcesManager;
  */
 public class MdmCeDemoImportTest extends DemosImportTest {
 
-    private static final String MDM_CE_DEMO_PLUGIN_ID = "org.talend.mdm.demo";
+    private static final String MDM_CE_DEMO_PLUGIN_ID = "org.talend.mdm.demo"; //$NON-NLS-1$
 
-    private ResourcesManager mdmResCeManager;
+    // private ResourcesManager mdmResCeManager;
 
     @Before
     public void importMdmDemo() throws Exception {

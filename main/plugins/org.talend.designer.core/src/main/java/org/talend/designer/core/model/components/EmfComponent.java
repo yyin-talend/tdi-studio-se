@@ -1655,6 +1655,7 @@ public class EmfComponent extends AbstractComponent {
                 param.setMaxLength(xmlParam.getMAXLENGTH());
             }
             param.setRaw(xmlParam.isRAW());
+            param.setLog4JEnabled(xmlParam.isLOG4J_ENABLED());
             switch (type) {
             case COLOR:
                 param.setValue(DEFAULT_COLOR);
@@ -3909,5 +3910,23 @@ public class EmfComponent extends AbstractComponent {
             return false;
         }
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isLog4JEnabled()
+     */
+    @Override
+    public boolean isLog4JEnabled() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return compType.getHEADER().isLOG4J_ENABLED();
     }
 }

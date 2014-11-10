@@ -332,6 +332,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     protected String getValueFromRepositoryName(IElement elem2, String repositoryName) {
+        return getValueFromRepositoryName(elem2, repositoryName, null);
+    }
+
+    protected String getValueFromRepositoryName(IElement elem2, String repositoryName, IElementParameter baseRepositoryParameter) {
 
         for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
             // for job settings extra.(feature 2710)
@@ -342,6 +346,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
             // return (String) param.getValue();
             // }
             if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryProperty() != null && baseRepositoryParameter != null
+                        && !param.getRepositoryProperty().equals(baseRepositoryParameter.getName())) {
+                    continue;
+                }
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
                         return getRepositoryItemFromRepositoryName(param, repositoryName);
@@ -419,28 +427,22 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return ""; //$NON-NLS-1$
     }
 
-    protected String getParaNameFromRepositoryName(String repositoryName) {
-        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-            // for job settings extra.(feature 2710)
-            if (!sameExtraParameter(param)) {
-                continue;
-            }
-            if (param.getRepositoryValue() != null) {
-                if (param.getRepositoryValue().equals(repositoryName)) {
-                    return param.getName();
-                }
-            }
-        }
-        return null;
+    protected String getParaNameFromRepositoryName(String repositoryName, IElementParameter basePropertyParameter) {
+        return getParaNameFromRepositoryName(elem, repositoryName, basePropertyParameter);
     }
 
-    protected String getParaNameFromRepositoryName(IElement elem2, String repositoryName) {
+    protected String getParaNameFromRepositoryName(IElement elem2, String repositoryName, IElementParameter basePropertyParameter) {
         for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
             // for job settings extra.(feature 2710)
             if (!sameExtraParameter(param)) {
                 continue;
             }
             if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryProperty() != null && basePropertyParameter != null
+                        && !param.getRepositoryProperty().equals(basePropertyParameter.getName())) {
+                    // in case the parameter name is not linked to the current property tested (cf like tSqoopImport)
+                    continue;
+                }
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     return param.getName();
                 }
@@ -1340,12 +1342,22 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected ConnectionParameters connParameters;
 
     private void setAllConnectionParameters(String typ, IElement element) {
+        IElementParameter basePropertyParameter = null;
+        for (IElementParameter param : elem.getElementParameters()) {
+            if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+                if (param.getRepositoryValue().startsWith("DATABASE")) {
+                    basePropertyParameter = param;
+                    break;
+                }
+            }
+        }
+
         String type = null;
         ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         if (typ != null && !typ.equals("")) { //$NON-NLS-1$
             type = typ;
         } else {
-            type = getValueFromRepositoryName(element, "TYPE"); //$NON-NLS-1$
+            type = getValueFromRepositoryName(element, "TYPE", basePropertyParameter); //$NON-NLS-1$
         }
         if (type.equals("Oracle") || type.contains("OCLE")) {
             IElementParameter ele = element.getElementParameter("CONNECTION_TYPE");
@@ -1357,7 +1369,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         // Get real hsqldb type
         if (type.equals(EDatabaseTypeName.HSQLDB.name())
-                && getValueFromRepositoryName(element, "RUNNING_MODE").equals("HSQLDB_INPROGRESS_PERSISTENT")) {//$NON-NLS-1$
+                && getValueFromRepositoryName(element, "RUNNING_MODE", basePropertyParameter).equals("HSQLDB_INPROGRESS_PERSISTENT")) {//$NON-NLS-1$
             type = EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName();
         }
         // If the dbtype has been setted don't reset it again unless the dbtype of connParameters is null.
@@ -1368,25 +1380,26 @@ public abstract class AbstractElementPropertySectionController implements Proper
             connParameters.setDbType(type);
         }
 
-        String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE"); //$NON-NLS-1$
+        String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE", basePropertyParameter); //$NON-NLS-1$
         connParameters.setFrameworkType(frameWorkKey);
 
-        String schema = getValueFromRepositoryName(element, EConnectionParameterName.SCHEMA.getName());
+        String schema = getValueFromRepositoryName(element, EConnectionParameterName.SCHEMA.getName(), basePropertyParameter);
         connParameters.setSchema(schema);
 
-        String userName = getValueFromRepositoryName(element, EConnectionParameterName.USERNAME.getName());
+        String userName = getValueFromRepositoryName(element, EConnectionParameterName.USERNAME.getName(), basePropertyParameter);
         connParameters.setUserName(userName);
 
-        String password = getValueFromRepositoryName(element, EConnectionParameterName.PASSWORD.getName());
+        String password = getValueFromRepositoryName(element, EConnectionParameterName.PASSWORD.getName(), basePropertyParameter);
         connParameters.setPassword(password);
 
-        String host = getValueFromRepositoryName(element, EConnectionParameterName.SERVER_NAME.getName());
+        String host = getValueFromRepositoryName(element, EConnectionParameterName.SERVER_NAME.getName(), basePropertyParameter);
         connParameters.setHost(host);
 
-        String port = getValueFromRepositoryName(element, EConnectionParameterName.PORT.getName());
+        String port = getValueFromRepositoryName(element, EConnectionParameterName.PORT.getName(), basePropertyParameter);
         connParameters.setPort(port);
 
-        boolean https = Boolean.parseBoolean(getValueFromRepositoryName(element, EConnectionParameterName.HTTPS.getName()));
+        boolean https = Boolean.parseBoolean(getValueFromRepositoryName(element, EConnectionParameterName.HTTPS.getName(),
+                basePropertyParameter));
         connParameters.setHttps(https);
 
         boolean isOracleOCI = type.equals(EDatabaseTypeName.ORACLE_OCI.getXmlName())
@@ -1398,44 +1411,47 @@ public abstract class AbstractElementPropertySectionController implements Proper
             connParameters.setLocalServiceName(localServiceName);
         }
 
-        String datasource = getValueFromRepositoryName(element, EConnectionParameterName.DATASOURCE.getName());
+        String datasource = getValueFromRepositoryName(element, EConnectionParameterName.DATASOURCE.getName(),
+                basePropertyParameter);
         connParameters.setDatasource(datasource);
 
         // qli modified to fix the bug "7364".
 
-        String dbName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
+        String dbName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName(), basePropertyParameter);
         connParameters.setDbName(dbName);
         if (connParameters.getDbType().equals(EDatabaseTypeName.SQLITE.getXmlName())
                 || connParameters.getDbType().equals(EDatabaseTypeName.ACCESS.getXmlName())
                 || connParameters.getDbType().equals(EDatabaseTypeName.FIREBIRD.getXmlName())) {
-            String file = getValueFromRepositoryName(element, EConnectionParameterName.FILE.getName());
+            String file = getValueFromRepositoryName(element, EConnectionParameterName.FILE.getName(), basePropertyParameter);
             connParameters.setFilename(file);
         }
 
-        String dir = getValueFromRepositoryName(element, EConnectionParameterName.DIRECTORY.getName());
+        String dir = getValueFromRepositoryName(element, EConnectionParameterName.DIRECTORY.getName(), basePropertyParameter);
         if (type.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName())) {
-            dir = getValueFromRepositoryName(elem, EConnectionParameterName.DBPATH.getName());
+            dir = getValueFromRepositoryName(elem, EConnectionParameterName.DBPATH.getName(), basePropertyParameter);
         }
         connParameters.setDirectory(dir);
 
         // General jdbc
-        String url = getValueFromRepositoryName(element, EConnectionParameterName.URL.getName());
+        String url = getValueFromRepositoryName(element, EConnectionParameterName.URL.getName(), basePropertyParameter);
         if (StringUtils.isEmpty(url)) {
             // for oracle RAC
             // url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName());
             // Changed by Marvin Wang on Feb. 14, 2012 for bug TDI-19597. Above is the original code, below is new code
             // to get the Oracle RAC url.
             if (EDatabaseTypeName.ORACLE_CUSTOM.getXmlName().equals(type)) {
-                url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName());
+                url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName(), basePropertyParameter);
             }
         }
         connParameters.setUrl(TalendTextUtils.removeQuotes(url));
 
-        String driverJar = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_JAR.getName());
+        String driverJar = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_JAR.getName(),
+                basePropertyParameter);
         connParameters.setDriverJar(TalendTextUtils.removeQuotes(driverJar));
 
-        String driverClass = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_CLASS.getName());
-        String dbVersion = getValueFromRepositoryName(element, "DB_VERSION");
+        String driverClass = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_CLASS.getName(),
+                basePropertyParameter);
+        String dbVersion = getValueFromRepositoryName(element, "DB_VERSION", basePropertyParameter);
         if (EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersion)
                 || EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersion)
                 || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersion)
@@ -1463,7 +1479,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
         }
 
-        String jdbcProps = getValueFromRepositoryName(element, EConnectionParameterName.PROPERTIES_STRING.getName());
+        String jdbcProps = getValueFromRepositoryName(element, EConnectionParameterName.PROPERTIES_STRING.getName(),
+                basePropertyParameter);
         connParameters.setJdbcProperties(jdbcProps);
 
         String realTableName = null;
@@ -1508,6 +1525,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
 
+        IElementParameter basePropertyParameter = null;
+        for (IElementParameter param : elem.getElementParameters()) {
+            if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+                if (param.getRepositoryValue().startsWith("DATABASE")) {
+                    basePropertyParameter = param;
+                    break;
+                }
+            }
+        }
+
         // qli modified to fix the bug "7364".
         if (connParameters == null) {
             connParameters = new ConnectionParameters();
@@ -1536,28 +1563,35 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
         }
 
-        connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
-        connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context));
-        connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context));
-        connParameters.setSchema(getParameterValueWithContext(element, EConnectionParameterName.SCHEMA.getName(), context));
-        connParameters.setHost(getParameterValueWithContext(element, EConnectionParameterName.SERVER_NAME.getName(), context));
-        connParameters.setUserName(getParameterValueWithContext(element, EConnectionParameterName.USERNAME.getName(), context));
-        String dir = getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context);
+        connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context,
+                basePropertyParameter));
+        connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context,
+                basePropertyParameter));
+        connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context,
+                basePropertyParameter));
+        connParameters.setSchema(getParameterValueWithContext(element, EConnectionParameterName.SCHEMA.getName(), context,
+                basePropertyParameter));
+        connParameters.setHost(getParameterValueWithContext(element, EConnectionParameterName.SERVER_NAME.getName(), context,
+                basePropertyParameter));
+        connParameters.setUserName(getParameterValueWithContext(element, EConnectionParameterName.USERNAME.getName(), context,
+                basePropertyParameter));
+        String dir = getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context,
+                basePropertyParameter);
         if (dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName())) {
-            dir = getParameterValueWithContext(element, EConnectionParameterName.DBPATH.getName(), context);
+            dir = getParameterValueWithContext(element, EConnectionParameterName.DBPATH.getName(), context, basePropertyParameter);
         }
         if (connParameters.getSchema() == null || connParameters.getSchema().equals("")) {
             if (EDatabaseTypeName.IBMDB2.getDisplayName().equals(dbType)
                     || EDatabaseTypeName.IBMDB2ZOS.getDisplayName().equals(dbType)) {
                 connParameters.setSchema(getParameterValueWithContext(element, EParameterName.SCHEMA_DB_DB2.getDisplayName(),
-                        context));
+                        context, basePropertyParameter));
             }
         }
         connParameters.setDirectory(dir);
         connParameters.setHttps(Boolean.parseBoolean(getParameterValueWithContext(element,
-                EConnectionParameterName.HTTPS.getName(), context)));
+                EConnectionParameterName.HTTPS.getName(), context, basePropertyParameter)));
         String url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
-                EConnectionParameterName.URL.getName(), context));
+                EConnectionParameterName.URL.getName(), context, basePropertyParameter));
         if (StringUtils.isEmpty(url)) {
             // try to get url for oracle RAC.
             // url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
@@ -1566,13 +1600,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
             // to get the Oracle RAC url.
             if (EDatabaseTypeName.ORACLE_CUSTOM.getDisplayName().equals(dbType)) {
                 url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element, "RAC_"
-                        + EConnectionParameterName.URL.getName(), context));
+                        + EConnectionParameterName.URL.getName(), context, basePropertyParameter));
             }
         }
         connParameters.setUrl(url);
 
         String driverClass = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
-                EConnectionParameterName.DRIVER_CLASS.getName(), context));
+                EConnectionParameterName.DRIVER_CLASS.getName(), context, basePropertyParameter));
         if (element != null) {
             String dbVersion = getValueFromRepositoryName(element, "DB_VERSION");
             if (EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersion)
@@ -1585,7 +1619,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDriverClass(driverClass);
 
         connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
-                EConnectionParameterName.DRIVER_JAR.getName(), context)));
+                EConnectionParameterName.DRIVER_JAR.getName(), context, basePropertyParameter)));
 
         // for jdbc connection from reposiotry
         final String dbTypeByClassName = ExtractMetaDataUtils.getInstance().getDbTypeByClassName(connParameters.getDriverClass());
@@ -1599,20 +1633,22 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (connParameters.getDbType().equals(EDatabaseTypeName.SQLITE.getXmlName())
                 || connParameters.getDbType().equals(EDatabaseTypeName.ACCESS.getXmlName())
                 || connParameters.getDbType().equals(EDatabaseTypeName.FIREBIRD.getXmlName())) {
-            connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
+            connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context,
+                    basePropertyParameter));
         }
         connParameters.setJdbcProperties(getParameterValueWithContext(element,
-                EConnectionParameterName.PROPERTIES_STRING.getName(), context));
-        connParameters
-                .setDatasource(getParameterValueWithContext(element, EConnectionParameterName.DATASOURCE.getName(), context));
+                EConnectionParameterName.PROPERTIES_STRING.getName(), context, basePropertyParameter));
+        connParameters.setDatasource(getParameterValueWithContext(element, EConnectionParameterName.DATASOURCE.getName(),
+                context, basePropertyParameter));
     }
 
-    private String getParameterValueWithContext(IElement elem, String key, IContext context) {
+    private String getParameterValueWithContext(IElement elem, String key, IContext context,
+            IElementParameter basePropertyParameter) {
         if (elem == null || key == null) {
             return ""; //$NON-NLS-1$
         }
 
-        String actualKey = this.getParaNameFromRepositoryName(key); // connKeyMap.get(key);
+        String actualKey = this.getParaNameFromRepositoryName(key, basePropertyParameter); // connKeyMap.get(key);
         if (actualKey != null) {
             return fetchElementParameterValue(elem, context, actualKey);
         } else {
@@ -1743,8 +1779,18 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         connParameters = null;
 
+        IElementParameter basePropertyParameter = null;
+        for (IElementParameter param : elem.getElementParameters()) {
+            if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+                if (param.getRepositoryValue().startsWith("DATABASE")) {
+                    basePropertyParameter = param;
+                    break;
+                }
+            }
+        }
+
         connParameters = new ConnectionParameters();
-        String type = getValueFromRepositoryName(elem, "TYPE"); //$NON-NLS-1$
+        String type = getValueFromRepositoryName(elem, "TYPE", basePropertyParameter); //$NON-NLS-1$
         if (type.equals("Oracle") || type.contains("OCLE")) {
             IElementParameter ele = elem.getElementParameter("CONNECTION_TYPE");
             if (ele != null) {
@@ -1765,7 +1811,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         connParameters.setDbType(type);
 
-        String driverName = getValueFromRepositoryName(elem, "DB_VERSION"); //$NON-NLS-1$
+        String driverName = getValueFromRepositoryName(elem, "DB_VERSION", basePropertyParameter); //$NON-NLS-1$
         String dbVersionName = EDatabaseVersion4Drivers.getDbVersionName(type, driverName);
         if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(type)) {
             if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equals(
@@ -1782,7 +1828,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
         connParameters.setSelectedComponentName(selectedComponentName);
         connParameters.setFieldType(paramFieldType);
-        if (elem instanceof Node) {
+        if (elem instanceof Node && !((Node) elem).getMetadataList().isEmpty()) {
             connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
         }
 
@@ -1826,9 +1872,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
 
         if (connectionNode != null) {
-            setConnectionParameterNames(connectionNode, connParameters);
+            setConnectionParameterNames(connectionNode, connParameters, basePropertyParameter);
         } else {
-            setConnectionParameterNames(elem, connParameters);
+            setConnectionParameterNames(elem, connParameters, basePropertyParameter);
         }
     }
 
@@ -1878,38 +1924,41 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return false;
     }
 
-    private void setConnectionParameterNames(IElement element, ConnectionParameters connParameters) {
+    private void setConnectionParameterNames(IElement element, ConnectionParameters connParameters,
+            IElementParameter basePropertyParameter) {
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.SCHEMA.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.SCHEMA.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.USERNAME.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.USERNAME.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.PASSWORD.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.PASSWORD.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.SERVER_NAME.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.SERVER_NAME.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.PORT.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.PORT.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.SID.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.SID.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.FILE.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.FILE.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.DIRECTORY.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.URL.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.URL.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.DRIVER_CLASS.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.DRIVER_CLASS.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.DRIVER_JAR.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.DRIVER_JAR.getName(), basePropertyParameter);
 
-        addConnectionParameter(element, connParameters, EConnectionParameterName.PROPERTIES_STRING.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.PROPERTIES_STRING.getName(),
+                basePropertyParameter);
 
     }
 
-    private void addConnectionParameter(IElement element, ConnectionParameters connParameters, String repositoryName) {
-        final String paraNameFromRepositoryName = getParaNameFromRepositoryName(element, repositoryName);
+    private void addConnectionParameter(IElement element, ConnectionParameters connParameters, String repositoryName,
+            IElementParameter basePropertyParameter) {
+        final String paraNameFromRepositoryName = getParaNameFromRepositoryName(element, repositoryName, basePropertyParameter);
         if (paraNameFromRepositoryName != null) {
             connParameters.getRepositoryNameParaName().put(repositoryName, paraNameFromRepositoryName);
         }
@@ -1972,9 +2021,24 @@ public abstract class AbstractElementPropertySectionController implements Proper
             String repositoryName2 = ""; //$NON-NLS-1$
             String repositoryId = null;
             IElementParameter memoParam = elem.getElementParameter(propertyName);
+            IElementParameter repositoryParam = null;
+            for (IElementParameter param : elem.getElementParameters()) {
+                if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE
+                        && param.getRepositoryValue().startsWith("DATABASE")) {
+                    repositoryParam = param;
+                    break;
+                }
+            }
+            // in case no database property found, take the first property (to keep compatibility with old code)
+            if (repositoryParam == null) {
+                for (IElementParameter param : elem.getElementParameters()) {
+                    if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+                        repositoryParam = param;
+                        break;
+                    }
+                }
+            }
 
-            IElementParameter repositoryParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
-                    memoParam.getCategory());
             if (repositoryParam != null) {
                 IElementParameter itemFromRepository = repositoryParam.getChildParameters().get(
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
@@ -2133,7 +2197,21 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 return new ChangeValuesFromRepository(elem, null, parentName + typeName, EmfComponent.BUILTIN);
             }
         }
-        return new ChangeValuesFromRepository(elem, null, UpgradeParameterHelper.PROPERTY + typeName, EmfComponent.BUILTIN);
+        Object objProperty = control.getData(PARAMETER_NAME);
+        String property = null;
+        if (objProperty != null && elem != null) {
+            String curSubParam = objProperty.toString().trim();
+            if (!curSubParam.isEmpty()) {
+                IElementParameter iElementParam = elem.getElementParameter(curSubParam);
+                if (iElementParam != null) {
+                    property = iElementParam.getRepositoryProperty();
+                }
+            }
+        }
+        if (property == null || property.trim().isEmpty()) {
+            property = UpgradeParameterHelper.PROPERTY;
+        }
+        return new ChangeValuesFromRepository(elem, null, property + typeName, EmfComponent.BUILTIN);
     }
 
     private Command refreshConnectionCommand(Control control) {

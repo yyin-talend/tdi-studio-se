@@ -174,7 +174,7 @@
 				REQUIRED="true" />
 			<IMPORT NAME="mylin-smooks" MODULE="milyn-smooks-all-1.4.jar" UrlPath="platform:/plugin/org.talend.libraries.edifact/lib/milyn-smooks-all-1.4.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="jaxen" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar" BundleID="org.apache.servicemix.bundles.jaxen"
+			<IMPORT NAME="jaxen" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar" BundleID="org.apache.servicemix.bundles.jaxen"
 				REQUIRED="true" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar"
 				REQUIRED="true" />
