@@ -15,6 +15,7 @@ package org.talend.spark.operation;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Put;
@@ -45,10 +46,11 @@ public class HBaseStore<T> {
 
 					public Tuple2<ImmutableBytesWritable, Put> call(
 							List<Object> t) throws Exception {
-						org.apache.hadoop.hbase.client.Put put = new org.apache.hadoop.hbase.client.Put(
-								org.apache.hadoop.hbase.util.Bytes
-										.toBytes(Integer.parseInt(t.get(0)
-												.toString())));
+//						org.apache.hadoop.hbase.client.Put put = new org.apache.hadoop.hbase.client.Put(
+//								org.apache.hadoop.hbase.util.Bytes
+//										.toBytes(Integer.parseInt(t.get(0)
+//												.toString())));
+						org.apache.hadoop.hbase.client.Put put = new org.apache.hadoop.hbase.client.Put(DigestUtils.md5(t.toString()));
 						String[] cols = columns.split(" ");
 						int i = 0;
 						for (Object o : t) {
