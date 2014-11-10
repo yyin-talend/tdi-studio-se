@@ -382,6 +382,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      * 
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
+    @Override
     protected void okPressed() {
         String expression = null;
         int startInx = nodeStyle.indexOf("-") + 2;//$NON-NLS-1$ 
@@ -393,10 +394,10 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
             sub = nodeStyle;
         }
         if (sub.equals("tRowGenerator")) { //$NON-NLS-1$
-            expression = expressionComposite.getReplaceExpression();
+            expression = expressionComposite.getReplaceExpression().trim();
             expressionForTable = expression; // hywang add for 9225
         } else {
-            expression = expressionComposite.getExpression();
+            expression = expressionComposite.getExpression().trim();
             expressionForTable = expression;
         }
         if (dataBean != null) {
@@ -414,29 +415,33 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      * 
      * @see org.talend.expressionbuilder.ui.IExpressionBuilderDialogController#openDialog()
      */
+    @Override
     public void openDialog(Object obj) {
         if (obj instanceof IExpressionDataBean) {
 
             List<Variable> vars = new ArrayList<Variable>();
             IExpressionDataBean bean = (IExpressionDataBean) obj;
             setDefaultExpression(bean.getExpression());
-            if (bean.getVariables() != null) {
-                vars.addAll(bean.getVariables());
-            }
 
             ExpressionPersistance persistance = ExpressionPersistance.getInstance();
             persistance.setOwnerId(bean.getOwnerId());
             persistance.setPath(getExpressionStorePath());
-            for (Variable var1 : persistance.loadExpression().getVariables()) {
-                boolean needAdd = true;
-                for (Variable var2 : vars) {
-                    if (var1.getName() != null && var1.getName().equals(var2.getName())) {
-                        needAdd = false;
-                        break;
+
+            List<Variable> varList = new ArrayList<Variable>(persistance.loadExpression().getVariables());
+            vars.addAll(varList);
+
+            if (bean.getVariables() != null) {
+                for (Variable var1 : bean.getVariables()) {
+                    boolean needAdd = true;
+                    for (Variable var2 : varList) {
+                        if (var1.getName() != null && var1.getName().equals(var2.getName())) {
+                            needAdd = false;
+                            break;
+                        }
                     }
-                }
-                if (var1.getName() != null && needAdd) {
-                    vars.add(var1);
+                    if (var1.getName() != null && needAdd) {
+                        vars.add(var1);
+                    }
                 }
             }
             addVariables(vars);
@@ -451,6 +456,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      * 
      * @see org.talend.expressionbuilder.ui.IExpressionBuilderDialogController#setDefaultExpression(java.lang.String)
      */
+    @Override
     public void setDefaultExpression(String expression) {
         defaultExpression = expression;
     }
@@ -460,6 +466,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      * 
      * @see org.talend.expressionbuilder.ui.IExpressionBuilderDialogController#setVariables(java.util.List)
      */
+    @Override
     public void addVariables(List<Variable> variables) {
         defaultVariables = variables;
     }
@@ -512,6 +519,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
     }
 
+    @Override
     public String getExpressionForTable() {
         return this.expressionForTable;
     }
