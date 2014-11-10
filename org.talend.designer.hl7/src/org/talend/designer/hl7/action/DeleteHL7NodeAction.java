@@ -17,17 +17,15 @@ import java.util.List;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.hl7.ui.HL7UI;
-import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
-import org.talend.designer.hl7.ui.data.NameSpaceNode;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * bqian Create a xml node. <br/>
- * 
+ *
  * $Id: DeleteNodeAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ *
  */
 public class DeleteHL7NodeAction extends SelectionProviderAction {
 
@@ -40,7 +38,7 @@ public class DeleteHL7NodeAction extends SelectionProviderAction {
 
     /**
      * CreateNode constructor comment.
-     * 
+     *
      * @param provider
      * @param text
      */
@@ -94,24 +92,12 @@ public class DeleteHL7NodeAction extends SelectionProviderAction {
             disconnectSubTree(node);
         }
         parent.removeChild(node);
-        // if (TreeUtil.refreshTree((HL7TreeNode) xmlViewer.getTree().getItem(0).getData())) {
-        // xmlViewer.refresh();
-        // }
-        if (node.isRepetable() || node.isGroup()) {
-            // hl7ui.updateStatus();
-        }
         xmlViewer.refresh(parent);
-        xmlViewer.expandAll();
-        if (hl7ui != null) {
-            hl7ui.redrawLinkers();
-        } else if (form != null) {
-            form.refreshLinks();
-        }
     }
 
     /**
      * DOC ke Comment method "disconnectSubTree".
-     * 
+     *
      * @param node
      */
     private void disconnectSubTree(HL7TreeNode node) {
@@ -120,12 +106,6 @@ public class DeleteHL7NodeAction extends SelectionProviderAction {
         }
         if (node.hasLink()) {
             node.setColumn(null);
-        }
-        if (node instanceof Attribute) {
-            return;
-        }
-        if (node instanceof NameSpaceNode) {
-            return;
         }
         List<HL7TreeNode> children = node.getChildren();
         for (HL7TreeNode child : children) {

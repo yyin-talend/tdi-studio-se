@@ -35,16 +35,13 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command;
 import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.HL7UI;
-import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
-import org.talend.designer.hl7.ui.data.NameSpaceNode;
 import org.talend.designer.hl7.ui.form.AbstractHL7StepForm;
 import org.talend.designer.hl7.ui.header.HL7Parse;
 import org.talend.designer.hl7.util.HL7PublicUtil;
@@ -63,8 +60,6 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
 
     private AbstractHL7StepForm form;
 
-    private int order = 1;
-
     private HL7Connection hl7Connection;
 
     private HL7PublicUtil hl7Util = new HL7PublicUtil();
@@ -73,7 +68,7 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
 
     /**
      * Create constructor comment.
-     * 
+     *
      * @param provider
      * @param text
      */
@@ -115,13 +110,13 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
                 EList root = hl7Connection.getRoot();
                 root.clear();
                 if (hl7TreeNode != null) {
-                    hl7Util.initNodeOrder(hl7TreeNode, orderMap, order);
+                    hl7Util.initNodeOrder(hl7TreeNode, orderMap);
                     hl7Util.tableLoader((Element) hl7TreeNode, "", root, hl7TreeNode.getDefaultValue(), orderMap);
                 }
                 table.addAll(root);
             } else {
                 if (hl7TreeNode != null) {
-                    hl7Util.initNodeOrder(hl7TreeNode, orderMap, order);
+                    hl7Util.initNodeOrder(hl7TreeNode, orderMap);
                     hl7Util.tableLoader((Element) hl7TreeNode, "", table, hl7TreeNode.getDefaultValue(), orderMap);
                 }
             }
@@ -151,130 +146,119 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
                         IConnectionCategory.FLOW);
             }
         }
-
         IProxyRepositoryFactory factory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
         List<MetadataTable> iMetadataTables = new ArrayList<MetadataTable>();
-        INode targetNode = null;
         HL7TreeNode rootNode = null;
-        for (String rowName : schemaList) {
+        Map<String, IMetadataTable> schemaNameToInputTable = new HashMap<String, IMetadataTable>();
+        Map<String, MetadataTable> schemaNameToOutputTable = new HashMap<String, MetadataTable>();
+        for (String schemaName : schemaList) {
             IMetadataTable metadataTable = null;
             for (IConnection connection : incomingConnections) {
-                if (connection.getUniqueName().equals(rowName)) {
+                if (connection.getUniqueName().equals(schemaName)) {
                     metadataTable = connection.getMetadataTable();
                     metadataTable.setLabel(connection.getUniqueName());
+                    schemaNameToInputTable.put(schemaName, metadataTable);
+                    break;
                 }
-                targetNode = connection.getTarget();
             }
 
             MetadataTable targetMetadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             targetMetadataTable.setId(factory.getNextId());
-            targetMetadataTable.setLabel(rowName);
+            schemaNameToOutputTable.put(schemaName, targetMetadataTable);
+            targetMetadataTable.setLabel(schemaName);
             iMetadataTables.add(targetMetadataTable);
-            List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
+        }
 
-            HL7TreeNode current = null;
-            HL7TreeNode temp = null;
-            HL7TreeNode mainNode = null;
-            String mainPath = null;
-            String currentPath = null;
-            String defaultValue = null;
-            int nodeOrder = 0;
-            boolean haveOrder = true;
-            String schemaId = rowName + ":";//((MetadataTable) obj).getLabel() + ":"; //$NON-NLS-1$
-            // build root tree
-            for (int i = 0; i < root.size(); i++) {
-                HL7FileNode node = (HL7FileNode) root.get(i);
-                String newPath = node.getFilePath();
-                defaultValue = node.getDefaultValue();
-                String columnName = node.getRelatedColumn();
-                // String type = node.getType();
-                String orderValue = String.valueOf(node.getOrder());
-                if (orderValue == null || "".equals(orderValue)) {
-                    haveOrder = false;
-                }
-                if (haveOrder) {
-                    nodeOrder = node.getOrder();
-                }
-                String flag = columnName + ":"; //$NON-NLS-1$
-                if (columnName != null && columnName.length() > 0 && !flag.startsWith(schemaId)) {
-                    continue;
-                }
-                if (node.getAttribute().equals("attri")) {
-                    temp = new Attribute(newPath);
-                    temp.setDefaultValue(defaultValue);
-                    temp.setAttribute(true);
-                    // temp.setDataType(type);
-                    current.addChild(temp);
-                } else if (node.getAttribute().equals("ns")) {
-                    temp = new NameSpaceNode(newPath);
-                    temp.setDefaultValue(defaultValue);
-                    temp.setNameSpace(true);
-                    // temp.setDataType(type);
-                    current.addChild(temp);
-                } else {
-                    temp = this.addElement(current, currentPath, newPath, defaultValue, mapNodes);
-                    // temp.setDataType(type);
-                    if (rootNode == null) {
-                        rootNode = temp;
-                    }
-                    if (node.getAttribute().equals("main")) {
-                        temp.setMain(true);
-                        mainNode = temp;
-                        mainPath = newPath;
-                    }
-                    current = temp;
-                    currentPath = newPath;
-                }
-                if (haveOrder) {
-                    temp.setOrder(nodeOrder);
-                }
-                if (columnName != null && columnName.length() > 0) {
-                    temp.setRow(rowName);
-                }
-
-                if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                    columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
-                    // group node can not get the metadata table
-                    if (metadataTable == null) {
-                        IMetadataTable metadataTableTemp = null;
-                        for (IConnection connection : incomingConnections) {
-                            metadataTableTemp = connection.getMetadataTable();
-                            String connectionName = metadataTableTemp.getLabel();
-                            if (connectionName == null) {
-                                connectionName = connection.getUniqueName();
-                            }
-                            if (columnName.startsWith(connectionName)) {
-                                break;
-                            }
-                        }
-                        if (metadataTableTemp != null) {
-                            temp.setColumnName(columnName);
-                            temp.setColumn(metadataTableTemp.getColumn(columnName));
-                            temp.setTable(metadataTableTemp);
-                        }
-                    } else {
-                        temp.setColumnName(columnName);
-                        temp.setColumn(metadataTable.getColumn(columnName));
-                        temp.setTable(metadataTable);
-                    }
-                    //
-                    if (!temp.isMain()) {
-                        MetadataColumn newColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                        newColumn.setLabel(columnName);
-                        newColumn.setName(temp.getLabel());
-                        newColumn.setLength(226);
-                        newColumn.setTalendType("id_String");
-                        columns.add(newColumn);
-                    }
-                }
-            }
-            targetMetadataTable.getColumns().addAll(columns);
-            if (rootNode == null) {
-                rootNode = new Element("rootTag");
+        HL7TreeNode current = null;
+        HL7TreeNode temp = null;
+        String currentPath = null;
+        String defaultValue = null;
+        int nodeOrder = 0;
+        boolean haveOrder = true;
+        // build root tree
+        for (int i = 0; i < root.size(); i++) {
+            HL7FileNode node = root.get(i);
+            String newPath = node.getFilePath();
+            defaultValue = node.getDefaultValue();
+            String columnName = node.getRelatedColumn();
+            // String type = node.getType();
+            String orderValue = String.valueOf(node.getOrder());
+            if (orderValue == null || "".equals(orderValue)) {
+                haveOrder = false;
             }
             if (haveOrder) {
-                orderNode(rootNode);
+                nodeOrder = node.getOrder();
             }
+            String rowName = columnName;
+            if (columnName != null && columnName.contains(":")) {
+                String[] names = columnName.split(":");
+                rowName = names[0];
+                columnName = names[1];
+            } else {
+                columnName = null;
+            }
+            temp = this.addElement(current, currentPath, newPath, defaultValue, mapNodes);
+            if (temp == null) {
+                // should not happen
+                continue;
+            }
+            // temp.setDataType(type);
+            if (rootNode == null) {
+                rootNode = temp;
+            }
+            if (node.getAttribute().equals("main")) {
+                temp.setMain(true);
+            }
+            current = temp;
+            currentPath = newPath;
+            if (haveOrder) {
+                temp.setOrder(nodeOrder);
+            }
+            if (rowName != null && rowName.length() > 0) {
+                temp.setRow(rowName);
+            }
+
+            if (columnName != null) {
+                IMetadataTable metadataTable = schemaNameToInputTable.get(rowName);
+                // group node can not get the metadata table
+                if (metadataTable == null) {
+                    IMetadataTable metadataTableTemp = null;
+                    for (IConnection connection : incomingConnections) {
+                        metadataTableTemp = connection.getMetadataTable();
+                        String connectionName = metadataTableTemp.getLabel();
+                        if (connectionName == null) {
+                            connectionName = connection.getUniqueName();
+                        }
+                        if (columnName.startsWith(connectionName)) {
+                            break;
+                        }
+                    }
+                    temp.setColumnName(columnName);
+                    if (metadataTableTemp != null) {
+                        temp.setColumn(metadataTableTemp.getColumn(columnName));
+                        temp.setTable(metadataTableTemp);
+                    }
+                } else {
+                    temp.setColumnName(columnName);
+                    temp.setColumn(metadataTable.getColumn(columnName));
+                    temp.setTable(metadataTable);
+                }
+                //
+                if (!temp.isMain()) {
+                    MetadataColumn newColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                    newColumn.setLabel(columnName);
+                    newColumn.setName(temp.getLabel());
+                    newColumn.setLength(226);
+                    newColumn.setTalendType("id_String");
+                    schemaNameToOutputTable.get(rowName).getColumns().add(newColumn);
+                }
+            }
+        }
+        if (rootNode == null) {
+            rootNode = new Element("rootTag");
+        }
+        if (haveOrder) {
+            orderNode(rootNode);
         }
         if (rootNode != null) {
             treeData.add(rootNode);
@@ -289,17 +273,17 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
                 form.getContents().put(rootNode.getColumnLabel(), hl7Node);
             }
         }
-        // execute the commands,initialize the propertiesView .
-        List<Command> commands = new ArrayList<Command>();
-        for (MetadataTable tableTemp : iMetadataTables) {
-            if (targetNode != null) {
-                Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(targetNode.getExternalNode(),
+        if (hl7ui != null) {
+            // execute the commands,initialize the propertiesView .
+            List<Command> commands = new ArrayList<Command>();
+            for (MetadataTable tableTemp : iMetadataTables) {
+                Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(hl7ui.gethl7Manager().getHl7Component(),
                         IHL7Constant.TABLE_SCHEMAS, tableTemp.getLabel(), ConvertionHelper.convert(tableTemp));
                 commands.add(hl7Cmd);
             }
-        }
-        for (Command command : commands) {
-            command.execute();
+            for (Command command : commands) {
+                command.execute();
+            }
         }
     }
 
@@ -378,9 +362,9 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
     }
 
     /**
-     * 
+     *
      * wzhang Comment method "getSelectedSchema".
-     * 
+     *
      * @return
      */
     private String getSelectedSchema() {

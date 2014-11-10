@@ -23,6 +23,10 @@ Bundle-Vendor: .Talend SA.
 Bundle-ClassPath: .
 Export-Package: org.talend.designer.hl7,
  org.talend.designer.hl7.action,
+ org.talend.designer.hl7.dnd,
+ org.talend.designer.hl7.model,
  org.talend.designer.hl7.ui.data,
  org.talend.designer.hl7.ui.edit,
- org.talend.designer.hl7.ui.form
+ org.talend.designer.hl7.ui.form,
+ org.talend.designer.hl7.ui.header,
+ org.talend.designer.hl7.util

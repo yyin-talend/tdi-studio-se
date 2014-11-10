@@ -14,51 +14,42 @@ package org.talend.designer.hl7.action;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.designer.hl7.i18n.Messages;
 import org.talend.designer.hl7.ui.HL7UI;
-import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
-import org.talend.designer.hl7.ui.data.NameSpaceNode;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * bqian Create a xml node. <br/>
- * 
+ *
  * $Id: CreateElementAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ *
  */
 public class SetRepetableAction extends SelectionProviderAction {
+
+    /**
+     *
+     */
+    private static final String REMOVE_REPEATABLE = Messages.getString("SetRepetableAction_removeRepeatable"); //$NON-NLS-1$
+
+    /**
+     *
+     */
+    private static final String SET_AS_REPEATABLE_ELEMENT = Messages.getString("SetRepetableAction_setAsRepeatable"); //$NON-NLS-1$
 
     // the xml viewer, see HL7UI.
     private TreeViewer xmlViewer;
 
-    private HL7UI hl7ui;
-
-    private boolean value;
-
-    private AbstractForm form;
-
-    /**
-     * SetForLoopAction constructor comment.
-     * 
-     * @param provider
-     * @param text
-     */
-    public SetRepetableAction(TreeViewer xmlViewer, String text) {
-        super(xmlViewer, text);
+    public SetRepetableAction(TreeViewer xmlViewer, AbstractForm form) {
+        super(xmlViewer, SET_AS_REPEATABLE_ELEMENT);
         this.xmlViewer = xmlViewer;
     }
 
-    public SetRepetableAction(TreeViewer xmlViewer, String text, AbstractForm form) {
-        super(xmlViewer, text);
-        this.xmlViewer = xmlViewer;
-        this.form = form;
-    }
-
     /**
-     * 
+     *
      * SetForLoopAction constructor comment.
-     * 
+     *
      * @param xmlViewer
      * @param text
      * @param hl7ui
@@ -66,39 +57,21 @@ public class SetRepetableAction extends SelectionProviderAction {
     public SetRepetableAction(TreeViewer xmlViewer, HL7UI hl7ui, String text, boolean value) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-        this.hl7ui = hl7ui;
-        this.value = value;
     }
 
     public void init() {
+        setText(SET_AS_REPEATABLE_ELEMENT);
         HL7TreeNode node = (HL7TreeNode) this.getStructuredSelection().getFirstElement();
         if (node == null) {
             this.setEnabled(false);
             return;
         }
-        if (node.getParent() == null) {
-            this.setEnabled(false);
-            return;
-        }
-        if (node.getParent().getParent() != null) {
-            this.setEnabled(false);
-            return;
-        }
         if (node.isRepetable()) {
-            this.setEnabled(false);
+            this.setEnabled(true);
+            this.setText(REMOVE_REPEATABLE);
             return;
         }
-        if (!node.isMain()) {
-            this.setEnabled(false);
-            return;
-        }
-
-        if (node instanceof Attribute) {
-            this.setEnabled(false);
-            return;
-        }
-
-        if (node instanceof NameSpaceNode) {
+        if (node.getLabel().length() != 3) {
             this.setEnabled(false);
             return;
         }
@@ -113,45 +86,18 @@ public class SetRepetableAction extends SelectionProviderAction {
     @Override
     public void run() {
         HL7TreeNode node = (HL7TreeNode) this.getStructuredSelection().getFirstElement();
-        if (node.isRepetable()) {
-            return;
+
+        if (!node.isRepetable()) {
+            if (node.isGroup()) {
+                node.setGroup(false);
+            }
+            node.setRepetable(true);
+            node.setMain(true);
+            upsetMainNode(node);
+        } else {
+            node.setRepetable(false);
         }
-
-        // HL7Manager hl7Manager = hl7ui.gethl7Manager();
-
-        // HL7TreeNode rootTreeData = hl7Manager.getRootHL7TreeNode(node);
-        // TreeUtil.clearSubGroupNode(node);
-        // // make sure group element is a ancestor of loop, or no group element.
-        // if (TreeUtil.findUpGroupNode(node) == null) {
-        // TreeUtil.clearSubGroupNode(rootTreeData);
-        // }
-        // TreeUtil.clearLoopNode(rootTreeData);
-        // TreeUtil.clearMainNode(rootTreeData);
-
-        if (node.isGroup()) {
-            node.setGroup(false);
-        }
-        node.setRepetable(true);
-        // if (this.value) {
-        // if (hl7ui != null && node.isGroup()) {
-        // // hl7ui.updateStatus();
-        // }
-        // // TreeUtil.upsetMainNode(node);
-        // // xmlViewer.refresh();
-        // } else {
-        // // if (hl7ui != null) {
-        // // hl7ui.updateStatus();
-        // // }
-        // // upsetMainNode(node);
-        // // xmlViewer.refresh();
-        // }
-        upsetMainNode(node);
         xmlViewer.refresh();
-        if (form != null) {
-            form.refreshLinks();
-        }
-
-        // this.hl7ui.updateStatus();
     }
 
     public void upsetMainNode(HL7TreeNode node) {
