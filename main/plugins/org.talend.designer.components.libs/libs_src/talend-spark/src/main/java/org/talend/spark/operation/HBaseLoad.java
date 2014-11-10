@@ -14,6 +14,8 @@ package org.talend.spark.operation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -31,13 +33,18 @@ public class HBaseLoad<T> {
 	@SuppressWarnings("deprecation")
 	public static JavaRDD<List<Object>> hbaseRDD(JavaSparkContext ctx,
 			String zookeeperHost, String zookeeperPort, String table,
-			final String columns) {
+			final String columns, Map<String, String> properties) {
 		
 		Configuration conf = HBaseConfiguration.create();
 		conf.set("hbase.zookeeper.quorum", zookeeperHost);
 		conf.set("hbase.zookeeper.property.clientPort", zookeeperPort);
 		conf.set("mapred.input.dir", table);
 		conf.set("hbase.mapred.tablecolumns", columns);
+		
+		for(Entry<String, String> e:properties.entrySet()) {
+			conf.set(e.getKey(), e.getValue());
+		}
+		
 		JavaPairRDD<ImmutableBytesWritable, Result> hbaseRDD = ctx.hadoopRDD(
 				new org.apache.hadoop.mapred.JobConf(conf),
 				org.apache.hadoop.hbase.mapred.TableInputFormat.class,

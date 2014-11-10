@@ -150,4 +150,9 @@ public class TalendDStreamPairRDD<K, V> extends TalendPairRDD<K, V> {
 			}
 		});
 	}
+	
+	@Override
+	public TalendPairRDD<K, V> cache() {
+		return new TalendDStreamPairRDD<K, V>(this.rdd.cache());
+	}
 }

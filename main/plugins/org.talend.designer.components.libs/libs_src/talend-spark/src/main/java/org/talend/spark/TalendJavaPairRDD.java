@@ -104,4 +104,9 @@ public class TalendJavaPairRDD<K, V> extends TalendPairRDD<K, V> {
 	public void saveAsHadoopDataset(JobConf conf) {
 		this.rdd.saveAsHadoopDataset(conf);		
 	}
+	
+	@Override
+	public TalendPairRDD<K, V> cache() {
+		return new TalendJavaPairRDD<K, V>(this.rdd.cache());
+	}
 }

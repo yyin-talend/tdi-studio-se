@@ -35,4 +35,5 @@ public abstract class TalendPairRDD<K, V> {
 	public abstract <U> TalendPairRDD<K, U> mapValues(Function<V, U> func);
 	public abstract TalendPairRDD<K, V> reduceByKey(Function2<V, V, V> func);
 	public abstract void saveAsHadoopDataset(org.apache.hadoop.mapred.JobConf conf);
+	public abstract TalendPairRDD<K, V> cache();
 }

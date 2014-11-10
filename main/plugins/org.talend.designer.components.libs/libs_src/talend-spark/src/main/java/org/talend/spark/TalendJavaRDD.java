@@ -93,4 +93,9 @@ public class TalendJavaRDD<T> extends TalendRDD<T> {
 	public <U> TalendRDD<U> flatMap(FlatMapFunction<T, U> func) {
 		return new TalendJavaRDD<U>(this.rdd.flatMap(func));
 	}
+
+	@Override
+	public TalendRDD<T> cache() {
+		return new TalendJavaRDD<T>(this.rdd.cache());
+	}
 }

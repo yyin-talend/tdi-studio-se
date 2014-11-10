@@ -31,4 +31,5 @@ public abstract class TalendRDD<T> {
 	public abstract TalendRDD<T> getTalendRDD();
 	public abstract <K2,V2> TalendPairRDD<K2, V2> mapToPair(PairFunction<T, K2, V2> func);
 	public abstract <U> TalendRDD<U> flatMap(FlatMapFunction<T, U> func);
+	public abstract TalendRDD<T> cache();
 }

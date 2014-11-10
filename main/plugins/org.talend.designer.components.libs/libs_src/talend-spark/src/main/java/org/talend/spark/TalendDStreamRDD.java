@@ -94,4 +94,9 @@ public class TalendDStreamRDD<T> extends TalendRDD<T> {
 	public <U> TalendRDD<U> flatMap(FlatMapFunction<T, U> func) {
 		return new TalendDStreamRDD<U>(this.rdd.flatMap(func));
 	}
+	
+	@Override
+	public TalendRDD<T> cache() {
+		return new TalendDStreamRDD<T>(this.rdd.cache());
+	}
 }
