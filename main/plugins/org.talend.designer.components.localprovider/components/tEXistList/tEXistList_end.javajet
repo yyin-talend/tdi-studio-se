@@ -19,10 +19,8 @@
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
 %>
-			}
-		nb_file_<%=cid%>++;
-	}
-}
+			} <% /* "for String contentName" end */ %>
+	} <% /* "for String key_" end */ %>
+} <% /* "for java.util.Map" end */ %>
 col_<%=cid%>.close();
 globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
-
