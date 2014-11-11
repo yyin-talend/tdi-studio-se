@@ -148,13 +148,12 @@
     String passwordFieldName = "__PASSWORD__";
 	%>
     
-	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-	
 	<%if("sapjco.jar".equals(version)){%>
 		com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
 		<%if(useExistingConn){%>	    
 			client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("conn_<%=connection %>");	
 		<%}else{%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		<%//big try%>
 		try{
 			<%if("ApplicationServer".equals(serverType)){%>
@@ -225,6 +224,7 @@
                         } 
 %> 
 		<%}else{%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		<%//big try%>
 		try{
 <% 

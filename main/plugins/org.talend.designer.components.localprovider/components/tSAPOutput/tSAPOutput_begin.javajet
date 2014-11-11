@@ -88,13 +88,12 @@ if(useExistingConn){
 String passwordFieldName = "__PASSWORD__";
 %>
 
-<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-
 <%if("sapjco.jar".equals(version)){%>
 	com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
 	<%if(useExistingConn){%>	    
 		  client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("conn_<%=connection %>");	
 	<%}else{%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		<%if("ApplicationServer".equals(serverType)){%>    
 			//Create a client connection to a dedicated R/3 system
 		  	client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
@@ -165,6 +164,7 @@ String passwordFieldName = "__PASSWORD__";
                         } 
 %> 
 	<%}else{%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 <% 
                 boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__")); 
                 if(specify_alias){ 
