@@ -101,13 +101,12 @@ boolean hasMySNCName = mySNCName != null && !"".equals(mySNCName);
 List<Map<String, String>> sapProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SAP_PROPERTIES__");    
 %>
 
-<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-
 <%if("sapjco.jar".equals(version)){%>
 	com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
 	<%if(useExistingConn){%>	    
 		  client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("conn_<%=connection %>");	
 	<%}else{%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		java.util.Properties properties_<%=cid%> = new java.util.Properties();
 		<%if("ApplicationServer".equals(serverType)){%>
     		//Create a client connection to a dedicated R/3 system
@@ -210,6 +209,7 @@ List<Map<String, String>> sapProps = (List<Map<String,String>>)ElementParameterP
 			}
 %>
 	<%}else{%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 <%
 		boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));
 		if(specify_alias){
