@@ -159,13 +159,12 @@
     List<Map<String, String>> sapProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SAP_PROPERTIES__");    
 	%>
     
-	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-	
 	<%if("sapjco.jar".equals(version)){%>
 		com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
 		<%if(useExistingConn){%>	    
 			client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("conn_<%=connection %>");	
 		<%}else{%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		<%//big try%>
 		java.util.Properties properties_<%=cid%> = new java.util.Properties();
 		try{
@@ -268,6 +267,7 @@
 			}
 %>
 		<%}else{%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		<%//big try%>
 		try{
 <%
