@@ -236,7 +236,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			tAsyncIn_cid = conns.get(0).getSource().getUniqueName();
 		}
 		if(!useExistingConnection) {
-	    	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
+	    	if(useTransaction && !("").equals(commitEvery) && !("0").equals(commitEvery)) {
 %>
 				commitEvery_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
 <%
