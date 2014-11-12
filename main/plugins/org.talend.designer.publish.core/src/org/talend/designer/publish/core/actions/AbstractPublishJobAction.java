@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -122,11 +120,9 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
                 featuresModel.addFeature(new FeatureModel(FeaturesModel.TALEND_DATA_MAPPER_FEATURE_NAME,
                         FeaturesModel.ESB_FEATURE_VERSION_RANGE));
             }
-            Collection<NodeType> tIPaasComponents = EmfModelUtils.getComponentsByName(processItem, "tActionInput",
-                    "tActionOutput");
-            if (!tIPaasComponents.isEmpty() && exportType == JobExportType.OSGI) {
-                addMissingBundles(featuresModel, ((JobJavaScriptOSGIForESBManager) jobScriptsManager).getExcludedModuleNeededs());
-            }
+
+            processModules(featuresModel, ((JobJavaScriptOSGIForESBManager) jobScriptsManager).getExcludedModuleNeededs());
+
             process(processItem, featuresModel, monitor);
         } catch (IOException e) {
             throw new InvocationTargetException(e);
@@ -175,28 +171,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
         return artifactVersion;
     }
 
-    @SuppressWarnings("serial")
-    private static final Map<String, BundleModel> BUNDLE_MAPPING = new HashMap<String, BundleModel>() {
-
-        {
-            put("org.apache.servicemix.bundles.dom4j", new BundleModel("org.apache.servicemix.bundles",
-                    "org.apache.servicemix.bundles.dom4j", "1.6.1_5"));
-            put("org.apache.servicemix.bundles.jaxen", new BundleModel("org.apache.servicemix.bundles",
-                    "org.apache.servicemix.bundles.jaxen", "1.1.1_2"));
-            put("org.apache.servicemix.bundles.wsdl4j", new BundleModel("org.apache.servicemix.bundles",
-                    "org.apache.servicemix.bundles.wsdl4j", "1.6.3_1"));
-        }
-    };
-
-    private static void addMissingBundles(FeaturesModel featuresModel, Collection<ModuleNeeded> modules) {
-        for (ModuleNeeded moduleNeeded : modules) {
-            BundleModel bundleModel = BUNDLE_MAPPING.get(moduleNeeded.getBundleName());
-            if (null != bundleModel) {
-                featuresModel.addBundle(bundleModel);
-            } else {
-                // TODO: upload non-maven artifacts to repo; filter assuming (like log4j, activation, etc)
-                // new BundleModel("provided_libs", "artifact", "version", studioLocation)
-            }
-        }
+    protected void processModules(FeaturesModel featuresModel, Collection<ModuleNeeded> modules) {
     }
+
 }
