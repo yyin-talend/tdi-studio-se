@@ -15,7 +15,6 @@ package org.talend.designer.scd;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -865,15 +864,16 @@ public class ScdManager {
             }
         }
         fixKeyColumnsInOutputSchema(schema, inputColumnsMap, lang);
+        // removed by TDI-30934
         // sort column by name
-        Collections.sort(schema.getListColumns(), new Comparator<IMetadataColumn>() {
-
-            public int compare(IMetadataColumn o1, IMetadataColumn o2) {
-
-                return o1.getLabel().compareTo(o2.getLabel());
-            }
-
-        });
+        // Collections.sort(schema.getListColumns(), new Comparator<IMetadataColumn>() {
+        //
+        // public int compare(IMetadataColumn o1, IMetadataColumn o2) {
+        //
+        // return o1.getLabel().compareTo(o2.getLabel());
+        // }
+        //
+        // });
 
     }
 
