@@ -3,4 +3,4 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jars
 Bundle-SymbolicName: org.talend.sqlbuilder.jars
 Bundle-Version: 6.0.0.qualifier
-Fragment-Host: org.talend.sqlbuilder;bundle-version="6.0.0"
+Fragment-Host: org.talend.sqlbuilder
