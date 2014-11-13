@@ -1157,9 +1157,11 @@ public class Node extends Element implements IGraphicalNode {
             }
 
             INodeConnector mainConnector;
+            boolean isFlowMain = false;
             if (isELTComponent()) {
                 mainConnector = this.getConnectorFromType(EConnectionType.TABLE);
             } else {
+                isFlowMain = true;
                 mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
 
@@ -1209,7 +1211,20 @@ public class Node extends Element implements IGraphicalNode {
                     // if the selected connector's schema type is in repository
                     // mode or read only, then don't propagate.
                     for (INodeConnector connector : getListConnector()) {
-                        if (mainConnector.getName().equals(connector.getBaseSchema())) {
+                        if (mainConnector.getName().equals(connector.getBaseSchema())
+                                && (isFlowMain ? connector.getMaxLinkInput() > 0 : true)) {
+                            /**
+                             * For FLOW(not include TABLE), I think, only for the input metatable is enough, because:<br>
+                             * 1. The following called ChangeMetadataCommand are always seem everytime<br>
+                             * 2. If the input table is not changed, maybe output table should not change too, because
+                             * output data is come from input data<br>
+                             * 3. The called ChangeMetadataCommand will change all the output tables every time for
+                             * FLOW, and seems will not change the output tables for TABLE if the connection is TABLE
+                             * type; so for TABLE type just keep like before, maybe need review.<br>
+                             * 4. While column datas in output tables are more than datas in input tables, if call multy
+                             * times for output table, maybe will make all the column datas in output table same with
+                             * the columns datas of the output table which is called last time.
+                             */
 
                             IMetadataTable targetTable = this.getMetadataFromConnector(connector.getName());
                             if (targetTable == null) {
