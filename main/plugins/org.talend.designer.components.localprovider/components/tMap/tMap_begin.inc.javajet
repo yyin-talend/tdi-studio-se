@@ -945,7 +945,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 
 	org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator<SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>> fsi_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%> = 
 		new org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator<SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>>(
-			<%= tempFolder %> + "/"+ jobName +"_tMapData_" + pid +"_<%= hasConcurrencyContext ? threadInsertedString + "_" : "" %><%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>", <%= rowsBufferSize %>) {
+			<%= tempFolder %> + "/"+ jobName +"_tMapData_" + Thread.currentThread().getId() + "_" + pid +"_<%= hasConcurrencyContext ? threadInsertedString + "_" : "" %><%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>", <%= rowsBufferSize %>) {
 			public SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%> createRowInstance() {
 				return new SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>();
 			}
