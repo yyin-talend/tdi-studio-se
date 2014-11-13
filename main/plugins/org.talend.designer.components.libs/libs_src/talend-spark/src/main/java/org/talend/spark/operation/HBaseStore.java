@@ -32,8 +32,8 @@ import scala.Tuple2;
 public class HBaseStore<T> {
 
 	public static void run(String zookeeperHost, String zookeeperPort,
-			String table, final String columns, TalendRDD<List<Object>> rdd)
-			throws IOException {
+			String table, final String columns, TalendRDD<List<Object>> rdd,
+			final List<Integer> keyList) throws IOException {
 
 		Configuration conf = HBaseConfiguration.create();
 		conf.set("hbase.zookeeper.quorum", zookeeperHost);
@@ -46,11 +46,13 @@ public class HBaseStore<T> {
 
 					public Tuple2<ImmutableBytesWritable, Put> call(
 							List<Object> t) throws Exception {
-//						org.apache.hadoop.hbase.client.Put put = new org.apache.hadoop.hbase.client.Put(
-//								org.apache.hadoop.hbase.util.Bytes
-//										.toBytes(Integer.parseInt(t.get(0)
-//												.toString())));
-						org.apache.hadoop.hbase.client.Put put = new org.apache.hadoop.hbase.client.Put(DigestUtils.md5(t.toString()));
+
+						String key = "";
+						for (int i : keyList) {
+							key = key + t.get(i);
+						}
+						org.apache.hadoop.hbase.client.Put put = new org.apache.hadoop.hbase.client.Put(
+								DigestUtils.md5("".equals(key)?t.toString():key));
 						String[] cols = columns.split(" ");
 						int i = 0;
 						for (Object o : t) {
