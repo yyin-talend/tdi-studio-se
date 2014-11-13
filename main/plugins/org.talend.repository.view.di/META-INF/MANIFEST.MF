@@ -17,7 +17,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.repository.view;visibility:=reexport,
  org.talend.repository.items.importexport,
  org.talend.repository.items.importexport.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.talend.repository.view.di,
  org.talend.repository.view.di.viewer.action,

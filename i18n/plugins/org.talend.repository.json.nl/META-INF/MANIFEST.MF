@@ -4,5 +4,4 @@ Bundle-Name: Nl Fragment
 Bundle-SymbolicName: org.talend.repository.json.nl
 Bundle-Version: 6.0.0.qualifier
 Fragment-Host: org.talend.repository.json
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: .Talend SA.

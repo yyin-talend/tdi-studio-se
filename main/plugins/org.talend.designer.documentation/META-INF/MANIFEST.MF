@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Documentation Plug-in
 Bundle-SymbolicName: org.talend.designer.documentation;singleton:=true
 Bundle-Version: 6.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.talend.core.model.genhtml,
  org.talend.repository,
  org.talend.repository.documentation.generation,
