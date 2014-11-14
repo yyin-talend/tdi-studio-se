@@ -562,7 +562,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     if (((i == 0) && (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()))
                             || (param.isRepositoryValueUsed()) || (param.isReadOnly()) || currentParam.isReadOnly()) {
                         // read only cell
-                        if (param.getName().equals("HADOOP_ADVANCED_PROPERTIES") || param.getName().equals("HBASE_PARAMETERS")) {
+                        if (!param.getElement().isReadOnly()
+                                && (param.getName().equals("HADOOP_ADVANCED_PROPERTIES") || param.getName().equals(
+                                        "HBASE_PARAMETERS"))) {
                             if (currentParam.isNoContextAssist()) {
                                 tcEditor = new TextCellEditor(table);
                             } else {
