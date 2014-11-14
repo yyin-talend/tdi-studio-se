@@ -12,6 +12,7 @@
     HAS_CONDITIONAL_OUTPUTS="true"
     SCHEMA_AUTO_PROPAGATE="false"
 	PARTITIONING="AUTO"
+  LOG4J_ENABLED="true"
   >
     <SIGNATURE/>
   </HEADER>
@@ -146,6 +147,7 @@
       NAME="TABLE"
       FIELD="DBTABLE"
       NUM_ROW="30"
+      LOG4J_ENABLED="false"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>

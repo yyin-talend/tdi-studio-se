@@ -90,18 +90,6 @@
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
 
-   
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="100">
-		<TABLE READONLY="true">
-			<COLUMN NAME="id" TYPE="id_String" />
-			<COLUMN NAME="title" TYPE="id_String" />
-			<COLUMN NAME="mimeType" TYPE="id_String" />
-			<COLUMN NAME="lastModified" TYPE="id_String" />
-			<COLUMN NAME="size" TYPE="id_Long" />
-			<COLUMN NAME="setfLink" TYPE="id_String" />
-			<COLUMN NAME="parents" TYPE="id_List" />
-		</TABLE>
-	</PARAMETER>
    </PARAMETERS>
    
 	<ADVANCED_PARAMETERS>
