@@ -12,16 +12,22 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
+import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.FileResource;
+import aQute.bnd.osgi.Jar;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -85,10 +91,6 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.TemplateProcessor;
-
-import aQute.bnd.osgi.Analyzer;
-import aQute.bnd.osgi.FileResource;
-import aQute.bnd.osgi.Jar;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -197,6 +199,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                  *  and need more discussion about then
                  */
                 BuildExportManager.getInstance().exportDependencies(osgiResource, processItem);
+
+                if ("MR".equals(type.getAlias())) {
+                    // JavaProcessUtil.getNeededModules(iProcess, true, true)
+                    String[] cmd = ProcessorUtilities.getCommandLine(WINDOWS_ENVIRONMENT, false, iProcess, null, false, statisticPort,
+                            tracePort, codeOptions);
+                    int libjars = Arrays.asList(cmd).indexOf("-libjars"); //$NON-NLS-1$
+                    if (libjars != -1) {
+                        File modules = new File(getTmpFolder() + PATH_SEPARATOR + "modules.txt"); //$NON-NLS-1$
+                        PrintWriter writer = new PrintWriter(modules);
+                        for (String lib : cmd[libjars + 1].split(",")) {
+                            writer.println(lib.substring(lib.lastIndexOf('/') + 1));
+                        }
+                        writer.close();
+                        osgiResource.addResources(Collections.singletonList(modules.toURI().toURL()));
+                    }
+                }
             }
 
             ExportFileResource libResource = getCompiledLibExportFileResource(processes);
@@ -210,6 +228,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             if (providedLibResources != null) {
                 list.add(providedLibResources);
             }
+        } catch (ProcessorException e) {
+            throw e;
         } catch (Exception e) {
             throw new ProcessorException(e);
         }
