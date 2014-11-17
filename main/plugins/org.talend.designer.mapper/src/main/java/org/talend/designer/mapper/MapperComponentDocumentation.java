@@ -181,9 +181,9 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
                 if ((!elemparameter.isShow(copyElementParameterList) && (!elemparameter.getName().equals(
                         EParameterFieldType.SCHEMA_TYPE.getName())))
                         || elemparameter.getCategory().equals(EComponentCategory.VIEW)
-                        || elemparameter.getName().equals("ACTIVATE") //$NON-NLS-1$
-                        || elemparameter.getName().equals("MAP") //$NON-NLS-1$
-                        || elemparameter.getName().equals("PREVIEW")) {//$NON-NLS-1$
+                        || "ACTIVATE".equals(elemparameter.getName()) //$NON-NLS-1$
+                        || "MAP".equals(elemparameter.getName()) //$NON-NLS-1$
+                        || "PREVIEW".equals(elemparameter.getName())) {//$NON-NLS-1$
                     continue;
                 }
                 Element columnElement = parametersElement.addElement("column"); //$NON-NLS-1$

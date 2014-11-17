@@ -68,6 +68,7 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
      * 
      * @see org.talend.core.model.process.IComponentDocumentation#getHTMLFile()
      */
+    @Override
     public URL getHTMLFile() {
         String xmlFilepath = this.tempFolderPath + File.separatorChar + this.componentName + IHTMLDocConstants.XML_FILE_SUFFIX;
 
@@ -108,6 +109,7 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
      * 
      * @see org.talend.core.model.process.IComponentDocumentation#setComponentName(java.lang.String)
      */
+    @Override
     public void setComponentName(String componentName) {
         this.componentName = componentName;
     }
@@ -117,6 +119,7 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
      * 
      * @see org.talend.core.model.process.IComponentDocumentation#setTempFolderPath(java.lang.String)
      */
+    @Override
     public void setTempFolderPath(String tempFolderpath) {
         this.tempFolderPath = tempFolderpath;
     }
@@ -173,9 +176,9 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
                 if ((!elemparameter.isShow(copyElementParameterList) && (!elemparameter.getName().equals(
                         EParameterFieldType.SCHEMA_TYPE.getName())))
                         || elemparameter.getCategory().equals(EComponentCategory.VIEW)
-                        || elemparameter.getName().equals("ACTIVATE")//$NON-NLS-1$
-                        || elemparameter.getName().equals("MAP") //$NON-NLS-1$
-                        || elemparameter.getName().equals("SCHEMA")) {//$NON-NLS-1$
+                        || "ACTIVATE".equals(elemparameter.getName())//$NON-NLS-1$
+                        || "MAP".equals(elemparameter.getName()) //$NON-NLS-1$
+                        || "SCHEMA".equals(elemparameter.getName())) {//$NON-NLS-1$
                     continue;
                 }
 
