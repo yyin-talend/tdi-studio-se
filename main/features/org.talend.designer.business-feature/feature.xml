@@ -515,7 +515,7 @@
          id="com.ibm.icu"
          download-size="0"
          install-size="0"
-         version="4.2.1.v20100412"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -844,7 +844,7 @@
          id="javax.servlet"
          download-size="0"
          install-size="0"
-         version="2.5.0.v200910301333"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
