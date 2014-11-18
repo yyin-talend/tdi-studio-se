@@ -88,47 +88,52 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 <%}%>
     java.util.List<com.google.api.services.drive.model.File> <%=cid%>_result = new java.util.ArrayList<com.google.api.services.drive.model.File>();
     com.google.api.services.drive.Drive.Files.List <%=cid%>_request = <%=cid%>_client.files().list();
-    
-	<%
-    if(folderName.startsWith("\"")){
-		folderName = folderName.substring(1);
-	}
-	if(folderName.endsWith("\"")){
-		folderName = folderName.substring(0, folderName.length() - 1);
+    String <%=cid%>_folderName = <%=folderName%>;
+    if (<%=cid%>_folderName == null || <%=cid%>_folderName.isEmpty())
+    {
+    	throw new Exception("Folder name can not be ampty");
     }
-	if ("false".equals(helper.getStringParam("__INCLUDSUBDIR__"))) { %> //without subfolders
+	
+    if(<%=cid%>_folderName.startsWith("\"")){
+		<%=cid%>_folderName = <%=cid%>_folderName.substring(1);
+	}
+	if(<%=cid%>_folderName.endsWith("\"")){
+		<%=cid%>_folderName = <%=cid%>_folderName.substring(0, <%=cid%>_folderName.length() - 1);
+    }
+	<%if ("false".equals(helper.getStringParam("__INCLUDSUBDIR__"))) { %> //without subfolders
     do {
       try {
-      <% if(!folderName.equals("root")) {%>
-      		<%=cid%>_request.setQ("title = '<%=folderName%>' and mimeType = 'application/vnd.google-apps.folder'");
-      <%} else {%>
+      
+      if(!<%=cid%>_folderName.equals("root")) {
+      		<%=cid%>_request.setQ("title = '" + <%=cid%>_folderName + "' and mimeType = 'application/vnd.google-apps.folder'");
+      } else {
       
 	  	<%if ("BOTH".equals(helper.getStringParam("__LIST_MODE__"))) {%>
-	  		<%=cid%>_request.setQ("'<%=folderName%>' in parents");
+	  		<%=cid%>_request.setQ("'" + <%=cid%>_folderName + "' in parents");
       	<%} else if ("FILES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
-      		<%=cid%>_request.setQ("'<%=folderName%>' in parents and mimeType != 'application/vnd.google-apps.folder'");
+      		<%=cid%>_request.setQ("'" + <%=cid%>_folderName + "' in parents and mimeType != 'application/vnd.google-apps.folder'");
       	<%} else {%>
-      		<%=cid%>_request.setQ("'<%=folderName%>' in parents and mimeType = 'application/vnd.google-apps.folder'");
+      		<%=cid%>_request.setQ("'" + <%=cid%>_folderName + "' in parents and mimeType = 'application/vnd.google-apps.folder'");
       	<%}%>
-      <%}%>
+      }
         com.google.api.services.drive.model.FileList files = <%=cid%>_request.execute();
-        <% if(!folderName.equals("root")) {%>
-        if (files.getItems().size() > 1) {
-        	throw new Exception("More then one folder with name " + "\"<%=folderName%>\" found!");
-        } else if (files.getItems().isEmpty()) {
-        	throw new Exception("No folder with name " + "\"<%=folderName%>\" found!");
-        } else {
-        	<%=cid%>_request = <%=cid%>_client.files().list();
-        	<%if ("BOTH".equals(helper.getStringParam("__LIST_MODE__"))) {%>
-        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents");
-        	<%} else if ("FILES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
-        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents and mimeType != 'application/vnd.google-apps.folder'");
-        	<%} else {%>
-        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents and mimeType = 'application/vnd.google-apps.folder'");
-        	<%}%>
-        	files = <%=cid%>_request.execute();
+        if(!<%=cid%>_folderName.equals("root")) {
+	        if (files.getItems().size() > 1) {
+	        	throw new Exception("More then one folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
+	        } else if (files.getItems().isEmpty()) {
+	        	throw new Exception("No folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
+	        } else {
+	        	<%=cid%>_request = <%=cid%>_client.files().list();
+	        	<%if ("BOTH".equals(helper.getStringParam("__LIST_MODE__"))) {%>
+	        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents");
+	        	<%} else if ("FILES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
+	        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents and mimeType != 'application/vnd.google-apps.folder'");
+	        	<%} else {%>
+	        		<%=cid%>_request.setQ("'" + files.getItems().get(0).getId() + "' in parents and mimeType = 'application/vnd.google-apps.folder'");
+	        	<%}%>
+	        	files = <%=cid%>_request.execute();
+	        }
         }
-        <%}%>
         <%=cid%>_result.addAll(files.getItems());
         <%=cid%>_request.setPageToken(files.getNextPageToken());
       } catch (IOException e) {
@@ -139,20 +144,20 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
              <%=cid%>_request.getPageToken().length() > 0);
    <%} else {%>
     java.util.List<String> subfolders_<%=cid %> = new java.util.ArrayList<String>(); 
-    <% if(!folderName.equals("root")) {%>
-   		<%=cid%>_request.setQ("title = '<%=folderName%>' and mimeType = 'application/vnd.google-apps.folder'");
+    if(!<%=cid%>_folderName.equals("root")) {
+   		<%=cid%>_request.setQ("title = '" + <%=cid%>_folderName + "' and mimeType = 'application/vnd.google-apps.folder'");
    		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_request.execute();
    		if (<%=cid%>_files.getItems().size() > 1) {
-        	throw new Exception("More then one folder with name " + "\"<%=folderName%>\" found!");
+        	throw new Exception("More then one folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
         } else if (<%=cid%>_files.getItems().isEmpty()) {
-        	throw new Exception("No folder with name " + "\"<%=folderName%>\" found!");
+        	throw new Exception("No folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
         } else {
         	subfolders_<%=cid %>.add(<%=cid%>_files.getItems().get(0).getId());
    		}
    		<%=cid%>_request = <%=cid%>_client.files().list();
-    <%} else {%>
-	subfolders_<%=cid %>.add("<%=folderName%>");
-	<%}%>
+    } else {
+	subfolders_<%=cid %>.add(<%=cid%>_folderName);
+	}
 	while (subfolders_<%=cid %>.size()>0) {
     do {
       try {
@@ -196,15 +201,7 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
      
    <%}%>
 	for (com.google.api.services.drive.model.File <%=cid%>_temp : <%=cid%>_result) {
-<%if(dataOutputConnection != null){%>
-			<%=dataOutputConnection%>.id = <%=cid%>_temp.getId();
-			<%=dataOutputConnection%>.title = <%=cid%>_temp.getTitle();
-			<%=dataOutputConnection%>.mimeType = <%=cid%>_temp.getMimeType;
-			<%=dataOutputConnection%>.lastModified = <%=cid%>_temp.getModifiedDate().toStringRfc3339();			
-			<%=dataOutputConnection%>.size = <%=cid%>_temp.getFileSize();	
-			<%=dataOutputConnection%>.selfLink = <%=cid%>_temp.getSelfLink();	
-			<%=dataOutputConnection%>.parents = <%=cid%>_temp.getParents();			
-<%}%>
+
 			globalMap.put("<%=cid%>_ID",<%=cid%>_temp.getId());
 			globalMap.put("<%=cid%>_TITLE",<%=cid%>_temp.getTitle());
 			globalMap.put("<%=cid%>_MIME_TYPE",<%=cid%>_temp.getMimeType());

@@ -2197,7 +2197,21 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 return new ChangeValuesFromRepository(elem, null, parentName + typeName, EmfComponent.BUILTIN);
             }
         }
-        return new ChangeValuesFromRepository(elem, null, UpgradeParameterHelper.PROPERTY + typeName, EmfComponent.BUILTIN);
+        Object objProperty = control.getData(PARAMETER_NAME);
+        String property = null;
+        if (objProperty != null && elem != null) {
+            String curSubParam = objProperty.toString().trim();
+            if (!curSubParam.isEmpty()) {
+                IElementParameter iElementParam = elem.getElementParameter(curSubParam);
+                if (iElementParam != null) {
+                    property = iElementParam.getRepositoryProperty();
+                }
+            }
+        }
+        if (property == null || property.trim().isEmpty()) {
+            property = UpgradeParameterHelper.PROPERTY;
+        }
+        return new ChangeValuesFromRepository(elem, null, property + typeName, EmfComponent.BUILTIN);
     }
 
     private Command refreshConnectionCommand(Control control) {

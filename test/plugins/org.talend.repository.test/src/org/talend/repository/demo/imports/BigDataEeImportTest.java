@@ -35,16 +35,16 @@ import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityMa
  */
 public class BigDataEeImportTest extends DemosImportTest {
 
-    public static final String BIG_DATA_EE_DEMO_PLUGIN_ID = "org.talend.demo.bigdata.ee";
+    public static final String BIG_DATA_EE_DEMO_PLUGIN_ID = "org.talend.demo.bigdata.ee"; //$NON-NLS-1$
 
     private ResourcesManager eeResManager;
 
     @Before
     public void importEeDemo() throws Exception {
         initDemo(BIG_DATA_EE_DEMO_PLUGIN_ID);
+        Assert.assertNotNull(currentDemo);
         initTestPaths();
         initTempPro();
-        Assert.assertNotNull(currentDemo);
         eeResManager = DemoImportTestUtil.getResourceManager(currentDemo);
         Assert.assertNotNull(eeResManager);
         ImportExportHandlersManager importManager = new ImportExportHandlersManager();

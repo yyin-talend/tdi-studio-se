@@ -13,6 +13,8 @@ class BasicLogUtil{
 		this.node = node;
 		this.cid = this.node.getUniqueName();
 		this.log4jEnabled = ("true").equals(org.talend.core.model.process.ElementParameterParser.getValue(this.node.getProcess(), "__LOG4J_ACTIVATE__"));
+		this.log4jEnabled = this.log4jEnabled &&
+							this.node.getComponent().isLog4JEnabled() && !"JOBLET".equals(node.getComponent().getComponentType().toString());
 		this.logID = this.cid;
 	}
 	
@@ -46,10 +48,15 @@ class BasicLogUtil{
 	public void trace(String... message){
 		log4j("trace", message);
 	}
-	
-	private void log4j(String level, String... messages){
+	java.util.List<String> checkableList = java.util.Arrays.asList(new String[]{"info", "debug", "trace"}); 	
+	public void log4j(String level, String... messages){
 		if(this.log4jEnabled){
-		%>
+			if(checkableList.contains(level)){
+			%>
+				if(log.is<%=level.substring(0, 1).toUpperCase() + level.substring(1)%>Enabled())
+			<%
+			}
+			%>
 			log.<%=level%>("<%=logID%> - " <%for(String message : messages){%> + <%=message%> <%}%>);
 		<%
 		}
@@ -126,7 +133,7 @@ class LogUtil extends BasicLogUtil{
     		   		)
     	   	);
        		for(org.talend.core.model.process.IElementParameter ep : org.talend.core.model.utils.NodeUtil.getDisplayedParameters(node)){
-       			if(ignoredParamsTypes.contains(ep.getFieldType())){
+       			if(!ep.isLog4JEnabled() || ignoredParamsTypes.contains(ep.getFieldType())){
        				continue;
        			}
        			String name = ep.getName();

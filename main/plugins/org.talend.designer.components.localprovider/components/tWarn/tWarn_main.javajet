@@ -33,6 +33,7 @@ if(priority.equals("1")){
 %>	
 	resumeUtil.addLog("USER_DEF_LOG", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "<%=label %>","",<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,"", "");
 <%
+	log.log4j(label.toLowerCase(), log.str("Message: "), ElementParameterParser.getValue(node, "__MESSAGE__"), log.str(". Code: "), ElementParameterParser.getValue(node, "__CODE__"));
 			if (node.getProcess().getNodesOfType("tLogCatcher").size() > 0) {
 				List<INode> logCatchers = (List<INode>)node.getProcess().getNodesOfType("tLogCatcher");
 				for (INode logCatcher : logCatchers) {

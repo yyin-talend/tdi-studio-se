@@ -9,6 +9,7 @@
 		AUTHOR="Talend"
 		RELEASE_DATE="20070319A"
 		STARTABLE="true"
+		LOG4J_ENABLED="true"
 	>
 		<SIGNATURE/>
 	</HEADER>
@@ -157,6 +158,7 @@
 			NAME="TABLE"
 			FIELD="DBTABLE"
 			NUM_ROW="30"
+			LOG4J_ENABLED="false"
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
