@@ -88,8 +88,24 @@ skeleton="../templates/db_output_bulk.skeleton"
 		isDynamic = metadata.isDynamicSchema(); 
 	}
 	
-	List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
-	isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
+	List<Column> stmtStructure = null;
+    if(columnList != null && columnList.size() > 0) {
+        stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    	isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
+    	
+        if(convertToUppercase) {
+            for(Column column : stmtStructure) {
+                if(column.isReplaced()) {
+                    for (Column replacedColumn : column.getReplacement()) {
+                        replacedColumn.setColumnName(replacedColumn.getColumnName().toUpperCase());
+                    }
+                } else if(!column.isDynamic()){
+                    column.setColumnName(column.getColumnName().toUpperCase());
+                }
+            }
+        }
+    }
+	
 	IMetadataColumn talendDynCol = null;
     ////////////////////////////////////////////////////////////
     List<Column> colStruct = new ArrayList();
@@ -128,17 +144,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%
 			}
-			if(convertToUppercase){
-            %>
-                insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
-            <%
-            }
 		}
 	    %>
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
@@ -149,17 +160,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
-			if(convertToUppercase){
-            %>
-                update_<%=cid%> = update_<%=cid%>.toUpperCase();
-            <%
-            }
 		}
 	    %>
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
@@ -170,29 +176,23 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%
 			}
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
-			if(convertToUppercase){
-            %>
-                insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
-                update_<%=cid%> = update_<%=cid%>.toUpperCase();
-            <%
-            }
 		}
 	    %>
-	    pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(("SELECT COUNT(1) FROM \"" + tableName_<%=cid%> + "\" WHERE <%=updateWhereStmt.toString()%>")<%if(convertToUppercase){%>.toUpperCase()<%}%>);
+	    pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + tableName_<%=cid%> + "\" WHERE <%=updateWhereStmt.toString()%>");
 	    pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 	    pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 	    <%
@@ -202,26 +202,20 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%
 			}
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")<%if(convertToUppercase){%>.toUpperCase()<%}%>+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
-			if(convertToUppercase){
-            %>
-                insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
-                update_<%=cid%> = update_<%=cid%>.toUpperCase();
-            <%
-            }
 		}
 	    %>
 	    pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
@@ -230,13 +224,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	} else if (("DELETE").equals(dataAction)) {
 	    %>
 	    String delete_<%=cid%> = "DELETE FROM \"" + tableName_<%=cid%> + "\" WHERE <%=deleteWhereStmt.toString()%>";
-	    <%
-	    if(convertToUppercase){
-        %>
-            delete_<%=cid%> = delete_<%=cid%>.toUpperCase();
-        <%
-        }
-	    %>
 	    pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
 	    <%
 	}
