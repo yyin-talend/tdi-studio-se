@@ -99,6 +99,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
             @Override
             public boolean getEnabledState() {
                 if (model != null
+                        && !model.getElemParameter().getElement().isReadOnly()
                         && (model.getElemParameter().getName().equals("HADOOP_ADVANCED_PROPERTIES") || model.getElemParameter()
                                 .getName().equals("HBASE_PARAMETERS"))) {
                     return true;
@@ -425,6 +426,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
             @Override
             public boolean getEnabledState() {
                 if (model != null
+                        && !model.getElemParameter().getElement().isReadOnly()
                         && (model.getElemParameter().getName().equals("HADOOP_ADVANCED_PROPERTIES") || model.getElemParameter()
                                 .getName().equals("HBASE_PARAMETERS"))) {
                     if (getExtendedTableViewer().getTable().getSelectionIndex() > -1) {

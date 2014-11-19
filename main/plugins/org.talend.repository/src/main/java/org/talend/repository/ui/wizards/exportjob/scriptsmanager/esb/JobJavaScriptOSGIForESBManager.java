@@ -828,7 +828,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     requireBundle = "tesb-xacml-rt"; //$NON-NLS-1$
                 }
             }
-            //
+            if ("MR".equals(ERepositoryObjectType.getItemType(processItem).getAlias())) {
+                importPackages.add("org.talend.cloud"); //$NON-NLS-1$
+            }
         }
 
         analyzer.setProperty(Analyzer.EXPORT_PACKAGE, exportPackage.toString());

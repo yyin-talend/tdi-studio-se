@@ -51,6 +51,7 @@
 					}
 					%>
 					org.talend.datastewardship.server.task.creation.TaskLoadClient taskLoadClient_<%=cid%> = new org.talend.datastewardship.server.task.creation.TaskLoadClient(url_<%=cid%>,<%=username%>,decryptedPassword_<%=cid%>);
+					taskLoadClient_<%=cid%>.validate();
 					<%
 					if(isLog4jEnabled){
 					%>	

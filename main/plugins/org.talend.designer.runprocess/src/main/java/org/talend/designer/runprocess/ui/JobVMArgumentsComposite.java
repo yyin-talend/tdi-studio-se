@@ -116,7 +116,7 @@ public class JobVMArgumentsComposite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                setAllEnabled(composite, checkBox.getSelection());
+                setAllEnabled(composite, checkBox.isEnabled() && checkBox.getSelection());
                 if (getJobProcess() != null) {
                     executeCommand(new PropertyChangeCommand(getJobProcess(), EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION
                             .getName(), checkBox.getSelection()));
@@ -423,6 +423,7 @@ public class JobVMArgumentsComposite {
         this.processContext = processContext;
         list.clear();
         if (getProcessContext() != null && getJobProcess() != null) {
+            checkBox.setEnabled(!this.processContext.getProcess().isReadOnly());
             if (checkBox != null && !checkBox.isDisposed()) {
                 IElementParameter param = getJobProcess().getElementParameter(
                         EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
@@ -431,7 +432,7 @@ public class JobVMArgumentsComposite {
                 } else {
                     checkBox.setSelection(false);
                 }
-                setAllEnabled(null, checkBox.getSelection());
+                setAllEnabled(null, checkBox.isEnabled() && checkBox.getSelection());
             }
             if (viewer != null && !viewer.getTable().isDisposed()) {
                 String vmarguments = "";
@@ -453,7 +454,7 @@ public class JobVMArgumentsComposite {
         } else {
             if (checkBox != null && !checkBox.isDisposed()) {
                 checkBox.setSelection(false);
-                setAllEnabled(null, checkBox.getSelection());
+                setAllEnabled(null, checkBox.isEnabled() && checkBox.getSelection());
             }
         }
         viewer.setInput(list);
