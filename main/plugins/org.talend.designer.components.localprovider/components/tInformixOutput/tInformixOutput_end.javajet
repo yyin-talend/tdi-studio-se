@@ -115,7 +115,7 @@ imports="
  
     <%
     }   
-if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
+if(!useExistingConnection && useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
     %>
         conn_<%=cid%>.commit();
     <%
