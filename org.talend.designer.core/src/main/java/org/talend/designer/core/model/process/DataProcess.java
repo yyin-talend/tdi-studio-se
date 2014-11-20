@@ -47,6 +47,7 @@ import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElement;
@@ -1770,6 +1771,20 @@ public class DataProcess implements IGeneratingProcess {
             dataNodeList.remove(preStaLogConNode);
             dataNodeList.add(0, preStaLogConNode);
         }
+
+        // tag all the components after Iterator(Parallel)
+        // !iterator with parallel shouldn't work on merge!
+        for (INode node : dataNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                tagComponentAfterParallelIterator(node);
+            }
+        }
+        for (INode node : dataNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                tagSubProcessAfterParallelIterator(node);
+            }
+        }
+
         checkRefList = null;
         checkMultipleMap = null;
         checktUniteMap = null;
@@ -1779,6 +1794,50 @@ public class DataProcess implements IGeneratingProcess {
         shortUniqueNameList = null;
         checkValidationList = null;
 
+    }
+
+    /**
+     * DOC bchen Comment method "tagSubProcessAfterParallelIterator".
+     * 
+     * @param node
+     */
+    private void tagSubProcessAfterParallelIterator(INode node) {
+        if (node.getIncomingConnections() != null && node.getIncomingConnections().size() != 0) {
+            IConnection connection = node.getIncomingConnections().get(0);
+            if (connection.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)
+                    || connection.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)
+                    || connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)
+                    || connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)
+                    || connection.getLineStyle().equals(EConnectionType.RUN_IF)) {// add if you think it should be count
+                                                                                  // for parallel Iterator
+                if (((AbstractNode) connection.getSource()).getParallelIterator() != null) {
+                    ((AbstractNode) node).setParallelIterator(((AbstractNode) connection.getSource()).getParallelIterator());
+                    tagComponentAfterParallelIterator(node);
+                }
+            }
+        }
+    }
+
+    /**
+     * DOC bchen Comment method "tagComponentAfterParallelIterator".
+     * 
+     * @param node
+     */
+    private void tagComponentAfterParallelIterator(INode node) {
+        for (IConnection connection : node.getOutgoingSortedConnections()) {
+            if (connection.getTarget().isActivate()) {
+
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN | IConnectionCategory.USE_ITERATE)) {
+                    if (((AbstractNode) node).getParallelIterator() != null) {
+                        ((AbstractNode) connection.getTarget()).setParallelIterator(((AbstractNode) node).getParallelIterator());
+                    } else if (connection.getLineStyle().equals(EConnectionType.ITERATE)
+                            && Boolean.TRUE.toString().equals(ElementParameterParser.getValue(connection, "__ENABLE_PARALLEL__"))) {
+                        ((AbstractNode) connection.getTarget()).setParallelIterator(connection.getTarget().getUniqueName());
+                    }
+                    tagComponentAfterParallelIterator(connection.getTarget());
+                }
+            }
+        }
     }
 
     private void checkPigLoadComponent() {

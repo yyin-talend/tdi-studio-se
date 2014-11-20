@@ -7,8 +7,10 @@
 		org.talend.core.model.process.IConnectionCategory
 		org.talend.core.model.process.ElementParameterParser 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.utils.NodeUtil
 		java.util.List
 		java.util.Map
+		org.talend.core.model.process.AbstractNode
 	"
 %>
 <%
@@ -70,9 +72,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			synchronized (multiThreadLockWrite) {
 			<%
 				}
-				if (codeGenArgument.subTreeContainsParallelIterate()) {
+				if (((AbstractNode)node).getParallelIterator() != null) {
 			%>
-			synchronized (lockWrite) {
+			synchronized ((Object[])globalMap.get("lockWrite_<%=((AbstractNode)node).getParallelIterator()%>")) {
 			<% 
 				}
 				if (isParallelize) {
@@ -96,7 +98,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			} 
 			<%
     		    }
-				if (codeGenArgument.subTreeContainsParallelIterate()) {
+				if (((AbstractNode)node).getParallelIterator() != null) {
 			%>
 				}
 			<% 

@@ -5,6 +5,8 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser
 		java.util.List
+		org.talend.core.model.utils.NodeUtil
+		org.talend.core.model.process.AbstractNode
 	"
 %>
 <%
@@ -30,9 +32,9 @@
 	synchronized (multiThreadLockWrite) {
 <%
 	}
-	if (codeGenArgument.subTreeContainsParallelIterate()) {
+	if (((AbstractNode)node).getParallelIterator() != null) {
 %>
-	synchronized (lockWrite) {
+	synchronized ((Object[])globalMap.get("lockWrite_<%=((AbstractNode)node).getParallelIterator()%>")) {
 <% 
 	}
 	if (isParallelize) {
@@ -57,7 +59,7 @@
     } 
 <%
     }
-	if (codeGenArgument.subTreeContainsParallelIterate()) {
+	if (((AbstractNode)node).getParallelIterator() != null) {
 %>
 	}
 <% 

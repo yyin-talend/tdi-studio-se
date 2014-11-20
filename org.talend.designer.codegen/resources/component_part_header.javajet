@@ -49,25 +49,15 @@
 		boolean hasParallelIterate = false;
 		for (IConnection iterateConn : iterateConnSet) { 
 			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
+			String iterateNodeName = iterateConn.getTarget().getUniqueName();
 	        if (parallelIterate) {
 			%>
 				TalendThreadPool mtp_<%=iterateConn.getTarget().getUniqueName() %> = new TalendThreadPool(<%=ElementParameterParser.getValue(iterateConn,"__NUMBER_PARALLEL__") %>);
 
-				<%
-				if(!hasParallelIterate){
-					hasParallelIterate = true;
-					%>
-					
-					final Object[] lockWrite = new Object[0];
-					int threadIdCounter =0;
-				<%
-				}
-				%>			
-			
+				globalMap.put("lockWrite_<%=iterateNodeName%>", new Object[0]);
+				int threadIdCounter_<%=iterateNodeName%> =0;
 			<%
 			}
-			
-			String iterateNodeName = iterateConn.getTarget().getUniqueName();
 			%>			
 			int NB_ITERATE_<%=iterateNodeName %> = 0; //for statistics
 			<%			

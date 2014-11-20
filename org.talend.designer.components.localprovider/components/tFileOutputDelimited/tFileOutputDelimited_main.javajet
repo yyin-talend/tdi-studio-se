@@ -10,6 +10,8 @@ imports="
     java.util.List
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.utils.NodeUtil
+	org.talend.core.model.process.AbstractNode
 " 
 %>
 
@@ -80,9 +82,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 				synchronized (multiThreadLockWrite) {
 				<%
     					}
-    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+    					if (((AbstractNode)node).getParallelIterator() != null) {
 				%>
-				synchronized (lockWrite) {
+				synchronized ((Object[])globalMap.get("lockWrite_<%=((AbstractNode)node).getParallelIterator()%>")) {
 		        <% 
     		        	}
     		        	if (isParallelize) {
@@ -135,7 +137,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 				} 
 		        <%
 		        		}
-						if (codeGenArgument.subTreeContainsParallelIterate()) {
+						if (((AbstractNode)node).getParallelIterator() != null) {
 				%>
 				} 
 		        <%
@@ -226,9 +228,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     				synchronized (multiThreadLockWrite) {
     				<%
     					}
-    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+    					if (((AbstractNode)node).getParallelIterator() != null) {
     				%>
-    				synchronized (lockWrite) {
+    				synchronized ((Object[])globalMap.get("lockWrite_<%=((AbstractNode)node).getParallelIterator()%>")) {
     		        <% 
     		        	}
     		        	if (isParallelize) {
@@ -349,7 +351,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     				} 
     		        <%
     		        	}
-    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+    					if (((AbstractNode)node).getParallelIterator() != null) {
     				%>
     				} 
     		        <%
@@ -404,6 +406,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	
         	boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
         	
+        	boolean useOSLineSeparator = ("true").equals(ElementParameterParser.getValue(node,"__OS_LINE_SEPARATOR_AS_ROW_SEPARATOR__"));
+        	
         	boolean hasDynamic = metadata.isDynamicSchema();
         	IMetadataColumn dynamicCol = metadata.getDynamicColumn();
         	if(hasDynamic){
@@ -424,9 +428,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 					synchronized (multiThreadLockWrite) {
 							<%
             				}
-            				if (codeGenArgument.subTreeContainsParallelIterate()) {
+            				if (((AbstractNode)node).getParallelIterator() != null) {
 							%>
-					synchronized (lockWrite) {
+					synchronized ((Object[])globalMap.get("lockWrite_<%=((AbstractNode)node).getParallelIterator()%>")) {
 	        				<% 
             	        	}
             	        	if (isParallelize) {
@@ -495,7 +499,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 					} 
             	        <%
             	        	}
-            				if (codeGenArgument.subTreeContainsParallelIterate()) {
+            				if (((AbstractNode)node).getParallelIterator() != null) {
             			%>
 					} 
             	        <%
@@ -583,9 +587,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     			synchronized (multiThreadLockWrite) {
 <%
     					}
-    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+    					if (((AbstractNode)node).getParallelIterator() != null) {
 %>
-				synchronized (lockWrite) {
+				synchronized ((Object[])globalMap.get("lockWrite_<%=((AbstractNode)node).getParallelIterator()%>")) {
 <%
 						}
 						if (isParallelize) {
@@ -624,8 +628,25 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)));
 								CsvWriter<%=cid%>.setSeparator(csvSettings_<%=cid %>.getFieldDelim());
             	                <%}%>
-    			            	if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
-    								CsvWriter<%=cid%>.setLineEnd(""+csvSettings_<%=cid %>.getRowDelim());
+            	                
+            	                <%
+            	                if(!useOSLineSeparator) {
+								%>
+				       	    	if(csvSettings_<%=cid%>.isUseCRLFRecordDelimiter()) {
+				    	    		CsvWriter<%=cid%>.setLineEnd("\r\n");
+				    	    	} else {
+				    	    		CsvWriter<%=cid%>.setLineEnd(""+csvSettings_<%=cid%>.getRowDelim());
+				    	    	}
+				    	    	<%
+				    	    	} else {
+				    	    	%>
+				    	    	if(!csvSettings_<%=cid%>.isUseCRLFRecordDelimiter() && csvSettings_<%=cid%>.getRowDelim()!='\r' && csvSettings_<%=cid%>.getRowDelim()!='\n') {
+					    			CsvWriter<%=cid%>.setLineEnd(""+csvSettings_<%=cid%>.getRowDelim());
+					    		}
+				    	    	<%
+				    	    	}
+            	                %>
+            	                
             			        //set header.
             			        <%
             			        if(isIncludeHeader && !isAppend){
@@ -735,7 +756,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     			} 
 <%
     		        	}
-    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+    					if (((AbstractNode)node).getParallelIterator() != null) {
 %>
 				}
 <%
