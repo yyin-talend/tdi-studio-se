@@ -14,6 +14,8 @@ package org.talend.spark.operation;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -32,13 +34,17 @@ import scala.Tuple2;
 public class HBaseStore<T> {
 
 	public static void run(String zookeeperHost, String zookeeperPort,
-			String table, final String columns, TalendRDD<List<Object>> rdd,
+			String table, final String columns, Map<String, String> properties, TalendRDD<List<Object>> rdd,
 			final List<Integer> keyList) throws IOException {
 
 		Configuration conf = HBaseConfiguration.create();
 		conf.set("hbase.zookeeper.quorum", zookeeperHost);
 		conf.set("hbase.zookeeper.property.clientPort", zookeeperPort);
 		conf.set("hbase.mapred.tablecolumns", columns);
+		
+		for(Entry<String, String> e:properties.entrySet()) {
+			conf.set(e.getKey(), e.getValue());
+		}
 
 		TalendPairRDD<ImmutableBytesWritable, Put> hbaseRdd = rdd
 				.mapToPair(new PairFunction<List<Object>, ImmutableBytesWritable, Put>() {
