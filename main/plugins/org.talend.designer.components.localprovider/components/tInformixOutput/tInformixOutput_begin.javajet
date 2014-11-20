@@ -191,6 +191,12 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
 	    conn_<%=cid%>.setAutoCommit(false);
 	}
 <%
+}else{
+	%>
+	if(!conn_<%=cid%>.getAutoCommit()) {
+	     conn_<%=cid%>.setAutoCommit(true);
+	   }
+	<%
 }%>
 
 if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
@@ -252,7 +258,7 @@ if(!isDynamic) {
     }
     } //end isDynamic
 		
-    if( useTransaction && !("").equals(commitEvery) && !("0").equals(commitEvery)) {
+    if(!useExistingConnection && useTransaction && !("").equals(commitEvery) && !("0").equals(commitEvery)) {
         %>
         
         int commitEvery_<%=cid%> = <%=commitEvery%>;
@@ -274,5 +280,3 @@ if(isDynamic) {
 	}
 }
 %>
-
-
