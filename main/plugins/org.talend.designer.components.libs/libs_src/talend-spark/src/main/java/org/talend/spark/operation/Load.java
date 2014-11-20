@@ -32,7 +32,7 @@ public class Load<T> {
 
 	public static JavaDStream<List<Object>> run(JavaStreamingContext ctx,
 			String filePath, final String regex) throws Exception {
-		JavaDStream<String> rawData = ctx.textFileStream((filePath));
+		JavaDStream<String> rawData = ctx.textFileStream((filePath));		
 		return rawData.map(new LoadFunction(regex));
 	}
 }

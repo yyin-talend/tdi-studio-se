@@ -12,12 +12,11 @@
 // ============================================================================
 package org.talend.spark;
 
+import java.util.Comparator;
+
 import org.apache.spark.api.java.function.Function;
-import org.talend.spark.function.AggregateFunction;
-import org.talend.spark.function.CoGroupJoinFunction;
-import org.talend.spark.function.InnerJoinFunction;
-import org.talend.spark.function.LeftJoinFunction;
-import org.talend.spark.utils.SortComparator;
+import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.api.java.function.PairFunction;
 
 import scala.Tuple2;
 
@@ -25,20 +24,16 @@ import com.google.common.base.Optional;
 
 public abstract class TalendPairRDD<K, V> {
 	public abstract TalendPairRDD<K, V> getTalendRDD();
+	public abstract <R> TalendRDD<R> map(Function<Tuple2<K, V>, R> func);
 	public abstract TalendRDD<Tuple2<K, V>> toJavaRDD();
-	
-	public abstract <U> TalendPairRDD<K, U> mapValues(AggregateFunction aggregateFunction);
-	public abstract <R> TalendRDD<R> map(Function<Tuple2<K, V>, R> function);
-	
 	public abstract TalendPairRDD<K, Iterable<V>> groupByKey();
-	public abstract <K2, V2> TalendPairRDD<K, V> sortByKey(SortComparator comparator);
-	public abstract TalendPairRDD<K, V> reduceByKey(AggregateFunction aggregateFunction);
-	
+	public abstract TalendPairRDD<K, V> sortByKey(Comparator<K> comparator);
+	public abstract <K2, V2> TalendPairRDD<K2, V2> mapToPair(PairFunction<Tuple2<K, V>, K2, V2> func);
 	public abstract <W> TalendPairRDD<K, Tuple2<V, Optional<W>>> leftOuterJoin(TalendPairRDD<K, W> dataM2);
-	public abstract <W> TalendPairRDD<K, Tuple2<V,W>> join(TalendPairRDD<K, W> dataM2);
-	public abstract <W> TalendPairRDD<K, Tuple2<Iterable<V>,Iterable<W>>> cogroup(TalendPairRDD<K, W> dataM2);
-		
-	public abstract <K2,V2> TalendPairRDD<K2,V2> mapToPair(InnerJoinFunction innerJoinFunction);
-	public abstract <K2,V2> TalendPairRDD<K2,V2> mapToPair(LeftJoinFunction leftJoinFunction);
-	public abstract <K2,V2> TalendPairRDD<K2,V2> mapToPair(CoGroupJoinFunction coGroupJoinFunction);
+	public abstract <W> TalendPairRDD<K, Tuple2<V, W>> join(TalendPairRDD<K, W> dataM2);
+	public abstract <W> TalendPairRDD<K, Tuple2<Iterable<V>, Iterable<W>>> cogroup(TalendPairRDD<K, W> dataM2);
+	public abstract <U> TalendPairRDD<K, U> mapValues(Function<V, U> func);
+	public abstract TalendPairRDD<K, V> reduceByKey(Function2<V, V, V> func);
+	public abstract void saveAsHadoopDataset(org.apache.hadoop.mapred.JobConf conf);
+	public abstract TalendPairRDD<K, V> cache();
 }

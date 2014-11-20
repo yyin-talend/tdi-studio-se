@@ -161,7 +161,8 @@ try {
 			    }
 			    jobNamePosition = position-1;
 			    
-			    childJobName = commandLine[jobNamePosition];
+                childJobName = commandLine[jobNamePosition];
+
 			    childJobName = childJobName.substring(childJobName.lastIndexOf(".")+1);
 				%>
 				childJob_commandLine_Mapper_<%=cid%>.put("<%=childJobName%>",childJob_commandLine_<%=cid%>);	

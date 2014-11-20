@@ -12,30 +12,24 @@
 // ============================================================================
 package org.talend.spark;
 
-import org.talend.spark.function.FilterColumnsFunction;
-import org.talend.spark.function.FilterRowFunction;
-import org.talend.spark.function.KeyByCompareColFunction;
-import org.talend.spark.function.KeyByFunction;
-import org.talend.spark.function.NormalizeFunction;
-import org.talend.spark.function.RDDConverterFunction;
-import org.talend.spark.function.StoreJavaRDDFunction;
+import java.util.List;
+
+import org.apache.spark.api.java.function.FlatMapFunction;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.PairFunction;
 
 
 public abstract class TalendRDD<T> {
-	public abstract <K2,V2> TalendPairRDD<K2, V2> mapToPair(KeyByFunction func);
-	public abstract <K2,V2> TalendPairRDD<K2, V2> mapToPair(KeyByCompareColFunction func);
-	
-	public abstract <R> TalendRDD<R> map(StoreJavaRDDFunction func);
-	public abstract <R> TalendRDD<R> map(RDDConverterFunction func);
-	public abstract <R> TalendRDD<R> map(FilterColumnsFunction func);
-	
-	public abstract TalendRDD<T> filter(FilterRowFunction func);
-	public abstract <U> TalendRDD<T> sample(boolean isWithReplacement, double fraction, int seed);
-	public abstract <U> TalendRDD<T> distinct();
+	public abstract <R> TalendRDD<R> map(Function<T, R> func);
+	public abstract TalendRDD<T> filter(Function<T, Boolean> func);
+	public abstract TalendRDD<T> sample(boolean isWithReplacement, double fraction, int seed);
+	public abstract TalendRDD<T> distinct();
 	public abstract TalendRDD<T> union(TalendRDD<T> rdd);
-	public abstract TalendRDD<T> getTalendRDD();
-	
-	public abstract void collect();
 	public abstract void saveAsTextFile(String filename);
-	public abstract <U> TalendRDD<U> flatMap(NormalizeFunction normalizeFunction);
+	public abstract void toConsole();
+	public abstract List<T> collect();
+	public abstract TalendRDD<T> getTalendRDD();
+	public abstract <K2,V2> TalendPairRDD<K2, V2> mapToPair(PairFunction<T, K2, V2> func);
+	public abstract <U> TalendRDD<U> flatMap(FlatMapFunction<T, U> func);
+	public abstract TalendRDD<T> cache();
 }
