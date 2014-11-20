@@ -12,20 +12,16 @@
 // ============================================================================
 package org.talend.spark;
 
-import org.apache.spark.api.java.JavaRDD;
+import java.util.List;
+
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.talend.spark.function.DistinctFunction;
-import org.talend.spark.function.FilterColumnsFunction;
-import org.talend.spark.function.FilterRowFunction;
-import org.talend.spark.function.KeyByCompareColFunction;
-import org.talend.spark.function.KeyByFunction;
-import org.talend.spark.function.NormalizeFunction;
-import org.talend.spark.function.RDDConverterFunction;
 import org.talend.spark.function.SampleFunction;
-import org.talend.spark.function.StoreJavaRDDFunction;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class TalendDStreamRDD<T> extends TalendRDD<T> {
 	private JavaDStream<T> rdd;
@@ -47,11 +43,31 @@ public class TalendDStreamRDD<T> extends TalendRDD<T> {
 		this.rdd = rdd;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <K2,V2> TalendPairRDD<K2, V2> mapToPair(KeyByFunction func) {
-		return new TalendDStreamPairRDD<K2, V2>(
-				this.rdd.mapToPair((PairFunction<T, K2, V2>) func));
+	public <R> TalendRDD<R> map(Function<T, R> func) {
+		return new TalendDStreamRDD<R>(this.rdd.map(func));
+	}
+
+	@Override
+	public TalendRDD<T> filter(Function<T, Boolean> func) {
+		return new TalendDStreamRDD<T>(this.rdd.filter(func));
+	}
+
+	@Override
+	public TalendRDD<T> sample(boolean isWithReplacement, double fraction,
+			int seed) {
+		return new TalendDStreamRDD<T>(rdd.transform(new SampleFunction<T>(
+				isWithReplacement, fraction, seed)));
+	}
+
+	@Override
+	public TalendRDD<T> distinct() {
+		return new TalendDStreamRDD<T>(rdd.transform(new DistinctFunction<T>()));
+	}
+
+	@Override
+	public TalendRDD<T> union(TalendRDD<T> rdd) {
+		throw new NotImplementedException();
 	}
 
 	@Override
@@ -59,69 +75,28 @@ public class TalendDStreamRDD<T> extends TalendRDD<T> {
 		this.rdd.dstream().saveAsTextFiles(filename, "");
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <R> TalendRDD<R> map(StoreJavaRDDFunction func) {
-		return new TalendDStreamRDD<R>(this.rdd.map((Function<T, R>) func));
-	}
-
-	@Override
-	public void collect() {
+	public void toConsole() {
 		this.rdd.print();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public TalendRDD<T> filter(FilterRowFunction func) {
-		return new TalendDStreamRDD<T>(
-				this.rdd.filter((Function<T, Boolean>) func));
-	}
+	 @Override
+	 public List<T> collect() {
+	 throw new NotImplementedException();
+	 }
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <R> TalendRDD<R> map(FilterColumnsFunction func) {
-		return new TalendDStreamRDD<R>(this.rdd.map((Function<T, R>) func));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <K2,V2> TalendPairRDD<K2, V2> mapToPair(KeyByCompareColFunction func) {
-		return new TalendDStreamPairRDD<K2, V2>(
-				this.rdd.mapToPair((PairFunction<T, K2, V2>) func));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <R> TalendRDD<R> map(RDDConverterFunction func) {
-		return new TalendDStreamRDD<R>(this.rdd.map((Function<T, R>) func));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <U> TalendRDD<T> sample(boolean isWithReplacement, double fraction,
-			int seed) {
-		Function<U, U> func = (Function<U, U>) new SampleFunction(
-				isWithReplacement, fraction, seed);
-		return new TalendDStreamRDD<T>(
-				rdd.transform((Function<JavaRDD<T>, JavaRDD<T>>) func));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <U> TalendRDD<T> distinct() {
-		Function<U, U> func = (Function<U, U>) new DistinctFunction();
-		return new TalendDStreamRDD<T>(
-				rdd.transform((Function<JavaRDD<T>, JavaRDD<T>>) func));
+	public <K2, V2> TalendPairRDD<K2, V2> mapToPair(PairFunction<T, K2, V2> func) {
+		return new TalendDStreamPairRDD<K2, V2>(this.rdd.mapToPair(func));
 	}
 
 	@Override
-	public TalendRDD<T> union(TalendRDD<T> rdd) {
-		return null;
+	public <U> TalendRDD<U> flatMap(FlatMapFunction<T, U> func) {
+		return new TalendDStreamRDD<U>(this.rdd.flatMap(func));
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	@Override
-	public <U> TalendRDD<U> flatMap(NormalizeFunction normalizeFunction) {
-		return new TalendDStreamRDD<U>(this.rdd.flatMap((FlatMapFunction<T, U>) normalizeFunction));
+	public TalendRDD<T> cache() {
+		return new TalendDStreamRDD<T>(this.rdd.cache());
 	}
 }

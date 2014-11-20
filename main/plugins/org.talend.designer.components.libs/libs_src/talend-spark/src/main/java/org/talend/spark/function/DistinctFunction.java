@@ -12,19 +12,17 @@
 // ============================================================================
 package org.talend.spark.function;
 
-import java.util.List;
-
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 
-public class DistinctFunction implements Function<JavaRDD<List<Object>>, JavaRDD<List<Object>>> {
+public class DistinctFunction<T> implements Function<JavaRDD<T>, JavaRDD<T>> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public JavaRDD<List<Object>> call(JavaRDD<List<Object>> rdd) throws Exception {
-		return (JavaRDD<List<Object>>)rdd.distinct();
+	public JavaRDD<T> call(JavaRDD<T> rdd) throws Exception {
+		return rdd.distinct();
 	}
 }

@@ -45,6 +45,6 @@ public class Log {
 
 	public static void run(final TalendRDD<List<Object>> dataM)
 			throws Exception {
-		dataM.collect();
+		dataM.toConsole();
 	}
 }

@@ -13,24 +13,23 @@
 package org.talend.spark.function;
 
 import java.util.Comparator;
-import java.util.List;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.function.Function;
 
-public class SortFunction implements Function<JavaPairRDD<List<Object>, List<Object>>, JavaPairRDD<List<Object>, List<Object>>> {
+public class SortFunction<K, V> implements Function<JavaPairRDD<K, V>, JavaPairRDD<K, V>> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Comparator<List<Object>> comparator;
+	private Comparator<K> comparator;
 
-	public SortFunction(Comparator<List<Object>> comparator) {
+	public SortFunction(Comparator<K> comparator) {
 		this.comparator = comparator;
 	}
 
-	public JavaPairRDD<List<Object>, List<Object>> call(JavaPairRDD<List<Object>, List<Object>> rdd) throws Exception {
-		return (JavaPairRDD<List<Object>, List<Object>>)rdd.sortByKey(this.comparator);
+	public JavaPairRDD<K, V> call(JavaPairRDD<K, V> rdd) throws Exception {
+		return rdd.sortByKey(this.comparator);
 	}
 }

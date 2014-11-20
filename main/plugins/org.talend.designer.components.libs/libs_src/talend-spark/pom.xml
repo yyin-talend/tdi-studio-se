@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.altic</groupId>
 	<artifactId>talend-spark</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>talend-spark</name>
 
 	<dependencies>
@@ -19,7 +19,7 @@
 			<artifactId>twitter4j-stream</artifactId>
 			<version>3.0.3</version>
 		</dependency>
-
+		
 		<!-- Spark dependencies -->
 
 		<dependency>
@@ -37,6 +37,34 @@
 			<artifactId>spark-streaming-twitter_2.10</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-streaming-kafka_2.10</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-client</artifactId>
+			<version>0.98.1-hadoop1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-common</artifactId>
+			<version>0.98.1-hadoop1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-server</artifactId>
+			<version>0.98.1-hadoop1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
 
 	</dependencies>
 </project>
