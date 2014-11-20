@@ -66,8 +66,8 @@ for (IConnection iterateConn : iterateConnSet) { //1
 			}
 			rowList = rowList.substring(0, rowList.length()-1);
 			%>			
+			final Object[] lockWrite = new Object[0];
 			class <%=node.getUniqueName() %>Thread extends TalendThread {//implements routines.system.TalendThreadPool.PropertySettable
-	
 				class ThreadedMap extends java.util.HashMap<String, Object> {
 			
 					private static final long serialVersionUID = 0L;

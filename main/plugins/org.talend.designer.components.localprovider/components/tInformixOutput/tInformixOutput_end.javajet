@@ -119,7 +119,7 @@ imports="
  
     <%
     }   
-if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
+if(!useExistingConnection && useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
     %>
 		<%dbLog.commit().commitTry(null, dbLog.var("commitCounter"));%>
         conn_<%=cid%>.commit();

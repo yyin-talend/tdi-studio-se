@@ -269,20 +269,8 @@ public class LoginComposite extends Composite {
 
     private ConnectionBean firstConnBean;
 
-    private List<IUpdateSiteBean> updateSiteToInstall = new ArrayList<IUpdateSiteBean>();
-
     // only for test
     // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
-
-    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-1$ 
-
-    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-1$ 
-
-    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-1$ 
-
-    private static final String ARCHIVA_USER = "username"; //$NON-NLS-1$ 
-
-    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-1$ 
 
     private boolean afterUpdate = false;
 
@@ -1606,6 +1594,7 @@ public class LoginComposite extends Composite {
                     } catch (JSONException e) {
                         ExceptionHandler.process(e);
                     }
+
                     displayPasswordComposite();
                 }
 
@@ -1767,22 +1756,10 @@ public class LoginComposite extends Composite {
                                 ICoreTisService.class);
                         afterUpdate = false;
                         if (tisService != null) {
-                            JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
-                            String archivaServicesURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY)
-                                    + ARCHIVA_SERVICES_SEGMENT;
-                            String repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
-                            String username = archivaProperties.getString(ARCHIVA_USER);
-                            String password = archivaProperties.getString(ARCHIVA_USER_PWD);
-                            List<String> repositories = new ArrayList<String>();
-                            // if no repository return,just use a empty repositories array
-                            if (repository != null) {
-                                repositories.add(repository);
-                            }
-                            tisService.downLoadAndInstallUpdateSites(archivaServicesURL, username, password, updateSiteToInstall,
-                                    repositories);
+                            tisService.downLoadAndInstallUpdates(getConnection().getUser(), getConnection().getPassword(),
+                                    getAdminURL());
                             afterUpdate = true;
                             tisService.setNeedResartAfterUpdate(afterUpdate);
-                            updateSiteToInstall.clear();
                         }
                         // need to relauch the studio automaticlly after updating
                         isRestart = true;
@@ -1803,68 +1780,51 @@ public class LoginComposite extends Composite {
     }
 
     private void validateUpdate() throws JSONException {
-        // need get archiva url and repository by tac
-        String archivaServiceURL;
-        String repository;
-        String username;
-        String password;
         ConnectionBean currentBean = getConnection();
         String repositoryId = null;
         // at 1st time open the studio there are no bean at all,so need avoid NPE
         if (currentBean != null) {
             repositoryId = currentBean.getRepositoryId();
         }
-        // if workspace different,no need to spent time check patches
+
         try {
-            if (repositoryId != null && repositoryId.equals(RepositoryConstants.REPOSITORY_REMOTE_ID)
-                    && isSVNProviderPluginLoadedRemote()) {
-                JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
+            if (currentBean != null && isSVNProviderPluginLoadedRemote()) {
+                if (afterUpdate) {
+                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    colorComposite.setBackground(RED_COLOR);
+                    onIconLabel.setBackground(colorComposite.getBackground());
+                    statusLabel.setText(Messages.getString("LoginComposite.archivaFinish")); //$NON-NLS-1$
+                    statusLabel.setBackground(RED_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                    restartBut.setVisible(true);
+                    restartBut.setEnabled(true);
+                    openProjectBtn.setEnabled(false);
+                    updateBtn.setEnabled(false);
 
-                // Added by Marvin Wang on Oct. 31, 2012 for bug TDI-22060, more details, refer to the comment following
-                // the bug.
-                if ("".equals(archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY))) {
-                    return;
-                }
-
-                archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
-                repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
-                username = archivaProperties.getString(ARCHIVA_USER);
-                password = archivaProperties.getString(ARCHIVA_USER_PWD);
-                List<String> repositories = new ArrayList<String>();
-                if (repository != null) {
-                    repositories.add(repository);
-                }
-                if (archivaServiceURL != null) {
-                    boolean needUpdate = needUpdate(username, password, archivaServiceURL, repositories);
-                    if (afterUpdate) {
-                        iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                        onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                        colorComposite.setBackground(RED_COLOR);
-                        onIconLabel.setBackground(colorComposite.getBackground());
-                        statusLabel.setText(Messages.getString("LoginComposite.archivaFinish")); //$NON-NLS-1$
-                        statusLabel.setBackground(RED_COLOR);
-                        statusLabel.setForeground(WHITE_COLOR);
-                        Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
-                        statusLabel.setFont(font);
-                        restartBut.setVisible(true);
-                        restartBut.setEnabled(true);
-                        openProjectBtn.setEnabled(false);
-                        updateBtn.setEnabled(false);
-
-                    } else if (needUpdate) {
-                        iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                        onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                        colorComposite.setBackground(RED_COLOR);
-                        onIconLabel.setBackground(colorComposite.getBackground());
-                        statusLabel.setText(Messages.getString("LoginComposite.updateArchiva")); //$NON-NLS-1$
-                        statusLabel.setBackground(RED_COLOR);
-                        statusLabel.setForeground(WHITE_COLOR);
-                        Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
-                        statusLabel.setFont(font);
-                        openProjectBtn.setEnabled(!needUpdate);
-                        updateBtn.setVisible(needUpdate);
-                        updateBtn.setEnabled(needUpdate);
-                        updateBtn.setText("update");
+                } else {
+                    ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(
+                            ICoreTisService.class);
+                    if (tisService != null) {
+                        boolean needUpdate = tisService.needUpdate(currentBean.getUser(), currentBean.getPassword(),
+                                getAdminURL());
+                        if (needUpdate) {
+                            iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                            onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                            colorComposite.setBackground(RED_COLOR);
+                            onIconLabel.setBackground(colorComposite.getBackground());
+                            statusLabel.setText(Messages.getString("LoginComposite.updateArchiva")); //$NON-NLS-1$
+                            statusLabel.setBackground(RED_COLOR);
+                            statusLabel.setForeground(WHITE_COLOR);
+                            Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                            statusLabel.setFont(font);
+                            openProjectBtn.setEnabled(!needUpdate);
+                            updateBtn.setVisible(needUpdate);
+                            updateBtn.setEnabled(needUpdate);
+                            updateBtn.setText("update");
+                        }
                     }
                 }
             } else {
@@ -1872,8 +1832,6 @@ public class LoginComposite extends Composite {
                 updateBtn.setEnabled(false);
             }
         } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        } catch (LoginException e) {
             ExceptionHandler.process(e);
         } catch (SystemException e) {
             updateArchivaErrorButton();
@@ -1887,39 +1845,6 @@ public class LoginComposite extends Composite {
             tacURL = currentBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
         }
         return tacURL;
-    }
-
-    /* should use api of tac to get the properties */
-    private JSONObject getArchivaServicesProperties(String tacURL) throws PersistenceException, LoginException {
-        JSONObject archivaObject = null;
-        ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
-        if (tisService != null) {
-            String userName = getConnection().getUser();
-            String password = getConnection().getPassword();
-            User user = PropertiesFactory.eINSTANCE.createUser();
-            user.setLogin(userName);
-            archivaObject = (JSONObject) tisService.getArchivaObject(user, password, tacURL);
-        }
-
-        return archivaObject;
-    }
-
-    // method need update is used to control the status of updateBtn
-    private boolean needUpdate(String username, String password, String archivaURL, List<String> repositories)
-            throws SystemException {
-
-        ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
-        if (tisService != null) {
-            try {
-                if (updateSiteToInstall != null) {
-                    updateSiteToInstall.clear();
-                }
-                updateSiteToInstall = tisService.getUpdateSitesToBeInstall(username, password, archivaURL, repositories);
-            } catch (BackingStoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return !updateSiteToInstall.isEmpty();
     }
 
     public void createNewProject() {
