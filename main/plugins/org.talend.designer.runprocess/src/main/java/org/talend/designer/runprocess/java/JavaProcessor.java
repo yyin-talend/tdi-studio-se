@@ -1034,6 +1034,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
         String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
         List<String> list = new ArrayList<String>();
+        
         list.add("-libjars"); //$NON-NLS-1$
         StringBuffer libJars = new StringBuffer("");
         Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
