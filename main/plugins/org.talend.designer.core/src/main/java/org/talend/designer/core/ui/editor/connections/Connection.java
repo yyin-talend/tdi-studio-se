@@ -144,6 +144,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setDisplayName(EParameterName.ACTIVATE.getDisplayName());
         param.setShow(false);
         param.setNumRow(1);
+        param.setDefaultValue(param.getValue());
         addElementParameter(param);
     }
 
@@ -232,6 +233,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setDisplayName(EParameterName.CONDITION.getDisplayName());
             param.setShow(true);
             param.setNumRow(1);
+            param.setDefaultValue(param.getValue());
             addElementParameter(param);
         }
         if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
@@ -339,6 +341,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setDisplayName(EParameterName.ACTIVATE.getDisplayName());
         param.setShow(false);
         param.setNumRow(1);
+        param.setDefaultValue(param.getValue());
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -381,6 +384,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setNumRow(2);
             param.setShow(true);
             param.setReadOnly(isLocalRepository);
+            param.setDefaultValue(param.getValue());
             addElementParameter(param);
 
             param = new ElementParameter(this);
@@ -393,6 +397,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setNumRow(3);
             param.setShow(true);
             param.setReadOnly(isLocalRepository);
+            param.setDefaultValue(param.getValue());
             addElementParameter(param);
 
             param = new ElementParameter(this);
@@ -405,6 +410,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setNumRow(4);
             param.setShow(true);
             param.setReadOnly(isLocalRepository);
+            param.setDefaultValue(param.getValue());
             addElementParameter(param);
             // breakpoint
             if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)
@@ -417,6 +423,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setNumRow(13);
                 param.setValue(false);
                 param.setContextMode(false);
+                param.setDefaultValue(param.getValue());
                 param.setShow(true);
 
                 addElementParameter(param);
@@ -431,6 +438,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                     tmpParam.setElement(this);
                     tmpParam.setCategory(EComponentCategory.BREAKPOINT);
                     tmpParam.setNumRow(14);
+                    tmpParam.setDefaultValue(tmpParam.getValue());
                     addElementParameter(tmpParam);
                 }
                 tmpParam = (ElementParameter) tmpNode.getElementParameter("CONDITIONS");
@@ -439,6 +447,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                     tmpParam.setCategory(EComponentCategory.BREAKPOINT);
                     tmpParam.setNumRow(15);
                     ColumnListController.updateColumnList(tmpNode, null, true);
+                    tmpParam.setDefaultValue(tmpParam.getValue());
                     addElementParameter(tmpParam);
                 }
 
@@ -447,6 +456,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                     tmpParam.setElement(this);
                     tmpParam.setCategory(EComponentCategory.BREAKPOINT);
                     tmpParam.setNumRow(16);
+                    tmpParam.setDefaultValue(tmpParam.getValue());
                     addElementParameter(tmpParam);
                 }
                 tmpParam = (ElementParameter) tmpNode.getElementParameter("ADVANCED_COND");
@@ -454,6 +464,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                     tmpParam.setElement(this);
                     tmpParam.setCategory(EComponentCategory.BREAKPOINT);
                     tmpParam.setNumRow(17);
+                    tmpParam.setDefaultValue(tmpParam.getValue());
                     addElementParameter(tmpParam);
                 }
             }
@@ -474,6 +485,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
         tmpParam.setShowIf("(#NODE@OUT.END_OF_FLOW == 'false' OR #NODE@IN.SUBTREE_START == 'true')");
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         tmpParam = new ElementParameter(this);
@@ -488,6 +500,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setShowIf("#NODE@IN.SUBTREE_START == 'false'");
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         tmpParam = new ElementParameter(this);
@@ -502,6 +515,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setShowIf("(#NODE@IN.SUBTREE_START == 'false' AND #NODE@OUT.END_OF_FLOW == 'false')");
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         tmpParam = new ElementParameter(this);
@@ -516,6 +530,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setShow(true);
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         IComponent componentPar = ComponentsFactoryProvider.getInstance().get("tPartitioner",
@@ -525,6 +540,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam = (ElementParameter) tmpNode.getElementParameter("NUM_PARTITIONS");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
         tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true')");
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         tmpParam = new ElementParameter(this);
@@ -537,17 +553,20 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setRequired(false);
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
         tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true') and (DEPARTITIONER=='false')");
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         tmpParam = (ElementParameter) tmpNode.getElementParameter("HASH_PARTITION");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
         tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true')");
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         tmpParam = (ElementParameter) tmpNode.getElementParameter("HASH_KEYS");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
         tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true') and (HASH_PARTITION=='true')");
         ColumnListController.updateColumnList(tmpNode, null, true);
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         componentPar = ComponentsFactoryProvider.getInstance().get("tDepartitioner", ComponentCategory.CATEGORY_4_DI.getName());
@@ -563,6 +582,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setRequired(false);
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
         tmpParam.setShowIf("(DEPARTITIONER == 'true' or REPARTITIONER=='true') and (PARTITIONER=='false')");// "(DEPARTITIONER == 'true' or REPARTITIONER=='true')"
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
 
         IComponent componentCol = ComponentsFactoryProvider.getInstance().get("tRecollector",
@@ -572,6 +592,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam = (ElementParameter) tmpNode1.getElementParameter("IS_SORTING");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
         tmpParam.setShowIf("(DEPARTITIONER == 'true' or REPARTITIONER=='true')");
+        tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
     }
 
@@ -590,6 +611,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(false);
         param.setNumRow(1);
+        param.setDefaultValue(param.getValue());
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -604,6 +626,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setValue(new ArrayList<Map<String, Object>>());
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(false);
+        param.setDefaultValue(param.getValue());
         param.setNumRow(2);
 
         addElementParameter(param);
@@ -663,6 +686,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(true);
         param.setNumRow(10);
+        // param.setDefaultValue(param.getValue());
         addElementParameter(param);
 
         Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get(
@@ -678,6 +702,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                     curParam.setShowIf("(" + curParam.getShowIf() + " and MONITOR_CONNECTION == 'true')"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 curParam.setElement(this);
+                ((ElementParameter) curParam).setDefaultValue(curParam.getValue());
                 addElementParameter(curParam);
             }
         }
