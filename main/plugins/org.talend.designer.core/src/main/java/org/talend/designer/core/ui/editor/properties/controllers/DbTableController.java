@@ -359,34 +359,33 @@ public class DbTableController extends AbstractElementPropertySectionController 
     private DatabaseConnection getExistConnection() {
         String implicitRepositoryId = getImplicitRepositoryId();
         String statsLogPrositoryId = getStatsLogRepositoryId();
-        DatabaseConnection connection = null;
         if (implicitRepositoryId != null || statsLogPrositoryId != null) {
             // jobsetting view load the exist db info from current selected category
-            if (EComponentCategory.EXTRA.equals(section) && implicitRepositoryId == null) {
-                return connection;
+            String repId = null;
+            if (EComponentCategory.EXTRA.equals(section)) {
+                repId = implicitRepositoryId;
+
+            } else if (EComponentCategory.STATSANDLOGS.equals(section)) {
+                repId = statsLogPrositoryId;
             }
-            if (EComponentCategory.STATSANDLOGS.equals(section)) {
-                if (statsLogPrositoryId != null) {
-                    implicitRepositoryId = statsLogPrositoryId;
-                } else {
-                    return connection;
-                }
-            }
-            IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getRepositoryService()
-                    .getProxyRepositoryFactory();
-            try {
-                IRepositoryViewObject lastVersion = proxyRepositoryFactory.getLastVersion(implicitRepositoryId);
-                if (implicitRepositoryId.equals(lastVersion.getId())) {
-                    Item item = lastVersion.getProperty().getItem();
-                    if (item instanceof DatabaseConnectionItem) {
-                        connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
+            if (repId != null) {
+                IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getRepositoryService()
+                        .getProxyRepositoryFactory();
+                try {
+                    IRepositoryViewObject lastVersion = proxyRepositoryFactory.getLastVersion(repId);
+                    if (lastVersion != null) {
+                        Item item = lastVersion.getProperty().getItem();
+                        if (item instanceof DatabaseConnectionItem) {
+                            DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
+                            return connection;
+                        }
                     }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
                 }
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
             }
         }
-        return connection;
+        return null;
     }
 
     /**

@@ -1351,15 +1351,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
             }
         }
-
         // jobsetting view load the db info from current selected category
-        if (EComponentCategory.EXTRA.equals(section)) {
-            basePropertyParameter = elem.getElementParameter("PROPERTY_TYPE_IMPLICIT_CONTEXT"); //$NON-NLS-1$
+        IElementParameter updateBasePropertyParameter = updateBasePropertyParameter();
+        if (updateBasePropertyParameter != null && !updateBasePropertyParameter.equals(basePropertyParameter)) {
+            basePropertyParameter = updateBasePropertyParameter;
         }
-        if (EComponentCategory.STATSANDLOGS.equals(section)) {
-            basePropertyParameter = elem.getElementParameter("PROPERTY_TYPE"); //$NON-NLS-1$
-        }
-
         String type = null;
         ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         if (typ != null && !typ.equals("")) { //$NON-NLS-1$
@@ -1542,15 +1538,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
             }
         }
-
         // jobsetting view load the db info from current selected category
-        if (EComponentCategory.EXTRA.equals(section)) {
-            basePropertyParameter = elem.getElementParameter("PROPERTY_TYPE_IMPLICIT_CONTEXT"); //$NON-NLS-1$
+        IElementParameter updateBasePropertyParameter = updateBasePropertyParameter();
+        if (updateBasePropertyParameter != null && !updateBasePropertyParameter.equals(basePropertyParameter)) {
+            basePropertyParameter = updateBasePropertyParameter;
         }
-        if (EComponentCategory.STATSANDLOGS.equals(section)) {
-            basePropertyParameter = elem.getElementParameter("PROPERTY_TYPE"); //$NON-NLS-1$
-        }
-
         // qli modified to fix the bug "7364".
         if (connParameters == null) {
             connParameters = new ConnectionParameters();
@@ -1804,15 +1796,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
             }
         }
-
         // jobsetting view load the db info from current selected category
-        if (EComponentCategory.EXTRA.equals(section)) {
-            basePropertyParameter = elem.getElementParameter("PROPERTY_TYPE_IMPLICIT_CONTEXT"); //$NON-NLS-1$
+        IElementParameter updateBasePropertyParameter = updateBasePropertyParameter();
+        if (updateBasePropertyParameter != null && !updateBasePropertyParameter.equals(basePropertyParameter)) {
+            basePropertyParameter = updateBasePropertyParameter;
         }
-        if (EComponentCategory.STATSANDLOGS.equals(section)) {
-            basePropertyParameter = elem.getElementParameter("PROPERTY_TYPE"); //$NON-NLS-1$
-        }
-
         connParameters = new ConnectionParameters();
         String type = getValueFromRepositoryName(elem, "TYPE", basePropertyParameter); //$NON-NLS-1$
         if (type.equals("Oracle") || type.contains("OCLE")) {
@@ -2329,4 +2317,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
         this.codeProblems = codeProblems;
     }
 
+    private IElementParameter updateBasePropertyParameter() {
+        if (EComponentCategory.EXTRA.equals(section)) {
+            return elem.getElementParameter("PROPERTY_TYPE_IMPLICIT_CONTEXT"); //$NON-NLS-1$
+        }
+        if (EComponentCategory.STATSANDLOGS.equals(section)) {
+            return elem.getElementParameter("PROPERTY_TYPE"); //$NON-NLS-1$
+        }
+        return null;
+    }
 }
