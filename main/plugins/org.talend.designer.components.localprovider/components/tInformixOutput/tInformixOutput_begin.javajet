@@ -196,6 +196,12 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
 	    conn_<%=cid%>.setAutoCommit(false);
 	}
 <%
+}else{
+	%>
+	if(!conn_<%=cid%>.getAutoCommit()) {
+	    conn_<%=cid%>.setAutoCommit(true);
+	}
+	<%
 }
 dbLog.commit().logAutoCommit("conn_"+cid+".getAutoCommit()");
 %>
@@ -258,7 +264,7 @@ if(!isDynamic) {
     }
     } //end isDynamic
 		
-    if( useTransaction && !("").equals(commitEvery) && !("0").equals(commitEvery)) {
+    if(!useExistingConnection && useTransaction && !("").equals(commitEvery) && !("0").equals(commitEvery)) {
         %>
         
         int commitEvery_<%=cid%> = <%=commitEvery%>;
