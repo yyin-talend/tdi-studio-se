@@ -1004,9 +1004,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // If the current job is m/r job, then add the argument "-libjars *.jar" for mapper and reducer method if
         // required.
         if (process.getComponentsType().equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) {
-            strings = addMapReduceJobCommands(strings, true);
-        } else {
-            strings = addMapReduceJobCommands(strings, false);
+            strings = addMapReduceJobCommands(strings);
         }
 
         String[] cmd2 = addVMArguments(strings, exportingJob);
@@ -1032,25 +1030,20 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return JavaProcessorUtilities.getJavaProjectLibFolder().getAbsolutePath();
     }
 
-    private List<String> getLibJars() {
-        java.util.List<String> list = new java.util.ArrayList<String>();
+    private List<String> getCommandSegmentsForMapReduceProcess() {
+        String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
+        String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
+        List<String> list = new ArrayList<String>();
         list.add("-libjars"); //$NON-NLS-1$
         StringBuffer libJars = new StringBuffer("");
         Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
         if (libNames != null && libNames.size() > 0) {
             Iterator<String> itLibNames = libNames.iterator();
             while (itLibNames.hasNext()) {
-                libJars.append(itLibNames.next()).append(",");
+                libJars.append(getLibFolderInWorkingDir() + itLibNames.next()).append(",");
             }
         }
         list.add(libJars.substring(0, libJars.length() - 1));
-        return list;
-    }
-
-    private List<String> getCommandSegmentsForMapReduceProcess() {
-        String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
-        String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
-        List<String> list = getLibJars();
         list.add("-fs");//$NON-NLS-1$
         list.add(nameNodeURI == null ? "hdfs://localhost:8020" : nameNodeURI);//$NON-NLS-1$
         list.add("-jt");//$NON-NLS-1$
@@ -1059,23 +1052,15 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return list;
     }
 
-    private String[] addMapReduceJobCommands(String[] strings, boolean isMR) {
+    private String[] addMapReduceJobCommands(String[] strings) {
         List<String> list = new ArrayList<String>();
         if (strings != null && strings.length > 0) {
             for (String commandSegment : strings) {
                 list.add(commandSegment);
             }
         }
-        if (isMR) {
-            list.addAll(getCommandSegmentsForMapReduceProcess());
-        } else {
-            list.addAll(getLibJars());
-        }
+        list.addAll(getCommandSegmentsForMapReduceProcess());
         return list.toArray(new String[list.size()]);
-    }
-
-    private String[] addMapReduceJobCommands(String[] strings) {
-        return addMapReduceJobCommands(strings, true);
     }
 
     protected String extractClassPathSeparator() {
