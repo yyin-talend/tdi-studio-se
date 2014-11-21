@@ -14,6 +14,7 @@ package org.talend.designer.core.model.components;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -1186,8 +1187,19 @@ public class ElementParameter implements IElementParameter {
         this.repositoryProperty = repositoryProperty;
     }
 
+    @SuppressWarnings("rawtypes")
     public void setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
+        // re-set the defaultValue
+        if (defaultValue != null) {
+            if (defaultValue instanceof ArrayList) {
+                this.defaultValue = ((ArrayList) defaultValue).clone();
+            } else if (defaultValue instanceof HashSet) {
+                this.defaultValue = ((HashSet) defaultValue).clone();
+            } else if (defaultValue instanceof HashMap) {
+                this.defaultValue = ((HashMap) defaultValue).clone();
+            }
+        }
     }
 
     /*
