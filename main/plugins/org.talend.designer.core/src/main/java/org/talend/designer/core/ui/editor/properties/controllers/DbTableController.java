@@ -60,6 +60,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
@@ -358,26 +359,33 @@ public class DbTableController extends AbstractElementPropertySectionController 
     private DatabaseConnection getExistConnection() {
         String implicitRepositoryId = getImplicitRepositoryId();
         String statsLogPrositoryId = getStatsLogRepositoryId();
-        DatabaseConnection connection = null;
         if (implicitRepositoryId != null || statsLogPrositoryId != null) {
-            if (implicitRepositoryId == null) {
-                implicitRepositoryId = statsLogPrositoryId;
+            // jobsetting view load the exist db info from current selected category
+            String repId = null;
+            if (EComponentCategory.EXTRA.equals(section)) {
+                repId = implicitRepositoryId;
+
+            } else if (EComponentCategory.STATSANDLOGS.equals(section)) {
+                repId = statsLogPrositoryId;
             }
-            IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getRepositoryService()
-                    .getProxyRepositoryFactory();
-            try {
-                IRepositoryViewObject lastVersion = proxyRepositoryFactory.getLastVersion(implicitRepositoryId);
-                if (implicitRepositoryId.equals(lastVersion.getId())) {
-                    Item item = lastVersion.getProperty().getItem();
-                    if (item instanceof DatabaseConnectionItem) {
-                        connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
+            if (repId != null) {
+                IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getRepositoryService()
+                        .getProxyRepositoryFactory();
+                try {
+                    IRepositoryViewObject lastVersion = proxyRepositoryFactory.getLastVersion(repId);
+                    if (lastVersion != null) {
+                        Item item = lastVersion.getProperty().getItem();
+                        if (item instanceof DatabaseConnectionItem) {
+                            DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
+                            return connection;
+                        }
                     }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
                 }
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
             }
         }
-        return connection;
+        return null;
     }
 
     /**
