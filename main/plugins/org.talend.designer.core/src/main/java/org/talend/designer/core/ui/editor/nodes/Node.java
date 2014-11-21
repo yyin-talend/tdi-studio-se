@@ -541,7 +541,7 @@ public class Node extends Element implements IGraphicalNode {
         }
 
         // TDI-30811:tSalesforcebulkexec/tSalesforceOutput link tLogRow with main line has compile error
-        if (!this.getProcess().isDuplicate()) {
+        if (this.component != null && this.component.isSchemaAutoPropagated() && !this.getProcess().isDuplicate()) {
             // only apply this to init the component when create ,if it's a duplicate process, only used for code
             // generation, no need to update any data.
             IElementParameter schemaTypeParam = this.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
