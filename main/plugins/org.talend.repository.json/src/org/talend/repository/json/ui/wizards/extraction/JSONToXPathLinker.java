@@ -663,9 +663,11 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
         if (!alreadyProcessedXPath.contains(xPathExpression)) {
             loopXpathNodes.add(xPathExpression);
             TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(xPathExpression);
-            addLoopLink(treeItemFromAbsoluteXPath, treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
-                    (JSONXPathLoopDescriptor) tableItemTarget.getData());
-            alreadyProcessedXPath.add(xPathExpression);
+            if (treeItemFromAbsoluteXPath != null) {
+                addLoopLink(treeItemFromAbsoluteXPath, treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
+                        (JSONXPathLoopDescriptor) tableItemTarget.getData());
+                alreadyProcessedXPath.add(xPathExpression);
+            }
         }
     }
 
