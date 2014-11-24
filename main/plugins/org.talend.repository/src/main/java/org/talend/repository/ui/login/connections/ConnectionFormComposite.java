@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.login.connections;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -38,15 +40,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.LabelText;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
-import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
-import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.repository.ILoginConnectionService;
@@ -85,6 +86,8 @@ public class ConnectionFormComposite extends Composite {
 
     private Text workSpaceText;
 
+    private Button workSpaceButton;
+
     private ConnectionBean connection;
 
     private ConnectionsListComposite connectionsListComposite;
@@ -97,10 +100,7 @@ public class ConnectionFormComposite extends Composite {
 
     private Map<IRepositoryFactory, Map<String, LabelledCombo>> dynamicChoices = new HashMap<IRepositoryFactory, Map<String, LabelledCombo>>();
 
-    private static final IExtensionPointLimiter CONNECT_PROVIDER = new ExtensionPointLimiterImpl(
-            "org.talend.core.repository.connection_provider", "connectionValidate");
-
-    public static final String URL_FIELD_NAME = "url";
+    public static final String URL_FIELD_NAME = "url"; //$NON-NLS-1$
 
     /**
      * DOC smallet ConnectionsComposite constructor comment.
@@ -115,41 +115,38 @@ public class ConnectionFormComposite extends Composite {
         this.connectionsListComposite = connectionsListComposite;
 
         toolkit = new FormToolkit(this.getDisplay());
-        ScrolledForm form = toolkit.createScrolledForm(this);
-        Composite formBody = form.getBody();
+        Composite formBody = toolkit.createComposite(this);
 
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         setLayout(layout);
-        form.setLayoutData(new GridData(GridData.FILL_BOTH));
+        formBody.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        final int hSpan = 10;
-
-        formBody.setLayout(new GridLayout(2, false));
-
+        formBody.setLayout(new GridLayout(3, false));
+        GridDataFactory formDefaultFactory = GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER);
         // Repository
         Label repositoryLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.repository")); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().applyTo(repositoryLabel);
+        formDefaultFactory.copy().applyTo(repositoryLabel);
 
         repositoryCombo = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         repositoryCombo.setContentProvider(new ArrayContentProvider());
         repositoryCombo.setLabelProvider(new RepositoryFactoryLabelProvider());
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(repositoryCombo.getControl());
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(repositoryCombo.getControl());
 
         // Name
         Label nameLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.name")); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().applyTo(nameLabel);
+        formDefaultFactory.copy().applyTo(nameLabel);
 
         nameText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(nameText);
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(nameText);
 
         // Comment
         Label descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().applyTo(descriptionLabel);
+        formDefaultFactory.copy().applyTo(descriptionLabel);
 
         descriptionText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(descriptionText);
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(descriptionText);
 
         // User
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
@@ -162,19 +159,37 @@ public class ConnectionFormComposite extends Composite {
             userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.usernameNoMail")); //$NON-NLS-1$
         }
 
-        GridDataFactory.fillDefaults().applyTo(userLabel);
+        formDefaultFactory.copy().applyTo(userLabel);
 
         userText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(userText);
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(userText);
 
         // Password
         Label passwordLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().applyTo(passwordLabel);
+        formDefaultFactory.copy().applyTo(passwordLabel);
 
         passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(passwordText);
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(passwordText);
 
-        GridData data;
+        Label workSpaceLabel = toolkit.createLabel(formBody, Messages.getString("ConnectionFormComposite.WORKSPACE")); //$NON-NLS-1$
+        formDefaultFactory.copy().applyTo(workSpaceLabel);
+
+        Composite wsCompo = toolkit.createComposite(formBody);
+        GridLayout wsCompoLayout = new GridLayout(2, false);
+        wsCompoLayout.marginHeight = 0;
+        wsCompoLayout.marginWidth = 0;
+
+        wsCompo.setLayout(wsCompoLayout);
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(wsCompo);
+
+        workSpaceText = toolkit.createText(wsCompo, "", SWT.BORDER); //$NON-NLS-1$
+        formDefaultFactory.copy().grab(true, false).applyTo(workSpaceText);
+
+        workSpaceButton = toolkit.createButton(wsCompo, null, SWT.PUSH);
+        workSpaceButton.setToolTipText(Messages.getString("ConnectionFormComposite.SELECT_WORKSPACE")); //$NON-NLS-1$
+        workSpaceButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
+        GridDataFactory.fillDefaults().applyTo(workSpaceButton);
+
         List<IRepositoryFactory> availableRepositories = getUsableRepositoryProvider();
         for (IRepositoryFactory current : availableRepositories) {
             Map<String, LabelText> list = new HashMap<String, LabelText>();
@@ -185,20 +200,17 @@ public class ConnectionFormComposite extends Composite {
             dynamicRequiredControls.put(current, listRequired);
             dynamicButtons.put(current, listButtons);
             dynamicChoices.put(current, listChoices);
-            Control baseControl = passwordLabel;
 
             for (final DynamicChoiceBean currentChoiceBean : current.getChoices()) {
                 Label label = toolkit.createLabel(formBody, currentChoiceBean.getName());
-                GridDataFactory.fillDefaults().applyTo(label);
+                formDefaultFactory.copy().applyTo(label);
 
                 Combo combo = new Combo(formBody, SWT.BORDER | SWT.READ_ONLY);
                 for (String label1 : currentChoiceBean.getChoices().values()) {
                     combo.add(label1);
                 }
 
-                GridDataFactory.fillDefaults().grab(true, false).applyTo(combo);
-
-                baseControl = combo;
+                formDefaultFactory.copy().grab(true, false).applyTo(combo);
 
                 listChoices.put(currentChoiceBean.getId(), new LabelledCombo(label, combo));
             }
@@ -209,13 +221,11 @@ public class ConnectionFormComposite extends Composite {
                     textStyle = textStyle | SWT.PASSWORD;
                 }
                 Label label = toolkit.createLabel(formBody, currentField.getName());
-                GridDataFactory.fillDefaults().applyTo(label);
+                formDefaultFactory.copy().align(SWT.FILL, SWT.CENTER).applyTo(label);
 
                 Text text = toolkit.createText(formBody, "", textStyle); //$NON-NLS-1$
 
-                GridDataFactory.fillDefaults().grab(true, false).applyTo(text);
-                baseControl = text;
-
+                formDefaultFactory.copy().grab(true, false).align(SWT.FILL, SWT.CENTER).applyTo(text);
                 LabelText labelText = new LabelText(label, text);
                 if (currentField.isRequired()) {
                     listRequired.put(currentField.getId(), labelText);
@@ -224,37 +234,35 @@ public class ConnectionFormComposite extends Composite {
             }
 
             for (final DynamicButtonBean currentButtonBean : current.getButtons()) {
-                Label label = toolkit.createLabel(formBody, ""); //$NON-NLS-1$
-                label.setVisible(false);
-                GridDataFactory.fillDefaults().applyTo(label);
                 Button button = new Button(formBody, SWT.PUSH);
                 button.setText(currentButtonBean.getName());
                 button.addSelectionListener(new DelegateSelectionListener(currentButtonBean));
-                GridDataFactory.fillDefaults().grab(true, false).applyTo(button);
-
-                baseControl = button;
+                formDefaultFactory.copy().align(SWT.RIGHT, SWT.CENTER).applyTo(button);
 
                 listButtons.put(currentButtonBean.getId(), button);
             }
         }
 
         addListeners();
+        addWorkSpaceListener();
         fillLists();
         showHideDynamicsControls();
         showHideTexts();
         // validateFields();
     }
 
-    private GridData createGridLayoutData(int horizontalSpan) {
-        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-        gridData.horizontalSpan = horizontalSpan;
-        gridData.widthHint = ConnectionsDialog.STANDARD_TEXT_WIDTH;
-        return gridData;
-
-    }
-
     public boolean canFinish() {
         return validateFields();
+    }
+
+    private boolean isValidatedWorkspace(String workSpace) {
+        File file = new File(workSpace);
+        if (!file.exists() || !file.isDirectory()) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     private boolean validateFields() {
@@ -277,7 +285,7 @@ public class ConnectionFormComposite extends Composite {
         }
         if (valid && getRepository() == null) {
             errorMsg = Messages.getString("connections.form.emptyField.repository"); //$NON-NLS-1$
-        } else if (valid && getName().length() == 0) {
+        } else if (valid && getTextName().length() == 0) {
             errorMsg = Messages.getString("connections.form.emptyField.connname"); //$NON-NLS-1$
         } else if (valid && getUser().length() == 0) {
             errorMsg = Messages.getString("connections.form.emptyField.username"); //$NON-NLS-1$
@@ -285,16 +293,18 @@ public class ConnectionFormComposite extends Composite {
             errorMsg = Messages.getString("connections.form.malformedField.username"); //$NON-NLS-1$
         } else if (valid && emptyUrl != null) {
             errorMsg = Messages.getString("connections.form.dynamicFieldEmpty", emptyUrl.getLabel()); //$NON-NLS-1$
+        } else if (valid && !this.isValidatedWorkspace(this.getWorkspace())) {
+            errorMsg = Messages.getString("ConnectionFormComposite.workspaceInvalid"); //$NON-NLS-1$
         } else if (valid && isOnlyRemoteConnection) {
             // Uniserv feature 8,Add new Extension point to allow Uniserv to add some custom controls during TAC
             // connection check
             List<ILoginConnectionService> loginConnections = LoginConnectionManager.getRemoteConnectionService();
             for (ILoginConnectionService loginConncetion : loginConnections) {
-                errorMsg = loginConncetion.checkConnectionValidation(getName(), getDesc(), getUser(), getPassword(), connection
-                        .getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
+                errorMsg = loginConncetion.checkConnectionValidation(getTextName(), getDesc(), getUser(), getPassword(),
+                        getWorkspace(), connection.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
             }
         }
-        if (errorMsg != null && !errorMsg.equals("")) {
+        if (errorMsg != null && !errorMsg.equals("")) { //$NON-NLS-1$
             valid = false;
         }
         if (!valid) {
@@ -373,7 +383,7 @@ public class ConnectionFormComposite extends Composite {
         return repositoryFactory;
     }
 
-    private String getName() {
+    private String getTextName() {
         return nameText.getText();
     }
 
@@ -387,6 +397,10 @@ public class ConnectionFormComposite extends Composite {
 
     private String getPassword() {
         return passwordText.getText();
+    }
+
+    private String getWorkspace() {
+        return workSpaceText.getText();
     }
 
     ModifyListener standardTextListener = new ModifyListener() {
@@ -417,6 +431,7 @@ public class ConnectionFormComposite extends Composite {
         descriptionText.addModifyListener(standardTextListener);
         userText.addModifyListener(standardTextListener);
         passwordText.addModifyListener(standardTextListener);
+        workSpaceText.addModifyListener(standardTextListener);
 
         for (IRepositoryFactory f : dynamicControls.keySet()) {
             for (LabelText control : dynamicControls.get(f).values()) {
@@ -431,12 +446,31 @@ public class ConnectionFormComposite extends Composite {
         }
     }
 
+    private void addWorkSpaceListener() {
+        workSpaceButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                DirectoryDialog dirDialog = new DirectoryDialog(dialog.getShell());
+                String path = dirDialog.open();
+                if (path == null || "".equals(path)) { //$NON-NLS-1$
+                    workSpaceText.setText(getRecentWorkSpace());
+                } else {
+                    //                    String cPath = path.replaceAll("\\\\", File.separator); //$NON-NLS-1$ //$NON-NLS-2$                   
+                    workSpaceText.setText(path);
+
+                }
+            }
+        });
+    }
+
     private void removeListeners() {
         repositoryCombo.removePostSelectionChangedListener(repositoryListener);
         nameText.removeModifyListener(standardTextListener);
         descriptionText.removeModifyListener(standardTextListener);
         userText.removeModifyListener(standardTextListener);
         passwordText.removeModifyListener(standardTextListener);
+        workSpaceText.removeModifyListener(standardTextListener);
 
         for (IRepositoryFactory f : dynamicControls.keySet()) {
             for (LabelText control : dynamicControls.get(f).values()) {
@@ -479,6 +513,7 @@ public class ConnectionFormComposite extends Composite {
             connection.setDescription(descriptionText.getText());
             connection.setUser(userText.getText());
             connection.setPassword(passwordText.getText());
+            connection.setWorkSpace(workSpaceText.getText());
 
             connectionsListComposite.refresh(connection);
         }
@@ -535,6 +570,8 @@ public class ConnectionFormComposite extends Composite {
             descriptionText.setText((connection.getDescription() == null ? "" : connection.getDescription())); //$NON-NLS-1$
             userText.setText((connection.getUser() == null ? "" : connection.getUser())); //$NON-NLS-1$
             passwordText.setText((connection.getPassword() == null ? "" : connection.getPassword())); //$NON-NLS-1$
+            workSpaceText
+                    .setText(("".equals(connection.getWorkSpace()) || connection.getWorkSpace() == null) ? getRecentWorkSpace() : connection.getWorkSpace());//$NON-NLS-1$
             addListeners();
         }
     }
@@ -571,6 +608,7 @@ public class ConnectionFormComposite extends Composite {
 
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
+            // not used.
         }
 
         @Override
