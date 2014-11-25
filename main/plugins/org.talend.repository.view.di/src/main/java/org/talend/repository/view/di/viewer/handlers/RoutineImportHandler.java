@@ -84,7 +84,7 @@ public class RoutineImportHandler extends ImportRepTypeHandler implements IImpor
         // deploy routines Jar
 
         final Item item = selectedItemRecord.getItem();
-        if (item.eClass().equals(PropertiesPackage.eINSTANCE.getRoutineItem()) && item instanceof RoutineItem) {
+        if (validEClass(item) && item instanceof RoutineItem) {
             RoutineItem rItem = (RoutineItem) item;
             Set<String> extRoutines = new HashSet<String>();
             for (IMPORTType type : (List<IMPORTType>) rItem.getImports()) {
@@ -99,6 +99,13 @@ public class RoutineImportHandler extends ImportRepTypeHandler implements IImpor
         }
 
         super.afterImportingItems(monitor, resManager, selectedItemRecord);
+    }
+
+    protected boolean validEClass(Item item) {
+        if (item != null && item.eClass().equals(PropertiesPackage.eINSTANCE.getRoutineItem())) {
+            return true;
+        }
+        return false;
     }
 
     private void deployJarToDestForArchive(final ResourcesManager manager, Set<String> extRoutines) {
