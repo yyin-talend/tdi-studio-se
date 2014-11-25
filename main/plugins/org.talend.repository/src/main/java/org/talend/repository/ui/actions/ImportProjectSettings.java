@@ -85,6 +85,10 @@ public class ImportProjectSettings {
         });
 
         final Document document = analyseur.parse(file);
+        // PTODO, if need, get the version from the imported file.
+        // NodeList exportParametersNodes = document.getElementsByTagName("exportParameters");
+        // String importStudioVersion=null;
+
         final NodeList nodes = document.getElementsByTagName("exportParameter"); //$NON-NLS-1$
         List addedComponentSetting = new ArrayList();
         List technical = project.getTechnicalStatus();
