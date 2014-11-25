@@ -48,11 +48,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -60,6 +63,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
@@ -103,6 +107,10 @@ public class TOSLoginComposite extends Composite {
 
     private Composite tosWorkspaceComposite;
 
+    private Button changeButton;
+
+    private Hyperlink repositoryHyperlink;
+
     private Composite tosWelcomeComposite;
 
     private Composite colorComposite;
@@ -119,7 +127,11 @@ public class TOSLoginComposite extends Composite {
 
     private LoginDialog dialog;
 
+    private Text workspaceText;
+
     private ConnectionUserPerReader perReader = null;
+
+    private String oldPath;
 
     private Map<String, String> convertorMapper = new HashMap<String, String>();
 
@@ -451,6 +463,50 @@ public class TOSLoginComposite extends Composite {
         tosWorkspaceComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosWorkspaceComposite.setLayout(new FormLayout());
         tosWorkspaceComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
+
+        FormData data;
+
+        Label workSpaceLabel = toolkit.createLabel(tosWorkspaceComposite, Messages.getString("TOSLoginComposite.workspaceLabel"));
+        workSpaceLabel.setFont(font);
+        GC gc = new GC(workSpaceLabel);
+        Point labelSize = gc.stringExtent(Messages.getString("TOSLoginComposite.workspaceLabel"));
+        gc.dispose();
+        data = new FormData();
+        data.top = new FormAttachment(0, 10);
+        data.left = new FormAttachment(0, 10);
+        data.right = new FormAttachment(0, 10 + labelSize.x);
+        data.bottom = new FormAttachment(0, 30);
+        workSpaceLabel.setLayoutData(data);
+
+        changeButton = toolkit.createButton(tosWorkspaceComposite, null, SWT.PUSH);
+        data = new FormData();
+        data.top = new FormAttachment(workSpaceLabel, 0, SWT.TOP);
+        data.left = new FormAttachment(100, -75);
+        data.right = new FormAttachment(100, -10);
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.bottom = new FormAttachment(workSpaceLabel, 0, SWT.BOTTOM);
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.bottom = new FormAttachment(workSpaceLabel, 5, SWT.BOTTOM);
+        } else {
+            data.bottom = new FormAttachment(workSpaceLabel, 5, SWT.BOTTOM);
+        }
+        changeButton.setText(Messages.getString("TOSLoginComposite.changeButton"));
+        changeButton.setFont(font);
+        changeButton.setLayoutData(data);
+
+        workspaceText = toolkit.createText(tosWorkspaceComposite, null, SWT.READ_ONLY | SWT.BORDER);
+        workspaceText.setFont(font);
+        workspaceText.setBackground(GREY_COLOR);
+        workspaceText.setText(loginComposite.getConnection().getWorkSpace());
+        oldPath = loginComposite.getConnection().getWorkSpace();
+        data = new FormData();
+        data.width = 200;
+        data.top = new FormAttachment(workSpaceLabel, 0, SWT.TOP);
+        data.left = new FormAttachment(workSpaceLabel, 10, SWT.RIGHT);
+        data.right = new FormAttachment(changeButton, -10, SWT.LEFT);
+        data.bottom = new FormAttachment(changeButton, 0, SWT.BOTTOM);
+        workspaceText.setLayoutData(data);
+
     }
 
     public Project[] readProject() {
@@ -591,6 +647,44 @@ public class TOSLoginComposite extends Composite {
                 }
             }
         });
+        changeButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                DirectoryDialog dirDialog = new DirectoryDialog(dialog.getShell());
+                String path = dirDialog.open();
+                if (path == null || "".equals(path)) { //$NON-NLS-1$
+                    workspaceText.setText(getRecentWorkSpace());
+                    loginComposite.getConnection().setWorkSpace(getRecentWorkSpace());
+                } else {
+                    workspaceText.setText(path);
+                    loginComposite.getConnection().setWorkSpace(path);
+                    if (!path.equals(oldPath)) {
+                        oldPath = path;
+                        restartBut.setVisible(true);
+                        openButton.setEnabled(false);
+                        deleteButton.setEnabled(false);
+                        createButton.setEnabled(false);
+                        importButton.setEnabled(false);
+                        demoProjectButton.setEnabled(false);
+                        changeButton.setEnabled(false);
+                    }
+                }
+                java.util.List<ConnectionBean> list = new ArrayList<ConnectionBean>();
+                list.add(loginComposite.getConnection());
+                loginComposite.storedConnections = list;
+                perReader.saveConnections(loginComposite.storedConnections);
+
+                if (!loginComposite.isWorkSpaceSame()) {
+                    try {
+                        setStatusArea();
+                    } catch (PersistenceException e1) {
+                        ExceptionHandler.process(e1);
+                    }
+                }
+
+            }
+        });
         restartBut.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -692,7 +786,17 @@ public class TOSLoginComposite extends Composite {
         }
 
         if (loginComposite.getConnection() != null) {
-            if (this.projectListViewer.getList().getItemCount() > 0) {
+            if (!loginComposite.isWorkSpaceSame()) {
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
+                onIconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES")); //$NON-NLS-1$
+                statusLabel.setBackground(RED_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            } else if (this.projectListViewer.getList().getItemCount() > 0) {
                 iconLabel.setImage(LOGIN_CORRECT_IMAGE);
                 onIconLabel.setImage(LOGIN_CORRECT_IMAGE);
                 colorComposite.setBackground(YELLOW_GREEN_COLOR);

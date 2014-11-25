@@ -33,23 +33,22 @@ import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
  */
 public class CreateAutomaticConnectionApplication implements IApplication {
 
-    private static String userKey = "-conuser"; // can't use "user" via can't be caught
+    private static String userKey = "-conuser"; //$NON-NLS-N$ can't use "user" via can't be caught
 
-    private static String nameKey = "-conname"; //$NON-NLS-1$
+    private static String nameKey = "-conname"; //$NON-NLS-N$
 
-    private static String descriptionKey = "-condes"; //$NON-NLS-1$
+    private static String descriptionKey = "-condes"; //$NON-NLS-N$
 
-    private static String passwordKey = "-conpwd"; //$NON-NLS-1$
+    private static String passwordKey = "-conpwd"; //$NON-NLS-N$
 
-    private static String urlKey = "-conurl"; //$NON-NLS-1$
+    private static String urlKey = "-conurl"; //$NON-NLS-N$
 
-    private static String repositoryIdKey = "-conrepository"; //$NON-NLS-1$
+    private static String repositoryIdKey = "-conrepository"; //$NON-NLS-N$
 
-    private static String workspaceKey = "-conworkspace"; //$NON-NLS-1$
+    private static String workspaceKey = "-conworkspace"; //$NON-NLS-N$
 
     private String repositoryIdValue;
 
-    @Override
     public Object start(IApplicationContext context) throws Exception {
         // String[] commandlineArgs = Platform.getCommandLineArgs();
         try {
@@ -60,14 +59,13 @@ public class CreateAutomaticConnectionApplication implements IApplication {
             ConnectionUserPerReader.getInstance().saveConnections(connectionList);
             return IApplication.EXIT_OK;
         } catch (ParameterIncorrectSetException e) {
-            MessageDialog.openError(new Shell(), "parameter errors!", e.getMessage()); //$NON-NLS-1$
+            MessageDialog.openError(new Shell(), "parameter errors!", e.getMessage()); //$NON-NLS-N$
             throw e;
         } finally {
             // releaseWorkspaceLock();
         }
     }
 
-    @Override
     public void stop() {
         // final IWorkbench workbench = PlatformUI.getWorkbench();
         // if (workbench == null) {
@@ -90,7 +88,7 @@ public class CreateAutomaticConnectionApplication implements IApplication {
         List<String> exceptionMessages = new ArrayList<String>();
         List<String> argsList = Arrays.asList(args);
         int valueIndex = 0;
-        String value = ""; //$NON-NLS-1$
+        String value = ""; //$NON-NLS-N$
         for (String current : argsList) {
             current = TalendTextUtils.removeQuotes(current);
             if (current.equals(userKey)) {
@@ -149,11 +147,11 @@ public class CreateAutomaticConnectionApplication implements IApplication {
             }
         }
         if (!exceptionMessages.isEmpty()) {
-            String exceptionMessage = ""; //$NON-NLS-1$
+            String exceptionMessage = ""; //$NON-NLS-N$
             StringBuffer sb = new StringBuffer();
             for (String s : exceptionMessages) {
                 sb.append(s);
-                sb.append("\n"); //$NON-NLS-1$
+                sb.append("\n"); //$NON-NLS-N$
             }
             exceptionMessage = sb.toString();
             ParameterIncorrectSetException exception = new ParameterIncorrectSetException(exceptionMessage);
@@ -165,6 +163,7 @@ public class CreateAutomaticConnectionApplication implements IApplication {
         bean.setPassword(argMap.get(passwordKey));
         bean.setUser(argMap.get(userKey));
         bean.setRepositoryId(argMap.get(repositoryIdKey));
+        bean.setWorkSpace(argMap.get(workspaceKey));
         bean.getDynamicFields().put("url", argMap.get(urlKey));
         bean.setComplete(true);
         return bean;
