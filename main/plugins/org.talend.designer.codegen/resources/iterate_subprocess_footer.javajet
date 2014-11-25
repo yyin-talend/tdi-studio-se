@@ -112,6 +112,7 @@
 				}
 
 				<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap<%=schemaInstanceDeclaration %>,threadIdCounter_<%=node.getUniqueName()%>++);
+				bt_<%=node.getUniqueName()%>.assignLock(lockWrite_<%=node.getUniqueName()%>);
 				mtp_<%=node.getUniqueName() %>.execute(bt_<%=node.getUniqueName() %>);
 
 				<%

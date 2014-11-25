@@ -58,7 +58,7 @@
 				if(!hasParallelIterate){
 					hasParallelIterate = true;
 					%>
-					
+					final Object[] lockWrite_<%=iterateNodeName%> = new Object[0];
 					int threadIdCounter_<%=iterateNodeName%> =0;
 				<%
 				}
