@@ -23,6 +23,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.Status;
@@ -66,14 +67,17 @@ public class ExportProjectSettings {
             DocumentBuilder analyseur = fabrique.newDocumentBuilder();
             analyseur.setErrorHandler(new ErrorHandler() {
 
+                @Override
                 public void error(final SAXParseException exception) throws SAXException {
                     throw exception;
                 }
 
+                @Override
                 public void fatalError(final SAXParseException exception) throws SAXException {
                     throw exception;
                 }
 
+                @Override
                 public void warning(final SAXParseException exception) throws SAXException {
                     throw exception;
                 }
@@ -82,6 +86,7 @@ public class ExportProjectSettings {
 
             Document document = analyseur.newDocument();
             Element root = document.createElement("exportParameters"); //$NON-NLS-1$
+            createVersionAttr(document, root);
             document.appendChild(root);
 
             // status
@@ -127,6 +132,31 @@ public class ExportProjectSettings {
             ExceptionHandler.process(e);
         }
 
+    }
+
+    /**
+     * record the version for studio.
+     * 
+     */
+    private void createVersionAttr(Document document, Element root) {
+        String studioVersion = VersionUtils.getVersion();
+        String talendVersion = VersionUtils.getTalendVersion();
+
+        Attr sVersion = document.createAttribute("version"); //$NON-NLS-1$
+        sVersion.setNodeValue(studioVersion);
+        root.setAttributeNode(sVersion);
+
+        boolean sameVersion = false;
+        if (studioVersion.equals(talendVersion)) { // complete same
+            sameVersion = true;
+        } else if (VersionUtils.compareTo(studioVersion, talendVersion) == 0) { // only check the Major and Minor
+            sameVersion = true;
+        }
+        if (!sameVersion) {
+            Attr tVersion = document.createAttribute("talendVersion"); //$NON-NLS-1$
+            tVersion.setNodeValue(talendVersion);
+            root.setAttributeNode(tVersion);
+        }
     }
 
     /**
