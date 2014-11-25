@@ -1,13 +1,13 @@
-<%@ jet 
+<%@ jet
 imports="
-			org.talend.core.model.process.INode 
-			org.talend.core.model.process.ElementParameterParser 
+			org.talend.core.model.process.INode
+			org.talend.core.model.process.ElementParameterParser
 			org.talend.designer.codegen.config.CodeGeneratorArgument
 			org.talend.designer.runprocess.ProcessorException
 			org.talend.designer.runprocess.ProcessorUtilities
 			java.util.List
 			java.util.Map
-		" 
+		"
 %>
 <%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
@@ -17,7 +17,7 @@ imports="
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 	String processId = node.getProcess().getId();
-	
+
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
@@ -28,9 +28,9 @@ imports="
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
-	
+
 	boolean useParquet = "true".equals(ElementParameterParser.getValue(node,"__USE_PARQUET__"));
-	
+
 	boolean isExecutedThroughWebHCat = "MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
 	if("true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"))) {
 		isExecutedThroughWebHCat = false;
@@ -41,12 +41,12 @@ imports="
 			}
 		}
 	}
-	
+
 	if(isExecutedThroughWebHCat) {
 %>
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetAzureConnection.javajet"%>
-<%		
-		if("false".equals(useExistingConn)) { // This variable is declared and initialized in the GetAzureConnection.javajet	
+<%
+		if("false".equals(useExistingConn)) { // This variable is declared and initialized in the GetAzureConnection.javajet
 			boolean setMemory = "true".equals(ElementParameterParser.getValue(node, "__SET_MEMORY__"));
 			if(setMemory) {
 				String mapMemory = ElementParameterParser.getValue(node,"__MAPREDUCE_MAP_MEMORY_MB__");
@@ -58,7 +58,7 @@ imports="
 				bw_<%=cid%>.write("SET yarn.app.mapreduce.am.resource.mb=" + <%=amMemory%> + ";");
 <%
 			}
-	
+
 			List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_PROPERTIES__");
 			if(advProps!=null) {
 				for(Map<String, String> item : advProps){
@@ -79,7 +79,7 @@ imports="
 		<%@ include file="../templates/Hive/GetConnection.javajet"%>
 <%
 	}
-	
+
 	String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
 	boolean setFsDefaultName = "true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"));
 	String fsDefaultName = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
@@ -106,7 +106,7 @@ imports="
 			}
 		}
 	}
-	
+
 	java.util.List<String> hiveVersionList = new java.util.ArrayList<String>();
 	hiveVersionList.add("APACHE_0_20_203");
 	hiveVersionList.add("Cloudera_CDH3");
@@ -115,12 +115,12 @@ imports="
 	hiveVersionList.add("MAPR2");
 	hiveVersionList.add("HDP_1_0");
 	hiveVersionList.add("PIVOTAL_HD_1_0_1");
-	
+
 	boolean isParquetSupported = "CUSTOM".equals(distribution) || !hiveVersionList.contains(hiveVersion);
 	if(useParquet && !isParquetSupported) {
 %>
 		if(true) {
-			throw new java.lang.UnsupportedOperationException("Parquet is only supported if the distribution used embeds Hive version 0.10 or later.");
+			throw new java.lang.UnsupportedOperationException("Parquet is only supported if the distribution uses embedded Hive version 0.10 or later.");
 		}
 <%
 	}
@@ -128,7 +128,7 @@ imports="
 	// Register jars to handle the parquet format.
 
 	java.util.List<String> jarsToRegister = null;
-	java.util.List<String> jars = null;	
+	java.util.List<String> jars = null;
 	boolean generateAddJarCodeForAll = useParquet;
 	if(generateAddJarCodeForAll) {
 		String[] commandLine = new String[] {"<command>"};
@@ -139,7 +139,7 @@ imports="
 		}
 
 		jarsToRegister = new java.util.ArrayList();
-		
+
 		jarsToRegister.add("snappy-java");
 		jarsToRegister.add("parquet-hive-bundle");
 
@@ -150,11 +150,11 @@ imports="
 			}
 		}
 	}
-	
+
 	if(jarsToRegister!=null && jars!=null) {
 		if("EMBEDDED".equalsIgnoreCase(connectionMode) || isExecutedThroughWebHCat) {
 %>
-			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/GetJarsToRegister.javajet"%>	
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/GetJarsToRegister.javajet"%>
 			GetJarsToRegister_<%=cid%> getJarsToRegister_<%=cid %> = new GetJarsToRegister_<%=cid%>();
 <%
 		} else {
@@ -164,8 +164,8 @@ imports="
 %>
 				<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetHiveJarsToRegister.javajet"%>
 				GetHiveJarsToRegister_<%=cid%> getJarsToRegister_<%=cid %> = new GetHiveJarsToRegister_<%=cid%>();
-<%		
-			}	
+<%
+			}
 		}
 
 		if(generateAddJarCodeForAll) {
@@ -198,7 +198,7 @@ imports="
 			}
 		}
 	}
-	
+
 	// End of parquet format handling.
 
 	if(!("true").equals(useExistingConn) && !isExecutedThroughWebHCat) {
@@ -206,7 +206,7 @@ imports="
 	        %>
 	        if(conn_<%=cid%>.getAutoCommit()) {
 	            conn_<%=cid%>.setAutoCommit(false);
-	        }        
+	        }
 	        int commitEvery_<%=cid%> = <%=commitEvery%>;
 	        int commitCounter_<%=cid%> = 0;
 	        <%
@@ -216,7 +216,7 @@ imports="
 	if(!isExecutedThroughWebHCat) {
 		if (usePrepareStatement) {
 %>
-			java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);	
+			java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
 <%
 		} else {
 %>
