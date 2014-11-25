@@ -30,10 +30,6 @@
             class="org.talend.designer.components.localprovider.BoxJetFileProvider"
             id="org.talend.designer.components.localprovider.BoxJetFileProvider">
       </jetProvider>
-      <jetProvider
-            class="org.talend.designer.components.localprovider.SparkCodeJetFileProvider"
-            id="org.talend.designer.components.localprovider.SparkCodeJetFileProvider">
-      </jetProvider>
    </extension>
    
 	<extension point="org.talend.core.runtime.librariesNeeded">
