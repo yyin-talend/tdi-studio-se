@@ -21,6 +21,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.ImplicitContextSettings;
@@ -31,6 +32,7 @@ import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.repository.ProjectManager;
+import org.talend.utils.security.CryptoHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -65,14 +67,17 @@ public class ImportProjectSettings {
         DocumentBuilder analyseur = fabrique.newDocumentBuilder();
         analyseur.setErrorHandler(new ErrorHandler() {
 
+            @Override
             public void error(final SAXParseException exception) throws SAXException {
                 throw exception;
             }
 
+            @Override
             public void fatalError(final SAXParseException exception) throws SAXException {
                 throw exception;
             }
 
+            @Override
             public void warning(final SAXParseException exception) throws SAXException {
                 throw exception;
             }
@@ -80,6 +85,10 @@ public class ImportProjectSettings {
         });
 
         final Document document = analyseur.parse(file);
+        // PTODO, if need, get the version from the imported file.
+        // NodeList exportParametersNodes = document.getElementsByTagName("exportParameters");
+        // String importStudioVersion=null;
+
         final NodeList nodes = document.getElementsByTagName("exportParameter"); //$NON-NLS-1$
         List addedComponentSetting = new ArrayList();
         List technical = project.getTechnicalStatus();
@@ -162,23 +171,37 @@ public class ImportProjectSettings {
      * @param statAndLogs
      */
     private void updateParameters(final Node node, final NamedNodeMap attrMap, List statAndLogs) {
-        boolean added = false;
+        final String name = attrMap.getNamedItem("name").getTextContent();//$NON-NLS-1$
+        String value = node.getTextContent();
+
+        ElementParameterType foundType = null;
         for (Object obj : statAndLogs) {
             ElementParameterType type = (ElementParameterType) obj;
-            if (type.getName().equals(attrMap.getNamedItem("name").getTextContent())) { //$NON-NLS-1$
-                type.setValue(node.getTextContent());
-                added = true;
+            if (type.getName().equals(name)) {
+                foundType = type;
+                break;
             }
         }
-        // if there is no such parameter in current settings add one
-        TalendFileFactory talendF = TalendFileFactory.eINSTANCE;
-        if (added == false) {
-
-            ElementParameterType type = talendF.createElementParameterType();
-            type.setName(attrMap.getNamedItem("name").getTextContent()); //$NON-NLS-1$
-            type.setValue(node.getTextContent());
-            statAndLogs.add(type);
+        if (foundType == null) {
+            // if there is no such parameter in current settings add one
+            foundType = TalendFileFactory.eINSTANCE.createElementParameterType();
+            foundType.setName(name);
+            statAndLogs.add(foundType);
         }
+        /*
+         * FIXME, TDI-31303
+         * 
+         * After 5.6.0, because have encrypted, so try to decrypt first, then encrypt again.
+         * 
+         * If the value is raw (before 5.6.0), the decrypted value will be null.
+         */
+        if (PasswordEncryptUtil.isPasswordField(foundType.getField())) {
+            String decValue = CryptoHelper.getDefault().decrypt(value);
+            if (decValue != null) {
+                value = decValue;
+            }
+        }
+        foundType.setRawValue(value);
     }
 
     /**
