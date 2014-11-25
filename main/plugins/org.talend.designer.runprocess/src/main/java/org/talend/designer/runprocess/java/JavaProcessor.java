@@ -994,9 +994,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
         tmpParams.add("-cp"); //$NON-NLS-1$
         if (exportingJob) {
-            tmpParams.add(libPath.toString() + portableProjectPath + exportJar);
+            tmpParams.add(portableProjectPath + exportJar + libPath.toString());
         } else {
-            tmpParams.add(libPath.toString() + portableProjectPath + exportJar + libFolder);
+            tmpParams.add(portableProjectPath + exportJar + libPath.toString() + libFolder);
         }
         tmpParams.add(className);
         strings = tmpParams.toArray(new String[0]);
