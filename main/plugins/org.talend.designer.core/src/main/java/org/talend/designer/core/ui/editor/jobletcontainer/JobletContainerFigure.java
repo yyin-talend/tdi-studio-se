@@ -92,7 +92,9 @@ public class JobletContainerFigure extends Figure {
         setLayoutManager(new FreeformLayout());
         this.parentMRFigure = parentMRFigure;
         this.jobletContainer = jobletContainer;
-        isSubjobDisplay = this.jobletContainer.getSubjobContainer().isDisplayed();
+        if (this.jobletContainer.getSubjobContainer() != null) {
+            isSubjobDisplay = this.jobletContainer.getSubjobContainer().isDisplayed();
+        }
         outlineFigure = new RoundedRectangle();
         rectFig = new GreenRectangle();
         rectFig.setAlpha(ALPHA_VALUE);
@@ -307,7 +309,8 @@ public class JobletContainerFigure extends Figure {
                 SimpleHtmlFigure value = entry.getValue();
                 for (Object obj : value.getChildren()) {
                     if (obj instanceof Figure) {
-                        if (this.jobletContainer.getSubjobContainer().isCollapsed()) {
+                        if (this.jobletContainer.getSubjobContainer() != null
+                                && this.jobletContainer.getSubjobContainer().isCollapsed()) {
                             ((Figure) obj).setVisible(false);
                         } else {
                             ((Figure) obj).setVisible(true);
