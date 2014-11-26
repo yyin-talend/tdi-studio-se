@@ -751,6 +751,8 @@ public class JobletContainer extends NodeContainer {
             this.percentMap = percentMap;
             this.percentReduce = percentReduce;
             firePropertyChange("UPDATE_STATUS", null, value); //$NON-NLS-1$
+        } else if (id.equals("UPDATE_MR_STATUS")) {
+            firePropertyChange("UPDATE_MR_STATUS", null, value); //$NON-NLS-1$
         }
     }
 

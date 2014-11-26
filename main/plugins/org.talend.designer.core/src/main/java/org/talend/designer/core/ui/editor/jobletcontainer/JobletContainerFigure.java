@@ -299,6 +299,25 @@ public class JobletContainerFigure extends Figure {
         }
     }
 
+    public void refreshMRstatus() {
+        if (this.jobletContainer.getNode().isMapReduceStart()) {
+            Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
+            while (ite.hasNext()) {
+                Entry<String, SimpleHtmlFigure> entry = ite.next();
+                SimpleHtmlFigure value = entry.getValue();
+                for (Object obj : value.getChildren()) {
+                    if (obj instanceof Figure) {
+                        if (this.jobletContainer.getSubjobContainer().isCollapsed()) {
+                            ((Figure) obj).setVisible(false);
+                        } else {
+                            ((Figure) obj).setVisible(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * DOC nrousseau Comment method "refreshForJoblet".
      */

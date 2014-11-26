@@ -169,6 +169,11 @@ public class JobletContainerPart extends NodeContainerPart {
                 }
             }
             refreshVisuals();
+        } else if (changeEvent.getPropertyName().equals("UPDATE_MR_STATUS")) {
+            if (getFigure() instanceof JobletContainerFigure) {
+                ((JobletContainerFigure) getFigure()).refreshMRstatus();
+            }
+            refreshVisuals();
         } else { // can only be UPDATE_SUBJOB_DATA, need to modify if some others are added
             if (getFigure() instanceof JobletContainerFigure) {
                 if (((JobletContainer) getModel()).getNode().isMapReduce()) {
