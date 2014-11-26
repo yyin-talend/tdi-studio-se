@@ -128,7 +128,8 @@ public class JobletContainer extends NodeContainer {
         if ((!collapsed || mapStart) && nodeContainers.size() > 0) {
             for (NodeContainer container : nodeContainers) {
                 Rectangle curRect = container.getNodeContainerRectangle();
-                if (container.getSubjobContainer().isCollapsed() && this.getNode().isMapReduce()) {
+                if (container.getSubjobContainer() != null && container.getSubjobContainer().isCollapsed()
+                        && this.getNode().isMapReduce()) {
                     if (container.getNode().isMapReduceStart()) {
                         totalRectangle = curRect.getCopy();
                         noNeedExpend = true;
@@ -432,7 +433,8 @@ public class JobletContainer extends NodeContainer {
             Integer mrGroupId = node.getMrGroupId();
             List<? extends INode> mapReduceNodes = this.node.getProcess().getGraphicalNodes();
             List<Node> nodeList = new ArrayList<Node>();
-            if (node.getNodeContainer().getSubjobContainer().isCollapsed()) {
+            if (node.getNodeContainer().getSubjobContainer() != null
+                    && node.getNodeContainer().getSubjobContainer().isCollapsed()) {
                 nodeList.add(node);
             } else {
                 for (INode inode : mapReduceNodes) {
@@ -789,7 +791,10 @@ public class JobletContainer extends NodeContainer {
             return;
         }
         Rectangle oracleRec = totalRectangle.getCopy();
-        boolean subjobCollapsed = this.node.getNodeContainer().getSubjobContainer().isCollapsed();
+        boolean subjobCollapsed = false;
+        if (this.node.getNodeContainer().getSubjobContainer() != null) {
+            subjobCollapsed = this.node.getNodeContainer().getSubjobContainer().isCollapsed();
+        }
         int temWidth = 114;
         if (isMRGroupContainesReduce() && !subjobCollapsed) {
             temWidth = 240;
