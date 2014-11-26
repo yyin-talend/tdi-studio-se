@@ -131,6 +131,7 @@ public class JobletContainerFigure extends Figure {
         initializejobletContainer(jobletContainer.getJobletContainerRectangle());
         if (jobletContainer.getNode().isMapReduceStart()) {
             refreshNodes(false);
+            refreshMRstatus();
         }
 
     }
@@ -537,7 +538,6 @@ public class JobletContainerFigure extends Figure {
             add(outlineFigure, null, 0);
             add(rectFig, null, 1);
         }
-
         if (this.jobletContainer.getNode().isMapReduceStart() && mrFigures.isEmpty()) {
             initMRFigures();
         }
@@ -550,12 +550,14 @@ public class JobletContainerFigure extends Figure {
             }
             mrFigures.clear();
         }
-        if (this.jobletContainer.getNode().isMapReduceStart()) {
-            Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
-            while (ite.hasNext()) {
-                Entry<String, SimpleHtmlFigure> entry = ite.next();
-                SimpleHtmlFigure value = entry.getValue();
-                parentMRFigure.add(value);
+        if (jobletContainer.getSubjobContainer() != null && !jobletContainer.getSubjobContainer().isCollapsed()) {
+            if (this.jobletContainer.getNode().isMapReduceStart()) {
+                Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
+                while (ite.hasNext()) {
+                    Entry<String, SimpleHtmlFigure> entry = ite.next();
+                    SimpleHtmlFigure value = entry.getValue();
+                    parentMRFigure.add(value);
+                }
             }
         }
 
