@@ -416,6 +416,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     elem.setPropertyValue(param.getName(), objectValue);
                                 }
                             }
+                        } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
+                                && param.getRepositoryValue().equals("CONNECTION_MODE")) {//$NON-NLS-1$
+                            if (!objectValue.equals(param.getValue())) {
+                                PropertyChangeCommand cmd = new PropertyChangeCommand(elem, "CONNECTION_MODE", objectValue);//$NON-NLS-1$
+                                cmd.execute();
+                            }
                         } else {
                             if (repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
                                 IElementParameter paramEncoding = param.getChildParameters().get(
@@ -860,6 +866,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
                     if (tables == null || tables.isEmpty()) {
                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    } else {
+                        if (table != null && table.getTableName() != null) {
+                            setDBTableFieldValue(node, table.getTableName(), null);
+                        }
                     }
                 }
             }
