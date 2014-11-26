@@ -44,6 +44,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean supportDuplicateUpdate = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__ON_DUPLICATE_KEY_UPDATE__"));
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+	boolean onErrDie = "true".equals(dieOnError);
 	
 	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
 	
@@ -337,14 +338,24 @@ skeleton="../templates/db_output_bulk.skeleton"
 	    
 	            row2Count<%=cid%>++;
 	        }        
-	        insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
+	        try{
+	        	insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
+	        }catch(java.lang.Exception e){
+	        	<% if(onErrDie){%>
+	       		throw e;
+	        	<% }else{
+	        		dbLog.logIgnoredException("e.getMessage()");
+	        	%>
+	        		System.err.println(e.getMessage());
+	        	<%}%>
+	        }
 	    }
 <%	
 		} else if ("MYSQL_5".equals(dbVersion)) {
   			//////////batch execute by batch size///////
-    		if(!("").equals(numPerInsert ) && !("0").equals(numPerInsert )) {
+    		if(!("").equals(numPerInsert ) && !("0").equals(numPerInsert)) {
     		%>
-                <%if ( (rejectConnName==null) && ("INSERT").equals(dataAction)) {
+                <%if ((rejectConnName==null) && ("INSERT").equals(dataAction)) {
                 %>                                                
                 try {
                 		if (batchSizeCounter_<%=cid%> != 0) {
@@ -378,8 +389,8 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    insertedCount_<%=cid%> += countSum_<%=cid%>;
 	    	    	<%
 	    	    	}
-	    	    	%> 
-    	    		<%dbLog.logPrintedException("e.getMessage()");%>
+					dbLog.logPrintedException("e.getMessage()");
+					%>
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
@@ -426,21 +437,17 @@ skeleton="../templates/db_output_bulk.skeleton"
         <%
     } else {
         %>
-	<%if ((rejectConnName==null && "MYSQL_5".equals(dbVersion) && useBatchSize) && ( ("INSERT").equals(dataAction) ||("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+	<%if ((rejectConnName==null && "MYSQL_5".equals(dbVersion) && useBatchSize) && (("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     %>                
     try {
     	if(pstmt_<%=cid %> != null){
 			int countSum_<%=cid%> = 0;
 			<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
 			for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-				countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : <%=("INSERT").equals(dataAction)? "1" : "countEach_" +cid%>);
+				countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
 			}       	
 			<%dbLog.batch().executeDone(dbLog.str(dataAction));%>
-	    	<%if (("INSERT").equals(dataAction)) {
-	    	%>
-	    		insertedCount_<%=cid%> += countSum_<%=cid%>; 
-	    	<%
-	    	}else if (("UPDATE").equals(dataAction)) {
+	    	<%if (("UPDATE").equals(dataAction)) {
 	    	%>
 	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
 	    	<%
@@ -461,11 +468,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		for(int countEach_<%=cid%>: e.getUpdateCounts()) {
 			countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
 		}
-		<%if (("INSERT").equals(dataAction)) {
-    	%>
-    	insertedCount_<%=cid%> += countSum_<%=cid%>;
-    	<%
-    	}else if (("UPDATE").equals(dataAction)) {
+		<%if (("UPDATE").equals(dataAction)) {
     	%>            	    		
     	updatedCount_<%=cid%> += countSum_<%=cid%>;
     	<%
@@ -473,8 +476,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     	%>
     	deletedCount_<%=cid%> += countSum_<%=cid%>;
     	<%
-    	}%>
-		<%dbLog.logPrintedException("e.getMessage()");%>
+    	}
+    	dbLog.logPrintedException("e.getMessage()");%>
     	System.err.println(e.getMessage());
     	<%
     	}%>                	
@@ -524,4 +527,3 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 
 <%@ include file="../templates/DB/Output/DBOutputEndGlobalVars.javajet"%>
-    
