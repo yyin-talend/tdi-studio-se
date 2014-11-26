@@ -123,10 +123,20 @@ public class JobletContainer extends NodeContainer {
         Rectangle totalRectangle = null;
         boolean collapsed = isCollapsed();
         boolean mapStart = this.getNode().isMapReduceStart();
+        boolean noNeedExpend = false;
 
         if ((!collapsed || mapStart) && nodeContainers.size() > 0) {
             for (NodeContainer container : nodeContainers) {
                 Rectangle curRect = container.getNodeContainerRectangle();
+                if (container.getSubjobContainer().isCollapsed() && this.getNode().isMapReduce()) {
+                    if (container.getNode().isMapReduceStart()) {
+                        totalRectangle = curRect.getCopy();
+                        noNeedExpend = true;
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
                 if (node.getNodeContainer() instanceof JobletContainer) {
                     String title = (String) node.getNodeContainer().getPropertyValue(EParameterName.SUBJOB_TITLE.getName());
                     SimpleHtmlFigure titleFigure = new SimpleHtmlFigure();
@@ -204,7 +214,9 @@ public class JobletContainer extends NodeContainer {
 
         }
 
-        changeWidth(totalRectangle);
+        if (!noNeedExpend) {
+            changeWidth(totalRectangle);
+        }
         jobletRectangle = totalRectangle.getCopy();
         return totalRectangle;
     }
