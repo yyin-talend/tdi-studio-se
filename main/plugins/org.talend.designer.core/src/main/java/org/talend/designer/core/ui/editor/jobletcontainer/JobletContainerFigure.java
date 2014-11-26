@@ -345,9 +345,9 @@ public class JobletContainerFigure extends Figure {
 
     public void initializejobletContainer(Rectangle rectangle) {
         Point location = this.getLocation();
-        if (location.equals(lastLocation)) {
+        if (location.equals(lastLocation) && !jobletContainer.getNode().isMapReduceStart()) {
             // avoid to calculate locations for nothing
-//            return;
+            return;
         }
         lastLocation = location;
         collapseFigure.setCollapsed(jobletContainer.isCollapsed());
