@@ -44,7 +44,7 @@ public class ChangeOutputConnectionOrderCommand extends Command {
         this.multipleOutputNode = multipleOutputNode;
         this.connectionInNewOrder = outputConnections;
         // TDI-8394:should not directly use node's outputs here,need to use its clone to deal with "undo"
-        connectionInOldOrderClone.addAll((List<IConnection>) multipleOutputNode.getOutgoingConnections());
+        connectionInOldOrderClone.addAll(multipleOutputNode.getOutgoingConnections());
         this.connectionInOldOrder = connectionInOldOrderClone;
 
         if (connectionInNewOrder.size() != connectionInOldOrder.size()) {
@@ -69,7 +69,9 @@ public class ChangeOutputConnectionOrderCommand extends Command {
                 }
             }
         }
-        multipleOutputNode.setMetadataList(metadataList);
+        if (!metadataList.isEmpty()) {
+            multipleOutputNode.setMetadataList(metadataList);
+        }
         multipleOutputNode.setOutgoingConnections(connectionInNewOrder);
         connectionInNewOrder.get(0).updateAllId();
         ((Process) multipleOutputNode.getProcess()).checkStartNodes();
