@@ -60,6 +60,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -67,6 +68,7 @@ import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.workspace.ChooseWorkspaceData;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
@@ -690,7 +692,15 @@ public class TOSLoginComposite extends Composite {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 LoginComposite.isRestart = true;
-                perReader.saveLastConnectionBean(loginComposite.getConnection());
+                ConnectionBean connection = loginComposite.getConnection();
+                perReader.saveLastConnectionBean(connection);
+                // update the restart command line to specify the workspace to launch
+                // if relaunch, should delete the "disableLoginDialog" argument in eclipse data for bug TDI-19214
+                EclipseCommandLine.updateOrCreateExitDataPropertyWithCommand("-data", connection.getWorkSpace(), false); //$NON-NLS-1$
+                // store the workspace in the eclipse history so that it is rememebered on next studio launch
+                ChooseWorkspaceData workspaceData = new ChooseWorkspaceData(""); //$NON-NLS-1$
+                workspaceData.workspaceSelected(connection.getWorkSpace());
+                workspaceData.writePersistedData();
                 dialog.okPressed();
             }
         });
