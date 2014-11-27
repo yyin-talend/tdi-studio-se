@@ -217,9 +217,8 @@ public class tPaloDimensions {
 		for (String key : paths.keySet()) {
 			List<List> elementPaths = paths.get(key);
 			for (List<String> path : elementPaths) {
-				int pathSize = path.size();
-				arr = new String[pathSize];
-				for (int i = 0; i < pathSize; i++) {
+				arr = new String[maxDepth];
+				for (int i = 0; i < path.size(); i++) {
 					arr[i] = path.get(i);
 				}
 				addMainInToTransformList(arr);
