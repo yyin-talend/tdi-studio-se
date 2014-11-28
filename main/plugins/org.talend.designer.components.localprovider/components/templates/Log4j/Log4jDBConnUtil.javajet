@@ -69,7 +69,11 @@ imports="
 			%>
 				if(conn_<%=cid%> != null) {
 					if(conn_<%=cid%>.getMetaData() != null) {
+						<%if (cid.startsWith("tImpala") || cid.startsWith("tHive")) {%>
+						log.info("<%=cid%> - Uses an existing connection <%=connection %>.");
+						<%} else {%>
 						log.info("<%=cid%> - Uses an existing connection with username '" + conn_<%=cid%>.getMetaData().getUserName() + "'. Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + ".");
+						<%}%>
 					}
 				}
 			<%

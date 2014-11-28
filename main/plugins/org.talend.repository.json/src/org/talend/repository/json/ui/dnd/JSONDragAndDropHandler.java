@@ -87,7 +87,12 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
                 return connection.getJSONFilePath();
             } else {
                 Path p = new Path(connection.getJSONFilePath());
-                return TalendQuoteUtils.addQuotes(p.toPortableString());
+                if (p.toFile().isFile()) {
+                    return TalendQuoteUtils.addQuotes(p.toPortableString());
+                } else {
+                    return TalendQuoteUtils.addQuotes(p.toString());
+                }
+
             }
         }
         if (value.equals("OUT_FILE_PATH")) {
@@ -98,7 +103,12 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
                 return connection.getOutputFilePath();
             } else {
                 Path p = new Path(connection.getOutputFilePath());
-                return TalendQuoteUtils.addQuotes(p.toPortableString());
+                if (p.toFile().isFile()) {
+                    return TalendQuoteUtils.addQuotes(p.toPortableString());
+                } else {
+                    return TalendQuoteUtils.addQuotes(p.toString());
+                }
+
             }
         }
         if (value.equals("LIMIT")) { //$NON-NLS-1$
