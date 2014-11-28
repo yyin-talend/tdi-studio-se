@@ -880,7 +880,9 @@ public class DataProcess implements IGeneratingProcess {
             }
 
             // propagate metadataLists for output component. only apply to multi-input virtual component
-            if (multipleComponentManager.isSetConnector() && multipleComponentManager.getOutputName().equals(curItem.getName())) {
+            boolean isSAPBapi = graphicalNode.getComponent() != null && "tSAPBapi".equals(graphicalNode.getComponent().getName());//$NON-NLS-1$
+            if (multipleComponentManager.isSetConnector()
+                    && (multipleComponentManager.getOutputName().equals(curItem.getName()) || isSAPBapi)) {
                 // deactivate dummy component
                 if (curNode.getComponentName().equals("tDummyRow")) {// or use //$NON-NLS-1$
                     // "!multipleComponentManager.existsLinkTo()"
@@ -2546,10 +2548,11 @@ public class DataProcess implements IGeneratingProcess {
             }
         }
         for (IConnection connection : node.getOutgoingConnections()) {
-            if(connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR) {
+            if (connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK
+                    || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR) {
                 continue;
             }
-            
+
             if (connection.isActivate()) {
                 if (!hasSingleMergeComponent(connection.getTarget(), checkedNodes, mergeFound || merge)) {
                     return false;
