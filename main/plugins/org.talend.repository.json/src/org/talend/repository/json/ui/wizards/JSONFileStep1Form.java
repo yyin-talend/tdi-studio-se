@@ -172,8 +172,8 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 jsonFilePath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
                         fileFieldJSON.getText()));
             }
-            if (!new File(jsonFilePath).exists() && getConnection().getFileContent() != null
-                    && getConnection().getFileContent().length > 0) {
+            File file = new File(jsonFilePath);
+            if (!file.exists() && getConnection().getFileContent() != null && getConnection().getFileContent().length > 0) {
                 initFileContent();
                 jsonFilePath = tempJSONXsdPath;
             }
@@ -448,6 +448,11 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 }
                 // getConnection().setJSONFilePath(PathUtils.getPortablePath(JSONXsdFilePath.getText()));
                 File file = new File(text);
+                if (file.isDirectory()) {
+                    valid = false;
+                    checkFieldsValue();
+                    return;
+                }
                 // if (file.exists()) {
                 // if (file.exists()) {
                 String tempxml = JSONUtil.changeJsonToXml(text);
@@ -608,6 +613,12 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         if (jsonFilePathText == "Filepath must be specified") {
             updateStatus(IStatus.ERROR, ""); //$NON-NLS-1$
             return false;
+        }
+        File file = new File(jsonFilePathText);
+        if (file.isFile() && !file.exists()) {
+            valid = false;
+        } else if (file.isDirectory()) {
+            valid = false;
         }
         if (!valid) {
             if (isContextMode()) {
