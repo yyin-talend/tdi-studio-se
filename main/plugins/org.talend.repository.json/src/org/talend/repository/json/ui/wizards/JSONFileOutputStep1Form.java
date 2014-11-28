@@ -358,7 +358,12 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 } else {
                     xsdPathChanged = false;
                 }
-                getConnection().setJSONFilePath(PathUtils.getPortablePath(jsonFilePath.getText()));
+                if (Path.fromOSString(jsonFilePath.getText()).toFile().isFile()) {
+                    getConnection().setJSONFilePath(PathUtils.getPortablePath(jsonFilePath.getText()));
+                } else {
+                    getConnection().setJSONFilePath(jsonFilePath.getText());
+                }
+
                 // updateConnection(text);
 
                 StringBuilder fileContent = new StringBuilder();

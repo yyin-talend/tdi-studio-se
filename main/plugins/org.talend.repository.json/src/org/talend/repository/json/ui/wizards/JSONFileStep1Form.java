@@ -33,6 +33,7 @@ import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -472,7 +473,11 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 } else {
                     xsdPathChanged = false;
                 }
-                getConnection().setJSONFilePath(PathUtils.getPortablePath(jsonPath));
+                if (Path.fromOSString(jsonPath).toFile().isFile()) {
+                    getConnection().setJSONFilePath(PathUtils.getPortablePath(jsonPath));
+                } else {
+                    getConnection().setJSONFilePath(jsonPath);
+                }
 
                 JSONWizard wizard = ((JSONWizard) getPage().getWizard());
                 wizard.setTreeRootNode(treeNode);
