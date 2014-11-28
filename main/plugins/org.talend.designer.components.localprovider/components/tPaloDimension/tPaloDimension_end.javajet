@@ -47,7 +47,8 @@
 	if(bCreateElements && (bHierachieNone || bHierachieNormal) ){
 		//for bug TDI-19242
 %>
-		thPDims_<%=cid %>.getAllExistPaloDimensionElements(pELMs_<%=cid%>);
+		if(iCommitCounter_<%= cid %> > 0 ){
+		thPDims_<%=cid %>.getAllExistPaloDimensionElements(pDIM_<%=cid%>.getElements());
 		thPDims_<%=cid %>.buildParentChildRelationShipNormal();
 		for(org.talend.jpalo.talendHelpers.tPaloDimensionElements thPElem_<%=cid %> : thPDims_<%=cid %>.getParentChildList()){
 			
@@ -92,6 +93,9 @@
 
 		<%
 		}
+	%>
+	   }
+	<%
 	}
 	else if(bCreateElements && bHierachieSelfReferenced){
 		%>
