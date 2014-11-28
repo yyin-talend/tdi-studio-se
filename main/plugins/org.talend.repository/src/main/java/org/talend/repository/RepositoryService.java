@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -97,6 +98,7 @@ import org.talend.core.repository.utils.RepositoryPathProvider;
 import org.talend.core.service.IRulesProviderService;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.perspective.RestoreAllRegisteredPerspectivesProvider;
 import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -140,6 +142,8 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  */
 
 public class RepositoryService implements IRepositoryService, IRepositoryContextService {
+
+    private static Logger log = Logger.getLogger(RestoreAllRegisteredPerspectivesProvider.class);
 
     /*
      * (non-Javadoc)
@@ -718,6 +722,8 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                         .toOSString();
                 return path;
             } catch (SystemException e) {
+                // added by SeB, log it at least butthe devlopper should have a look at this
+                log.error("failed to get the Rules provider path", e); //$NON-NLS-1$
             }
         }
         return "";
