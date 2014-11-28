@@ -430,6 +430,13 @@ public class PropertyChangeCommand extends Command {
             ((IGraphicalNode) elem).checkAndRefreshNode();
         }
 
+        if (elem instanceof IConnection) {
+            IProcess process = ((IConnection) elem).getSource().getProcess();
+            if (process instanceof IProcess2) {
+                ((IProcess2) process).checkProcess();
+            }
+        }
+
         // See feature 3902
         if (needUpdateMonitorConnection()) {
             ((Connection) elem).setMonitorConnection((Boolean) currentParam.getValue());
