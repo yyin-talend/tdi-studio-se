@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
@@ -133,18 +134,37 @@ public class JSONUtil {
         java.io.ByteArrayOutputStream outStream = new java.io.ByteArrayOutputStream();
         InputStream inStream = null;
         File file = new File(jsonPath);
+
         // String filename = file.getName().replaceAll("\\.", "_");
         // filename = "tempTest";
         boolean isFromUrl = false;
-        try {
-            InputStream input = null;
-            if (file.exists()) {
-                input = new FileInputStream(file);
+        boolean illegalURL = false;
+        InputStream input = null;
 
-            } else {
-                isFromUrl = true;
-                input = new URL(jsonPath).openStream();
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                return "";
             }
+            try {
+                input = new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                ExceptionHandler.process(e);
+            }
+        } else {
+            isFromUrl = true;
+            try {
+                input = new URL(jsonPath).openStream();
+            } catch (MalformedURLException e) {
+                illegalURL = true;
+            } catch (IOException e) {
+                illegalURL = true;
+            }
+            if (illegalURL) {
+                return "";
+            }
+        }
+
+        try {
             String jsonStr = IOUtils.toString(input);
 
             convertJSON.setJsonString(jsonStr);
@@ -172,10 +192,6 @@ public class JSONUtil {
             if (isFromUrl) {
                 tempJSONXsdPath = temPath;
             }
-        } catch (FileNotFoundException e1) {
-            ExceptionHandler.process(e1);
-        } catch (IOException e1) {
-            ExceptionHandler.process(e1);
         } catch (java.lang.Exception e) {
             ExceptionHandler.process(e);
         } finally {
