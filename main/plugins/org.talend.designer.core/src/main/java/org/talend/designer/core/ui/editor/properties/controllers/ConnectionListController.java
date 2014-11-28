@@ -51,7 +51,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.ParameterValueUtil;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.service.IEBCDICProviderService;
-import org.talend.core.service.ISAPProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -320,10 +319,9 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
                                             return;
                                         }
                                     }
-                                    if (PluginChecker.isSAPWizardPluginLoaded() && elem instanceof INode) {
-                                        ISAPProviderService service = (ISAPProviderService) GlobalServiceRegister.getDefault()
-                                                .getService(ISAPProviderService.class);
-                                        if (service != null && service.isSAPNode((INode) elem)) {
+                                    if (elem instanceof INode) {
+                                        INode node = (INode) elem;
+                                        if (node.getComponent() != null && "tSAPBapi".equals(node.getComponent().getName())) {
                                             // not changed
                                             return;
                                         }
