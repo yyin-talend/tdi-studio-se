@@ -30,6 +30,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String table = ElementParameterParser.getValue(node,"__TABLE__");
 	String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+    boolean onErrDie = "true".equals(dieOnError);
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 	List<Map<String, String>> addCols =
@@ -719,7 +720,21 @@ if(columnList != null && columnList.size() > 0) {
 			}
 %>	         
 	                if(rowCount<%=cid%> == <%=numPerInsert%>){ 
+	                    try{
 	                    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
+	                    }catch(java.lang.Exception e){
+                    	<% if(onErrDie){%>
+                    	     throw e;
+			        	<% }else{
+		        			if(isLog4jEnabled){
+		        				%>
+		        				   log.error("<%=cid%> - " + e.getMessage());
+		        				<%
+		        			}
+		        		 %>
+		        			 System.err.println(e.getMessage());
+		        		<%}%>
+	                    }
 	                    exInsertColValueList<%=cid%>.clear();
 	                    rowCount<%=cid%> = 0;
 			    counter<%=cid%>=1;
