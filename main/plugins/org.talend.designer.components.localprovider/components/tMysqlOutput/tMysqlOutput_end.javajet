@@ -43,6 +43,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean supportDuplicateUpdate = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__ON_DUPLICATE_KEY_UPDATE__"));
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+	boolean onErrDie = "true".equals(dieOnError);
 	
 	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
@@ -337,7 +338,21 @@ skeleton="../templates/db_output_bulk.skeleton"
 	    
 	            row2Count<%=cid%>++;
 	        }        
+	        try{
 	        insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
+	        }catch(java.lang.Exception e){
+	        	<% if(onErrDie){%>
+	       		throw e;
+	        	<% }else{
+	        		if(isLog4jEnabled){
+	        		   %>
+	        		      log.error("<%=cid%> - " + e.getMessage());
+	        		   <%
+	        		}
+	        	%>
+	        		System.err.println(e.getMessage());
+	        	<%}%>
+	        }
 	    }
 <%	
 		} else if ("MYSQL_5".equals(dbVersion)) {
