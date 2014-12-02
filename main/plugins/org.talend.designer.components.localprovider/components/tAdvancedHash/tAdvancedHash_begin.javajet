@@ -95,10 +95,10 @@
 					boolean isAllRows = "ALL_ROWS".equals(matchingModeStr);
 					
 					boolean includeParallelComps = false;
-					List<? extends INode> listPartitions= node.getProcess().getNodesOfType("tPartitioner");
-					if (listPartitions!=null && listPartitions.size() > 0 ) {
-						includeParallelComps = true;
-					}
+					INode collectorNode = validTarget.getDesignSubjobStartNode();
+           			if ("tCollector".equals(collectorNode.getComponent().getName())) {
+        				includeParallelComps = true;
+        			}
 			   %>
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%= matchingModeStr %>;
