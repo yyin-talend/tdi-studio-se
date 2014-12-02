@@ -201,6 +201,7 @@ public class JavaJobExportReArchieveCreator {
         if (libFolder != null) {
             File[] files = libFolder.listFiles(new FilenameFilter() {
 
+                @Override
                 public boolean accept(File dir, String name) {
                     return name.toLowerCase().endsWith(FileConstants.JAR_FILE_SUFFIX)
                             || name.toLowerCase().endsWith(FileConstants.ZIP_FILE_SUFFIX) ? true : false;
@@ -221,6 +222,7 @@ public class JavaJobExportReArchieveCreator {
         if (drlFolder != null) {
             File[] files = drlFolder.listFiles(new FilenameFilter() {
 
+                @Override
                 public boolean accept(File dir, String name) {
                     return name.toLowerCase().endsWith(".drl") //$NON-NLS-1$ 
                     ? true
@@ -240,6 +242,7 @@ public class JavaJobExportReArchieveCreator {
         if (xlsFolder != null) {
             File[] files = xlsFolder.listFiles(new FilenameFilter() {
 
+                @Override
                 public boolean accept(File dir, String name) {
                     return name.toLowerCase().endsWith(".xls") //$NON-NLS-1$ 
                     ? true
@@ -257,6 +260,7 @@ public class JavaJobExportReArchieveCreator {
     private String[] getJobFolderJarFilenames() {
         File[] files = jobFolder.listFiles(new FilenameFilter() {
 
+            @Override
             public boolean accept(File dir, String name) {
                 return name.toLowerCase().endsWith(FileConstants.JAR_FILE_SUFFIX)
                         || name.toLowerCase().endsWith(FileConstants.ZIP_FILE_SUFFIX) ? true : false;
@@ -316,7 +320,17 @@ public class JavaJobExportReArchieveCreator {
             if (needjars != null) {
                 for (String needjar : needjars) {
                     if (".".equals(needjar)) {
-                        break;
+                        continue;
+                    }
+                    boolean found = false;
+                    for (String jobJar : fs) {
+                        if (jobJar != null && jobJar.equals(needjar)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        continue;
                     }
                     sb.append(needjar + " ");
                 }
