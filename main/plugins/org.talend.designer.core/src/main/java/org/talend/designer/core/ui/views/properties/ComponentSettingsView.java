@@ -651,7 +651,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 Object propertyValue = conn.getPropertyValue(Connection.LINESTYLE_PROP);
                 if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)
                         || propertyValue.equals(EConnectionType.ON_COMPONENT_ERROR)
-                        || propertyValue.equals(EConnectionType.RUN_IF)) {
+                        || propertyValue.equals(EConnectionType.RUN_IF) || propertyValue.equals(EConnectionType.ON_SUBJOB_ERROR)
+                        || propertyValue.equals(EConnectionType.PARALLELIZE)) {
                     return true;
                 } else {
                     if (isAvoidRecoveryByConditions(conn)) {
