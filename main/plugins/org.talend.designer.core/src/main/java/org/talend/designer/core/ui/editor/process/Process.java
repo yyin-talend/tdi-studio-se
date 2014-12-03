@@ -182,6 +182,11 @@ import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
  */
 public class Process extends Element implements IProcess2, IGEFProcess, ILastVersionChecker {
 
+    /**
+     * 
+     */
+    private static final String PROCESS_SCREENSHOT_KEY = "process"; //$NON-NLS-1$
+
     protected List<INode> nodes = new ArrayList<INode>();
 
     protected List<Element> elem = new ArrayList<Element>();
@@ -1364,7 +1369,22 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
          */
         processType.setDefaultContext(contextManager.getDefaultContext().getName());
         if (getScreenshot() != null) {
-            processType.getScreenshots().put("process", getScreenshot());
+            processType.getScreenshots().put(PROCESS_SCREENSHOT_KEY, getScreenshot());
+            // fix a bug (TUP-2278) of synch between inner process item and newly created process item during save, this
+            // is very dirty but inherent to the current archi.
+            // copy all the screenshot items appart from the "process" one that is already handled here.
+            if (property != null && (property.getItem() != null) && (property.getItem() instanceof ProcessItem)) {
+                ProcessItem pi = (ProcessItem) property.getItem();
+                ProcessType pt = pi.getProcess();
+                if (pt != null) {
+                    EMap delegateScreenshots = pt.getScreenshots();
+                    for (Object objkey : delegateScreenshots.keySet()) {
+                        if (!PROCESS_SCREENSHOT_KEY.equals(objkey)) {
+                            processType.getScreenshots().put(objkey, delegateScreenshots.get(objkey));
+                        }// else keep looking
+                    }
+                }// else no process available so ignor
+            }// else not a type we can handle so ignor
         }
         setScreenshot(null); // once be saved, set the screenshot to null to free memory
         contextManager.saveToEmf(processType.getContext());
