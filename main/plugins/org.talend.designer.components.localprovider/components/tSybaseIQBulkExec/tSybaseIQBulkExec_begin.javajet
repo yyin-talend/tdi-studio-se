@@ -70,7 +70,7 @@ if(useExistingConn) {
 <%
 		}
 %>
-		 String dirverName = "com.sybase.jdbc3.jdbc.SybDriver";
+		 String dirverName_<%=cid %> = "com.sybase.jdbc3.jdbc.SybDriver";
 <%	
 	} else {//sybase IQ 15
 		if ("DSN".equals(ElementParameterParser.getValue(node,"__DATA_SOURCE__"))) {
@@ -89,12 +89,12 @@ if(useExistingConn) {
 <%
 		}
 %>
-		String dirverName = "ianywhere.ml.jdbcodbc.IDriver";
+		String dirverName_<%=cid %> = "ianywhere.ml.jdbcodbc.IDriver";
 <%
 	}//end sybase IQ 15
 %>
    
-    java.lang.Class.forName(dirverName);
+    java.lang.Class.forName(dirverName_<%=cid %>);
 	<%
 	String passwordFieldName = "__PASS__";
 	%>
