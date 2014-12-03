@@ -582,8 +582,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                     EComponentCategory[] newCategories;
                     // rusuming checkBox only for ON_SUBJOB_OK , modified by nma, order 8663
                     // dont display Recovery tab on M/R for TDI-25789
-                    boolean needAvoid = needAvoidRecovery(elem);
-                    if (propertyValue.equals(EConnectionType.ON_SUBJOB_OK) && !isMRProcess && !needAvoid) {
+                    boolean isNormalJobNeedRecovery = (!isMRProcess && !isAvoidRecoveryByConditions(elem));
+                    if (isNeedRecoveryCategory(propertyValue, isNormalJobNeedRecovery, isMRProcess)) {
                         newCategories = new EComponentCategory[length + 1];
                         for (int i = 0; i < length; i++) {
                             newCategories[i] = categories[i];
@@ -638,7 +638,12 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         return null;
     }
 
-    private boolean needAvoidRecovery(IElement elem) {
+    /**
+     * Need to add recovery category or not by some conditions for current connection
+     * 
+     * @param elem
+     */
+    private boolean isAvoidRecoveryByConditions(IElement elem) {
         if (elem instanceof IConnection) {
             INode source = ((IConnection) elem).getSource();
             List<? extends IConnection> conns = source.getIncomingConnections();
@@ -649,13 +654,19 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                         || propertyValue.equals(EConnectionType.RUN_IF)) {
                     return true;
                 } else {
-                    if (needAvoidRecovery(conn)) {
+                    if (isAvoidRecoveryByConditions(conn)) {
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    private boolean isNeedRecoveryCategory(Object currentConnPropertyValue, boolean isNormalJob, boolean isMrJob) {
+        // subjob_ok need the recovery category
+        boolean isSubJobConn = currentConnPropertyValue.equals(EConnectionType.ON_SUBJOB_OK);
+        return (isSubJobConn && isNormalJob) || isMrJob;
     }
 
     /**
