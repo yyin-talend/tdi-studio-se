@@ -108,7 +108,7 @@
       <DEFAULT>"/.ssh/id_dsa"</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
+  <PARAMETER
       NAME="PASSPHRASE"
       FIELD="TEXT"
       NUM_ROW="50"
@@ -125,15 +125,22 @@
       NUM_ROW="100"
     >
       <ITEMS>
-     	<ITEM NAME="SOURCE" />
+      <ITEM NAME="SOURCE" />
       </ITEMS>
     </PARAMETER>  
 
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="120"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-    	<IMPORT  NAME="Java_SCP"  MODULE="ganymed-ssh2-261.jar" REQUIRED="true"/>
+      <IMPORT  NAME="Java_SCP"  MODULE="ganymed-ssh2-261.jar" REQUIRED="true"/>
     </IMPORTS>
   </CODEGENERATION>
   
