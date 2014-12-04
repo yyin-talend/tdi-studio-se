@@ -135,9 +135,6 @@ if (outConn!=null) {
 <%
     if(dieOnError){
 %>
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - " + ex_<%=cid %>.getMessage());
-		<%}%>
         throw(ex_<%=cid %>);
 <%
     }else{
@@ -415,9 +412,6 @@ if(outConns!=null){
 								}
 							<%
 							}
-									if(isLog4jEnabled){%>
-										log4jSb_<%=cid%>.append(<%=firstConnName%>.<%=column.getLabel() %> + "|");
-									<%}
 	                        break;
                         } // if S_0_0_0_0_1
                     } // if S_0_0_0_1
@@ -435,9 +429,6 @@ if(outConns!=null){
 <%
     if(dieOnError){
 %>
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - " + ex_<%=cid %>.getMessage());
-		<%}%>
     throw(ex_<%=cid %>);
 <%
     }else{
@@ -491,6 +482,4 @@ if(outConns!=null){
 %>
 		<%if(isLog4jEnabled){%>
 			log.debug("<%=cid%> - Extracting the record " + nb_line_<%=cid %> + ".");
-			log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid %> + ": " + log4jSb_<%=cid%>  + " .");
-			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 		<%}%>

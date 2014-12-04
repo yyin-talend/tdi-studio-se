@@ -28,6 +28,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
@@ -57,9 +58,9 @@ import org.talend.designer.runprocess.ItemCacheManager;
 /**
  * Command that changes a given property. It will call the set or get property value in an element. This element can be
  * either a node, a connection or a process. <br/>
- *
+ * 
  * $Id$
- *
+ * 
  */
 public class PropertyChangeCommand extends Command {
 
@@ -77,7 +78,8 @@ public class PropertyChangeCommand extends Command {
 
     private final Map<IElementParameter, Object> oldElementValues;
 
-    private ChangeMetadataCommand changeMetadataCommand;
+    // private ChangeMetadataCommand changeMetadataCommand;
+    private List<ChangeMetadataCommand> changeMetadataCommands;
 
     private String propertyTypeName;
 
@@ -95,7 +97,7 @@ public class PropertyChangeCommand extends Command {
 
     /**
      * The property is defined in an element, which can be either a node or a connection.
-     *
+     * 
      * @param elem
      * @param propName
      * @param propValue
@@ -106,6 +108,7 @@ public class PropertyChangeCommand extends Command {
         newValue = propValue;
         toUpdate = false;
         oldElementValues = new HashMap<IElementParameter, Object>();
+        changeMetadataCommands = new ArrayList<ChangeMetadataCommand>();
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
         // for job settings extra (feature 2710)
         // if (JobSettingsConstants.isExtraParameter(propName) ||
@@ -128,9 +131,50 @@ public class PropertyChangeCommand extends Command {
         // }
     }
 
+    private List<INode> getRelativeNodes(List<? extends IElementParameter> elementParameters) {
+        List<INode> retList = null;
+        if (elementParameters == null || elementParameters.size() == 0) {
+            return retList;
+        }
+        IElement element = elementParameters.get(0).getElement();
+        if (element instanceof Node) {
+            Node operatingNode = (Node) element;
+            IProcess process = operatingNode.getProcess();
+            if (process == null) {
+                return retList;
+            }
+            List<? extends INode> graphicNodes = process.getGraphicalNodes();
+            if (graphicNodes == null || graphicNodes.size() == 0) {
+                return retList;
+            }
+            String nodeName = operatingNode.getLabel();
+            retList = new ArrayList<INode>();
+            for (INode node : graphicNodes) {
+                List<? extends IElementParameter> nodeElementParameters = node.getElementParameters();
+                if (nodeElementParameters == null || nodeElementParameters.size() == 0) {
+                    continue;
+                }
+                for (IElementParameter elementParameter : nodeElementParameters) {
+                    if (elementParameter.getFieldType() == EParameterFieldType.COMPONENT_LIST) {
+                        Object objName = elementParameter.getValue();
+                        if (objName == null) {
+                            continue;
+                        }
+                        String relatedComponentsName = objName.toString();
+                        if (relatedComponentsName.equals(nodeName)) {
+                            retList.add(node);
+                        }
+                    }
+                }
+            }
+        }
+        return retList;
+    }
+
     @Override
     public void execute() {
         IElementParameter currentParam = elem.getElementParameter(propName);
+        changeMetadataCommands.clear();
         oldElementValues.clear();
         if (currentParam == null) {
             return;
@@ -316,74 +360,11 @@ public class PropertyChangeCommand extends Command {
         if (!toUpdate
                 && (currentParam.getFieldType().equals(EParameterFieldType.RADIO)
                         || currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
-                        || currentParam.getFieldType().equals(EParameterFieldType.CHECK) || currentParam.getFieldType().equals(
-                        EParameterFieldType.AS400_CHECK))) {
+                        || currentParam.getFieldType().equals(EParameterFieldType.CHECK)
+                        || currentParam.getFieldType().equals(EParameterFieldType.AS400_CHECK) || currentParam.getFieldType()
+                        .equals(EParameterFieldType.COMPONENT_LIST))) {
             toUpdate = false;
-            for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                IElementParameter testedParam = elem.getElementParameters().get(i);
-
-                String showIf = testedParam.getShowIf();
-                String notShowIf = testedParam.getNotShowIf();
-
-                if (showIf != null) {
-                    if (showIf.contains(currentParam.getName())) {
-                        toUpdate = true;
-                    }
-                } else {
-                    if (notShowIf != null) {
-                        if (notShowIf.contains(currentParam.getName())) {
-                            toUpdate = true;
-                        }
-                    }
-                }
-                if (testedParam.getFieldType() == EParameterFieldType.TABLE) {
-                    String[] tmpShowIfs = testedParam.getListItemsShowIf();
-                    if (tmpShowIfs != null) {
-                        for (String show : tmpShowIfs) {
-                            if (show != null && show.contains(currentParam.getName())) {
-                                toUpdate = true;
-                            }
-                        }
-                    }
-                    tmpShowIfs = testedParam.getListItemsNotShowIf();
-                    if (tmpShowIfs != null) {
-                        for (String show : tmpShowIfs) {
-                            if (show != null && show.contains(currentParam.getName())) {
-                                toUpdate = true;
-                            }
-                        }
-                    }
-                }
-                if (currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
-                    /*
-                     * TUP-968, In order to refresh for missing modules top messages.
-                     */
-                    if (EParameterName.DB_VERSION.getName().equals(currentParam.getName())
-                            || "HBASE_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
-                            || "HIVE_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
-                            || "HCAT_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
-                            || "DISTRIBUTION".equals(currentParam.getName())) {//$NON-NLS-1$
-                        toUpdate = true;
-                    } else if (testedParam.getListItemsShowIf() != null) {
-                        for (int j = 0; j < testedParam.getListItemsShowIf().length && !toUpdate; j++) {
-                            showIf = testedParam.getListItemsShowIf()[j];
-                            notShowIf = testedParam.getListItemsNotShowIf()[j];
-                            if (showIf != null) {
-                                if (showIf.contains(currentParam.getName())) {
-                                    toUpdate = true;
-                                }
-                            } else {
-                                if (notShowIf != null) {
-                                    if (notShowIf.contains(currentParam.getName())) {
-                                        toUpdate = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                setDefaultValues(currentParam, testedParam);
-            }
+            setDefaultValues(currentParam, elem);
         }
 
         if (currentParam.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
@@ -421,9 +402,17 @@ public class PropertyChangeCommand extends Command {
                 }
             }
         }
+        updateRelativeNodesIfNeeded(currentParam);
         //
         if (elem instanceof IGraphicalNode) {
             ((IGraphicalNode) elem).checkAndRefreshNode();
+        }
+
+        if (elem instanceof IConnection) {
+            IProcess process = ((IConnection) elem).getSource().getProcess();
+            if (process instanceof IProcess2) {
+                ((IProcess2) process).checkProcess();
+            }
         }
 
         // See feature 3902
@@ -431,6 +420,103 @@ public class PropertyChangeCommand extends Command {
             ((Connection) elem).setMonitorConnection((Boolean) currentParam.getValue());
         }
         refreshMR(propName);
+    }
+
+    /**
+     * DOC cmeng Comment method "updateRelativeNodesIfNeeded".
+     * 
+     * @param currentParam
+     */
+    private void updateRelativeNodesIfNeeded(IElementParameter currentParam) {
+        boolean originalUpdateValue = toUpdate;
+        List<INode> relativeNodes = getRelativeNodes(elem.getElementParameters());
+        if (relativeNodes != null && 0 < relativeNodes.size()) {
+            for (INode node : relativeNodes) {
+                toUpdate = false;
+                setDefaultValues(currentParam, node);
+                if (toUpdate) {
+                    node.setPropertyValue(updataComponentParamName, new Boolean(true));
+                }
+            }
+        }
+        toUpdate = originalUpdateValue;
+    }
+
+    /**
+     * DOC cmeng Comment method "setDefaultValues".
+     * 
+     * @param currentParam
+     */
+    private void setDefaultValues(IElementParameter currentParam, IElement node) {
+        List<? extends IElementParameter> elementParameters = node.getElementParameters();
+        if (elementParameters == null) {
+            return;
+        }
+        for (int i = 0; i < elementParameters.size(); i++) {
+            IElementParameter testedParam = elementParameters.get(i);
+
+            String showIf = testedParam.getShowIf();
+            String notShowIf = testedParam.getNotShowIf();
+
+            if (showIf != null) {
+                if (showIf.contains(currentParam.getName())) {
+                    toUpdate = true;
+                }
+            } else {
+                if (notShowIf != null) {
+                    if (notShowIf.contains(currentParam.getName())) {
+                        toUpdate = true;
+                    }
+                }
+            }
+            if (testedParam.getFieldType() == EParameterFieldType.TABLE) {
+                String[] tmpShowIfs = testedParam.getListItemsShowIf();
+                if (tmpShowIfs != null) {
+                    for (String show : tmpShowIfs) {
+                        if (show != null && show.contains(currentParam.getName())) {
+                            toUpdate = true;
+                        }
+                    }
+                }
+                tmpShowIfs = testedParam.getListItemsNotShowIf();
+                if (tmpShowIfs != null) {
+                    for (String show : tmpShowIfs) {
+                        if (show != null && show.contains(currentParam.getName())) {
+                            toUpdate = true;
+                        }
+                    }
+                }
+            }
+            if (currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
+                /*
+                 * TUP-968, In order to refresh for missing modules top messages.
+                 */
+                if (EParameterName.DB_VERSION.getName().equals(currentParam.getName())
+                        || "HBASE_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
+                        || "HIVE_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
+                        || "HCAT_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
+                        || "DISTRIBUTION".equals(currentParam.getName())) {//$NON-NLS-1$
+                    toUpdate = true;
+                } else if (testedParam.getListItemsShowIf() != null) {
+                    for (int j = 0; j < testedParam.getListItemsShowIf().length && !toUpdate; j++) {
+                        showIf = testedParam.getListItemsShowIf()[j];
+                        notShowIf = testedParam.getListItemsNotShowIf()[j];
+                        if (showIf != null) {
+                            if (showIf.contains(currentParam.getName())) {
+                                toUpdate = true;
+                            }
+                        } else {
+                            if (notShowIf != null) {
+                                if (notShowIf.contains(currentParam.getName())) {
+                                    toUpdate = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            setDefaultValues(currentParam, testedParam, node);
+        }
     }
 
     private boolean needUpdateMonitorConnection() {
@@ -460,12 +546,16 @@ public class PropertyChangeCommand extends Command {
 
     /**
      * Set the values to default if needed.
-     *
+     * 
      * @param currentParam Current parameter that has been modified in the interface
      * @param testedParam Tested parameter, to know if there is a link for the default values between this parameter and
      * the current.
      */
-    private void setDefaultValues(IElementParameter currentParam, IElementParameter testedParam) {
+    private void setDefaultValues(IElementParameter currentParam, IElementParameter testedParam, IElement referenceNode) {
+        List<? extends IElementParameter> elementParameters = referenceNode.getElementParameters();
+        if (elementParameters == null) {
+            return;
+        }
         boolean contains = false;
 
         // zli
@@ -495,13 +585,13 @@ public class PropertyChangeCommand extends Command {
                     if (testedParam.getListItemsShowIf() != null) {
                         String conditionShowIf = testedParam.getListItemsShowIf()[index];
                         if (conditionShowIf != null) {
-                            isCurrentComboValid = Expression.evaluate(conditionShowIf, elem.getElementParameters());
+                            isCurrentComboValid = Expression.evaluate(conditionShowIf, elementParameters);
                         }
                     }
                     if (testedParam.getListItemsNotShowIf() != null) {
                         String conditionNotShowIf = testedParam.getListItemsNotShowIf()[index];
                         if (conditionNotShowIf != null) {
-                            isCurrentComboValid = !Expression.evaluate(conditionNotShowIf, elem.getElementParameters());
+                            isCurrentComboValid = !Expression.evaluate(conditionNotShowIf, elementParameters);
                         }
                     }
                 }
@@ -509,7 +599,7 @@ public class PropertyChangeCommand extends Command {
             if (!isCurrentComboValid && testedParam.getListItemsShowIf() != null) {
                 for (String condition : testedParam.getListItemsShowIf()) {
                     if (condition != null && condition.contains(currentParam.getName())) {
-                        boolean isValid = Expression.evaluate(condition, elem.getElementParameters());
+                        boolean isValid = Expression.evaluate(condition, elementParameters);
                         if (isValid) {
                             int index = ArrayUtils.indexOf(testedParam.getListItemsShowIf(), condition);
                             testedParam.setValue(testedParam.getListItemsValue()[index]);
@@ -521,7 +611,7 @@ public class PropertyChangeCommand extends Command {
             if (!isCurrentComboValid && !contains && testedParam.getListItemsNotShowIf() != null) {
                 for (String condition : testedParam.getListItemsNotShowIf()) {
                     if (condition != null && condition.contains(currentParam.getName())) {
-                        boolean isValid = !Expression.evaluate(condition, elem.getElementParameters());
+                        boolean isValid = !Expression.evaluate(condition, elementParameters);
                         if (isValid) {
                             int index = ArrayUtils.indexOf(testedParam.getListItemsNotShowIf(), condition);
                             testedParam.setValue(testedParam.getListItemsValue()[index]);
@@ -542,11 +632,11 @@ public class PropertyChangeCommand extends Command {
                         && !testedParam.getFieldType().equals(EParameterFieldType.RADIO)) {
                     oldMapping = (String) testedParam.getValue();
                 }
-                testedParam.setValueToDefault(elem.getElementParameters());
+                testedParam.setValueToDefault(elementParameters);
                 if (testedParam.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
                     String newMapping = (String) testedParam.getValue();
                     if (!oldMapping.equals(newMapping)) {
-                        Node node = (Node) elem;
+                        Node node = (Node) referenceNode;
                         if (node.getMetadataList().size() > 0) {
                             // to change with:
                             // IMetadataTable metadataTable = node.getMetadataFromConnector(testedParam.getContext());
@@ -557,7 +647,7 @@ public class PropertyChangeCommand extends Command {
                 }
             } else {
                 // See issue 975, update the schema.
-                Node node = (Node) elem;
+                Node node = (Node) referenceNode;
                 if (node.getMetadataList().size() > 0) {
                     IMetadataTable metadataTable = null;
                     IMetadataTable newMetadataTable = null;
@@ -572,11 +662,10 @@ public class PropertyChangeCommand extends Command {
                             isBuiltIn = true;
                         }
                     }
-
                     if (isBuiltIn || elementParameter == null) {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         testedParam.setValueToDefault(node.getElementParameters());
-                        newMetadataTable = (IMetadataTable) testedParam.getValue();
+                        newMetadataTable = ((IMetadataTable) testedParam.getValue()).clone(true);
                     } else {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         if (testedParam.getName().equals("SCHEMA")) {//$NON-NLS-1$
@@ -628,8 +717,9 @@ public class PropertyChangeCommand extends Command {
                             metadataTable.setReadOnly(newMetadataTable.isReadOnly());
                             newMetadataTable = metadataTable;
                         }
-
-                        changeMetadataCommand = new ChangeMetadataCommand(node, null, null, newMetadataTable);
+                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, null, null,
+                                newMetadataTable);
+                        changeMetadataCommands.add(changeMetadataCommand);
                         changeMetadataCommand.execute(true);
                     }
                 }
@@ -670,8 +760,12 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
-        if (changeMetadataCommand != null) {
-            changeMetadataCommand.undo();
+        if (changeMetadataCommands != null) {
+            int size = changeMetadataCommands.size();
+            for (int i = size - 1; 0 <= i; i--) {
+                ChangeMetadataCommand changeMetadataCommand = changeMetadataCommands.get(i);
+                changeMetadataCommand.undo();
+            }
         }
         CodeView.refreshCodeView(elem);
         ComponentSettings.switchToCurComponentSettingsView();
@@ -726,8 +820,10 @@ public class PropertyChangeCommand extends Command {
             elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
 
-        if (changeMetadataCommand != null) {
-            changeMetadataCommand.redo();
+        if (changeMetadataCommands != null) {
+            for (ChangeMetadataCommand changeMetadataCommand : changeMetadataCommands) {
+                changeMetadataCommand.redo();
+            }
         }
         CodeView.refreshCodeView(elem);
         ComponentSettings.switchToCurComponentSettingsView();
@@ -802,20 +898,32 @@ public class PropertyChangeCommand extends Command {
     }
 
     private void refreshMR(String propName) {
-        if (!(elem instanceof Node)) {
-            return;
-        }
-        Node node = (Node) elem;
-        if (!node.isMapReduce()) {
-            return;
-        }
-        if (!propName.equals("MAP_ONLY") && !propName.equals("REPLICATED_JOIN")
-                && !propName.equals(EParameterName.GROUPBYS.getName())) {
-            return;
+        if (elem instanceof Node) {
+            Node node = (Node) elem;
+            if (!node.isMapReduce()) {
+                return;
+            }
+            if (!propName.equals("MAP_ONLY") && !propName.equals("REPLICATED_JOIN")
+                    && !propName.equals(EParameterName.GROUPBYS.getName())) {
+                return;
+            }
+
+            ((IProcess2) node.getProcess()).getGeneratingNodes();
+            node.refreshNodeContainer();
+        } else if (elem instanceof IProcess2) {
+            IProcess2 process = (IProcess2) elem;
+            for (INode inode : process.getGraphicalNodes()) {
+                Node node = (Node) inode;
+                if (!node.isMapReduceStart()) {
+                    return;
+                }
+                if (!propName.equals("DISTRIBUTION")) {
+                    return;
+                }
+                node.refreshNodeContainer();
+            }
         }
 
-        ((IProcess2) node.getProcess()).getGeneratingNodes();
-        node.refreshNodeContainer();
     }
 
 }

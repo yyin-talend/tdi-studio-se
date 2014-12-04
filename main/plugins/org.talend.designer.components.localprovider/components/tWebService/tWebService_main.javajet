@@ -13,10 +13,12 @@ imports="
     java.util.Map
 "
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+log = new LogUtil(node);
 
 String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String methodTemp = ElementParameterParser.getValue(node,"__METHOD__");
@@ -84,7 +86,9 @@ if (incomingConnections != null && !incomingConnections.isEmpty()) {
 %>	
 	 java.util.Map<String, Object> results_<%=cid%> = null;
 	 try{
-	 results_<%=cid%> = serviceInvokerHelper_<%=cid%>.invoke(serviceName_<%=cid%>, portName_<%=cid%>, "<%=method%>", inMap_<%=cid%>);
+	 	<%log.debug(log.str("Invoking the method " + method + " on "), log.var("serviceName"), log.str("."));%>
+	 	results_<%=cid%> = serviceInvokerHelper_<%=cid%>.invoke(serviceName_<%=cid%>, portName_<%=cid%>, "<%=method%>", inMap_<%=cid%>);
+	 	<%log.debug(log.str("Invoke the method " + method + " on "), log.var("serviceName"), log.str(" has succeeded."));%>
 	 }catch(java.lang.Exception e){
 <%
 	 if (("true").equals(dieOnError)) {
@@ -95,6 +99,7 @@ if (incomingConnections != null && !incomingConnections.isEmpty()) {
 %>
 		System.err.print(e.getMessage());
 <%
+		log.logPrintedException("e.getMessage()");
 	 }
 %>
 	 }

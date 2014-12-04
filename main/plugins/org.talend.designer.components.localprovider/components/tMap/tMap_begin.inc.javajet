@@ -74,14 +74,6 @@ boolean isVirtualOut = componentName.endsWith("TMAP_OUT");
 String uniqueNameComponent = componentName.replaceAll("_TMAP_IN", "");
 uniqueNameComponent = uniqueNameComponent.replaceAll("_TMAP_OUT", "");
 
-	if(isLog4jEnabled){
-		if(!isVirtualOut) {
-%>
-			log.info("<%=uniqueNameComponent%> - Start to work.");
-			StringBuffer log4jSb_<%=uniqueNameComponent%> = new StringBuffer();
-<%
-		}
-	}
 
 if(isVirtualIn) {
 	List<IConnection> localInputConnections = inputConnections;
@@ -138,7 +130,6 @@ for(int i=0; i < inputTablesWithInvalid.size(); i++) {
 		if(!isVirtualOut) {
 		%>
 		int count_<%=currentLoopTable.getName()%>_<%=uniqueNameComponent%> = 0;
-		StringBuffer log4jSb_<%=currentLoopTable.getName()%>_<%=uniqueNameComponent%> = new StringBuffer();
 		<%
 		}
 	}
@@ -298,7 +289,6 @@ class  <%=className%>  {
 				if(!isVirtualOut) {
 				%>
 				int count_<%=tableName%>_<%=uniqueNameComponent%> = 0;
-				StringBuffer log4jSb_<%=tableName%>_<%=uniqueNameComponent%> = new StringBuffer();
 				<%
 				}
 			}
@@ -760,9 +750,6 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	    if(hasAtLeastOneRead) {
 	    %>
         	} catch (IOException e) {
-        		<%if(isLog4jEnabled){%>
-        			log.fatal("<%=uniqueNameComponent%> - " + e.getMessage());
-        		<%}%>
 	            throw new RuntimeException(e);
         <%
         }
@@ -772,9 +759,6 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		if(hasAtLeastOneObjectType) {
 		%>
 			} catch(ClassNotFoundException eCNFE) {
-        		<%if(isLog4jEnabled){%>
-        			log.fatal("<%=uniqueNameComponent%> - " + eCNFE.getMessage());
-        		<%}%>
 				 throw new RuntimeException(eCNFE);
 		<%
 		}
@@ -924,9 +908,6 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	    if(hasAtLeastOneWrite) {
 	    %>
         	} catch (IOException e) {
-        		<%if(isLog4jEnabled){%>
-        			log.fatal("<%=uniqueNameComponent%> - " + e.getMessage());
-        		<%}%>
 	            throw new RuntimeException(e);
         <%
         }
@@ -945,7 +926,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 
 	org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator<SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>> fsi_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%> = 
 		new org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator<SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>>(
-			<%= tempFolder %> + "/"+ jobName +"_tMapData_" + pid +"_<%= hasConcurrencyContext ? threadInsertedString + "_" : "" %><%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>", <%= rowsBufferSize %>) {
+			<%= tempFolder %> + "/"+ jobName +"_tMapData_" + Thread.currentThread().getId() + "_" + pid +"_<%= hasConcurrencyContext ? threadInsertedString + "_" : "" %><%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>", <%= rowsBufferSize %>) {
 			public SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%> createRowInstance() {
 				return new SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>();
 			}

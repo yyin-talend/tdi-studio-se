@@ -20,7 +20,6 @@ imports="
     
     String whereClause = ElementParameterParser.getValue(node,"__WHERE_CLAUSE__");
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-    log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 <%log4jCodeGenerateUtil.useExistConnection(node);%>

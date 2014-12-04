@@ -19,7 +19,7 @@ imports="
 "
 skeleton="tFileOutputMSXML_java.skeleton"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 
 // ------------------- *** Common code start *** ------------------- //
@@ -119,5 +119,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 <%
 	}
+	log4jFileUtil.writeDataFinishInfo(node);
 }
 %>

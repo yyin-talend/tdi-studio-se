@@ -38,6 +38,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
@@ -45,6 +46,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
+import org.talend.commons.exception.OperationCancelException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.model.components.IComponentConstants;
@@ -74,6 +76,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -98,7 +101,6 @@ import org.talend.core.repository.utils.RepositoryPathProvider;
 import org.talend.core.service.IRulesProviderService;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.ui.perspective.RestoreAllRegisteredPerspectivesProvider;
 import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -143,7 +145,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
 
 public class RepositoryService implements IRepositoryService, IRepositoryContextService {
 
-    private static Logger log = Logger.getLogger(RestoreAllRegisteredPerspectivesProvider.class);
+    private static Logger log = Logger.getLogger(RepositoryService.class);
 
     /*
      * (non-Javadoc)
@@ -229,12 +231,16 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     // see DataBaseWizard, DatabaseTableWizard, AContextualAction
     @Override
     public void notifySQLBuilder(List<IRepositoryViewObject> list) {
-        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getRepositoryView();
-        removeRepositoryChangedListener(listener);
+        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getDIRepositoryView(false);
+        if (listener != null) {
+            removeRepositoryChangedListener(listener);
+        }
         for (IRepositoryViewObject element : list) {
             repositoryChanged(new RepositoryElementDelta(element));
         }
-        registerRepositoryChangedListenerAsFirst(listener);
+        if (listener != null) {
+            registerRepositoryChangedListenerAsFirst(listener);
+        }
     }
 
     /*
@@ -293,11 +299,11 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
      * @see org.talend.repository.model.IRepositoryService#openLoginDialog(org.eclipse.swt.widgets.Shell, boolean)
      */
     @Override
-    public boolean openLoginDialog(Shell shell, boolean inuse) {
+    public boolean openLoginDialog(Shell shell) {
         if (isloginDialogDisabled()) {
             return true;
         }
-        LoginDialog loginDialog = new LoginDialog(shell, inuse);
+        LoginDialog loginDialog = new LoginDialog(shell);
         boolean logged = loginDialog.open() == LoginDialog.OK;
         return logged;
 
@@ -437,8 +443,20 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                 repositoryContext.setProject(project);
 
                 repositoryFactory.logOnProject(project, new NullProgressMonitor());
-            } catch (PersistenceException e) {
-                MessageBoxExceptionHandler.process(e, new Shell());
+            } catch (final PersistenceException e) {
+                if (e instanceof OperationCancelException) {
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            MessageDialog.openError(Display.getDefault().getActiveShell(),
+                                    Messages.getString("LoginDialog.logonCanceled"), e.getLocalizedMessage());
+                        }
+
+                    });
+                } else {
+                    MessageBoxExceptionHandler.process(e, new Shell());
+                }
                 repositoryFactory.logOffProject();
                 return false;
             } catch (LoginException e) {
@@ -617,10 +635,13 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
      * ERepositoryObjectType, java.lang.String)
      */
     @Override
-    public void openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType, List<IContextParameter> params,
-            IContextManager contextManager) {
+    public ContextItem openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType,
+            List<IContextParameter> params, IContextManager contextManager) {
         ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params, contextManager);
-        dialog.open();
+        if (dialog.open() == Window.OK) {
+            return dialog.getItem();
+        }
+        return null;
     }
 
     /**
@@ -726,7 +747,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                 log.error("failed to get the Rules provider path", e); //$NON-NLS-1$
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     @Override
@@ -778,10 +799,10 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
         }
         File file = new File(url.getFile());
         // String librariesPath = LibrariesManagerUtils.getLibrariesPath(ECodeLanguage.JAVA) + "/";
-        String librariesPath = processor.getCodeProject().getLocation() + "/lib/";
+        String librariesPath = processor.getCodeProject().getLocation() + "/lib/"; //$NON-NLS-1$
         String targetFileName = JobJavaScriptsManager.USERPIGUDF_JAR;
         if (!isExport) {
-            targetFileName = property.getLabel() + "_" + property.getVersion() + "_" + JobJavaScriptsManager.USERPIGUDF_JAR;
+            targetFileName = property.getLabel() + '_' + property.getVersion() + '_' + JobJavaScriptsManager.USERPIGUDF_JAR;
         }
         File target = new File(librariesPath + targetFileName);
         try {

@@ -7,7 +7,6 @@ imports="
 	java.util.Map
 " 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -22,19 +21,18 @@ imports="
 		<%
 		if(isLog4jEnabled){
 		%>	
-			log.info("<%=cid%> - Bucket "+<%=bucket%>+" is exists.");
+			if(bucketExist_<%=cid%>){
+				log.info("<%=cid%> - Bucket "+<%=bucket%>+" exists.");
+			}else{
+				log.info("<%=cid%> - Bucket "+<%=bucket%>+" does not exist.");
+			}
 		<%
 		}
 		%>
 	}catch(java.lang.Exception e_<%=cid%>){
 		<%
 		if (("true").equals(dieOnError)) {
-			if(isLog4jEnabled){
-			%>
-				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-			<%
-			}
-			%>
+		%>
 			throw(e_<%=cid%>);
 		<%
 		} else {
@@ -59,6 +57,4 @@ imports="
 	}
 	globalMap.put("<%=cid%>_BUCKET_NAME", <%=bucket%>);
 	globalMap.put("<%=cid%>_BUCKET_EXIST", bucketExist_<%=cid%>);
-	<%
-	log4jFileUtil.componentFinishInfo(node);
-	%>
+	

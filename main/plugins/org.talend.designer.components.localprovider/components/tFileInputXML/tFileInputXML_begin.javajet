@@ -54,43 +54,8 @@ if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schema
 }
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-/* Build the Log4J message for the different parameters */
-
-if(isLog4jEnabled) {
-%>
-	String log4jFileInputXMLParameters_<%=cid%> = "";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "FILENAME = " + <%=ElementParameterParser.getValue(node, "__FILENAME__")%> + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "LOOP_QUERY = " + <%=ElementParameterParser.getValue(node, "__LOOP_QUERY__")%> + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "LIMIT = " + <%="".equals(ElementParameterParser.getValue(node, "__LIMIT__"))?"\"\"":ElementParameterParser.getValue(node, "__LIMIT__")%> + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "IGNORE_DTD = " + <%=ElementParameterParser.getValue(node, "__IGNORE_DTD__")%> + " | ";
-	<% if("true".equals(ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__"))) {%>
-		log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "THOUSANDS_SEPARATOR = " + <%=ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__")%> + " | ";
-		log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "DECIMAL_SEPARATOR = " + <%=ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__")%> + " | ";
-	<% } %>
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "GENERATION_MODE = " + "<%=ElementParameterParser.getValue(node, "__GENERATION_MODE__")%>" + " | ";
-	<% if("DOM4J".equalsIgnoreCase(ElementParameterParser.getValue(node, "__GENERATION_MODE__"))) {%>
-		log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "IGNORE_NS = " + <%=ElementParameterParser.getValue(node, "__IGNORE_NS__")%> + " | ";
-		<% if("true".equals(ElementParameterParser.getValue(node, "__IGNORE_NS__"))) {%>
-			log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "TMP_FILENAME = " + <%=ElementParameterParser.getValue(node, "__TMP_FILENAME__")%> + " | ";
-		<% } %>
-	<% } %>
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "USE_SEPARATOR_FOR_XERCES = " + <%=ElementParameterParser.getValue(node, "__USE_SEPARATOR__")%> + " | ";
-	<% if("true".equals(ElementParameterParser.getValue(node, "__USE_SEPARATOR__"))) {%>
-		log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "FIELD_SEPARATOR = " + <%=ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__")%> + " | ";
-	<% } %>
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "ENCODING_TYPE = " + "<%=ElementParameterParser.getValue(node, "__ENCODING_TYPE__")%>" + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "CHECK_DATE = " + <%=ElementParameterParser.getValue(node, "__CHECK_DATE__")%> + " | ";
-	log4jFileInputXMLParameters_<%=cid%> = log4jFileInputXMLParameters_<%=cid%> + "DIE_ON_ERROR = " + <%=ElementParameterParser.getValue(node, "__DIE_ON_ERROR__")%> + " | ";
-
-	
-	log4jFileInputXMLParameters_<%=cid%> = "<%=cid%> - Parameters:" + log4jFileInputXMLParameters_<%=cid%>;
-	log.debug(log4jFileInputXMLParameters_<%=cid%>);
-<%
-}
 		
 /* -------------------------- */
-
-log4jFileUtil.componentStartInfo(node);
 %>
 int nb_line_<%=cid%> = 0;
 
@@ -122,6 +87,10 @@ class TalendPrefixResolver_<%=cid%> implements org.apache.xml.utils.PrefixResolv
     private java.util.Map<String, String> map = new java.util.HashMap<String, String>();
     
 	private java.util.List<String> defualtNSPath = new java.util.ArrayList<String>();
+	
+	public java.util.List<String> getDefualtNSPath() {
+		return defualtNSPath;
+	}
 	
     public String getBaseIdentifier() {
         return null;
@@ -176,28 +145,6 @@ class TalendPrefixResolver_<%=cid%> implements org.apache.xml.utils.PrefixResolv
         return hasDefaultPrefix;
     }
     
-    public int[] getDefaulNSIndex(String path, String loopPath){
-		String fullPath = loopPath;
-    	if(!path.equals(fullPath)){
-        	for (String tmp : path.split("/")) {
-        		if (("..").equals(tmp)) {
-                    fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
-                } else {
-                    fullPath += "/" + tmp;
-                }
-        	}
-        }
-    	int[] indexs = new int[fullPath.split("/").length - 1];
-        java.util.Arrays.fill(indexs, -1);
-        int length = 0;
-        for (int i = 0; i < defualtNSPath.size(); i++) {
-            if (defualtNSPath.get(i).length() > length && fullPath.startsWith(defualtNSPath.get(i))) {
-                java.util.Arrays.fill(indexs, defualtNSPath.get(i).split("/").length - 2, indexs.length, i);
-                length = defualtNSPath.get(i).length();
-            }
-        }
-    	return indexs;
-    }
 }
 
 class XML_API_<%=cid%>{
@@ -224,99 +171,42 @@ class XML_API_<%=cid%>{
         return false;
     }
 
+	private final org.talend.xpath.XPathUtil util = new  org.talend.xpath.XPathUtil();
+
 	public void initXPath(org.w3c.dom.Node root){
 		pr= new TalendPrefixResolver_<%=cid%>();
     	hasDefaultNS = pr.countNSMap(root);
+    	util.setDefaultNSPath(pr.getDefualtNSPath());
 	}
 
 //==============add for feature 10753 start================================
 	org.apache.xpath.objects.XObject obj = null;
 	
 	public int getNodeType(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException{
-		obj = org.apache.xpath.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+		obj = org.apache.xpath.XPathAPI.eval(node, util.addDefaultNSPrefix(xpath,loopPath), pr);
 		return obj.getType();
 	}
 	
 	public String getNodeString(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException{
 		if(obj==null){
-			obj = org.apache.xpath.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+			obj = org.apache.xpath.XPathAPI.eval(node, util.addDefaultNSPrefix(xpath,loopPath), pr);
 		}
 		return obj.str();
 	}
 
     public org.w3c.dom.Node getSingleNode(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException {
     	if(obj==null){
-        	obj = org.apache.xpath.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+        	obj = org.apache.xpath.XPathAPI.eval(node, util.addDefaultNSPrefix(xpath,loopPath), pr);
         }
         return obj.nodelist().item(0);
     }
 //=====================end=================================================
 
     public org.w3c.dom.NodeList getNodeList(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException {
-        org.apache.xpath.objects.XObject obj = org.apache.xpath.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+        org.apache.xpath.objects.XObject obj = org.apache.xpath.XPathAPI.eval(node, util.addDefaultNSPrefix(xpath), pr);
         return obj.nodelist();
     }
     
-    private String addDefaultNSPrefix(String path) {
-        if (hasDefaultNS) {
-            StringBuffer newPath = new StringBuffer();
-            int[] indexs= pr.getDefaulNSIndex(path,loopPath);
-            String[] pathStrs = path.split("/");
-            for (int i = 0; i < pathStrs.length; i++) {
-                String tmp = pathStrs[i];
-                if (newPath.length() > 0) {
-                    newPath.append("/");
-                }
-                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 /*&& tmp.indexOf("@") == -1*/) {
-                    int index = indexs[i + indexs.length - pathStrs.length];
-                    if (index >= 0) {
-                    	//==== add by wliu to support both filter and functions==
-						if(tmp.indexOf("[")>0 && tmp.indexOf("]")>tmp.indexOf("[")){//include filter
-							String tmpStr=replaceElementWithNS(tmp,"pre"+index+":");
-							newPath.append(tmpStr);
-						}else{
-							if(tmp.indexOf("@") != -1 || tmp.indexOf("(")<tmp.indexOf(")")){  // include attribute
-								newPath.append(tmp);
-							}else{
-						//==add end=======	
-                        		newPath.append("pre").append(index).append(":").append(tmp);
-                        	}
-                        }                    
-                    } else {
-                        newPath.append(tmp);
-                    }
-                } else {
-                    newPath.append(tmp);
-                }
-            }
-            return newPath.toString();
-        }
-        return path;
-    }
-
-	private String matches = "@*\\b[a-z|A-Z|_]+[[-]*\\w]*\\b[^'|^\\(]";
-    private java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(matches);
-    
-	private String replaceElementWithNS(String global, String pre){
-
-        java.util.regex.Matcher match = pattern.matcher(global);
-        StringBuffer sb = new StringBuffer();
-        match.reset();
-        while (match.find()) {
-            String group = match.group();
-            String tmp = "";
-            if (group.toLowerCase().matches("\\b(div|mod|and|or)\\b.*") || group.matches("@.*")) {
-                tmp = group;
-            } else {
-                tmp = tmp + pre + group;
-            }
-            match.appendReplacement(sb, tmp);
-        }
-        match.appendTail(sb);
-        
-        return sb.toString();
-	}    
-
 }
 
 <%if("true".equals(useSeparator)){%>
@@ -378,9 +268,6 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 	<%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -411,9 +298,6 @@ try{
     }
 }catch(java.lang.Exception e){
 <%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 <%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -473,89 +357,20 @@ class NameSpaceTool_<%=cid%> {
         }
     }
     
-    public String addDefaultNSPrefix(String path, String loopPath) {
-        if (defualtNSPath.size() > 0) {
-        	String fullPath = loopPath;
-        	if(!path.equals(fullPath)){
-            	for (String tmp : path.split("/")) {
-            		if (("..").equals(tmp)) {
-                        fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
-                    } else {
-                        fullPath += "/" + tmp;
-                    }
-            	}
-            }
-            int size = fullPath.split("/").length - 1;
-            if(size<0) {
-            	return fullPath;
-            }
-        	int[] indexs = new int[size];
-            java.util.Arrays.fill(indexs, -1);
-            int length = 0;
-            for (int i = 0; i < defualtNSPath.size(); i++) {
-                if (defualtNSPath.get(i).length() > length && fullPath.startsWith(defualtNSPath.get(i))) {
-                    java.util.Arrays.fill(indexs, defualtNSPath.get(i).split("/").length - 2, indexs.length, i);
-                    length = defualtNSPath.get(i).length();
-                }
-            }
-
-            StringBuilder newPath = new StringBuilder();
-            String[] pathStrs = path.split("/");
-            for (int i = 0; i < pathStrs.length; i++) {
-                String tmp = pathStrs[i];
-                if (newPath.length() > 0) {
-                    newPath.append("/");
-                }
-                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 /*&& tmp.indexOf("@") == -1*/) {
-                    int index = indexs[i + indexs.length - pathStrs.length];
-                    if (index >= 0) {
-                    	//==== add by wliu to support both filter and functions==
-						if(tmp.indexOf("[")>0 && tmp.indexOf("]")>tmp.indexOf("[")){//include filter
-							String tmpStr=replaceElementWithNS(tmp,"pre"+index+":");
-							newPath.append(tmpStr);
-						}else{
-							if(tmp.indexOf("@") != -1 || tmp.indexOf("(")<tmp.indexOf(")")){  // include attribute
-								newPath.append(tmp);
-							}else{
-						//==add end=======	
-                        		newPath.append("pre").append(index).append(":").append(tmp);
-                        	}
-                        }                    
-                    } else {
-                        newPath.append(tmp);
-                    }
-                } else {
-                    newPath.append(tmp);
-                }
-            }
-            return newPath.toString();
-        }
-        return path;
-    }
-
-	private String matches = "@*\\b[a-z|A-Z|_]+[[-]*\\w]*\\b[^'|^\\(]";
-    private java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(matches);
+    private final org.talend.xpath.XPathUtil util = new  org.talend.xpath.XPathUtil();
     
-	private String replaceElementWithNS(String global, String pre){
-
-        java.util.regex.Matcher match = pattern.matcher(global);
-        StringBuffer sb = new StringBuffer();
-        match.reset();
-        while (match.find()) {
-            String group = match.group();
-            String tmp = "";
-            if (group.toLowerCase().matches("\\b(div|mod|and|or)\\b.*") || group.matches("@.*")) {
-                tmp = group;
-            } else {
-                tmp = tmp + pre + group;
-            }
-            match.appendReplacement(sb, tmp);
-        }
-        match.appendTail(sb);
-        
-        return sb.toString();
-	}    
-
+    {
+    	util.setDefaultNSPath(defualtNSPath);
+    }
+    
+	public String addDefaultNSPrefix(String path) {
+		return util.addDefaultNSPrefix(path);
+	}
+	
+	public String addDefaultNSPrefix(String relativeXpression, String basePath) {
+		return util.addDefaultNSPrefix(relativeXpression,basePath);
+	}
+    
 }
 
 class XML_API_<%=cid%>{
@@ -635,9 +450,6 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 	<%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -675,9 +487,6 @@ try {
 	output_<%=cid %>.close();
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 	<%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -710,9 +519,6 @@ try{
 	}
 }catch(java.lang.Exception e){
 <%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
 <%}else{%>
 	<%if(isLog4jEnabled){%>
@@ -731,7 +537,7 @@ NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
 java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;  
 
-org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>,<%=loopQuery%>));  
+org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>));  
 x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
 <%if(("true").equals(ignore_NS_Str)){%>
 org.jaxen.NamespaceContext namespaceContext_<%=cid%> = new org.jaxen.NamespaceContext() {
@@ -825,14 +631,11 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
-	<%if(isLog4jEnabled){%>
-		log.fatal("<%=cid%> - " + e.getMessage());
-	<%}%>
 	throw(e);
-	<%if(isLog4jEnabled){%>
-		log.error("<%=cid%> - " + e.getMessage());
-	<%}%>
-	<%}else{%>
+	<%}else{
+		if(isLog4jEnabled){%>
+	log.error("<%=cid%> - " + e.getMessage());
+		<%}%>
 	System.err.println(e.getMessage());
 	<%}%>
 }
@@ -904,9 +707,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if(("SAX").equals(mode)){
 				varsMap.put("row_"+cid,"java.util.Map<String, String>");
 				varsMap.put("node_"+cid,"String[]");
-			}
-			if(isLog4jEnabled){
-				varsMap.put("log4jSb_"+cid,"StringBuffer");
 			}
 			class RowUtil extends DefaultRowUtil{
 				public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, int start , int end){
@@ -985,9 +785,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							if(isWrongConfig) {
 %>
 	if(true) {
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - Error Config: \"Get Nodes\" should be checked when type is \"Document\"");
-		<%}%>
 		throw new RuntimeException("Error Config: \"Get Nodes\" should be checked when type is \"Document\"");
 	}
 <%
@@ -1081,12 +878,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
 <%
 										}
-										if(isLog4jEnabled){%>
-										log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-										<%if(i < mapping.size()-1){%>
-											log4jSb_<%=cid%>.append("|");
-										<%}
-									}
 										continue;
 									}
 									if(javaType == JavaTypesManager.STRING){
@@ -1153,16 +944,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%=cid %>);
 <%
 									}
-									if(isLog4jEnabled){
-%>
-										log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-<%
-										if(i < mapping.size()-1){
-%>
-									log4jSb_<%=cid%>.append("|");
-<%
-										}
-									}
 %>
 	}
 <%
@@ -1209,9 +990,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         if (dieOnError) {
             %>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
             throw(e);
             <%
         } else {

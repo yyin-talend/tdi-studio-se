@@ -24,7 +24,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 
 <%    
         String cid = node.getUniqueName();
-        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
             	
     	//get the input Main and Lookup connection
     	IConnection inMainCon = null;
@@ -69,10 +68,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 			<%=outputConnName %> = null;	
 <%		
 		}
-		if(isLog4jEnabled){%>
-			StringBuffer log4jSbMain_<%=cid%> = new StringBuffer();
-			StringBuffer log4jSbReject_<%=cid%> = new StringBuffer();
-		<%}
 		if(inRefCon != null){//exist lookup	
 			int firstConn = 0;
 			for (IConnection conn : outConns) {
@@ -104,14 +99,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 %>					
 						<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;
 <%
-						if(isLog4jEnabled && firstConn==0){%>
-							log4jSbMain_<%=cid%>.append(<%=outputConnName %>.<%=column.getLabel() %>);
-							log4jSbReject_<%=cid%>.append(<%=outputConnName %>.<%=column.getLabel() %>);
-							<%if(i < minSize-1){%>
-								log4jSbMain_<%=cid%>.append("|");
-								log4jSbReject_<%=cid%>.append("|");
-							<%}
-						}
 					}
 				} //4
 				firstConn++;
@@ -144,17 +131,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 %>			
 								<%=outputConnName %>.<%=column.getLabel() %> = util_<%=cid %>.lookupValue.<%=lookupName %>;
 <%
-								if(isLog4jEnabled){%>
-									log4jSbMain_<%=cid%>.append("|" + <%=outputConnName %>.<%=column.getLabel() %>);
-								<%}
 							}
 						} //4
 					}
 				}
-				if(isLog4jEnabled){%>
-					log.trace("<%=cid%> - Output record :" + log4jSbMain_<%=cid%>);
-					log4jSbMain_<%=cid%>.delete(0,log4jSbMain_<%=cid%>.length());
-				<%}				
 
 				for (IConnection conn : connsReject) { 
 					if(!conn.isActivate()) continue;
@@ -172,10 +152,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 <%
 					for (IConnection conn : connsFilter) { 
 						if(!conn.isActivate()) continue;
-						if(isLog4jEnabled){%>
-							log.trace("<%=cid%> - Rejected record :" + log4jSbReject_<%=cid%>);
-							log4jSbReject_<%=cid%>.delete(0,log4jSbReject_<%=cid%>.length());
-						<%}
 %> 
 						<%=conn.getName()%> = null; 
 <%
@@ -207,17 +183,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 %>					
 					<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;			
 <%
-					if(isLog4jEnabled){%>
-						log4jSb2_<%=cid%>.append(<%=outputConnName %>.<%=column.getLabel() %>);
-						<%if(i < minSize-1){%>
-							log4jSb2_<%=cid%>.append("|");
-						<%}
-					}
 				} //4
-				if(isLog4jEnabled){%>
-					log.trace("<%=cid%> - Output records :" + log4jSb2_<%=cid%>);
-					log4jSb2_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-				<%}
 			}
 		}
 %>		

@@ -686,7 +686,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(true);
         param.setNumRow(10);
-        param.setDefaultValue(param.getValue());
+        // param.setDefaultValue(param.getValue());
         addElementParameter(param);
 
         Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get(

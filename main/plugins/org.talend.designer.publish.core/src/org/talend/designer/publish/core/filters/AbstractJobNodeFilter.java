@@ -12,33 +12,33 @@ import org.talend.repository.model.IRepositoryNode;
 
 public abstract class AbstractJobNodeFilter implements NodeFilter {
 
-	protected abstract String checkNodeTypes(List<NodeType> nodeTypes);
+    protected abstract String checkNodeTypes(List<NodeType> nodeTypes);
 
-	@Override
-	public String checkNode(IRepositoryNode node) {
-		List<NodeType> nodeTypes = getProcessNodeTypes(node);
-		return checkNodeTypes(nodeTypes);
-	}
+    @Override
+    public String checkNode(IRepositoryNode node) {
+        List<NodeType> nodeTypes = getProcessNodeTypes(node);
+        return checkNodeTypes(nodeTypes);
+    }
 
-	@SuppressWarnings("unchecked")
-	private static List<NodeType> getProcessNodeTypes(IRepositoryNode node) {
-		Item item = node.getObject().getProperty().getItem();
-		if (item instanceof ProcessItem) {
-			ProcessType process = ((ProcessItem) item).getProcess();
-			return process.getNode();
-		}
-		return Collections.emptyList();
-	}
+    @SuppressWarnings("unchecked")
+    private static List<NodeType> getProcessNodeTypes(IRepositoryNode node) {
+        Item item = node.getObject().getProperty().getItem();
+        if (item instanceof ProcessItem) {
+            ProcessType process = ((ProcessItem) item).getProcess();
+            return process.getNode();
+        }
+        return Collections.emptyList();
+    }
 
-	protected static boolean checkIsDeactivated(NodeType nodeType) {
-		@SuppressWarnings("unchecked")
-		List<ElementParameterType> params = nodeType.getElementParameter();
-		for (ElementParameterType param : params) {
-			if (param.getName().equals("Activate")) {
-				return "false".equals(param.getValue());
-			}
-		}
-		return false;
-	}
+    protected static boolean checkIsDeactivated(NodeType nodeType) {
+        @SuppressWarnings("unchecked")
+        List<ElementParameterType> params = nodeType.getElementParameter();
+        for (ElementParameterType param : params) {
+            if ("Activate".equals(param.getName())) { //$NON-NLS-1$
+                return "false".equals(param.getValue()); //$NON-NLS-1$
+            }
+        }
+        return false;
+    }
 
 }

@@ -12,6 +12,7 @@ imports="
 	java.util.Map
 "
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -114,5 +115,7 @@ nb_line_<%=cid %> ++;
 nb_line_<%=cid %> ++;
 <%
 	}
+	
+	log4jFileUtil.debugWriteData(node);
 }//HSS_____0
 %>

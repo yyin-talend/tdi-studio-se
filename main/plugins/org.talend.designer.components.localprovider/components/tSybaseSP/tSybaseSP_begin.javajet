@@ -7,10 +7,11 @@ imports="
 	java.util.Map
 " 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
+	   dbLog = new DBLogUtil(node);
 String cid = node.getUniqueName();
 
 String dbhost = ElementParameterParser.getValue(node, "__HOST__");
@@ -30,11 +31,13 @@ if(useExistingConn){
 	String schema = "dbschema_" + connection;
     %>
     java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+    <%dbLog.conn().useExistConn("connection_"+cid+".getMetaData().getURL()", "connection_"+cid+".getMetaData().getUserName()");%>
     String dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");
     <%
 } else {       
     %>
     java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+    <%dbLog.conn().logJDBCDriver(dbLog.str("com.sybase.jdbc3.jdbc.SybDriver"));%>
 <%
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
@@ -52,11 +55,15 @@ if(useExistingConn){
 	%>
 	
 	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-   	
+
+   	<%dbLog.conn().connTry(dbLog.var("connectionString"), dbuser);%>
     java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, decryptedPassword_<%=cid%>);
+	<%dbLog.conn().connDone(dbLog.var("connectionString"));%>
+
 	String dbschema_<%=cid%>= <%=dbschema%>; 
     <%
 }
+dbLog.commit().logAutoCommit("connection_"+cid+".getAutoCommit()");
 %>
 String spName_<%=cid%> = <%=spName%>;
 if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {

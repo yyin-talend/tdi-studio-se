@@ -231,7 +231,7 @@ public final class SAPParametersUtils {
             if (connection != null && sapFunctionLabel != null) {
                 SAPFunctionUnit unit = null;
                 for (int i = 0; i < ((SAPConnection) connection).getFuntions().size(); i++) {
-                    SAPFunctionUnit tmp = (SAPFunctionUnit) ((SAPConnection) connection).getFuntions().get(i);
+                    SAPFunctionUnit tmp = ((SAPConnection) connection).getFuntions().get(i);
                     if (tmp.getLabel().equals(sapFunctionLabel)) {
                         unit = tmp;
                         break;
@@ -247,16 +247,25 @@ public final class SAPParametersUtils {
                 param.setRepositoryValueUsed(false);
                 param.setReadOnly(false);
             }
-        } else if (param.getFieldType().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("INPUT_PARAMS")) { //$NON-NLS-1$
-            if (connection != null && sapFunctionLabel != null) {
-                List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
-                RepositoryToComponentProperty
-                        .getSAPInputAndOutputValue((SAPConnection) connection, table, sapFunctionLabel, true);
+        } else if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
+            if (param.getRepositoryValue().equals("INPUT_PARAMS")) {//$NON-NLS-1$
+                if (connection != null && sapFunctionLabel != null) {
+                    List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
+                    RepositoryToComponentProperty.getSAPInputAndOutputValue((SAPConnection) connection, table, sapFunctionLabel,
+                            true);
+                    param.setRepositoryValueUsed(true);
+                    param.setReadOnly(true);
+                } else {
+                    param.setRepositoryValueUsed(false);
+                    param.setReadOnly(false);
+                }
+            }
+            if ("SAP_PROPERTIES".equals(param.getRepositoryValue())) {//$NON-NLS-1$
+                Object value = RepositoryToComponentProperty.getValue(connection, "SAP_PROPERTIES", null);//$NON-NLS-1$
+                param.setValue(value);
                 param.setRepositoryValueUsed(true);
                 param.setReadOnly(true);
-            } else {
-                param.setRepositoryValueUsed(false);
-                param.setReadOnly(false);
+
             }
         } else if (param.getFieldType().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("OUTPUT_PARAMS")) { //$NON-NLS-1$
             if (connection != null && sapFunctionLabel != null) {

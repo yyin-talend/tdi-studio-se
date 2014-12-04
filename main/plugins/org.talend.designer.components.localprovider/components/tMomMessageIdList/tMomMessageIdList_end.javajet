@@ -12,6 +12,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if(("JBoss").equals(serverType)){
 %>
 					
@@ -25,6 +26,10 @@ if(("JBoss").equals(serverType)){
 }
 <%
 	}
+if (isLog4jEnabled) {
 %>
-
+	log.info("<%=cid%> - Retrieved records count: "+ nb_line_<%=cid%> + " .");
+<%
+}
+%>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

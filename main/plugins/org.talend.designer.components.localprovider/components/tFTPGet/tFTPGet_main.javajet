@@ -64,9 +64,6 @@ if ("true".equals(useExistingConn)) {
 		getter_<%=cid %>.chdir(root_<%=cid %>);
 	} catch(java.lang.Exception e) {
 		<%if ("true".equals(dieOnError)){%>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
     		throw(e);
   		<%}else{%>
 			<%if(isLog4jEnabled){%>

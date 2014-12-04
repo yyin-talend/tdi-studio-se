@@ -80,7 +80,7 @@ public class ExportProcessorHelper {
                             for (Object curParam : cType.getContextParameter()) {
                                 ContextParameterType cParamType = (ContextParameterType) curParam;
                                 if (contextParameter.getName().equals(cParamType.getName())) {
-                                    cParamType.setValue(contextParameter.getValue());
+                                    cParamType.setRawValue(contextParameter.getValue());
                                 }
                             }
                         }

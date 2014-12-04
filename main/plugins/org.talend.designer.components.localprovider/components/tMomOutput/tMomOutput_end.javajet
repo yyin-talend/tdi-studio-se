@@ -17,6 +17,7 @@ String connectionComponentName = ElementParameterParser.getValue(node, "__CONNEC
 
 boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
 	|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
  
 
 if (isUseSharedConnection) {
@@ -33,19 +34,49 @@ if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseShare
 	if( ("JBoss").equals(serverType) || ( ("ActiveMQ").equals(serverType)) ){
 		// if no commmit or rollback component exists and set transacted - commit session
 		if(!isCommitRollback && transacted){
-		%>
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Committing the session...");
+			<%
+			}
+			%>
 			session_<%=cid%>.commit();
-		<%	
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Commit successfully.");
+			<%
+			}
+		}
+		if (isLog4jEnabled) {
+		%>
+			log.info("<%=cid%> - Closing producer...");
+		<%
 		}
 		%>
 		producer_<%=cid %>.close();
 		<%
+		if (isLog4jEnabled) {
+		%>
+			log.info("<%=cid%> - Closed successfully.");
+		<%
+		}
         if (!isCommitRollback && !isUseSharedConnection) {
-		%> // if no commmit or rollback component exists - close session
+        	if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Closing connection...");
+			<%
+			}
+			%> // if no commmit or rollback component exists - close session
  			System.out.println("Closing connection");
             session_<%=cid %>.close();
             connection_<%=cid %>.close();
-		<%	
+			<%	
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Closed successfully.");
+			<%
+			}
 		}
 	}
 	if((("ActiveMQ").equals(serverType) || isUseSharedConnection) && !isCommitRollback && transacted){
@@ -60,13 +91,27 @@ if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseShare
 		globalMap.put("qMgr_<%=cid%>",qMgr_<%=cid%>);
 	<%
 	} else {
-	%>
+		if (isLog4jEnabled) {
+		%>
+			log.info("<%=cid%> - Disconnecting connection...");
+		<%
+		}
+		%>
 		System.out.println("Closing connection");
 		remoteQ_<%=cid%>.close();
 		qMgr_<%=cid%>.disconnect();
-
-	<%
+		<%
+		if (isLog4jEnabled) {
+		%>
+			log.info("<%=cid%> - Disconnected successfully.");
+		<%
+		}
 	}
+}
+if (isLog4jEnabled) {
+%>
+	log.info("<%=cid%> - Written records count: "+ nb_line_<%=cid%> + " .");
+<%
 }
 %>
 

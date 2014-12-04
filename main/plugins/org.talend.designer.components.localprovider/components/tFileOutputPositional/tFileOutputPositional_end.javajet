@@ -5,8 +5,12 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser
 		java.util.List
+		org.talend.core.model.utils.NodeUtil
 	"
 %>
+	
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+	
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -30,7 +34,7 @@
 	synchronized (multiThreadLockWrite) {
 <%
 	}
-	if (codeGenArgument.subTreeContainsParallelIterate()) {
+	if (NodeUtil.subBranchContainsParallelIterate(node)) {
 %>
 	synchronized (lockWrite) {
 <% 
@@ -57,7 +61,7 @@
     } 
 <%
     }
-	if (codeGenArgument.subTreeContainsParallelIterate()) {
+	if (NodeUtil.subBranchContainsParallelIterate(node)) {
 %>
 	}
 <% 
@@ -70,6 +74,7 @@
 %>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
+	log4jFileUtil.writeDataFinishInfo(node);
 		}
 	}
 %>

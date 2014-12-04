@@ -37,6 +37,7 @@
     <PARAMETER
       NAME="CODE"
       FIELD="MEMO_JAVA"
+      RAW="true"
       REQUIRED="false"
       NUM_ROW="2"
       NB_LINES="9"

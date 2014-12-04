@@ -319,6 +319,13 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
                                             return;
                                         }
                                     }
+                                    if (elem instanceof INode) {
+                                        INode node = (INode) elem;
+                                        if (node.getComponent() != null && "tSAPBapi".equals(node.getComponent().getName())) {
+                                            // not changed
+                                            return;
+                                        }
+                                    }
                                     if (connectionName.equals(oldConnectionName)) {
                                         curLine.put(param.getName(), newConnectionName);
                                     }

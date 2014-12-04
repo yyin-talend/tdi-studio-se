@@ -60,14 +60,7 @@ if(outConn!=null){
 			}
 			i++;
 %>
-			<%if(isLog4jEnabled){%>
-				log4jSb_<%=cid%>.append(<%=outputConnName%>.<%=outputCol.getLabel()%> + "|");
-			<%}%>
 <%
 		}
-%>
-		//System.out.println(<%=cid%>_sr.getValuesAsString());
-		nb_line_<%=cid%> ++;
-<%
 }
 %>

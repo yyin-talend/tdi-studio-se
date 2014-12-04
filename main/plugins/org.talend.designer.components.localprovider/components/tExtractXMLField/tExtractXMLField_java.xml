@@ -14,7 +14,8 @@
     DATA_AUTO_PROPAGATE="false"
     HAS_CONDITIONAL_OUTPUTS="true"
     IS_MULTIPLYING_OUTPUTS="true"
-	PARTITIONING="AUTO"
+	  PARTITIONING="AUTO"
+    LOG4J_ENABLED="true"
   ><!---->
     <SIGNATURE/>
   </HEADER>
@@ -162,7 +163,7 @@
       />
       <IMPORT
         NAME="Java_JAXEN1.1"
-        MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar"
+        MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar"
         REQUIRED="true"
       />
     </IMPORTS>

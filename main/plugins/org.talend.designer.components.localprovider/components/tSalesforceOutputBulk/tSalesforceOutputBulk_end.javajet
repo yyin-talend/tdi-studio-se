@@ -5,11 +5,12 @@
 		org.talend.core.model.process.IProcess
 	"
 %>
-<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	log = new LogUtil(node);
 %>
 	if(csvWriter_<%=cid%>!=null) {
 		csvWriter_<%=cid%>.close();
@@ -17,7 +18,4 @@
 	resourceMap.put("finish_<%=cid%>", true); 
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 	
-	<%
-	log4jFileUtil.writeDataFinishInfo(node);
-	log4jFileUtil.componentFinishInfo(node);
-	%>
+	<%log.info(log.str("Written records count: "), log.var("nb_line"), log.str("."));%>

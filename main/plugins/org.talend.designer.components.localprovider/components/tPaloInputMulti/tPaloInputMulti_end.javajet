@@ -26,10 +26,6 @@
 	}
 	if(strOutputConnectionName != null && strOutputConnectionName.length()>0){
 %>
-			<%if(isLog4jEnabled){%>
-				log.trace("<%=cid%> - Content of the record : " + log4jSb_<%=cid%>);
-				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-			<%}%>
 			}
 		}
 <%
@@ -48,6 +44,3 @@
 <%
 	}
 %>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Done.");
-	<%}%>

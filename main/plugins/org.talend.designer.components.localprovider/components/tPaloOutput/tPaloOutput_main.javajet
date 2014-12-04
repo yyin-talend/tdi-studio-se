@@ -47,12 +47,6 @@
 %>
 					strArrTalendQuery[<%=iArrPos++ %>]=String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
 <%
-					if(isLog4jEnabled){%>
-						log4jSb_<%=cid%>.append(strArrTalendQuery[<%=iArrPos++ %>] );
-		                <%if(i < sizeColumns-1){%>
-		                	log4jSb_<%=cid%>.append("|");
-	    	            <%}
-					}
 				}
      		}
 %>
@@ -69,12 +63,6 @@
 				nb_commit_count_<%=cid %> =0;
 			}
 			<%
-			if(isLog4jEnabled){
-			%>
-				log.trace("<%=cid%> - Content of the record : " + nb_line_<%=cid%> + ": "  + log4jSb_<%=cid%> + " .");
-				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-			<%		
-			}			
 		}
 	}
 %>

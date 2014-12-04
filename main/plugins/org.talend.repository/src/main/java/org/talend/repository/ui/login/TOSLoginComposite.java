@@ -60,6 +60,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -67,6 +68,7 @@ import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.workspace.ChooseWorkspaceData;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
@@ -133,8 +135,6 @@ public class TOSLoginComposite extends Composite {
 
     private String oldPath;
 
-    private boolean inuse;
-
     private Map<String, String> convertorMapper = new HashMap<String, String>();
 
     private static final Image OPEN_IMAGE = ImageProvider.getImage(ERepositoryImages.OPEN_ICON);
@@ -163,11 +163,10 @@ public class TOSLoginComposite extends Composite {
      * @param parent
      * @param style
      */
-    public TOSLoginComposite(Composite parent, int style, LoginComposite loginComposite, LoginDialog dialog, boolean inuse) {
+    public TOSLoginComposite(Composite parent, int style, LoginComposite loginComposite, LoginDialog dialog) {
         super(parent, style);
         this.loginComposite = loginComposite;
         this.dialog = dialog;
-        this.inuse = inuse;
 
         perReader = ConnectionUserPerReader.getInstance();
 
@@ -373,21 +372,26 @@ public class TOSLoginComposite extends Composite {
         this.projectListViewer.setContentProvider(new TableViewerContentProvider());
         this.projectListViewer.setLabelProvider(new ILabelProvider() {
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
 
                 return false;
 
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public String getText(Object element) {
 
                 if (element != null) {
@@ -398,6 +402,7 @@ public class TOSLoginComposite extends Composite {
                 return null;
             }
 
+            @Override
             public Image getImage(Object element) {
 
                 return null;
@@ -536,7 +541,7 @@ public class TOSLoginComposite extends Composite {
                     int index = 0;
                     Collections.sort(allProjects);
                     for (int i = 0; i < allProjects.size(); i++) {
-                        String projectName = (String) allProjects.get(i);
+                        String projectName = allProjects.get(i);
                         if (project.getLabel().equals(projectName)) {
                             index = i;
                             break;
@@ -626,6 +631,7 @@ public class TOSLoginComposite extends Composite {
                 try {
                     IRunnableWithProgress op = new IRunnableWithProgress() {
 
+                        @Override
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                             try {
                                 ProxyRepositoryFactory.getInstance().initialize();
@@ -686,7 +692,15 @@ public class TOSLoginComposite extends Composite {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 LoginComposite.isRestart = true;
-                perReader.saveLastConnectionBean(loginComposite.getConnection());
+                ConnectionBean connection = loginComposite.getConnection();
+                perReader.saveLastConnectionBean(connection);
+                // update the restart command line to specify the workspace to launch
+                // if relaunch, should delete the "disableLoginDialog" argument in eclipse data for bug TDI-19214
+                EclipseCommandLine.updateOrCreateExitDataPropertyWithCommand("-data", connection.getWorkSpace(), false); //$NON-NLS-1$
+                // store the workspace in the eclipse history so that it is rememebered on next studio launch
+                ChooseWorkspaceData workspaceData = new ChooseWorkspaceData(""); //$NON-NLS-1$
+                workspaceData.workspaceSelected(connection.getWorkSpace());
+                workspaceData.writePersistedData();
                 dialog.okPressed();
             }
         });
@@ -733,6 +747,7 @@ public class TOSLoginComposite extends Composite {
         this.projectListViewer.getList().removeAll();
 
         projectsMap.clear();
+        convertorMapper.clear();
         if (projects != null) {
             for (Project pro : projects) {
                 convertorMapper.put(pro.getTechnicalLabel(), pro.getLabel());
@@ -787,16 +802,6 @@ public class TOSLoginComposite extends Composite {
                 colorComposite.setBackground(RED_COLOR);
                 onIconLabel.setBackground(colorComposite.getBackground());
                 statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES")); //$NON-NLS-1$
-                statusLabel.setBackground(RED_COLOR);
-                statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
-                statusLabel.setFont(font);
-            } else if (inuse) {
-                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                colorComposite.setBackground(RED_COLOR);
-                onIconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier

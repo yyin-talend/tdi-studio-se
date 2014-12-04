@@ -32,9 +32,6 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.ge
 
 %>
 // ------------
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Start to work.");
-<%}%>
 
 java.util.Map hashAggreg_<%=cid %> = new java.util.HashMap(); 
 
@@ -212,9 +209,6 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		public void checkedIADD(byte a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
 		    byte r = (byte) (a + b);
 		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'short/Short'", "'int/Integer'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'short/Short'", "'int/Integer'"));
 		    }
 		}
@@ -222,9 +216,6 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		public void checkedIADD(short a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
 		    short r = (short) (a + b);
 		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'int/Integer'", "'short/Short'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'int/Integer'", "'short/Short'"));
 		    }
 		}
@@ -232,9 +223,6 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		public void checkedIADD(int a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
 		    int r = a + b;
 		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'long/Long'", "'int/Integer'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'long/Long'", "'int/Integer'"));
 		    }
 		}
@@ -251,17 +239,11 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			if(checkUlp) {
 			    float minAddedValue = Math.ulp(a);
 			    if (minAddedValue > Math.abs(b)) {
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - " + buildPrecisionMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
-					<%}%>
 			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
 			    }
 			}
 			
 		    if (checkTypeOverFlow && ((double) a + (double) b > (double) Float.MAX_VALUE) || ((double) a + (double) b < (double) -Float.MAX_VALUE)) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
 		    }
 		}
@@ -271,17 +253,11 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			if(checkUlp) {
 			    double minAddedValue = Math.ulp(a);
 			    if (minAddedValue > Math.abs(b)) {
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - " + buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-					<%}%>
 			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
 			    }
 			}
 		
 		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
@@ -289,9 +265,6 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		public void checkedIADD(double a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
 		
 		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
@@ -299,9 +272,6 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		public void checkedIADD(double a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
 		
 		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
@@ -309,9 +279,6 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		public void checkedIADD(double a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
 		
 		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
@@ -321,17 +288,11 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			if(checkUlp) {
 			    double minAddedValue = Math.ulp(a);
 			    if (minAddedValue > Math.abs(b)) {
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - " + buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-					<%}%>
 			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
 			    }
 			}
 		
 		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-				<%}%>
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}

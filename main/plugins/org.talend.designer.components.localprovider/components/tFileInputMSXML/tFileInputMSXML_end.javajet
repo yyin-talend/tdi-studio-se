@@ -8,12 +8,15 @@
 	    java.util.List
 	"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
+
+final boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
 List< ? extends IConnection> connections = node.getOutgoingSortedConnections();
 String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 
@@ -39,9 +42,19 @@ if(connections!=null && connections.size()>0){
 	} catch(java.lang.Exception e) {
 	<% if(dieOnError) { %>
 		throw e;
-	<% } else { %>
+	<% } else { 
+		if(isLog4jEnabled) {
+	%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%
+		}
+	%>
 		System.err.println(e.getMessage());	
 	<% } %>
 	}
 <% } %>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+	
+<%
+log4jFileUtil.retrievedDataNumberInfo();
+%>

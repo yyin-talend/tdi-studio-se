@@ -5,6 +5,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 "
 %>
+
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -47,10 +48,10 @@ imports="
         }else{
         	globalMap.put("<%=cid %>_STATUS", "No file transfered.");
         }
-    }catch(java.lang.Exception e_<%=cid%>){
-    		e_<%=cid%>.printStackTrace();
+    }catch(java.lang.Exception e){
+    		e.printStackTrace();
     		<%if(isLog4jEnabled){%>
-    			log.warn("<%=cid%> - File uploading has failed.");
+                log.error(e.getMessage());
     		<%}%>
     		globalMap.put("<%=cid %>_STATUS", "File put fail.");
     }

@@ -286,15 +286,9 @@
 								<%
 								}
 								%>
-								<%if(isLog4jEnabled){%>
-									log4jSb_<%=cid%>.append("<%=column.getLabel() %>" + " : " + list_<%=cid %>.get(<%=i %>) + "|");
-								<%}%>
 							} else { 
 			
 								<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-								<%if(isLog4jEnabled){%>
-									log4jSb_<%=cid%>.append("<%=column.getLabel() %> :  <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%> " + "|");
-								<%}%>
 							}
 							<%
 							if(i==0){
@@ -317,12 +311,6 @@
 							}
 						}
 					}
-					if(isLog4jEnabled){
-					%>
-						log.trace("<%=cid%> - Content of current mail : " + log4jSb_<%=cid%>);
-						log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-					<%
-					}
 				}//2
 	
 			}//1
@@ -333,7 +321,7 @@
 		<% if(!dieOnError){ %>
 			catch (java.lang.Exception e){
 				<%if(isLog4jEnabled){%>
-					log.err("<%=cid%> - " + e.getMessage());
+					log.error("<%=cid%> - " + e.getMessage());
 				<%}%>
 				//nothing to do, ignore the exception if don't die on error
 				System.err.println("Exception in component <%=cid%>: " + e.getMessage());

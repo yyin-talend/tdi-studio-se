@@ -2,7 +2,7 @@
 <feature
       id="org.talend.tos.libraries_feature"
       label="Libraries_feature"
-      version="1.0.0.qualifier">
+      version="6.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -135,25 +135,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.talend.libraries.ebcdic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.talend.libraries.edifact"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.talend.libraries.ehcache"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.talend.libraries.ftp"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
@@ -208,12 +190,6 @@
 
    <plugin
          id="org.talend.libraries.crm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.talend.libraries.svn"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

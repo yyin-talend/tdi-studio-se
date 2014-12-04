@@ -2,12 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Salesforce
 Bundle-SymbolicName: org.talend.libraries.salesforce;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 6.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.apache.axis,
  javax.xml.rpc,
  org.talend.libraries.apache.axis2;visibility:=reexport
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
  lib/salesforce_enterprise.jar,
  lib/salesforceCRMManagement.jar,
@@ -24,3 +23,4 @@ Export-Package: com.salesforce.soap.partner,
  org.talend.salesforce,
  org.talend.salesforce.oauth
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

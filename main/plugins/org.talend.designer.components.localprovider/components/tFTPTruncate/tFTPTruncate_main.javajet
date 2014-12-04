@@ -64,9 +64,6 @@
 						<%}%>
 					} catch (com.jcraft.jsch.SftpException se) {
                 		globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate fail.");
-						<%if(isLog4jEnabled){%>
-							log.fatal("<%=cid%> - Truncated '" + filePath<%=cid%> + "' fail.");
-						<%}%>
     	                throw se;
 					}
 					nb_file_<%=cid%>++;
@@ -110,9 +107,6 @@
 	   		}
 		}catch(com.enterprisedt.net.ftp.FTPException e){
    			globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate fail.");
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
 	   		throw e;
    		}
 		ftp_<%=cid %>.chdir(root<%=cid %>);

@@ -69,12 +69,6 @@
 					%>
 					strArrToAdd_<%=cid %>[<%=i%>] = String.valueOf(<%=strInputConnectionName%>.<%=column.getLabel()%>);
 					<%
-					if(isLog4jEnabled){%>
-						log4jSb_<%=cid%>.append(strArrToAdd_<%=cid %>[<%=i%>] );
-		                <%if(i < sizeColumns-1){%>
-		                	log4jSb_<%=cid%>.append("|");
-	    	            <%}
-	    			}
 					//}
 				}
 %>
@@ -88,9 +82,6 @@
 						<%
 						if(bDieOnError){
 						%>
-							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - " + plE_<%=cid %>.getMessage());
-							<%}%>
 							throw(plE_<%=cid %>);
 						<%
 						}else{
@@ -107,12 +98,6 @@
 					iNbOfProcessedRows_<%=cid %>=0;
 				}
 				<%
-				if(isLog4jEnabled){
-				%>
-					log.trace("<%=cid%> - Content of the record : " + log4jSb_<%=cid%> + " .");
-					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-				<%		
-				}		
 			}
 		}
 	}

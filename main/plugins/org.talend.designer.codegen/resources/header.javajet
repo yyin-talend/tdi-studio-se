@@ -118,7 +118,7 @@ boolean actAsConsumer = !process.getNodesOfType("tESBConsumer").isEmpty();
 boolean talendEsbJob = actAsProvider || actAsConsumer || !process.getNodesOfType("tRouteInput").isEmpty();
 boolean talendEsbJobFactory = actAsProvider || !process.getNodesOfType("tRouteInput").isEmpty();
 
-boolean talendStepTemplate = !process.getNodesOfType("tiPaaSInput").isEmpty() || !process.getNodesOfType("tiPaaSOutput").isEmpty();
+boolean talendStepTemplate = !process.getNodesOfType("tActionInput").isEmpty() || !process.getNodesOfType("tActionOutput").isEmpty() || !process.getNodesOfType("tActionReject").isEmpty();
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 
@@ -273,13 +273,13 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	private String currentComponent = "";
 	<%
 	//tParallelize will wrap globalMap with synchronizedMap
-	if(!isRunInMultiThread){
-	%>
-		private final java.util.Map<String, Object> globalMap = new java.util.HashMap<String, Object>();
-	<%
-	}else{
+	if(isRunInMultiThread || NodeUtil.containsMultiThreadComponent(process)){
 	%>
 		private final java.util.Map<String, Object> globalMap = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Object>());
+	<%
+	} else {
+	%>
+		private final java.util.Map<String, Object> globalMap = new java.util.HashMap<String, Object>();
 	<%
 	}
 	boolean exist_tParallelize = false;

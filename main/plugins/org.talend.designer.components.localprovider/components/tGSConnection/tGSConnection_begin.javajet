@@ -5,7 +5,6 @@
 	    org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -13,7 +12,6 @@
     String cid = node.getUniqueName();
     String accessKey = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
 
-   	log4jFileUtil.componentStartInfo(node);
 	%>
 
    <%
@@ -27,6 +25,4 @@
 		new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
 	service_<%=cid%>.getAccountOwner();
 	globalMap.put("service_" + "<%=cid%>",service_<%=cid%>);
-	<%
-	log4jFileUtil.componentFinishInfo(node);
-	%>
+	

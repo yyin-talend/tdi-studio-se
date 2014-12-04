@@ -9,7 +9,6 @@
 		org.talend.core.model.process.IConnectionCategory
 	"
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -58,7 +57,6 @@
 <%
 				}
 				
-				log4jFileUtil.componentFinishInfo(node);
 			}
 		}
 	}

@@ -13,10 +13,8 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node); 
-	log4jFileUtil.logParameters(node); 
 	String cid = node.getUniqueName();
-String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+	String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
 String outputConnName = null;
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -54,14 +52,10 @@ if (outputConnName != null){
 		<%=outputConnName%>.number_of_variables=(long)<%=cid%>_sf.getNumberOfVariables();
 		<%=outputConnName%>.number_of_cases=(long)<%=cid%>_sf.getNumberOfCases();
 		<%=cid%>_bIsValidFile=true;
-		<% 	
-			if(isLog4jEnabled) {
-		%>
-				log4jSb_<%=cid%>.append(<%=outputConnName%>.abs_path + "|" +<%=outputConnName%>.dirname + "|" + <%=outputConnName%>.basename+ "|" + <%=outputConnName%>.system_info + "|" + <%=outputConnName%>.system_id + "|" + <%=outputConnName%>.file_date_time + "|" + <%=outputConnName%>.weight_variable + "|" + <%=outputConnName%>.is_compressed+ "|" + <%=outputConnName%>.variable_sets + "|" + <%=outputConnName%>.number_of_variables + "|" + <%=outputConnName%>.number_of_cases);
-		<%
-			}
-		%>
-	
+		
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Retrieving the record.");
+		<%}%>
 <%
 }
 %>

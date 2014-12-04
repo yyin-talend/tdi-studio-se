@@ -87,7 +87,12 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
                 return connection.getJSONFilePath();
             } else {
                 Path p = new Path(connection.getJSONFilePath());
-                return TalendQuoteUtils.addQuotes(p.toPortableString());
+                if (p.toFile().isFile()) {
+                    return TalendQuoteUtils.addQuotes(p.toPortableString());
+                } else {
+                    return TalendQuoteUtils.addQuotes(p.toString());
+                }
+
             }
         }
         if (value.equals("OUT_FILE_PATH")) {
@@ -98,7 +103,12 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
                 return connection.getOutputFilePath();
             } else {
                 Path p = new Path(connection.getOutputFilePath());
-                return TalendQuoteUtils.addQuotes(p.toPortableString());
+                if (p.toFile().isFile()) {
+                    return TalendQuoteUtils.addQuotes(p.toPortableString());
+                } else {
+                    return TalendQuoteUtils.addQuotes(p.toString());
+                }
+
             }
         }
         if (value.equals("LIMIT")) { //$NON-NLS-1$
@@ -311,7 +321,7 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
         return setting;
     }
 
-    private void setJSONRepositoryValue(JSONFileConnection connection, INode node, String repositoryValue) {
+    private void setJSONRepositoryValue(JSONFileConnection connection, INode node, IElementParameter param) {
     }
 
     @Override
@@ -328,19 +338,29 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
             return;
         }
         IElementParameter fileNameParameter = ele.getElementParameter(EJSONRepositoryToComponent.FILENAME.getParameterName());
+        // if (fileNameParameter != null) {
+        // String JSONPath = "";
+        // // metadataTable.getAdditionalProperties().get(JSONConstants.JSON_PATH);
+        // if (JSONPath != null) {
+        // fileNameParameter.setValue(TalendQuoteUtils.addQuotesIfNotExist(JSONPath));
+        // }
+        // }
         if (fileNameParameter != null) {
-            String JSONPath = "";
-            // metadataTable.getAdditionalProperties().get(JSONConstants.JSON_PATH);
-            if (JSONPath != null) {
-                fileNameParameter.setValue(TalendQuoteUtils.addQuotesIfNotExist(JSONPath));
+            Object pValue = fileNameParameter.getValue();
+            String JSONPath;
+            if (pValue == null || pValue.toString().trim().isEmpty()) {
+                JSONPath = TalendQuoteUtils.addQuotesIfNotExist(""); //$NON-NLS-1$
+            } else {
+                JSONPath = TalendQuoteUtils.addQuotesIfNotExist(pValue.toString());
             }
+            fileNameParameter.setValue(JSONPath);
         }
     }
 
     @Override
-    public void setComponentValue(Connection connection, INode node, String repositoryValue) {
+    public void setComponentValue(Connection connection, INode node, IElementParameter param) {
         if (node != null && canHandle(connection)) {
-            setJSONRepositoryValue((JSONFileConnection) connection, node, repositoryValue);
+            setJSONRepositoryValue((JSONFileConnection) connection, node, param);
         }
     }
 

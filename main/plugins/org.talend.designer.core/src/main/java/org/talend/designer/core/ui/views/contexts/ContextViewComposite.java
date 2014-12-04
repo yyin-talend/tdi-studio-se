@@ -65,24 +65,6 @@ public class ContextViewComposite extends ContextComposite {
     }
 
     @Override
-    public void refreshTableTab() {
-        refreshRelationship();
-        super.refreshTableTab();
-    }
-
-    @Override
-    public void refreshTemplateTab() {
-        refreshRelationship();
-        super.refreshTemplateTab();
-    }
-
-    @Override
-    public void refreshTreeTab() {
-        refreshRelationship();
-        super.refreshTreeTab();
-    }
-
-    @Override
     public CommandStack getCommandStack() {
         return part == null ? null : (CommandStack) (((AbstractMultiPageTalendEditor) part).getTalendEditor()
                 .getAdapter(CommandStack.class));
@@ -108,7 +90,7 @@ public class ContextViewComposite extends ContextComposite {
      * @see org.talend.core.ui.context.ContextComposite#switchSettingsView()
      */
     @Override
-    protected void switchSettingsView(String oldName, String newName) {
+    public void switchSettingsView(String oldName, String newName) {
         if (UpdateContextVariablesHelper.updateProcessForRenamed(getProcess(), oldName, newName)) {
             JobSettings.switchToCurJobSettingsView();
             ComponentSettings.switchToCurComponentSettingsView();

@@ -4,6 +4,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -11,4 +12,8 @@
 %>
 	out<%=cid %>.close();
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-	resourceMap.put("finish_<%=cid%>", true); 
+	resourceMap.put("finish_<%=cid%>", true);
+
+	<%
+	log4jFileUtil.writeDataFinishInfo(node);
+	%>

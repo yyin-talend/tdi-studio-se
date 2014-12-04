@@ -72,6 +72,3 @@ if (sftp && !("true").equals(useExistingConn)) {
 	}
 }
 %>
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Done.");	
-<%}%>

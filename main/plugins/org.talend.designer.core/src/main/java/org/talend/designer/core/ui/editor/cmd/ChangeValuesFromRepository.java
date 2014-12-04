@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnect
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
+import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -71,9 +72,9 @@ import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
- *
+ * 
  * $Id$
- *
+ * 
  */
 public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
@@ -415,6 +416,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     elem.setPropertyValue(param.getName(), objectValue);
                                 }
                             }
+                        } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
+                                && param.getRepositoryValue().equals("CONNECTION_MODE")) {//$NON-NLS-1$
+                            if (!objectValue.equals(param.getValue())) {
+                                PropertyChangeCommand cmd = new PropertyChangeCommand(elem, "CONNECTION_MODE", objectValue);//$NON-NLS-1$
+                                cmd.execute();
+                            }
                         } else {
                             if (repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
                                 IElementParameter paramEncoding = param.getChildParameters().get(
@@ -515,7 +522,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     } else {
                         // For SAP
                         String paramName = param.getName();
-                        if ("MAPPING_INPUT".equals(paramName)
+                        if ("SAP_PROPERTIES".equals(paramName)
+                                || "MAPPING_INPUT".equals(paramName)
                                 || "SAP_FUNCTION".equals(paramName) // INPUT_PARAMS should be MAPPING_INPUT,bug16426
                                 || "OUTPUT_PARAMS".equals(paramName) || "SAP_ITERATE_OUT_TYPE".equals(paramName)
                                 || "SAP_ITERATE_OUT_TABLENAME".equals(paramName)) {
@@ -573,6 +581,20 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
 
         if (elem instanceof Node) {
+            // Xstream Cdc Type Mode
+            boolean isXstreamCdcTypeMode = false;
+            if (connection != null && connection instanceof DatabaseConnection) {
+                String cdcTypeMode = ((DatabaseConnection) connection).getCdcTypeMode();
+                if (CDCTypeMode.XSTREAM_MODE == CDCTypeMode.indexOf(cdcTypeMode)) {
+                    isXstreamCdcTypeMode = true;
+                }
+            }
+            if (isXstreamCdcTypeMode && ((Node) elem).getComponent().getName().equals("tOracleCDC")) {//$NON-NLS-1$
+                IMetadataTable table = ((Node) elem).getMetadataList().get(0);
+                IElementParameter schemaParam = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                schemaParam.setValueToDefault(elem.getElementParameters());
+                table.setListColumns((((IMetadataTable) schemaParam.getValue()).clone(true)).getListColumns());
+            }
             ((Process) ((Node) elem).getProcess()).checkProcess();
         }
     }
@@ -844,6 +866,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
                     if (tables == null || tables.isEmpty()) {
                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    } else {
+                        if (table != null && table.getTableName() != null) {
+                            setDBTableFieldValue(node, table.getTableName(), null);
+                        }
                     }
                 }
             }
@@ -911,7 +937,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     /**
      * qzhang Comment method "getTake".
-     *
+     * 
      * @return
      */
     private Boolean take = null;
@@ -989,7 +1015,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     /**
      * Sets a sets of maps.
-     *
+     * 
      * @param tablesmap
      * @param queriesmap
      * @param repositoryTableMap
@@ -999,11 +1025,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     }
 
     /**
-     *
+     * 
      * ggu Comment method "isGuessQuery".
-     *
+     * 
      * for guess query
-     *
+     * 
      * @return
      */
     public boolean isGuessQuery() {
@@ -1016,31 +1042,31 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     /**
      * Getter for sapFunctionName.
-     *
+     * 
      * @return the sapFunctionName
      */
     public String getSapFunctionLabel() {
-        // Use the first function
-        if (this.sapFunctionLabel == null) {
-
-            if (connection == null) {
-                return null;
-            }
-
-            if (!(connection instanceof SAPConnection)) {
-                return null;
-            }
-            SAPConnection sapConn = (SAPConnection) connection;
-            if (sapConn.getFuntions() != null && !sapConn.getFuntions().isEmpty()) {
-                return sapConn.getFuntions().get(0).getLabel();
-            }
-        }
+        // // Use the first function
+        // if (this.sapFunctionLabel == null) {
+        //
+        // if (connection == null) {
+        // return null;
+        // }
+        //
+        // if (!(connection instanceof SAPConnection)) {
+        // return null;
+        // }
+        // SAPConnection sapConn = (SAPConnection) connection;
+        // if (sapConn.getFuntions() != null && !sapConn.getFuntions().isEmpty()) {
+        // return sapConn.getFuntions().get(0).getLabel();
+        // }
+        // }
         return this.sapFunctionLabel;
     }
 
     /**
      * Sets the sapFunctionName.
-     *
+     * 
      * @param sapFunctionName the sapFunctionName to set
      */
     public void setSapFunctionLabel(String sapFunctionName) {

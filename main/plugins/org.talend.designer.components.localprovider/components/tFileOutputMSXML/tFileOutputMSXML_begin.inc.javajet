@@ -767,6 +767,7 @@ class TalendWrapTool_<%=cid %> {
 %>
 nb_line_<%=cid%>++;
 <%
+			log4jFileUtil.debugWriteData(node);
 		}
 		
 		if (this.isOptimizeCode) {

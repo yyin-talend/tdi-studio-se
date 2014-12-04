@@ -12,9 +12,6 @@ imports="
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node);
-	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PRIVATEKEY","PASSWORD","PASSPHRASE")); 
-	log4jFileUtil.logParameters(node); 
     String cid = node.getUniqueName();
     String host = ElementParameterParser.getValue(
         node,
@@ -75,11 +72,11 @@ imports="
 %>
               /* Now connect */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' with the username '" + <%=user%> + "'.");
+			log.info("<%=cid%> - Attempt to connect to '" + hostname_<%=cid%> + "' with the username '" + <%=user%> + "'.");
 		<%}%>
         conn_<%=cid%>.connect();
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to '" + hostname_<%=cid%> + "' has succeeded.");
+			log.info("<%=cid%> - Connect to '" + hostname_<%=cid%> + "' has succeeded.");
 		<%}%>
 <%        
         if (("PUBLICKEY").equals(authMethod)) {
@@ -98,9 +95,6 @@ imports="
 	        
 			boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, decryptedPassword_<%=cid%>);
 	        	if (isAuthenticated_<%=cid%> == false){
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - Authentication failed.");
-					<%}%>
 	                throw new RuntimeException("Authentication failed.");
 			}
 			<%if(isLog4jEnabled){%>
@@ -122,9 +116,6 @@ imports="
 			
         	boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, decryptedPassword_<%=cid%>);
         	if (isAuthenticated_<%=cid%> == false){
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Authentication failed.");
-				<%}%>
             	throw new RuntimeException("Authentication failed.");
 			}
 			<%if(isLog4jEnabled){%>
@@ -143,7 +134,6 @@ imports="
 	        				String instruction, int numPrompts,
 	        				String[] prompt, boolean[] echo)
 	        				throws java.lang.Exception {
-	        			// TODO Auto-generated method stub
 	        			String[] reply = new String[numPrompts];
 	        			
                         <%
@@ -160,9 +150,6 @@ imports="
 	        	}	
 	        );
         	if (isAuthenticated_<%=cid%> == false){
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Authentication failed.");
-				<%}%>
             	throw new RuntimeException("Authentication failed.");
 			}
 			<%if(isLog4jEnabled){%>

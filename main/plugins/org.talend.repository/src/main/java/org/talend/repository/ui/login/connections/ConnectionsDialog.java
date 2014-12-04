@@ -15,6 +15,7 @@ package org.talend.repository.ui.login.connections;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -58,7 +59,7 @@ public class ConnectionsDialog extends TitleAreaDialog {
 
     public ConnectionsDialog(Shell parentShell) {
         super(parentShell);
-
+        setShellStyle(getShellStyle() | SWT.RESIZE);
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         ImageDescriptor imgDesc = brandingService.getLoginHImage();
@@ -87,6 +88,7 @@ public class ConnectionsDialog extends TitleAreaDialog {
         Composite composite = (Composite) super.createDialogArea(parent);
 
         Composite container = new Composite(composite, SWT.NONE);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(container);
 
         GridLayout layout = new GridLayout(2, false);
         layout.marginWidth = 0;
@@ -96,15 +98,10 @@ public class ConnectionsDialog extends TitleAreaDialog {
         container.setLayout(layout);
 
         listComposite = new ConnectionsListComposite(container, SWT.NONE);
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = LIST_COMPOSITE_WIDTH;
-        listComposite.setLayoutData(data);
+        GridDataFactory.fillDefaults().hint(LIST_COMPOSITE_WIDTH, SWT.DEFAULT).grab(false, true).applyTo(listComposite);
 
         formComposite = new ConnectionFormComposite(container, SWT.NONE, listComposite, this);
-        data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = FORM_COMPOSITE_WIDTH;
-        data.heightHint = FORM_COMPOSITE_HEIGHT;
-        formComposite.setLayoutData(data);
+        GridDataFactory.fillDefaults().hint(FORM_COMPOSITE_WIDTH, FORM_COMPOSITE_HEIGHT).grab(true, true).applyTo(formComposite);
         listComposite.setConnectionsFormComposite(formComposite);
 
         Label titleBarSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);

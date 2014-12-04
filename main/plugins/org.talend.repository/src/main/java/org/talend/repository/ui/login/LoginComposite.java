@@ -77,9 +77,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.osgi.service.prefs.BackingStoreException;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.exception.WarningException;
@@ -90,6 +88,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.PasswordHelper;
+import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -112,7 +111,7 @@ import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.updatesite.IUpdateSiteBean;
+import org.talend.core.ui.workspace.ChooseWorkspaceData;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
@@ -127,7 +126,6 @@ import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.login.sandboxProject.CreateSandboxProjectDialog;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 import org.talend.utils.json.JSONException;
-import org.talend.utils.json.JSONObject;
 
 /**
  * labe Composite login.<br/>
@@ -154,7 +152,7 @@ public class LoginComposite extends Composite {
 
     private static final int HORIZONTAL_FOUR_SPACE = 20;
 
-    private int LEFTSPACE = 80;
+    private int leftSpace = 80;
 
     /**
      * Colors used for Remote Object background when enabled.
@@ -229,8 +227,6 @@ public class LoginComposite extends Composite {
 
     public static boolean isRestart = false;
 
-    private boolean inuse = false;
-
     private Label iconLabel = null;
 
     private Label onIconLabel = null;
@@ -269,30 +265,10 @@ public class LoginComposite extends Composite {
 
     private ConnectionBean firstConnBean;
 
-    private List<IUpdateSiteBean> updateSiteToInstall = new ArrayList<IUpdateSiteBean>();
-
     // only for test
     // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
 
-    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-1$ 
-
-    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-1$ 
-
-    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-1$ 
-
-    private static final String ARCHIVA_USER = "username"; //$NON-NLS-1$ 
-
-    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-1$ 
-
     private boolean afterUpdate = false;
-
-    private TOSLoginComposite tosLoginComposite;
-
-    private StackLayout stackLayout;
-
-    private Composite parent;
-
-    private String oldPath;
 
     private static final int VISIBLE_PROJECT_COUNT = 20;
 
@@ -308,14 +284,10 @@ public class LoginComposite extends Composite {
      * @param parent Parent component.
      * @param style Style bits.
      */
-    public LoginComposite(Composite parent, int style, LoginDialog dialog, boolean inuse, TOSLoginComposite tosLoginComposite,
+    public LoginComposite(Composite parent, int style, LoginDialog dialog, TOSLoginComposite tosLoginComposite,
             StackLayout stackLayout) {
         super(parent, style);
-        this.parent = parent;
         this.dialog = dialog;
-        this.inuse = inuse;
-        this.tosLoginComposite = tosLoginComposite;
-        this.stackLayout = stackLayout;
         perReader = ConnectionUserPerReader.getInstance();
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
@@ -357,24 +329,17 @@ public class LoginComposite extends Composite {
         rightPartComposite.pack();
         // the width of column 1 should not larger than 7/21 of the whole right part width
         int size = (int) (rightPartComposite.getSize().x * (7.0 / 21));
-        if (size < LEFTSPACE) {
-            LEFTSPACE = size;
+        if (size < leftSpace) {
+            leftSpace = size;
         }
         for (FormData iFormData : columnFormDatas) {
-            iFormData.right = new FormAttachment(0, LEFTSPACE);
+            iFormData.right = new FormAttachment(0, leftSpace);
         }
 
         readConnectionData();
         recordFirstConnection();
         fillContents();
         addListeners();
-        if (inuse) {
-            manageViewer.getControl().setEnabled(false);
-            manageProjectsButton.setEnabled(false);
-            openProjectBtn.setEnabled(false);
-            // warningLabel.setVisible(true);
-            restartBut.setVisible(false);
-        }
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
@@ -400,8 +365,8 @@ public class LoginComposite extends Composite {
         columnFormDatas.add(fromData);
         ctrl.pack();
         int width = ctrl.getSize().x + HORIZONTAL_TWO_SPACE;
-        if (LEFTSPACE < width) {
-            LEFTSPACE = width;
+        if (leftSpace < width) {
+            leftSpace = width;
         }
     }
 
@@ -1372,17 +1337,6 @@ public class LoginComposite extends Composite {
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
-            } else if (inuse) {
-                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                colorComposite.setBackground(RED_COLOR);
-                onIconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
-                statusLabel.setFont(font);
-                statusLabel.setBackground(RED_COLOR);
-                statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
-                statusLabel.setFont(font);
             } else if (projectViewer == null || projectViewer.getCombo().getItemCount() > 0) {
                 iconLabel.setImage(LOGIN_CORRECT_IMAGE);
                 onIconLabel.setImage(LOGIN_CORRECT_IMAGE);
@@ -1627,6 +1581,7 @@ public class LoginComposite extends Composite {
                     } catch (JSONException e) {
                         ExceptionHandler.process(e);
                     }
+
                     displayPasswordComposite();
                 }
 
@@ -1773,6 +1728,13 @@ public class LoginComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 isRestart = true;
                 perReader.saveLastConnectionBean(getConnection());
+                // update the restart command line to specify the workspace to launch
+                // if relaunch, should delete the "disableLoginDialog" argument in eclipse data for bug TDI-19214
+                EclipseCommandLine.updateOrCreateExitDataPropertyWithCommand("-data", getConnection().getWorkSpace(), false); //$NON-NLS-1$
+                // store the workspace in the eclipse history so that it is rememebered on next studio launch
+                ChooseWorkspaceData workspaceData = new ChooseWorkspaceData(""); //$NON-NLS-1$
+                workspaceData.workspaceSelected(getConnection().getWorkSpace());
+                workspaceData.writePersistedData();
                 dialog.okPressed();
             }
         });
@@ -1788,22 +1750,10 @@ public class LoginComposite extends Composite {
                                 ICoreTisService.class);
                         afterUpdate = false;
                         if (tisService != null) {
-                            JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
-                            String archivaServicesURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY)
-                                    + ARCHIVA_SERVICES_SEGMENT;
-                            String repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
-                            String username = archivaProperties.getString(ARCHIVA_USER);
-                            String password = archivaProperties.getString(ARCHIVA_USER_PWD);
-                            List<String> repositories = new ArrayList<String>();
-                            // if no repository return,just use a empty repositories array
-                            if (repository != null) {
-                                repositories.add(repository);
-                            }
-                            tisService.downLoadAndInstallUpdateSites(archivaServicesURL, username, password, updateSiteToInstall,
-                                    repositories);
+                            tisService.downLoadAndInstallUpdates(getConnection().getUser(), getConnection().getPassword(),
+                                    getAdminURL());
                             afterUpdate = true;
                             tisService.setNeedResartAfterUpdate(afterUpdate);
-                            updateSiteToInstall.clear();
                         }
                         // need to relauch the studio automaticlly after updating
                         isRestart = true;
@@ -1824,68 +1774,50 @@ public class LoginComposite extends Composite {
     }
 
     private void validateUpdate() throws JSONException {
-        // need get archiva url and repository by tac
-        String archivaServiceURL;
-        String repository;
-        String username;
-        String password;
         ConnectionBean currentBean = getConnection();
         String repositoryId = null;
         // at 1st time open the studio there are no bean at all,so need avoid NPE
         if (currentBean != null) {
             repositoryId = currentBean.getRepositoryId();
         }
-        // if workspace different,no need to spent time check patches
+
         try {
-            if (repositoryId != null && repositoryId.equals(RepositoryConstants.REPOSITORY_REMOTE_ID)
-                    && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
-                JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
-
-                // Added by Marvin Wang on Oct. 31, 2012 for bug TDI-22060, more details, refer to the comment following
-                // the bug.
-                if ("".equals(archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY))) {
-                    return;
-                }
-
-                archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
-                repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
-                username = archivaProperties.getString(ARCHIVA_USER);
-                password = archivaProperties.getString(ARCHIVA_USER_PWD);
-                List<String> repositories = new ArrayList<String>();
-                if (repository != null) {
-                    repositories.add(repository);
-                }
-                if (archivaServiceURL != null) {
-                    boolean needUpdate = needUpdate(username, password, archivaServiceURL, repositories);
-                    if (afterUpdate) {
-                        iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                        onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                        colorComposite.setBackground(RED_COLOR);
-                        onIconLabel.setBackground(colorComposite.getBackground());
-                        statusLabel.setText(Messages.getString("LoginComposite.archivaFinish")); //$NON-NLS-1$
-                        statusLabel.setBackground(RED_COLOR);
-                        statusLabel.setForeground(WHITE_COLOR);
-                        Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
-                        statusLabel.setFont(font);
-                        restartBut.setVisible(true);
-                        restartBut.setEnabled(true);
-                        openProjectBtn.setEnabled(false);
-                        updateBtn.setEnabled(false);
-
-                    } else if (needUpdate && isWorkSpaceSame()) {
-                        iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                        onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                        colorComposite.setBackground(RED_COLOR);
-                        onIconLabel.setBackground(colorComposite.getBackground());
-                        statusLabel.setText(Messages.getString("LoginComposite.updateArchiva")); //$NON-NLS-1$
-                        statusLabel.setBackground(RED_COLOR);
-                        statusLabel.setForeground(WHITE_COLOR);
-                        Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
-                        statusLabel.setFont(font);
-                        openProjectBtn.setEnabled(!needUpdate);
-                        updateBtn.setVisible(needUpdate);
-                        updateBtn.setEnabled(needUpdate);
-                        updateBtn.setText("update");
+            if (currentBean != null && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
+                if (afterUpdate) {
+                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    colorComposite.setBackground(RED_COLOR);
+                    onIconLabel.setBackground(colorComposite.getBackground());
+                    statusLabel.setText(Messages.getString("LoginComposite.archivaFinish")); //$NON-NLS-1$
+                    statusLabel.setBackground(RED_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                    restartBut.setVisible(true);
+                    restartBut.setEnabled(true);
+                    openProjectBtn.setEnabled(false);
+                    updateBtn.setEnabled(false);
+                } else {
+                    ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(
+                            ICoreTisService.class);
+                    if (tisService != null) {
+                        boolean needUpdate = tisService.needUpdate(currentBean.getUser(), currentBean.getPassword(),
+                                getAdminURL());
+                        if (needUpdate && isWorkSpaceSame()) {
+                            iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                            onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                            colorComposite.setBackground(RED_COLOR);
+                            onIconLabel.setBackground(colorComposite.getBackground());
+                            statusLabel.setText(Messages.getString("LoginComposite.updateArchiva")); //$NON-NLS-1$
+                            statusLabel.setBackground(RED_COLOR);
+                            statusLabel.setForeground(WHITE_COLOR);
+                            Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                            statusLabel.setFont(font);
+                            openProjectBtn.setEnabled(!needUpdate);
+                            updateBtn.setVisible(needUpdate);
+                            updateBtn.setEnabled(needUpdate);
+                            updateBtn.setText("update");
+                        }
                     }
                 }
             } else {
@@ -1893,8 +1825,6 @@ public class LoginComposite extends Composite {
                 updateBtn.setEnabled(false);
             }
         } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        } catch (LoginException e) {
             ExceptionHandler.process(e);
         } catch (SystemException e) {
             updateArchivaErrorButton();
@@ -1908,39 +1838,6 @@ public class LoginComposite extends Composite {
             tacURL = currentBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
         }
         return tacURL;
-    }
-
-    /* should use api of tac to get the properties */
-    private JSONObject getArchivaServicesProperties(String tacURL) throws PersistenceException, LoginException {
-        JSONObject archivaObject = null;
-        ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
-        if (tisService != null) {
-            String userName = getConnection().getUser();
-            String password = getConnection().getPassword();
-            User user = PropertiesFactory.eINSTANCE.createUser();
-            user.setLogin(userName);
-            archivaObject = (JSONObject) tisService.getArchivaObject(user, password, tacURL);
-        }
-
-        return archivaObject;
-    }
-
-    // method need update is used to control the status of updateBtn
-    private boolean needUpdate(String username, String password, String archivaURL, List<String> repositories)
-            throws SystemException {
-
-        ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
-        if (tisService != null) {
-            try {
-                if (updateSiteToInstall != null) {
-                    updateSiteToInstall.clear();
-                }
-                updateSiteToInstall = tisService.getUpdateSitesToBeInstall(username, password, archivaURL, repositories);
-            } catch (BackingStoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return !updateSiteToInstall.isEmpty();
     }
 
     public void createNewProject() {
@@ -2130,19 +2027,6 @@ public class LoginComposite extends Composite {
             }
             // warningLabel.setVisible(true);
             restartBut.setVisible(true);
-        } else if (inuse) {
-            manageViewer.getControl().setEnabled(false);
-            manageProjectsButton.setEnabled(false);
-            openProjectBtn.setEnabled(false);
-            //warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
-            // warningLabel.setVisible(true);
-            restartBut.setVisible(false);
-            if (fillProjectsBtn != null) {
-                fillProjectsBtn.setEnabled(false);
-            }
-            if (branchesViewer != null) {
-                branchesViewer.getControl().setEnabled(false);
-            }
         } else {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
@@ -2784,6 +2668,10 @@ public class LoginComposite extends Composite {
         return fontsize;
     }
 
+    /**
+     * created by sgandon on 18 nov. 2014 Detailled comment
+     *
+     */
     private static class ArchivaErrorDialog extends MessageDialog {
 
         public ArchivaErrorDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage,

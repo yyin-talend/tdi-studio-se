@@ -144,7 +144,7 @@ public class EncryptPasswordInComponentsMigrationTask extends AbstractItemMigrat
         return ExecutionResult.SUCCESS_NO_ALERT;
     }
 
-    private class FakeNode extends AbstractNode {
+    public static class FakeNode extends AbstractNode {
 
         /**
          * DOC nrousseau FakeNode constructor comment.

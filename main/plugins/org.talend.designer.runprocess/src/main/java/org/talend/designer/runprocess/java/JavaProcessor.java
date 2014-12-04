@@ -994,9 +994,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
         tmpParams.add("-cp"); //$NON-NLS-1$
         if (exportingJob) {
-            tmpParams.add(libPath.toString() + portableProjectPath + exportJar);
+            tmpParams.add(portableProjectPath + exportJar + libPath.toString());
         } else {
-            tmpParams.add(libPath.toString() + portableProjectPath + exportJar + libFolder);
+            tmpParams.add(portableProjectPath + exportJar + libPath.toString() + libFolder);
         }
         tmpParams.add(className);
         strings = tmpParams.toArray(new String[0]);
@@ -1034,7 +1034,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
         String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
         List<String> list = new ArrayList<String>();
-
+        
         list.add("-libjars"); //$NON-NLS-1$
         StringBuffer libJars = new StringBuffer("");
         Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);

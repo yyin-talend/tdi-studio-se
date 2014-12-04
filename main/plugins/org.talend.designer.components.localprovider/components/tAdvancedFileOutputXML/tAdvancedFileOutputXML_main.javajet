@@ -18,6 +18,8 @@ imports="
 skeleton="tAdvancedFileOutputXML_java.skeleton"
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 final INode node = (INode)codeGenArgument.getArgument();
@@ -50,6 +52,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
                 boolean bAddEmptyAttr = "true".equals(ElementParameterParser.getValue(node, "__ADD_EMPTY_ATTRIBUTE__"));
                 boolean bAddUnmappedAttr = "true".equals(ElementParameterParser.getValue(node, "__ADD_UNMAPPED_ATTRIBUTE__"));
+                boolean isSaveDocAsNode = ("true").equals(ElementParameterParser.getValue(node,"__ADD_DOCUMENT_AS_NODE__"));
                 
                 String outputAsXSD = ElementParameterParser.getValue(node, "__OUTPUT_AS_XSD__");
                 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
@@ -82,6 +85,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String xslType = ElementParameterParser.getValue(node, "__XSL_TYPE__");
 				String xslHref = ElementParameterParser.getValue(node, "__XSL_HREF__");
 				
+				final boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+				
 				int schemaOptNum=100;
 				boolean isOptimizeCode=false;
 				String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
@@ -99,6 +104,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 tool.thousandsSeparator=thousandsSeparator;
                 tool.decimalSeparator=decimalSeparator;
                 tool.cid=cid;
+                boolean isAppend = !useStream && isMerge;
+                tool.isAppend = isAppend;
                 
                 // change tables to a tree 
 				Object[] treeObjs = getTree(rootTable, groupTable, loopTable, metadata.getListColumns());
@@ -112,7 +119,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 XMLNode root = mainList.get(0);                
             	XMLNode loop = (XMLNode)treeObjs[2];
                 
-                if(!("true").equals(allowEmpty)){
+                if(!"true".equals(allowEmpty) && !(groupTable.size()>0 && isAppend)){
                 	removeEmptyElement(root);
                 }
                 
@@ -124,12 +131,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	nb_line_<%=cid%>++;
 	valueMap_<%=cid%>.clear();
 <%
+				log4jFileUtil.setCid(cid);
 				int colNum=0;
 				for(IMetadataColumn column :metadata.getListColumns()){
 					if(isOptimizeCode){
 						if(colNum%schemaOptNum==0){
 %>
-	advancedXMLUtil_<%=cid%>.putValue_<%=colNum/schemaOptNum%>(<%=tool.connName%>,valueMap_<%=cid%>);
+	advancedXMLUtil_<%=cid%>.putValue_<%=colNum/schemaOptNum%>(<%=tool.connName%>,valueMap_<%=cid%><%if(tool.isAppend){%>,compactFormat_<%=cid%><%}%>);
 <%
 						}
 					}else{
@@ -139,6 +147,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}
 					colNum++;
 				}
+				
+				log4jFileUtil.debugWriteData(node);
+				
 // ------------------- *** Common code end *** ------------------- //
 
 // ------------------- *** Dom4j generation mode start *** ------------------- //
@@ -154,6 +165,7 @@ if(("Dom4j").equals(mode)){
     }
     generateToolByDom4j.bAddEmptyAttr = bAddEmptyAttr;
     generateToolByDom4j.bAddUnmappedAttr = bAddUnmappedAttr;
+    generateToolByDom4j.isSaveDocAsNode = isSaveDocAsNode;
     generateToolByDom4j.cid = cid;
     generateToolByDom4j.touchXMLNode.cid = cid;
     generateToolByDom4j.bigMethodHelper.cid = cid;
@@ -197,10 +209,16 @@ if(groupTable.size()>0){					//init the generate tool.
 				firstGroupPathElement_<%=cid%> = (org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=firstGroupPath.substring(0,firstGroupPath.lastIndexOf("/")) %>");
 				if(firstGroupPathElement_<%=cid%> == null) {
 					System.err.println("WARN : the root tag is not same when appending");
+					<%if(isLog4jEnabled) {%>
+					log.error("<%=cid%> - the root tag is not same when appending");
+					<%}%>
 				} else { 
 					String subRootPath = firstGroupPathElement_<%=cid%>.getPath().replace("*[name()='","").replace("']", "");
 					if(!"<%=firstGroupPath.substring(0,firstGroupPath.lastIndexOf("/")) %>".equals(subRootPath)) {
 						System.err.println("WARN : the root tag is not same on namespace prefix when appending");
+						<%if(isLog4jEnabled) {%>
+						log.error("<%=cid%> - the root tag is not same on namespace prefix when appending");
+						<%}%>
 					}
 				}
 			}else{
@@ -216,6 +234,7 @@ if(groupTable.size()>0){					//init the generate tool.
 			GenerateExprCmpByDom4j generateExprCmpByDom4j = new GenerateExprCmpByDom4j();
 			generateExprCmpByDom4j.tool = tool;
 			generateExprCmpByDom4j.groupNode = groupNode;
+			generateExprCmpByDom4j.isSaveDocAsNode = isSaveDocAsNode;
 			generateExprCmpByDom4j.needEmptyNode = ("true").equals(allowEmpty);
 %>
 		if(bl_<%=cid %>==false){

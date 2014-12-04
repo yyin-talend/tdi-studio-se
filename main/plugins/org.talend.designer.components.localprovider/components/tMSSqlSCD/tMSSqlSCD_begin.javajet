@@ -17,11 +17,14 @@ imports="
 "
 skeleton="../templates/slowly_change_dimension.skeleton"
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+dbLog = new DBLogUtil(node); 
+
 List<IMetadataColumn> inputSchema = getInputSchema(node);
 List<IMetadataColumn> outputSchema = getOutputSchema(node);
 
@@ -924,7 +927,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             %>
             String endDateTimeDetail_<%=cid%> = <%=endDateTimeString.length()>0?endDateTimeString:"\"\""%>;
             String datePattern_<%=cid%> = "yyyy-MM-dd";
-            if(endDateTimeDetail_<%=cid%>.length()>0 && !"null".equalsIgnoreCase(endDateTimeDetail_<%=cid%>)){
+            if(endDateTimeDetail_<%=cid%>.length()>0){
             	endDateTimeDetail_<%=cid%> = " "+endDateTimeDetail_<%=cid%>;
             	datePattern_<%=cid%> = "yyyy-MM-dd HH:mm:ss";
             }

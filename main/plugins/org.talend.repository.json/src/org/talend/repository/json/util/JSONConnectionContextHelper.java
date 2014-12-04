@@ -567,7 +567,7 @@ public final class JSONConnectionContextHelper {
                     }
                 }
                 if (param != null) {
-                    String value2 = param.getValue();
+                    String value2 = param.getRawValue();
                     if (value2 != null) {
                         // return TalendTextUtils.removeQuotes(value2); //some value can't be removed for quote
                         return value2;

@@ -118,6 +118,7 @@ public enum EDatabaseComponentName implements IComponentName {
     // Changed by Marvin Wang on Sep. 3, 2012 for bug TDI-22566.
     HIVE(DatabaseConnectionItem.class, EDatabaseTypeName.HIVE, "tHiveInput", "tHiveOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     HBASE(DatabaseConnectionItem.class, EDatabaseTypeName.HBASE, "tHBaseInput", "tHBaseOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    IMPALA(DatabaseConnectionItem.class, EDatabaseTypeName.IMPALA, "tImpalaInput", "tImpalaOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
     // FILES
     FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF", "DELIMITED"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -133,11 +134,11 @@ public enum EDatabaseComponentName implements IComponentName {
     GENERICSCHEMA(GenericSchemaConnectionItem.class, (String) null, null, "GENERICSCHEMA"), //$NON-NLS-1$
 
     FILEEBCDIC(EbcdicConnectionItem.class, "tFileInputEBCDIC", "tFileOutputEBCDIC", "EBCDIC"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    FILEHL7(HL7ConnectionItem.class, "tHL7Input", null, "HL7"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    FILEHL7(HL7ConnectionItem.class, "tHL7Input", null, "HL7"), //$NON-NLS-1$ //$NON-NLS-2$ 
     EDIFACT(EDIFACTConnectionItem.class, "tUN/EDIFACT", null, "UN/EDIFACT"),
     FILEMDM(MDMConnectionItem.class, "tMDMInput", "tMDMOutput", "MDM"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    FTP(FTPConnectionItem.class, "", null, "FTP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    FTP(FTPConnectionItem.class, "", null, "FTP"), //$NON-NLS-1$ //$NON-NLS-2$ 
     BRMS(BRMSConnectionItem.class, "tBRMS", "tBRMS", "BRMS"),
     LDAP(LDAPSchemaConnectionItem.class, "tLDAPInput", "tLDAPOutput", "LDAP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
@@ -214,6 +215,7 @@ public enum EDatabaseComponentName implements IComponentName {
         return this.productName;
     }
 
+    @Override
     public String getDefaultComponentName() {
         return getInputComponentName();
     }
@@ -227,6 +229,7 @@ public enum EDatabaseComponentName implements IComponentName {
      * 
      * @return the inputComponentName
      */
+    @Override
     public String getInputComponentName() {
         return this.inputComponentName;
     }
@@ -236,6 +239,7 @@ public enum EDatabaseComponentName implements IComponentName {
      * 
      * @return the outPutComponentName
      */
+    @Override
     public String getOutPutComponentName() {
         return this.outPutComponentName;
     }

@@ -2,7 +2,7 @@
 
 	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA"
 		COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20080104"
-		STARTABLE="true" HAS_CONDITIONAL_OUTPUTS="true">
+		STARTABLE="true" HAS_CONDITIONAL_OUTPUTS="true" LOG4J_ENABLED="true">
 		<SIGNATURE />
 	</HEADER>
 
@@ -43,7 +43,7 @@
 			<ITEMS>
 				<ITEM NAME="SCHEMA" FIELD="SCHEMA_TYPE" />
 				<ITEM NAME="LOOP_PATH" FIELD="TEXT" />
-				<ITEM NAME="MAPPING" FIELD="SCHEMA_XPATH_QUERYS" />
+				<ITEM NAME="MAPPING" FIELD="SCHEMA_XPATH_QUERYS" RAW="true" />
 				<ITEM NAME="CREATE_EMPTY_ROW" FIELD="CHECK" />
 			</ITEMS>
 		</PARAMETER>
@@ -84,7 +84,7 @@
 		<IMPORTS>
 			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar"
+			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="Java_talendSAX" MODULE="TalendSAX.jar" UrlPath="platform:/plugin/org.talend.libraries.xml/lib/TalendSAX.jar"
 				REQUIRED="true" />

@@ -10,6 +10,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20080320A"
     STARTABLE="true"
+    LOG4J_ENABLED="true"
   >
     <SIGNATURE/>
   </HEADER>
@@ -107,6 +108,19 @@
     >
       <DEFAULT>"123456"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="AUTH_METHOD"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="7"
+      SHOW_IF="(SFTP=='true')"
+      REPOSITORY_VALUE="AUTH_METHOD"
+    >
+      <ITEMS DEFAULT="PASSWORD">
+        <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
+        <ITEM NAME="PASSWORD"   VALUE="PASSWORD"/>
+      </ITEMS>
+    </PARAMETER>
 
     <PARAMETER
       NAME="PRIVATEKEY"
@@ -126,19 +140,6 @@
       REPOSITORY_VALUE="PASSPHRASE"
     >
       <DEFAULT>"secret"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="AUTH_METHOD"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="7"
-      SHOW_IF="(SFTP=='true')"
-      REPOSITORY_VALUE="AUTH_METHOD"
-    >
-      <ITEMS DEFAULT="PASSWORD">
-        <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
-        <ITEM NAME="PASSWORD"   VALUE="PASSWORD"/>
-      </ITEMS>
     </PARAMETER>
 
     <PARAMETER NAME="CONNECT_MODE" FIELD="CLOSED_LIST" NUM_ROW="100" REPOSITORY_VALUE="CONNECT_MODE" NOT_SHOW_IF="(SFTP == 'true') OR (FTPS == 'true')">
@@ -194,7 +195,7 @@
   <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="Java-FTP" MODULE="edtftpj.jar" UrlPath="platform:/plugin/org.talend.libraries.ftp/lib/edtftpj.jar" REQUIRED_IF="(SFTP == 'false') AND (FTPS == 'false')"/>
-       <IMPORT NAME="Java-SFTP" MODULE="jsch.jar" UrlPath="platform:/plugin/org.talend.libraries.ftp/lib/jsch.jar" REQUIRED_IF="(SFTP == 'true')"/>
+       <IMPORT NAME="Java-SFTP" MODULE="jsch-0.1.51.jar" UrlPath="platform:/plugin/org.talend.libraries.ftp/lib/jsch-0.1.51.jar" REQUIRED_IF="(SFTP == 'true')"/>
        <IMPORT NAME="Java-FTPS" MODULE="ftp4j-1.7.2.jar" UrlPath="platform:/plugin/org.talend.libraries.ftp/lib/ftp4j-1.7.2.jar" REQUIRED_IF="(FTPS == 'true')" />
      </IMPORTS>
    </CODEGENERATION>

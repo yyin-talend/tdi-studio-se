@@ -3,6 +3,8 @@
 		org.talend.core.model.process.INode
 		org.talend.designer.codegen.config.CodeGeneratorArgument
         org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.IContextParameter
+    	java.util.List
 	"
 %>
 
@@ -38,9 +40,6 @@
 		<%}%>
 		System.<%="Error".equals(newVariable)?"err":"out"%>.println("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
         <%if (bDieOnError && newVariable.equals("Error")){%>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - <%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
-			<%}%>
 		  throw new RuntimeException("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
 		<%}%>        
 	}
@@ -56,9 +55,6 @@
 		<%}%>
 		System.<%=oldVariable.equals("Error")?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
 		<%if (bDieOnError && oldVariable.equals("Error")){%>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - <%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
-			<%}%>
 		  throw new RuntimeException("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
 		<%}%>
 	}
@@ -76,10 +72,21 @@
     globalMap.put("<%=cid%>_KEY_NOT_LOADED", noAssign_<%=cid %>);
 
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-    
-	resumeUtil.addLog("NODE", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context));    
+
+	List<String> parametersToEncrypt_<%=cid%> = new java.util.ArrayList<String>();
+	<%
+	List<IContextParameter> params = node.getProcess().getContextManager().getDefaultContext().getContextParameterList();
+	for(IContextParameter ctxParam :params) {
+    	if ("id_Password".equals(ctxParam.getType())) {
+		%>
+		parametersToEncrypt_<%=cid%>.add("<%=ctxParam.getName()%>");
+		<%
+    	}
+    }
+	%>
+	
+	resumeUtil.addLog("NODE", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context,parametersToEncrypt_<%=cid%>));    
     <%if(isLog4jEnabled){%>
     	log.info("<%=cid%> - Loaded contexts count: " + nb_line_<%=cid %> + ".");
-		log.info("<%=cid%> - Done.");
     <%}%>
     

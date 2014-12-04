@@ -25,7 +25,6 @@ imports="
     String criteria = ElementParameterParser.getValue(node,"__CRITERIA__");
     boolean isInclude = ("INCLUDE").equals(criteria);
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-    log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 <%	
@@ -160,7 +159,7 @@ if(useFilter){
 	if(isLog4jEnabled){
 	%>
 		log.debug("<%=cid%> - Retrieving the table "+nb_table_<%=cid %>+".");
-		log.trace("<%=cid%> - Name of table "+nb_table_<%=cid%>+":"+currentTableName_<%=cid %>+"。");
+		log.trace("<%=cid%> - Name of table "+nb_table_<%=cid%>+":"+currentTableName_<%=cid %>+".");
 	<%
 	}
 	%>

@@ -7,12 +7,12 @@ imports="
 	java.util.Map
 " 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+       dbLog = new DBLogUtil(node);
 String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 String dbport = ElementParameterParser.getValue(node, "__PORT__");
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -30,7 +30,8 @@ if(useExistingConn) {
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;    
     %>
-    java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");    
+    java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    <%dbLog.conn().useExistConn("connection_"+cid+".getMetaData().getURL()", "connection_"+cid+".getMetaData().getUserName()");%>
     <%
 } else {
     %>
@@ -52,9 +53,13 @@ if(useExistingConn) {
     String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 
     java.lang.Class.forName("org.gjt.mm.mysql.Driver");
+    <%dbLog.conn().logJDBCDriver(dbLog.str("org.gjt.mm.mysql.Driver"));%>
+    <%dbLog.conn().connTry(dbLog.var("connectionString"), dbLog.var("dbUser"));%>
     java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+    <%dbLog.conn().connDone(dbLog.var("connectionString"));%>
     <%
 }
+dbLog.commit().logAutoCommit("connection_"+cid+".getAutoCommit()");
 %>
 
 java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call " + <%=spName%> + "(

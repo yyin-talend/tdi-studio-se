@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -39,18 +40,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.LabelText;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
-import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
-import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.repository.ILoginConnectionService;
@@ -103,10 +100,7 @@ public class ConnectionFormComposite extends Composite {
 
     private Map<IRepositoryFactory, Map<String, LabelledCombo>> dynamicChoices = new HashMap<IRepositoryFactory, Map<String, LabelledCombo>>();
 
-    private static final IExtensionPointLimiter CONNECT_PROVIDER = new ExtensionPointLimiterImpl(
-            "org.talend.core.repository.connection_provider", "connectionValidate");
-
-    public static final String URL_FIELD_NAME = "url";
+    public static final String URL_FIELD_NAME = "url"; //$NON-NLS-1$
 
     /**
      * DOC smallet ConnectionsComposite constructor comment.
@@ -121,54 +115,38 @@ public class ConnectionFormComposite extends Composite {
         this.connectionsListComposite = connectionsListComposite;
 
         toolkit = new FormToolkit(this.getDisplay());
-        ScrolledForm form = toolkit.createScrolledForm(this);
-        Composite formBody = form.getBody();
+        Composite formBody = toolkit.createComposite(this);
 
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         setLayout(layout);
-        form.setLayoutData(new GridData(GridData.FILL_BOTH));
+        formBody.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        final int hSpan = 10;
-        final int labelHSpan = 3;
-        final int btnHSpan = 2;
-
-        GridLayout lay = new GridLayout();
-        lay.numColumns = hSpan;
-        formBody.setLayout(lay);
-
-        // Use by all widgets:
-        GridData data1;
-
+        formBody.setLayout(new GridLayout(3, false));
+        GridDataFactory formDefaultFactory = GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER);
         // Repository
         Label repositoryLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.repository")); //$NON-NLS-1$
-        data1 = new GridData();
-        data1.horizontalSpan = labelHSpan;
-        repositoryLabel.setLayoutData(data1);
+        formDefaultFactory.copy().applyTo(repositoryLabel);
 
         repositoryCombo = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         repositoryCombo.setContentProvider(new ArrayContentProvider());
         repositoryCombo.setLabelProvider(new RepositoryFactoryLabelProvider());
-        repositoryCombo.getControl().setLayoutData(createGridLayoutData(hSpan - labelHSpan));
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(repositoryCombo.getControl());
 
         // Name
         Label nameLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.name")); //$NON-NLS-1$
-        data1 = new GridData();
-        data1.horizontalSpan = labelHSpan;
-        nameLabel.setLayoutData(data1);
+        formDefaultFactory.copy().applyTo(nameLabel);
 
         nameText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        nameText.setLayoutData(createGridLayoutData(hSpan - labelHSpan));
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(nameText);
 
         // Comment
         Label descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
-        data1 = new GridData();
-        data1.horizontalSpan = labelHSpan;
-        descriptionLabel.setLayoutData(data1);
+        formDefaultFactory.copy().applyTo(descriptionLabel);
 
         descriptionText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        descriptionText.setLayoutData(createGridLayoutData(hSpan - labelHSpan));
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(descriptionText);
 
         // User
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
@@ -181,40 +159,37 @@ public class ConnectionFormComposite extends Composite {
             userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.usernameNoMail")); //$NON-NLS-1$
         }
 
-        data1 = new GridData(GridData.FILL_HORIZONTAL);
-        data1.horizontalSpan = labelHSpan;
-        userLabel.setLayoutData(data1);
+        formDefaultFactory.copy().applyTo(userLabel);
 
         userText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        userText.setLayoutData(createGridLayoutData(hSpan - labelHSpan));
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(userText);
 
         // Password
         Label passwordLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
-        data1 = new GridData();
-        data1.horizontalSpan = labelHSpan;
-        passwordLabel.setLayoutData(data1);
+        formDefaultFactory.copy().applyTo(passwordLabel);
 
         passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
-        passwordText.setLayoutData(createGridLayoutData(hSpan - labelHSpan));
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(passwordText);
 
         Label workSpaceLabel = toolkit.createLabel(formBody, Messages.getString("ConnectionFormComposite.WORKSPACE")); //$NON-NLS-1$
-        data1 = new GridData();
-        data1.horizontalSpan = labelHSpan;
-        workSpaceLabel.setLayoutData(data1);
+        formDefaultFactory.copy().applyTo(workSpaceLabel);
 
-        workSpaceText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        data1 = createGridLayoutData(hSpan - labelHSpan - btnHSpan);
-        // data1.widthHint = ConnectionsDialog.STANDARD_TEXT_WIDTH - 50;
-        workSpaceText.setLayoutData(data1);
+        Composite wsCompo = toolkit.createComposite(formBody);
+        GridLayout wsCompoLayout = new GridLayout(2, false);
+        wsCompoLayout.marginHeight = 0;
+        wsCompoLayout.marginWidth = 0;
 
-        workSpaceButton = toolkit.createButton(formBody, null, SWT.PUSH);
-        data1 = new GridData();
-        data1.horizontalSpan = btnHSpan;
+        wsCompo.setLayout(wsCompoLayout);
+        formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(wsCompo);
+
+        workSpaceText = toolkit.createText(wsCompo, "", SWT.BORDER); //$NON-NLS-1$
+        formDefaultFactory.copy().grab(true, false).applyTo(workSpaceText);
+
+        workSpaceButton = toolkit.createButton(wsCompo, null, SWT.PUSH);
         workSpaceButton.setToolTipText(Messages.getString("ConnectionFormComposite.SELECT_WORKSPACE")); //$NON-NLS-1$
         workSpaceButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
-        workSpaceButton.setLayoutData(data1);
+        GridDataFactory.fillDefaults().applyTo(workSpaceButton);
 
-        GridData data;
         List<IRepositoryFactory> availableRepositories = getUsableRepositoryProvider();
         for (IRepositoryFactory current : availableRepositories) {
             Map<String, LabelText> list = new HashMap<String, LabelText>();
@@ -225,24 +200,17 @@ public class ConnectionFormComposite extends Composite {
             dynamicRequiredControls.put(current, listRequired);
             dynamicButtons.put(current, listButtons);
             dynamicChoices.put(current, listChoices);
-            Control baseControl = passwordLabel;
 
             for (final DynamicChoiceBean currentChoiceBean : current.getChoices()) {
                 Label label = toolkit.createLabel(formBody, currentChoiceBean.getName());
-                data = new GridData();
-                data.horizontalSpan = labelHSpan;
-                label.setLayoutData(data);
+                formDefaultFactory.copy().applyTo(label);
 
                 Combo combo = new Combo(formBody, SWT.BORDER | SWT.READ_ONLY);
                 for (String label1 : currentChoiceBean.getChoices().values()) {
                     combo.add(label1);
                 }
 
-                data = new GridData(GridData.FILL_HORIZONTAL);
-                data.horizontalSpan = hSpan - labelHSpan;
-                combo.setLayoutData(createGridLayoutData(hSpan - labelHSpan));
-
-                baseControl = combo;
+                formDefaultFactory.copy().grab(true, false).applyTo(combo);
 
                 listChoices.put(currentChoiceBean.getId(), new LabelledCombo(label, combo));
             }
@@ -253,16 +221,11 @@ public class ConnectionFormComposite extends Composite {
                     textStyle = textStyle | SWT.PASSWORD;
                 }
                 Label label = toolkit.createLabel(formBody, currentField.getName());
-                data = new GridData();
-                data.horizontalSpan = labelHSpan;
-                label.setLayoutData(data);
+                formDefaultFactory.copy().align(SWT.FILL, SWT.CENTER).applyTo(label);
 
                 Text text = toolkit.createText(formBody, "", textStyle); //$NON-NLS-1$
 
-                text.setLayoutData(createGridLayoutData(hSpan - labelHSpan));
-
-                baseControl = text;
-
+                formDefaultFactory.copy().grab(true, false).align(SWT.FILL, SWT.CENTER).applyTo(text);
                 LabelText labelText = new LabelText(label, text);
                 if (currentField.isRequired()) {
                     listRequired.put(currentField.getId(), labelText);
@@ -271,19 +234,10 @@ public class ConnectionFormComposite extends Composite {
             }
 
             for (final DynamicButtonBean currentButtonBean : current.getButtons()) {
-                Label label = toolkit.createLabel(formBody, ""); //$NON-NLS-1$
-                label.setVisible(false);
-                data = new GridData();
-                data.horizontalSpan = labelHSpan;
-                label.setLayoutData(data);
-
                 Button button = new Button(formBody, SWT.PUSH);
                 button.setText(currentButtonBean.getName());
                 button.addSelectionListener(new DelegateSelectionListener(currentButtonBean));
-
-                button.setLayoutData(createGridLayoutData(hSpan - labelHSpan));
-
-                baseControl = button;
+                formDefaultFactory.copy().align(SWT.RIGHT, SWT.CENTER).applyTo(button);
 
                 listButtons.put(currentButtonBean.getId(), button);
             }
@@ -295,14 +249,6 @@ public class ConnectionFormComposite extends Composite {
         showHideDynamicsControls();
         showHideTexts();
         // validateFields();
-    }
-
-    private GridData createGridLayoutData(int horizontalSpan) {
-        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-        gridData.horizontalSpan = horizontalSpan;
-        gridData.widthHint = ConnectionsDialog.STANDARD_TEXT_WIDTH;
-        return gridData;
-
     }
 
     public boolean canFinish() {
@@ -339,7 +285,7 @@ public class ConnectionFormComposite extends Composite {
         }
         if (valid && getRepository() == null) {
             errorMsg = Messages.getString("connections.form.emptyField.repository"); //$NON-NLS-1$
-        } else if (valid && getName().length() == 0) {
+        } else if (valid && getTextName().length() == 0) {
             errorMsg = Messages.getString("connections.form.emptyField.connname"); //$NON-NLS-1$
         } else if (valid && getUser().length() == 0) {
             errorMsg = Messages.getString("connections.form.emptyField.username"); //$NON-NLS-1$
@@ -354,11 +300,11 @@ public class ConnectionFormComposite extends Composite {
             // connection check
             List<ILoginConnectionService> loginConnections = LoginConnectionManager.getRemoteConnectionService();
             for (ILoginConnectionService loginConncetion : loginConnections) {
-                errorMsg = loginConncetion.checkConnectionValidation(getName(), getDesc(), getUser(), getPassword(),
+                errorMsg = loginConncetion.checkConnectionValidation(getTextName(), getDesc(), getUser(), getPassword(),
                         getWorkspace(), connection.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
             }
         }
-        if (errorMsg != null && !errorMsg.equals("")) {
+        if (errorMsg != null && !errorMsg.equals("")) { //$NON-NLS-1$
             valid = false;
         }
         if (!valid) {
@@ -437,7 +383,7 @@ public class ConnectionFormComposite extends Composite {
         return repositoryFactory;
     }
 
-    private String getName() {
+    private String getTextName() {
         return nameText.getText();
     }
 
@@ -459,6 +405,7 @@ public class ConnectionFormComposite extends Composite {
 
     ModifyListener standardTextListener = new ModifyListener() {
 
+        @Override
         public void modifyText(ModifyEvent e) {
             fillBean();
             validateFields();
@@ -467,6 +414,7 @@ public class ConnectionFormComposite extends Composite {
 
     ISelectionChangedListener repositoryListener = new ISelectionChangedListener() {
 
+        @Override
         public void selectionChanged(SelectionChangedEvent e) {
             showHideDynamicsControls();
             validateFields();
@@ -501,6 +449,7 @@ public class ConnectionFormComposite extends Composite {
     private void addWorkSpaceListener() {
         workSpaceButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 DirectoryDialog dirDialog = new DirectoryDialog(dialog.getShell());
                 String path = dirDialog.open();
@@ -657,9 +606,12 @@ public class ConnectionFormComposite extends Composite {
             this.bean = bean;
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
+            // not used.
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             e.data = connection;
             bean.getListener().widgetSelected(e);

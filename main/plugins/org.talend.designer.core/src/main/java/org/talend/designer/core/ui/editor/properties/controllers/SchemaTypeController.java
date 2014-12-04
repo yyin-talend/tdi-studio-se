@@ -41,9 +41,11 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataSchemaType;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -57,11 +59,13 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
@@ -271,7 +275,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     newButton = btn;
                 }
                 Button retrieveSchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param, RETRIEVE_SCHEMA,
-                        RETRIEVE_SCHEMA, top, param.isReadOnly());
+                        RETRIEVE_SCHEMA, top, !param.isReadOnly());
                 retrieveSchemaButton.setData(NAME, RETRIEVE_SCHEMA);
 
                 lastControlUsed = retrieveSchemaButton;
@@ -287,7 +291,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
                 Button copySchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param,
                         Messages.getString("SchemaController.copyChildSchema"), Messages //$NON-NLS-1$
-                                .getString("SchemaController.copyChildSchema.tooltip"), top, param.isReadOnly()); //$NON-NLS-1$
+                                .getString("SchemaController.copyChildSchema.tooltip"), top, !param.isReadOnly()); //$NON-NLS-1$
                 copySchemaButton.setData(NAME, COPY_CHILD_COLUMNS);
 
                 lastControlUsed = copySchemaButton;
@@ -913,8 +917,20 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     node = node.getParent();
                 }
 
-                String id = dialog.getResult().getObject().getProperty().getId();
-                String name = dialog.getResult().getObject().getLabel();// The name is Table Name.
+                IRepositoryViewObject object = dialog.getResult().getObject();
+                Property property = object.getProperty();
+                String id = property.getId();
+                String name = object.getLabel();// The name is Table Name.
+                if (property.getItem() instanceof SAPConnectionItem && object instanceof MetadataTableRepositoryObject) {
+                    MetadataTableRepositoryObject metadataObject = (MetadataTableRepositoryObject) object;
+                    org.talend.core.model.metadata.builder.connection.MetadataTable table = (org.talend.core.model.metadata.builder.connection.MetadataTable) metadataObject
+                            .getModelElement();
+                    if (table.eContainer() instanceof SAPFunctionUnit) {
+                        SAPFunctionUnit function = (SAPFunctionUnit) table.eContainer();
+                        String tableType = table.getTableType() == null ? MetadataSchemaType.OUTPUT.name() : table.getTableType();
+                        name = function.getLabel() + "/" + tableType + "/" + name;//$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                }
                 if (name != null) {
                     if (elem instanceof Node) {
                         Node nodeElement = (Node) elem;
@@ -1001,19 +1017,20 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     connection = MetadataToolHelper.getConnectionFromRepository(value);
 
                     // For SAP see bug 5423
-                    if (((Node) elem).getUniqueName().startsWith("tSAP") && !((Node) elem).getUniqueName().startsWith("tSAPHana")) { //$NON-NLS-1$
+                    String functionId = node.getParent().getId();
+                    if (((Node) elem).getUniqueName().startsWith("tSAP") && !((Node) elem).getUniqueName().startsWith("tSAPHana")//$NON-NLS-1$//$NON-NLS-2$
+                            && functionId != "-1") {//$NON-NLS-1$
                         Node sapNode = (Node) elem;
-                        String functionId = node.getParent().getId();
                         repositoryMetadata = getMetadataFromRepository(id, functionId, name);
 
-                        String tableName = repositoryMetadata.getLabel();
                         String functionName = node.getParent().getObject().getLabel();
                         for (IElementParameter param : sapNode.getElementParameters()) {
                             SAPParametersUtils.retrieveSAPParams(elem, connection, param, functionName);
                         }
-                    } else {
-                        repositoryMetadata = MetadataToolHelper.getMetadataFromRepository(value);
                     }
+                    // else {
+                    // repositoryMetadata = MetadataToolHelper.getMetadataFromRepository(value);
+                    // }
                     // connection = MetadataTool.getConnectionFromRepository(value);
 
                     // For validation rule.

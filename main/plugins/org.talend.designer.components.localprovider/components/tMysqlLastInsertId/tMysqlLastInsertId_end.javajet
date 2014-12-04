@@ -5,7 +5,7 @@ imports="
     org.talend.core.model.process.ElementParameterParser
 " 
 %>
-<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
+
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -14,7 +14,3 @@ imports="
 pstmt_<%=cid %>.close();
 
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
-<%
-log4jCodeGenerateUtil.retrieveRecordsCount(node);
-log4jCodeGenerateUtil.infoComponentEnd(node);
-%>

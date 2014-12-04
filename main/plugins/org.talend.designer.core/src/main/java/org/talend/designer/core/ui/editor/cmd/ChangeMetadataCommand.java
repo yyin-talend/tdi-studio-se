@@ -13,9 +13,11 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -429,34 +431,71 @@ public class ChangeMetadataCommand extends Command {
             }
         } else {
             if (!node.getOutgoingConnections().isEmpty()) {
+                IMetadataTable relativeOldOutputMetadata = null;
+                IMetadataTable relativeNewOutputMetadata = null;
+                if (isExecute) {
+                    relativeOldOutputMetadata = oldOutputMetadata;
+                    relativeNewOutputMetadata = newOutputMetadata;
+                } else {
+                    relativeOldOutputMetadata = newOutputMetadata;
+                    relativeNewOutputMetadata = oldOutputMetadata;
+                }
                 for (IConnection outgoingConnection : node.getOutgoingConnections()) {
                     final Node target = (Node) outgoingConnection.getTarget();
                     if (target != null && target.getExternalNode() != null) {
-                        List<IMetadataColumn> oldListColumns = oldOutputMetadata.getListColumns();
-                        List<IMetadataColumn> newListColumns = newOutputMetadata.getListColumns();
+                        List<IMetadataColumn> oldListColumns = relativeOldOutputMetadata.getListColumns();
+                        List<IMetadataColumn> newListColumns = relativeNewOutputMetadata.getListColumns();
                         List<ColumnNameChanged> columnNameChanges = new ArrayList<ColumnNameChanged>();
                         int size = oldListColumns.size();
                         int newSize = newListColumns.size();
                         if (newSize < size) {
                             size = newSize;
                         }
+                        IODataComponent output = new IODataComponent(outgoingConnection, relativeNewOutputMetadata);
+                        if (newListColumns != null) {
+                            List<ColumnNameChanged> newColumnsList = output.getNewMetadataColumns();
+                            // new added columns list
+                            Set<String> newAddedColumns = new HashSet<String>();
+                            // newest columns after user changed
+                            Set<String> newestColumns = new HashSet<String>();
 
-                        for (int i = 0; i < size; i++) {
-                            IMetadataColumn metadataColumn = oldListColumns.get(i);
-                            IMetadataColumn newMetadataColumn = newListColumns.get(i);
-                            if (metadataColumn != null && newMetadataColumn != null) {
-                                String oldLabel = metadataColumn.getLabel();
-                                String newLabel = newMetadataColumn.getLabel();
-                                if (oldLabel != null && !oldLabel.equals(newLabel)) {
-                                    columnNameChanges.add(new ColumnNameChanged(oldLabel, newLabel));
+                            // init
+                            if (newColumnsList != null) {
+                                for (ColumnNameChanged columnChanged : newColumnsList) {
+                                    newAddedColumns.add(columnChanged.getNewName());
+                                }
+                            }
+                            for (IMetadataColumn metadataColumn : newListColumns) {
+                                newestColumns.add(metadataColumn.getLabel());
+                            }
+
+                            // check
+                            for (int i = 0; i < size; i++) {
+                                IMetadataColumn oldMetadataColumn = oldListColumns.get(i);
+                                String columnName = oldMetadataColumn.getLabel();
+                                // if this column(before changing) is not exists in the new columns(after changing),
+                                // there are two possible truth: 1. this column has been renamed; 2. this column has
+                                // been removed
+                                if (!newestColumns.contains(columnName)) {
+                                    IMetadataColumn newMetadataColumn = newListColumns.get(i);
+                                    String newColumnNameAtThisIndex = newMetadataColumn.getLabel();
+                                    // if the column at the same position in new table is a new column(two possible
+                                    // truth: 1. an old column's name has been changed; 2. user add a new column);
+                                    // For now, Seems it is very hard to judge whether it is a renamed column or a new
+                                    // column, so we suppose the more possible truth is that it is a renamed column
+                                    if (newAddedColumns.contains(newColumnNameAtThisIndex)) {
+                                        columnNameChanges.add(new ColumnNameChanged(columnName, newColumnNameAtThisIndex));
+                                    }
                                 }
                             }
                         }
+
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IXmlMapService.class)) {
                             final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
                                     IXmlMapService.class);
                             if (service.isXmlMapComponent(target.getExternalNode())) {
-                                IODataComponent output = new IODataComponent(outgoingConnection, newOutputMetadata);
+                                // IODataComponent output = new IODataComponent(outgoingConnection,
+                                // relativeNewOutputMetadata);
                                 output.setColumnNameChanged(columnNameChanges);
                                 target.metadataInputChanged(output, outgoingConnection.getName());
                             }
@@ -466,7 +505,6 @@ public class ChangeMetadataCommand extends Command {
                             final IDbMapService service = (IDbMapService) GlobalServiceRegister.getDefault().getService(
                                     IDbMapService.class);
                             if (service.isDbMapComponent(target.getExternalNode())) {
-                                IODataComponent output = new IODataComponent(outgoingConnection, newOutputMetadata);
                                 // TDI-25307:should setColumNameChanged here for ELtDbMap in case the propagate schema
                                 // does not affect it.
                                 output.setColumnNameChanged(columnNameChanges);
@@ -594,7 +632,7 @@ public class ChangeMetadataCommand extends Command {
             updateColumnList(oldOutputMetadata, newOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
         }
-        refreshTHMAPObjectType();
+        refreshMetadataChanged();
     }
 
     private org.talend.core.model.metadata.builder.connection.Connection connection;
@@ -727,7 +765,7 @@ public class ChangeMetadataCommand extends Command {
             updateColumnList(newOutputMetadata, oldOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
         }
-        refreshTHMAPObjectType();
+        refreshMetadataChanged();
     }
 
     /**
@@ -808,46 +846,12 @@ public class ChangeMetadataCommand extends Command {
         }
     }
 
-    private void refreshTHMAPObjectType() {
-        if (inputNode != null && inputNode.getComponent().getName().equals("tHMap")) {
-            if (inputNode.getElementParameter("SINGLE_COLUMN_OBJECTTYPE") != null) {
-                boolean isSingleObject = false;
-                if (currentInputMetadata.getListColumns().size() == 1) {
-                    if (currentInputMetadata.getListColumns().get(0).getTalendType().equals("id_Object")) {
-                        inputNode.getElementParameter("SINGLE_COLUMN_OBJECTTYPE").setValue(true);
-                        isSingleObject = true;
-                    }
-                }
-                if (!isSingleObject) {
-                    inputNode.getElementParameter("SINGLE_COLUMN_OBJECTTYPE").setValue(false);
-                    if (inputNode.getElementParameter("AS_STRING") != null) {
-                        inputNode.getElementParameter("AS_STRING").setValue(false);
-                        inputNode.getElementParameter("AS_BYTEARRAY").setValue(false);
-                        inputNode.getElementParameter("AS_INPUTSTREAM").setValue(false);
-                        inputNode.getElementParameter("AS_DOCUMENT").setValue(false);
-                    }
-                }
-            }
+    private void refreshMetadataChanged() {
+        if (inputNode != null && inputNode.getExternalNode() != null) {
+            inputNode.getExternalNode().metadataOutputChanged(currentInputMetadata);
         }
-        if (node != null && node.getComponent().getName().equals("tHMap")) {
-            if (node.getElementParameter("SINGLE_COLUMN_OBJECTTYPE") != null) {
-                boolean isSingleObject = false;
-                if (currentOutputMetadata.getListColumns().size() == 1) {
-                    if (currentOutputMetadata.getListColumns().get(0).getTalendType().equals("id_Object")) {
-                        node.getElementParameter("SINGLE_COLUMN_OBJECTTYPE").setValue(true);
-                        isSingleObject = true;
-                    }
-                }
-                if (!isSingleObject) {
-                    node.getElementParameter("SINGLE_COLUMN_OBJECTTYPE").setValue(false);
-                    if (node.getElementParameter("AS_STRING") != null) {
-                        node.getElementParameter("AS_STRING").setValue(false);
-                        node.getElementParameter("AS_BYTEARRAY").setValue(false);
-                        node.getElementParameter("AS_INPUTSTREAM").setValue(false);
-                        node.getElementParameter("AS_DOCUMENT").setValue(false);
-                    }
-                }
-            }
+        if (node != null && node.getExternalNode() != null) {
+            node.getExternalNode().metadataOutputChanged(currentOutputMetadata);
         }
     }
 

@@ -35,5 +35,4 @@ imports="
 
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Written records count: " + nb_line_<%=cid %> + " .");
-		log.info("<%=cid%> - Done.");
 	<%}%>

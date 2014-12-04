@@ -348,15 +348,18 @@ public final class Expression {
                 }
                 if (node != null) {
                     String relatedNodeName = ElementParameterParser.getValue(node, "__" + varNames[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$
-                    List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
-                    for (INode aNode : generatingNodes) {
-                        if (aNode.getUniqueName().equals(relatedNodeName)) {
-                            simpleExpression = simpleExpression.replace(varNames[0] + "." + varNames[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
-                            List<? extends IElementParameter> elementParameters = aNode.getElementParameters();
-                            // let's supose the currentParam = null, there won't want deal with the TABLE field, only
-                            // deal with LIST/CHECKBOX
-                            return evaluate(simpleExpression, elementParameters);
+                    // if relatedNodeName is empty, maybe means this property have not been setted
+                    if (relatedNodeName != null && !relatedNodeName.trim().isEmpty()) {
+                        List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
+                        for (INode aNode : generatingNodes) {
+                            if (aNode.getUniqueName().equals(relatedNodeName)) {
+                                simpleExpression = simpleExpression.replace(varNames[0] + "." + varNames[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+                                List<? extends IElementParameter> elementParameters = aNode.getElementParameters();
+                                // let's supose the currentParam = null, there won't want deal with the TABLE field,
+                                // only deal with LIST/CHECKBOX
+                                return evaluate(simpleExpression, elementParameters);
 
+                            }
                         }
                     }
                 }
@@ -451,6 +454,9 @@ public final class Expression {
                         List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
                         if (currentParam == null) {
                             continue;
+                        }
+                        if (tableValues.size() <= currentParam.getCurrentRow()) {
+                            break;
                         }
                         Map<String, Object> currentRow = tableValues.get(currentParam.getCurrentRow());
                         if (currentRow.containsKey(varNames[1])) {
@@ -747,28 +753,42 @@ public final class Expression {
                     // debug: System.out.println(leftString + " => " +
                     // leftExpression.isValid());
                 }
-                String rightString = string.substring(i + 3, string.length()).trim();
-                Expression rightExpression = new Expression(rightString);
-                expression.setRightExpression(rightExpression);
-                if (rightString.contains("(") //$NON-NLS-1$
-                        || isThereCondition(rightString, AND) || isThereCondition(rightString, OR)) {
-                    evaluateExpression(rightExpression, listParam, currentParam);
-                } else { // no bracket == evaluate expression
-                    rightExpression.setValid(evaluateSimpleExpression(rightString, listParam, currentParam));
-                    // debug: System.out.println(rightString + " => " +
-                    // rightExpression.isValid());
+
+                boolean needValidRightExpression = true;
+                if (expression.getCondition().equals(AND) && !expression.getLeftExpression().isValid()) {
+                    // if left expression is already false, then needn't continue to validate right expression
+                    expression.setValid(false);
+                    needValidRightExpression = false;
+                } else if (expression.getCondition().equals(OR) && expression.getLeftExpression().isValid()) {
+                    // if left expression is already true, then need't continue to validate right expression
+                    expression.setValid(true);
+                    needValidRightExpression = false;
                 }
-                if (expression.getCondition().equals(AND)) {
-                    if (expression.getLeftExpression().isValid() && expression.getRightExpression().isValid()) {
-                        expression.setValid(true);
-                    } else {
-                        expression.setValid(false);
+
+                if (needValidRightExpression) {
+                    String rightString = string.substring(i + 3, string.length()).trim();
+                    Expression rightExpression = new Expression(rightString);
+                    expression.setRightExpression(rightExpression);
+                    if (rightString.contains("(") //$NON-NLS-1$
+                            || isThereCondition(rightString, AND) || isThereCondition(rightString, OR)) {
+                        evaluateExpression(rightExpression, listParam, currentParam);
+                    } else { // no bracket == evaluate expression
+                        rightExpression.setValid(evaluateSimpleExpression(rightString, listParam, currentParam));
+                        // debug: System.out.println(rightString + " => " +
+                        // rightExpression.isValid());
                     }
-                } else if (expression.getCondition().equals(OR)) {
-                    if (expression.getLeftExpression().isValid() || expression.getRightExpression().isValid()) {
-                        expression.setValid(true);
-                    } else {
-                        expression.setValid(false);
+                    if (expression.getCondition().equals(AND)) {
+                        if (expression.getLeftExpression().isValid() && expression.getRightExpression().isValid()) {
+                            expression.setValid(true);
+                        } else {
+                            expression.setValid(false);
+                        }
+                    } else if (expression.getCondition().equals(OR)) {
+                        if (expression.getLeftExpression().isValid() || expression.getRightExpression().isValid()) {
+                            expression.setValid(true);
+                        } else {
+                            expression.setValid(false);
+                        }
                     }
                 }
             }

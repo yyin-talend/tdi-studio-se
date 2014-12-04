@@ -11,6 +11,7 @@ COMPATIBILITY="ALL"
  RELEASE_DATE="20050320A"
     STARTABLE="true"
 	PARTITIONING="AUTO"
+  LOG4J_ENABLED="true"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
@@ -83,6 +84,19 @@ COMPATIBILITY="ALL"
     </PARAMETER>
 
     <PARAMETER
+      NAME="AUTH_METHOD"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="41"
+      REPOSITORY_VALUE="AUTH_METHOD"
+      SHOW_IF="(SFTP=='true') AND (USE_EXISTING_CONNECTION == 'false')"
+    >
+      <ITEMS DEFAULT="PASSWORD">
+        <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
+        <ITEM NAME="PASSWORD"   VALUE="PASSWORD"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="PRIVATEKEY"
       FIELD="FILE"
       NUM_ROW="22"
@@ -108,20 +122,6 @@ COMPATIBILITY="ALL"
 
     <PARAMETER NAME="MOVE_TO_THE_CURRENT_DIRECTORY" FIELD="CHECK" NUM_ROW="31" SHOW_IF="USE_EXISTING_CONNECTION == 'true'">
       <DEFAULT>true</DEFAULT>
-    </PARAMETER>
-    
-
-    <PARAMETER
-      NAME="AUTH_METHOD"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="41"
-      REPOSITORY_VALUE="AUTH_METHOD"
-      SHOW_IF="(SFTP=='true') AND (USE_EXISTING_CONNECTION == 'false')"
-    >
-      <ITEMS DEFAULT="PASSWORD">
-        <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
-        <ITEM NAME="PASSWORD"   VALUE="PASSWORD"/>
-      </ITEMS>
     </PARAMETER>
 
     <PARAMETER NAME="PERL5_REGEX" FIELD="CHECK" REQUIRED="false" NUM_ROW="50">
@@ -184,7 +184,7 @@ COMPATIBILITY="ALL"
   <CODEGENERATION>
      <IMPORTS>
 		<IMPORT NAME="Java-FTP" MODULE="edtftpj.jar" UrlPath="platform:/plugin/org.talend.libraries.ftp/lib/edtftpj.jar" REQUIRED_IF="(SFTP == 'false') AND (USE_EXISTING_CONNECTION == 'false')"/>
-		<IMPORT NAME="Java-SFTP" MODULE="jsch.jar" UrlPath="platform:/plugin/org.talend.libraries.ftp/lib/jsch.jar" REQUIRED_IF="(SFTP == 'true') AND (USE_EXISTING_CONNECTION == 'false')"/>
+		<IMPORT NAME="Java-SFTP" MODULE="jsch-0.1.51.jar" UrlPath="platform:/plugin/org.talend.libraries.ftp/lib/jsch-0.1.51.jar" REQUIRED_IF="(SFTP == 'true') AND (USE_EXISTING_CONNECTION == 'false')"/>
        <IMPORT NAME="jakarta-oro" MODULE="jakarta-oro-2.0.8.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/jakarta-oro-2.0.8.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>

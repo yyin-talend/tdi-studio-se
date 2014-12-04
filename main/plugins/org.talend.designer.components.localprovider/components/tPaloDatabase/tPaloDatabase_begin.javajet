@@ -11,9 +11,6 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node); 
-	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASS"));
-	log4jFileUtil.logParameters(node); 
 
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
@@ -133,9 +130,6 @@ if(("CREATE").equals(sDatabaseAction)){
 			log.info("<%=cid%> - Delete database '" + <%=sDatabaseName%> + "' has succeeded.");
 		<%}%>
 	}else{
-		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - Database '" + <%=sDatabaseName%> + "' not found.");
-		<%}%>
 		 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 	}
 <%	
@@ -155,4 +149,3 @@ if(("CREATE").equals(sDatabaseAction)){
 	}
 %>
 globalMap.put("<%=cid %>_DATABASENAME",<%=sDatabaseName%>);
-<%log4jFileUtil.componentFinishInfo(node);%>

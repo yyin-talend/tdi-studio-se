@@ -16,8 +16,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
@@ -79,10 +79,12 @@ public class EncryptPasswordInProjectSettingsMigrationTask extends AbstractMigra
                     // variable name used for Stat&Logs
                     if ("PASS".equals(name)) { //$NON-NLS-1$
                         try {
-                            modified = encryptValueIfNeeded(parameterType);
+                            if (encryptValueIfNeeded(parameterType)) {
+                                modified = true;
+                            }
                         } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            ExceptionHandler.process(e);
+                            return ExecutionResult.FAILURE;
                         }
                     }
                 }
@@ -101,10 +103,12 @@ public class EncryptPasswordInProjectSettingsMigrationTask extends AbstractMigra
                     // variable name used for implicit context
                     if ("PASS_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-1$
                         try {
-                            modified = encryptValueIfNeeded(parameterType);
+                            if (encryptValueIfNeeded(parameterType)) {
+                                modified = true;
+                            }
                         } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            ExceptionHandler.process(e);
+                            return ExecutionResult.FAILURE;
                         }
                     }
                 }

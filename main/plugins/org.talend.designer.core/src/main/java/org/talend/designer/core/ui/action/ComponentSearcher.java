@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
@@ -36,6 +37,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.dialog.JobSearchResultProcessor;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
@@ -119,6 +121,16 @@ public class ComponentSearcher {
         try {
             List<IRepositoryViewObject> repositoryObjectList = factory.getAll(ERepositoryObjectType.PROCESS, false);
             repositoryObjectList.addAll(factory.getAll(ERepositoryObjectType.PROCESS_MR, false));
+            repositoryObjectList.addAll(factory.getAll(ERepositoryObjectType.valueOf("PROCESS_STORM"), false));
+            if (ProjectManager.getInstance().getReferencedProjects(ProjectManager.getInstance().getCurrentProject()).size() > 0) {
+                for (Project refProject : ProjectManager.getInstance().getReferencedProjects(
+                        ProjectManager.getInstance().getCurrentProject())) {
+                    repositoryObjectList.addAll(factory.getAll(refProject, ERepositoryObjectType.PROCESS, false));
+                    repositoryObjectList.addAll(factory.getAll(refProject, ERepositoryObjectType.PROCESS_MR, false));
+                    repositoryObjectList
+                            .addAll(factory.getAll(refProject, ERepositoryObjectType.valueOf("PROCESS_STORM"), false));
+                }
+            }
             monitor.beginTask("Searching Component in Jobs ", repositoryObjectList.size()); //$NON-NLS-1$
             for (IRepositoryViewObject rObject : repositoryObjectList) {
                 if (monitor.isCanceled()) {

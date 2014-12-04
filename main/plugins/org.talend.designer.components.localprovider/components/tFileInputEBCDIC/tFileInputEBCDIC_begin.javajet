@@ -19,8 +19,6 @@
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jFileUtil.componentStartInfo(node);
-	log4jFileUtil.logParameters(node);
     String cid = node.getUniqueName();
     
 	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
@@ -37,7 +35,9 @@
 		schemaOptNum  = Integer.parseInt(schemaOptNumStr);
 	}
 	boolean isOptimizeCode=false;
-
+%>
+   int nb_line_<%= cid %> = 0;
+<%
 if(!customSetOriginalLength){//------11111
 %>
 	// open file
@@ -137,6 +137,12 @@ if(!customSetOriginalLength){//------11111
     <%}%>
 	while (rset_<%=cid %>.hasNext()){
 		inrecord_<%=cid %> = rset_<%=cid %>.next();
+		nb_line_<%= cid %> ++;
+
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Retrieving the record " + nb_line_<%= cid %> + ".");
+		<%}%>
+		
 		{
 			
 <%
@@ -197,9 +203,6 @@ if(!customSetOriginalLength){//------11111
 <%
 						}
 					}
-					if(isLog4jEnabled){%>
-		               	log4jSb_<%=cid%>.append(<%=justConn.getName() %>.<%=column.getLabel()%> + "|");
-					<%}
 				}
 %>	
 			}	
@@ -403,9 +406,6 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 <%
 							}
 						}
-						if(isLog4jEnabled){%>
-			               	log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel()%> + "|");
-						<%}
 					}//------BBB12
 			}//------BBB1
 %>

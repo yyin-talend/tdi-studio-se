@@ -45,10 +45,6 @@ boolean sftp = false;
 boolean ftps = false;
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node);
-log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASSWORD","PRIVATEKEY","PASSPHRASE","KEYSTORE_FILE","KEYSTORE_PASS","PROXY_PASSWORD"));
-log4jFileUtil.logParameters(node); 
-
 String passwordFieldName = "";
 
 if ("true".equals(useExistingConn)) {
@@ -238,7 +234,6 @@ if (sftp) { // *** sftp *** //
 					);
 						<%if(isLog4jEnabled){%>
 							log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
-							log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 						<%}%>
         				msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
         				<%if (bPrintMsg) {%>
@@ -251,9 +246,6 @@ if (sftp) { // *** sftp *** //
 							msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsuccessfully.");
 							globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
 						}
-						<%if(isLog4jEnabled){%>
-							log.fatal("<%=cid%> - " + e.getMessage());
-						<%}%>
 				        throw e;
 					}
 					count++;
@@ -267,7 +259,7 @@ if (sftp) { // *** sftp *** //
 				com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
 				<%if(isLog4jEnabled){%>
 					if(c_<%=cid%>!=null && c_<%=cid%>.getSession()!=null) {
-						log.info("<%=cid%> - Uses an existing connection as " + c_<%=cid%>.getSession().getUserName() + ". Connection hostname: " + c_<%=cid%>.getSession().getHost() + ". Connection port: " + c_<%=cid%>.getSession().getPort() + "."); 
+						log.info("<%=cid%> - Use an existing connection.Connection username: " + c_<%=cid%>.getSession().getUserName() + ", Connection hostname: " + c_<%=cid%>.getSession().getHost() + ", Connection port: " + c_<%=cid%>.getSession().getPort() + "."); 
 					}
 				<%}%>
 				if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
@@ -312,13 +304,13 @@ if (sftp) { // *** sftp *** //
 				  	}
 				<%}%>
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' with the username '" + <%=user%> + "'.");
+					log.info("<%=cid%> - Attempt to connect to '" + <%=host %> + "' with username: '" + <%=user%> + "'.");
 				<%}%>
 			    session_<%=cid%>.connect();
 			    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
 			    channel_<%=cid%>.connect();
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+					log.info("<%=cid%> - Connect to '" + <%=host %> + "' has succeeded.");
 				<%}%>
 			    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
 			    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
@@ -457,7 +449,6 @@ if (sftp) { // *** sftp *** //
 			        ftpClient.get(fout, remoteFileName);
 					<%if(isLog4jEnabled){%>
 						log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
-						log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 					<%}%>
           			msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
 					<%if (bPrintMsg) {%>
@@ -471,7 +462,6 @@ if (sftp) { // *** sftp *** //
 						ftpClient.get(localFileName, remoteFileName);
 						<%if(isLog4jEnabled){%>
 							log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
-							log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 						<%}%>
 			            msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
             			<%if (bPrintMsg) {%>
@@ -479,6 +469,9 @@ if (sftp) { // *** sftp *** //
 			            <%}%>
             			globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
 					} else { 
+                        <%if(isLog4jEnabled){%>
+                               log.info("<%= cid %> - file ["+ remoteFileName +"] exit transmission.");
+                        <%}%>
 						msg_<%=cid%>.add("file ["+ remoteFileName +"] exit transmission.");
 			            globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
 					}
@@ -488,7 +481,6 @@ if (sftp) { // *** sftp *** //
 					ftpClient.get(localFileName, remoteFileName);
 					<%if(isLog4jEnabled){%>
 						log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
-						log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 					<%}%>
 					msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
 					<%if (bPrintMsg) {%>
@@ -505,7 +497,6 @@ if (sftp) { // *** sftp *** //
 							ftpClient.get(localFileName, remoteFileName);
 							<%if(isLog4jEnabled){%>
 								log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
-								log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 							<%}%>
             				msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
 							<%if (bPrintMsg) {%>
@@ -513,11 +504,17 @@ if (sftp) { // *** sftp *** //
 							<%}%>
 							globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
 			            } else {
+			                 <%if(isLog4jEnabled){%>
+                                    log.info("<%= cid %> - file ["+ remoteFileName +"] exit transmission.");
+                             <%}%>
             				msg_<%=cid%>.add("file ["+ remoteFileName +"] exit transmission.");
 							globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
 			            }
 					} else {
 						ftpClient.get(localFileName, remoteFileName);
+						<%if(isLog4jEnabled){%>
+								log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
+						<%}%>
 				 		msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
 						<%if (bPrintMsg) {%>
 							System.out.println("file [" + remoteFileName + "] downloaded successfully.");
@@ -530,9 +527,6 @@ if (sftp) { // *** sftp *** //
 			} catch (com.enterprisedt.net.ftp.FTPException e) {
 		        msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsuccessfully.");
         		globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e.getMessage());
-				<%}%>
         		throw e;
       		}
 		      count++;
@@ -550,7 +544,7 @@ if (sftp) { // *** sftp *** //
 	  	<%}%>
 		<%if(isLog4jEnabled){%>
 			if(ftp_<%=cid %>!=null) {
-				log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + ftp_<%=cid %>.getRemoteHost() + ". Connection port: " + ftp_<%=cid %>.getRemotePort() + "."); 
+				log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + ftp_<%=cid %>.getRemoteHost() + ", Connection port: " + ftp_<%=cid %>.getRemotePort() + "."); 
 			}
 		<%}%>
 	<%} else {%>    
@@ -573,7 +567,7 @@ if (sftp) { // *** sftp *** //
     %>
 	    ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' with the username '" +<%=user %>+ "'.");
+			log.info("<%=cid%> - Attempt to connect to '" + <%=host %> + "' with username '" +<%=user %>+ "'.");
 		<%}%>
 	    ftp_<%=cid %>.connect();
 	    
@@ -585,7 +579,7 @@ if (sftp) { // *** sftp *** //
 	    
     	ftp_<%=cid %>.login(<%=user %>, decryptedPassword_<%=cid%>);  
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+			log.info("<%=cid%> - Connect to '" + <%=host %> + "' has succeeded.");
 		<%}%>  
 	<%} %>
 	msg_<%=cid%>.clearAll();
@@ -673,7 +667,6 @@ if (sftp) { // *** sftp *** //
 			ftpClient.download(remoteFileName, localFile);
 			<%if(isLog4jEnabled){%>
 				log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
-				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 			<%}%>
 	      count++;
 		}
@@ -741,8 +734,8 @@ if (sftp) { // *** sftp *** //
 				}
 %>
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - FTPS authentication (<%=securityMode%>).");
-					log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" + <%=user %>+ "'.");
+					log.info("<%=cid%> - FTPS security Mode is (<%=securityMode%>).");
+					log.info("<%=cid%> - Attempt to connect to '" + <%=host %> + "' with username: '" + <%=user %>+ "'.");
 				<%}%>
 				ftp_<%=cid %>.connect(<%=host %>,<%=port %>);
 				
@@ -754,7 +747,7 @@ if (sftp) { // *** sftp *** //
             	
 				ftp_<%=cid %>.login(<%=user %>, decryptedPassword_<%=cid%>);
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+					log.info("<%=cid%> - Connect to '" + <%=host %> + "' has succeeded.");
 				<%}%>
     <%  
     		} else {
@@ -766,7 +759,7 @@ if (sftp) { // *** sftp *** //
 				<%}%>
 				<%if(isLog4jEnabled){%>
 					if(ftp_<%=cid %>!=null) {
-						log.info("<%=cid%> - Uses an existing connection as " + ftp_<%=cid %>.getUsername() + ". Connection hostname: " + ftp_<%=cid %>.getHost() + ". Connection port: " + ftp_<%=cid %>.getPort() + "."); 
+						log.info("<%=cid%> - Use an existing connection.Connection username: " + ftp_<%=cid %>.getUsername() + ", Connection hostname: " + ftp_<%=cid %>.getHost() + ", Connection port: " + ftp_<%=cid %>.getPort() + "."); 
 					}
 				<%}%>
     <%  

@@ -16,11 +16,6 @@ boolean forLoop = ("true").equals(ElementParameterParser.getValue(node,"__FORLOO
 boolean whileLoop = ("true").equals(ElementParameterParser.getValue(node,"__WHILELOOP__"));
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	if(isLog4jEnabled){
-%>
-		log.info("<%=cid%> - Start to work.");
-<%
-	}
 %>
 int current_iteration_<%=cid%> = 0;
 <%
@@ -35,7 +30,7 @@ if (("").equals(step)) step = "1";
 boolean increase = ("true").equals(ElementParameterParser.getValue(node, "__INCREASE__"));
 if(isLog4jEnabled){
 %>
-	log.info("<%=cid%> - Start to loop from " + <%=from%> + " to " + <%=to%> + " with a step of " + <%=step%> + " (" + <%=increase?"\"Increasing\"":"\"Decreasing\""%> + ").");
+	log.info("<%=cid%> - Start to loop from " + (<%=from%>) + " to " + (<%=to%>) + " with a step of " + (<%=step%>) + " (" + <%=increase?"\"Increasing\"":"\"Decreasing\""%> + ").");
 <%
 }
 if(increase){%>
@@ -56,24 +51,14 @@ globalMap.put("<%=cid%>_CURRENT_ITERATION",current_iteration_<%=cid%>);
 }else{// While type
 
 String condition = ElementParameterParser.getValue(node, "__CONDITION__");
-if (condition.startsWith("\"") && condition.endsWith("\"")) {
-    condition = condition.substring(1, condition.length()-1);
-}
-
 String declaration = ElementParameterParser.getValue(node, "__DECLARATION__");
-if (declaration.startsWith("\"") && declaration.endsWith("\"")) {
-    declaration = declaration.substring(1, declaration.length()-1);
-}
-
-
 
 %>
 
 <%=declaration%>;
 	<%if(isLog4jEnabled){
-		String cdn = ElementParameterParser.getValue(node, "__CONDITION__");
-		%>
-		log.info("<%=cid%> - Start to loop using a while loop. Initial declaration: '" + "<%=declaration%>" + "'. Condition: '" + <%=cdn%> + "'.");
+	%>
+		log.info("<%=cid%> - Start to loop using a while loop. Initial declaration: '" + <%=org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, "DECLARATION")%> + "'. Condition: '" + <%=org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, "CONDITION")%> + "'.");
 	<%}%>
 while(<%=condition%>){
 	<%if(isLog4jEnabled){%>

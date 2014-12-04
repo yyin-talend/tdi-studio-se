@@ -13,7 +13,7 @@ imports="
 	org.talend.core.model.metadata.types.JavaType
 " 
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -24,6 +24,8 @@ String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 boolean ignore_NS_Str = ("true").equals(ElementParameterParser.getValue(node, "__IGNORE_NS__"));
+
+final boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 String strXMLField = ElementParameterParser.getValue(node, "__USE_XML_FIELD__");
 boolean useXMLField = (strXMLField!=null&&!("").equals(strXMLField))?("true").equals(strXMLField):false;
@@ -270,6 +272,11 @@ if (outConn!=null) {
 	<%=rejectConnName %>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 <%
 		} else if(("").equals(rejectConnName)){
+			if(isLog4jEnabled) {
+%>
+	log.error("<%=cid%> - " + ex_<%=cid %>.getMessage());
+<%
+			}
 %>
     System.err.println(ex_<%=cid %>.getMessage());
 <%
@@ -301,6 +308,8 @@ if(outConns!=null){
 	
 	    	nb_line_<%=cid%>++;	
 <%
+		log4jFileUtil.logCurrentRowNumberInfo();
+		
 		if (limit.compareTo("-1")!=0) {
 %>
 	    	if (nb_line_<%=cid%>><%=Integer.parseInt(limit)%>) {
@@ -518,6 +527,11 @@ if(outConns!=null){
 	<%=firstConnName %> = null;
 <%
 		} else if(("").equals(rejectConnName)){
+			if(isLog4jEnabled) {
+%>
+	log.error("<%=cid%> - " + ex_<%=cid %>.getMessage());
+<%
+			}
 %>
     System.err.println(ex_<%=cid %>.getMessage());
     <%=firstConnName %> = null;

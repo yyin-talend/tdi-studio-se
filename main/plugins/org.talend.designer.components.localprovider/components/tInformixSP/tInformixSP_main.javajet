@@ -13,7 +13,7 @@ imports="
 	java.util.HashMap
 " 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 /* Algorithm:
  * For each procedure arguments
@@ -39,7 +39,8 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+       dbLog = new DBLogUtil(node);
+String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
 List<Map<String, String>> spArgs =
 	(List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 
@@ -209,11 +210,11 @@ if (canGenerate) {
 	  			<%
 			}
 		}
-		
+		dbLog.info(dbLog.str("Try to execute store procedure:"),spName,dbLog.str("."));
 		%>
 		statement_<%=cid%>.execute();
 		<%
-		
+		dbLog.info(dbLog.str("The store procedure:"),spName,dbLog.str(" executed successfully."));
 		List<? extends IConnection> outConnections = node.getOutgoingConnections();
 		IConnection firstOutConnection = null;
 		

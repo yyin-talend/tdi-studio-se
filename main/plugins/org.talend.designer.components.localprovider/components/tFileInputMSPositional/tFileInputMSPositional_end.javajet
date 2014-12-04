@@ -6,6 +6,7 @@
 		java.util.List 
 	" 
 %>
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -15,6 +16,9 @@
 	if (conns!=null && conns.size()>0) { //1
 %>
 		nb_line_<%=cid%>++;
+<%
+		log4jFileUtil.debugRetriveData(node);
+%>
 		
 		if(limit_<%=cid %> != -1 && nb_line_<%=cid %> >= limit_<%=cid %>){
 			break;
@@ -27,5 +31,6 @@
 	globalMap.put("<%=cid%>_NB_LINE_UNKOWN_HEADER_TYPES", nb_line_unknownHeader_<%=cid%>);
 	globalMap.put("<%=cid%>_NB_LINE_PARSE_ERRORS", nb_line_parseError_<%=cid%>);
 <%
+		log4jFileUtil.retrievedDataNumberInfo();
 	} //1
 %>

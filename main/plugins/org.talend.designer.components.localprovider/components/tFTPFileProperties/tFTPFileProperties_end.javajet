@@ -90,6 +90,3 @@ if (sftp && !bUseExistingConn) { // *** sftp *** //
 }
 %>
 
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Done.");
-<%}%>

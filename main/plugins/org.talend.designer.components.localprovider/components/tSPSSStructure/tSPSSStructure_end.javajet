@@ -8,7 +8,6 @@ imports="
     java.util.List
 "
 %>
-<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -32,10 +31,6 @@ if (conns!=null) {
 
 if (outputConnName != null){
 %>
-	<%if(isLog4jEnabled){%>
-		log.debug("<%=cid%> - Retrieving the record " + nb_line_<%=cid %> + " .");
-		log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid %> + ":" + log4jSb_<%=cid%> + ".");
-	<%}%> 
 	}
 	<%=cid%>_sf.close();
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
@@ -44,5 +39,4 @@ if (outputConnName != null){
 	<%}%>
 <%
 }
-log4jFileUtil.componentFinishInfo(node);
 %>

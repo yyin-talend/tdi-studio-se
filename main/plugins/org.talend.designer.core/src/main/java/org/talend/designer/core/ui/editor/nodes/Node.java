@@ -73,7 +73,6 @@ import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
-import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
@@ -538,6 +537,20 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
 
+            }
+        }
+
+        // TDI-30811:tSalesforcebulkexec/tSalesforceOutput link tLogRow with main line has compile error
+        if (this.component != null && this.component.isSchemaAutoPropagated() && !this.getProcess().isDuplicate()) {
+            // only apply this to init the component when create ,if it's a duplicate process, only used for code
+            // generation, no need to update any data.
+            IElementParameter schemaTypeParam = this.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            if (schemaTypeParam != null) {
+                IMetadataTable metadataTable = this.getMetadataFromConnector(schemaTypeParam.getContext());
+                if (metadataTable != null) {
+                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(this, schemaTypeParam, metadataTable, metadataTable);
+                    cmd.execute(true);
+                }
             }
         }
 
@@ -1144,9 +1157,11 @@ public class Node extends Element implements IGraphicalNode {
             }
 
             INodeConnector mainConnector;
+            boolean isFlowMain = false;
             if (isELTComponent()) {
                 mainConnector = this.getConnectorFromType(EConnectionType.TABLE);
             } else {
+                isFlowMain = true;
                 mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
 
@@ -1196,7 +1211,20 @@ public class Node extends Element implements IGraphicalNode {
                     // if the selected connector's schema type is in repository
                     // mode or read only, then don't propagate.
                     for (INodeConnector connector : getListConnector()) {
-                        if (mainConnector.getName().equals(connector.getBaseSchema())) {
+                        if (mainConnector.getName().equals(connector.getBaseSchema())
+                                && (isFlowMain ? connector.getMaxLinkInput() > 0 : true)) {
+                            /**
+                             * For FLOW(not include TABLE), I think, only for the input metatable is enough, because:<br>
+                             * 1. The following called ChangeMetadataCommand are always seem everytime<br>
+                             * 2. If the input table is not changed, maybe output table should not change too, because
+                             * output data is come from input data<br>
+                             * 3. The called ChangeMetadataCommand will change all the output tables every time for
+                             * FLOW, and seems will not change the output tables for TABLE if the connection is TABLE
+                             * type; so for TABLE type just keep like before, maybe need review.<br>
+                             * 4. While column datas in output tables are more than datas in input tables, if call multy
+                             * times for output table, maybe will make all the column datas in output table same with
+                             * the columns datas of the output table which is called last time.
+                             */
 
                             IMetadataTable targetTable = this.getMetadataFromConnector(connector.getName());
                             if (targetTable == null) {
@@ -1790,12 +1818,13 @@ public class Node extends Element implements IGraphicalNode {
                         refreshNodeContainer();
                     }
                 } else {
-                    IConnection[] conns = process.getAllConnections(null);
-                    for (IConnection conn : conns) {
-                        if (conn instanceof IPerformance) {
-                            ((IPerformance) conn).setPerformanceData(""); //$NON-NLS-1$
-                        }
-                    }
+                    // Fix for TDI-30185:statistics should not be cleard on preoperty change
+                    // IConnection[] conns = process.getAllConnections(null);
+                    // for (IConnection conn : conns) {
+                    // if (conn instanceof IPerformance) {
+                    //                            ((IPerformance) conn).setPerformanceData(""); //$NON-NLS-1$
+                    // }
+                    // }
                 }
             }
         }
@@ -2520,6 +2549,18 @@ public class Node extends Element implements IGraphicalNode {
                                 }
                             }
                         }
+                        Object type = tabMap.get("TYPE");
+                        if (type != null && type.toString().equals("SINGLE")) {
+                            Object code = tabMap.get("SCHEMA");
+                            IMetadataTable metaTable = this.getMetadataTable(code.toString());
+                            if (metaTable != null) {
+                                if (metaTable.getListColumns(true).size() > 1) {
+                                    String warnMessage = Messages.getString("Node.hasMoreThenOneColumn", metaTable.getLabel()); //$NON-NLS-1$
+                                    Problems.add(ProblemStatus.WARNING, this, warnMessage);
+                                }
+                            }
+                        }
+
                     }
                 }
                 if (inexistentColumns.length() > 0) {
@@ -3362,8 +3403,10 @@ public class Node extends Element implements IGraphicalNode {
                 if (getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0 && noSchema) {
                     if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0)
                             || (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) > 0)) {
-                        String errorMessage = Messages.getString("Node.outputNeedInputLink"); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        if (!this.getComponent().getName().equals("tSAPBapi")) {
+                            String errorMessage = Messages.getString("Node.outputNeedInputLink"); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
                     }
                 }
             }
@@ -3514,7 +3557,7 @@ public class Node extends Element implements IGraphicalNode {
                                 schemaSynchronized = false;
                                 String errorMessage = Messages.getString(
                                         "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
-                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
                         } else if (connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() == 0) {
                             if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)) {
@@ -4569,6 +4612,16 @@ public class Node extends Element implements IGraphicalNode {
 
         }
         return false;
+    }
+
+    public boolean isProgressBarNeeded() {
+        boolean needBar = true;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+            IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                    IMRProcessService.class);
+            needBar = mrService.isProgressBarNeeded(process);
+        }
+        return needBar;
     }
 
     public void defineAsSubjobMapReduceStart() {

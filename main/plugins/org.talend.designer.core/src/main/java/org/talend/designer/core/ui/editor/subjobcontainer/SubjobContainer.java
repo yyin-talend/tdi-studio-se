@@ -526,6 +526,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         if (id.equals(EParameterName.COLLAPSED.getName())) {
             // refreshOutputConnections();
             updateSubjobContainer();
+            refreshMRProgressBar();
         } else if (id.equals(EParameterName.SUBJOB_COLOR.getName()) || id.equals(EParameterName.SHOW_SUBJOB_TITLE.getName())
                 || id.equals(EParameterName.SUBJOB_TITLE.getName())) {
             fireStructureChange(UPDATE_SUBJOB_DATA, this);
@@ -577,6 +578,16 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 }
             }
             fireStructureChange(UPDATE_SUBJOB_CONNECTIONS, this);
+        }
+    }
+
+    private void refreshMRProgressBar() {
+        for (NodeContainer nc : this.getNodeContainers()) {
+            if (nc instanceof JobletContainer) {
+                if (nc.getNode().isMapReduceStart()) {
+                    ((JobletContainer) nc).updateState("UPDATE_MR_STATUS", "CLEAR", new Double(0), new Double(0)); //$NON-NLS-1$
+                }
+            }
         }
     }
 

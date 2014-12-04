@@ -33,7 +33,6 @@ if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
 globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
 <%
 log4jCodeGenerateUtil.retrieveRecordsCount(node);
-log4jCodeGenerateUtil.infoComponentEnd(node);
 %>
 
 

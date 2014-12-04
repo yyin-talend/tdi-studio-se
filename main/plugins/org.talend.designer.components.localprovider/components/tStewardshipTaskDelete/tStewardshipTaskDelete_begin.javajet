@@ -30,6 +30,7 @@
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	boolean targetRecordOnly = ("true").equals(ElementParameterParser.getValue(node,"__TARGET_RECORD_ONLY__"));
 	boolean isDeleteById = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_BY_ID__"));
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 	int deleted_task_<%=cid%> = 0;	
         java.net.Authenticator.setDefault(new java.net.Authenticator() {
@@ -45,9 +46,22 @@
         }});
 		
 		java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");
+		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Attempt to get a task delete service from: " + wsdlUrl_<%=cid%> + ".");
+		<%
+		}
+		%>
 		org.talend.datastewardship.server.ws.TDSCWS_Service service_<%=cid%> = new org.talend.datastewardship.server.ws.TDSCWS_Service(wsdlUrl_<%=cid%>);
 		org.talend.datastewardship.server.ws.TDSCWS TDSCWS_<%=cid%> = service_<%=cid%>.getTDSCWSImplPort();
 		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Got successfully.");
+			log.info("<%=cid%> - Start to delete tasks from server.");
+		<%
+		}
 		if(!isDeleteById){
 		%>
 			String startDateString_<%=cid%> = <%=startDate.equals("")?null:startDate%>;
@@ -69,7 +83,6 @@
 	            java.util.GregorianCalendar endDate_<%=cid%> = (java.util.GregorianCalendar) endCal_<%=cid%>;
 				endXMLGregorianCalendar_<%=cid%> = factory_<%=cid%>.newXMLGregorianCalendar(endDate_<%=cid%>);
 			}
-			
 			deleted_task_<%=cid%> = TDSCWS_<%=cid%>.deleteTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>,<%=status.equals("null")?null:"\""+status+"\""%>);
 		<%
 		}

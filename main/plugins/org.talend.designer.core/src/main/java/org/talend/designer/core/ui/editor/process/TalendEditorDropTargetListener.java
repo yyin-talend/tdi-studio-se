@@ -78,7 +78,7 @@ import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IHL7Constant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.ISAPConstant;
-import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.metadata.MetadataSchemaType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
@@ -91,7 +91,6 @@ import org.talend.core.model.metadata.builder.connection.MdmConceptType;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
-import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.impl.BRMSConnectionImpl;
@@ -142,6 +141,7 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command;
+import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForSAPBapi;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForSAPCommand;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
@@ -904,10 +904,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
             }
             ConnectionItem connectionItem = (ConnectionItem) dragNode.getObject().getProperty().getItem();
-            Command command = getChangeMetadataCommand(dragNode, node, connectionItem);
-            if (command != null) {
-                cc.add(command);
-            }
+            getChangeMetadataCommand(cc, dragNode, node, connectionItem);
+
             if (isValRulesLost) {
                 ValidationRulesUtil.appendRemoveValidationRuleCommands(cc, node);
             }
@@ -1099,11 +1097,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     execCommandStack(new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition));
                 }
                 // initialize the propertiesView
-
-                List<Command> commands = createRefreshingPropertiesCommand(selectedNode, node);
-                for (Command command : commands) {
-                    execCommandStack(command);
-                }
+                CompoundCommand cc = new CompoundCommand();
+                createRefreshingPropertiesCommand(cc, selectedNode, node);
+                execCommandStack(cc);
+                // for (Command command : commands) {
+                // }
 
                 propaHadoopCfgChanges(selectedNode);
 
@@ -1170,8 +1168,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * @param selectedNode
      * @param node
      */
-    private List<Command> createRefreshingPropertiesCommand(RepositoryNode selectedNode, Node node) {
-        List<Command> list = new ArrayList<Command>();
+    private List<Command> createRefreshingPropertiesCommand(CompoundCommand cc, RepositoryNode selectedNode, Node node) {
+        // List<Command> list = new ArrayList<Command>();
         if (selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
             String propertyId = selectedNode.getObject().getProperty().getId();
             ConnectionItem originalConnectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
@@ -1209,7 +1207,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                 String cdcTypeMode = ((DatabaseConnection) originalConnection).getCdcTypeMode();
                                 Command logModeCmd = new PropertyChangeCommand(node, EParameterName.CDC_TYPE_MODE.getName(),
                                         CDCTypeMode.LOG_MODE.getName().equals(cdcTypeMode));
-                                list.add(logModeCmd);
+                                cc.add(logModeCmd);
                             }
                             // set lib for as400 so far.
                             final String name = "SOURCE_LIB"; //$NON-NLS-1$
@@ -1223,24 +1221,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                     propValue = TalendTextUtils.addQuotes(databaseConnection.getSID());
                                 }
                                 Command libSettingCmd = new PropertyChangeCommand(node, name, propValue);
-                                list.add(libSettingCmd);
+                                cc.add(libSettingCmd);
                             }
                         }
                     }
                 }
 
-            }
-
-            // for SAP
-            if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_SAP_FUNCTION
-                    && PluginChecker.isSAPWizardPluginLoaded()) {
-                SAPFunctionUnit functionUnit = (SAPFunctionUnit) ((SAPFunctionRepositoryObject) selectedNode.getObject())
-                        .getAbstractMetadataObject();
-                for (MetadataTable table : functionUnit.getTables()) {
-                    Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
-                            table.getLabel(), ConvertionHelper.convert(table), functionUnit);
-                    list.add(sapCmd);
-                }
             }
 
             // fore EBCDIC, by cli
@@ -1251,7 +1237,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     for (MetadataTable table : ConnectionHelper.getTables(originalConnection)) {
                         Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
                                 table.getLabel(), ConvertionHelper.convert(table));
-                        list.add(ebcdicCmd);
+                        cc.add(ebcdicCmd);
                     }
                 }
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
@@ -1262,7 +1248,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
                     Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
                             table.getLabel(), ConvertionHelper.convert(table));
-                    list.add(ebcdicCmd);
+                    cc.add(ebcdicCmd);
                 }
             }
             // fore HL7, by gcui
@@ -1304,7 +1290,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     for (MetadataTable table : ConnectionHelper.getTablesWithOrders(originalConnection)) {
                         Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS,
                                 table.getLabel(), ConvertionHelper.convert(table));
-                        list.add(hl7Cmd);
+                        cc.add(hl7Cmd);
                     }
                 }
             }
@@ -1413,78 +1399,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     command1.setGuessQuery(true);
                 }
 
-                // Noted by Marvin Wang on Jun. 29, 2012. The piece of code is used to judge if the selected node is SAP
-                // Table node, if so, set up the table name to command.
-                if (selectedNode.getParent() != null
-                        && selectedNode.getParent().getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
-                    IRepositoryViewObject functionObject = selectedNode.getParent().getObject();
-                    if (functionObject instanceof SAPFunctionRepositoryObject) {
-                        SAPFunctionRepositoryObject sapObj = (SAPFunctionRepositoryObject) functionObject;
-                        String connectionId = connection.getId();
-                        String functionId = selectedNode.getParent().getObject().getId();
-                        String tableName = selectedNode.getObject().getLabel();
-                        // IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(connectionId,
-                        // functionId, tableName);
-                        MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) selectedNode.getObject();
+                setSAPSpecailValueForCommand(selectedNode, command1);
 
-                        // object.getTable();
-                        // node.getMetadataList().add(ConvertionHelper.convert(object.getTable()));
-
-                        // Below added by Marvin Wang on July 11, 2012 for subtask TDI-21660.
-                        // If node is tSAPOutput component, then copy the table to metadata list. Otherwise, do nothing.
-                        if ("tSAPOutput".equals(node.getComponent().getName())) {
-                            MetadataToolHelper.copyTable(ConvertionHelper.convert(object.getTable()),
-                                    node.getMetadataList().get(0));
-                        }
-
-                        command1.setSapFunctionLabel(((SAPFunctionUnit) sapObj.getAbstractMetadataObject()).getLabel());
-                        // Below added by Marvin Wang on Jun. 29, 2012 for subtask TDI-21659.
-                        command1.setCurrentTableName(selectedNode.getObject().getLabel());
-                    }
-                }
-
-                if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
-                    IRepositoryViewObject selectedObj = selectedNode.getObject();
-                    if (selectedObj instanceof SAPFunctionRepositoryObject) {
-                        SAPFunctionRepositoryObject sapObj = (SAPFunctionRepositoryObject) selectedObj;
-
-                        command1.setSapFunctionLabel(((SAPFunctionUnit) sapObj.getAbstractMetadataObject()).getLabel());
-
-                        // Below added by Marvin Wang on Jun. 29, 2012 for subtask TDI-21659.
-                        List<IRepositoryNode> nodes = selectedNode.getChildren();
-                        if (nodes != null && nodes.size() > 0) {
-                            String firstTableName = nodes.get(0).getObject().getLabel();
-                            command1.setCurrentTableName(firstTableName);
-                            if ("tSAPOutput".equals(node.getComponent().getName())) {
-                                IElementParameter schemaParam = node
-                                        .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                                schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
-                                        .setValue(EmfComponent.REPOSITORY);
-                            } else {
-                                //
-                            }
-
-                        } else {
-                            if ("tSAPOutput".equals(node.getComponent().getName())) {
-                                IElementParameter schemaParam = node
-                                        .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                                schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
-                                        .setValue(EmfComponent.BUILTIN);
-                                command1.setCurrentTableName(null);
-                            } else {
-                                //
-                            }
-                        }
-                    }
-                }
-                if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_IDOC) {
-                    IRepositoryViewObject selectedObj = selectedNode.getObject();
-                    if (selectedObj instanceof SAPIDocRepositoryObject) {
-                        SAPIDocRepositoryObject sapObj = (SAPIDocRepositoryObject) selectedObj;
-                        command1.setSapIDocLabel(((SAPIDocUnit) sapObj.getAbstractMetadataObject()).getLabel());
-
-                    }
-                }
                 // for salesForce module
                 SalesforceModuleRepositoryObject sfObject = null;
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {
@@ -1501,14 +1417,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         command1.setSalesForceModuleUnit((SalesforceModuleUnit) modelElement);
                     }
                 }
-                list.add(command1);
+                cc.add(command1);
             }
 
             // command used to set metadata
-            Command command = getChangeMetadataCommand(selectedNode, node, originalConnectionItem);
-            if (command != null) {
-                list.add(command);
-            }
+            getChangeMetadataCommand(cc, selectedNode, node, originalConnectionItem);
 
             // command used to set query
             if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
@@ -1520,7 +1433,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (queryParam != null) {
                     RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query, queryParam.getName()
                             + ":" + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value); //$NON-NLS-1$
-                    list.add(command3);
+                    cc.add(command3);
                 }
             } else {
                 if (connection instanceof DatabaseConnection && hasQuery(node)) {
@@ -1535,7 +1448,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType, connection);
                     }
                     if (queryGuessCommand != null) {
-                        list.add(queryGuessCommand);
+                        cc.add(queryGuessCommand);
                     }
                 }
             }
@@ -1546,10 +1459,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // command used to set job
             String value = processItem.getProperty().getId();
             PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS.getName(), value);
-            list.add(command4);
+            cc.add(command4);
             PropertyChangeCommand command5 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_CONTEXT.getName(),
                     processItem.getProcess().getDefaultContext());
-            list.add(command5);
+            cc.add(command5);
         } else if (selectedNode.getObject().getProperty().getItem() instanceof FileItem) { // hywang add for 6484
             if (selectedNode.getObject().getProperty().getItem() instanceof RulesItem) {
                 RulesItem rulesItem = (RulesItem) selectedNode.getObject().getProperty().getItem();
@@ -1563,7 +1476,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     final String showId = rulesItem.getProperty().getId();
                     PropertyChangeCommand command6 = new PropertyChangeCommand(node,
                             EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), showId);
-                    list.add(command6);
+                    cc.add(command6);
                 }
             }
         } else if (selectedNode.getObject().getProperty().getItem() instanceof LinkRulesItem) {
@@ -1576,10 +1489,40 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 final String showId = linkItem.getProperty().getId();
                 PropertyChangeCommand command7 = new PropertyChangeCommand(node,
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), showId);
-                list.add(command7);
+                cc.add(command7);
             }
         }
-        return list;
+        return null;
+    }
+
+    private void setSAPSpecailValueForCommand(RepositoryNode selectedNode, ChangeValuesFromRepository command) {
+        // Noted by Marvin Wang on Jun. 29, 2012. The piece of code is used to judge if the selected node is SAP
+        // Table node, if so, set up the table name to command.
+        IRepositoryViewObject object = selectedNode.getObject();
+        SAPFunctionUnit unit = null;
+        if (object != null) {
+            if (object instanceof MetadataTableRepositoryObject) {
+                MetadataTableRepositoryObject tableObject = (MetadataTableRepositoryObject) object;
+                MetadataTable abstractMetadataObject = (MetadataTable) tableObject.getAbstractMetadataObject();
+                if (abstractMetadataObject != null && abstractMetadataObject.eContainer() instanceof SAPFunctionUnit) {
+                    unit = (SAPFunctionUnit) abstractMetadataObject.eContainer();
+                    command.setSapFunctionLabel(unit.getLabel());
+                    // set table name to functionName/type/tablename;
+                    String currentTableName = unit.getLabel() + "/" + abstractMetadataObject.getTableType() + "/"
+                            + abstractMetadataObject.getLabel();
+                    command.setCurrentTableName(currentTableName);
+                }
+            } else if (object instanceof SAPFunctionRepositoryObject) {
+                SAPFunctionRepositoryObject sapObj = (SAPFunctionRepositoryObject) object;
+                unit = sapObj.getModelElement();
+                command.setSapFunctionLabel(unit.getLabel());
+            } else if (object instanceof SAPIDocRepositoryObject) {
+                SAPIDocRepositoryObject sapObj = (SAPIDocRepositoryObject) object;
+                command.setSapIDocLabel(sapObj.getLabel());
+
+            }
+        }
+
     }
 
     public boolean hasQuery(Node node) {
@@ -1598,7 +1541,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * @param list
      * @param connectionItem
      */
-    private Command getChangeMetadataCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
+    private void getChangeMetadataCommand(CompoundCommand cc, RepositoryNode selectedNode, Node node,
+            ConnectionItem connectionItem) {
         if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE
                 || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION
                 || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {
@@ -1625,8 +1569,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             MetadataTable table = null;
             if (object instanceof MetadataTableRepositoryObject) {
                 table = ((MetadataTableRepositoryObject) object).getTable();
-            } else if (object instanceof SAPFunctionRepositoryObject) {
-                table = (MetadataTable) ((SAPFunctionRepositoryObject) object).getAdapter(MetadataTable.class);
             } else if (object instanceof SalesforceModuleRepositoryObject) {
                 table = ((SalesforceModuleRepositoryObject) object).getDefaultTable();
                 IRepositoryViewObject obj = null;
@@ -1640,6 +1582,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     }
                 }
             }
+            // for SAP
+            if (PluginChecker.isSAPWizardPluginLoaded() && connectionItem instanceof SAPConnectionItem) {
+                getSAPCommand(cc, object, connectionItem, table, node);
+                return;
+
+            }
+
             if (table != null) {
                 String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
                 IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
@@ -1649,11 +1598,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     if (queryParam != null) {
                         queryParam.setValue(EmfComponent.BUILTIN);
                     }
-                }
-                // for SAP
-                Command command = getSAPCommand(object, connectionItem, table, node);
-                if (command != null) {
-                    return command;
                 }
 
                 // for EBCDIC (bug 5860)
@@ -1665,10 +1609,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (PluginChecker.isHL7PluginLoaded() && connectionItem instanceof HL7ConnectionItem) {
                     Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IEbcdicConstant.TABLE_SCHEMAS,
                             table.getLabel(), ConvertionHelper.convert(table));
-                    return hl7Cmd;
+                    cc.add(hl7Cmd);
+                    return;
                 }
                 if (schemaParam == null) {
-                    return null;
+                    return;
                 }
                 if (node.isELTComponent()) {
                     node.setPropertyValue(EParameterName.LABEL.getName(), "__ELT_TABLE_NAME__");
@@ -1677,10 +1622,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":" //$NON-NLS-1$
                         + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null,
                         connectionItem.getConnection());
-                return command2;
+                cc.add(command2);
+                return;
             }
         }
-        return null;
     }
 
     /**
@@ -1692,66 +1637,66 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * @param node
      * @return
      */
-    private Command getSAPCommand(IRepositoryViewObject object, ConnectionItem connectionItem, MetadataTable table, Node node) {
-        String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
-        // for SAP
-        if (PluginChecker.isSAPWizardPluginLoaded() && connectionItem instanceof SAPConnectionItem) {
-            if (object instanceof MetadataTableRepositoryObject) {
-                if (table.eContainer() instanceof SAPFunctionUnit) {
-                    // To judge what the current node is, tSAPOutput or tSAPInput component.
-                    String sapComponentName = node.getComponent().getName();
-                    if ("tSAPOutput".equals(sapComponentName)) {
-                        IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                        schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
-                                .setValue(EmfComponent.REPOSITORY);
+    private void getSAPCommand(CompoundCommand cc, IRepositoryViewObject object, ConnectionItem connectionItem,
+            MetadataTable table, Node node) {
+        SAPFunctionUnit functionUnit = null;
+        if (object instanceof MetadataTableRepositoryObject) {
+            IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            if (table.eContainer() instanceof SAPFunctionUnit) {
+                // function parameter table
+                functionUnit = (SAPFunctionUnit) table.eContainer();
+                // To judge what the current node is, tSAPOutput or tSAPInput component.
+                String sapComponentName = node.getComponent().getName();
+                if ("tSAPBapi".equals(sapComponentName)) {
+                    RepositoryChangeMetadataForSAPBapi command = new RepositoryChangeMetadataForSAPBapi(node,
+                            (SAPFunctionUnit) table.eContainer(), ConvertionHelper.convert(table), null);
+                    cc.add(command);
+                } else {
+                    if (schemaParam != null) {
+                        // repository id should be connectionid - sapfunctionName/type/tableName
+                        String type = table.getTableType() == null ? MetadataSchemaType.OUTPUT.name() : table.getTableType();
+                        String value = connectionItem.getProperty().getId()
+                                + " - " + functionUnit.getLabel() + "/" + type + "/" + table.getLabel(); //$NON-NLS-1$
                         RepositoryChangeMetadataCommand changeValueCmd = new RepositoryChangeMetadataCommand(node,
                                 schemaParam.getName() + ":" //$NON-NLS-1$
                                         + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value,
                                 ConvertionHelper.convert(table), null, connectionItem.getConnection());
-                        return changeValueCmd;
-                    } else {
-                        SAPFunctionUnit functionUnit = (SAPFunctionUnit) table.eContainer();
+                        cc.add(changeValueCmd);
+                    }
+                    IElementParameter schemasParam = node.getElementParameter(ISAPConstant.TABLE_SCHEMAS);
+                    if (schemasParam != null) {
                         Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
                                 table.getLabel(), ConvertionHelper.convert(table), functionUnit);
-                        return sapCmd;
+                        cc.add(sapCmd);
                     }
-                } else {
-                    Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
-                            table.getLabel(), ConvertionHelper.convert(table));
-                    return sapCmd;
                 }
-            } else if (object instanceof SAPFunctionRepositoryObject) {
-                // For subtask TDI-21695, if there are no table nodes under function unit node, setup default
-                // value built-in.
-                if (table.eContainer() instanceof SAPFunctionUnit) {
-                    // To judge what the current node is, tSAPOutput or tSAPInput component.
-                    String sapComponentName = node.getComponent().getName();
-                    if ("tSAPOutput".equals(sapComponentName)) {
-                        SAPFunctionUnit functionUnit = (SAPFunctionUnit) table.eContainer();
-                        EList<MetadataTable> children = functionUnit.getTables();
-                        if (children != null && children.size() > 0) {
-                            // schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
-                            // .setValue(EmfComponent.REPOSITORY);
-                            // // For subtask TDI-21703.
-                            value = connectionItem.getProperty().getId() + " - " + children.get(0).getLabel();
-                        } else {
-                            value = connectionItem.getProperty().getId() + " - ";
-                        }
-                        IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                        schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.BUILTIN);
-                        return new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":" //$NON-NLS-1$
-                                + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null,
-                                connectionItem.getConnection());
-                    } else {
-                        SAPFunctionUnit functionUnit = (SAPFunctionUnit) table.eContainer();
-                        Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
-                                table.getLabel(), ConvertionHelper.convert(table), functionUnit);
-                        return sapCmd;
-                    }
+            } else {
+                // Sap Table : keep repository id as before
+                if (schemaParam != null) {
+                    String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
+                    RepositoryChangeMetadataCommand changeValueCmd = new RepositoryChangeMetadataCommand(node,
+                            schemaParam.getName() + ":" //$NON-NLS-1$
+                                    + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table),
+                            null, connectionItem.getConnection());
+                    cc.add(changeValueCmd);
+                }
+
+            }
+        } else if (object instanceof SAPFunctionRepositoryObject) {
+            functionUnit = (SAPFunctionUnit) ((SAPFunctionRepositoryObject) object).getAbstractMetadataObject();
+            if (node.getComponent() != null && node.getComponent().getName().equals("tSAPBapi")) {
+                RepositoryChangeMetadataForSAPBapi command = new RepositoryChangeMetadataForSAPBapi(node, functionUnit, null,
+                        null);
+                cc.add(command);
+            } else {
+                for (MetadataTable metadataTable : functionUnit.getTables()) {
+                    Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
+                            metadataTable.getLabel(), ConvertionHelper.convert(metadataTable), functionUnit);
+                    cc.add(sapCmd);
                 }
             }
         }
-        return null;
+
     }
 
     private boolean isMdmOutput(RepositoryNode selectedNode, ConnectionItem connectionItem) {

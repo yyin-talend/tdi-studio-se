@@ -422,7 +422,7 @@
           	<ITEM NAME="STREAMSIZE"    VALUE="STREAMSIZE"/>
           </ITEMS>
         </ITEM>
-        <ITEM NAME="VALUE" FIELD="TEXT"/>
+        <ITEM NAME="VALUE" FIELD="TEXT" RAW="true"/>
       </ITEMS>
     </PARAMETER>
 

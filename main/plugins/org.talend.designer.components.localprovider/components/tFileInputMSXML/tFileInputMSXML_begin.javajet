@@ -13,13 +13,14 @@ imports="
 	org.talend.core.model.metadata.types.JavaType
 " 
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
 
+final boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 //List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
@@ -109,6 +110,9 @@ if(connections!=null && connections.size()>0){
 %>
 int nb_line_<%=cid %> = 0;
 <%
+
+log4jFileUtil.startRetriveDataInfo();
+
 // *** dom4j begin *** //
 if(("Dom4j").equals(mode)){
 %>
@@ -317,6 +321,11 @@ for (org.dom4j.Element loop_<%=cid %>: nodeList_<%=cid %>) {
 	
 	while(it_<%=cid%>.hasNext()){
 		nb_line_<%=cid %>++;
+		
+<%
+		log4jFileUtil.debugRetriveData(node);
+%>
+
 		org.dom4j.Element temp_<%=cid %> = it_<%=cid %>.next();
 <%	}else{ // out of order%>
 	java.util.List<java.util.Map<String,org.dom4j.Element>> resultList_<%=cid %> = new java.util.ArrayList<java.util.Map<String,org.dom4j.Element>>();
@@ -424,6 +433,10 @@ looper_<%=cid%>.parse(<%=filename %>);
 	while (it_<%=cid%>.hasNext()) {
 	
 		nb_line_<%=cid %>++;
+		
+<%
+		log4jFileUtil.debugRetriveData(node);
+%>
 		
 		java.util.Map<String, java.util.Map<String,String>> tmp_<%=cid %> = it_<%=cid %>.next();
 <%
@@ -629,6 +642,11 @@ looper_<%=cid%>.parse(<%=filename %>);
             throw(e);
             <%
 	} else {
+		if(isLog4jEnabled) {
+%>
+		log.error("<%=cid%> - " + e.getMessage());
+<%
+		}
 %>
         System.err.println(e.getMessage());
 <%

@@ -431,8 +431,8 @@ public class UpdateNodeParameterCommand extends Command {
                                                     }
                                                 }
                                             }
-                                        } else if ((name.equals("HADOOP_ADVANCED_PROPERTIES") || name.equals("HBASE_PARAMETERS")
-                                                && objectValue instanceof List)) {
+                                        } else if ((name.equals("HADOOP_ADVANCED_PROPERTIES") || name.equals("HBASE_PARAMETERS") || name
+                                                .equals("SAP_PROPERTIES") && objectValue instanceof List)) {
                                             List<HashMap<String, Object>> oldValue = (List<HashMap<String, Object>>) param
                                                     .getValue();
                                             for (HashMap<String, Object> map : oldValue) {
@@ -617,8 +617,22 @@ public class UpdateNodeParameterCommand extends Command {
                                                     && result.getContextModeConnectionItem() != null) {
                                                 final Object value = param.getChildParameters().get("REPOSITORY_SCHEMA_TYPE")
                                                         .getValue();
+                                                // for sap
+                                                String remark = result.getRemark();
+                                                String namePrefix = "";
+                                                if (remark != null) {
+                                                    String[] split = remark.split(UpdatesConstants.SEGMENT_LINE);
+                                                    if (split.length == 2) {
+                                                        String tableName = split[1];
+                                                        String[] tableSplit = tableName.split("/");
+                                                        if (tableSplit.length == 3) {
+                                                            namePrefix = tableSplit[0] + "/" + tableSplit[1] + "/";
+                                                        }
+                                                    }
+                                                }
+
                                                 String idAndName = result.getContextModeConnectionItem().getProperty().getId()
-                                                        + UpdatesConstants.SEGMENT_LINE + newTable.getLabel();
+                                                        + UpdatesConstants.SEGMENT_LINE + namePrefix + newTable.getLabel();
                                                 if (idAndName.equals(value)) {
                                                     cmd = new ChangeMetadataCommand(node, param, null, newTable);
                                                 }

@@ -6,7 +6,6 @@ imports="
 	
 " 
 %>
-<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -21,6 +20,4 @@ if(destination==null || "".equals(destination)){
 <%if(isLog4jEnabled){%>
 	log.debug("<%=cid%> - Extracted records count: " + nb_line_<%=cid %> + " .");
 <%}%>
-<%
-log4jFileUtil.componentFinishInfo(node);
-%>
+

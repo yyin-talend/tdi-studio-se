@@ -35,9 +35,6 @@ if(!customSetOriginalLength){//------11111
 			for (IMetadataColumn column: preMetadatas.get(0).getListColumns()) {
 %>
 				record_<%=cid %>.add(<%=conn.getName() %>.<%=column.getLabel() %>) ;
-				<%if(isLog4jEnabled){%>
-					log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %> + "|");
-				<%}%>
 <%
 			}
 %>
@@ -151,9 +148,6 @@ DB Type of the column:<%=column.getLabel()%> should be X, 3, 9, B, T
 <%
 							}
 %>
-							<%if(isLog4jEnabled){%>
-								log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=inColumn.getLabel()%> + "|");
-							<%}%>
 							fOut_<%=cid%>.flush();
 
 <%

@@ -67,5 +67,4 @@
 	
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - List rules count " + NB_RULES<%=cid%> + " .");
-		log.info("<%=cid%> - Done.");
 	<%}%>

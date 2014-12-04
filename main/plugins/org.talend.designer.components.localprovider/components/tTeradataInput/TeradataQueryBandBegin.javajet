@@ -1,9 +1,7 @@
 <%
-   		Boolean queryBand = "true".equals(ElementParameterParser.getValue(node, "__QUERY_BAND__"));   		
+   		Boolean queryBand = "true".equals(ElementParameterParser.getValue(node, "__QUERY_BAND__"));
       List<Map<String, String>> queryBandList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__QUERY_BAND_PARAMETERS__");
-
       if(queryBand){%>
-             //add query band begin
              boolean currentAutoCommitMode<%= cid %> =  conn_<%=cid%>.getAutoCommit();          
              conn_<%=cid%>.setAutoCommit(true);           
              try{             

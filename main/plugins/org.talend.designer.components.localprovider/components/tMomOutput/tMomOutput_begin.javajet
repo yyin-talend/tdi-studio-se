@@ -33,6 +33,7 @@ class="MomInput"
 	List<Map<String,String>> additionalOpts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADDITIONAL_OPTIONS__");
 
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 		
 	String strHost = null;
@@ -55,7 +56,7 @@ class="MomInput"
 			if (pNode.getUniqueName().equals(connectionComponentName)) {
 				transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
 				serverType=ElementParameterParser.getValue(pNode, "__SERVER__");
-                           	failover =  ("true").equals(ElementParameterParser.getValue(pNode, "__FAILOVER__"));
+                failover =  ("true").equals(ElementParameterParser.getValue(pNode, "__FAILOVER__"));
 			}	
 		}
 	}
@@ -69,10 +70,39 @@ class="MomInput"
         javax.jms.Connection connection_<%=cid %> = null;
 	    javax.jms.Session session_<%=cid %> = null;
         try {
+        	<%
+			if(isLog4jEnabled){
+			%>	
+				log.info("<%=cid%> - Get a connection from component: <%=connectionComponentName%> .");
+			<%
+			}
+			%>
 	        connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
+	        <%
+			if(isLog4jEnabled){
+			%>	
+				log.info("<%=cid%> - Activating the connection...");
+			<%
+			}
+			%>
             connection_<%=cid %>.start();
+            <%
+			if(isLog4jEnabled){
+			%>	
+				log.info("<%=cid%> - Activate successfully.");
+				log.info("<%=cid%> - Get a  session from component: <%=connectionComponentName%> .");
+			<%
+			}
+			%>
 			session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
 		} catch (NullPointerException npe) {
+			<%
+			if(isLog4jEnabled){
+			%>	
+				log.error("<%=cid%> - Got connection unsuccessfully.");
+			<%
+			}
+			%>
 		    throw new RuntimeException("<%=connectionComponentName%> still not initialized. Try to redesign job.");
 		}
 		
@@ -173,7 +203,13 @@ class="MomInput"
 			System.out.println("Connecting to URL: " + url_<%=cid %>);
 			System.out.println("Producing " + (<%=!("Queue").equals(msgType)%> ? "topic" : "queue") + ": " + <%=to %>);
 			
-			
+			<%
+			if(isLog4jEnabled){
+			%>	
+				log.info("<%=cid%> - Attempt to create connection from URL: " + url_<%=cid %> + ".");
+			<%
+			}
+			%>
 			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
 				new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
 		<%
@@ -198,12 +234,30 @@ class="MomInput"
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,decryptedPassword_<%=cid%>);
 		<%
 		} 
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Created connection successfully.");
+			log.info("<%=cid%> - Activating the connection...");
+		<%
+		}
 		%>
-			
 		connection_<%=cid %>.start();
-	
+		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Activate successfully.");
+			log.info("<%=cid%> - Creating a session...");
+		<%
+		}
+		%>
 		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
-		
+		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Created session successfully.");
+		<%
+		}
+		%>
 		javax.jms.Destination des_<%=cid %>;
 		<%
 		if (("Queue").equals(msgType)) {
@@ -236,8 +290,11 @@ class="MomInput"
 
 		<%
 		}
-		%>
-	<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Start to produce " + (<%=!("Queue").equals(msgType)%> ? "topic" : "queue") + ": " + <%=to %>);
+		<%
+		}
 	}else{ //server judgement   /***WebSphere MQ*****/
 		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 		String qm=ElementParameterParser.getValue(node, "__QM__");
@@ -270,10 +327,29 @@ class="MomInput"
 			props_<%=cid%>.put("password",decryptedPassword_<%=cid%>);
 		<%
 		}
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Attempt to create Queue Manager from server.");
+		<%
+		}
 		%>
-	
 		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager(<%=qm%>, props_<%=cid%>);
+		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Created successfully.");
+			log.info("<%=cid%> - Creating queue instance for queue: "+<%=queue%>+"...");
+		<%
+		}
+		%>
 	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = qMgr_<%=cid%>.accessQueue(<%=queue%>, 16);
+	    <%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Created successfully.");
+		<%
+		}
+		%>
 	    com.ibm.mq.MQPutMessageOptions opM_<%=cid%> = new com.ibm.mq.MQPutMessageOptions();
 		<%	    
 	    if (transacted) {
@@ -281,6 +357,11 @@ class="MomInput"
 			opM_<%=cid%>.options=opM_<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
 		<%
 	    }
+	    if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Start to produce queue: " + <%=queue%>);
+		<%
+		}
 	}
 	if(isUseSharedConnection ||("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)){
 		if(setJmsHeader && jmsHeaders !=null && jmsHeaders.size()>0){

@@ -20,7 +20,7 @@ if (node.getIncomingConnections().size()==1) {
 	IConnection conn = node.getIncomingConnections().get(0);
 	connName = conn.getName();
 }
-
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 ///////////////
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS_____0
@@ -31,9 +31,21 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
                 java.util.Arrays.<rowStruct_<%=cid %>> sort(buffer_1_<%=cid %>, 0, rowsInBuffer_1_<%=cid %>, comparator_1_<%=cid %>);
                 
                 java.io.File file_<%=cid %> = new java.io.File(workDirectory_<%=cid %> + "/<%=cid %>_TEMP_" + files_1_<%=cid %>.size());
-                
+                <%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Invoke request to delete file: "+file_<%=cid %>.getPath()+" When VM exit.");
+				<%
+				}
+				%>
                 file_<%=cid %>.deleteOnExit();
-                
+                <%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Writing the data into: "+file_<%=cid %>.getPath());
+				<%
+				}
+				%>
                 java.io.ObjectOutputStream rw_<%=cid %> = new java.io.ObjectOutputStream(new java.io.BufferedOutputStream(
                         new java.io.FileOutputStream(file_<%=cid %>)));
                 for (int i = 0; i < rowsInBuffer_1_<%=cid %>; i++) {
@@ -41,7 +53,13 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
                 }
                 
                 rw_<%=cid %>.close();
-
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Wrote successfully.");
+				<%
+				}
+				%>
                 files_1_<%=cid %>.add(file_<%=cid %>);
 
                 rowsInBuffer_1_<%=cid %> = 0;

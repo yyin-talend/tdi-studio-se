@@ -8,6 +8,11 @@ imports="
     java.util.List
     java.lang.StringBuilder
     java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
+    java.util.Set
+    java.util.Iterator
+    java.util.Arrays
 "
 %>
 <%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
@@ -32,7 +37,7 @@ String execution= ElementParameterParser.getValue(node, "__EXECUTION__");
 String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
-String beginLoad= ElementParameterParser.getValue(node, "__BEGINLOAD_ADVANCEDPARAM__");
+
 boolean returnCodeDie= "true".equals(ElementParameterParser.getValue(node, "__RETURN_CODE_DIE__"));
 String returnCode= ElementParameterParser.getValue(node, "__RETURN_CODE__");
 boolean specifyLogTable= "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_LOG_TABLE__"));
@@ -42,10 +47,51 @@ String charset = ElementParameterParser.getValue(node, "__CHARSET__");
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 boolean checkedScriptParameter = ("true").equals(ElementParameterParser.getValue(node, "__SCRIPT_PARAMETER__"));
+boolean applyOptionalAttributes = "true".equals(ElementParameterParser.getValue(node, "__APPLY_OPTIONAL_ATTRIBUTES__"));
 
 String passwordFieldName="__PASS__";
 
-log4jCodeGenerateUtil.infoComponentStart(node);
+//New Feature TDI-29325 begin
+List<String>  intAttrisList = null;
+List<String>  arrayAttrisList = null;
+Map<String,String> attrisMap = null;
+if(applyOptionalAttributes){
+	List<Map<String,String>> additionalList = null;
+	if("LOAD".equalsIgnoreCase(operatorType)){
+		additionalList = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node,"__TPT_CONSUMER_OPERATOR_OPTIONAL_ATTRIBUTES__");
+	}else if("INSERTER".equalsIgnoreCase(operatorType)){
+		additionalList = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node,"__TPT_COOA_FOR_INSERTER__");
+	}else if("UPDATE".equalsIgnoreCase(operatorType)){
+		additionalList = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node,"__TPT_COOA_FOR_UPDATE__");
+	}else if("STREAM".equalsIgnoreCase(operatorType)){
+		additionalList = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node,"__TPT_COOA_FOR_STREAM__");
+	}else{
+		System.err.println("Unexcepted consumer operator type.");
+	}
+
+	attrisMap =  new HashMap<String,String>();//For unique key
+
+	for(Map<String,String> map : additionalList){
+		String attriName = map.get("OPTIONAL_ATTRIBUTES_NAME");
+		String attriValue = map.get("OPTIONAL_ATTRIBUTES_VALUE");
+		if("WORKINGDATABASE".equalsIgnoreCase(attriName)){
+			dbname = attriValue;
+		}
+		attrisMap.put(attriName, attriValue);
+	}
+
+	intAttrisList = Arrays.asList(
+										"BUFFERSIZE","ERRORLIMIT","MAXSESSIONS",
+										"MINSESSIONS","TENACITYHOURS","TENACITYSLEEP",
+										"BUFFERS","PACK","RATE",
+										"PERIODICITY","IOBUFFERSIZE","ROWSPERINSTANCE",
+										"SKIPROWS","TIMEOUT","VIGILELAPSEDTIME",
+										"VIGILMAXFILES","VIGILWAITTIME"
+								  );
+    arrayAttrisList = Arrays.asList("TRACELEVEL","TARGETTABLE","ERRORTABLE1","ERRORTABLE2","WORKTABLE");
+}
+//end
+
 //windows line separator as default
 String lineSeparator = "\\r\\n";
 if("Unix".equals(execution)){
@@ -110,15 +156,19 @@ try{
 				fw_<%=cid %>.write("  		VARCHAR LogTable, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR TargetTable, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		INTEGER BufferSize, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DataEncryption, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		INTEGER ErrorLimit, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		INTEGER MaxSessions, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		INTEGER MinSessions, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		INTEGER TenacityHours, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		INTEGER TenacitySleep, <%=lineSeparator%>");
-				fw_<%=cid %>.write("  		VARCHAR AccountID, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR AccountId, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR DateForm, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR ErrorTable1, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR ErrorTable2, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogSQL, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogonMech, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogonMechData, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR NotifyExit, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR NotifyExitIsDLL, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR NotifyLevel, <%=lineSeparator%>");
@@ -126,8 +176,10 @@ try{
 				fw_<%=cid %>.write("  		VARCHAR NotifyString, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR PauseAcq, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR PrivateLogName,<%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR QueryBandSessInfo,<%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR TdpId, <%=lineSeparator%>");
-				fw_<%=cid %>.write("  		VARCHAR TraceLevel, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ARRAY TraceLevel, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR WildcardInsert, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR WorkingDatabase<%=lineSeparator%>");
 				fw_<%=cid %>.write("  	);<%=lineSeparator%>");
 				fw_<%=cid %>.write("  <%=lineSeparator%>");
@@ -143,6 +195,14 @@ try{
 				fw_<%=cid %>.write("  		VARCHAR Tdpid, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR DateForm, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR PrivateLogName, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR AccountId, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DataEncryption, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogSQL, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogonMech, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogonMechData, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR QueryBandSessInfo, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ReplicationOverride, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ARRAY TraceLevel, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR WorkingDatabase <%=lineSeparator%>");
 				fw_<%=cid %>.write("  	);<%=lineSeparator%>");
 				fw_<%=cid %>.write("  <%=lineSeparator%>");
@@ -158,6 +218,34 @@ try{
 				fw_<%=cid %>.write("  		VARCHAR Tdpid, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR PrivateLogName, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR LogTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ARRAY TraceLevel, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER BufferSize, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER ErrorLimit, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER MaxSessions, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER MinSessions, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER TenacityHours, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER TenacitySleep, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR AccountId, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR AmpCheck, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DataEncryption, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DateForm, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DeleteTask, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DropErrorTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DropLogTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DropWorkTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogSQL, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogonMech, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogonMechData, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyExit, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyExitIsDLL, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyLevel, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyMethod, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyString, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR PauseAcq, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR QueryBandSessInfo, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR QueueErrorTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ARRAY WorkTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR WorkingDatabase, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR ARRAY TargetTable, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR ARRAY ErrorTable1, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR ARRAY ErrorTable2 <%=lineSeparator%>");
@@ -177,6 +265,37 @@ try{
 				fw_<%=cid %>.write("  		VARCHAR LogTable, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR ErrorTable, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR AppendErrorTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER Buffers, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER ErrorLimit, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER MaxSessions, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER MinSessions, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER Pack, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER Rate, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER Periodicity, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER TenacityHours, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		INTEGER TenacitySleep, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR AccountId, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ArraySupport, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DataEncryption, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DateForm, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR DropMacro, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogonMech, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogonMechData, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR MacroDatabase, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR OperatorCommandID, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyExit, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyExitIsDLL, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyLevel, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyMethod, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR LogSQL, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR NotifyString, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR PackMaximum, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR QueryBandSessInfo, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR QueueErrorTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ReplicationOverrride, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR Robust, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR WorkingDatabase, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ARRAY TraceLevel, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR DropErrorTable<%=lineSeparator%>");
 				fw_<%=cid %>.write("  	);<%=lineSeparator%>");
 				fw_<%=cid %>.write("  <%=lineSeparator%>");
@@ -194,7 +313,7 @@ try{
 					<%
 						} else {
 					%>
-							fw_<%=cid %>.write("               <%=column.getOriginalDbColumnName()%>"+" VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>)<%=lineSeparator%>");
+						fw_<%=cid %>.write("               <%=column.getOriginalDbColumnName()%>"+" VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>)<%=lineSeparator%>");
 					<% 	}
 						counter++;
 					}
@@ -315,9 +434,15 @@ try{
 		                    fw_<%=cid %>.write("            'UPDATE " + <%=dbname%> + "." + <%=table%> + " SET <%= setStrBuilder.toString() %> WHERE <%= whereStrBuilder.toString() %>;',<%=lineSeparator%>");
 		                    fw_<%=cid %>.write("            'INSERT INTO "+ <%=dbname%> + "." + <%=table%>+" (<%=inserterColsStrBuilder.toString()%>) VALUES (<%=inserterValueSqlStrBuilder.toString()%>);'<%=lineSeparator%>");
 		                <%}else{
-		                    //unexcepted DML type
+		                    %>
+		                      System.err.println("Unexcepted DML type.");
+		                    <%
 		                } %>
-                <%}else{} %>
+                <%}else{
+                	%>
+                	  	System.err.println("Unknow customer operator.");
+                	<%
+	            } %>
 
                 fw_<%=cid %>.write("        )<%=lineSeparator%>");
                 <%  if(("Update".equals(operatorType) || "Stream".equals(operatorType)) && "InsertOrUpdate".equals(dmlType)){%>
@@ -335,26 +460,65 @@ try{
 				<%@ include file="../templates/password.javajet"%>
 
                 fw_<%=cid %>.write("            UserPassword = '" + decryptedPassword_<%=cid%> + "',<%=lineSeparator%>");
-                fw_<%=cid %>.write("            TdpId = '" + <%=tdpid%> + "',<%=lineSeparator%>");
-                fw_<%=cid %>.write("            PrivateLogName = '" + tableFullName_<%=cid%> + "_log'<%=lineSeparator%>");
+                fw_<%=cid %>.write("            TdpId = '" + <%=tdpid%> + "'<%=lineSeparator%>");                
 
                 <% if("Load".equals(operatorType)){%>
                 	    fw_<%=cid %>.write("            ,TargetTable = '" + tableFullName_<%=cid%> + "'<%=lineSeparator%>");
                 	<% if(specifyLogTable){ %>                	    
-                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");                	    
+                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
                 	<% } %>
                 <%} if("Update".equals(operatorType)){%>
                 	<% if(specifyLogTable){ %>                	    
-                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");                	    
+                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
                 	<% } %>
                 		fw_<%=cid %>.write("            ,TargetTable = ['" + tableFullName_<%=cid%> + "']<%=lineSeparator%>");
                 <%} if("Stream".equals(operatorType)){%>
-                	<% if(specifyLogTable){ %>                	    
-                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");                	    
-                	<% } %>					    
-					    fw_<%=cid %>.write("            ,AppendErrorTable = 'Y'<%=lineSeparator%>");
-					    fw_<%=cid %>.write("            ,DropErrorTable = 'N'<%=lineSeparator%>");
-            <%}%>
+                	<% if(specifyLogTable){ %>
+                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
+                	<% }
+                }
+					//New Feature TDI-29325
+					if(applyOptionalAttributes){
+						Set<String> attrisKeySet = attrisMap.keySet();
+						for(String key : attrisKeySet){
+							String value = attrisMap.get(key);
+							boolean isIntType = intAttrisList.contains(key);
+							boolean isArrType;
+							if(isIntType){//Integer
+								%>
+								   fw_<%=cid %>.write("            ,<%= key %> = "+<%= value %>+"<%=lineSeparator%>");
+								<%
+							}else{
+								isArrType = arrayAttrisList.contains(key);
+								if(!isArrType){//Varchar
+									if("ERRORTABLE".equalsIgnoreCase(key)){
+									%>
+									   fw_<%=cid %>.write("            ,<%= key %> = '"+<%= dbname %>+"."+<%= value %>+"'<%=lineSeparator%>");
+									<%
+									}else{
+									%>
+									   fw_<%=cid %>.write("            ,<%= key %> = '"+<%= value %>+"'<%=lineSeparator%>");
+									<%
+									}
+								}else{//Array
+											if(!operatorType.equalsIgnoreCase("LOAD")){ // The Type Of ErrorTable1 and  ErrorTable2 and TargetTable are Array
+													%>
+													   fw_<%=cid %>.write("            ,<%= key %> = "+<%= value %>+"<%=lineSeparator%>");
+													<%
+											}else if("TRACELEVEL".equalsIgnoreCase(key)){ // The Type Of ErrorTable1 and  ErrorTable2 and TargetTable are Varchar for Load
+														%>
+														   fw_<%=cid %>.write("            ,<%= key %> = "+<%= value %>+"<%=lineSeparator%>");
+														<%
+											}else{// Just for ErrorTable1 and ErrorTable2
+													%>
+													   fw_<%=cid %>.write("            ,<%= key %> = '"+<%= dbname %>+"."+<%= value %>+"'<%=lineSeparator%>");
+													<%
+											}
+									}
+								}
+							}
+						}
+				%>
 
                 fw_<%=cid %>.write("        )<%=lineSeparator%>");
                 fw_<%=cid %>.write("    )<%=lineSeparator%>");
@@ -394,7 +558,8 @@ try{
                     <%}
                 }%>
                 <%if(isLog4jEnabled){%>
-                    log.info("<%=cid%> - Executing command '" + sb_<%=cid%> + "'.");
+                	String cmdStr_<%= cid %> = java.util.Arrays.toString(sb_<%=cid%>);
+                    log.info("<%=cid%> - Executing command: '" + cmdStr_<%= cid %> + "'.");
                 <%}%>
                 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>);
                 Thread normal_<%=cid %> = new Thread() {
@@ -449,16 +614,13 @@ try{
                 if(returnCodeDie) {
                 %>
                     if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
-                        <%if(isLog4jEnabled){%>
-                            log.fatal("<%=cid%> - "+"TPT returned exit code "+process_<%=cid %>.exitValue()+".");
-                        <%}%>
                         throw new RuntimeException("TPT returned exit code "+process_<%=cid %>.exitValue());
                     }
                 <%
                 }
                 %>
                 <%if(isLog4jEnabled){%>
-                    log.info("<%=cid%> - Excute '" + sb_<%=cid%> + "' has finished.");
+                    log.info("<%=cid%> - Excute command:'" + cmdStr_<%= cid %> + "' has finished.");
                 <%}%>
 }finally{
 	try{
@@ -467,4 +629,3 @@ try{
         <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
 	}
 }
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

@@ -117,7 +117,7 @@ public class ChangeValuesFromRepositoryTest {
         connection.setName("ChangeValues");
         ((DatabaseConnection) connection).setDatabaseType("MySQL");
         ((DatabaseConnection) connection).setUsername("root");
-        ((DatabaseConnection) connection).setPassword("root");
+        ((DatabaseConnection) connection).setRawPassword("root");
         ((DatabaseConnection) connection).setPort("4000");
         ((DatabaseConnection) connection).setDatasourceName("test");
         ((DatabaseConnection) connection).setServerName("localhost");
@@ -182,7 +182,7 @@ public class ChangeValuesFromRepositoryTest {
         assertEquals(elem.getPropertyValue("PROPERTY:REPOSITORY_PROPERTY_TYPE"), databaseConnItem.getProperty().getId());
 
         assertEquals(elem.getPropertyValue("USER"), TalendTextUtils.addQuotes(dbConn.getUsername()));
-        assertEquals(elem.getPropertyValue("PASS"), TalendTextUtils.addQuotes(dbConn.getPassword()));
+        assertEquals(elem.getPropertyValue("PASS"), TalendTextUtils.addQuotes(dbConn.getRawPassword()));
         assertEquals(elem.getPropertyValue("HOST"), TalendTextUtils.addQuotes(dbConn.getServerName()));
         assertEquals(elem.getPropertyValue("PORT"), TalendTextUtils.addQuotes(dbConn.getPort()));
         assertEquals(elem.getPropertyValue("DBNAME"), TalendTextUtils.addQuotes(dbConn.getDatasourceName()));
@@ -317,7 +317,7 @@ public class ChangeValuesFromRepositoryTest {
         assertEquals(databaseConnItem.getProperty().getId(), node.getPropertyValue("PROPERTY:REPOSITORY_PROPERTY_TYPE"));
 
         assertEquals(TalendTextUtils.addQuotes(dbConn.getUsername()), node.getPropertyValue("USER"));
-        assertEquals(TalendTextUtils.addQuotes(dbConn.getPassword()), node.getPropertyValue("PASS"));
+        assertEquals(TalendTextUtils.addQuotes(dbConn.getRawPassword()), node.getPropertyValue("PASS"));
         assertEquals(TalendTextUtils.addQuotes(dbConn.getServerName()), node.getPropertyValue("HOST"));
         assertNotSame(TalendTextUtils.addQuotes(dbConn.getPort()), node.getPropertyValue("PORT"));
         assertNotSame(TalendTextUtils.addQuotes(dbConn.getDatasourceName()), node.getPropertyValue("DBNAME"));

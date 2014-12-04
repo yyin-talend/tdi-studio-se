@@ -75,6 +75,7 @@ import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
@@ -326,26 +327,32 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     if (!renamed) {
                         // update
-                        final ContextItem contextItem = ContextUtils.getContextItemById(allContextItem, source);
+                        final Item contextItem = ContextUtils.getRepositoryContextItemById(source);
                         boolean builtin = true;
                         if (contextItem != null) {
-                            final ContextType contextType = ContextUtils.getContextTypeByName(contextItem, context.getName(),
-                                    true);
-                            if (contextType != null) {
-                                final ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(
-                                        contextType, paramName);
-                                if (contextParameterType != null) {
-                                    if (onlySimpleShow
-                                            || !ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
-                                        unsameMap.add(contextItem, paramName);
-                                    }
-                                    builtin = false;
-                                } else {
-                                    // delete context variable
-                                    if (ContextUtils.isPropagateContextVariable()) {
-                                        deleteParams.add(contextItem, paramName);
+                            if (contextItem instanceof ContextItem) {
+                                final ContextType contextType = ContextUtils.getContextTypeByName((ContextItem) contextItem,
+                                        context.getName(), true);
+                                if (contextType != null) {
+                                    final ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(
+                                            contextType, paramName);
+                                    if (contextParameterType != null) {
+                                        if (onlySimpleShow
+                                                || !ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
+                                            unsameMap.add(contextItem, paramName);
+                                        }
                                         builtin = false;
+                                    } else {
+                                        // delete context variable
+                                        if (ContextUtils.isPropagateContextVariable()) {
+                                            deleteParams.add(contextItem, paramName);
+                                            builtin = false;
+                                        }
                                     }
+                                }
+                            } else {
+                                if (contextItem instanceof JobletProcessItem) {
+                                    builtin = false;
                                 }
                             }
                         }
@@ -380,7 +387,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             contextResults.add(result);
         }
         if (!builtInMap.isEmpty()) {
-            for (ContextItem item : builtInMap.getContexts()) {
+            for (Item item : builtInMap.getContexts()) {
                 Set<String> names = builtInMap.get(item);
                 if (names != null && !names.isEmpty()) {
                     UpdateCheckResult result = new UpdateCheckResult(names);
@@ -401,7 +408,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
         // update
         if (!unsameMap.isEmpty()) {
-            for (ContextItem item : unsameMap.getContexts()) {
+            for (Item item : unsameMap.getContexts()) {
                 Set<String> names = unsameMap.get(item);
                 if (names != null && !names.isEmpty()) {
                     collectUpdateResult(contextResults, EUpdateItemType.CONTEXT, EUpdateResult.UPDATE, item, names);
@@ -410,7 +417,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
         // rename
         if (!renamedMap.isEmpty()) {
-            for (ContextItem item : renamedMap.getContexts()) {
+            for (Item item : renamedMap.getContexts()) {
                 Map<String, String> nameMap = repositoryRenamedMap.get(item);
                 if (nameMap != null && !nameMap.isEmpty()) {
                     for (String newName : nameMap.keySet()) {
@@ -449,7 +456,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
     /**
      * propagate when add or remove a variable in a repository context to jobs/joblets.
-     *
+     * 
      * @param contextResults
      * @param contextManager
      * @param deleteParams
@@ -480,7 +487,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
             // delete
             if (!deleteParams.isEmpty()) {
-                for (ContextItem item : deleteParams.getContexts()) {
+                for (Item item : deleteParams.getContexts()) {
                     Set<String> names = deleteParams.get(item);
                     if (!names.isEmpty()) {
                         collectUpdateResult(contextResults, EUpdateItemType.CONTEXT, EUpdateResult.DELETE, item, names);
@@ -491,7 +498,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     private UpdateCheckResult collectUpdateResult(List<UpdateResult> contextResults, EUpdateItemType itemType,
-            EUpdateResult resulstType, ContextItem contextItem, Object names) {
+            EUpdateResult resulstType, Item contextItem, Object names) {
         UpdateCheckResult result = new UpdateCheckResult(names);
         result.setResult(itemType, resulstType, contextItem, UpdateRepositoryUtils.getRepositorySourceName(contextItem));
         List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
@@ -917,7 +924,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
     /**
      * DOC ycbai Comment method "checkNodeValidationRuleFromRepository".
-     *
+     * 
      * @param node
      * @param onlySimpleShow
      * @return
@@ -1075,9 +1082,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     /**
-     *
+     * 
      * DOC YeXiaowei Comment method "checkNodeSAPFunctionFromRepository".
-     *
+     * 
      * @param node
      * @return
      */
@@ -1130,13 +1137,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     boolean inputSame = true;
                     sapNodeParam = node.getElementParameter("MAPPING_INPUT"); //$NON-NLS-1$
-                    if (sapNodeParam != null && sapNodeParam.getValue() != null) {
+                    if (sapNodeParam != null && sapNodeParam.getRepositoryValue() != null && sapNodeParam.getValue() != null) {
                         inputSame = SAPConnectionUtils.sameParamterTableWith(function,
                                 (List<Map<String, Object>>) sapNodeParam.getValue(), true);
                     }
                     boolean outputSame = true;
                     sapNodeParam = node.getElementParameter("MAPPING_OUTPUT"); //$NON-NLS-1$
-                    if (sapNodeParam != null && sapNodeParam.getValue() != null) {
+                    if (sapNodeParam != null && sapNodeParam.getRepositoryValue() != null && sapNodeParam.getValue() != null) {
                         outputSame = SAPConnectionUtils.sameParamterTableWith(function,
                                 (List<Map<String, Object>>) sapNodeParam.getValue(), false);
                     }
@@ -1156,9 +1163,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     /**
-     *
+     * 
      * nrousseau Comment method "checkNodeSchemaFromRepository".
-     *
+     * 
      * @param nc
      * @param metadataTable
      * @return true if the data have been modified
@@ -1269,7 +1276,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
                                 if (table != null) {
                                     String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
-                                            + UpdatesConstants.SEGMENT_LINE + table.getLabel();
+                                            + UpdatesConstants.SEGMENT_LINE + schemaName;
 
                                     final IMetadataTable copyOfrepositoryMetadata = table.clone();
                                     copyOfrepositoryMetadata.setTableName(uniqueName);
@@ -1362,7 +1369,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
     /**
      * DOC ycbai Comment method "checkNodeSchemaFromRepositoryForTMap".
-     *
+     * 
      * @param node
      * @param onlySimpleShow
      * @return
@@ -1444,9 +1451,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     /**
-     *
+     * 
      * nrousseau Comment method "checkNodeSchemaFromRepositoryForEBCDIC".
-     *
+     * 
      * @param node
      * @return
      */
@@ -1588,9 +1595,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     /**
-     *
+     * 
      * nrousseau Comment method "checkNodePropertiesFromRepository".
-     *
+     * 
      * @param node
      * @return true if the data have been modified
      */
@@ -1847,8 +1854,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                         }
                                                     }
                                                 }
-                                            } else if (param.getName().equals("HBASE_PARAMETERS") && oldList != null //$NON-NLS-1$
-                                                    && objectValue instanceof List) {
+                                            } else if ((param.getName().equals("SAP_PROPERTIES") || param.getName().equals(//$NON-NLS-1$
+                                                    "HBASE_PARAMETERS"))//$NON-NLS-1$
+                                                    && oldList != null && objectValue instanceof List) {
                                                 List objectList = (List) objectValue;
                                                 if (oldList.size() != objectList.size()) {
                                                     sameValues = false;
@@ -2091,7 +2099,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
     /**
      * ggu Comment method "checkParameterContextMode".
-     *
+     * 
      * for bug 5198
      */
     private List<UpdateResult> checkParameterContextMode(final List<? extends IElementParameter> parameters,
@@ -2239,11 +2247,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     /**
-     *
+     * 
      * ggu Comment method "checkNodesPropertyChanger".
-     *
+     * 
      * If this is not relational joblet node to update. filter it.
-     *
+     * 
      * @deprecated seems have unused it.
      */
     @Deprecated
@@ -2415,14 +2423,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     /**
-     *
+     * 
      * DOC hcw ProcessUpdateManager class global comment. Detailled comment
      */
     static class ContextItemParamMap {
 
-        private Map<ContextItem, Set<String>> map = new HashMap<ContextItem, Set<String>>();
+        private Map<Item, Set<String>> map = new HashMap<Item, Set<String>>();
 
-        public void add(ContextItem item, String param) {
+        public void add(Item item, String param) {
             Set<String> params = map.get(item);
             if (params == null) {
                 params = new HashSet<String>();
@@ -2432,7 +2440,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
 
         @SuppressWarnings("unchecked")
-        public Set<String> get(ContextItem item) {
+        public Set<String> get(Item item) {
             Set<String> params = map.get(item);
             return (params == null) ? Collections.EMPTY_SET : params;
 
@@ -2442,7 +2450,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             return map.isEmpty();
         }
 
-        public Set<ContextItem> getContexts() {
+        public Set<Item> getContexts() {
             return map.keySet();
         }
     }

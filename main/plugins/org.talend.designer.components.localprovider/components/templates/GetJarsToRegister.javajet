@@ -35,6 +35,10 @@
 			}
 			
 			public String replaceJarPaths(String originalClassPathLine) throws Exception {
+				return replaceJarPaths(originalClassPathLine, "");
+			}
+			
+			public String replaceJarPaths(String originalClassPathLine, String scheme) throws Exception {
 				String classPathLine = "";
 				String crcMapPath = new java.io.File("../crcMap").getCanonicalPath();
 				
@@ -55,7 +59,11 @@
 						}
 					}
 				} else {
-					classPathLine = originalClassPathLine;
+					if(originalClassPathLine!=null && originalClassPathLine.startsWith(".")) {
+						classPathLine = originalClassPathLine;
+					} else {
+						classPathLine = scheme + originalClassPathLine;
+					}
 				}
 				return classPathLine;
 			}
@@ -79,8 +87,12 @@
 				String jarName = entry.getValue();
 				String crc = entry.getKey();
 				String libStringFinder = "../lib/" + jarName;
+				String libStringFinder2 = "./" + jarName; // for the job jar itself.
+				
 				if (line.contains(libStringFinder)) {
 					line = line.replace(libStringFinder, "../../../cache/lib/" + crc + "/" + jarName);
+				} else if (line.toLowerCase().contains(libStringFinder2)) {
+					line = line.toLowerCase().replace(libStringFinder2, "../../../cache/lib/" + crc + "/" + jarName);
 				} else if (line.contains(":$ROOT_PATH/" + jarName + ":")) {
 					line = line.replace(":$ROOT_PATH/" + jarName + ":", ":$ROOT_PATH/../../../cache/lib/" + crc + "/" + jarName + ":");
 				} else if (line.contains(";" + jarName + ";")) {

@@ -123,10 +123,21 @@ public class JobletContainer extends NodeContainer {
         Rectangle totalRectangle = null;
         boolean collapsed = isCollapsed();
         boolean mapStart = this.getNode().isMapReduceStart();
+        boolean noNeedExpend = false;
 
         if ((!collapsed || mapStart) && nodeContainers.size() > 0) {
             for (NodeContainer container : nodeContainers) {
                 Rectangle curRect = container.getNodeContainerRectangle();
+                if (container.getSubjobContainer() != null && container.getSubjobContainer().isCollapsed()
+                        && this.getNode().isMapReduce()) {
+                    if (container.getNode().isMapReduceStart()) {
+                        totalRectangle = curRect.getCopy();
+                        noNeedExpend = true;
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
                 if (node.getNodeContainer() instanceof JobletContainer) {
                     String title = (String) node.getNodeContainer().getPropertyValue(EParameterName.SUBJOB_TITLE.getName());
                     SimpleHtmlFigure titleFigure = new SimpleHtmlFigure();
@@ -204,7 +215,9 @@ public class JobletContainer extends NodeContainer {
 
         }
 
-        changeWidth(totalRectangle);
+        if (!noNeedExpend) {
+            changeWidth(totalRectangle);
+        }
         jobletRectangle = totalRectangle.getCopy();
         return totalRectangle;
     }
@@ -420,7 +433,8 @@ public class JobletContainer extends NodeContainer {
             Integer mrGroupId = node.getMrGroupId();
             List<? extends INode> mapReduceNodes = this.node.getProcess().getGraphicalNodes();
             List<Node> nodeList = new ArrayList<Node>();
-            if (node.getNodeContainer().getSubjobContainer().isCollapsed()) {
+            if (node.getNodeContainer().getSubjobContainer() != null
+                    && node.getNodeContainer().getSubjobContainer().isCollapsed()) {
                 nodeList.add(node);
             } else {
                 for (INode inode : mapReduceNodes) {
@@ -751,6 +765,8 @@ public class JobletContainer extends NodeContainer {
             this.percentMap = percentMap;
             this.percentReduce = percentReduce;
             firePropertyChange("UPDATE_STATUS", null, value); //$NON-NLS-1$
+        } else if (id.equals("UPDATE_MR_STATUS")) {
+            firePropertyChange("UPDATE_MR_STATUS", null, value); //$NON-NLS-1$
         }
     }
 
@@ -775,7 +791,10 @@ public class JobletContainer extends NodeContainer {
             return;
         }
         Rectangle oracleRec = totalRectangle.getCopy();
-        boolean subjobCollapsed = this.node.getNodeContainer().getSubjobContainer().isCollapsed();
+        boolean subjobCollapsed = false;
+        if (this.node.getNodeContainer().getSubjobContainer() != null) {
+            subjobCollapsed = this.node.getNodeContainer().getSubjobContainer().isCollapsed();
+        }
         int temWidth = 114;
         if (isMRGroupContainesReduce() && !subjobCollapsed) {
             temWidth = 240;

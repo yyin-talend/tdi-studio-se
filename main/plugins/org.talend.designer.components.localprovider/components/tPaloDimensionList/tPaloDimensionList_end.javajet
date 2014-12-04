@@ -56,9 +56,6 @@ if (outputConnName != null || bIterate){
 	if(useRetriveFromCube){
 %>
 	else {
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "'." );
-			<%}%>
 		    throw new RuntimeException ("Cube '" + <%=sCubeName%> + 
 		                              "' not found in database '" + <%=sDatabaseName%> + "'. exiting..." );
 		}
@@ -85,5 +82,4 @@ if (outputConnName != null || bIterate){
 
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - List dimensions count " + NB_DIMENSIONS<%=cid%> + " .");
-		log.info("<%=cid%> - Done.");
 	<%}%>

@@ -16,8 +16,6 @@ boolean forLoop = ("true").equals(ElementParameterParser.getValue(node,"__FORLOO
 
 boolean whileLoop = ("true").equals(ElementParameterParser.getValue(node,"__WHILELOOP__"));
 
-boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-
 if (forLoop) {
 %>
 	}
@@ -25,11 +23,6 @@ if (forLoop) {
 }else{// While type
 
 String iteration   = ElementParameterParser.getValue(node, "__ITERATION__");
-//iteration = iteration.substring(1,iteration.length()-1);
-if (iteration.startsWith("\"") && iteration.endsWith("\"")) {
-    iteration = iteration.substring(1, iteration.length()-1);
-}
-
 %>
 
 
@@ -41,6 +34,3 @@ if (iteration.startsWith("\"") && iteration.endsWith("\"")) {
 }
 %>
 
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Done.");
-	<%}%>

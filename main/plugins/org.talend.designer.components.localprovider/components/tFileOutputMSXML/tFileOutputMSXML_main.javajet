@@ -19,6 +19,7 @@ imports="
 "
 skeleton="tFileOutputMSXML_java.skeleton"
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 // ------------------- *** Common code start *** ------------------- //
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;

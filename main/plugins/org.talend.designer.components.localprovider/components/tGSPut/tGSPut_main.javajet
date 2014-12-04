@@ -8,7 +8,6 @@
 		java.util.Map
 	" 
 %>
-	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -23,10 +22,6 @@
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	boolean isUseFilesList=("true").equals(ElementParameterParser.getValue(node, "__USE_FILES_LIST__"));
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	
-	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("FILES"));
-	log4jFileUtil.componentStartInfo(node);
-	log4jFileUtil.logParameters(node);
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");	
@@ -96,12 +91,7 @@
 	}catch(java.lang.Exception e_<%=cid%>) {
 		<%
 		if (("true").equals(dieOnError)) {
-			if(isLog4jEnabled){
-			%>
-				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
-			<%
-			}
-			%>
+		%>
 			throw(e_<%=cid%>);
 		<%
 		} else {
@@ -162,6 +152,4 @@
 		%>
 	}
 	globalMap.put("<%=cid%>_NB_LINE", nb_line_<%=cid%>);
-	<%
-	log4jFileUtil.componentFinishInfo(node);
-	%>
+	

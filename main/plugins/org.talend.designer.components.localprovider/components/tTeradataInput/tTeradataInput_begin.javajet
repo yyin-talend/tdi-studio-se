@@ -12,7 +12,11 @@ imports="
 		java.util.Map
 " 
 %>
-	<%@ include file="../templates/DB/Input/HelpClass.javajet"%>
+<%@ include file="../templates/DB/Input/HelpClass.javajet"%>
+  <%
+   	 CodeGeneratorArgument codeGenArgumentX = (CodeGeneratorArgument) argument;
+	 INode nodeX = (INode)codeGenArgumentX.getArgument();
+  %>
 <%
 
 	class DBInputBeginUtil extends DefaultDBInputUtil{

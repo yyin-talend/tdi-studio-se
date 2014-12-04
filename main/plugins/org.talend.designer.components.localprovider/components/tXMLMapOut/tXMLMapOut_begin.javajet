@@ -53,6 +53,8 @@
 
 	XmlMapData xmlMapData =(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
 	
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
 	EList<InputXmlTree> inputTables = xmlMapData.getInputTrees();
 	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
 	EList<VarTable> varTables = xmlMapData.getVarTables();
@@ -360,7 +362,6 @@ class TreeNode_API_<%=cid %> {
 			pathTypeMap.put(node.getXpath(), talendType);
 			pathPatternMap.put(node.getXpath(), patternValue);
 			pathTypeToGenMap.put(node.getXpath(), typeToGenerate);
-//			System.out.println(node.getXpath() + " javaType:Id=" + javaType.getId() + "---talendType="+talendType +"---typeGen=" +typeToGenerate);
 			if(typeMap.get(typeToGenerate)==null){
 				typeMap.put(typeToGenerate,typeToGenerate);
 				if ("id_String".equals(talendType) || "id_Object".equals(talendType)) {
@@ -453,6 +454,11 @@ class TreeNode_API_<%=cid %> {
 //the aggregate variable
 <%= className %> <%= tableName1 %>_aggregate = null;
 <%
+			if(isLog4jEnabled) {
+%>
+int count_<%=tableName1%>_<%=cid%> = 0;
+<%
+			}
         }
 %>
 //init the resultset for aggregate
@@ -763,7 +769,6 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 	}
 	// judge if the current main element has a group or loop element as his child node
 	private boolean isRootEndMainNode(OutputTreeNode node){
-//		System.out.println(node.getName() + ":main=" + node.isMain() + ":Loop=" + node.isLoop() + ":group=" + node.isGroup());
 		if(!node.isMain() || node.isLoop() || node.isGroup()){
 			return false;
 		}

@@ -81,9 +81,6 @@
 							 globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
 						} catch (com.jcraft.jsch.SftpException e_<%=cid %>) {
 							globalMap.put("<%=cid %>_CURRENT_STATUS", "Deleting file action error");
-							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - " + e_<%=cid %>.getMessage());
-							<%}%>
             	           throw e_<%=cid %>;
                 		}
 						nb_file_<%=cid%>++;
@@ -142,13 +139,13 @@
 %>				
 								ftp_<%=cid %>.delete(file_<%=cid%>);
 								<%if(isLog4jEnabled){%>
-									log.debug("<%=cid%> - File '" + file_<%=cid%> + "' was deleted.");
+									log.debug("<%=cid%> - File '" + file_<%=cid%>  + "' was deleted from the remote directory " + <%=remotedir %> + ".");
 								<%}%>
 <%
 							}else{
 %>					
 								<%if(isLog4jEnabled){%>
-									log.debug("<%=cid%> - Directory '" + file_<%=cid%> + "' was deleted.");
+									log.debug("<%=cid%> - Directory '" + file_<%=cid%>  + "' was deleted from the remote directory " + <%=remotedir %> + ".");
 								<%}%>
 								ftp_<%=cid %>.rmdir(file_<%=cid%>);
 <%
@@ -161,9 +158,6 @@
    				}
 		   	}catch(com.enterprisedt.net.ftp.FTPException e_<%=cid %>){
    				globalMap.put("<%=cid %>_CURRENT_STATUS", "Deleting file action error");
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - Deleting file action error.");
-				<%}%>
    				throw e_<%=cid %>;
 		   	}
 		   ftp_<%=cid %>.chdir(root<%=cid %>);
@@ -174,9 +168,6 @@
 <%
 		if(("true").equals(dieOnError)){
 %>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e_<%=cid %>.getMessage());
-			<%}%>
     		throw(e_<%=cid %>);
 <%
 		}else{

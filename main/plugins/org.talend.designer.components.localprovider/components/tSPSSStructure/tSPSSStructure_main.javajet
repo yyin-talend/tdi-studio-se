@@ -11,7 +11,6 @@ imports="
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
@@ -33,7 +32,6 @@ if (outputConnName != null){
 %>
 	<%=outputConnName%> = new <%=outputConnName%>Struct();
 	org.talend.jspss.spssvariable <%=cid%>_spVar = <%=cid%>_spVars.getVariabelAtPos(i);
-	nb_line_<%=cid%> ++;
 	<%=outputConnName%>.Name=<%=cid%>_spVar.getName();
 	<%=outputConnName%>.Type=<%=cid%>_spVar.getStringType();
 	<%=outputConnName%>.Width=<%=cid%>_spVar.getDecimals();
@@ -46,16 +44,6 @@ if (outputConnName != null){
 	<%=outputConnName%>.Measure=<%=cid%>_spVar.getStringMeasure();
 	
 	if(<%=cid%>_spVar.hasLabels()) <%=outputConnName%>.Values=<%=cid%>_spVar.getSPSSValueLable().getValuesAsString();
-	
-	<% 	
-		if(isLog4jEnabled) {
-	%>
-			log4jSb_<%=cid%>.append(<%=outputConnName%>.Name + "|" +<%=outputConnName%>.Type + "|" + <%=outputConnName%>.Width + "|" + <%=outputConnName%>.Decimals + "|" + <%=outputConnName%>.Lable + "|" + <%=outputConnName%>.Values + "|" + 	<%=outputConnName%>.Missing + "|" + <%=outputConnName%>.Columns + "|" + <%=outputConnName%>.Align + "|" + <%=outputConnName%>.Measure);
-	<%
-		}
-	%>
-
 <%
 }
 %>
-

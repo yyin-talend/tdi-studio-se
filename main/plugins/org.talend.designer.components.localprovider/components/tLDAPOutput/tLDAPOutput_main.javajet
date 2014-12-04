@@ -73,9 +73,6 @@ imports="
 					javax.naming.directory.Attributes entry_<%=cid%> = new javax.naming.directory.BasicAttributes(true);
 					whetherReject_<%=cid%> = false;
 					String dn_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=dnColumnName%>).trim();
-					<%if(isLog4jEnabled){%>
-						log4jSb_<%=cid%>.append(dn_<%=cid%> + "|");
-					<%}%>
 <%
 					for(IMetadataColumn column:columnList){
 						javaType= JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -84,9 +81,6 @@ imports="
 							continue;
 						}
 %>
-						<%if(isLog4jEnabled){%>
-							log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel()%> + "|");
-						<%}%>
 <%
 						if(!("DELETE").equals(insertMode) && !("UPDATA").equals(insertMode)){
 %>
@@ -309,17 +303,11 @@ imports="
 <%
 					}
 %>
-					<%if(isLog4jEnabled){%>
-						log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid %> + ":" + log4jSb_<%=cid%> + ".");
-					<%}%>
 	}catch(java.lang.Exception e){
         whetherReject_<%=cid%> = true;
 <%
         if (("true").equals(dieOnError)) {
 %>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
         	throw(e);
 <%
         } else {

@@ -201,11 +201,8 @@ public class EditQueriesAction extends AContextualAction {
                     DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
                     DatabaseConnection dbConn = (DatabaseConnection) dbItem.getConnection();
                     String dbType = dbConn.getDatabaseType();
-                    if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
-                        canWork = false;
-                        break;
-                    }
-                    if (EDatabaseTypeName.IMPALA.getXmlName().equalsIgnoreCase(dbType)) {
+                    if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)
+                            || EDatabaseTypeName.HBASE.getXmlName().equalsIgnoreCase(dbType)) {
                         canWork = false;
                         break;
                     }

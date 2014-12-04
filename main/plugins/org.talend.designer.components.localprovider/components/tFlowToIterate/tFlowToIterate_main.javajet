@@ -11,11 +11,11 @@ imports="
     java.util.Map
 "
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-
+log = new LogUtil(node);
 String cid = node.getUniqueName();
 
 boolean useDefault = ("true").equals(ElementParameterParser.getValue(node, "__DEFAULT_MAP__"));
@@ -42,17 +42,19 @@ if (inMainConns != null && !inMainConns.isEmpty()) {
         for (int i = 0; i < listColumns.size(); i++) {
             IMetadataColumn column = listColumns.get(i);
             String columnLabel = column.getLabel();
-        %>            
+        	log.trace(log.str("Set global var, key=" + inputRowName + "." + columnLabel + ", value="), inputRowName + "." + columnLabel, log.str("."));    
+        	%>            
             globalMap.put("<%=inputRowName %>.<%=columnLabel %>", <%=inputRowName %>.<%=columnLabel %>);
             nb_line_<%=cid %>++;  
-        <%  
-          }
-        %>
+    	<%  
+      	}
+    	%>
 
 <%  } else { %>	
     	<%
         for (int i = 0; i < map.size(); i++) {
               Map<String, String> line = map.get(i);
+              log.trace(log.str("Set global var, key="), line.get("KEY"), log.str(", value="), inputRowName + "." + line.get("VALUE"), log.str("."));    
         %>
               globalMap.put(<%= line.get("KEY") %>, <%=inputRowName %>.<%= line.get("VALUE") %>);
               nb_line_<%=cid %>++;
@@ -63,4 +65,5 @@ if (inMainConns != null && !inMainConns.isEmpty()) {
 	}            
 %> 
        counter_<%=cid %>++;
+       <%log.debug(log.str("Current iteration is: "), log.var("counter"), log.str("."));%>
        globalMap.put("<%=cid %>_CURRENT_ITERATION", counter_<%=cid %>);

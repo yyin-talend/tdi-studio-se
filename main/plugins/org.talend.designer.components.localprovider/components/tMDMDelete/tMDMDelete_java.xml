@@ -134,15 +134,29 @@
 
           </ITEMS>
         </PARAMETER>
-	    <PARAMETER NAME="USE_DROP_ITEM" FIELD="CHECK" NUM_ROW="60" SHOW_IF="USE_ITEMS=='false'">
+        
+        <PARAMETER NAME="WITHREPORT" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" SHOW_IF="(USE_ITEMS=='false') AND (CONTAINER_TYPE=='MASTER') ">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER NAME="SOURCE" FIELD="TEXT" NUM_ROW="65" REQUIRED="true"  SHOW_IF="(USE_ITEMS=='false') AND (CONTAINER_TYPE=='MASTER') and (WITHREPORT=='true')">
+			<DEFAULT>"TOS"</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER NAME="ISINVOKE" FIELD="CHECK" REQUIRED="true" SHOW_IF="(USE_ITEMS=='false') AND (CONTAINER_TYPE=='MASTER') and (WITHREPORT=='true')"
+				 NUM_ROW="65">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+        
+	    <PARAMETER NAME="USE_DROP_ITEM" FIELD="CHECK" NUM_ROW="70" SHOW_IF="(USE_ITEMS=='false')">
 	    	<DEFAULT>false</DEFAULT>
 	    </PARAMETER>
 
-	    <PARAMETER NAME="PART_PATH" FIELD="TEXT" NUM_ROW="60" SHOW_IF="(USE_DROP_ITEM=='true') AND (USE_ITEMS=='false')">
+	    <PARAMETER NAME="PART_PATH" FIELD="TEXT" NUM_ROW="70" SHOW_IF="(USE_DROP_ITEM=='true') AND (USE_ITEMS=='false')">
 	    	<DEFAULT>"/"</DEFAULT>
 	    </PARAMETER>
 
-	    <PARAMETER NAME="DIE_ON_ERROR" FIELD="CHECK" NUM_ROW="70">
+	    <PARAMETER NAME="DIE_ON_ERROR" FIELD="CHECK" NUM_ROW="90">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
@@ -153,7 +167,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="MDM-Webservice" MODULE="mdm_webservice.jar" REQUIRED="true" />
+      <IMPORT NAME="MDM-Webservice" MODULE="mdm_webservice.jar" UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar" BundleID="" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc-api" MODULE="jaxrpc-api.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc-api.jar" REQUIRED="true" />

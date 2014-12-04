@@ -69,7 +69,8 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
         if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
             try {
                 if (node.getContentType().equals(ERepositoryObjectType.PROCESS)
-                        || node.getContentType().equals(ERepositoryObjectType.PROCESS_MR)) {
+                        || node.getContentType().equals(ERepositoryObjectType.PROCESS_MR)
+                        || node.getContentType().equals(ERepositoryObjectType.valueOf("PROCESS_STORM"))) {
                     return true;
                 }
             } catch (Exception e) { // ignore
@@ -82,6 +83,9 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
             } catch (Exception e) {
                 return false;
             }
+        } else if (node.getContentType().equals(ERepositoryObjectType.REFERENCED_PROJECTS)
+                || node.getContentType().equals(ERepositoryObjectType.SVN_ROOT)) {
+            return true;
         } else if (node.getObject() != null) {
             String id = node.getObject().getId();
             return jobIds.contains(id);
@@ -103,6 +107,8 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
     protected List<ERepositoryObjectType> getTypes() {
         List<ERepositoryObjectType> list = new ArrayList<ERepositoryObjectType>(50);
         list.add(ERepositoryObjectType.PROCESS);
+        list.add(ERepositoryObjectType.PROCESS_MR);
+        list.add(ERepositoryObjectType.valueOf("PROCESS_STORM"));
         return list;
     }
 }

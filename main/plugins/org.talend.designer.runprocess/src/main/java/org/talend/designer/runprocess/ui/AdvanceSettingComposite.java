@@ -304,9 +304,8 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
      * @param b
      */
     private void setRunnable(boolean runnable) {
-        // TODO Auto-generated method stub
         if (argumentsComposite != null) {
-            argumentsComposite.setEnabled(runnable);
+            argumentsComposite.setEnabled(runnable && !processContext.getProcess().isReadOnly());
         }
         perfBtn.setEnabled(runnable);
         saveJobBeforeRunButton.setEnabled(runnable);

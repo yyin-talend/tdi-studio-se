@@ -53,6 +53,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
@@ -61,7 +62,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.utils.Log4jUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -116,6 +116,7 @@ import org.talend.repository.preference.constants.IExportJobPrefConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.EsbConfigUtils;
+import org.talend.repository.utils.Log4jUtil;
 import org.talend.resource.IExportJobResourcesService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
@@ -157,6 +158,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     private List<String> mavenModules = new ArrayList<String>();
 
     private ExportFileResource[] exportFileResource;
+
+    public static final String PLUGIN_ID = "org.talend.libraries.apache.storm"; //$NON-NLS-1$
 
     /**
      * Getter for compiledModules.
@@ -1470,6 +1473,17 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return this.getJobScripts(projectName, escapeFileNameSpace(process), version, needJob);
     }
 
+    protected Object getProcessParameterValue(ProcessItem process, String parameterName) {
+        EList<ElementParameterType> parameters = process.getProcess().getParameters().getElementParameter();
+        for (ElementParameterType pt : parameters) {
+            if (pt.getName().equals(parameterName)) {
+                return pt.getValue();
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Gets Job Scripts.
      * 
@@ -2053,12 +2067,32 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (exportFileResource != null) {
             ExportFileResource libResource = getCompiledLibExportFileResource(exportFileResource, isSpecialMR);
             Collection<Set<URL>> col = libResource.getAllResources();
+            // this from org.talend.libraries.apache.storm/lib
+            URL stormLibUrl = null;
+            File file = null;
+            try {
+                stormLibUrl = FileLocator.toFileURL(FileLocator.find(Platform.getBundle(PLUGIN_ID), new Path("lib"), null));
+                file = new File(stormLibUrl.getFile());
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
             for (Set<URL> set : col) {
                 Iterator<URL> it = set.iterator();
                 while (it.hasNext()) {
                     URL url = it.next();
-                    if (url.getFile().startsWith("/")) {
-                        ret.add(new File(url.getFile().substring(1, url.getFile().length())));
+                    // for storm not include the jar from libraries.apache.strom
+                    if (!isSpecialMR && stormLibUrl != null && file != null) {
+                        File[] jars = file.listFiles();
+                        String name = url.getFile().substring(url.getFile().lastIndexOf("/") + 1, url.getFile().length());
+                        boolean isExist = false;
+                        for (File jarFile : jars) {
+                            if (jarFile.getName().equals(name)) {
+                                isExist = true;
+                            }
+                        }
+                        if (!isExist) {
+                            ret.add(new File(url.getFile()));
+                        }
                     } else {
                         ret.add(new File(url.getFile()));
                     }

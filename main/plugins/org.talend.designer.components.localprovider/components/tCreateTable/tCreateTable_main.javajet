@@ -1932,7 +1932,6 @@ class ManagerFactory {
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 List<IMetadataColumn> columnList = null;
-log4jCodeGenerateUtil.infoComponentStart(node);
 List<IMetadataTable> metadatas = node.getMetadataList();
 if(metadatas != null && metadatas.size() > 0) {
     IMetadataTable metadata = metadatas.get(0);
@@ -2136,11 +2135,9 @@ if(columnList != null && columnList.size() > 0) {
         globalMap.put("<%=cid%>_QUERY", "<%=manager.getCreateTableSQL(columnList)%>");        
     } catch(java.lang.Exception e) {
         globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
-        <%log4jCodeGenerateUtil.logError(node,"fatal");%>
         throw new RuntimeException("Creating table failed", e);
     }
 <%
 }
-log4jCodeGenerateUtil.infoComponentEnd(node);
 %>
 

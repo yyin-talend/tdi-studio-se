@@ -14,6 +14,7 @@
     HAS_CONDITIONAL_OUTPUTS="true"
     IS_MULTIPLYING_OUTPUTS="true"
 	PARTITIONING="AUTO"
+  LOG4J_ENABLED="true"
   >
     <SIGNATURE/>
   </HEADER>
@@ -108,7 +109,7 @@
             REQUIRED="true" SHOW="false">
         <DEFAULT>100</DEFAULT>
     </PARAMETER>
-    <PARAMETER NAME="DESTINATION" FIELD="TEXT" NUM_ROW="20"
+    <PARAMETER NAME="DESTINATION" FIELD="TEXT" RAW="true" NUM_ROW="20"
             REQUIRED="true" SHOW="false">
 		<DEFAULT>tExtractJSONFields_1</DEFAULT>
 	</PARAMETER>
@@ -124,7 +125,7 @@
     <CODEGENERATION>
     <IMPORTS>
             <IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" REQUIRED="true" />
-            <IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar" REQUIRED="true" />
+            <IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar" REQUIRED="true" />
             <IMPORT NAME="json-lib" MODULE="json-lib-2.4-jdk15.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json-lib-2.4-jdk15.jar" REQUIRED="true" />
             <IMPORT NAME="commons_lang" MODULE="commons-lang-2.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar" REQUIRED="true" />
             <IMPORT NAME="commons_logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar" REQUIRED="true" />

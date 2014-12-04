@@ -7,11 +7,12 @@ imports="
     java.util.List
 " 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+LogUtil logtpl = new LogUtil(node);
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -60,8 +61,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(directory_<%=cid%> != null && directory_<%=cid%>.trim().length() != 0) {
  			java.io.File dir_<%=cid%> = new java.io.File(directory_<%=cid%>);
 			if(!dir_<%=cid%>.exists()) {
-    			dir_<%=cid%>.mkdirs();
-			}
+                <% logtpl.info("\"The directory '\"",logtpl.var("directory"),"\"' doesn't exist,try to create it.\""); %>
+                if(dir_<%=cid%>.mkdirs()){
+                <% logtpl.info("\"The directory '\"",logtpl.var("directory"),"\"' has been created successfully.\""); %>
+                    System.out.println("The directory '"+directory_<%=cid%>+"' has been created successfully.");
+                }else{
+                    <% logtpl.error("\"Fail to create directory '\"",logtpl.var("directory"),"\"'.\""); %>
+                    System.err.println("Fail to create directory '"+directory_<%=cid%>+"'.");
+                }
+            }
 		}
 <%
     }

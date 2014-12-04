@@ -17,7 +17,6 @@ imports="
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
     String conn = "conn_" + connection;
-	log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 
@@ -49,11 +48,10 @@ if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
 	<%if(close){%>
 		try{
 	<%}%>
-			<%log4jCodeGenerateUtil.commit();%>
+			<%log4jCodeGenerateUtil.commit(node);%>
 	<%if(close){%>
 		}finally{
-			<%log4jCodeGenerateUtil.close();%>
+			<%log4jCodeGenerateUtil.close(node);%>
 	    }
 	<%}%>
 }
-<%log4jCodeGenerateUtil.infoComponentEnd(node);%>
