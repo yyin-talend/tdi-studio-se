@@ -246,8 +246,8 @@
    <extension
          point="org.talend.core.runtime.service">
       <Service
-      		serviceId="IRepositoryService" 
-      		class="org.talend.repository.RepositoryService"/>
+          serviceId="IRepositoryService" 
+          class="org.talend.repository.RepositoryService"/>
       <Service
             class="org.talend.repository.StatusPreferenceInitService"
             serviceId="IStatusPreferenceInitService">
@@ -1033,14 +1033,14 @@
                name="Rename the XMLMultiSchema to MSXML"
                version="5.1.2">
          </projecttask>
-	      <projecttask
+        <projecttask
              beforeLogon="false"
              breaks="5.1.1"
              class="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
              id="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
              name="ChangeExtendInsertDefaultValueMigrationTask"
              version="5.1.2">
-	      </projecttask>
+        </projecttask>
        <projecttask
              beforeLogon="false"
              breaks="5.1.1"
@@ -1414,7 +1414,7 @@
             name="UpgrateDatabaseTypeForSybaseConnection"
             version="5.1.2">
       </projecttask>
-	  <projecttask
+    <projecttask
          beforeLogon="false"
          breaks="5.1.1"
          class="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
@@ -1423,7 +1423,7 @@
          name="Rename pig mode parameter"
          version="5.1.2">
       </projecttask>
-  	  <projecttask
+      <projecttask
            beforeLogon="false"
            breaks="5.1.1"
            class="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
@@ -1432,7 +1432,7 @@
            name="Set the standalone value for the connection mode for old jobs."
            version="5.1.2">
       </projecttask>
-	  <projecttask
+    <projecttask
          beforeLogon="false"
          breaks="5.1.1"
          class="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
@@ -1441,7 +1441,7 @@
          name="Replace host and port by namenode uri for hadoop components"
          version="5.1.2">
       </projecttask>
-  	  <projecttask
+      <projecttask
          beforeLogon="false"
          breaks="5.1.1"
          class="org.talend.repository.model.migration.ReplaceHostAndPortByNamenodeURIMigrationTask"
@@ -1467,7 +1467,7 @@
             id="org.talend.repository.model.migration.RenameVersionParametersForPigMigrationTask"
             name="Rename pig parameters"
             version="5.1.2">
-      </projecttask>		  
+      </projecttask>      
       <projecttask
             beforeLogon="false"
             breaks="5.1.1"
@@ -1620,7 +1620,7 @@
               name="Add additionalField to the job model"
               version="5.1.2">
         </projecttask>
-		<projecttask
+    <projecttask
         beforeLogon="false"
         breaks="5.1.1"
         class="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
@@ -1628,23 +1628,23 @@
         id="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
         name="SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
         version="5.1.2">
-		</projecttask>
-		<projecttask
+    </projecttask>
+    <projecttask
         beforeLogon="false"
         breaks="5.1.1"
         class="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
         id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
         name="ChangeDefaultValueTDIBug21708"
         version="5.1.2">
-		</projecttask>
-		<projecttask
+    </projecttask>
+    <projecttask
         beforeLogon="false"
         breaks="5.1.1"
         class="org.talend.repository.model.migration.ChangetMongoDBInputSortTextToTable"
         id="org.talend.repository.model.migration.ChangetMongoDBInputSortTextToTable"
         name="ChangetMongoDBInputSortTextToTable"
         version="5.1.2">
-		</projecttask>
+    </projecttask>
         <projecttask
             beforeLogon="false"
             breaks="5.1.1"
@@ -1661,13 +1661,13 @@
               name="ChangeDefaultValueFortNormalizeCSVOption"
               version="5.1.2">
         </projecttask>
-	  <workspacetask
+    <workspacetask
         breaks="5.2.0"
         class="org.talend.repository.model.migration.ChangeProjectTechinicalNameMigrationTask"
         id="org.talend.repository.model.migration.ChangeProjectTechinicalName"
         name="Change Project Techinical Name"
         version="5.2.0">
- 	 </workspacetask>
+   </workspacetask>
         <projecttask
               beforeLogon="false"
               breaks="5.1.1"
@@ -1811,7 +1811,7 @@
             name="SettingValuesIntoHadoopPropertiesFortHiveConnection"
             version="5.2.2">
       </projecttask>
-	  <projecttask
+    <projecttask
             beforeLogon="false"
             breaks="5.2.1"
             class="org.talend.repository.model.migration.ChangeHadoopVersionValue4TDQComponents"
@@ -1819,9 +1819,9 @@
             id="org.talend.repository.model.migration.ChangeHadoopVersionValue4TDQComponents"
             name="ChangeHadoopVersionValue4TDQComponents"
             version="5.2.2">
-	  </projecttask>
-	  <projecttask
-        	beforeLogon="false"
+    </projecttask>
+    <projecttask
+          beforeLogon="false"
             breaks="5.2.2"
             class="org.talend.repository.model.migration.ChangeSalesForceComponetsCustomerModuleName"
             description="Add double quote if &quot;customer module name&quot; is not surrounded by it"
@@ -1881,6 +1881,15 @@
               description="add HashKeyFromInputConnector property for tHashOutput component"
               id="org.talend.repository.model.migration.AddHashKeyFromInputConnector4tHashOutput"
               name="AddHashKeyFromInputConnector4tHashOutput"
+              version="5.2.4">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.2.3"
+              class="org.talend.repository.model.migration.SetDieOnErrorFalse4tSCPDelete"
+              description="set old tSCPDelete die on error as fasle"
+              id="org.talend.repository.model.migration.SetDieOnErrorFalse4tSCPDelete"
+              name="SetDieOnErrorFalse4tSCPDelete"
               version="5.2.4">
         </projecttask>
    </extension>
