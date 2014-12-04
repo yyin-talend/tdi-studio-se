@@ -246,8 +246,8 @@
    <extension
          point="org.talend.core.runtime.service">
       <Service
-      		serviceId="IRepositoryService" 
-      		class="org.talend.repository.RepositoryService"/>
+          serviceId="IRepositoryService" 
+          class="org.talend.repository.RepositoryService"/>
       <Service
             class="org.talend.repository.StatusPreferenceInitService"
             serviceId="IStatusPreferenceInitService">
@@ -862,13 +862,13 @@
                id="org.talend.repository.model.migration.renameMultiSchemaToMSMigrationTask"
                name="Rename the XMLMultiSchema to MSXML">
          </projecttask>
-	      <projecttask
-	            beforeLogon="false"
-	            class="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
-	            description="change the tMysqlOutput'extend insert default value&quot;&quot; from &quot;false&quot; to &quot;true&quot;"
-	            id="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
-	            name="ChangeExtendInsertDefaultValueMigrationTask">
-	      </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
+              description="change the tMysqlOutput'extend insert default value&quot;&quot; from &quot;false&quot; to &quot;true&quot;"
+              id="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
+              name="ChangeExtendInsertDefaultValueMigrationTask">
+        </projecttask>
        <projecttask
              beforeLogon="false"
              class="org.talend.repository.model.migration.RenametFSUniq"
@@ -1158,14 +1158,14 @@
             id="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
             name="UpgrateDatabaseTypeForSybaseConnection">
       </projecttask>
-	  <projecttask
+    <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
             description="Rename pig mode parameter for bug TDI-13406 "
             id="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
             name="Rename pig mode parameter">
       </projecttask>
-  	  <projecttask
+      <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
             description="Set the standalone value for the connection mode for old jobs for feature TDI-20301 "
@@ -1185,7 +1185,7 @@
             description="Rename pig mode parameter for bug TDI-20076 "
             id="org.talend.repository.model.migration.RenameVersionParametersForPigMigrationTask"
             name="Rename pig parameters">
-      </projecttask>		  
+      </projecttask>      
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
@@ -1296,37 +1296,37 @@
               id="org.talend.repository.model.migration.AddCopyBookXc2jFileMigrationTask"
               name="AddCopyBookXc2jFileMigrationTask">
         </projecttask>
-		<projecttask
+    <projecttask
               beforeLogon="false"
               class="org.talend.repository.model.migration.AddAdditionalFieldMigrationTask"
               id="org.talend.repository.model.migration.AddAdditionalFieldMigrationTask"
               name="Add additionalField to the job model">
         </projecttask>
-	<projecttask
+  <projecttask
              beforeLogon="false"
              class="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
              description="Set the value from 'To' to 'From' for FILTER_TIEM in ADVANCED_FILTER of the component tPOP in Bug TDI-21568"
              id="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
              name="SetFilterTiemFromTotoFromPOPComponentsMigrationTask">
-	</projecttask>
-		<projecttask
+  </projecttask>
+    <projecttask
              beforeLogon="false"
              class="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
              id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
              name="ChangeDefaultValueTDIBug21708">
-		</projecttask>
-	  	<projecttask
-	        beforeLogon="false"
-	        class="org.talend.repository.model.migration.ChangeOptionDefaultValueFortNormalize"
-	        id="org.talend.repository.model.migration.ChangeOptionDefaultValueFortNormalize"
-	        name="ChangeOptionDefaultValueFortNormalize">
-	  	</projecttask>
+    </projecttask>
+      <projecttask
+          beforeLogon="false"
+          class="org.talend.repository.model.migration.ChangeOptionDefaultValueFortNormalize"
+          id="org.talend.repository.model.migration.ChangeOptionDefaultValueFortNormalize"
+          name="ChangeOptionDefaultValueFortNormalize">
+      </projecttask>
         <projecttask
-          	beforeLogon="false"
-          	class="org.talend.repository.model.migration.ChangeDefaultValueFortNormalizeCSVOption"
-          	id="org.talend.repository.model.migration.ChangeDefaultValueFortNormalizeCSVOption"
-          	name="ChangeDefaultValueFortNormalizeCSVOption">
-   	 	</projecttask>
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ChangeDefaultValueFortNormalizeCSVOption"
+            id="org.talend.repository.model.migration.ChangeDefaultValueFortNormalizeCSVOption"
+            name="ChangeDefaultValueFortNormalizeCSVOption">
+      </projecttask>
         <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
@@ -1334,7 +1334,7 @@
             id="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
             name="ChangeMysqlJarReference4MysqlComponents">
         </projecttask>
-   	 	<projecttask
+      <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenametStandardizePhoneNumberColumnName"
             description="Rename the schema column &quot;IsPossiblePhoneNumber &quot; to &quot;IsPossiblePhoneNumber&quot;"
@@ -1355,6 +1355,13 @@
             id="org.talend.repository.model.migration.UpdateJobSettingsForMysqlMigrationTask"
             name="UpdateJobSettingsForMysqlMigrationTask"
             >
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.SetDieOnErrorFalse4tSCPDelete"
+            description="set old tSCPDelete die on error as fasle"
+            id="org.talend.repository.model.migration.SetDieOnErrorFalse4tSCPDelete"
+            name="SetDieOnErrorFalse4tSCPDelete">
       </projecttask>
    </extension>
    
@@ -1390,7 +1397,7 @@
             message="%libraryneeded.fororacleconnection"
             name="ojdbc5-11g.jar"
             required="false"/>
-	<libraryNeeded
+  <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
             language="java"
             message="%libraryneeded.forparaccelconnection"
