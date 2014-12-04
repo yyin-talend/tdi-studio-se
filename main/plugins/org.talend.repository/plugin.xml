@@ -2204,7 +2204,15 @@
               name="ChangeRecalculateFormulaValueMigrationTask"
               version="5.3.3">
         </projecttask>        
-        
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.2"
+              class="org.talend.repository.model.migration.SetDieOnErrorFalse4tSCPDelete"
+              description="set old tSCPDelete die on error as fasle"
+              id="org.talend.repository.model.migration.SetDieOnErrorFalse4tSCPDelete"
+              name="SetDieOnErrorFalse4tSCPDelete"
+              version="5.4.3">
+        </projecttask>
    </extension>
    
    <extension
