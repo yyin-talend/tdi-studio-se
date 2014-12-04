@@ -3,7 +3,6 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    
     java.util.List
     java.util.Map    
 "
@@ -13,52 +12,77 @@ imports="
         CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
         INode node = (INode)codeGenArgument.getArgument();
         String cid = node.getUniqueName();
-        
         List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILELIST__");
+    boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+    if(dieOnError){
 %>
-		
-		//initial the command
-		StringBuilder command_<%=cid %> = new StringBuilder();
-		String dir_<%=cid%> = null;
+	       boolean isCmdFailed_<%= cid %> = false;
 <%
-			for (int i = 0;i<filelist.size();i++) {
-%>
-				dir_<%=cid%> = <%=filelist.get(i).get("SOURCE")%>;
-				dir_<%=cid%> = "\""+dir_<%=cid%>+"\"";
-<%
-			  if(i==0){
-%>
-         	command_<%=cid %>.append("rm " + dir_<%=cid%>);
-         	nb_file_<%=cid %> ++;
-       <%}else{%>
-         	if(command_<%=cid %>.length() > 0){
-         		command_<%=cid %>.append(" ");
          	} 
-            command_<%=cid %>.append(dir_<%=cid%>);
+%>
+    StringBuilder command_<%=cid %> = new StringBuilder("rm -f");
+    ch.ethz.ssh2.Session sessNew_<%=cid%> = conn_<%=cid%>.openSession();
+<%
+		   for(Map<String,String> map : filelist){
+		   	%>
+				command_<%=cid %>.append(" ");
+				command_<%=cid %>.append("\"");
+				command_<%=cid %>.append(<%= map.get("SOURCE") %>);
+				command_<%=cid %>.append("\"");
             nb_file_<%=cid %> ++;
-            <%}
+		   	<%
             }
          %>
        
-		/* Create a session */
-		ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
+        String rmCmd_<%= cid %> = command_<%=cid %>.toString();
+        if(!"rm -f".equals(rmCmd_<%= cid %>)){
+				sessNew_<%=cid%>.execCommand(rmCmd_<%= cid %>);
+				<% if(dieOnError){ %>
+					StringBuilder errMsg_<%= cid %> = new StringBuilder("File(s) deleting failed.");
+					int returnCondition_<%= cid %> = sessNew_<%=cid%>.waitForCondition(ch.ethz.ssh2.ChannelCondition.EXIT_STATUS,300L);
+					Integer exitCode_<%= cid %> = sessNew_<%=cid%>.getExitStatus();
+				    if((returnCondition_<%= cid %> & ch.ethz.ssh2.ChannelCondition.EXIT_STATUS) == ch.ethz.ssh2.ChannelCondition.EXIT_STATUS){
+						  if (exitCode_<%= cid %> != 0) {
+							  isCmdFailed_<%= cid %> = true;
+							  errMsg_<%= cid %>.append("Exit code: ");
+							  errMsg_<%= cid %>.append(exitCode_<%= cid %>);
+  						  }
+					}else if((returnCondition_<%= cid %> & ch.ethz.ssh2.ChannelCondition.TIMEOUT) == ch.ethz.ssh2.ChannelCondition.TIMEOUT){
+						  isCmdFailed_<%= cid %> = true;
+						  errMsg_<%= cid %>.append("The request timeout.");
+					}else if((returnCondition_<%= cid %> & ch.ethz.ssh2.ChannelCondition.CLOSED) == ch.ethz.ssh2.ChannelCondition.CLOSED){
+						  isCmdFailed_<%= cid %> = true;
+						  errMsg_<%= cid %>.append("Unexpected closed session.");
+					}else{
+						 System.err.println("Unexpected error.");
+						 isCmdFailed_<%= cid %> = true;
+					}
+				<% } %>
 		
-		//execute the command
-		sess_<%=cid%>.execCommand((command_<%=cid %>).toString());		
-		
-		//get the return info
-		
-		java.io.InputStream stderr_<%=cid%> = sess_<%=cid%>.getStderr();
+				java.io.InputStream stderr_<%=cid%> = sessNew_<%=cid%>.getStderr();
         java.io.BufferedReader breer_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stderr_<%=cid%>));
         String line_err_<%=cid%> = "";
         StringBuilder stringStderr_<%=cid%> =new StringBuilder();
 		while((line_err_<%=cid%> = breer_<%=cid%>.readLine()) != null) {
+						String errInfo_<%= cid %> = new String(line_err_<%=cid%>.getBytes(),"UTF-8");
+						System.err.println(errInfo_<%= cid %>);
 			stringStderr_<%=cid%>.append(line_err_<%=cid%> + "\n");
 		}
 		String stderrString_<%=cid %> = stringStderr_<%=cid %>.toString();
 		
-		<%for (int i = 0;i<filelist.size();i++) {%>
+				<% if(dieOnError){
+					%>
+						if(stderrString_<%=cid %> != null && stderrString_<%=cid %>.length() > 0){
+							isCmdFailed_<%= cid %> = true;
+						}
+						if(isCmdFailed_<%= cid %>){
+							throw new RuntimeException(errMsg_<%= cid %>.toString());
+						}
+					<%
+				}
+				%>
 		
+				<%for (int i = 0;i<filelist.size();i++) {%>
 		    if(stderrString_<%=cid %>.contains(<%=filelist.get(i).get("SOURCE")%>)){
 		    	nb_file_<%=cid %> --;
 		    }
@@ -67,11 +91,13 @@ imports="
 		breer_<%=cid%>.close();
 		stderr_<%=cid%>.close();
 		
-		 /* Close this session */			
-		sess_<%=cid%>.close();
-		
-		if(("").equals(stringStderr_<%=cid %>.toString()) || (stringStderr_<%=cid %>.toString() == null)){
+			if("".equals(stderrString_<%=cid %>) || (stderrString_<%=cid %> == null)){
 			globalMap.put("<%=cid %>_STATUS","File(s) deleted OK");
 		}else{
 			globalMap.put("<%=cid %>_STATUS",stringStderr_<%=cid %>.toString());
 		}
+
+        }else{
+        	globalMap.put("<%=cid %>_STATUS","No file to be deleted.");
+        }
+		sessNew_<%=cid%>.close();
