@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
@@ -25,6 +24,9 @@ public class SetDieOnErrorFalse4tSCPDelete extends AbstractJobMigrationTask {
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
+        if (processType == null) {
+            return ExecutionResult.NOTHING_TO_DO;
+        }
         IComponentFilter filter = new NameComponentFilter("tSCPDelete");
         try {
             ModifyComponentsAction.searchAndModify(item, processType, filter,
@@ -36,12 +38,10 @@ public class SetDieOnErrorFalse4tSCPDelete extends AbstractJobMigrationTask {
                                ComponentUtilities.getNodeProperty(node, "DIE_ON_ERROR").setValue("false");
                         }
                     }));
-        } catch (PersistenceException e) {
+        } catch (Exception e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
         }
-
         return ExecutionResult.SUCCESS_NO_ALERT;
-
     }
 }
