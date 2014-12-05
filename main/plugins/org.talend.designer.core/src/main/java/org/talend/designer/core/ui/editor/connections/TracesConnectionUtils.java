@@ -38,6 +38,7 @@ import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.repository.utility.NotReallyNeedSchemaDBS;
 
 /**
@@ -271,7 +272,8 @@ public class TracesConnectionUtils {
         // boolean isOralceWithSid = productName.equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
 
         String schema = parameters.getSchema();
-        if (EDatabaseTypeName.TERADATA.getProduct().equals(productName)) {
+        EDatabaseTypeName type = EDatabaseTypeName.getTypeFromDbType(dbType);
+        if (ManagerConnection.isSchemaFromSidOrDatabase(type)) {
             schema = parameters.getDbName();
         }
 

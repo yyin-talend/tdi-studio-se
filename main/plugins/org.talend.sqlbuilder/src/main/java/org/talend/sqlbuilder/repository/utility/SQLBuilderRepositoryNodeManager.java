@@ -736,7 +736,8 @@ public class SQLBuilderRepositoryNodeManager {
         // boolean isOralceWithSid = productName.equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
 
         String schema = parameters.getSchema();
-        if (EDatabaseTypeName.TERADATA.getProduct().equals(productName)) {
+        EDatabaseTypeName type = EDatabaseTypeName.getTypeFromDbType(dbType);
+        if (ManagerConnection.isSchemaFromSidOrDatabase(type)) {
             schema = parameters.getDbName();
         }
 
