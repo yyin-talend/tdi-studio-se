@@ -60,8 +60,6 @@ public class CodeGeneratorArgument {
 
     private int pauseTime;
 
-    private boolean subTreeContainsParallelIterate;
-
     /**
      * Constructor.
      */
@@ -277,11 +275,4 @@ public class CodeGeneratorArgument {
         this.subTree = subTree;
     }
 
-    public boolean subTreeContainsParallelIterate() {
-        return subTreeContainsParallelIterate;
-    }
-
-    public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
-        this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
-    }
 }

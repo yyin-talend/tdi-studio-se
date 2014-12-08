@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
@@ -60,8 +59,6 @@ public class NodesSubTree {
     boolean isMergeSubTree = false;
 
     List<IConnection> allMainSubTreeConnections = null;
-
-    boolean subTreeContainsParallelIterate = false;
 
     List<INode> mergeBranchStarts;
 
@@ -280,11 +277,7 @@ public class NodesSubTree {
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                     if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         allMainSubTreeConnections.add(connection);
-                    } else {
-                        if (Boolean.TRUE.toString().equals(ElementParameterParser.getValue(connection, "__ENABLE_PARALLEL__"))) { //$NON-NLS-1$ 
-                            subTreeContainsParallelIterate = true;
-                        }
-                    }
+                    } 
                     if (DEBUG) {
                         System.out.print(" -> "); //$NON-NLS-1$
                     }
@@ -535,14 +528,6 @@ public class NodesSubTree {
      */
     public void setAllMainSubTreeConnections(List<IConnection> allMainSubTreeConnections) {
         this.allMainSubTreeConnections = allMainSubTreeConnections;
-    }
-
-    public boolean subTreeContainsParallelIterate() {
-        return subTreeContainsParallelIterate;
-    }
-
-    public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
-        this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
     }
 
     /**
