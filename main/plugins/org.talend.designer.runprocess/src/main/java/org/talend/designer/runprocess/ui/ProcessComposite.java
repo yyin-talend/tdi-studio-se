@@ -856,15 +856,22 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                     clearTracePerfBtn.setEnabled(false);
                     return;
                 }
-                ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
-                clearPerfAction.setProcess(processContext.getProcess());
-                clearPerfAction.run();
-                ClearTraceAction clearTraceAction = new ClearTraceAction();
-                clearTraceAction.setProcess(processContext.getProcess());
-                clearTraceAction.run();
-                consoleText.setText("");
-                processContext.clearMessages();
-                refreshNodeContainer();
+                // normally, variable "run" can not be null
+                if (!run.getEnabled()) {
+                    if (consoleText != null && !consoleText.isDisposed()) {
+                        consoleText.setText(""); //$NON-NLS-1$
+                    }
+                } else {
+                    ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
+                    clearPerfAction.setProcess(processContext.getProcess());
+                    clearPerfAction.run();
+                    ClearTraceAction clearTraceAction = new ClearTraceAction();
+                    clearTraceAction.setProcess(processContext.getProcess());
+                    clearTraceAction.run();
+                    consoleText.setText(""); //$NON-NLS-1$
+                    processContext.clearMessages();
+                    refreshNodeContainer();
+                }
             }
         });
 
@@ -1056,7 +1063,11 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // perfBtn.setEnabled(runnable);
         // traceBtn.setEnabled(runnable);
         if (clearTracePerfBtn != null && !clearTracePerfBtn.isDisposed()) {
-            clearTracePerfBtn.setEnabled(runnable);
+            if (processContext != null && processContext.getProcess() != null) {
+                clearTracePerfBtn.setEnabled(true);
+            } else {
+                clearTracePerfBtn.setEnabled(runnable);
+            }
         }
 
         setExecBtn(runnable);
