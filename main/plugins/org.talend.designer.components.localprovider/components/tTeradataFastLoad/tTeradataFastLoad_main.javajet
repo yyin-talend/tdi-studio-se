@@ -55,17 +55,11 @@ imports="
 
 ///////////////Inner Class Column///////////////////////////
 class Column{
-
 	IMetadataColumn column;
-	
 	String name;
-	
 	String sqlStmt;
-	
 	String value;
-	
 	boolean addCol;
-	
 	List<Column> replacement = new ArrayList<Column>();
 	
 	public Column(String colName,String sqlStmt,boolean addCol){
@@ -136,6 +130,7 @@ class Column{
 		return this.value;
 	}
 }
+
 	StringBuilder insertColName = new StringBuilder();
 	StringBuilder insertValueStmt = new StringBuilder();
 	StringBuilder updateSetStmt = new StringBuilder();
@@ -146,7 +141,6 @@ for(IMetadataColumn column:columnList){
 	stmtStructure.add(new Column(column));
 }
 
-////////////////////////////////////////////////////////////
 List<Column> colStruct =  new ArrayList();
 for(Column colStmt:stmtStructure){
 	if(!colStmt.isReplaced()&&!colStmt.isAddCol()){
@@ -154,7 +148,6 @@ for(Column colStmt:stmtStructure){
 	}
 }
 
-/////////////////Inner Class Operation///////////////////////
 class Operation{
 	public static final int NORMAL_TYPE = 0;
 	public static final int INSERT_TYPE = 1;
@@ -361,6 +354,7 @@ if(incomingConnName != null && columnList != null){
 			}
 		%>
 	    commitCounter_<%=cid%>++;
+	    nb_line_<%=cid%>++;
 <%
 	////////////commit every////////////
 	if(!("").equals(commitEvery) && !("0").equals(commitEvery)){

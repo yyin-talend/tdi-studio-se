@@ -25,10 +25,7 @@ imports="
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 int nb_line_<%=cid%> = 0;
-int nb_line_update_<%=cid%> = 0;
 int nb_line_inserted_<%=cid%> = 0;
-
-int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
 String driverClass_<%=cid%> = "com.teradata.jdbc.TeraDriver";
@@ -39,6 +36,7 @@ String dbProperties_<%=cid%> = <%=dbproperties%>;
 if(dbProperties_<%=cid%> != null && dbProperties_<%=cid%>.trim().length() > 0) {
 	url_<%=cid %> +=","+dbProperties_<%=cid%>;
 }
+
 <%
 List<IMetadataColumn> columnList = null;
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -64,19 +62,12 @@ java.sql.Connection conn_<%=cid%> = null;
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
 <%
 if(columnList != null && columnList.size()>0){
-
 class Column{
-
 	IMetadataColumn column;
-	
 	String name;
-	
 	String sqlStmt;
-	
 	String value;
-	
 	boolean addCol;
-	
 	List<Column> replacement = new ArrayList<Column>();
 	
 	public Column(String colName,String sqlStmt,boolean addCol){
@@ -227,14 +218,15 @@ for(Column colStmt:stmtStructure){
 	counterOuter ++;
 }
 %>
+
 	 String tableName_<%=cid%> = <%=tableName%>;
 	 String dbname_<%=cid%> = <%=dbname%>;
-	 
 	if(dbname_<%=cid%> == null || dbname_<%=cid%>.trim().length() == 0) {
     	tableName_<%=cid%> = <%=tableName%>;
 	} else {
     	tableName_<%=cid%> = dbname_<%=cid%> + "." + <%=tableName%>;
 	}
+
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 		int commitCounter_<%=cid%> = 0;
 <%
