@@ -868,7 +868,6 @@ public class CodeGenerator implements ICodeGenerator {
         CodeGeneratorArgument argument = new CodeGeneratorArgument();
         argument.setNode(node);
         argument.setAllMainSubTreeConnections(subProcess.getAllMainSubTreeConnections());
-        argument.setSubTreeContainsParallelIterate(subProcess.subTreeContainsParallelIterate());
         argument.setCodePart(part);
         argument.setStatistics(statistics);
         argument.setTrace(trace);

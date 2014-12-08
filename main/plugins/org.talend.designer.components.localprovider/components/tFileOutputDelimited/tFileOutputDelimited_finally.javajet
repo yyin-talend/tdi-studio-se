@@ -7,6 +7,7 @@
 		java.util.List
 		org.talend.core.model.process.IProcess
 		org.talend.core.model.utils.NodeUtil
+		org.talend.core.model.process.AbstractNode
 	" 
 %>
 
@@ -44,9 +45,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		   		synchronized (multiThreadLockWrite) {
 			<%
 			}
-			if (NodeUtil.subBranchContainsParallelIterate(node)) {
+			if (((AbstractNode)node).getParallelIterator() != null) {
 			%>
-				synchronized (lockWrite) {
+				synchronized ((Object[])globalMap.get("lockWrite_<%=((AbstractNode)node).getParallelIterator()%>")) {
 			<% 
 			}
 			if (isParallelize) {
@@ -141,7 +142,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 			<%
 			}
-			if (NodeUtil.subBranchContainsParallelIterate(node)) {
+			if (((AbstractNode)node).getParallelIterator() != null) {
 			%>
 				}
 			<% 
