@@ -19,6 +19,7 @@
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String targetType = ElementParameterParser.getValue(node, "__TARGETTYPE__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
+	boolean log4JActived = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	dbLog = new DBLogUtil(node);
 %>
    	java.util.Set<String> keySet_<%=cid%> = map_<%=cid%>.keySet();
@@ -40,7 +41,11 @@
 			for(String resourceName_<%=cid%> : col_<%=cid%>.listResources()){
 				if(resourceName_<%=cid%>.matches(finalMask_<%=cid%>)){
 			        org.xmldb.api.base.Resource resource_<%=cid%> = col_<%=cid%>.getResource(resourceName_<%=cid%>);
+			        <% if(log4JActived){ %>
+			             log.info("<%= cid %> - Try to remove resource '"+resourceName_<%=cid%>+"'.");
+			        <% } %>
 			        col_<%=cid%>.removeResource(resource_<%=cid%>);
+			        <% dbLog.info(dbLog.str("The resource removed successed.")); %>
 				}
 			}
 <%
@@ -48,7 +53,11 @@
 %>
 			for(String subCol_<%=cid%> : col_<%=cid%>.listChildCollections()){
 				if(subCol_<%=cid%>.matches(finalMask_<%=cid%>)){
+					<% if(log4JActived){ %>
+					     log.info("<%= cid %> - Try to remove collection '"+subCol_<%=cid%>+"'.");
+					<% } %>
 					mgtService_<%=cid%>.removeCollection(subCol_<%=cid%>);
+					<% dbLog.info(dbLog.str("The collection removed successed.")); %>
 				}
 			}
 <%
@@ -57,12 +66,20 @@
 			for(String resourceName_<%=cid%> : col_<%=cid%>.listResources()){
 				if(resourceName_<%=cid%>.matches(finalMask_<%=cid%>)){
 			        org.xmldb.api.base.Resource resource_<%=cid%> = col_<%=cid%>.getResource(resourceName_<%=cid%>);
+			        <% if(log4JActived){ %>
+			             log.info("<%= cid %> - Try to remove resource '"+resourceName_<%=cid%>+"'.");
+			        <% } %>
 			        col_<%=cid%>.removeResource(resource_<%=cid%>);
+			        <% dbLog.info(dbLog.str("The resource removed successed.")); %>
 				}
 			}
 			for(String subCol_<%=cid%> : col_<%=cid%>.listChildCollections()){
 				if(subCol_<%=cid%>.matches(finalMask_<%=cid%>)){
+					<% if(log4JActived){ %>
+					     log.info("<%= cid %> - Try to remove collection '"+subCol_<%=cid%>+"'.");
+					<% } %>
 					mgtService_<%=cid%>.removeCollection(subCol_<%=cid%>);
+					<% dbLog.info(dbLog.str("The collection removed successed.")); %>
 				}
 			}
 <%

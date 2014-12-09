@@ -17,11 +17,13 @@
 	String updateFile = ElementParameterParser.getValue(node, "__UPDATEFILE__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	boolean log4JActived = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 	dbLog = new DBLogUtil(node);
 
 	if(("true").equals(useExistingConn)){
 		String col= "col_" + connection;
+		dbLog.info(dbLog.str("uses an existing connection."));
 %>
 		org.xmldb.api.base.Collection col_<%=cid%> = (org.xmldb.api.base.Collection)globalMap.get("<%=col%>");
 <%
@@ -29,7 +31,10 @@
 %>
 		Class cl_<%=cid%> = Class.forName(<%=driver%>);
 		<%dbLog.conn().logJDBCDriver(driver);%>
+		<% dbLog.info(dbLog.str("Try to create a database instance.")); %>
 	    org.xmldb.api.base.Database database_<%=cid%> = (org.xmldb.api.base.Database) cl_<%=cid%>.newInstance();
+	    <% dbLog.info(dbLog.str("Create the instance successed.")); %>
+
 	    database_<%=cid%>.setProperty("create-database", "true");
 	    org.xmldb.api.DatabaseManager.registerDatabase(database_<%=cid%>);
 	        
@@ -38,9 +43,9 @@
 		%>
 		
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-	   	<%dbLog.conn().connTry(uri,user);%>
+	    <% dbLog.info(dbLog.str("Try to retrieve a Collection instance from the database for the given URI: "),uri,dbLog.str(".")); %>
 	    org.xmldb.api.base.Collection col_<%=cid%> = org.xmldb.api.DatabaseManager.getCollection(<%=uri%> + <%=collection%>,<%=user%>,decryptedPassword_<%=cid%>);
-		<%dbLog.conn().connDone(uri);%>
+        <% dbLog.info(dbLog.str("Retrieves a Collection instance from the database successed.")); %>
 <%
 	}
 %>
@@ -51,4 +56,9 @@
 	br_<%=cid%>.read(characters_<%=cid%>, 0, new Long(file_<%=cid%>.length()).intValue());
 	br_<%=cid%>.close();
 	String xUpdateModifications_<%=cid%> = new String(characters_<%=cid%>);
+	<% if(log4JActived){ %>
+	      log.debug("<%= cid %> - The raw update string is '"+xUpdateModifications_<%=cid%>+"'.");
+	<% } %>
+	<% dbLog.info(dbLog.str("Try to update xmldb.")); %>
 	service_<%=cid%>.update(xUpdateModifications_<%=cid%>);
+	<% dbLog.info(dbLog.str("Update the xmldb successed.")); %>

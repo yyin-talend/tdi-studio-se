@@ -19,6 +19,7 @@
 	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
+	boolean log4JActived = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	dbLog = new DBLogUtil(node);
 %>
    	java.util.Set<String> keySet_<%=cid%> = map_<%=cid%>.keySet();
@@ -49,13 +50,18 @@
             });
     	} 
     	if(listings_<%=cid%> != null && listings_<%=cid%>.length > 0){
-    		for(int m_<%=cid%> = 0; m_<%=cid%> < listings_<%=cid%>.length; m_<%=cid%>++){ 
-     			if(listings_<%=cid%>[m_<%=cid %>].getName().matches(mask_<%=cid%>)){
+    		for(int m_<%=cid%> = 0; m_<%=cid%> < listings_<%=cid%>.length; m_<%=cid%>++){
+    			String fileName_<%= cid %> = listings_<%=cid%>[m_<%=cid %>].getName();
+     			if(fileName_<%= cid %>.matches(mask_<%=cid%>)){
      				java.io.File localFile_<%=cid%> = new java.io.File(listings_<%=cid%>[m_<%=cid%>].getAbsolutePath());
      				try{
+     					<% if(log4JActived){ %>
+     					      log.debug("<%= cid %> - Try to put '"+fileName_<%= cid %>+"' into xmldb.");
+     					<% } %>
      					org.xmldb.api.modules.XMLResource document_<%=cid%> = (org.xmldb.api.modules.XMLResource) col_<%=cid%>.createResource(localFile_<%=cid%>.getName(), "XMLResource");
 				        document_<%=cid%>.setContent(localFile_<%=cid%>);
 				        col_<%=cid%>.storeResource(document_<%=cid%>);
+				        <% dbLog.debug(dbLog.str("Put file into xmldb successed.")); %>
      				}catch(org.xmldb.api.base.XMLDBException e_<%=cid%>){
      					org.exist.xmldb.RemoteBinaryResource document_<%=cid%> = (org.exist.xmldb.RemoteBinaryResource) col_<%=cid%>.createResource(localFile_<%=cid%>.getName(), "BinaryResource");
 				        document_<%=cid%>.setContent(localFile_<%=cid%>);
@@ -66,6 +72,6 @@
     		}
     	}else{
     		System.err.println("No match file exist!");
-    		<%dbLog.logIgnoredException(dbLog.str("No match file exist!"));%>
+    		<%dbLog.logPrintedException(dbLog.str("No match file exist!"));%>
     	}
     }
