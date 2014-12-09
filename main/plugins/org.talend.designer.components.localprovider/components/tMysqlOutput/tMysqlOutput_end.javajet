@@ -344,7 +344,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	        	<% if(onErrDie){%>
 	       		throw e;
 	        	<% }else{
-	        		dbLog.logIgnoredException("e.getMessage()");
+	        		dbLog.logPrintedException("e.getMessage()");
 	        	%>
 	        		System.err.println(e.getMessage());
 	        	<%}%>
