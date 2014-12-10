@@ -726,7 +726,7 @@ if(columnList != null && columnList.size() > 0) {
                     	<% if(onErrDie){%>
                     	     throw e;
 			        	<% }else{
-		        			 dbLog.logIgnoredException("e.getMessage()");%>
+		        			 dbLog.logPrintedException("e.getMessage()");%>
 		        			 System.err.println(e.getMessage());
 		        		<%}%>
 	                    }

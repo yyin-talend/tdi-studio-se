@@ -78,34 +78,13 @@ public class EditRoutinePropertiesWizardPage extends PropertiesWizardPage {
     protected List<IRepositoryViewObject> loadRepViewObjectWithOtherTypes() throws PersistenceException {
         List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
 
-        // List for common process
-        if (ERepositoryObjectType.PROCESS != null) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IProxyRepositoryService.class)) {
-                IProxyRepositoryService service = (IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
-                        IProxyRepositoryService.class);
-
-                List<IRepositoryViewObject> mrList = service.getProxyRepositoryFactory().getAll(ERepositoryObjectType.PROCESS,
-                        true, false);
-                if (mrList != null && mrList.size() > 0) {
-                    list.addAll(mrList);
-                }
-            }
+        // List for all other processes
+        List<IRepositoryViewObject> processList = getAllProcessTypeObjectsWithoutCurrentType();
+        if (processList != null && !processList.isEmpty()) {
+            list.addAll(processList);
         }
 
         // TODO to check why can not check m/r process when routine name modified is the same as m/r process
-        // List for m/r process
-        ERepositoryObjectType mrRepObjType = ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "PROCESS_MR");//$NON-NLS-1$
-        if (mrRepObjType != null) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IProxyRepositoryService.class)) {
-                IProxyRepositoryService service = (IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
-                        IProxyRepositoryService.class);
-
-                List<IRepositoryViewObject> mrList = service.getProxyRepositoryFactory().getAll(mrRepObjType, true, false);
-                if (mrList != null && mrList.size() > 0) {
-                    list.addAll(mrList);
-                }
-            }
-        }
 
         // List for esb route
         ERepositoryObjectType routeType = ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "ROUTES");

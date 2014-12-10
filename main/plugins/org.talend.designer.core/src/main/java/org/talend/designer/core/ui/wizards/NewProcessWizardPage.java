@@ -130,18 +130,10 @@ public class NewProcessWizardPage extends PropertiesWizardPage {
     protected List<IRepositoryViewObject> loadRepViewObjectWithOtherTypes() throws PersistenceException {
         List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
 
-        // List for m/r process
-        ERepositoryObjectType mrRepObjType = ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "PROCESS_MR");//$NON-NLS-1$
-        if (mrRepObjType != null) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IProxyRepositoryService.class)) {
-                IProxyRepositoryService service = (IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
-                        IProxyRepositoryService.class);
-
-                List<IRepositoryViewObject> mrList = service.getProxyRepositoryFactory().getAll(mrRepObjType, true, false);
-                if (mrList != null && mrList.size() > 0) {
-                    list.addAll(mrList);
-                }
-            }
+        // List for all other processes
+        List<IRepositoryViewObject> processList = getAllProcessTypeObjectsWithoutCurrentType();
+        if (processList != null && !processList.isEmpty()) {
+            list.addAll(processList);
         }
 
         // List for routine
