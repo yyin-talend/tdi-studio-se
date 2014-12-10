@@ -19,8 +19,9 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.ui.editor.IJobEditorHandler;
+import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.repository.editor.JobEditorInput;
 
 /**
  * DOC marvin class global comment. Detailled comment

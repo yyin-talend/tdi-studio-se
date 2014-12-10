@@ -138,6 +138,7 @@ import org.talend.core.repository.model.repositoryObject.MetadataTableRepository
 import org.talend.core.service.ISAPProviderService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command;
@@ -180,7 +181,6 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
@@ -191,6 +191,7 @@ import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.SAPIDocRepositoryObject;
 import org.talend.repository.model.SalesforceModuleRepositoryObject;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
+
 import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**

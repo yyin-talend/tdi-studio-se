@@ -67,6 +67,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.IReplaceNodeInProcess;
 import org.talend.designer.core.ReplaceNodesInProcessProvider;
 import org.talend.designer.core.i18n.Messages;
@@ -82,7 +83,6 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.utils.ValidationRulesUtil;
-import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
 

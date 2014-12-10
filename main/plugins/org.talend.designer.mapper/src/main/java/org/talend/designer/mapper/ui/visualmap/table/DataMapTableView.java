@@ -133,6 +133,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.runtime.services.IExpressionBuilderDialogService;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -173,7 +174,6 @@ import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvi
 import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
 import org.talend.designer.mapper.ui.visualmap.zone.InputsZone;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
-import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryService;
 import org.talend.repository.model.RepositoryNode;

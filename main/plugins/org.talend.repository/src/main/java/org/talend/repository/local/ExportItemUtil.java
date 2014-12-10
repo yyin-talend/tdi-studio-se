@@ -73,11 +73,11 @@ import org.talend.core.repository.utils.ResourceFilenameHelper;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.service.ITransformService;
+import org.talend.core.ui.export.IFileExporterFullPath;
+import org.talend.core.ui.export.TarFileExporterFullPath;
+import org.talend.core.ui.export.ZipFileExporterFullPath;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.documentation.IFileExporterFullPath;
-import org.talend.repository.documentation.TarFileExporterFullPath;
-import org.talend.repository.documentation.ZipFileExporterFullPath;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ResourceModelUtils;
 

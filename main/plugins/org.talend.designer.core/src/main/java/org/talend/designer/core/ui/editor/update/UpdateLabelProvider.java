@@ -20,6 +20,7 @@ import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
+import org.talend.commons.ui.swt.images.OverlayImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -29,12 +30,11 @@ import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.images.CoreImageProvider;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * ggu class global comment. Detailled comment

@@ -33,7 +33,7 @@ import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlCellEditorLocator;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlTextEditManager;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.service.ISQLBuilderService;
+import org.talend.core.ui.services.ISQLBuilderService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;

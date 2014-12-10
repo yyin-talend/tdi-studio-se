@@ -61,7 +61,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -1024,7 +1024,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     /**
      * hywang Comment method "getRepositoryFileItemMap".
      * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryFileItemMap()
+     * @see org.talend.core.ui.properties.tab.IDynamicProperty#getRepositoryFileItemMap()
      */
     public Map<String, FileItem> getRepositoryFileItemMap() {
         if (this.repositoryFileItemMap.isEmpty()) {

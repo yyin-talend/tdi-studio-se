@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.component.preference.provider.IPaletteItem;
 import org.talend.core.ui.images.CoreImageProvider;
-import org.talend.designer.components.preference.provider.IPaletteItem;
 
 /**
  * created by nrousseau on Aug 11, 2014 Detailled comment

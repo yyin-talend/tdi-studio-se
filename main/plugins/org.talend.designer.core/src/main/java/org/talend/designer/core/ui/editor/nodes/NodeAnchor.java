@@ -25,7 +25,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.commons.ui.gmf.draw2d.LineSeg;
 import org.talend.commons.ui.gmf.draw2d.LineSeg.KeyPoint;
 import org.talend.core.model.process.IConnection;
-import org.talend.core.model.process.IGraphicalNode;
+import org.talend.core.ui.process.IGraphicalNode;
 import org.talend.designer.core.ui.editor.connections.Connection;
 
 /**

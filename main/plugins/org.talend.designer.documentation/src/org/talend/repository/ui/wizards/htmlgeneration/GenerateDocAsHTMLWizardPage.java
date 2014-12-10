@@ -48,7 +48,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
+import org.talend.core.ui.export.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.documentation.generation.HTMLDocGenerator;
 import org.talend.repository.documentation.generation.JobHTMLScriptsManager;

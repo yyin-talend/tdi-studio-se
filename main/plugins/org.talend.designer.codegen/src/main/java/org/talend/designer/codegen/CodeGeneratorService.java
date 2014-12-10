@@ -27,12 +27,12 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC bqian class global comment. Provides services for CodeGenerator plugin. <br/>

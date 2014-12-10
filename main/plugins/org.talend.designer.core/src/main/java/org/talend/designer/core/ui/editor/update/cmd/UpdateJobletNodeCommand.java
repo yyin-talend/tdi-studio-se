@@ -45,6 +45,7 @@ import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -52,7 +53,6 @@ import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * ggu class global comment. Detailled comment

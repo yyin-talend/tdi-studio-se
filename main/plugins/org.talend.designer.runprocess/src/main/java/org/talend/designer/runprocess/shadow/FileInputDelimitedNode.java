@@ -33,12 +33,12 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.FileInputDelimited;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>

@@ -94,6 +94,8 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ParameterValueUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.documentation.generation.ExternalNodeComponentHandler;
+import org.talend.core.ui.documentation.generation.InternalNodeComponentHandler;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ICamelDesignerCoreService;

@@ -52,9 +52,9 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.ui.CoreUIPlugin;
-import org.talend.designer.components.preference.provider.TalendPaletteLabelProvider;
-import org.talend.designer.components.preference.provider.TalendPaletteTreeProvider;
-import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.core.ui.component.preference.provider.TalendPaletteLabelProvider;
+import org.talend.core.ui.component.preference.provider.TalendPaletteTreeProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.actions.ShowStandardAction;
 

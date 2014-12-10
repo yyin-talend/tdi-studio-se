@@ -95,6 +95,7 @@ import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.service.IEBCDICProviderService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.SAPConnectionUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -108,7 +109,6 @@ import org.talend.designer.core.ui.editor.update.UpdateCheckResult;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.UpdateRepositoryUtils;
-import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**

@@ -43,7 +43,7 @@ import org.talend.commons.ui.utils.workbench.preferences.ComboFieldEditor;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.components.ComponentPaletteUtilities;
+import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.i18n.Messages;

@@ -51,16 +51,16 @@ import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
+import org.talend.core.ui.component.ComponentPaletteUtilities;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.model.ExchangePackage;
 import org.talend.designer.components.exchange.model.RevisionInfo;
 import org.talend.designer.components.exchange.model.VersionRevision;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC hcyi class global comment. Detailled comment
