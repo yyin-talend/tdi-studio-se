@@ -329,7 +329,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         }
     }
 
-    private static final int DEFAULT_GROUP_HEIGHT = 20;
+    private static final int DEFAULT_GROUP_HEIGHT = 25;
 
     /**
      * Initialize all components for the defined section for this node.

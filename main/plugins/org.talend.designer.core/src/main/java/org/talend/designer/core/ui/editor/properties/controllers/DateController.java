@@ -39,6 +39,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
@@ -70,8 +71,22 @@ public class DateController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
-        Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
+
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
+        data = new FormData();
+        if (lastControl != null) {
+            data.left = new FormAttachment(lastControl, 0);
+        } else {
+            data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+        }
+        data.top = new FormAttachment(0, top);
+        labelLabel.setLayoutData(data);
+        if (numInRow != 1) {
+            labelLabel.setAlignment(SWT.RIGHT);
+        }
+
+        Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
 
         btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
@@ -108,18 +123,6 @@ public class DateController extends AbstractElementPropertySectionController {
 
         hashCurControls.put(param.getName(), dateText);
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
-        data = new FormData();
-        if (lastControl != null) {
-            data.left = new FormAttachment(lastControl, 0);
-        } else {
-            data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
-        }
-        data.top = new FormAttachment(0, top);
-        labelLabel.setLayoutData(data);
-        if (numInRow != 1) {
-            labelLabel.setAlignment(SWT.RIGHT);
-        }
         // **************************
         data = new FormData();
         int currentLabelWidth = STANDARD_LABEL_WIDTH;
@@ -143,13 +146,13 @@ public class DateController extends AbstractElementPropertySectionController {
 
         data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
         data.right = new FormAttachment(labelLabel, currentDateWidth, SWT.RIGHT);
-        data.top = new FormAttachment(btnEdit, 0, SWT.CENTER);
+        data.top = new FormAttachment(labelLabel, 0, SWT.CENTER);
         cLayout.setLayoutData(data);
 
         data = new FormData();
         data.left = new FormAttachment(cLayout, 0, SWT.RIGHT);
         data.right = new FormAttachment(cLayout, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
-        data.top = new FormAttachment(0, top);
+        data.top = new FormAttachment(labelLabel, 0, SWT.CENTER);
         data.height = STANDARD_HEIGHT - 2;
         btnEdit.setLayoutData(data);
 
@@ -208,6 +211,7 @@ public class DateController extends AbstractElementPropertySectionController {
             String propertyName = (String) button.getData(PARAMETER_NAME);
             String date = dateDial.getTalendDateString();
             if (!elem.getPropertyValue(propertyName).equals(date)) {
+                elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
                 return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(date));
 
             }
