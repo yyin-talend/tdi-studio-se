@@ -25,6 +25,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -32,6 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -71,6 +73,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.ISVNProviderService;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -142,6 +145,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
 
         componentViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 shareButton.setEnabled(!event.getSelection().isEmpty());
             }
@@ -158,6 +162,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
 
         shareViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 backButton.setEnabled(!event.getSelection().isEmpty());
             }
@@ -340,6 +345,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
     protected void performApply() {
         final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask("Save custom component setting", (sharedAdded.size() + backAdded.size()) * 100);
                 finish(monitor);
@@ -381,85 +387,126 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
         if (monitorWrap != null && monitorWrap.length == 1) {
             monitor = monitorWrap[0];
         }
-        IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
+        final IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
 
         if (PluginChecker.isSVNProviderPluginLoaded() && (!sharedAdded.isEmpty() || !backAdded.isEmpty())) {
-            ISVNProviderService service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
-                    ISVNProviderService.class);
-            String projectLabel = pro.getTechnicalLabel();
-            IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            IProject eclipseProject = workspace.getRoot().getProject(projectLabel);
+            RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Commit new component") {
 
-            String targetRoot = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath()
-                    + File.separatorChar + projectLabel + File.separatorChar
-                    + ERepositoryObjectType.getFolderName(ERepositoryObjectType.COMPONENTS);
-            File componentFolder = new File(targetRoot);
-            URL url = null;
-            try {
-                if (!componentFolder.exists()) {
-                    FilesUtils.createFoldersIfNotExists(targetRoot, false);
-                }
-                Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-                url = FileLocator.toFileURL(FileLocator.find(b, new Path(""), null));
+                @Override
+                public void run() throws PersistenceException {
+                    final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
-                String sourceRoot = url.getFile();
+                        @Override
+                        public void run(IProgressMonitor subMonitor) throws CoreException {
 
-                // delete share
-                for (IComponent component : backAdded.keySet()) {
-                    service.svnEclipseHandlerDelete(eclipseProject, pro, targetRoot + File.separator + component.getName());
-                    if (monitor != null) {
-                        monitor.worked(10);
-                    }
-                }
-                if (!backAdded.isEmpty()) {
-                    getCustomComponentSettings().removeAll(backAdded.values());
-                }
+                            ISVNProviderService service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
+                                    ISVNProviderService.class);
+                            String projectLabel = pro.getTechnicalLabel();
+                            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                            IProject eclipseProject = workspace.getRoot().getProject(projectLabel);
 
-                FileFilter ff = new FileFilter() {
+                            String targetRoot = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath()
+                                    + File.separatorChar + projectLabel + File.separatorChar
+                                    + ERepositoryObjectType.getFolderName(ERepositoryObjectType.COMPONENTS);
+                            File componentFolder = new File(targetRoot);
+                            URL url = null;
+                            try {
+                                if (!componentFolder.exists()) {
+                                    FilesUtils.createFoldersIfNotExists(targetRoot, false);
+                                }
+                                Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+                                url = FileLocator.toFileURL(FileLocator.find(b, new Path(""), null));
 
-                    public boolean accept(File pathname) {
-                        if (FilesUtils.isSVNFolder(pathname)) {
-                            return false;
+                                String sourceRoot = url.getFile();
+
+                                // delete share
+                                for (IComponent component : backAdded.keySet()) {
+                                    service.svnEclipseHandlerDelete(eclipseProject, pro,
+                                            targetRoot + File.separator + component.getName());
+                                    if (subMonitor != null) {
+                                        subMonitor.worked(10);
+                                    }
+                                }
+                                if (!backAdded.isEmpty()) {
+                                    getCustomComponentSettings().removeAll(backAdded.values());
+                                }
+
+                                FileFilter ff = new FileFilter() {
+
+                                    @Override
+                                    public boolean accept(File pathname) {
+                                        if (FilesUtils.isSVNFolder(pathname)) {
+                                            return false;
+                                        }
+                                        return true;
+                                    }
+
+                                };
+
+                                // share
+                                for (IComponent component : sharedAdded.keySet()) {
+                                    String sourcePath = sourceRoot + component.getPathSource() + File.separator
+                                            + component.getName();
+                                    File sourceFile = new File(sourcePath);
+
+                                    String targetPath = targetRoot + File.separatorChar + component.getName();
+                                    File targetFile = new File(targetPath);
+                                    FilesUtils.copyFolder(sourceFile, targetFile, true, ff, null, true, false);
+                                    if (subMonitor != null) {
+                                        subMonitor.worked(10);
+                                    }
+                                }
+
+                            } catch (Exception e) {
+                                resetCustomComponentSetting();
+                                ExceptionHandler.process(e);
+                            }
+                            try {
+                                prf.saveProject(pro);
+                            } catch (PersistenceException e) {
+                                ExceptionHandler.process(e);
+                            }
+
+                            try {
+                                eclipseProject.refreshLocal(IResource.DEPTH_INFINITE, subMonitor);
+                            } catch (CoreException e1) {
+                                ExceptionHandler.process(e1);
+                            }
                         }
-                        return true;
-                    }
-
-                };
-
-                // share
-                for (IComponent component : sharedAdded.keySet()) {
-                    String sourcePath = sourceRoot + component.getPathSource() + File.separator + component.getName();
-                    File sourceFile = new File(sourcePath);
-
-                    String targetPath = targetRoot + File.separatorChar + component.getName();
-                    File targetFile = new File(targetPath);
-                    FilesUtils.copyFolder(sourceFile, targetFile, true, ff, null, true, false);
-                    if (monitor != null) {
-                        monitor.worked(10);
+                    };
+                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                    try {
+                        ISchedulingRule schedulingRule = workspace.getRoot();
+                        // the update the project files need to be done in the workspace runnable to avoid all
+                        // notification
+                        // of changes before the end of the modifications.
+                        workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
+                    } catch (CoreException e) {
+                        throw new PersistenceException(e.getCause());
                     }
                 }
-
-            } catch (Exception e) {
-                resetCustomComponentSetting();
-                ExceptionHandler.process(e);
-            }
+            };
+            repositoryWorkUnit.setRefreshRepository(false);
+            repositoryWorkUnit.setForceTransaction(true);
+            prf.executeRepositoryWorkUnit(repositoryWorkUnit);
             try {
-                prf.saveProject(pro);
+                repositoryWorkUnit.throwPersistenceExceptionIfAny();
             } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
+                e.printStackTrace();
             }
-
-            try {
-                eclipseProject.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-            } catch (CoreException e1) {
-                ExceptionHandler.process(e1);
-            }
-
         }
         if (monitor != null) {
             monitor.done();
         }
-
+        // refresh again after the gui closed .
+        try {
+            String projectLabel = pro.getTechnicalLabel();
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            IProject eclipseProject = workspace.getRoot().getProject(projectLabel);
+            eclipseProject.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+        } catch (CoreException e1) {
+            ExceptionHandler.process(e1);
+        }
     }
 
     private void resetCustomComponentSetting() {
@@ -504,21 +551,25 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
      */
     class CustomCompSettingContentProvider implements ITreeContentProvider {
 
+        @Override
         public Object[] getChildren(Object parentElement) {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public Object getParent(Object element) {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public boolean hasChildren(Object element) {
             // TODO Auto-generated method stub
             return false;
         }
 
+        @Override
         public Object[] getElements(Object inputElement) {
             if (inputElement instanceof List) {
                 return ((List) inputElement).toArray();
@@ -526,11 +577,13 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
             return null;
         }
 
+        @Override
         public void dispose() {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // TODO Auto-generated method stub
 
