@@ -21,6 +21,7 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -129,21 +130,34 @@ public class ConfigureConnParamDialog extends Dialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-
-        mainComposite = (Composite) super.createDialogArea(parent);
+        Composite parentComposite = (Composite) super.createDialogArea(parent);
 
         GridLayout gridLayout = new GridLayout(1, true);
-        // gridLayout.verticalSpacing = 0;
+        gridLayout.verticalSpacing = 0;
 
+        parentComposite.setLayout(gridLayout);
+
+        IContext defaultContext = createContextComposite(parentComposite);
+
+        // Label hLabel = new Label(parentComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
+        //
+        // hLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        ScrolledComposite scrolledComposite = new ScrolledComposite(parentComposite, SWT.V_SCROLL | SWT.BORDER);
+
+        mainComposite = new Composite(scrolledComposite, SWT.NONE);
+        gridLayout = new GridLayout(1, true);
+        gridLayout.verticalSpacing = 0;
         mainComposite.setLayout(gridLayout);
 
-        IContext defaultContext = createContextComposite();
-
-        Label hLabel = new Label(mainComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
-
-        hLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
         addComponents(defaultContext);
+
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        scrolledComposite.setLayoutData(gridData);
+        scrolledComposite.setContent(mainComposite);
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+        scrolledComposite.setMinSize(mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
         contextCombo.addSelectionListener(new SelectionAdapter() {
 
@@ -159,7 +173,7 @@ public class ConfigureConnParamDialog extends Dialog {
                 }
             }
         });
-        return mainComposite;
+        return parentComposite;
     }
 
     private final List<Text> allParamText = new ArrayList<Text>();
@@ -208,7 +222,9 @@ public class ConfigureConnParamDialog extends Dialog {
         hostComposite.setLayoutData(gridData);
         Label hostLabel = new Label(hostComposite, SWT.NONE);
         hostLabel.setText(key.getDisplayName() + ":"); //$NON-NLS-1$
-        GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
+        // GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        hostLabel.setLayoutData(data);
 
         Composite fileComposite = new Composite(hostComposite, SWT.NONE);
         gridLayout = new GridLayout();
@@ -244,6 +260,7 @@ public class ConfigureConnParamDialog extends Dialog {
              * @see
              * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
              */
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
 
             }
@@ -253,6 +270,7 @@ public class ConfigureConnParamDialog extends Dialog {
              * 
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 DirectoryDialog dialog = new DirectoryDialog(mainComposite.getShell(), SWT.NONE);
                 String path = PathExtractor.extractPath(host.getText());
@@ -282,6 +300,7 @@ public class ConfigureConnParamDialog extends Dialog {
              * 
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
+            @Override
             public void modifyText(ModifyEvent e) {
                 if (isRequriedValue(key.getName())) {
                     if (host.getText().trim().length() == 0) {
@@ -323,7 +342,9 @@ public class ConfigureConnParamDialog extends Dialog {
         hostComposite.setLayoutData(gridData);
         Label hostLabel = new Label(hostComposite, SWT.NONE);
         hostLabel.setText(key.getDisplayName() + ":"); //$NON-NLS-1$
-        GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
+        // GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        hostLabel.setLayoutData(data);
 
         Composite fileComposite = new Composite(hostComposite, SWT.NONE);
         gridLayout = new GridLayout();
@@ -359,6 +380,7 @@ public class ConfigureConnParamDialog extends Dialog {
              * @see
              * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
              */
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
 
             }
@@ -368,6 +390,7 @@ public class ConfigureConnParamDialog extends Dialog {
              * 
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 FileDialog dialog = new FileDialog(mainComposite.getShell(), SWT.NONE);
                 String path = PathExtractor.extractPath(host.getText());
@@ -397,6 +420,7 @@ public class ConfigureConnParamDialog extends Dialog {
              * 
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
+            @Override
             public void modifyText(ModifyEvent e) {
                 if (isRequriedValue(key.getName())) {
                     if (host.getText().trim().length() == 0) {
@@ -496,8 +520,8 @@ public class ConfigureConnParamDialog extends Dialog {
      * 
      * @return
      */
-    private IContext createContextComposite() {
-        Composite contextComposite = new Composite(mainComposite, SWT.NONE);
+    private IContext createContextComposite(Composite parent) {
+        Composite contextComposite = new Composite(parent, SWT.NONE);
         GridLayout gridLayout = new GridLayout(2, false);
         contextComposite.setLayout(gridLayout);
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
