@@ -24,13 +24,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Decorations;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.designer.scd.ScdManager;
 import org.talend.designer.scd.util.SWTResourceManager;
 
@@ -39,13 +37,7 @@ import org.talend.designer.scd.util.SWTResourceManager;
  */
 public class ScdSection {
 
-    protected static final int HEADER_HEIGHT = 20;
-
     protected Label title;
-
-    protected int width;
-
-    protected int height;
 
     private Composite composite;
 
@@ -67,19 +59,19 @@ public class ScdSection {
 
     protected Font titleFont;
 
-    public ScdSection(Composite parent, int width, int height, ScdManager scdManager, boolean toolbarNeeded) {
-        this.width = width;
-        this.height = height;
+    public ScdSection(Composite parent, ScdManager scdManager, boolean toolbarNeeded) {
         this.toolbarNeeded = toolbarNeeded;
         this.scdManager = scdManager;
-        if (WindowSystem.isWIN32()) {
-            composite = new Decorations(parent, SWT.ON_TOP);
-            // composite.setBackgroundMode(SWT.INHERIT_NONE);
-            // composite.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-        } else {
-            composite = new Composite(parent, SWT.BORDER);
-        }
-        GridDataFactory.swtDefaults().hint(this.width, height).applyTo(composite);
+        // if (WindowSystem.isWIN32()) {
+        // // composite = new Composite(parent, SWT.NONE);
+        // composite = new Decorations(parent, SWT.ON_TOP);
+        // // composite.setBackgroundMode(SWT.INHERIT_NONE);
+        // // composite.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+        // } else {
+        // composite = new Composite(parent, SWT.NONE);
+        // }
+        composite = new Composite(parent, SWT.BORDER);
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
         GridLayoutFactory.swtDefaults().margins(0, 0).spacing(0, 0).applyTo(composite);
         // SWTResourceManager.getFont("Times New Roman", 12, SWT.BOLD)
         titleFont = SWTResourceManager.getSystemFont(SWT.BOLD);
@@ -97,22 +89,20 @@ public class ScdSection {
         if (toolbarNeeded) {
             headerComposite = new Composite(composite, SWT.NONE);
             GridData headerGridData = new GridData(GridData.FILL_HORIZONTAL);
-            headerGridData.heightHint = HEADER_HEIGHT;
             headerComposite.setLayoutData(headerGridData);
             GridLayoutFactory.swtDefaults().margins(0, 0).spacing(0, 0).numColumns(2).applyTo(headerComposite);
 
             title = new Label(headerComposite, SWT.NONE);
             title.setAlignment(SWT.CENTER);
             title.setFont(titleFont);
-            GridDataFactory.swtDefaults().hint(SWT.DEFAULT, HEADER_HEIGHT).align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-                    title);
+            GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(title);
 
             createToolbar(headerComposite);
         } else {
             title = new Label(composite, SWT.NONE);
             title.setAlignment(SWT.CENTER);
             title.setFont(titleFont);
-            GridDataFactory.swtDefaults().hint(SWT.DEFAULT, HEADER_HEIGHT).align(SWT.FILL, SWT.FILL).applyTo(title);
+            GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).applyTo(title);
         }
         createContents(composite);
     }
@@ -125,13 +115,13 @@ public class ScdSection {
     protected void createToolbar(Composite headerComposite) {
         toolBar = new ToolBar(headerComposite, SWT.FLAT | SWT.RIGHT | SWT.NONE);
         addEntryItem = new ToolItem(toolBar, SWT.PUSH);
-        addEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.ADD_ICON)));
+        addEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
         toolBar.setBackground(SWTResourceManager.getColor(IColorConstants.YELLOW));
 
         removeEntryItem = new ToolItem(toolBar, SWT.PUSH);
-        removeEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.MINUS_ICON)));
+        removeEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
         // removeEntryItem.setBackground(SWTResourceManager.getColor(IColorConstants.YELLOW));
 
         moveUpEntryItem = new ToolItem(toolBar, SWT.PUSH);
