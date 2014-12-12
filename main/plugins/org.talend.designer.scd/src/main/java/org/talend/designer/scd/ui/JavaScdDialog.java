@@ -16,9 +16,14 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.designer.scd.ScdManager;
@@ -50,56 +55,59 @@ public class JavaScdDialog extends AbstractScdDialog {
      */
     @Override
     Control createScdContents(Composite parent) {
-        Composite composite = new Composite(parent, SWT.NONE);
-        GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).spacing(20, 10).applyTo(composite);
-        GridDataFactory.fillDefaults().applyTo(composite);
+        SashForm sashForm = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
+        sashForm.setLayout(new GridLayout(1, true));
+        sashForm.SASH_WIDTH = 1;
 
-        Composite filterUnusedComposite = new Composite(composite, SWT.NONE);
+        Composite sashPart1 = new Composite(sashForm, SWT.NONE);
+        GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).spacing(20, 10).applyTo(sashPart1);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(sashPart1);
+
+        Composite filterUnusedComposite = new Composite(sashPart1, SWT.NONE);
         GridLayoutFactory.swtDefaults().margins(0, 0).spacing(0, 0).applyTo(filterUnusedComposite);
-        GridDataFactory.fillDefaults().span(1, 2).hint(SECTION_WIDTH, SECTION_HEIGHT * 2 + 20).applyTo(filterUnusedComposite);
+        GridDataFactory.fillDefaults().span(1, 2).grab(true, true).applyTo(filterUnusedComposite);
 
         ViewerFilter filter = createFilter(filterUnusedComposite);
 
-        unusedFields = new FieldSection(filterUnusedComposite, SECTION_WIDTH - 5, SECTION_HEIGHT, scdManager, false, false);
+        unusedFields = new FieldSection(filterUnusedComposite, scdManager, false, false);
         unusedFields.setTitle(Messages.getString("JavaScdDialog.unUsed"), SWTResourceManager.getColor(198, 195, //$NON-NLS-1$
                 198));
         unusedFields.setTableInput(scdManager.getUnusedFields());
         unusedFields.getTableViewer().addFilter(filter);
         unusedFields.setSortable(true);
-        GridDataFactory.swtDefaults().hint(SECTION_WIDTH - 5, SECTION_HEIGHT * 2 - 20).applyTo(unusedFields.getControl());
+        GridDataFactory.swtDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(unusedFields.getControl());
         addContextHelp(unusedFields.getTableViewer().getTable(), "org.talend.designer.scd.unused"); //$NON-NLS-1$
 
-        type0Fields = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false);
+        type0Fields = new FieldSection(sashPart1, scdManager, false, false);
         type0Fields.setTitle(Messages.getString("JavaScdDialog.type0Field"), SWTResourceManager.getColor(255, //$NON-NLS-1$
                 146, 0));
-        // GridDataFactory.swtDefaults().hint(SECTION_WIDTH,
-        // SECTION_HEIGHT).applyTo(type0Fields.getControl());
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(type0Fields.getControl());
         type0Fields.setTableInput(scdManager.getType0Table());
         addContextHelp(type0Fields.getTableViewer().getTable(), "org.talend.designer.scd.type0"); //$NON-NLS-1$
 
-        type1Fields = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false,
-                ScdParameterConstants.DROP_COPY_TYPE1FIELDS);
+        type1Fields = new FieldSection(sashPart1, scdManager, false, false, ScdParameterConstants.DROP_COPY_TYPE1FIELDS);
         type1Fields.setTitle(Messages.getString("JavaScdDialog.type1Field"), SWTResourceManager.getColor(255, //$NON-NLS-1$
                 203, 0));
-        // GridDataFactory.swtDefaults().hint(SECTION_WIDTH,
-        // SECTION_HEIGHT).applyTo(type1Fields.getControl());
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(type1Fields.getControl());
         type1Fields.setTableInput(scdManager.getType1Table());
         addContextHelp(type1Fields.getTableViewer().getTable(), "org.talend.designer.scd.type1"); //$NON-NLS-1$
 
-        sourceKeys = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false,
-                ScdParameterConstants.DROP_COPY_SOURCEKEYS);
+        Composite sashPart2 = new Composite(sashForm, SWT.NONE);
+        GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).spacing(20, 10).applyTo(sashPart2);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(sashPart2);
+
+        sourceKeys = new FieldSection(sashPart2, scdManager, false, false, ScdParameterConstants.DROP_COPY_SOURCEKEYS);
         sourceKeys.setTitle(Messages.getString("JavaScdDialog.sourceKey"), SWTResourceManager.getColor(156, 0, //$NON-NLS-1$
                 255));
-        // GridDataFactory.swtDefaults().hint(SECTION_WIDTH,
-        // SECTION_HEIGHT).applyTo(sourceKeys.getControl());
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(sourceKeys.getControl());
         sourceKeys.setTableInput(scdManager.getSourceKeys());
         addContextHelp(sourceKeys.getTableViewer().getTable(), "org.talend.designer.scd.sourceKey"); //$NON-NLS-1$
 
-        type2Fields = new Type2Section(composite, SECTION_WIDTH, SECTION_HEIGHT * 2 + 40, scdManager,
-                ScdParameterConstants.DROP_COPY_TYPE2FIELDS);
+        type2Fields = new Type2Section(sashPart2, scdManager, ScdParameterConstants.DROP_COPY_TYPE2FIELDS);
         type2Fields.setTitle(Messages.getString("JavaScdDialog.type2Field"), SWTResourceManager.getColor(255, //$NON-NLS-1$
                 255, 0));
-        GridDataFactory.swtDefaults().span(1, 2).hint(SECTION_WIDTH, SECTION_HEIGHT * 2 + 40).applyTo(type2Fields.getControl());
+        GridDataFactory.swtDefaults().span(1, 2).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(type2Fields.getControl());
         type2Fields.setTableInput(scdManager.getType2Table());
         if (scdManager.getVersionData() != null) {
             type2Fields.setVersionInput(scdManager.getVersionData());
@@ -108,20 +116,24 @@ public class JavaScdDialog extends AbstractScdDialog {
         }
         addContextHelp(type2Fields.getTableViewer().getTable(), "org.talend.designer.scd.type2"); //$NON-NLS-1$
 
-        surrogateKeys = new SurrogateSection(composite, SECTION_WIDTH, SECTION_HEIGHT + 30, scdManager);
+        surrogateKeys = new SurrogateSection(sashPart2, scdManager);
         surrogateKeys.setTitle(Messages.getString("JavaScdDialog.surrogateKey"), SWTResourceManager.getColor( //$NON-NLS-1$
                 214, 40, 255));
-        GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT + 30).applyTo(surrogateKeys.getControl());
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(surrogateKeys.getControl());
         surrogateKeys.setTableInput(scdManager.getSurrogateKeys());
         surrogateKeys.addContextHelp(this);
 
-        Label placeHolder = new Label(composite, SWT.NONE);
-        GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(placeHolder);
+        Composite sashPart3 = new Composite(sashForm, SWT.NONE);
+        GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).spacing(20, 10).applyTo(sashPart3);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(sashPart3);
 
-        type3Fields = new Type3Section(composite, SECTION_WIDTH, SECTION_HEIGHT, scdManager);
+        Label placeHolder = new Label(sashPart3, SWT.NONE);
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(placeHolder);
+
+        type3Fields = new Type3Section(sashPart3, scdManager);
         type3Fields.setTitle(Messages.getString("JavaScdDialog.type3Key"), SWTResourceManager.getColor(24, //$NON-NLS-1$
                 182, 255));
-        GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT + 20).applyTo(type3Fields.getControl());
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(type3Fields.getControl());
         type3Fields.setTableInput(scdManager.getType3Table());
         addContextHelp(type3Fields.getTable(), "org.talend.designer.scd.type3"); //$NON-NLS-1$
 
@@ -130,7 +142,39 @@ public class JavaScdDialog extends AbstractScdDialog {
         for (ScdSection scd : sections) {
             scdManager.addUnusedFieldsTarget(scd);
         }
-        return composite;
+        sashForm.setSashWidth(3);
+
+        // the following codes are used to adjust the heights
+        sashForm.pack();
+
+        GridData gridData1 = (GridData) filterUnusedComposite.getLayoutData();
+        Control type2Control = type2Fields.getControl();
+        type2Control.pack();
+
+        GridData gridData2 = (GridData) type2Control.getLayoutData();
+        Control surrogateControl = surrogateKeys.getControl();
+        surrogateControl.pack();
+
+        int totalHeight = getDialogSize().y;
+        int surrogateHeight = (surrogateControl.getSize().y + 40) * 2;
+        int averageHeight = (int) (totalHeight * 1.0 / 3);
+        int sashForm2Height = type2Control.getSize().y;
+
+        if (sashForm2Height < surrogateHeight) {
+            sashForm2Height = surrogateHeight;
+        }
+
+        if (averageHeight < sashForm2Height) {
+            sashForm2Height = (int) ((sashForm2Height - averageHeight) * 3.0 / 4 + averageHeight);
+            averageHeight = (int) ((totalHeight - sashForm2Height) * 2.0 / 5);
+        }
+        int sashForm3Height = averageHeight;
+        int sashForm1Height = totalHeight - sashForm2Height - sashForm3Height;
+        gridData1.heightHint = sashForm1Height;
+        gridData2.heightHint = sashForm2Height;
+
+        sashForm.setWeights(new int[] { sashForm1Height, sashForm2Height, sashForm3Height });
+        return sashForm;
     }
 
     @Override
@@ -153,7 +197,11 @@ public class JavaScdDialog extends AbstractScdDialog {
      */
     @Override
     protected Point getInitialSize() {
-        return new Point(810, 750);
+        return getDialogSize();
     }
 
+    protected Point getDialogSize() {
+        Rectangle rect = Display.getCurrent().getClientArea();
+        return new Point((int) (rect.width * 1.0 / 2), (int) (rect.height * 17.0 / 20));
+    }
 }
