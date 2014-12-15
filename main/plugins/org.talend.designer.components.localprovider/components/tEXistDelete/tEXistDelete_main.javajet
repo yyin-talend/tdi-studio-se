@@ -40,7 +40,9 @@
 			for(String resourceName_<%=cid%> : col_<%=cid%>.listResources()){
 				if(resourceName_<%=cid%>.matches(finalMask_<%=cid%>)){
 			        org.xmldb.api.base.Resource resource_<%=cid%> = col_<%=cid%>.getResource(resourceName_<%=cid%>);
+			        <% dbLog.info(dbLog.str("Try to remove resource '"),dbLog.var("resourceName"),dbLog.str("'.")); %>
 			        col_<%=cid%>.removeResource(resource_<%=cid%>);
+			        <% dbLog.info(dbLog.str("The resource removed successed.")); %>
 				}
 			}
 <%
@@ -48,7 +50,9 @@
 %>
 			for(String subCol_<%=cid%> : col_<%=cid%>.listChildCollections()){
 				if(subCol_<%=cid%>.matches(finalMask_<%=cid%>)){
+					<% dbLog.info(dbLog.str("Try to remove collection '"),dbLog.var("subCol"),dbLog.str("'.")); %>
 					mgtService_<%=cid%>.removeCollection(subCol_<%=cid%>);
+					<% dbLog.info(dbLog.str("The collection removed successed.")); %>
 				}
 			}
 <%
@@ -57,12 +61,16 @@
 			for(String resourceName_<%=cid%> : col_<%=cid%>.listResources()){
 				if(resourceName_<%=cid%>.matches(finalMask_<%=cid%>)){
 			        org.xmldb.api.base.Resource resource_<%=cid%> = col_<%=cid%>.getResource(resourceName_<%=cid%>);
+			        <% dbLog.info(dbLog.str("Try to remove resource '"),dbLog.var("resourceName"),dbLog.str("'.")); %>
 			        col_<%=cid%>.removeResource(resource_<%=cid%>);
+			        <% dbLog.info(dbLog.str("The resource removed successed.")); %>
 				}
 			}
 			for(String subCol_<%=cid%> : col_<%=cid%>.listChildCollections()){
 				if(subCol_<%=cid%>.matches(finalMask_<%=cid%>)){
+					<% dbLog.info(dbLog.str("Try to remove collection '"),dbLog.var("subCol"),dbLog.str("'.")); %>
 					mgtService_<%=cid%>.removeCollection(subCol_<%=cid%>);
+					<% dbLog.info(dbLog.str("The collection removed successed.")); %>
 				}
 			}
 <%

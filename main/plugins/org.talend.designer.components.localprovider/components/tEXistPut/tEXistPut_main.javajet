@@ -49,13 +49,16 @@
             });
     	} 
     	if(listings_<%=cid%> != null && listings_<%=cid%>.length > 0){
-    		for(int m_<%=cid%> = 0; m_<%=cid%> < listings_<%=cid%>.length; m_<%=cid%>++){ 
-     			if(listings_<%=cid%>[m_<%=cid %>].getName().matches(mask_<%=cid%>)){
+    		for(int m_<%=cid%> = 0; m_<%=cid%> < listings_<%=cid%>.length; m_<%=cid%>++){
+    			String fileName_<%= cid %> = listings_<%=cid%>[m_<%=cid %>].getName();
+     			if(fileName_<%= cid %>.matches(mask_<%=cid%>)){
      				java.io.File localFile_<%=cid%> = new java.io.File(listings_<%=cid%>[m_<%=cid%>].getAbsolutePath());
      				try{
+     					<% dbLog.debug(dbLog.str("Try to put '"),dbLog.var("fileName"),dbLog.str("' into xmldb.")); %>
      					org.xmldb.api.modules.XMLResource document_<%=cid%> = (org.xmldb.api.modules.XMLResource) col_<%=cid%>.createResource(localFile_<%=cid%>.getName(), "XMLResource");
 				        document_<%=cid%>.setContent(localFile_<%=cid%>);
 				        col_<%=cid%>.storeResource(document_<%=cid%>);
+				        <% dbLog.debug(dbLog.str("Put file into xmldb successed.")); %>
      				}catch(org.xmldb.api.base.XMLDBException e_<%=cid%>){
      					org.exist.xmldb.RemoteBinaryResource document_<%=cid%> = (org.exist.xmldb.RemoteBinaryResource) col_<%=cid%>.createResource(localFile_<%=cid%>.getName(), "BinaryResource");
 				        document_<%=cid%>.setContent(localFile_<%=cid%>);
@@ -66,6 +69,6 @@
     		}
     	}else{
     		System.err.println("No match file exist!");
-    		<%dbLog.logIgnoredException(dbLog.str("No match file exist!"));%>
+    		<%dbLog.logPrintedException(dbLog.str("No match file exist!"));%>
     	}
     }
