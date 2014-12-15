@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.runprocess.shadow.ObjectElementParameter;
+import org.talend.core.model.runprocess.shadow.TextElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 
 /**

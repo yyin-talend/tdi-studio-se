@@ -59,6 +59,7 @@ import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.properties.tab.HorizontalTabFactory;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.core.ui.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.views.IComponentSettingsView;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;

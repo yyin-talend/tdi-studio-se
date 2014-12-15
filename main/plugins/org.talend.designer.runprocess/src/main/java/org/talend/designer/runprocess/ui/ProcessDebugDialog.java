@@ -35,10 +35,10 @@ import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess2;
-import org.talend.designer.runprocess.IEclipseProcessor;
+import org.talend.core.model.runprocess.IEclipseProcessor;
+import org.talend.core.model.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
-import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 

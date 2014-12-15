@@ -55,6 +55,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.services.resource.IExportJobResourcesService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -70,7 +71,6 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsEx
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsTemporaryOptionsKeeper;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.SaUtils;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.TalendUtils;
-import org.talend.resource.IExportJobResourcesService;
 
 /**
  * DOC x class global comment. Detailled comment <br/>

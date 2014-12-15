@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Documentation Plug-in
 Bundle-SymbolicName: org.talend.designer.documentation;singleton:=true
 Bundle-Version: 6.0.0.qualifier
-Export-Package: org.talend.core.model.genhtml,
+Export-Package: org.talend.designer.documentation.genhtml,
  org.talend.repository,
  org.talend.repository.documentation.generation,
  org.talend.repository.ui.actions,

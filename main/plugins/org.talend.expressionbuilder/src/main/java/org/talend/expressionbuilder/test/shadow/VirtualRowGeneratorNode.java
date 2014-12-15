@@ -34,11 +34,11 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.runprocess.shadow.ObjectElementParameter;
+import org.talend.core.model.runprocess.shadow.TextElementParameter;
 import org.talend.designer.rowgenerator.PluginUtils;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.runprocess.shadow.ObjectElementParameter;
-import org.talend.designer.runprocess.shadow.TextElementParameter;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 
 /**

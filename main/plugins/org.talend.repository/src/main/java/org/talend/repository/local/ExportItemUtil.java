@@ -67,6 +67,7 @@ import org.talend.core.model.repository.FakePropertyImpl;
 import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
+import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.ResourceFilenameHelper;
@@ -79,7 +80,6 @@ import org.talend.core.ui.export.ZipFileExporterFullPath;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ResourceModelUtils;
 
 /***/
 public class ExportItemUtil {

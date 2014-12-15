@@ -60,6 +60,7 @@ import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.repository.ExternalNodesFactory;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -72,7 +73,6 @@ import org.talend.designer.codegen.config.TalendJetEmitter;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.repository.model.ExternalNodesFactory;
 
 /**
  * Pool of initialized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation

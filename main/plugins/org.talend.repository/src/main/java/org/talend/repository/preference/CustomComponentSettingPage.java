@@ -70,7 +70,7 @@ import org.talend.core.model.properties.CustomComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.ui.ISVNProviderService;
+import org.talend.core.services.ISVNProviderService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 

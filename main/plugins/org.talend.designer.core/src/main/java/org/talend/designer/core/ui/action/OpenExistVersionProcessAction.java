@@ -38,7 +38,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.repository.RepositoryObject;
-import org.talend.core.ui.IUIRefresher;
+import org.talend.core.services.IUIRefresher;
 import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
