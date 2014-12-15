@@ -52,9 +52,13 @@ public class FeaturesModel extends BaseModel {
 
 	public void addFeature(FeatureModel feature) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<feature version='");
-		sb.append(feature.getVersion());
-		sb.append("\'>");
+        sb.append("<feature");
+        if (null != feature.getVersion() && !feature.getVersion().isEmpty()) {
+            sb.append(" version='");
+            sb.append(feature.getVersion());
+            sb.append('\'');
+        }
+        sb.append(">");
 		sb.append(feature.getArtifactId());
 		sb.append("</feature>");
 		subFeatures.add(sb.toString());

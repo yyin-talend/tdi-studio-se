@@ -13,11 +13,14 @@
 package org.talend.designer.publish.core.models;
 
 
-
 public class FeatureModel extends BaseModel {
 
-	public FeatureModel(String artifactId, String version) {
-		super("", artifactId, version, "pom");
-	}
+    public FeatureModel(String artifactId, String version) {
+        super("", artifactId, version, "pom");
+    }
+
+    public FeatureModel(String artifactId) {
+        this(artifactId, "");
+    }
 
 }
