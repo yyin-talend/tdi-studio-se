@@ -19,7 +19,6 @@
 	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
-	boolean log4JActived = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	dbLog = new DBLogUtil(node);
 %>
    	java.util.Set<String> keySet_<%=cid%> = map_<%=cid%>.keySet();
@@ -55,9 +54,7 @@
      			if(fileName_<%= cid %>.matches(mask_<%=cid%>)){
      				java.io.File localFile_<%=cid%> = new java.io.File(listings_<%=cid%>[m_<%=cid%>].getAbsolutePath());
      				try{
-     					<% if(log4JActived){ %>
-     					      log.debug("<%= cid %> - Try to put '"+fileName_<%= cid %>+"' into xmldb.");
-     					<% } %>
+     					<% dbLog.debug(dbLog.str("Try to put '"),dbLog.var("fileName"),dbLog.str("' into xmldb.")); %>
      					org.xmldb.api.modules.XMLResource document_<%=cid%> = (org.xmldb.api.modules.XMLResource) col_<%=cid%>.createResource(localFile_<%=cid%>.getName(), "XMLResource");
 				        document_<%=cid%>.setContent(localFile_<%=cid%>);
 				        col_<%=cid%>.storeResource(document_<%=cid%>);

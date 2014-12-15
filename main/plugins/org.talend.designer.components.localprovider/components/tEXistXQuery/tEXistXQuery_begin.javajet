@@ -18,7 +18,6 @@
     String xqueryFile = ElementParameterParser.getValue(node, "__XQUERY__");
     String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
     String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
-    boolean log4JActived = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     dbLog = new DBLogUtil(node);
 
     if(("true").equals(useExistingConn)){
@@ -56,13 +55,7 @@
         xml_<%=cid%>.append(line_<%=cid%>);
     f_<%=cid%>.close();
     String query_<%=cid%> = xml_<%=cid%>.toString();
-    <%
-      if(log4JActived){
-         %>
-            log.debug("<%= cid %> - the raw query string is '"+query_<%= cid %>+"'");
-         <%
-       } 
-     %>
+    <% dbLog.debug(dbLog.str("The raw query string is '"),dbLog.var("query"),dbLog.str("'.")); %>
     org.exist.xmldb.XQueryService service_<%=cid%> = (org.exist.xmldb.XQueryService) col_<%=cid%>.getService("XQueryService", "1.0");
     service_<%=cid%>.setProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
     service_<%=cid%>.setProperty(javax.xml.transform.OutputKeys.ENCODING, "UTF-8");

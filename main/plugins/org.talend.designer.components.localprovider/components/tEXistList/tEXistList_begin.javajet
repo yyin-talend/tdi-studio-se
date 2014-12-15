@@ -21,7 +21,6 @@
 	String targetType = ElementParameterParser.getValue(node, "__TARGET_TYPE__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
-	boolean log4JActived = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	dbLog = new DBLogUtil(node);
 	
 	if(("true").equals(useExistingConn)){
@@ -101,11 +100,7 @@
 %>
 						if(contentName_<%=cid%>.matches(finalMask_<%=cid%>)){
 							nb_file_<%=cid%>++;
-							<% if(log4JActived){
-								%>
-								   log.debug("<%= cid %> - '"+contentName_<%=cid%>+"' matches the raw file mask '"+filemask_<%=cid%>+"'.");
-								<%
-							} %>
+							<% dbLog.debug(dbLog.str("'"),dbLog.var("contentName"),dbLog.str("' matches the raw file mask '"),dbLog.var("filemask"),dbLog.str("'.")); %>
 					        globalMap.put("<%=cid%>_CURRENT_FILE", contentName_<%=cid%>);
 					        globalMap.put("<%=cid%>_CURRENT_FILEPATH", <%=collection%> + contentName_<%=cid%>);
 						}
