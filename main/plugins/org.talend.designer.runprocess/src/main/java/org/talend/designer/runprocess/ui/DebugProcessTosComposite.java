@@ -61,6 +61,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -224,7 +225,6 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         execScroll.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         Composite execContent = new Composite(execScroll, SWT.NONE);
-        GridLayout glayout = new GridLayout();
         execContent.setLayout(new FormLayout());
         execScroll.setContent(execContent);
 
@@ -242,8 +242,10 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         layoutData.bottom = new FormAttachment(0, 50);
         execHeader.setLayoutData(layoutData);
 
-        FormData formData = new FormData();
-        toolBar = new ToolBar(execHeader, SWT.FLAT | SWT.RIGHT);
+        Composite toolBarComposite = new Composite(execHeader, SWT.NONE);
+        toolBarComposite.setLayout(new FillLayout());
+
+        toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
 
         itemDropDown = new ToolItem(toolBar, SWT.ARROW);
         itemDropDown.setText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$
@@ -287,7 +289,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                     itemDropDown.setData(ProcessView.DEBUG_ID);
                     itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
                     itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$
-                    toolBar.getParent().layout();
+                    toolBar.getParent().getParent().layout();
                     manager.setBooleanTrace(false);
                     addTrace(ProcessView.DEBUG_ID);
                 }
@@ -311,7 +313,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                         itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
                         itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
                         itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$
-                        toolBar.getParent().layout();
+                        toolBar.getParent().getParent().layout();
                         manager.setBooleanTrace(true);
                         addTrace(ProcessView.TRACEDEBUG_ID);
 
@@ -321,33 +323,14 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             });
         }
         toolBar.setEnabled(false);
-        Point debugSize = null;
-        Point execSize = null;
-        FormData formDatat = new FormData();
         // see the feature 6366,qli comment.
         // make a judge when the text change in diffrent languages.
-        formDatat.left = new FormAttachment(0);
+        // changed to use FillLayout to resolve this problem, see TDI-28943
         if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
-            // set debug text to judge size
             itemDropDown.setText(debugMenuItem.getText());
-            debugSize = computeSize(itemDropDown.getText());
-
-            // set exec text to judge size
-            execSize = computeSize(menuItem1.getText());
-            if (debugSize.x > execSize.x) {
-                formDatat.right = new FormAttachment(0, debugSize.x + 60);
-            } else {
-                // itemDropDown.setText(menuItem1.getText());
-
-                formDatat.right = new FormAttachment(0, execSize.x + 50);
-            }
         } else {
-            // set exec text to judge size
             itemDropDown.setText(menuItem1.getText());
-            execSize = computeSize(itemDropDown.getText());
-            formDatat.right = new FormAttachment(0, execSize.x + 50);
         }
-        toolBar.setLayoutData(formDatat);
 
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
@@ -356,10 +339,11 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         // setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         FormData formDatap = new FormData();
-        formDatap.left = new FormAttachment(toolBar, 0, SWT.RIGHT);
+        formDatap.left = new FormAttachment(toolBarComposite, 0, SWT.RIGHT);
         formDatap.width = 80;
-        formDatap.top = new FormAttachment(0, 0);
-        formDatap.bottom = new FormAttachment(0, 30);
+        formDatap.top = new FormAttachment(toolBarComposite, 0, SWT.CENTER);
+        // formDatap.bottom = new FormAttachment(0, 30);
+        formDatap.height = 30;
         killBtn.setLayoutData(formDatap);
         clearTracePerfBtn = new Button(execHeader, SWT.PUSH);
         clearTracePerfBtn.setText(Messages.getString("ProcessComposite.clear")); //$NON-NLS-1$
@@ -370,13 +354,14 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         formDatap = new FormData();
         formDatap.left = new FormAttachment(killBtn, 0, SWT.RIGHT);
         formDatap.width = 80;
-        formDatap.top = new FormAttachment(0, 0);
-        formDatap.bottom = new FormAttachment(0, 30);
+        formDatap.top = new FormAttachment(toolBarComposite, 0, SWT.CENTER);
+        // formDatap.bottom = new FormAttachment(0, 30);
+        formDatap.height = 30;
         clearTracePerfBtn.setLayoutData(formDatap);
         consoleText = new StyledText(execContent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
         FormData formDataco = new FormData();
         formDataco.top = new FormAttachment(0, 50);
-        formDataco.left = new FormAttachment(0, 0);
+        formDataco.left = new FormAttachment(0, 10);
         formDataco.right = new FormAttachment(100, 0);
         formDataco.bottom = new FormAttachment(100, -30);
         consoleText.setLayoutData(formDataco);
@@ -963,13 +948,13 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                         itemDropDown.setToolTipText(Messages.getString("ProcessComposite.pauseJob"));
                         itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
                         itemDropDown.setData(ProcessView.PAUSE_ID);
-                        toolBar.getParent().layout();
                     } else {
                         itemDropDown.setText(" " + Messages.getString("ProcessComposite.traceDebug"));
                         itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
                         itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
                         itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
                     }
+                    toolBar.getParent().getParent().layout();
                     toolBar.setEnabled(b);
                 }
                 // bug 18852
