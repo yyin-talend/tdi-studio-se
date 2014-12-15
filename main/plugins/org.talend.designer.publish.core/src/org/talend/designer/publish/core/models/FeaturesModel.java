@@ -24,10 +24,8 @@ public class FeaturesModel extends BaseModel {
 
 	public static final String NAME_SUFFIX = "-feature";
 
-	public static final String ESB_FEATURE_VERSION_RANGE = "[5,6)";
-	
 	public static final String CORRELATION_FEATURE_NAME = "tesb-policy-correlationid";
-	
+
 	public static final String TALEND_DATA_MAPPER_FEATURE_NAME = "talend-data-mapper";
 
 	private final String name;

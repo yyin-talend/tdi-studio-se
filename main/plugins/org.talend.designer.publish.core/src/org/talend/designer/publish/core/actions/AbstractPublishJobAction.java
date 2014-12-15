@@ -117,8 +117,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
             // [TESB-12036] add talend-data-mapper feature
             NodeType tHMapNode = EmfModelUtils.getComponentByName(processItem, THMAP_COMPONENT_NAME);
             if (tHMapNode != null) {
-                featuresModel.addFeature(new FeatureModel(FeaturesModel.TALEND_DATA_MAPPER_FEATURE_NAME,
-                        FeaturesModel.ESB_FEATURE_VERSION_RANGE));
+                featuresModel.addFeature(new FeatureModel(FeaturesModel.TALEND_DATA_MAPPER_FEATURE_NAME));
             }
 
             processModules(featuresModel, ((JobJavaScriptOSGIForESBManager) jobScriptsManager).getExcludedModuleNeededs());
