@@ -856,10 +856,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                     clearTracePerfBtn.setEnabled(false);
                     return;
                 }
-                // normally, variable "run" can not be null
-                if (!run.getEnabled()) {
+                if (processContext.isRunning()) {
                     if (consoleText != null && !consoleText.isDisposed()) {
-                        consoleText.setText(""); //$NON-NLS-1$
+                        processContext.clearMessages();
                     }
                 } else {
                     ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
@@ -1061,13 +1060,17 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
     protected void setRunnable(boolean runnable) {
         // perfBtn.setEnabled(runnable);
-        // traceBtn.setEnabled(runnable);
         if (clearTracePerfBtn != null && !clearTracePerfBtn.isDisposed()) {
-            if (processContext != null && processContext.getProcess() != null) {
-                clearTracePerfBtn.setEnabled(true);
+            IProcess2 iProcess = null;
+            boolean enableClearBtn = true;
+            if (processContext != null && (iProcess = processContext.getProcess()) != null) {
+                if (iProcess.disableRunJobView()) {
+                    enableClearBtn = false;
+                }
             } else {
-                clearTracePerfBtn.setEnabled(runnable);
+                enableClearBtn = false;
             }
+            clearTracePerfBtn.setEnabled(enableClearBtn);
         }
 
         setExecBtn(runnable);

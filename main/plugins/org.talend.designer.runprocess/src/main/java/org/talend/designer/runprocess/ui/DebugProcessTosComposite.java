@@ -539,9 +539,9 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                     clearTracePerfBtn.setEnabled(false);
                     return;
                 }
-                if (isRuning) {
+                if (processContext.isRunning()) {
                     if (consoleText != null && !consoleText.isDisposed()) {
-                        consoleText.setText(""); //$NON-NLS-1$
+                        processContext.clearMessages();
                     }
                 } else {
                     ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
@@ -920,12 +920,17 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     @Override
     protected void setRunnable(boolean runnable) {
-        if (!clearTracePerfBtn.isDisposed() && clearTracePerfBtn != null) {
-            if (processContext != null && processContext.getProcess() != null) {
-                clearTracePerfBtn.setEnabled(true);
+        if (clearTracePerfBtn != null && !clearTracePerfBtn.isDisposed()) {
+            IProcess2 iProcess = null;
+            boolean enableClearBtn = true;
+            if (processContext != null && (iProcess = processContext.getProcess()) != null) {
+                if (iProcess.disableRunJobView()) {
+                    enableClearBtn = false;
+                }
             } else {
-                clearTracePerfBtn.setEnabled(runnable);
+                enableClearBtn = false;
             }
+            clearTracePerfBtn.setEnabled(enableClearBtn);
         }
         // previousRow.setEnabled(runnable);
         // nextRow.setEnabled(runnable);
@@ -935,10 +940,10 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         // if (argumentsComposite != null) {
         // argumentsComposite.setEnabled(runnable);
         // }
-        if (!enableLineLimitButton.isDisposed() && enableLineLimitButton != null) {
+        if (enableLineLimitButton != null && !enableLineLimitButton.isDisposed()) {
             enableLineLimitButton.setEnabled(runnable);
         }
-        if (!lineLimitText.isDisposed() && lineLimitText != null) {
+        if (lineLimitText != null && !lineLimitText.isDisposed()) {
             lineLimitText.setEnabled(runnable);
         }
 
