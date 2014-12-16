@@ -418,7 +418,11 @@ public class NodesPasteCommand extends Command {
                         newTable.setTableName(createNewConnectionName(metaTable.getTableName(),
                                 IProcess.DEFAULT_TABLE_CONNECTION_NAME));
                     } else {
-                        newTable.setTableName(createNewConnectionName(metaTable.getTableName(), null));
+                        if (metaTable.getTableName().equals(copiedNode.getUniqueName())) {
+                            newTable.setTableName(createNewConnectionName(pastedNode.getUniqueName(), null));
+                        } else {
+                            newTable.setTableName(createNewConnectionName(metaTable.getTableName(), null));
+                        }
                     }
                     oldMetaToNewMeta.put(pastedNode.getUniqueName() + ":" + metaTable.getTableName(), newTable.getTableName()); //$NON-NLS-1$
 
