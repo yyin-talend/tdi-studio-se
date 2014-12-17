@@ -29,10 +29,10 @@ import org.talend.core.repository.model.preview.IPreview;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.metadata.managment.ui.i18n.Messages;
+import org.talend.metadata.managment.ui.preview.AsynchronousPreviewHandler;
+import org.talend.metadata.managment.ui.preview.ProcessDescription;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.SchemaTarget;
-import org.talend.repository.preview.AsynchronousPreviewHandler;
-import org.talend.repository.preview.ProcessDescription;
 
 /**
  * Create a ProcessDescription to use in the step2 & step3 of CSV File Wizard on Shadow mode.

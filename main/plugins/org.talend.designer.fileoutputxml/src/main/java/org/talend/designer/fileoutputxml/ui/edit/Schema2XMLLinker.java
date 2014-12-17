@@ -52,9 +52,9 @@ import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.linking.TableToTreeLinker;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.XmlExtractorBgRefresher;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
  * bqian This is the linker for connecting schema instructure to xml's. <br/>

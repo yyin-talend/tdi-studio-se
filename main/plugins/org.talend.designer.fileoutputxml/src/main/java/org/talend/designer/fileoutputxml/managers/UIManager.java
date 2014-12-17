@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Element;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
 
 /**
  * UI Manager<br/>

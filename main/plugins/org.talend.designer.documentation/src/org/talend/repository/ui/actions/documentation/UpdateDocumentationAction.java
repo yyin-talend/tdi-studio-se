@@ -22,13 +22,13 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.metadata.managment.ui.wizard.documentation.DocumentationUpdateWizard;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.wizards.documentation.DocumentationUpdateWizard;
 
 /**
  * Action used to update an existing documentation.<br/>

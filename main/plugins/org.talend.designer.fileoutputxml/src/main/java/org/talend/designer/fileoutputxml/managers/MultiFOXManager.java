@@ -22,11 +22,11 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Attribute;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Element;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.NameSpaceNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.TreeUtil;
 
 /**
  * wzhang class global comment. Detailled comment
@@ -306,7 +306,7 @@ public class MultiFOXManager extends FOXManager {
     public List<Map<String, String>> getLoopTable() {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         for (FOXTreeNode rootNode : this.getOriginalNodes()) {
-            Element loopNode = (Element) org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil
+            Element loopNode = (Element) org.talend.metadata.managment.ui.wizard.metadata.xml.utils.TreeUtil
                     .getLoopNode(rootNode);
             if (loopNode != null) {
                 String path = TreeUtil.getPath(loopNode);

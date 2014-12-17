@@ -69,12 +69,12 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.XmlExtractorBgRefresher;
 import org.talend.repository.json.ui.wizards.dnd.JSONToSchemaDragAndDropHandler;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.SchemaTarget;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
 import org.w3c.dom.Node;
 
 /**

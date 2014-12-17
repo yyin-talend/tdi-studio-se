@@ -32,7 +32,7 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.StringUtil;
 
 /**
  * DOC wchen class global comment. Detailled comment

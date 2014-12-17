@@ -15,8 +15,8 @@ package org.talend.designer.fileoutputxml.action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.TreeUtil;
 
 /**
  * bqian Create a xml node. <br/>

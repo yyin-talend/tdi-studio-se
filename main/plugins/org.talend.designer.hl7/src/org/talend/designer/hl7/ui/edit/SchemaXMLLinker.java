@@ -57,8 +57,8 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.XmlExtractorBgRefresher;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
 
 /**
  * DOC hwang class global comment. Detailled comment

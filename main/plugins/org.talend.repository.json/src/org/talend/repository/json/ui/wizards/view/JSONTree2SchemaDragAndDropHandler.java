@@ -47,9 +47,9 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditor;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd.XPathTransfer;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
  * 

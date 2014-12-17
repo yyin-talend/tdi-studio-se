@@ -67,8 +67,8 @@ import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.designer.core.utils.SAPParametersUtils;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.UpdateRepositoryUtils;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

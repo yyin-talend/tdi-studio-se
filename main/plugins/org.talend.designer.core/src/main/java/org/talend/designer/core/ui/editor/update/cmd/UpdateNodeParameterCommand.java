@@ -82,8 +82,8 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.utils.SAPParametersUtils;
+import org.talend.metadata.managment.ui.model.ProjectNodeHelper;
 import org.talend.repository.UpdateRepositoryUtils;
-import org.talend.repository.model.ProjectNodeHelper;
 
 /**
  * ggu class global comment. Detailled comment

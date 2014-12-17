@@ -75,6 +75,8 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.services.IUIRefresher;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.metadata.managment.ui.wizard.PropertiesWizard;
+import org.talend.metadata.managment.ui.wizard.process.EditProcessPropertiesWizard;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -84,8 +86,6 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.wizards.EditProcessPropertiesWizard;
-import org.talend.repository.ui.wizards.PropertiesWizard;
 import org.talend.repository.ui.wizards.routines.EditRoutinePropertiesWizard;
 
 /**

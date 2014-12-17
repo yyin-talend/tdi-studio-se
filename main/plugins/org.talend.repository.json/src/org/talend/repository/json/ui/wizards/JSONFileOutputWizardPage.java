@@ -18,8 +18,8 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.TableHelper;
+import org.talend.metadata.managment.ui.wizard.AbstractForm;
 import org.talend.repository.model.json.JSONFileConnection;
-import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * wzhang class global comment. Detailled comment

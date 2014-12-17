@@ -25,6 +25,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.OverlayImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.metadata.managment.ui.wizard.documentation.DocumentationCreateWizard;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -33,7 +34,6 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.wizards.documentation.DocumentationCreateWizard;
 
 /**
  * Action to create a new IDocumentation. <br/>

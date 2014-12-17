@@ -92,8 +92,8 @@ import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
+import org.talend.metadata.managment.ui.dialog.MappingFileSelectDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
-import org.talend.repository.ui.wizards.metadata.connection.database.MappingFileSelectDialog;
 
 /**
  * DOC zqin class global comment. Detailled comment

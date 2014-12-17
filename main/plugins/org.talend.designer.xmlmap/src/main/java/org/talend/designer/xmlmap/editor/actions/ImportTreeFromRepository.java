@@ -74,16 +74,16 @@ import org.talend.designer.xmlmap.ui.dialog.RepositoryXmlSelectionDialog;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapConnectionBuilder;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Attribute;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Element;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.NameSpaceNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.StringUtil;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.TreeUtil;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
  * DOC talend class global comment. Detailled comment

@@ -50,9 +50,9 @@ import org.talend.commons.ui.swt.drawing.link.LinksManager;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.linking.TableToTreeLinker;
 import org.talend.commons.ui.utils.TreeUtils;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.XmlExtractorBgRefresher;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
 import org.talend.repository.json.ui.wizards.AbstractJSONStepForm;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
  * wzhang class global comment. Detailled comment

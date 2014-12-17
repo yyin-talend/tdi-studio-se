@@ -18,7 +18,7 @@ import org.talend.designer.hl7.i18n.Messages;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
-import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.metadata.managment.ui.wizard.AbstractForm;
 
 /**
  * bqian Create a xml node. <br/>

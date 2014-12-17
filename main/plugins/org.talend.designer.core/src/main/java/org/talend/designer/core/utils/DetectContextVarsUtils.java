@@ -27,8 +27,8 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.UpdateRepositoryUtils;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * ggu class global comment. Detailled comment

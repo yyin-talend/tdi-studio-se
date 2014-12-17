@@ -64,7 +64,7 @@ import org.talend.designer.filemultischemas.data.MultiSchemaRowData;
 import org.talend.designer.filemultischemas.data.MultiSchemasMetadataColumn;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.fileprocess.FileInputDelimited;
-import org.talend.repository.preview.ProcessDescription;
+import org.talend.metadata.managment.ui.preview.ProcessDescription;
 
 /**
  * cLi class global comment. Detailled comment

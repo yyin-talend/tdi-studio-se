@@ -72,9 +72,9 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.datatools.xml.utils.ATreeNode;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.json.util.JSONUtil;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
 
 /**

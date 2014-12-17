@@ -185,12 +185,12 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.ValidationRulesUtil;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 import orgomg.cwm.objectmodel.core.ModelElement;
 
