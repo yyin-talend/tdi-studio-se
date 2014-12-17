@@ -24,7 +24,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.runprocess.shadow.ObjectElementParameter;
 import org.talend.core.model.runprocess.shadow.TextElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.repository.preview.WSDLSchemaBean;
+import org.talend.core.repository.model.preview.WSDLSchemaBean;
 
 /**
  * DOC qwei class global comment. Detailled comment

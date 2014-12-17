@@ -57,7 +57,6 @@ import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.process.TraceData;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.runprocess.IEclipseProcessor;
-import org.talend.core.model.runprocess.ProcessorUtilities;
 import org.talend.core.model.runprocess.data.PerformanceData;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;

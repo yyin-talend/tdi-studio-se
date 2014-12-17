@@ -58,7 +58,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.runprocess.ProcessorUtilities;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -95,6 +94,7 @@ import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.actions.routines.CreateRoutineAction;
 

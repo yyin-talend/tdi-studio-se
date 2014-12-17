@@ -15,6 +15,7 @@ package org.talend.repository.preview;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ListenerList;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.repository.model.preview.IPreview;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

@@ -28,8 +28,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.runprocess.ProcessorUtilities;
 import org.talend.core.prefs.IDEWorkbenchPlugin;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 
 /**

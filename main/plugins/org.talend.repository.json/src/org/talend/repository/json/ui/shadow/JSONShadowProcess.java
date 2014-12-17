@@ -28,19 +28,19 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.repository.ResourceModelUtils;
-import org.talend.core.model.runprocess.ProcessorUtilities;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.model.preview.IProcessDescription;
+import org.talend.core.repository.model.preview.SalesforceSchemaBean;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessStreamTrashReader;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.shadow.FileInputXmlNode;
 import org.talend.designer.runprocess.shadow.FileOutputDelimitedNode;
 import org.talend.designer.runprocess.shadow.FileinToDelimitedProcess;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.preview.IProcessDescription;
-import org.talend.repository.preview.SalesforceSchemaBean;
 
 /**
  * Launch a Process in shadow mode. <br/>

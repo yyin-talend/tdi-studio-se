@@ -70,7 +70,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.repository.ConnectionStatus;
+import org.talend.core.repository.model.connection.ConnectionStatus;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorDialog;

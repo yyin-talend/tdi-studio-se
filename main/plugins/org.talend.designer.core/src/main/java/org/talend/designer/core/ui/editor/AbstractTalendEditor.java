@@ -152,7 +152,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.job.IJobResourceProtection;
 import org.talend.core.model.repository.job.JobResource;
 import org.talend.core.model.repository.job.JobResourceManager;
-import org.talend.core.model.runprocess.ProcessorUtilities;
+import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.service.IMRProcessService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
@@ -204,7 +204,7 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.utils.ConnectionUtil;
-import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.views.IRepositoryView;
 

@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.repository.json.ui;
 
+import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.repository.json.node.JSONRepositoryNodeType;
 import org.talend.repository.metadata.content.AbstractMetadataContentProvider;
-import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 
 /**

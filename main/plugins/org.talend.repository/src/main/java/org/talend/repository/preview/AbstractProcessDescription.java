@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.repository.model.preview.IProcessDescription;
 
 /**
  * Description of a Process.

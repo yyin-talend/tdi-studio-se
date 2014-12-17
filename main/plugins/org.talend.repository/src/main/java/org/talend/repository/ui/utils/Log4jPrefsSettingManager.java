@@ -25,11 +25,11 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.repository.model.ResourceModelUtils;
+import org.talend.core.repository.utils.Log4jUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.utils.Log4jUtil;
 
 public class Log4jPrefsSettingManager {
 

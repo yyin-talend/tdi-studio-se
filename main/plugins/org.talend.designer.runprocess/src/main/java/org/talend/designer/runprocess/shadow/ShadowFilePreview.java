@@ -14,12 +14,12 @@ package org.talend.designer.runprocess.shadow;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
+import org.talend.core.repository.model.preview.IPreview;
+import org.talend.core.repository.model.preview.IProcessDescription;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
-import org.talend.repository.preview.IPreview;
-import org.talend.repository.preview.IProcessDescription;
 
 /**
  * Previewer for a file delimited input. <br/>

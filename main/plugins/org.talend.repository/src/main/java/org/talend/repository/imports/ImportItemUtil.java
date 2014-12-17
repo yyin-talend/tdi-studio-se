@@ -111,6 +111,7 @@ import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.utils.MigrationUtil;
 import org.talend.core.repository.model.PropertiesProjectResourceImpl;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.ui.actions.RestoreFolderUtil;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -133,7 +134,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.actions.RestoreFolderUtil;
 
 /**
  * 

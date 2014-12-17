@@ -77,7 +77,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.repository.ConnectionStatus;
+import org.talend.core.repository.model.connection.ConnectionStatus;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.core.ui.services.ISQLBuilderService;

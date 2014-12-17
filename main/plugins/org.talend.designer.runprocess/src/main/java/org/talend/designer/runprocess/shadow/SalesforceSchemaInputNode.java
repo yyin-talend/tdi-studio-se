@@ -17,7 +17,7 @@ import java.util.List;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.runprocess.shadow.TextElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.repository.preview.SalesforceSchemaBean;
+import org.talend.core.repository.model.preview.SalesforceSchemaBean;
 
 /**
  * DOC YeXiaowei class global comment. Detailled comment <br/>

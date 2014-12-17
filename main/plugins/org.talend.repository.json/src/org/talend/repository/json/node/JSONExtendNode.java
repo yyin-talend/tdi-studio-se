@@ -13,7 +13,7 @@
 package org.talend.repository.json.node;
 
 import org.talend.commons.ui.runtime.image.IImage;
-import org.talend.core.repository.IExtendRepositoryNode;
+import org.talend.commons.ui.runtime.repository.IExtendRepositoryNode;
 import org.talend.repository.json.util.JSONImage;
 import org.talend.repository.model.RepositoryNode;
 

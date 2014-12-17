@@ -49,6 +49,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.actions.SaveAsBusinessModelAction;
@@ -63,7 +64,6 @@ import org.talend.designer.business.model.business.diagram.providers.BusinessDia
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.repository.RepositoryWorkUnit;
-import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;

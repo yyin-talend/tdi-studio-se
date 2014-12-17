@@ -32,7 +32,6 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.runprocess.ProcessorUtilities;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.managers.UIManager;
@@ -40,6 +39,7 @@ import org.talend.designer.rowgenerator.shadow.LogRowNode;
 import org.talend.designer.rowgenerator.shadow.RowGenProcess;
 import org.talend.designer.rowgenerator.shadow.RowGenProcessMain;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 
 /**

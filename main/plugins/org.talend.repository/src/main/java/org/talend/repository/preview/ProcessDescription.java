@@ -12,6 +12,11 @@
 // ============================================================================
 package org.talend.repository.preview;
 
+import org.talend.core.repository.model.preview.ExcelSchemaBean;
+import org.talend.core.repository.model.preview.LDAPSchemaBean;
+import org.talend.core.repository.model.preview.SalesforceSchemaBean;
+import org.talend.core.repository.model.preview.WSDLSchemaBean;
+
 /**
  * Describes a process for shadow execution. <br/>
  * 
@@ -33,6 +38,7 @@ public class ProcessDescription extends AbstractProcessDescription {
      * 
      * @return the wsdlSchemaBean
      */
+    @Override
     public WSDLSchemaBean getWsdlSchemaBean() {
         return this.wsdlSchemaBean;
     }
@@ -42,6 +48,7 @@ public class ProcessDescription extends AbstractProcessDescription {
      * 
      * @param wsdlSchemaBean the wsdlSchemaBean to set
      */
+    @Override
     public void setWsdlSchemaBean(WSDLSchemaBean wsdlSchemaBean) {
         this.wsdlSchemaBean = wsdlSchemaBean;
     }
@@ -53,10 +60,12 @@ public class ProcessDescription extends AbstractProcessDescription {
         super();
     }
 
+    @Override
     public LDAPSchemaBean getLdapSchemaBean() {
         return this.ldapSchemaBean;
     }
 
+    @Override
     public void setLdapSchemaBean(LDAPSchemaBean ldapSchemaBean) {
         this.ldapSchemaBean = ldapSchemaBean;
     }
@@ -66,6 +75,7 @@ public class ProcessDescription extends AbstractProcessDescription {
      * 
      * @return the excelSchemaBean
      */
+    @Override
     public ExcelSchemaBean getExcelSchemaBean() {
         return this.excelSchemaBean;
     }
@@ -75,6 +85,7 @@ public class ProcessDescription extends AbstractProcessDescription {
      * 
      * @param excelSchemaBean the excelSchemaBean to set
      */
+    @Override
     public void setExcelSchemaBean(ExcelSchemaBean excelSchemaBean) {
         this.excelSchemaBean = excelSchemaBean;
     }
@@ -84,6 +95,7 @@ public class ProcessDescription extends AbstractProcessDescription {
      * 
      * @return the salesforceSchemaBean
      */
+    @Override
     public SalesforceSchemaBean getSalesforceSchemaBean() {
         return this.salesforceSchemaBean;
     }
@@ -93,6 +105,7 @@ public class ProcessDescription extends AbstractProcessDescription {
      * 
      * @param salesforceSchemaBean the salesforceSchemaBean to set
      */
+    @Override
     public void setSalesforceSchemaBean(SalesforceSchemaBean salesforceSchemaBean) {
         this.salesforceSchemaBean = salesforceSchemaBean;
     }
