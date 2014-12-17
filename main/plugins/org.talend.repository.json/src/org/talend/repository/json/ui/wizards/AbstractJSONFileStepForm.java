@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -34,7 +35,6 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -318,7 +318,7 @@ public abstract class AbstractJSONFileStepForm extends AbstractJSONStepForm {
         Project project = ProjectManager.getInstance().getCurrentProject();
         IProject fsProject = null;
         try {
-            fsProject = ResourceModelUtils.getProject(project);
+            fsProject = ResourceUtils.getProject(project);
         } catch (PersistenceException e2) {
             ExceptionHandler.process(e2);
         }

@@ -26,11 +26,11 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractProjectMigrationTask;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.repository.utils.XmiResourceManager;
 
 /**
@@ -42,13 +42,14 @@ public class ChangeXmiSerialization extends AbstractProjectMigrationTask {
 
     private Collection<Resource> modifiedResources = new ArrayList<Resource>();
 
+    @Override
     public ExecutionResult execute(Project project) {
         try {
             if (!project.isLocal()) {
                 return ExecutionResult.NOTHING_TO_DO;
             }
 
-            IProject iProject = ResourceModelUtils.getProject(project);
+            IProject iProject = ResourceUtils.getProject(project);
             xmiResourceManager = new XmiResourceManager();
             xmiResourceManager.setUseOldProjectFile(true);
             if (!xmiResourceManager.hasTalendProjectFile(iProject)) {
@@ -89,8 +90,8 @@ public class ChangeXmiSerialization extends AbstractProjectMigrationTask {
             xmiResourceManager.setUseOldProjectFile(false);
             Resource newProjectResource = xmiResourceManager.createProjectResource(iProject);
             EObject[] objects = (EObject[]) projectResource.getContents().toArray();
-            for (int i = 0; i < objects.length; i++) {
-                newProjectResource.getContents().add(objects[i]);
+            for (EObject object : objects) {
+                newProjectResource.getContents().add(object);
             }
 
             modifiedResources.add(newProjectResource);
@@ -121,6 +122,7 @@ public class ChangeXmiSerialization extends AbstractProjectMigrationTask {
 
         private Collection<IFile> propertiesResourcesFiles = new ArrayList<IFile>();
 
+        @Override
         public boolean visit(IResource resource) {
             if (resource.getType() == IResource.FILE) {
                 IFile file = (IFile) resource;
@@ -136,6 +138,7 @@ public class ChangeXmiSerialization extends AbstractProjectMigrationTask {
         }
     }
 
+    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();

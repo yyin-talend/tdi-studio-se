@@ -48,13 +48,14 @@ import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.i18n.Messages;
@@ -81,6 +82,7 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         super();
     }
 
+    @Override
     public void run() {
 
         // Refresh Navigator view before export operation, see bug 4595
@@ -132,7 +134,7 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
             // fix for bug 15454
             Project[] projects = repositoryFactory.readProject(true);
             for (Project project : projects) {
-                IProject fsProject = ResourceModelUtils.getProject(project);
+                IProject fsProject = ResourceUtils.getProject(project);
                 IFolder libJavaFolder = fsProject.getFolder(ExportProjectsAsAction.LIB);
                 if (!libJavaFolder.exists()) {
                     continue;
@@ -162,6 +164,7 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
 
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) {
                 Set<Project> projects = map.keySet();
                 monitor.beginTask(Messages.getString("ExportProjectsAsAction.createLiberariesLink"), projects.size()); //$NON-NLS-1$
@@ -331,17 +334,21 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         return (new Path(pathName)).makeAbsolute();
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
         this.window = window;
     }
 
+    @Override
     public void run(IAction action) {
         run();
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
     }
 

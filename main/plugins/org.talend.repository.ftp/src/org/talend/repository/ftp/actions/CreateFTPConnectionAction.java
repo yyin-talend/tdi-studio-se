@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.swt.images.OverlayImageProvider;
+import org.talend.commons.ui.runtime.image.OverlayImageProvider;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.properties.ConnectionItem;

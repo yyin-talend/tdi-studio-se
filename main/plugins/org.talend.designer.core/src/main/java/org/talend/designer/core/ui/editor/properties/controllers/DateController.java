@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.swt.tableviewer.celleditor.DateDialog;
+import org.talend.commons.ui.runtime.swt.tableviewer.celleditor.DateDialog;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.CoreUIPlugin;

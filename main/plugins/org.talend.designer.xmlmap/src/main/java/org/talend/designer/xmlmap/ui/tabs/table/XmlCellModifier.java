@@ -12,11 +12,11 @@
 // ============================================================================
 package org.talend.designer.xmlmap.ui.tabs.table;
 
+import org.talend.commons.ui.runtime.swt.tableviewer.data.AccessorUtils;
+import org.talend.commons.ui.runtime.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
-import org.talend.commons.ui.swt.tableviewer.data.AccessorUtils;
-import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 
 /**
  * DOC talend class global comment. Detailled comment

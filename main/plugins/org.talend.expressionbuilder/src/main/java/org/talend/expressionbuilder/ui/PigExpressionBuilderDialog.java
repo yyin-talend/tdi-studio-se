@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.runtime.model.expressionbuilder.Variable;
-import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
+import org.talend.commons.ui.runtime.expressionbuilder.IExpressionDataBean;
 import org.talend.core.model.process.INode;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.expressionbuilder.i18n.Messages;

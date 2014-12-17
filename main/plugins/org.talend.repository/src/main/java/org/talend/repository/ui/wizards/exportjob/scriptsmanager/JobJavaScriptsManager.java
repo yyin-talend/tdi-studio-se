@@ -66,6 +66,7 @@ import org.talend.commons.runtime.xml.XmlUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
@@ -88,7 +89,6 @@ import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.repository.utils.Log4jUtil;
 import org.talend.core.services.resource.IExportJobResourcesService;
 import org.talend.core.ui.CoreUIPlugin;
@@ -1894,7 +1894,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             org.talend.core.model.general.Project projecdddt = ProjectManager.getInstance().getCurrentProject();
             IProject fsProject = null;
             try {
-                fsProject = ResourceModelUtils.getProject(projecdddt);
+                fsProject = ResourceUtils.getProject(projecdddt);
             } catch (PersistenceException e2) {
                 ExceptionHandler.process(e2);
             }

@@ -21,7 +21,7 @@ import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.swt.images.OverlayImageProvider;
+import org.talend.commons.ui.runtime.image.OverlayImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProjectRepositoryNode;

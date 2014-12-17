@@ -29,17 +29,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature.Setting;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.EcoreUtil.ExternalCrossReferencer;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.emf.EmfHelper;
@@ -51,7 +47,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.MetadataManager;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
@@ -147,18 +142,19 @@ public class ExportItemUtil {
      * @param progressMonitor, to show the progress during export
      * @throws Exception in case of problem
      */
-    public void exportItems(File destination, Collection<Item> items, boolean exportAllVersions, IProgressMonitor progressMonitor)
-            throws Exception {
+    public void exportItems(File destination, final Collection<Item> items, boolean exportAllVersions,
+            IProgressMonitor progressMonitor) throws Exception {
         // bug 11301 :export 0 items
-        if (items == null) {
-            items = new ArrayList<Item>();
+        Collection<Item> workItems = items;
+        if (workItems == null) {
+            workItems = new ArrayList<Item>();
         }
 
         Collection<Item> otherVersions = new ArrayList<Item>();
         // get all versions of the exported items if wanted
         if (exportAllVersions) {
-            otherVersions = getOtherVersions(items);
-            items.addAll(otherVersions);
+            otherVersions = getOtherVersions(workItems);
+            workItems.addAll(otherVersions);
             otherVersions.clear();
         }// else keep current items version only
         try {
@@ -188,7 +184,7 @@ public class ExportItemUtil {
 
             try {
                 if (exporter != null) {
-                    toExport = exportItems2(items, tmpDirectory, true, progressMonitor);
+                    toExport = exportItems2(workItems, tmpDirectory, true, progressMonitor);
 
                     // in case of .tar.gz we remove extension twice
                     // IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
@@ -198,7 +194,7 @@ public class ExportItemUtil {
                         exporter.write(file.getAbsolutePath(), path.toString());
                     }
                 } else {
-                    toExport = exportItems2(items, destination, true, progressMonitor);
+                    toExport = exportItems2(workItems, destination, true, progressMonitor);
                 }
             } catch (Exception e) {
                 throw e;
@@ -278,11 +274,11 @@ public class ExportItemUtil {
             list.add(item);
         }
         // merge items from different projects
-        items = new ArrayList<Item>(items.size());
+        Collection<Item> workItems = new ArrayList<Item>(items.size());
         for (List<Item> list : projectItems.values()) {
-            items.addAll(list);
+            workItems.addAll(list);
         }
-        return items;
+        return workItems;
     }
 
     private Map<File, IPath> exportItems2(Collection<Item> items, File destinationDirectory, boolean projectFolderStructure,
@@ -773,64 +769,7 @@ public class ExportItemUtil {
         }
     }
 
-    private void cleanResources(ResourceSet resourceSet) {
-        for (Resource resource : resourceSet.getResources()) {
-            resource.unload();
-        }
-        resourceSet.getResources().clear();
-        resourceSet = new ResourceSetImpl();
-    }
-
     @SuppressWarnings("unchecked")
-    private Collection<EObject> getObjects(Item oraItem) {
-        List<EObject> objects = new ArrayList<EObject>();
-
-        URI propertyUri = oraItem.getProperty().eResource().getURI();
-        ResourceSet resourceSet = new ResourceSetImpl();
-        Resource propertyResource = resourceSet.getResource(propertyUri, true);
-
-        Property property = (Property) EcoreUtil.getObjectByType(propertyResource.getContents(),
-                PropertiesPackage.eINSTANCE.getProperty());
-        Item item = property.getItem();
-
-        objects.add(item);
-        EList references = item.eClass().getEAllReferences();
-        for (Iterator iter = references.iterator(); iter.hasNext();) {
-            EReference reference = (EReference) iter.next();
-            if (!reference.isTransient()) {
-                if (reference.isMany()) {
-                    EList referencedEList = (EList) item.eGet(reference);
-                    for (Iterator iterator = referencedEList.iterator(); iterator.hasNext();) {
-                        EObject referenceEObject = (EObject) iterator.next();
-                        if (referenceEObject != null && !objects.contains(referenceEObject)) {
-                            // need to load all reference files when copy the item
-                            if (referenceEObject instanceof ReferenceFileItem) {
-                                EList subRef = referenceEObject.eClass().getEAllReferences();
-                                for (Iterator subiter = subRef.iterator(); subiter.hasNext();) {
-                                    EReference subReference = (EReference) subiter.next();
-                                    if (!subReference.isMany()) {
-                                        referenceEObject.eGet(subReference);
-                                    }
-                                }
-                            }
-                            objects.add(referenceEObject);
-                        }
-                    }
-                } else {
-                    EObject referenceEObject = (EObject) item.eGet(reference);
-                    if (referenceEObject != null && !objects.contains(referenceEObject)) {
-                        objects.add(referenceEObject);
-                    }
-                }
-            }
-        }
-
-        MetadataManager.addPackges(item, objects); // hywang 13221
-
-        // return EcoreUtil.copyAll(objects);
-        return objects;
-    }
-
     private void moveObjectsToResource(Resource resource, Collection<EObject> objects, EClass type) {
         Collection<EObject> objectsToTransfer;
         if (type != null) {
@@ -862,23 +801,6 @@ public class ExportItemUtil {
         item.getState().setLocker(null);
         item.getState().setLockDate(null);
         item.getState().setLocked(false);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void dereferenceNotContainedObjects(ResourceSet resourceSet) {
-        Map<EObject, Collection<Setting>> externalObjects = ExternalCrossReferencer.find(resourceSet);
-
-        for (EObject object : externalObjects.keySet()) {
-            Collection<Setting> collection = externalObjects.get(object);
-            for (Setting setting : collection) {
-                if (setting.getEStructuralFeature().isMany()) {
-                    EList referencedEList = (EList) setting.getEObject().eGet(setting.getEStructuralFeature());
-                    referencedEList.clear();
-                } else {
-                    setting.getEObject().eSet(setting.getEStructuralFeature(), null);
-                }
-            }
-        }
     }
 
     private void createFolder(File folder) throws IOException {

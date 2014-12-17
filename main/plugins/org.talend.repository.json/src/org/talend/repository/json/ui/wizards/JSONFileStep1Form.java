@@ -60,6 +60,7 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.commons.utils.encoding.CharsetToolkit;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -68,7 +69,6 @@ import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.datatools.xml.utils.ATreeNode;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -713,7 +713,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         Project project = ProjectManager.getInstance().getCurrentProject();
         IProject fsProject = null;
         try {
-            fsProject = ResourceModelUtils.getProject(project);
+            fsProject = ResourceUtils.getProject(project);
         } catch (PersistenceException e2) {
             ExceptionHandler.process(e2);
         }

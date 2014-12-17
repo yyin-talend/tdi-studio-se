@@ -17,7 +17,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
+import org.talend.commons.ui.runtime.swt.tableviewer.celleditor.CellEditorDialogBehavior;
 
 /**
  * DOC wchen class global comment. Detailled comment

@@ -44,6 +44,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -60,7 +61,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.ui.services.IOpenJobScriptActionService;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -315,7 +315,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
                     // TDI-19014:open another version of jobScript
                     try {
                         if (item instanceof JobScriptItem) {
-                            IProject fsProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
+                            IProject fsProject = ResourceUtils.getProject(ProjectManager.getInstance().getCurrentProject());
                             openXtextEditor(node, fsProject, readonly);
                         }
                     } catch (PersistenceException e) {
