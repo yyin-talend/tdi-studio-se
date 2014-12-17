@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.xml.XmlUtil;
+import org.talend.commons.runtime.xml.XmlUtil;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;

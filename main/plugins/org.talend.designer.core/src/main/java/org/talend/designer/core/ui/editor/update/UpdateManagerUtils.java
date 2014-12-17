@@ -30,6 +30,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
@@ -77,7 +78,6 @@ import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.RepositoryWorkUnit;
-import org.talend.repository.model.ERepositoryStatus;
 
 /**
  * ggu class global comment. Detailled comment

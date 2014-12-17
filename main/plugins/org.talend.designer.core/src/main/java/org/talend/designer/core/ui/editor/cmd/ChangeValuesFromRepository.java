@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.xml.XmlUtil;
+import org.talend.commons.runtime.xml.XmlUtil;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.context.ContextUtils;

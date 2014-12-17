@@ -17,7 +17,7 @@ import java.beans.PropertyChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.model.components.IComponentConstants;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;

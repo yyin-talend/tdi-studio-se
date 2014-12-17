@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
@@ -37,7 +38,6 @@ import org.talend.designer.rowgenerator.shadow.RowGenContextManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.shadow.ShadowConnection;
 import org.talend.designer.runprocess.shadow.ShadowNode;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 

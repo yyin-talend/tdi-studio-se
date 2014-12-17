@@ -15,6 +15,7 @@ package org.talend.repository.json.action;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -28,7 +29,6 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.json.i18n.Messages;
 import org.talend.repository.json.node.JSONRepositoryNodeType;
 import org.talend.repository.json.ui.wizards.FileJSONTableWizard;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -36,6 +36,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileConnectionItem;
 import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
+
 import orgomg.cwm.resource.record.RecordFactory;
 import orgomg.cwm.resource.record.RecordFile;
 

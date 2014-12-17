@@ -45,7 +45,7 @@ import org.eclipse.jface.text.revisions.Revision;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.osgi.framework.Version;
-import org.talend.commons.emf.EmfHelper;
+import org.talend.commons.runtime.model.emf.EmfHelper;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.VersionUtils;

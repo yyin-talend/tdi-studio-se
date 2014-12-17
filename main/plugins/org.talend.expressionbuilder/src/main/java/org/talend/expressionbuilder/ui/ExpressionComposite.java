@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorPart;
-import org.talend.commons.expressionbuilder.Variable;
+import org.talend.commons.runtime.model.expressionbuilder.Variable;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.designer.core.ui.viewer.ReconcilerViewer;

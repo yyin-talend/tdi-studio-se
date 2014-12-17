@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.runtime.model.emf.EmfHelper;
 import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;

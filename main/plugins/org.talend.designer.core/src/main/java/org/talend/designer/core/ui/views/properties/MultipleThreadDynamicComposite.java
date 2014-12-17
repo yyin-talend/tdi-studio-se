@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
@@ -76,7 +77,6 @@ import org.talend.designer.core.ui.editor.properties.controllers.GroupController
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**

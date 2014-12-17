@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -36,7 +37,6 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**

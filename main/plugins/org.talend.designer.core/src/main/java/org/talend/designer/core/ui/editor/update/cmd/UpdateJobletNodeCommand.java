@@ -23,7 +23,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.model.components.IComponentConstants;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;

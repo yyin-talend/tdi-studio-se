@@ -39,6 +39,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
@@ -64,7 +65,6 @@ import org.talend.designer.business.model.business.diagram.providers.BusinessDia
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.repository.RepositoryWorkUnit;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;

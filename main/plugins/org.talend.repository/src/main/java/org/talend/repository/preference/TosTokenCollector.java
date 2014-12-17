@@ -24,6 +24,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.FolderItem;
@@ -42,7 +43,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 import us.monoid.json.JSONException;

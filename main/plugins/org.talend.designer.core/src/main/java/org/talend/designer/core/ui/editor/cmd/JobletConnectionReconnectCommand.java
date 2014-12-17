@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
@@ -22,7 +23,6 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.repository.model.ERepositoryStatus;
 
 /**
  * Command that allows to change a connection to a new source or a new target when collapse joblet_component. <br/>

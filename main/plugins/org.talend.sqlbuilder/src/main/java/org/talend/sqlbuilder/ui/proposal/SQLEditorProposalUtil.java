@@ -22,9 +22,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.fieldassist.IContentProposal;
+import org.talend.commons.runtime.xml.XmlUtil;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
-import org.talend.commons.xml.XmlUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.RepositoryNode;

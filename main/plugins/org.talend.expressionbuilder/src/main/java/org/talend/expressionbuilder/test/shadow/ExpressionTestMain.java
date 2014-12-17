@@ -23,7 +23,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.talend.commons.expressionbuilder.Variable;
+import org.talend.commons.runtime.model.expressionbuilder.Variable;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.core.model.context.JobContextParameter;

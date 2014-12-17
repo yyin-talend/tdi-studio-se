@@ -16,6 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -57,7 +58,6 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryService;
 

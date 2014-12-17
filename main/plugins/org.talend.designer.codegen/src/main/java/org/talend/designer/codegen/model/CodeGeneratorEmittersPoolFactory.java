@@ -45,7 +45,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.model.components.IComponentConstants;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.io.IOUtils;

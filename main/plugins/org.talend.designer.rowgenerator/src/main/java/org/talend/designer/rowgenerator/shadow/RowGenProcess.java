@@ -21,6 +21,7 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.Element;
@@ -36,7 +37,6 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 

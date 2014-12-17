@@ -64,7 +64,7 @@ import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
 import org.eclipse.ui.texteditor.DefaultRangeIndicator;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.expressionbuilder.Variable;
+import org.talend.commons.runtime.model.expressionbuilder.Variable;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
