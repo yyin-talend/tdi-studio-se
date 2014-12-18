@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.documentation.generation;
+package org.talend.designer.documentation.generation;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -108,7 +108,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.designer.documentation.genhtml.CSSParserUtils;
 import org.talend.designer.documentation.i18.Messages;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;

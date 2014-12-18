@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.actions;
+package org.talend.designer.documentation.generation.actions;
 
 import java.util.List;
 
@@ -27,11 +27,12 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.designer.documentation.generation.wizards.GenerateDocAsHTMLWizard;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.wizards.htmlgeneration.GenerateDocAsHTMLWizard;
+import org.talend.repository.ui.actions.AContextualAction;
 
 /**
  * ftang class global comment. Detailed comment

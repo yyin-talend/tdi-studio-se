@@ -10,43 +10,49 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.actions.documentation;
+package org.talend.designer.documentation.generation.actions;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.OverlayImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.metadata.managment.ui.wizard.documentation.DocumentationUpdateWizard;
+import org.talend.metadata.managment.ui.wizard.documentation.DocumentationCreateWizard;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
- * Action used to update an existing documentation.<br/>
+ * Action to create a new IDocumentation. <br/>
  * 
- * $Id: UpdateDocumentationAction.java 77219 2012-01-24 01:14:15Z mhirt $
+ * $Id: CreateDocumentationAction.java 77219 2012-01-24 01:14:15Z mhirt $
  * 
  */
-public class UpdateDocumentationAction extends AContextualAction {
+public class CreateDocumentationAction extends AContextualAction {
 
     /**
-     * Constructs a new UpdateDocumentationAction.
+     * Constructs a new CreateDocumentationAction.
      */
-    public UpdateDocumentationAction() {
+    public CreateDocumentationAction() {
         super();
 
-        setText(Messages.getString("UpdateDocumentationAction.updateDocActionText.updateDoc")); //$NON-NLS-1$
-        setToolTipText(Messages.getString("UpdateDocumentationAction.updateDocActionTipText.updateDoc")); //$NON-NLS-1$
-        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_ICON));
+        setText(Messages.getString("CreateDocumentationAction.createDocActionText.addDoc")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("CreateDocumentationAction.createDocActionTipText.addDocItem")); //$NON-NLS-1$
+        Image folderImg = ImageProvider.getImage(ECoreImage.DOCUMENTATION_ICON);
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
 
     /*
@@ -58,12 +64,29 @@ public class UpdateDocumentationAction extends AContextualAction {
     @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            canWork = false;
+        }
         if (canWork) {
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            canWork = (node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getRepositoryObjectType() == ERepositoryObjectType.DOCUMENTATION && factory
-                    .isPotentiallyEditable(node.getObject()));
+            switch (node.getType()) {
+            case SIMPLE_FOLDER:
+            case SYSTEM_FOLDER:
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                if (nodeType != ERepositoryObjectType.DOCUMENTATION) {
+                    canWork = false;
+                }
+                if (node.getObject() != null && node.getObject().isDeleted()) {
+                    canWork = false;
+                }
+                break;
+            default:
+                canWork = false;
+            }
+            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+                canWork = false;
+            }
         }
         setEnabled(canWork);
     }
@@ -75,13 +98,11 @@ public class UpdateDocumentationAction extends AContextualAction {
      */
     @Override
     protected void doRun() {
-        RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
-
-        DocumentationUpdateWizard docWizard = new DocumentationUpdateWizard(PlatformUI.getWorkbench(), node.getObject(),
-                getPath());
+        DocumentationCreateWizard docWizard = new DocumentationCreateWizard(PlatformUI.getWorkbench(), getPath());
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), docWizard);
         dlg.open();
 
+        RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
     }
 
     private IPath getPath() {
@@ -91,8 +112,9 @@ public class UpdateDocumentationAction extends AContextualAction {
         if (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
             path = RepositoryNodeUtilities.getPath(node);
         } else {
-            path = RepositoryNodeUtilities.getPath(node);
+            path = new Path(""); //$NON-NLS-1$
         }
         return path;
     }
+
 }
