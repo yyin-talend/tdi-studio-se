@@ -39,7 +39,6 @@ import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
-import org.talend.core.service.IDQComponentService;
 import org.talend.core.service.IXmlMapService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -383,18 +382,14 @@ public class ExternalNodeChangeCommand extends Command {
                         // no matter propagate or not the metadata change will be propagate to xmlmap emf data
                         final Node target = (Node) connection.getTarget();
                         if (target != null && target.getExternalNode() != null) {
-                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IXmlMapService.class)) {}
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IXmlMapService.class)) {
                                 final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
                                         IXmlMapService.class);
                                 if (service.isXmlMapComponent(target.getExternalNode())) {
                                     IODataComponent output = new IODataComponent(connection, dataComponent.getTable());
                                     target.metadataInputChanged(output, connection.getUniqueName());
                                 }
-                        } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IDQComponentService.class)) {
-                            final IDQComponentService service = (IDQComponentService) GlobalServiceRegister.getDefault()
-                                    .getService(IDQComponentService.class);
-                            service.externalComponentChange(connection, dataComponent.getTable());
-                        }
+                            }
                         }
                     }
                 }
