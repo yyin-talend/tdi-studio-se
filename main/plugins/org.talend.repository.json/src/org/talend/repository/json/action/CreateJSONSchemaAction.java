@@ -29,13 +29,13 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.json.i18n.Messages;
 import org.talend.repository.json.node.JSONRepositoryNodeType;
 import org.talend.repository.json.ui.wizards.FileJSONTableWizard;
+import org.talend.repository.metadata.ui.actions.metadata.AbstractCreateTableAction;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileConnectionItem;
-import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
 
 import orgomg.cwm.resource.record.RecordFactory;
 import orgomg.cwm.resource.record.RecordFile;
