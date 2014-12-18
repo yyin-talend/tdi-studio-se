@@ -39,6 +39,7 @@ import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.service.IDQComponentService;
 import org.talend.core.service.IXmlMapService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -389,7 +390,12 @@ public class ExternalNodeChangeCommand extends Command {
                                     IODataComponent output = new IODataComponent(connection, dataComponent.getTable());
                                     target.metadataInputChanged(output, connection.getUniqueName());
                                 }
+                            } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IDQComponentService.class)) {
+                                final IDQComponentService service = (IDQComponentService) GlobalServiceRegister.getDefault()
+                                        .getService(IDQComponentService.class);
+                                service.externalComponentChange(connection, dataComponent.getTable());
                             }
+
                         }
                     }
                 }
