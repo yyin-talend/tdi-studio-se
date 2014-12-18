@@ -29,14 +29,12 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.CommonsPlugin;
-import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.registration.wizards.register.TalendForgeDialog;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.ui.wizards.register.TalendForgeDialog;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -163,6 +161,7 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
      * 
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
+    @Override
     public void init(IWorkbench workbench) {
     }
 
