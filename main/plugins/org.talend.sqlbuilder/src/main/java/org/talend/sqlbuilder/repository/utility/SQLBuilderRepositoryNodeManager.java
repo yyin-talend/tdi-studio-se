@@ -60,6 +60,7 @@ import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SchemaHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.relational.TdColumn;
+import org.talend.designer.core.sqlbuilder.NotReallyNeedSchemaDBS;
 import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
 import org.talend.metadata.managment.model.MetadataFillFactory;
 import org.talend.metadata.managment.repository.ManagerConnection;
