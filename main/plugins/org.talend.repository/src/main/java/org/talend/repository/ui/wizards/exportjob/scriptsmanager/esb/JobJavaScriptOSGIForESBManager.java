@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -554,7 +553,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         ElementParameterType customPropsType = EmfModelUtils.findElementParameterByName(
                 "SERVICE_LOCATOR_CUSTOM_PROPERTIES", restRequestComponent); //$NON-NLS-1$
         if (null != customPropsType) {
-            EList<?> elementValues = customPropsType.getElementValue();
+            List<?> elementValues = customPropsType.getElementValue();
             final int size = elementValues.size();
             for (int i = 0; i < size; i += 2) {
                 if (size <= i + 1) {
@@ -983,8 +982,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (!needLibraries) {
             return Collections.emptyList();
         }
-        // jar from routines
-        List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
         boolean useBeans = false;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
             ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
@@ -1036,22 +1033,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         } else {
             includePath = "routines"; //$NON-NLS-1$
         }
-        collectRoutines.addAll(collectRoutines(process, includePath));
 
-        for (IRepositoryViewObject object : collectRoutines) {
+        // jar from routines
+        for (IRepositoryViewObject object : collectRoutines(process, includePath)) {
             Item item = object.getProperty().getItem();
             if (item instanceof RoutineItem) {
-                RoutineItem routine = (RoutineItem) item;
                 @SuppressWarnings("unchecked")
-                EList<IMPORTType> imports = routine.getImports();
+                List<IMPORTType> imports = ((RoutineItem) item).getImports();
                 for (IMPORTType type : imports) {
-                    listModulesReallyNeeded.add(type.getMODULE());
+                    if (type.isREQUIRED()) {
+                        listModulesReallyNeeded.add(type.getMODULE());
+                    }
                 }
             }
         }
 
         return getNeededModuleURLs(listModulesReallyNeeded);
-
     }
 
     protected List<URL> getNeededModuleURLs(Set<String> neededModules) {
