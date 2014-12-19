@@ -4,3 +4,4 @@ Bundle-Name: Jars
 Bundle-SymbolicName: org.talend.sqlbuilder.jars
 Bundle-Version: 6.0.0.qualifier
 Fragment-Host: org.talend.sqlbuilder
+Eclipse-BundleShape: dir

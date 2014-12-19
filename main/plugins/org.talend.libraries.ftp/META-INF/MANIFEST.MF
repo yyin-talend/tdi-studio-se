@@ -26,3 +26,4 @@ Export-Package: org.apache.commons.net,
  org.apache.commons.net.time,
  org.apache.commons.net.util,
  org.apache.commons.net.whois
+Eclipse-BundleShape: dir

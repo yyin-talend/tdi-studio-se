@@ -14,4 +14,4 @@ Export-Package: net.sf.cb2xml,
  net.sf.cb2xml.sablecc.parser,
  net.sf.cb2xml.util,
  net.sf.cobol2j
-
+Eclipse-BundleShape: dir
