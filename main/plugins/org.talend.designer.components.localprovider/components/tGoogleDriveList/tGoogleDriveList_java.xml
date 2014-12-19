@@ -123,7 +123,7 @@
                     REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
                <IMPORT NAME="jsr305-"
                     MODULE="jsr305-1.3.9.jar"
-                    REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
+                    REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" BundleID="" />
 
                <IMPORT NAME="jackson-core"
                     MODULE="jackson-core-2.2.2.jar"
@@ -140,7 +140,7 @@
                <IMPORT NAME="commons-logging"
                     MODULE="commons-logging-1.1.3.jar"
                     UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.3.jar"
-                    REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
+                    REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" BundleID="" />
                <IMPORT NAME="commons-codec"
                     MODULE="commons-codec-1.4.jar"
                     UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.4.jar"
