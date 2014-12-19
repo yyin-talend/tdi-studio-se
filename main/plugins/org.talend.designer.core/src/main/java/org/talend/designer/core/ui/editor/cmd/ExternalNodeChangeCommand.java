@@ -390,7 +390,9 @@ public class ExternalNodeChangeCommand extends Command {
                                     IODataComponent output = new IODataComponent(connection, dataComponent.getTable());
                                     target.metadataInputChanged(output, connection.getUniqueName());
                                 }
-                            } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IDQComponentService.class)) {
+                            }
+
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDQComponentService.class)) {
                                 final IDQComponentService service = (IDQComponentService) GlobalServiceRegister.getDefault()
                                         .getService(IDQComponentService.class);
                                 service.externalComponentChange(connection, dataComponent.getTable());
