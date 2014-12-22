@@ -249,6 +249,8 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             if (data != null && data instanceof String) {
                 if (((String) data).equals("PARALLELIZE_UNIT_SIZE")) {
                     return;
+                } else if (((String) data).equals("PASS")) {
+                    return;
                 }
             }
             if (useRepository((String) data)) {
