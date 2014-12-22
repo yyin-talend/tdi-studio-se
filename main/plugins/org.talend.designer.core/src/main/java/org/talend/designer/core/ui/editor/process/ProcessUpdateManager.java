@@ -1704,7 +1704,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
                                             IESBService.class);
                                     if (service != null) {
-                                        objectValue = service.getValue(item, repositoryValue, node);
+                                        Object objectValueFromESB = service.getValue(item, repositoryValue, node);
+                                        if (objectValueFromESB != null) {
+                                            objectValue = objectValueFromESB;
+                                        }
                                     }
                                 }
 
