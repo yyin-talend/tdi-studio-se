@@ -856,15 +856,21 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                     clearTracePerfBtn.setEnabled(false);
                     return;
                 }
-                ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
-                clearPerfAction.setProcess(processContext.getProcess());
-                clearPerfAction.run();
-                ClearTraceAction clearTraceAction = new ClearTraceAction();
-                clearTraceAction.setProcess(processContext.getProcess());
-                clearTraceAction.run();
-                consoleText.setText("");
-                processContext.clearMessages();
-                refreshNodeContainer();
+                if (processContext.isRunning()) {
+                    if (consoleText != null && !consoleText.isDisposed()) {
+                        processContext.clearMessages();
+                    }
+                } else {
+                    ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
+                    clearPerfAction.setProcess(processContext.getProcess());
+                    clearPerfAction.run();
+                    ClearTraceAction clearTraceAction = new ClearTraceAction();
+                    clearTraceAction.setProcess(processContext.getProcess());
+                    clearTraceAction.run();
+                    consoleText.setText(""); //$NON-NLS-1$
+                    processContext.clearMessages();
+                    refreshNodeContainer();
+                }
             }
         });
 
@@ -1054,9 +1060,17 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
     protected void setRunnable(boolean runnable) {
         // perfBtn.setEnabled(runnable);
-        // traceBtn.setEnabled(runnable);
         if (clearTracePerfBtn != null && !clearTracePerfBtn.isDisposed()) {
-            clearTracePerfBtn.setEnabled(runnable);
+            IProcess2 iProcess = null;
+            boolean enableClearBtn = true;
+            if (processContext != null && (iProcess = processContext.getProcess()) != null) {
+                if (iProcess.disableRunJobView()) {
+                    enableClearBtn = false;
+                }
+            } else {
+                enableClearBtn = false;
+            }
+            clearTracePerfBtn.setEnabled(enableClearBtn);
         }
 
         setExecBtn(runnable);

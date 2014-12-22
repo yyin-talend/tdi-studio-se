@@ -246,7 +246,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         toolBar = new ToolBar(execHeader, SWT.FLAT | SWT.RIGHT);
 
         itemDropDown = new ToolItem(toolBar, SWT.ARROW);
-        itemDropDown.setText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        itemDropDown.setText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$
         itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
         itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$
         itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
@@ -275,7 +275,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
         // debug
         final MenuItem menuItem1 = new MenuItem(menu, SWT.PUSH);
-        menuItem1.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        menuItem1.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$//$NON-NLS-2$
         menuItem1.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
         menuItem1.setData(ProcessView.DEBUG_ID);
         menuItem1.addSelectionListener(new SelectionAdapter() {
@@ -383,11 +383,13 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         // feature 6875, add searching capability, nma
         consoleText.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(KeyEvent evt) {
                 // select all
                 if ((evt.stateMask == SWT.CTRL) && (evt.keyCode == 'a')) {
-                    if (consoleText.getText().length() > 0)
+                    if (consoleText.getText().length() > 0) {
                         consoleText.setSelection(0, (consoleText.getText().length() - 1));
+                    }
                 }
                 // search special string value
                 else if ((evt.stateMask == SWT.CTRL) && (evt.keyCode == 'f')) {
@@ -399,6 +401,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                 }
             }
 
+            @Override
             public void keyReleased(KeyEvent arg0) {
 
             }
@@ -413,12 +416,14 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
         pcl = new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 runProcessContextChanged(evt);
             }
         };
         streamListener = new IStreamListener() {
 
+            @Override
             public void streamAppended(String text, IStreamMonitor monitor) {
                 IProcessMessage message = new ProcessMessage(ProcessMessage.MsgType.STD_OUT, text);
                 processContext.addDebugResultToConsole(message);
@@ -489,6 +494,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         lineLimitText.addListener(SWT.Verify, new Listener() {
 
             // this text only receive number here.
+            @Override
             public void handleEvent(Event e) {
                 String s = e.text;
                 if (!s.equals("")) { //$NON-NLS-1$
@@ -504,6 +510,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         });
         lineLimitText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 RunProcessPlugin.getDefault().getPluginPreferences()
                         .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText());
@@ -532,14 +539,20 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                     clearTracePerfBtn.setEnabled(false);
                     return;
                 }
-                ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
-                clearPerfAction.setProcess(processContext.getProcess());
-                clearPerfAction.run();
-                ClearTraceAction clearTraceAction = new ClearTraceAction();
-                clearTraceAction.setProcess(processContext.getProcess());
-                clearTraceAction.run();
-                consoleText.setText(""); //$NON-NLS-1$
-                processContext.clearMessages();
+                if (processContext.isRunning()) {
+                    if (consoleText != null && !consoleText.isDisposed()) {
+                        processContext.clearMessages();
+                    }
+                } else {
+                    ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
+                    clearPerfAction.setProcess(processContext.getProcess());
+                    clearPerfAction.run();
+                    ClearTraceAction clearTraceAction = new ClearTraceAction();
+                    clearTraceAction.setProcess(processContext.getProcess());
+                    clearTraceAction.run();
+                    consoleText.setText(""); //$NON-NLS-1$
+                    processContext.clearMessages();
+                }
             }
         });
 
@@ -668,7 +681,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<IProcessMessage>());
         if (processContext == null) {
             manager.setBooleanTrace(false);
-            itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$//$NON-NLS-2$
             itemDropDown.setData(ProcessView.DEBUG_ID);
             itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$
             itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
@@ -721,12 +734,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         style.start = consoleText.getText().length();
 
         String[] contents = content.split("\n");
-        for (int i = 0; i < contents.length; i++) {
-            if (isPattern(contents[i]) || isPatternFor(contents[i])) {
+        for (String content2 : contents) {
+            if (isPattern(content2) || isPatternFor(content2)) {
                 consoleText.append(""); //$NON-NLS-1$
                 content = ""; //$NON-NLS-1$
             } else {
-                consoleText.append(contents[i]);
+                consoleText.append(content2);
                 consoleText.append("\n");
             }
         }
@@ -804,6 +817,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
     protected void appendToConsole(final IProcessMessage message) {
         manager.getProcessShell().getDisplay().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
 
                 if (message.getType() == MsgType.CORE_OUT || message.getType() == MsgType.CORE_ERR) {
@@ -850,6 +864,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
             dis.asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (!consoleText.isDisposed()) {
                         consoleText.setText(""); //$NON-NLS-1$
@@ -863,14 +878,16 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         } else if (RunProcessContext.PROP_RUNNING.equals(propName)) {
             dis.asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (isDisposed()) {
                         return;
                     }
                     boolean running = ((Boolean) evt.getNewValue()).booleanValue();
                     setRunnable(!running);
-                    if (!killBtn.isDisposed() && killBtn != null)
+                    if (!killBtn.isDisposed() && killBtn != null) {
                         killBtn.setEnabled(running);
+                    }
                     isRuning = false;
                     // previousRow.setEnabled(running);
                     // nextRow.setEnabled(running);
@@ -903,8 +920,18 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     @Override
     protected void setRunnable(boolean runnable) {
-        if (!clearTracePerfBtn.isDisposed() && clearTracePerfBtn != null)
-            clearTracePerfBtn.setEnabled(runnable);
+        if (clearTracePerfBtn != null && !clearTracePerfBtn.isDisposed()) {
+            IProcess2 iProcess = null;
+            boolean enableClearBtn = true;
+            if (processContext != null && (iProcess = processContext.getProcess()) != null) {
+                if (iProcess.disableRunJobView()) {
+                    enableClearBtn = false;
+                }
+            } else {
+                enableClearBtn = false;
+            }
+            clearTracePerfBtn.setEnabled(enableClearBtn);
+        }
         // previousRow.setEnabled(runnable);
         // nextRow.setEnabled(runnable);
         // nextBreakPoint.setEnabled(runnable);
@@ -913,10 +940,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         // if (argumentsComposite != null) {
         // argumentsComposite.setEnabled(runnable);
         // }
-        if (!enableLineLimitButton.isDisposed() && enableLineLimitButton != null)
+        if (enableLineLimitButton != null && !enableLineLimitButton.isDisposed()) {
             enableLineLimitButton.setEnabled(runnable);
-        if (!lineLimitText.isDisposed() && lineLimitText != null)
+        }
+        if (lineLimitText != null && !lineLimitText.isDisposed()) {
             lineLimitText.setEnabled(runnable);
+        }
 
     }
 
@@ -1021,6 +1050,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
             IRunnableWithProgress worker = new IRunnableWithProgress() {
 
+                @Override
                 public void run(IProgressMonitor monitor) {
                     IProcessor processor = ProcessorUtilities.getProcessor(processContext.getProcess(), processContext
                             .getProcess().getProperty(), context);
@@ -1087,10 +1117,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                             }
                             dis.asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     setRunnable(true);
-                                    if (!killBtn.isDisposed() && killBtn != null)
+                                    if (!killBtn.isDisposed() && killBtn != null) {
                                         killBtn.setEnabled(false);
+                                    }
                                     preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, oldValueConsoleOnOut);
 
                                     preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, oldValueConsoleOnErr);
@@ -1128,10 +1160,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                                 }
                                 dis.asyncExec(new Runnable() {
 
+                                    @Override
                                     public void run() {
                                         setRunnable(false);
-                                        if (!killBtn.isDisposed() && killBtn != null)
+                                        if (!killBtn.isDisposed() && killBtn != null) {
                                             killBtn.setEnabled(true);
+                                        }
                                         processContext.setRunning(true);
                                         processContext.setDebugProcess(process);
                                         if (!isAddedStreamListener) {
@@ -1168,10 +1202,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                                 }
                                 dis.asyncExec(new Runnable() {
 
+                                    @Override
                                     public void run() {
                                         setRunnable(true);
-                                        if (!killBtn.isDisposed() && killBtn != null)
+                                        if (!killBtn.isDisposed() && killBtn != null) {
                                             killBtn.setEnabled(false);
+                                        }
                                     }
                                 });
                             }
@@ -1339,6 +1375,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
              * 
              * @see java.lang.Runnable#run()
              */
+            @Override
             public void run() {
                 getParent().layout();
             }
@@ -1365,7 +1402,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             String currenctJobName = processContext.getProcess().getName();
             for (int i = 0; i < linesMess.length; i++) {
                 String tRunJobName = currenctJobName;
-                String linemess = linesMess[i].trim(); //$NON-NLS-1$
+                String linemess = linesMess[i].trim();
                 Pattern pattern = Pattern.compile("^Exception\\s*in\\s*component\\s*(\\w)+_\\d$");//$NON-NLS-1$
                 Matcher m = pattern.matcher(linemess);
                 if (m.find()) {
@@ -1385,11 +1422,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                                     break;
                                 }
                             }
-                            if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
+                            if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1) {
                                 tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1,
                                         tRunJobName.lastIndexOf(".java"));
-                            else
+                            } else {
                                 tRunJobName = currenctJobName;
+                            }
                         }
                     }
 
@@ -1416,6 +1454,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
     public void refreshNode(final IProcessMessage psMess) {
         Display.getDefault().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 if (processContext == null) {
                     return;
@@ -1493,13 +1532,13 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         String uniqueName = ""; //$NON-NLS-1$
         String[] message = psMess.getContent().split("\n");
 
-        for (int i = 0; i < message.length; i++) {
-            if (isPattern(message[i])) {
+        for (String element : message) {
+            if (isPattern(element)) {
 
-                int firIndex = message[i].indexOf("$"); //$NON-NLS-1$
-                int secIndex = message[i].indexOf("%"); //$NON-NLS-1$
-                uniqueName = message[i].substring(0, firIndex);
-                mess = message[i].substring(firIndex + 1, secIndex);
+                int firIndex = element.indexOf("$"); //$NON-NLS-1$
+                int secIndex = element.indexOf("%"); //$NON-NLS-1$
+                uniqueName = element.substring(0, firIndex);
+                mess = element.substring(firIndex + 1, secIndex);
             }
 
             Double extentPro = new Double(0);
