@@ -74,8 +74,8 @@ public class SurrogateSection extends ScdSection {
      * @param width
      * @param height
      */
-    public SurrogateSection(Composite parent, int width, int height, ScdManager scdManager) {
-        super(parent, width, height, scdManager, false);
+    public SurrogateSection(Composite parent, ScdManager scdManager) {
+        super(parent, scdManager, false);
         surrogateManager = new SurrogateKeyManager();
     }
 

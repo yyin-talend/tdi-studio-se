@@ -85,8 +85,8 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
      * @param width
      * @param height
      */
-    public Type3Section(Composite parent, int width, int height, ScdManager scdManager) {
-        super(parent, width, height, scdManager, false);
+    public Type3Section(Composite parent, ScdManager scdManager) {
+        super(parent, scdManager, false);
         editorManager = new TableEditorManager();
         dragDropManager = new DragDropManager();
         dragDropManager.addDragSupport(table, this);
@@ -99,13 +99,14 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
     protected void createContents(Composite composite) {
         inputColumns = scdManager.getInputColumnNames();
         outputColumns = scdManager.getOutputColumnNames();
-        // | SWT.BORDER);
         tableViewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         table = tableViewer.getTable();
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
 
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd.grabExcessHorizontalSpace = true;
+        gd.grabExcessVerticalSpace = true;
         table.setLayoutData(gd);
 
         TableViewerColumn currentColumn = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -238,10 +239,10 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
         StringBuffer buf = new StringBuffer();
         // number of selected elements
         buf.append(selection.length);
-        for (int i = 0, n = selection.length; i < n; i++) {
+        for (TableItem element : selection) {
             buf.append('|');
             // drag from current field
-            buf.append(selection[i].getText(0));
+            buf.append(element.getText(0));
         }
         return buf.toString();
     }
@@ -319,7 +320,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
                 }
             }
             if (itemToRemove != null) {
-                tableModel.remove((Type3Field) itemToRemove.getData());
+                tableModel.remove(itemToRemove.getData());
                 if (scdManager.getTypeTable().contains(toRemove[i])) {
                     scdManager.getTypeTable().remove(toRemove[i]);
                 }

@@ -28,6 +28,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -35,6 +37,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.scd.ScdManager;
 import org.talend.designer.scd.ScdParameterConstants;
@@ -60,8 +63,8 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * 
      * @param parent
      */
-    public FieldSection(Composite parent, int width, int height, ScdManager scdManager, boolean toolbarNeeded, boolean editable) {
-        super(parent, width, height, scdManager, toolbarNeeded);
+    public FieldSection(Composite parent, ScdManager scdManager, boolean toolbarNeeded, boolean editable) {
+        super(parent, scdManager, toolbarNeeded);
         dragDropManager = new DragDropManager();
         dragDropManager.addDragSupport(tableViewer.getTable(), this);
         dragDropManager.addDropSupport(tableViewer.getTable(), this);
@@ -74,9 +77,8 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * 
      * @param parent
      */
-    public FieldSection(Composite parent, int width, int height, ScdManager scdManager, boolean toolbarNeeded, boolean editable,
-            int type) {
-        super(parent, width, height, scdManager, toolbarNeeded);
+    public FieldSection(Composite parent, ScdManager scdManager, boolean toolbarNeeded, boolean editable, int type) {
+        super(parent, scdManager, toolbarNeeded);
         dragDropManager = new DragDropManager();
         dragDropManager.addDragSupport(tableViewer.getTable(), this);
         dragDropManager.addDropSupport(tableViewer.getTable(), this);
@@ -88,15 +90,24 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
     @Override
     protected void createContents(Composite composite) {
         tableViewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL);
-        Table table = tableViewer.getTable();
+        final Table table = tableViewer.getTable();
         table.setLinesVisible(true);
         table.setHeaderVisible(false);
 
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd.horizontalAlignment = SWT.FILL;
+        gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
 
         TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
-        column.getColumn().setWidth(width);
+        table.addPaintListener(new PaintListener() {
+
+            public void paintControl(PaintEvent e) {
+                TableColumn[] columns = table.getColumns();
+                int clientWidth = table.getBounds().width;
+                columns[0].setWidth(clientWidth);
+            }
+        });
 
         if (editable) {
             column.setEditingSupport(new FieldEditingSupport(tableViewer, 0));
@@ -234,9 +245,9 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         StringBuffer buf = new StringBuffer();
         // number of selected elements
         buf.append(selection.length);
-        for (int i = 0, n = selection.length; i < n; i++) {
+        for (TableItem element : selection) {
             buf.append('|');
-            buf.append(selection[i].getText());
+            buf.append(element.getText());
         }
 
         return buf.toString();

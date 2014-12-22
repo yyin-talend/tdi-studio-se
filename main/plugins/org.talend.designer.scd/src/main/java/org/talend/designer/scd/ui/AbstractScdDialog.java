@@ -20,10 +20,15 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -41,9 +46,9 @@ import org.talend.designer.scd.i18n.Messages;
  */
 public abstract class AbstractScdDialog extends TrayDialog {
 
-    protected static final int SECTION_HEIGHT = 110;
-
-    protected static final int SECTION_WIDTH = 380;
+    // protected static final int SECTION_HEIGHT = 125;
+    //
+    // protected static final int SECTION_WIDTH = 395;
 
     protected ScdManager scdManager;
 
@@ -65,6 +70,8 @@ public abstract class AbstractScdDialog extends TrayDialog {
 
     protected Shell shell;
 
+    protected Button okButton;
+
     /**
      * DOC hcw AbstractScdDialog constructor comment.
      * 
@@ -73,7 +80,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
     public AbstractScdDialog(Shell shell) {
         super(shell);
         this.shell = shell;
-        setShellStyle(SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE | SWT.APPLICATION_MODAL);
+        setShellStyle(SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE | SWT.APPLICATION_MODAL | SWT.RESIZE);
     }
 
     // /**
@@ -153,12 +160,33 @@ public abstract class AbstractScdDialog extends TrayDialog {
      */
     protected ViewerFilter createFilter(Composite container) {
         Composite composite = new Composite(container, SWT.NONE);
-        GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 5).applyTo(composite);
-        GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SWT.DEFAULT).applyTo(composite);
+        GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.FILL).applyTo(composite);
+        composite.setLayout(new FormLayout());
 
+        final Button filterButton = new Button(composite, SWT.PUSH);
         filterText = new Text(composite, SWT.BORDER);
-        GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).hint(SECTION_WIDTH - 100, SWT.DEFAULT).applyTo(filterText);
-        Button filterButton = new Button(composite, SWT.PUSH);
+        filterText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                Shell dialogShell = AbstractScdDialog.this.getShell();
+                if (dialogShell != null) {
+                    dialogShell.setDefaultButton(filterButton);
+                }
+            }
+        });
+        filterText.setFocus();
+
+        FormData formData = new FormData();
+        formData.right = new FormAttachment(100);
+        formData.top = new FormAttachment(0);
+        filterButton.setLayoutData(formData);
+
+        formData = new FormData();
+        formData.top = new FormAttachment(filterButton, 0, SWT.CENTER);
+        formData.left = new FormAttachment(0);
+        formData.right = new FormAttachment(filterButton, 0, SWT.LEFT);
+        filterText.setLayoutData(formData);
+
         filterButton.setText(Messages.getString("AbstractScdDialog.filter")); //$NON-NLS-1$
         filterButton.addSelectionListener(new SelectionListener() {
 
@@ -167,6 +195,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
             }
 
             public void widgetSelected(SelectionEvent e) {
+                filterText.setFocus();
                 applyFilter();
             }
 
@@ -200,7 +229,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
 

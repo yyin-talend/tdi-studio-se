@@ -72,8 +72,8 @@ public class MultipleSurrogateSection extends ScdSection {
      * @param width
      * @param height
      */
-    public MultipleSurrogateSection(Composite parent, int width, int height, ScdManager scdManager) {
-        super(parent, width, height, scdManager, false);
+    public MultipleSurrogateSection(Composite parent, ScdManager scdManager) {
+        super(parent, scdManager, false);
         surrogateManager = new SurrogateKeyManager();
         editorManager = new TableEditorManager();
         dragDropManager = new DragDropManager();
@@ -83,6 +83,8 @@ public class MultipleSurrogateSection extends ScdSection {
     protected void createContents(Composite composite) {
         table = new Table(composite, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd.horizontalAlignment = SWT.FILL;
+        gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);

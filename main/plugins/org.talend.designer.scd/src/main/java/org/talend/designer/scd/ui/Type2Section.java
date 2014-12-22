@@ -60,14 +60,14 @@ public class Type2Section extends FieldSection {
 
     private boolean supportCreationType = true;
 
-    public Type2Section(Composite parent, int width, int height, ScdManager scdManager) {
-        super(parent, width, height, scdManager, false, false);
+    public Type2Section(Composite parent, ScdManager scdManager) {
+        super(parent, scdManager, false, false);
         editorManager = new TableEditorManager();
         dragDropManager = new DragDropManager();
     }
 
-    public Type2Section(Composite parent, int width, int height, ScdManager scdManager, int type) {
-        super(parent, width, height, scdManager, false, false, type);
+    public Type2Section(Composite parent, ScdManager scdManager, int type) {
+        super(parent, scdManager, false, false, type);
         editorManager = new TableEditorManager();
         dragDropManager = new DragDropManager();
     }
@@ -76,8 +76,8 @@ public class Type2Section extends FieldSection {
     protected void createContents(Composite composite) {
         super.createContents(composite);
         Table table = getTableViewer().getTable();
-        GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
-        gd.heightHint = this.height / 2 - 50;
+        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        // gd.heightHint = this.height / 2 - 50;
         table.setLayoutData(gd);
 
         Label subTitle = new Label(composite, SWT.NONE); // SWT.BORDER
@@ -86,8 +86,9 @@ public class Type2Section extends FieldSection {
         subTitle.setText("Versioning"); //$NON-NLS-1$
         // subTitle.setBackground(SWTResourceManager.getColor(IColorConstants.
         // DARK_GREEN));
+        // subTitle.pack();
         subTitle.setBackground(SWTResourceManager.getColor(255, 255, 0));
-        GridDataFactory.swtDefaults().hint(SWT.DEFAULT, HEADER_HEIGHT).align(SWT.FILL, SWT.CENTER).applyTo(subTitle);
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(subTitle);
         createVersionTable(composite);
 
     }
@@ -95,7 +96,7 @@ public class Type2Section extends FieldSection {
     private void createVersionTable(Composite composite) {
         versionTable = new Table(composite, SWT.NONE);
         GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
-        gd.heightHint = this.height / 2 + 50;
+        // gd.heightHint = this.height / 2 + 50;
         versionTable.setLayoutData(gd);
 
         versionTable.setLinesVisible(true);
