@@ -29,9 +29,9 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.TraceData;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>

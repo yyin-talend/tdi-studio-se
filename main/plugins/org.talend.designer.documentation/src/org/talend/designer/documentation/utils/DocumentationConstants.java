@@ -10,17 +10,15 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.preview;
+package org.talend.designer.documentation.utils;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
- * 
- * $Id$
- * 
- * @param <R> result of preview
+ * ggu class global comment. Detailled comment
  */
-public interface IPreviewHandlerListener<R> {
+public interface DocumentationConstants {
 
-    public void handleEvent(PreviewHandlerEvent<R> event);
+    static final String KEY_ITEM_ID = "ITEM_ID";
+
+    static final String ID_SUFFIX = "doc"; //$NON-NLS-1$
 
 }

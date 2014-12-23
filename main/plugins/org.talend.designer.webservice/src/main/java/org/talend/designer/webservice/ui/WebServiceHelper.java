@@ -35,11 +35,11 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.service.IWebServiceTos;
 import org.talend.core.ui.AbstractWebService;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.webService.WebServiceTosSaveManager;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.webservice.WebServiceComponent;
 import org.talend.designer.webservice.WebServiceComponentMain;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC Administrator class global comment. Detailled comment

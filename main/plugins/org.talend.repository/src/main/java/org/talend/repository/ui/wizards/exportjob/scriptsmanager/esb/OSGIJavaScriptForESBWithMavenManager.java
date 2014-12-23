@@ -23,9 +23,9 @@ import org.eclipse.core.runtime.Path;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IOsgiDependenciesService;
+import org.talend.core.services.resource.IExportJobResourcesService;
 import org.talend.repository.constants.IExportJobConstants;
 import org.talend.repository.preference.constants.IExportJobPrefConstants;
-import org.talend.resource.IExportJobResourcesService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**

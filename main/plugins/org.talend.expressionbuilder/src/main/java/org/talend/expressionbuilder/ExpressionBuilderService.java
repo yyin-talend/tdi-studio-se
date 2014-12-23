@@ -15,10 +15,11 @@ package org.talend.expressionbuilder;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.expressionbuilder.Variable;
-import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
-import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
+import org.talend.commons.runtime.model.expressionbuilder.Variable;
+import org.talend.commons.ui.runtime.expressionbuilder.IExpressionBuilderDialogController;
+import org.talend.commons.ui.runtime.expressionbuilder.IExpressionDataBean;
 import org.talend.core.model.process.INode;
+import org.talend.core.runtime.services.IExpressionBuilderDialogService;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 import org.talend.expressionbuilder.ui.PigExpressionBuilderDialog;
 

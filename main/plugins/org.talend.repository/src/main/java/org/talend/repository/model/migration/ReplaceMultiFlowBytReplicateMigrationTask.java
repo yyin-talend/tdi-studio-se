@@ -30,6 +30,7 @@ import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.Item;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -38,7 +39,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC nrousseau class global comment. Detailled comment

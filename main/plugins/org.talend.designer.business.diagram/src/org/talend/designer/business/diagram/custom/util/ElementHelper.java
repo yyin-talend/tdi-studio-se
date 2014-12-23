@@ -40,6 +40,7 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.ui.view.RepositoryLabelProvider;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure;
 import org.talend.designer.business.model.business.BusinessAssignment;
@@ -49,7 +50,6 @@ import org.talend.designer.business.model.business.SQLPattern;
 import org.talend.designer.business.model.business.TalendItem;
 import org.talend.designer.business.model.business.provider.BusinessAssignmentItemProvider;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
-import org.talend.repository.ui.views.RepositoryLabelProvider;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

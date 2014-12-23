@@ -44,7 +44,7 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
-import org.talend.core.model.components.ComponentPaletteUtilities;
+import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.designer.core.i18n.Messages;
 
 /**

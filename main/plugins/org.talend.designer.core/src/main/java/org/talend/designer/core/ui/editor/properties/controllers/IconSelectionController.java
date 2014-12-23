@@ -46,14 +46,14 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
-import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.repository.ui.view.RepositoryLabelProvider;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.repository.ui.views.RepositoryLabelProvider;
 
 /**
  * DOC zywang class global comment. Detailled comment

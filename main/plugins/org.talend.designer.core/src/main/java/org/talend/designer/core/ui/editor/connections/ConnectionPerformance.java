@@ -14,7 +14,7 @@ package org.talend.designer.core.ui.editor.connections;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.Element;
-import org.talend.runprocess.data.CommonPerformance;
+import org.talend.core.model.runprocess.data.CommonPerformance;
 
 /**
  * Model part of connection performance.

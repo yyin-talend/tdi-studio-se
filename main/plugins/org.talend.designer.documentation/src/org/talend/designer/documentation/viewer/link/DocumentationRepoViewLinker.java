@@ -10,12 +10,12 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.viewer.link;
+package org.talend.designer.documentation.viewer.link;
 
 import org.eclipse.ui.internal.browser.WebBrowserEditor;
 import org.eclipse.ui.part.EditorPart;
 import org.talend.core.repository.link.AbstractEditorInputWithItemIdLinker;
-import org.talend.repository.DocumentationConstants;
+import org.talend.designer.documentation.utils.DocumentationConstants;
 
 /**
  * DOC ggu class global comment. Detailled comment <br/>

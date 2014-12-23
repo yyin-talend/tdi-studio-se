@@ -17,9 +17,9 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.filemultischemas.ui.MultiSchemasUI;
+import org.talend.metadata.managment.ui.preview.ProcessDescription;
+import org.talend.metadata.managment.ui.utils.ShadowProcessHelper;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.preview.ProcessDescription;
-import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
  * cLi class global comment. Detailled comment

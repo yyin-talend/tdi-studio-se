@@ -28,9 +28,9 @@ import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
+import org.talend.core.repository.model.repositoryObject.SAPFunctionRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.SAPFunctionRepositoryObject;
 
 /**
  * bqian TypeProcessor for Schema. <br/>

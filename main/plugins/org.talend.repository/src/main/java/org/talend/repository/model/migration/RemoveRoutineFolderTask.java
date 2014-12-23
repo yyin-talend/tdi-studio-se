@@ -22,7 +22,6 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractProjectMigrationTask;
-import org.talend.core.repository.model.ResourceModelUtils;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -37,13 +36,14 @@ public class RemoveRoutineFolderTask extends AbstractProjectMigrationTask {
      * 
      * @see org.talend.core.model.migration.IMigrationTask#execute()
      */
+    @Override
     public ExecutionResult execute(Project project) {
         if (!project.isLocal()) {
             return ExecutionResult.NOTHING_TO_DO;
         }
 
         try {
-            IProject iproject = ResourceModelUtils.getProject(project);
+            IProject iproject = ResourceUtils.getProject(project);
             String oldRoutinesPath = "routines"; // Routines path as it was in talend v1.0.n and until 1.1.m2 //$NON-NLS-1$
             // //$NON-NLS-1$
             IFolder f2 = ResourceUtils.getFolder(iproject, oldRoutinesPath, false);
@@ -55,6 +55,7 @@ public class RemoveRoutineFolderTask extends AbstractProjectMigrationTask {
         }
     }
 
+    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();

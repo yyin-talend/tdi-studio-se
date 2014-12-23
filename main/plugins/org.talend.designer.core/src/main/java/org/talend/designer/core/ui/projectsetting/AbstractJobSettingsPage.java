@@ -57,8 +57,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.ui.CoreUIPlugin;
+import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
@@ -67,13 +67,13 @@ import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.core.utils.DetectContextVarsUtils;
+import org.talend.metadata.managment.ui.wizard.metadata.ShowAddedContextdialog;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.preference.ProjectSettingPage;
-import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
 
 /**
  * cli class global comment. Detailled comment

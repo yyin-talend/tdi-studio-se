@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.wizards.htmlgeneration;
+package org.talend.designer.documentation.generation.wizards;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -47,11 +47,11 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.documentation.generation.JobHTMLScriptsManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
+import org.talend.core.ui.export.ArchiveFileExportOperationFullPath;
+import org.talend.designer.documentation.generation.HTMLDocGenerator;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.documentation.generation.HTMLDocGenerator;
-import org.talend.repository.documentation.generation.JobHTMLScriptsManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;

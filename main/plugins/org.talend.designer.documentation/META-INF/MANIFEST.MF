@@ -3,13 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Documentation Plug-in
 Bundle-SymbolicName: org.talend.designer.documentation;singleton:=true
 Bundle-Version: 6.0.0.qualifier
-Export-Package: org.talend.core.model.genhtml,
- org.talend.repository,
- org.talend.repository.documentation.generation,
- org.talend.repository.ui.actions,
- org.talend.repository.ui.actions.documentation,
- org.talend.repository.ui.wizards.htmlgeneration,
- org.talend.repository.viewer.link
+Export-Package: org.talend.designer.documentation.generation,
+ org.talend.designer.documentation.generation.actions,
+ org.talend.designer.documentation.generation.wizards,
+ org.talend.designer.documentation.utils
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.draw2d,
  org.eclipse.jface,

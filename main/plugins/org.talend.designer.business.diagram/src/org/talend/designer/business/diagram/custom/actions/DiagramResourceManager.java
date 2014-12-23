@@ -32,12 +32,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.properties.BusinessProcessItem;
+import org.talend.core.ui.editor.RepositoryEditionManager;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorUtil;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramFileCreator;
-import org.talend.repository.editor.RepositoryEditionManager;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

@@ -38,8 +38,8 @@ import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.repository.ui.utils.ManagerConnection;
-import org.talend.sqlbuilder.repository.utility.NotReallyNeedSchemaDBS;
+import org.talend.designer.core.sqlbuilder.NotReallyNeedSchemaDBS;
+import org.talend.metadata.managment.repository.ManagerConnection;
 
 /**
  * cLi class global comment. Detailled comment

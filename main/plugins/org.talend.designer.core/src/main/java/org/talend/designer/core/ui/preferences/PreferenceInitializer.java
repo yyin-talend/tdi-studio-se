@@ -33,7 +33,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
+import org.talend.core.ui.preference.metadata.MetadataTypeLengthConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;

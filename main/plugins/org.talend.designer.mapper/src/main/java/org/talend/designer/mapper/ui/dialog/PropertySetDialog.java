@@ -35,12 +35,12 @@ import org.talend.commons.ui.swt.formtools.LabelledDirectoryField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.MapperSettingsManager;
 import org.talend.designer.mapper.model.MapperSettingModel;
 import org.talend.designer.mapper.ui.listener.CommonListener;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC ycbai class global comment. Detailled comment

@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.actions.documentation;
+package org.talend.designer.documentation.generation.actions;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,13 +33,13 @@ import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.metadata.managment.ui.wizard.documentation.LinkDocumentationHelper;
+import org.talend.metadata.managment.ui.wizard.documentation.LinkUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.wizards.documentation.LinkDocumentationHelper;
-import org.talend.repository.ui.wizards.documentation.LinkUtils;
 
 /**
  * Saves the content of a document on the local file system. <br/>

@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.filemultischemas.ui.MultiSchemasUI;
-import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
+import org.talend.metadata.managment.ui.preview.ShadowProcessPreview;
 
 /**
  * cLi class global comment. Detailled comment

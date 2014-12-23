@@ -72,9 +72,9 @@ import org.talend.designer.fileoutputxml.ui.edit.Schema2XMLLinker;
 import org.talend.designer.fileoutputxml.ui.edit.SchemaTableViewerProvider;
 import org.talend.designer.fileoutputxml.ui.footer.FooterComposite;
 import org.talend.designer.fileoutputxml.ui.header.HeaderComposite;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.NameSpaceNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.StringUtil;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>

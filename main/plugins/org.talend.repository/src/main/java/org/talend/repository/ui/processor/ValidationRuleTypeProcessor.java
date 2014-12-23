@@ -19,11 +19,11 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.ui.view.ValidationRulesLabelProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.views.ValidationRulesLabelProvider;
 
 /**
  * DOC ycbai class global comment. Detailled comment

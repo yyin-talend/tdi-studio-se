@@ -56,7 +56,7 @@
       </page>
       <page
             category="org.talend.designer.codegen.components.preference"
-            class="org.talend.designer.components.preference.ComponentsFormatPreferencePage"
+            class="org.talend.core.ui.component.preference.ComponentsFormatPreferencePage"
             id="org.talend.designer.codegen.components.preference.format"
             name="%format">
       </page>

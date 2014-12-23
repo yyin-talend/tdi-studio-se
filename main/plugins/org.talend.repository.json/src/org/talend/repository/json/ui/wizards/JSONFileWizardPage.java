@@ -21,8 +21,8 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.xml.XmlArray;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.TableHelper;
+import org.talend.metadata.managment.ui.wizard.AbstractForm;
 import org.talend.repository.model.json.JSONFileConnection;
-import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * DOC wanghong class global comment. Detailled comment

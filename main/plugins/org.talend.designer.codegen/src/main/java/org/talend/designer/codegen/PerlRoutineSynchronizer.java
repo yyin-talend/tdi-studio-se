@@ -38,12 +38,12 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.ui.branding.AbstractBrandingService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.ResourceModelUtils;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>

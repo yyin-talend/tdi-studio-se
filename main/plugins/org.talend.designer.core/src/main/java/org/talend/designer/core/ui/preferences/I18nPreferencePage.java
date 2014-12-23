@@ -58,7 +58,6 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.genhtml.FileCopyUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.prefs.ui.CorePreferencePage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.RefreshView;
 import org.talend.designer.core.utils.ZipFileUtils;
@@ -74,7 +73,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
     private List<FieldEditor> fields = new ArrayList<FieldEditor>();
 
-    private static Logger log = Logger.getLogger(CorePreferencePage.class);
+    private static Logger log = Logger.getLogger(I18nPreferencePage.class);
 
     private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(\\.(RC|M)\\d+)?_r\\d+"); //$NON-NLS-1$
 
@@ -95,6 +94,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         setPreferenceStore(store);
     }
 
+    @Override
     public void init(IWorkbench workbench) {
         // nothing to do
     }
@@ -164,7 +164,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 { spanish, "es" }, { russian, "ru" }, //$NON-NLS-1$ //$NON-NLS-2$ 
                 { Locale.KOREA.getDisplayLanguage(Locale.KOREA), "kr" }, { "Turkish", "tr" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
                 { greek, "el" }, { "Hrvatski", "hr" }, { arabic, "ar" }, { serbian, "sr" }, { "Polski", "pl" },
-                { "Romanian", "ro" }, { "Netherlands", "nl" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ /$NON-NLS-7$ 
+                { "Romanian", "ro" }, { "Netherlands", "nl" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ // /$NON-NLS-7$ 
         languageSelectionEditor = new OneLineComboFieldEditor(ITalendCorePrefConstants.LANGUAGE_SELECTOR,
                 Messages.getString("I18nPreferencePage.needRestart"), entryNamesAndValues, getFieldEditorParent()); //$NON-NLS-1$
         addField(languageSelectionEditor);
@@ -180,6 +180,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
         allUpdate.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // import all update from Babili
                 // select the .zip file
@@ -194,11 +195,13 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                     runProgressMonitorDialog(selected);
                     if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                             Messages.getString("I18nPreferencePage.restart"), //$NON-NLS-1$
-                            Messages.getString("I18nPreferencePage.restartButton"))) //$NON-NLS-1$
+                            Messages.getString("I18nPreferencePage.restartButton"))) {
                         PlatformUI.getWorkbench().restart();
+                    }
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // Nothing to do
             }
@@ -210,16 +213,19 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         restoredefault.setLayoutData(new GridData());
         restoredefault.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // Nothing to do
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 isBabiliButtonClicked = true;
                 runProgressMonitorDialog(Messages.getString("I18nPreferencePage.restoreDefault")); //$NON-NLS-1$
                 if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        Messages.getString("I18nPreferencePage.restart"), Messages.getString("I18nPreferencePage.restartButton"))) //$NON-NLS-1$ //$NON-NLS-2$
+                        Messages.getString("I18nPreferencePage.restart"), Messages.getString("I18nPreferencePage.restartButton"))) {
                     PlatformUI.getWorkbench().restart();
+                }
             }
         });
     }
@@ -298,8 +304,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                                 String subjarfPath = subJarf.getAbsolutePath().substring(0,
                                         subJarf.getAbsolutePath().indexOf(".original")); //$NON-NLS-1$
                                 File subjarfPathFile = new File(subjarfPath);
-                                if (subjarfPathFile.exists())
+                                if (subjarfPathFile.exists()) {
                                     subjarfPathFile.delete();
+                                }
                                 subJarf.renameTo(subjarfPathFile);
                             }
                         } else {
@@ -360,8 +367,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         || f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
 
                     File writeJarFile = (File) jarFileMap.get(f.getName());
-                    if (writeJarFile == null)
+                    if (writeJarFile == null) {
                         continue;
+                    }
                     String jarFilePath = writeJarFile.getAbsolutePath();
                     // for bug 13620
                     if (writeJarFile.toString().endsWith(".jar")) {//$NON-NLS-1$
@@ -508,6 +516,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(getFieldEditorParent().getShell());
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) {
                 try {
                     monitor.beginTask(Messages.getString("I18nPreferencePage.wait_process"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
@@ -542,8 +551,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         boolean ok = super.performOk();
         saveLanguageType();
         CorePlugin.getDefault().savePluginPreferences();
-        if (isBabiliButtonClicked)
+        if (isBabiliButtonClicked) {
             RefreshView.refreshAll();
+        }
         return ok;
     }
 

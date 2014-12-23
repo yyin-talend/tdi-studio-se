@@ -24,10 +24,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.ResourceModelUtils;
 
 /**
  * Created by Ryan Skraba on August 6, 2014.

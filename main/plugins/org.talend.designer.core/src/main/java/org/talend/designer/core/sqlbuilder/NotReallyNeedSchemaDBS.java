@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.sqlbuilder.repository.utility;
+package org.talend.designer.core.sqlbuilder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.documentation.generation;
+package org.talend.designer.documentation.generation;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -73,7 +73,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.genhtml.CSSParserUtils;
 import org.talend.core.model.genhtml.FileCopyUtils;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.genhtml.HTMLHandler;
@@ -91,9 +90,13 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.documentation.generation.DocumentationPathProvider;
+import org.talend.core.model.repository.documentation.generation.IDocumentationGenerator;
 import org.talend.core.model.utils.ParameterValueUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.documentation.generation.ExternalNodeComponentHandler;
+import org.talend.core.ui.documentation.generation.InternalNodeComponentHandler;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ICamelDesignerCoreService;

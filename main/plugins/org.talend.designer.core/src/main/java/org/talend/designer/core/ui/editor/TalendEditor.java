@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import org.talend.core.editor.ITalendJobEditor;
 import org.talend.core.model.components.IComponentsHandler;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.SaveAsProcessAction;

@@ -72,6 +72,7 @@ Export-Package: org.talend.designer.core;
  org.talend.designer.core.model.process.statsandlogs,
  org.talend.designer.core.repository,
  org.talend.designer.core.runprocess,
+ org.talend.designer.core.sqlbuilder,
  org.talend.designer.core.ui;
   uses:="org.eclipse.core.runtime,
    org.talend.core.model.process,
@@ -220,6 +221,5 @@ Export-Package: org.talend.designer.core;
  org.talend.designer.core.ui.views.properties.composites,
  org.talend.designer.core.ui.views.statsandlogs,
  org.talend.designer.core.ui.wizards,
- org.talend.designer.core.utils,
- org.talend.sqlbuilder.repository.utility
+ org.talend.designer.core.utils
 Bundle-Vendor: .Talend SA.
