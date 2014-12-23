@@ -20,16 +20,6 @@ import org.talend.designer.components.exchange.i18n.Messages;
  */
 public class ExchangeConstants {
 
-    public static final String STATUS_NOT_INSTALLED = Messages.getString(""); //$NON-NLS-1$
-
-    public static final String STATUS_INSTALLED = Messages.getString(""); //$NON-NLS-1$
-
-    public static final String DELETE_SUCCESS = Messages.getString(""); //$NON-NLS-1$
-
-    public static final String DELETE_FAIL = Messages.getString(""); //$NON-NLS-1$
-
-    public static final int KEY_ENTER = 13;
-
     /**
      * File that store information about the components we have downloaded.
      */

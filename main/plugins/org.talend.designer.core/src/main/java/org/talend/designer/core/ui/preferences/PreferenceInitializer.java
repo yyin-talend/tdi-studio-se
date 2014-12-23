@@ -14,20 +14,17 @@ package org.talend.designer.core.ui.preferences;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.core.CorePlugin;
@@ -88,24 +85,16 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR, Platform.getLocation().toPortableString()
                     + "/" + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel()); //$NON-NLS-1$
         }
-        // ADD sizhaoliu TDQ-6698
+        // // ADD sizhaoliu TDQ-6698
         Bundle refBundle = Platform.getBundle("org.talend.dataquality.reporting"); //$NON-NLS-1$
         if (refBundle != null) {
-            URL entry = refBundle.getEntry("."); //$NON-NLS-1$
-            if (entry != null) {
-                try {
-                    URLConnection connection = entry.openConnection();
-                    if (connection instanceof BundleURLConnection) {
-                        URL fileURL = ((BundleURLConnection) connection).getFileURL();
-                        String path = fileURL.getPath();
-                        store.setDefault(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR, path);
-                    }
-                } catch (IOException e) {
-                    ExceptionHandler.process(e);
-                }
+            try {
+                String dirPath = FileLocator.getBundleFile(refBundle).getPath();
+                store.setDefault(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR, dirPath);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
         store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "none"); //$NON-NLS-1$
@@ -165,9 +154,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);
         store.setDefault(IRepositoryPrefConstants.ADD_CLASSPATH_JAR, false);
 
-        store.setDefault(
-                TalendDesignerPrefConstants.NOT_SHOW_WARNING_WHEN_DELETE_LINK_WITH_JOBLETTRIGGERLINKCOMPONENT,
-                false);
+        store.setDefault(TalendDesignerPrefConstants.NOT_SHOW_WARNING_WHEN_DELETE_LINK_WITH_JOBLETTRIGGERLINKCOMPONENT, false);
 
         if (!CommonUIPlugin.isFullyHeadless()) {
             Display display = Display.getDefault();

@@ -44,7 +44,7 @@ import us.monoid.web.mime.MultipartContent;
  */
 public class ExchangeWebService {
 
-    public final static String exchangeWSServer = "http://www.talendforge.org/exchange/webservices/";
+    public final static String exchangeWSServer = "http://www.talendforge.org/exchange/webservices/"; //$NON-NLS-1$
 
     public void webServiceToken(String[] args) {
         Resty r = new Resty();
@@ -272,7 +272,7 @@ public class ExchangeWebService {
                     ws.setResult(true);
                     ws.setMessageException(Messages.getString("ExchangeWebService.deleteExtensionSuccessful")); //$NON-NLS-1$
                 } else {
-                    ws.setMessageException(object.toString()); //$NON-NLS-1$
+                    ws.setMessageException(object.toString());
                 }
             }
         } catch (JSONException e) {
@@ -452,7 +452,7 @@ public class ExchangeWebService {
                 ws.setResult(true);
                 ws.setMessageException(Messages.getString("ExchangeWebService.insertReviewSuccessful")); //$NON-NLS-1$
             } else {
-                ws.setMessageException(object.toString()); //$NON-NLS-1$
+                ws.setMessageException(object.toString());
             }
         } catch (JSONException e) {
             ws.setMessageException(e.getMessage());
@@ -590,7 +590,7 @@ public class ExchangeWebService {
                     ws.setResult(true);
                     ws.setMessageException(Messages.getString("ExchangeWebService.updateRevisionSuccessful")); //$NON-NLS-1$
                 } else {
-                    ws.setMessageException(object.toString()); //$NON-NLS-1$
+                    ws.setMessageException(object.toString());
                 }
             }
         } catch (JSONException e) {
