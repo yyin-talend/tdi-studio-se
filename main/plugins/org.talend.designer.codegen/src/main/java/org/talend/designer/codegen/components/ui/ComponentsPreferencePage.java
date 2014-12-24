@@ -15,9 +15,9 @@ package org.talend.designer.codegen.components.ui;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -43,7 +43,6 @@ import org.talend.commons.ui.utils.workbench.preferences.ComboFieldEditor;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.components.ComponentUtilities;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.i18n.Messages;
@@ -73,6 +72,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     private final String joblet = "Joblet"; //$NON-NLS-1$
 
     private static String oldPath = null;
+
+    private final String component_suffix = "_java.xml";
 
     /**
      * This class exists to provide visibility to the <code>refreshValidState</code> method and to perform more
@@ -261,11 +262,20 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
             public void modifyText(ModifyEvent e) {
                 String newPath = filePathTemp.getTextControl(parent).getText();
                 File file = new File(newPath);
-                if (!file.exists() && !"".equals(newPath)) {
+                if (!file.exists() && !"".equals(newPath)) { //$NON-NLS-1$
                     // getPreferenceStore().setValue(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, "");
                     filePathTemp.showErrorMessage();
                     setValid(false);
                 } else {
+                    if (oldPath.equals(newPath)) {
+                        setValid(true);
+                        return;
+                    }
+                    if (!StringUtils.isEmpty(newPath)) {
+                        if (!checkUserComponentsFolder(file)) {
+                            filePathTemp.getTextControl(parent).setText(oldPath);
+                        }
+                    }
                     setValid(true);
                 }
             }
@@ -281,6 +291,18 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
             createForJoblet(parent);
         }
         parent.pack();
+    }
+
+    private boolean checkUserComponentsFolder(File componentsfolder) {
+        for (File subFile : componentsfolder.listFiles()) {
+            String name = subFile.getName();
+            if (name.equals(componentsfolder.getName() + component_suffix)) {
+                boolean isContinue = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Confirm",
+                        Messages.getString("ComponentsPreferencePage.notValidDirectory")); //$NON-NLS-1$
+                return isContinue;
+            }
+        }
+        return true;
     }
 
     public void propertyChangeForComponents(PropertyChangeEvent event) {
