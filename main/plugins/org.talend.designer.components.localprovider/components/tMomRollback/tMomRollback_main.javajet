@@ -3,14 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
-" 
-%>
-
-<%@ jet 
-imports="
-    org.talend.core.model.process.INode 
-    org.talend.core.model.process.ElementParameterParser 
-    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.utils.NodeUtil
 " 
 %>
 
@@ -24,41 +17,52 @@ imports="
     
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
-	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+    INode connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),connectionCid,true);
+    
+    boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(connectionNode, "__USE_CONNECTION__"));
+    
+    if(isUseConnection){
+    	String realConnNodeName = ElementParameterParser.getValue(connectionNode,"__CONNECTION__");
+    	connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),realConnNodeName);
+    }
+    String serverType=ElementParameterParser.getValue(connectionNode, "__SERVER__");
+	
 	
 	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
-%>
+	%>
 		javax.jms.Session session_<%=cid%> = (javax.jms.Session)globalMap.get("session_<%=connectionCid%>");
 		javax.jms.Connection connection_<%=cid%> = (javax.jms.Connection)globalMap.get("connection_<%=connectionCid%>");
 		javax.jms.MessageProducer producer_<%=cid%> = (javax.jms.MessageProducer)globalMap.get("producer_<%=connectionCid%>");
 		if(session_<%=cid%> != null && connection_<%=cid %> != null) {
 			session_<%=cid%>.rollback();
-<%  
-		if(close){
-%>
-		if (producer_<%=cid %> != null) { producer_<%=cid %>.close(); }
-	        session_<%=cid %>.close();
-	        connection_<%=cid %>.close();
-<% 
+			<%  
+			if(close){
+			%>
+				if (producer_<%=cid %> != null) { 
+					producer_<%=cid %>.close();
+				}
+		        session_<%=cid %>.close();
+		        connection_<%=cid %>.close();
+			<% 
+			}
+			%>
 		}
-%>
-		}
-<%
+	<%
 	} else {
-%>
+	%>
 		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = (com.ibm.mq.MQQueueManager)globalMap.get("qMgr_<%=connectionCid%>");
 	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = (com.ibm.mq.MQQueue)globalMap.get("remoteQ_<%=connectionCid%>");
 		if(qMgr_<%=cid%> != null && remoteQ_<%=cid%> != null) {
 			qMgr_<%=cid%>.backout();
-<%  
-		if(close){
-%>
-			remoteQ_<%=cid%>.close();
-		    qMgr_<%=cid%>.disconnect();;
-<% 
+			<%  
+			if(close){
+			%>
+				remoteQ_<%=cid%>.close();
+			    qMgr_<%=cid%>.disconnect();;
+			<% 
+			}
+			%>
 		}
-%>
-		}
-<%
+	<%
 	}
-%>
+	%>

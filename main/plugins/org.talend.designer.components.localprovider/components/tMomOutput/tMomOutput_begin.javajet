@@ -15,7 +15,7 @@ class="MomInput"
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 
-	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+	boolean isUseExistConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
 	String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
 
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
@@ -50,12 +50,12 @@ class="MomInput"
 	boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
 		|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
 
-	if (isUseSharedConnection) {
+	if (isUseExistConnection) {
 		for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
 			if (pNode.getUniqueName().equals(connectionComponentName)) {
 				transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
 				serverType=ElementParameterParser.getValue(pNode, "__SERVER__");
-                           	failover =  ("true").equals(ElementParameterParser.getValue(pNode, "__FAILOVER__"));
+                failover =  ("true").equals(ElementParameterParser.getValue(pNode, "__FAILOVER__"));
 			}	
 		}
 	}
@@ -64,7 +64,7 @@ class="MomInput"
 	int nb_line_<%=cid%> = 0;
 
 	<%	
-	if (isUseSharedConnection) { 
+	if (isUseExistConnection && ("ActiveMQ").equals(serverType))  { 
 	%>
         javax.jms.Connection connection_<%=cid %> = null;
 	    javax.jms.Session session_<%=cid %> = null;
@@ -188,14 +188,17 @@ class="MomInput"
 		<%
 		} else { 
 		%>
+		
 			<%
 			String passwordFieldName = "__PASS__";
 			%>
+
 			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+				
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,decryptedPassword_<%=cid%>);
 		<%
 		} 
-		%>
+		%>	
 			
 		connection_<%=cid %>.start();
 	
@@ -233,40 +236,50 @@ class="MomInput"
 
 		<%
 		}
+	} else if(("WebSphere").equals(serverType)){ //server judgement   /***WebSphere MQ*****/
 		%>
-	<%
-	}else{ //server judgement   /***WebSphere MQ*****/
-		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
-		String qm=ElementParameterParser.getValue(node, "__QM__");
+		com.ibm.mq.MQQueueManager qMgr_<%=cid%>=null;	
+		<%
 		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
 		boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
 		String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
-		%>
-	    props_<%=cid%>.put("hostname", <%=host%>);
-	    props_<%=cid%>.put("port", Integer.valueOf(<%=port%>));
-	    props_<%=cid%>.put("channel", <%=channel%>);
-	    props_<%=cid%>.put("CCSID", new Integer(1208));
-	    props_<%=cid%>.put("transport", "MQSeries");
-	    
-	    <%
+		if(isUseExistConnection){
+			String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+			%>
+			qMgr_<%=cid%> = (com.ibm.mq.MQQueueManager)globalMap.get("qMgr_<%=connection%>");
+		<%
+		}else{
+			String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
+			String qm=ElementParameterParser.getValue(node, "__QM__");
+			%>
+			props_<%=cid%>.put("hostname", <%=host%>);
+			props_<%=cid%>.put("port", Integer.valueOf(<%=port%>));
+			props_<%=cid%>.put("channel", <%=channel%>);
+			props_<%=cid%>.put("CCSID", new Integer(1208));
+			props_<%=cid%>.put("transport","MQSeries");
+			<%
+			if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
+			%>
+				props_<%=cid%>.put("userID",<%=dbuser%>);
+				<%
+				String passwordFieldName = "__PASS__";
+				%>
+
+				<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>			
+		
+				props_<%=cid%>.put("password",decryptedPassword_<%=cid%>);
+			<%
+			}
+			%>
+			qMgr_<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,props_<%=cid%>);
+		<%
+		}
 		if(needSSLCipher){
 		%>
 			com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
 		<%
 		}
-		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
 		%>
-			props_<%=cid%>.put("userID",<%=dbuser%>);
-			<%
-			String passwordFieldName = "__PASS__";
-			%>
-			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>			
-			props_<%=cid%>.put("password",decryptedPassword_<%=cid%>);
-		<%
-		}
-		%>
-	
-		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager(<%=qm%>, props_<%=cid%>);
 	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = qMgr_<%=cid%>.accessQueue(<%=queue%>, 16);
 	    com.ibm.mq.MQPutMessageOptions opM_<%=cid%> = new com.ibm.mq.MQPutMessageOptions();
 		<%	    
@@ -276,7 +289,7 @@ class="MomInput"
 		<%
 	    }
 	}
-	if(isUseSharedConnection ||("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)){
+	if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)){
 		if(setJmsHeader && jmsHeaders !=null && jmsHeaders.size()>0){
 		%>
 			if(producer_<%=cid %>!=null){
