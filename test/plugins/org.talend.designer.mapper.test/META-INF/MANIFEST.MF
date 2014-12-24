@@ -4,4 +4,4 @@ Bundle-Name: Test
 Bundle-SymbolicName: org.talend.designer.mapper.test
 Bundle-Version: 6.0.0.qualifier
 Fragment-Host: org.talend.designer.mapper
-Require-Bundle: org.junit4;bundle-version="4.5.0"
+Require-Bundle: org.talend.testutils
