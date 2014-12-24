@@ -24,7 +24,6 @@
 
    <requires>
       <import plugin="org.talend.core"/>
-      <import plugin="com.ibm.icu" version="4.2.1.v20100412" match="equivalent"/>
       <import plugin="org.talend.commons.ui"/>
       <import plugin="org.talend.core.repository"/>
       <import plugin="org.talend.metadata.managment.ui"/>
