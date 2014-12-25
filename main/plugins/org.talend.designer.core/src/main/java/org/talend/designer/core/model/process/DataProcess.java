@@ -1828,8 +1828,7 @@ public class DataProcess implements IGeneratingProcess {
         for (IConnection connection : node.getOutgoingSortedConnections()) {
             if (connection.getTarget().isActivate()) {
 
-                if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                        || connection.getLineStyle().equals(EConnectionType.ITERATE)) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN | IConnectionCategory.USE_ITERATE)) {
                     if (((AbstractNode) node).getParallelIterator() != null) {
                         ((AbstractNode) connection.getTarget()).setParallelIterator(((AbstractNode) node).getParallelIterator());
                     } else if (connection.getLineStyle().equals(EConnectionType.ITERATE)
