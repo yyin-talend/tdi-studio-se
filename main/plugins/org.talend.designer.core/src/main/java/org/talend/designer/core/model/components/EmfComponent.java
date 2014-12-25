@@ -3929,4 +3929,16 @@ public class EmfComponent extends AbstractComponent {
         }
         return compType.getHEADER().isLOG4J_ENABLED();
     }
+
+    public String getEquivalent() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return compType.getHEADER().getEQUIVALENT();
+    }
 }

@@ -78,7 +78,6 @@ import org.talend.designer.business.model.business.SAPFunction;
 import org.talend.designer.business.model.business.SQLPattern;
 import org.talend.designer.business.model.business.TableMetadata;
 import org.talend.designer.business.model.business.TalendItem;
-import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.jobsettings.tabs.AbstractTabComposite;
 import org.talend.designer.core.utils.EmfPropertyHelper;
@@ -154,8 +153,6 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     public void createControls(Composite parent) {
 
         composite = widgetFactory.createFlatFormComposite(parent);
-
-        adapterFactory = new BusinessItemProviderAdapterFactory();
 
         tableViewer = new TableViewer(composite, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         tableViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));

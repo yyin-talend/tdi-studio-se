@@ -3223,7 +3223,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     public List<INode> getNodesOfType(String componentName) {
         List<INode> matchingNodes = new ArrayList<INode>();
         List<INode> generatingNodes = new ArrayList<INode>();
-
         generatingNodes = (List<INode>) getGeneratingNodes();
         getMatchingNodes(componentName, matchingNodes, generatingNodes);
 
@@ -3257,13 +3256,22 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     } catch (MalformedPatternException e) {
                         throw new RuntimeException(e);
                     }
-                } else if ((node.getComponent().getName() != null)
-                        && (node.getComponent().getName().compareTo(componentName)) == 0) {
-                    addNodeIfNotInTheList(matchingNodes, node);
+                } else if ((node.getComponent().getName() != null)) {
+                    if (node.getComponent().getName().compareTo(componentName) == 0) {
+                        addNodeIfNotInTheList(matchingNodes, node);
+                    } else {
+                        EmfComponent component = (EmfComponent) node.getComponent();
+                        String eqCompName = component.getEquivalent();
+                        if (componentName.equals(eqCompName)) {
+                            addNodeIfNotInTheList(matchingNodes, node);
+                        }
+                    }
                 }
             }
         }
     }
+
+    // }
 
     private void addNodeIfNotInTheList(List<INode> matchingNodes, INode node) {
         for (INode currentNode : matchingNodes) {

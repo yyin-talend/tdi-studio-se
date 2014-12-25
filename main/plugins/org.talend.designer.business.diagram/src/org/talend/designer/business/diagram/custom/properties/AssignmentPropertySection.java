@@ -86,7 +86,6 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
 
     private Composite composite;
 
-    private BusinessItemProviderAdapterFactory adapterFactory;
 
     private TableViewer tableViewer;
 
