@@ -18,6 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
 
 /**
  * @generated
@@ -53,7 +54,6 @@ public class BusinessDiagramEditorPlugin extends AbstractUIPlugin {
     /**
      * @generated
      */
-    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         instance = this;
@@ -67,7 +67,6 @@ public class BusinessDiagramEditorPlugin extends AbstractUIPlugin {
     /**
      * @generated
      */
-    @Override
     public void stop(BundleContext context) throws Exception {
         adapterFactory.dispose();
         adapterFactory = null;
@@ -95,6 +94,7 @@ public class BusinessDiagramEditorPlugin extends AbstractUIPlugin {
      * @generated
      */
     protected void fillItemProviderFactories(List factories) {
+        factories.add(new BusinessItemProviderAdapterFactory());
         factories.add(new ResourceItemProviderAdapterFactory());
         factories.add(new ReflectiveItemProviderAdapterFactory());
     }
