@@ -152,6 +152,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
+import org.talend.designer.core.ui.editor.properties.controllers.ComponentListController;
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -1776,6 +1777,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         loadSubjobs(processType);
 
         initExternalComponents();
+        initJobletComponents();
         setActivate(true);
         checkStartNodes();
         // (bug 5365)
@@ -1882,6 +1884,22 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             if (node.isExternalNode()) {
                 node.getExternalNode().initialize();
             }
+        }
+    }
+
+    private void initJobletComponents() {
+        for (INode node : nodes) {
+            if ((node instanceof Node) && ((Node) node).isJoblet()) {
+                List<? extends IElementParameter> parametersWithChildrens = node.getElementParametersWithChildrens();
+                for (IElementParameter param : parametersWithChildrens) {
+                    if (param.getFieldType() == EParameterFieldType.COMPONENT_LIST) {
+                        if (param.getValue() == null || ((String) param.getValue()).length() <= 0) {
+                            ComponentListController.updateComponentList(node, param);
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -3391,7 +3409,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             commandStack.addCommandStackEventListener(commandStackEventListener);
 
             if (!isReadOnly()) { // when readonly. don't check the modifications.
-            	getUpdateManager().updateAll();
+                getUpdateManager().updateAll();
             }
 
             ProjectPreferences projectPreferences = (ProjectPreferences) Log4jPrefsSettingManager.getInstance()
