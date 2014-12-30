@@ -50,7 +50,7 @@ import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.ui.progress.ProgressUI;
-import org.talend.core.utils.PluginUtil;
+import org.talend.core.ui.utils.PluginUtil;
 
 /**
  * @author rli

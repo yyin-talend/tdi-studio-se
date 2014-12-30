@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
@@ -61,7 +62,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -76,7 +77,6 @@ import org.talend.designer.core.ui.editor.properties.controllers.GroupController
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -1024,7 +1024,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     /**
      * hywang Comment method "getRepositoryFileItemMap".
      * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryFileItemMap()
+     * @see org.talend.core.ui.properties.tab.IDynamicProperty#getRepositoryFileItemMap()
      */
     public Map<String, FileItem> getRepositoryFileItemMap() {
         if (this.repositoryFileItemMap.isEmpty()) {

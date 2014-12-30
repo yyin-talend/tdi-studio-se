@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 
 /**
  * DOC cantoine class global comment. Detailled comment <br/>

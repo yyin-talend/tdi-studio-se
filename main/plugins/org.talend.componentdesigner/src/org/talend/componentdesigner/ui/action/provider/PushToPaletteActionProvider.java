@@ -37,8 +37,8 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.service.IComponentsLocalProviderService;
-import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.core.ui.services.IComponentsLocalProviderService;
 
 /**
  * DOC slanglois class global comment. Detailled comment

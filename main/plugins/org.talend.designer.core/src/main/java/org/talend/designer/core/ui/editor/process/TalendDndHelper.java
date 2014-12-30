@@ -34,8 +34,8 @@ import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 
 /**

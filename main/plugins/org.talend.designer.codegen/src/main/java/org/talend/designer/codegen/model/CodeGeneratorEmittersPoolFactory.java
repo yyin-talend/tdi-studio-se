@@ -45,10 +45,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.model.components.IComponentConstants;
+import org.talend.commons.runtime.model.components.IComponentConstants;
+import org.talend.commons.runtime.utils.io.IOUtils;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.utils.StringUtils;
-import org.talend.commons.utils.io.IOUtils;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -60,8 +60,10 @@ import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.repository.ExternalNodesFactory;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.config.EInternalTemplate;
@@ -71,8 +73,6 @@ import org.talend.designer.codegen.config.TalendJetEmitter;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.ExternalNodesFactory;
 
 /**
  * Pool of initialized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation

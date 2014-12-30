@@ -13,7 +13,7 @@
 package org.talend.designer.runprocess.java;
 
 import org.eclipse.core.runtime.IPath;
-import org.talend.designer.runprocess.IJavaProcessorStates;
+import org.talend.core.model.runprocess.IJavaProcessorStates;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>

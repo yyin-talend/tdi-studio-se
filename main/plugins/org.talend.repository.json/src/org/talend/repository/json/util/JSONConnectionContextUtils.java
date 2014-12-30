@@ -17,10 +17,10 @@ import java.util.List;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.JsonFactory;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC wanghong class global comment. Detailled comment

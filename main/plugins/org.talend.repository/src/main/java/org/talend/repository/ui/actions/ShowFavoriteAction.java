@@ -15,7 +15,7 @@ package org.talend.repository.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.model.components.ComponentPaletteUtilities;
+import org.talend.core.ui.component.ComponentPaletteUtilities;
 
 /**
  * DOC hwang class global comment. Detailled comment

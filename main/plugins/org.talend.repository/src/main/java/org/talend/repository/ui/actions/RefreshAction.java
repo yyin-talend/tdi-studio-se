@@ -17,8 +17,8 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**

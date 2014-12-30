@@ -21,9 +21,9 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.metadata.managment.ui.wizard.context.ContextWizard;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.wizards.context.ContextWizard;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

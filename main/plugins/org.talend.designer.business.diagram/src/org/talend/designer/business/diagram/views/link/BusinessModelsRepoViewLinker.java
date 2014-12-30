@@ -16,7 +16,7 @@ import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.document.FileEdit
 import org.eclipse.ui.IEditorInput;
 import org.talend.core.model.repository.IRepositoryEditorInput;
 import org.talend.core.repository.link.AbstractRepositoryEditorInputLinker;
-import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 
 /**

@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.runtime.model.emf.EmfHelper;
 import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
@@ -33,10 +33,10 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * created by nrousseau on Mar 3, 2014 Detailled comment

@@ -27,7 +27,7 @@ public class NameSpaceNode extends HL7TreeNode {
     /**
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.fileoutputxml.data.FOXTreeNode#hasChildren()
+     * @see org.talend.metadata.managment.ui.wizard.metadata.xml.node.fileoutputxml.data.FOXTreeNode#hasChildren()
      */
     @Override
     public boolean hasChildren() {

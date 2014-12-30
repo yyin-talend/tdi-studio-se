@@ -28,9 +28,9 @@ import java.util.jar.Manifest;
 import org.eclipse.core.resources.IProject;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.ui.utils.ZipToFile;
 
 /**

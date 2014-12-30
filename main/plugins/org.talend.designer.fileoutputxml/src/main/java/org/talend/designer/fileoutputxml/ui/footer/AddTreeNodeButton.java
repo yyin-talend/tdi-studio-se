@@ -22,10 +22,10 @@ import org.talend.designer.fileoutputxml.action.CreateElementAction;
 import org.talend.designer.fileoutputxml.action.CreateNameSpaceAction;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.view.AddElementDialog;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.dialog.AddElementDialog;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Attribute;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.NameSpaceNode;
 
 /**
  * DOC talend class global comment. Detailled comment

@@ -30,13 +30,14 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
-import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
-import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
+import org.talend.commons.ui.runtime.expressionbuilder.IExpressionBuilderDialogController;
+import org.talend.commons.ui.runtime.swt.tableviewer.celleditor.CellEditorDialogBehavior;
+import org.talend.commons.ui.runtime.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.runtime.services.IExpressionBuilderDialogService;
 import org.talend.designer.gefabstractmap.figures.VarNodeTextLabel;
 import org.talend.designer.gefabstractmap.figures.cells.IComboCell;
 import org.talend.designer.gefabstractmap.figures.cells.IExpressionBuilderCell;
@@ -61,7 +62,6 @@ import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
-import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
 /**
  * DOC talend class global comment. Detailled comment

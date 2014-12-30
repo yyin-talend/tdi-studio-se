@@ -13,8 +13,8 @@
 package org.talend.repository.view.di.viewer.content.doc;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider;
 

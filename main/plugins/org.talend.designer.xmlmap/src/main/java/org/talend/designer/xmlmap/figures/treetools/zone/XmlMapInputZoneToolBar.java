@@ -24,7 +24,7 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
+import org.talend.core.ui.preference.metadata.MetadataTypeLengthConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.gefabstractmap.figures.treetools.zone.InputZoneToolBar;
 import org.talend.designer.xmlmap.XmlMapComponent;

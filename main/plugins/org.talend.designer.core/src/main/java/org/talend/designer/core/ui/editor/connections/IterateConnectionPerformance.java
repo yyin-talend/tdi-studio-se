@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import org.talend.runprocess.data.IteratePerformance;
+import org.talend.core.model.runprocess.data.IteratePerformance;
 
 /**
  * Control the statistical message that display on iterate link.

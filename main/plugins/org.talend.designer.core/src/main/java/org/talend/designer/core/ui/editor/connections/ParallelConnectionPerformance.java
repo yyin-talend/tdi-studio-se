@@ -13,7 +13,7 @@
 package org.talend.designer.core.ui.editor.connections;
 
 import org.eclipse.draw2d.geometry.Point;
-import org.talend.runprocess.data.ParallelPerformance;
+import org.talend.core.model.runprocess.data.ParallelPerformance;
 
 /**
  * Control the statistical message that display on row link for parallel execution, if no parallel execution existed,

@@ -14,7 +14,7 @@ package org.talend.expressionbuilder.test;
 
 import java.util.List;
 
-import org.talend.commons.expressionbuilder.Variable;
+import org.talend.commons.runtime.model.expressionbuilder.Variable;
 
 /**
  * yzhang class global comment. Detailled comment <br/>

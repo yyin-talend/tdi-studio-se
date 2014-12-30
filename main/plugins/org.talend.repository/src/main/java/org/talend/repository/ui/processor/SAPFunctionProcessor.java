@@ -15,8 +15,8 @@ package org.talend.repository.ui.processor;
 import java.util.List;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.model.repositoryObject.MetadataColumnRepositoryObject;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 

@@ -5,30 +5,30 @@
          point="org.talend.core.repositoryContextualsActions">
          
          <Action
-            class="org.talend.repository.ui.actions.documentation.CreateDocumentationAction"
+            class="org.talend.designer.documentation.generation.actions.CreateDocumentationAction"
             id="org.talend.repository.actions.createdocumentation"
             level="10"
             name="Add documentation"/>
       	<Action
-            class="org.talend.repository.ui.actions.documentation.OpenDocumentationAction"
+            class="org.talend.designer.documentation.generation.actions.OpenDocumentationAction"
             id="org.talend.repository.actions.opendocumentation"
             isReadAction="true"
             level="11"
             name="Open documentation"/>
       	<Action
-            class="org.talend.repository.ui.actions.documentation.ExtractDocumentationAction"
+            class="org.talend.designer.documentation.generation.actions.ExtractDocumentationAction"
             id="org.talend.repository.actions.extractdocumentation"
             isReadAction="true"
             level="12"
             name="Extract documentation"/>
       	<Action
-            class="org.talend.repository.ui.actions.documentation.UpdateDocumentationAction"
+            class="org.talend.designer.documentation.generation.actions.UpdateDocumentationAction"
             id="org.talend.repository.actions.updatedocumentation"
             isEditAction="true"
             level="10"
             name="Update documentation"/>
        <Action
-             class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
+             class="org.talend.designer.documentation.generation.actions.GenerateDocAsHTMLAction"
              id="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
              isEditAction="true"
              isReadAction="true"
@@ -39,7 +39,7 @@
    <extension
          point="org.talend.core.repository.repoViewLinker">
       <linker
-            class="org.talend.repository.viewer.link.DocumentationRepoViewLinker"
+            class="org.talend.designer.documentation.viewer.link.DocumentationRepoViewLinker"
             name="Documentation"
             priority="normal">
       </linker>
@@ -47,7 +47,7 @@
    <extension
          point="org.talend.core.repository.repositorySeeker">
       <seeker
-            class="org.talend.repository.viewer.seeker.DocumentationRepositorySeeker"
+            class="org.talend.designer.documentation.viewer.seeker.DocumentationRepositorySeeker"
             name="Documentation">
       </seeker>
    </extension>
@@ -70,7 +70,7 @@
             name="Documentation importer"
             priority="NORMAL">
          <importItemsHandler
-               class="org.talend.repository.viewer.handler.DocumentationImportHandler">
+               class="org.talend.designer.documentation.viewer.handler.DocumentationImportHandler">
             <parameter
                   name="type"
                   value="DOCUMENTATION">

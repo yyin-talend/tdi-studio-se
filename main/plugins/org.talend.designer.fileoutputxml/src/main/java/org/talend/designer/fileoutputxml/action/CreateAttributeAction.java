@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Attribute;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Element;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
 
 /**
  * bqian Create a xml node. <br/>
@@ -72,7 +72,7 @@ public class CreateAttributeAction extends SelectionProviderAction {
      */
     private void createChildNode(FOXTreeNode node) {
         String label = ""; //$NON-NLS-1$
-        while (!org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil.validateLabelForXML(label)) {
+        while (!org.talend.metadata.managment.ui.wizard.metadata.xml.utils.StringUtil.validateLabelForXML(label)) {
             InputDialog dialog = new InputDialog(null, Messages.getString("CreateAttributeAction.1"), //$NON-NLS-1$
                     Messages.getString("CreateAttributeAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
             int status = dialog.open();

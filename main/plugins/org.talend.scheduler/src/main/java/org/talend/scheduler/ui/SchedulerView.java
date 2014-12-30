@@ -54,7 +54,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.repository.job.deletion.JobResourceManager;
+import org.talend.core.model.repository.job.JobResourceManager;
 import org.talend.scheduler.SchedulerPlugin;
 import org.talend.scheduler.core.CommandModeType;
 import org.talend.scheduler.core.ScheduleTask;

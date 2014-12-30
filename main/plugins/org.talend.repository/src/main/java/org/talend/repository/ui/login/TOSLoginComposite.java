@@ -69,13 +69,13 @@ import org.talend.core.model.general.Project;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.workspace.ChooseWorkspaceData;
+import org.talend.metadata.managment.ui.model.TableViewerContentProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
 import org.talend.repository.ui.actions.importproject.SelectDeleteProjectDialog;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
-import org.talend.repository.ui.wizards.metadata.connection.wsdl.TableViewerContentProvider;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
 /**

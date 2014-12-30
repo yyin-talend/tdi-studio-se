@@ -76,9 +76,8 @@
       <import plugin="org.eclipse.text" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.p2.metadata.repository" version="1.0.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.jobs" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.p2.repository" version="2.0.0" match="equivalent"/>
-      <import plugin="org.eclipse.equinox.p2.metadata" version="2.0.0" match="equivalent"/>
-      <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.repository" version="2.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.metadata" version="2.0.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="compatible"/>
       <import plugin="org.eclipse.jface.text" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="compatible"/>
@@ -258,7 +257,7 @@
          id="com.ibm.icu"
          download-size="0"
          install-size="0"
-         version="4.2.1.v20100412"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -405,7 +404,7 @@
          id="javax.servlet"
          download-size="0"
          install-size="0"
-         version="2.5.0.v200910301333"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin

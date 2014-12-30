@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
@@ -37,7 +38,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.scheduler.SchedulerPlugin;
 
 /**

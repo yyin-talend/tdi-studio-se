@@ -20,12 +20,12 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.internal.core.SourceField;
+import org.eclipse.jdt.internal.ui.text.java.CompletionProposalCategory;
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProcessor;
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.jdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.jdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.jdt.ui.text.java.JavaContentAssistInvocationContext;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -58,48 +58,40 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
      * org.eclipse.core.runtime.IProgressMonitor, org.eclipse.jdt.ui.text.java.ContentAssistInvocationContext)
      */
     @Override
-    protected List filterAndSortProposals(List proposals, IProgressMonitor monitor, ContentAssistInvocationContext context) {
-        List newProposals = super.filterAndSortProposals(proposals, monitor, context);
+    protected List<ICompletionProposal> sortProposals(List<ICompletionProposal> proposals, IProgressMonitor monitor,
+            ContentAssistInvocationContext context) {
+        List<ICompletionProposal> newProposals = super.sortProposals(proposals, monitor, context);
 
-        List toRemove = new ArrayList();
-        try {
-            char firstChar = context.getDocument().getChar(context.getInvocationOffset() - 1);
-            boolean globalFieldsDone = false;
-            for (Object o : newProposals) {
-                ICompletionProposal proposal = (ICompletionProposal) o;
-                String longna = proposal.getDisplayString();
-                int indexna = longna.indexOf("-"); //$NON-NLS-1$
-                if (indexna > 0) {
-                    if (longna.substring(indexna + 2, longna.length()).equals(TalendJavaSourceViewer.getClassName())) {
-                        toRemove.add(proposal);
-                    }
-                }
-                if (proposal instanceof JavaCompletionProposal) {
-                    JavaCompletionProposal javaProposal = ((JavaCompletionProposal) proposal);
-                    if (javaProposal.getJavaElement() instanceof SourceField) {
-                        globalFieldsDone = true;
-                    }
-                    if (javaProposal.getJavaElement() == null && globalFieldsDone) {
-                        toRemove.add(proposal);
-                    }
-                }
-
-                // if (firstChar != '.') {
-                // if (proposal instanceof JavaMethodCompletionProposal) {
-                // toRemove.add(proposal);
-                // }
-                // }
-                if (proposal.getDisplayString().startsWith(TalendJavaSourceViewer.VIEWER_CLASS_NAME)) {
+        List<ICompletionProposal> toRemove = new ArrayList<ICompletionProposal>();
+        boolean globalFieldsDone = false;
+        for (Object o : newProposals) {
+            ICompletionProposal proposal = (ICompletionProposal) o;
+            String longna = proposal.getDisplayString();
+            int indexna = longna.indexOf("-"); //$NON-NLS-1$
+            if (indexna > 0) {
+                if (longna.substring(indexna + 2, longna.length()).equals(TalendJavaSourceViewer.getClassName())) {
                     toRemove.add(proposal);
                 }
             }
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
+            if (proposal instanceof JavaCompletionProposal) {
+                JavaCompletionProposal javaProposal = ((JavaCompletionProposal) proposal);
+                if (javaProposal.getJavaElement() instanceof SourceField) {
+                    globalFieldsDone = true;
+                }
+                if (javaProposal.getJavaElement() == null && globalFieldsDone) {
+                    toRemove.add(proposal);
+                }
+            }
+
+            if (proposal.getDisplayString().startsWith(TalendJavaSourceViewer.VIEWER_CLASS_NAME)) {
+                toRemove.add(proposal);
+            }
         }
         newProposals.removeAll(toRemove);
-        Collections.sort(newProposals, new Comparator() {
+        Collections.sort(newProposals, new Comparator<ICompletionProposal>() {
 
-            public int compare(Object arg0, Object arg1) {
+            @Override
+            public int compare(ICompletionProposal arg0, ICompletionProposal arg1) {
                 if (arg1 instanceof TalendCompletionProposal && (!(arg0 instanceof TalendCompletionProposal))) {
                     return 1;
                 } else if (arg1 instanceof TalendCompletionProposal && (arg0 instanceof TalendCompletionProposal)) {
@@ -112,6 +104,26 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
 
         });
         return newProposals;
+    }
+
+    /*
+     * @see ContentAssistProcessor#checkDefaultEnablement(CompletionProposalCategory)
+     * 
+     * @since 3.8
+     */
+    @Override
+    protected boolean checkDefaultEnablement(CompletionProposalCategory category) {
+        return true;
+    }
+
+    /*
+     * @see ContentAssistProcessor#checkSeparateEnablement(CompletionProposalCategory)
+     * 
+     * @since 3.8
+     */
+    @Override
+    protected boolean checkSeparateEnablement(CompletionProposalCategory category) {
+        return true;
     }
 
     /*
@@ -151,6 +163,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IEditorPart#getEditorInput()
          */
+        @Override
         public IEditorInput getEditorInput() {
             return null;
         }
@@ -160,6 +173,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IEditorPart#getEditorSite()
          */
+        @Override
         public IEditorSite getEditorSite() {
             return null;
         }
@@ -169,6 +183,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
          */
+        @Override
         public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         }
 
@@ -177,6 +192,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#addPropertyListener(org.eclipse.ui.IPropertyListener)
          */
+        @Override
         public void addPropertyListener(IPropertyListener listener) {
         }
 
@@ -185,6 +201,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
          */
+        @Override
         public void createPartControl(Composite parent) {
         }
 
@@ -193,6 +210,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#dispose()
          */
+        @Override
         public void dispose() {
         }
 
@@ -201,6 +219,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#getSite()
          */
+        @Override
         public IWorkbenchPartSite getSite() {
             return null;
         }
@@ -210,6 +229,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#getTitle()
          */
+        @Override
         public String getTitle() {
             return null;
         }
@@ -219,6 +239,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#getTitleImage()
          */
+        @Override
         public Image getTitleImage() {
             return null;
         }
@@ -228,6 +249,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#getTitleToolTip()
          */
+        @Override
         public String getTitleToolTip() {
             return null;
         }
@@ -237,6 +259,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#removePropertyListener(org.eclipse.ui.IPropertyListener)
          */
+        @Override
         public void removePropertyListener(IPropertyListener listener) {
         }
 
@@ -245,6 +268,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.IWorkbenchPart#setFocus()
          */
+        @Override
         public void setFocus() {
         }
 
@@ -253,6 +277,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
          */
+        @Override
         public Object getAdapter(Class adapter) {
             return null;
         }
@@ -262,6 +287,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
          */
+        @Override
         public void doSave(IProgressMonitor monitor) {
         }
 
@@ -270,6 +296,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.ISaveablePart#doSaveAs()
          */
+        @Override
         public void doSaveAs() {
         }
 
@@ -278,6 +305,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.ISaveablePart#isDirty()
          */
+        @Override
         public boolean isDirty() {
             return false;
         }
@@ -287,6 +315,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
          */
+        @Override
         public boolean isSaveAsAllowed() {
             return false;
         }
@@ -296,6 +325,7 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
          * 
          * @see org.eclipse.ui.ISaveablePart#isSaveOnCloseNeeded()
          */
+        @Override
         public boolean isSaveOnCloseNeeded() {
             return false;
         }

@@ -91,12 +91,15 @@ import org.osgi.service.event.EventHandler;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.OverlayImageProvider;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -113,7 +116,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
-import org.talend.core.model.process.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -123,19 +125,23 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
+import org.talend.core.model.repository.job.JobResourceManager;
 import org.talend.core.model.routines.RoutinesUtil;
-import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.model.utils.AccessingEmfJob;
 import org.talend.core.repository.constants.Constant;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.model.ResourceModelUtils;
-import org.talend.core.ui.ICreateXtextProcessService;
+import org.talend.core.repository.ui.editor.RepositoryEditorInput;
+import org.talend.core.services.ICreateXtextProcessService;
+import org.talend.core.services.IUIRefresher;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
-import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.ui.images.OverlayImageProvider;
-import org.talend.core.utils.AccessingEmfJob;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.core.ui.editor.JobEditorInput;
+import org.talend.core.ui.process.UpdateRunJobComponentContextHelper;
+import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.core.ui.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.views.IComponentSettingsView;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -165,17 +171,11 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
-import org.talend.repository.editor.JobEditorInput;
-import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.job.deletion.JobResourceManager;
-import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IJobSettingsView;
@@ -186,7 +186,7 @@ import org.talend.repository.ui.views.IJobSettingsView;
 public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
         ISelectionListener, IUIRefresher, IMultiPageTalendEditor {
 
-    protected static final String DISPLAY_CODE_VIEW = "DISPLAY_CODE_VIEW"; //$NON-NLS-1$
+    public static final String DISPLAY_CODE_VIEW = "DISPLAY_CODE_VIEW"; //$NON-NLS-1$
 
     protected AdapterImpl dirtyListener = new AdapterImpl() {
 
@@ -286,7 +286,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 savePropertyIfNeededForErrorStatus();
                 IProject currentProject;
                 try {
-                    currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
+                    currentProject = ResourceUtils.getProject(ProjectManager.getInstance().getCurrentProject());
                     String jobScriptVersion = "";
                     if (getEditorInput() != null && getEditorInput() instanceof RepositoryEditorInput) {
                         Item item = ((RepositoryEditorInput) getEditorInput()).getItem();
@@ -829,7 +829,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         String scriptValue = "";
         try {
-            IProject currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
+            IProject currentProject = ResourceUtils.getProject(ProjectManager.getInstance().getCurrentProject());
             String jobScriptVersion = "";
             if (getEditorInput() != null && getEditorInput() instanceof RepositoryEditorInput) {
                 Item item = ((RepositoryEditorInput) getEditorInput()).getItem();
@@ -971,9 +971,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
 
         if (getActivePage() == 0 || getActivePage() == 1) {
+            refreshPropertyDirtyStatus();
             getEditor(0).doSave(monitor);
         } else if (getActivePage() == 2) {
             boolean isDirty = getEditor(2).isDirty();
+            refreshPropertyDirtyStatus();
             getEditor(2).doSave(monitor);
             try {
                 IProcess2 oldProcess = getProcess();
@@ -1085,6 +1087,17 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     dc.refresh();
                 }
             }
+        }
+    }
+
+    private void refreshPropertyDirtyStatus() {
+        /*
+         * refresh should be executed before add the listener,or it will has eProxy on the property,it will cause a
+         * editor dirty problem. hywang commet bug 17357
+         */
+        if (processEditorInput != null) {
+            propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
+            propertyIsDirty = false;
         }
     }
 

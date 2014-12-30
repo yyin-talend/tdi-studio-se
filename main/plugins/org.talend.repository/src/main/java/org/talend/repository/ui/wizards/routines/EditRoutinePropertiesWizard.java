@@ -14,8 +14,8 @@ package org.talend.repository.ui.wizards.routines;
 
 import org.eclipse.core.runtime.IPath;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.metadata.managment.ui.wizard.PropertiesWizard;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.wizards.PropertiesWizard;
 
 /**
  * Created by Marvin Wang on Feb 22, 2013.

@@ -23,7 +23,7 @@ import org.talend.core.context.Context;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.utils.PluginUtil;
+import org.talend.core.ui.utils.PluginUtil;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;

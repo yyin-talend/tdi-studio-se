@@ -22,7 +22,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.ui.tabs.table.toolbar.XmlMapExtendedToolbarView;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
+import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.StringUtil;
 
 /**
  * WCHEN talend class global comment. Detailled comment

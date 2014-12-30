@@ -33,9 +33,9 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.metadata.managment.ui.wizard.AbstractForm;
 import org.talend.repository.ftp.i18n.Messages;
 import org.talend.repository.ftp.ui.wizards.pags.FTPPage;
-import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * DOC hwang class global comment. Detailled comment
