@@ -20,10 +20,10 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -44,7 +44,7 @@ public final class ImportProjectAsAction extends Action {
     private static final String ACTION_TITLE = Messages.getString("ImportProjectAsAction.actionTitle"); //$NON-NLS-1$
 
     private static final String ACTION_TOOLTIP = Messages.getString("ImportProjectAsAction.actionTooltip", //$NON-NLS-1$
-            ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getShortProductName());
+            ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getShortProductName()); //$NON-NLS-1$
 
     private static ImportProjectAsAction singleton;
 
@@ -64,7 +64,6 @@ public final class ImportProjectAsAction extends Action {
         this.setImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.IMPORT_PROJECTS_ACTION));
     }
 
-    @Override
     public void run() {
         ImportProjectAsWizard docWizard = new ImportProjectAsWizard();
         WizardDialog dlg = new ImportProjectWizardDialog(Display.getCurrent().getActiveShell(), docWizard);
@@ -88,7 +87,7 @@ public final class ImportProjectAsAction extends Action {
             IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
             Project[] projects = repositoryFactory.readProject();
             for (Project project : projects) {
-                IProject fsProject = ResourceUtils.getProject(project);
+                IProject fsProject = ResourceModelUtils.getProject(project);
                 IFolder libJavaFolder = fsProject.getFolder(ImportProjectAsAction.LIB);
                 if (!libJavaFolder.exists()) {
                     continue;

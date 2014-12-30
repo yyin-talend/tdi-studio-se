@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.business.diagram.i18n.Messages;
-import org.talend.metadata.managment.ui.wizard.PropertiesWizardPage;
+import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 public class SimpleBusinessCreationWizardPage extends PropertiesWizardPage {
 
@@ -29,7 +29,6 @@ public class SimpleBusinessCreationWizardPage extends PropertiesWizardPage {
         setTitle(Messages.getString("SimpleBusinessCreationWizardPage.Title")); //$NON-NLS-1$
     }
 
-    @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout(2, false);
@@ -43,7 +42,6 @@ public class SimpleBusinessCreationWizardPage extends PropertiesWizardPage {
         setPageComplete(false);
     }
 
-    @Override
     public ERepositoryObjectType getRepositoryObjectType() {
         return ERepositoryObjectType.BUSINESS_PROCESS;
     }

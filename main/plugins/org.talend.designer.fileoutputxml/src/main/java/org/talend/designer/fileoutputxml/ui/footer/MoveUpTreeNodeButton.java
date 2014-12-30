@@ -23,10 +23,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Attribute;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Element;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.NameSpaceNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
 
 /**
  * DOC talend class global comment. Detailled comment

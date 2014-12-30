@@ -32,11 +32,11 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * // * This migration only fixes some problem of case for the dbtypes<br>

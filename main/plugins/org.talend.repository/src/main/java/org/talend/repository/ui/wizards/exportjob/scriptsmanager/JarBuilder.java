@@ -37,8 +37,8 @@ import org.eclipse.core.resources.IProject;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.utils.ZipFileUtils;
 import org.talend.utils.io.FilesUtils;
 

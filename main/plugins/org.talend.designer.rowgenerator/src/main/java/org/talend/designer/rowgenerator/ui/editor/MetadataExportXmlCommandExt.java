@@ -20,7 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.gef.commands.Command;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.ui.metadata.editor.MetadataTableEditor;
+import org.talend.core.model.metadata.editor.MetadataTableEditor;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

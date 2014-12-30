@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Point;
-import org.talend.commons.ui.runtime.utils.ControlUtils;
+import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.dnd.DraggedData;
 import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;

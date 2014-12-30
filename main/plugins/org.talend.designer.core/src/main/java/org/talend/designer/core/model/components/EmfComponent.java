@@ -83,16 +83,14 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.ExternalNodesFactory;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.service.IComponentsLocalProviderService;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
-import org.talend.core.ui.component.settings.ComponentsSettingsHelper;
-import org.talend.core.ui.services.IComponentsLocalProviderService;
+import org.talend.core.ui.componentsettings.ComponentsSettingsHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
@@ -125,6 +123,8 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
+import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.ExternalNodesFactory;
 
 /**
  * 
@@ -3928,17 +3928,5 @@ public class EmfComponent extends AbstractComponent {
             }
         }
         return compType.getHEADER().isLOG4J_ENABLED();
-    }
-
-    public String getEquivalent() {
-        if (compType == null) {
-            isLoaded = false;
-            try {
-                load();
-            } catch (BusinessException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return compType.getHEADER().getEQUIVALENT();
     }
 }

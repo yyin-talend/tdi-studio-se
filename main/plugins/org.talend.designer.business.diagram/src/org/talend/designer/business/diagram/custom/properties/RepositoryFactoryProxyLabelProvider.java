@@ -7,7 +7,6 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -27,6 +26,7 @@ import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.Routine;
 import org.talend.designer.business.model.business.SQLPattern;
 import org.talend.designer.business.model.business.TalendItem;
+import org.talend.repository.model.ERepositoryStatus;
 
 public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProvider {
 

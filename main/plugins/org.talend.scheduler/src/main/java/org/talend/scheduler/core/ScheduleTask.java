@@ -21,8 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.talend.core.model.process.JobInfo;
-import org.talend.core.model.repository.job.IJobResourceProtection;
-import org.talend.core.model.repository.job.JobResource;
+import org.talend.repository.job.deletion.IJobResourceProtection;
+import org.talend.repository.job.deletion.JobResource;
 import org.talend.scheduler.i18n.Messages;
 
 /**

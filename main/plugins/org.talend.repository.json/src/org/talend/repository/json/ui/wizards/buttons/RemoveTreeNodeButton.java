@@ -19,9 +19,9 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
 import org.talend.repository.json.ui.wizards.AbstractJSONStepForm;
 import org.talend.repository.json.ui.wizards.action.DeleteJSONNodeAction;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
  * hwang class global comment. Detailled comment

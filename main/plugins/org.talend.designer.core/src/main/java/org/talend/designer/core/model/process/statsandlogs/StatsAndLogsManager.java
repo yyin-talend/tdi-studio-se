@@ -37,7 +37,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -46,6 +45,7 @@ import org.talend.designer.core.model.process.DataConnection;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

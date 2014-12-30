@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.runtime.xml.XmlUtil;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -46,9 +46,9 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
-import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

@@ -28,8 +28,8 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.business.diagram.i18n.Messages;
-import org.talend.metadata.managment.ui.wizard.RepositoryWizard;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.wizards.RepositoryWizard;
 
 public class SimpleBusinessCreationWizard extends RepositoryWizard {
 

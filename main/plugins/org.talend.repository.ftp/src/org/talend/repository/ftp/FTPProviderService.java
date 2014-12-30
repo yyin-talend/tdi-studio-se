@@ -19,7 +19,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.FTPConnectionItem;
-import org.talend.core.services.IFTPProviderService;
+import org.talend.core.ui.IFTPProviderService;
 import org.talend.repository.ftp.ui.wizards.FTPWizard;
 import org.talend.repository.model.RepositoryNode;
 

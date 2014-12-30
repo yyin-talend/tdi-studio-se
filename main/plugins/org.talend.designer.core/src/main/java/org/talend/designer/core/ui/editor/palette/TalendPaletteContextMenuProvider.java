@@ -33,17 +33,17 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.ui.component.ComponentPaletteUtilities;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ComponentSearcher;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.PaletteComponentFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.ui.actions.ShowFavoriteAction;
 
 /**

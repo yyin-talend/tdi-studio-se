@@ -39,7 +39,6 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.ui.IJobletProviderService;
-import org.talend.core.ui.editor.CustomExternalActions;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ActivateElementAction;
 import org.talend.designer.core.ui.action.ActivateSubjobAction;

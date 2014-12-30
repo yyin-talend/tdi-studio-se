@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.ui.component.preference.provider.IPaletteItem;
+import org.talend.designer.components.preference.provider.IPaletteItem;
 
 /**
  * created by nrousseau on Aug 11, 2014 Detailled comment

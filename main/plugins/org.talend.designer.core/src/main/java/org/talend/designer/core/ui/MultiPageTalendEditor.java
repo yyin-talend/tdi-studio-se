@@ -24,7 +24,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.services.ISVNProviderService;
+import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;

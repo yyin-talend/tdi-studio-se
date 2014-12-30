@@ -77,10 +77,10 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.repository.model.connection.ConnectionStatus;
+import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.repository.ConnectionStatus;
+import org.talend.core.service.ISQLBuilderService;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
-import org.talend.core.ui.properties.tab.IDynamicProperty;
-import org.talend.core.ui.services.ISQLBuilderService;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
@@ -92,8 +92,8 @@ import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
-import org.talend.metadata.managment.ui.dialog.MappingFileSelectDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.wizards.metadata.connection.database.MappingFileSelectDialog;
 
 /**
  * DOC zqin class global comment. Detailled comment

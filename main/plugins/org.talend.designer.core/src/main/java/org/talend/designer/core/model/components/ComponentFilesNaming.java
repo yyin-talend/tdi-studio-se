@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.talend.commons.runtime.xml.XmlUtil;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.temp.ECodePart;

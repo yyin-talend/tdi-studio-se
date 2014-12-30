@@ -33,7 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableColumn;
-import org.talend.commons.runtime.model.expressionbuilder.Variable;
+import org.talend.commons.expressionbuilder.Variable;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.test.JavaTestShadow;
 

@@ -38,11 +38,11 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IJobletProviderService;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -69,10 +69,8 @@ public class ConnectionCreateActionTest {
     public void setUp() throws Exception {
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         IProcess2 process = new Process(property);
-        IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput",
-                ComponentCategory.CATEGORY_4_DI.getName());
-        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput",
-                ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput", ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput", ComponentCategory.CATEGORY_4_DI.getName());
         node = new Node(sourceCom, process);
         node.setLabel("tMysqlInput_1");
         curNodeConnector = new NodeConnector(node);

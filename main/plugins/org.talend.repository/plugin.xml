@@ -27,12 +27,12 @@
          name="Actions"
          point="org.talend.core.repositoryContextualsActions">
       <Action
-            class="org.talend.core.repository.ui.actions.CreateFolderAction"
+            class="org.talend.repository.ui.actions.CreateFolderAction"
             id="org.talend.repository.actions.createfolder"
             level="20"
             name="Create folder"/>
       <Action
-            class="org.talend.core.repository.ui.actions.RenameFolderAction"
+            class="org.talend.repository.ui.actions.RenameFolderAction"
             id="org.talend.repository.actions.renamefolder"
             level="20"
             name="Rename folder"/>

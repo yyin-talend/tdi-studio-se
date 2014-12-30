@@ -3,7 +3,6 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.utils.NodeUtil
 " 
 %>
 
@@ -16,19 +15,10 @@ imports="
     String connectionCid = ElementParameterParser.getValue(node,"__CONNECTION__");
     
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
-    
-    INode connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),connectionCid,true);
-    
-    boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(connectionNode, "__USE_CONNECTION__"));
-    
-    if(isUseConnection){
-    	String realConnNodeName = ElementParameterParser.getValue(connectionNode,"__CONNECTION__");
-    	connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),realConnNodeName);
-    }
-    String serverType=ElementParameterParser.getValue(connectionNode, "__SERVER__");
-    boolean isTransacted = "true".equals(ElementParameterParser.getValue(connectionNode, "__IS_TRANSACTED__")); 
 
+	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
 	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
 	%>
 		javax.jms.Session session_<%=cid%> = (javax.jms.Session)globalMap.get("session_<%=connectionCid%>");
@@ -36,20 +26,18 @@ imports="
 		javax.jms.MessageProducer producer_<%=cid%> = (javax.jms.MessageProducer)globalMap.get("producer_<%=connectionCid%>");
 		if(session_<%=cid%> != null && connection_<%=cid %> != null) {
 			<%
-			if(isTransacted){
-				if (isLog4jEnabled) {
-				%>
-					log.info("<%=cid%> - Committing the session...");
-				<%
-				}
-				%>
-				session_<%=cid%>.commit();
-				<%
-				if (isLog4jEnabled) {
-				%>
-					log.info("<%=cid%> - Commit successfully.");
-				<%
-				}
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Committing the session...");
+			<%
+			}
+			%>
+			session_<%=cid%>.commit();
+			<%
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Commit successfully.");
+			<%
 			}
 			if(close){
 			%>
@@ -92,7 +80,8 @@ imports="
 	} else {
 	%>
 		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = (com.ibm.mq.MQQueueManager)globalMap.get("qMgr_<%=connectionCid%>");
-	    if(qMgr_<%=cid%> != null) {
+	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = (com.ibm.mq.MQQueue)globalMap.get("remoteQ_<%=connectionCid%>");
+		if(qMgr_<%=cid%> != null && remoteQ_<%=cid%> != null) {
 			<%
 			if (isLog4jEnabled) {
 			%>
@@ -114,7 +103,8 @@ imports="
 				<%
 				}
 			    %>
-			    qMgr_<%=cid%>.disconnect();
+				remoteQ_<%=cid%>.close();
+			    qMgr_<%=cid%>.disconnect();;
 				<% 
 				if (isLog4jEnabled) {
 				%>

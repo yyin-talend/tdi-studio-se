@@ -68,13 +68,13 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 

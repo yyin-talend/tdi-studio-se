@@ -40,7 +40,7 @@ import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
 import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.StringUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * wchen class global comment. Detailled comment

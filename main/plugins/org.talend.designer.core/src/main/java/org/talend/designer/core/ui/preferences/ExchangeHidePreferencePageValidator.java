@@ -14,7 +14,7 @@ package org.talend.designer.core.ui.preferences;
 
 import org.talend.core.PluginChecker;
 import org.talend.core.model.utils.TalendPropertiesUtil;
-import org.talend.core.ui.preference.hidden.IHidePreferencePageValidator;
+import org.talend.core.prefs.hidden.IHidePreferencePageValidator;
 
 /**
  * DOC ggu class global comment. Detailled comment

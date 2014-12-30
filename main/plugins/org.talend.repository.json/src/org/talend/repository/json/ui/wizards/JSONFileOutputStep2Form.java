@@ -64,11 +64,6 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.cwm.helper.ConnectionHelper;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Attribute;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Element;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.NameSpaceNode;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.TreeUtil;
 import org.talend.repository.json.ui.wizards.action.CreateJSONAttributeAction;
 import org.talend.repository.json.ui.wizards.action.CreateJSONElementAction;
 import org.talend.repository.json.ui.wizards.action.CreateJSONNameSpaceAction;
@@ -91,6 +86,11 @@ import org.talend.repository.json.ui.wizards.view.JSONTree2SchemaLinker;
 import org.talend.repository.json.util.JSONUtil;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
  * wzhang class global comment. Detailled comment

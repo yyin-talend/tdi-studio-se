@@ -29,7 +29,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.sqlbuilder.util.TextUtil;
-import org.talend.metadata.managment.repository.ManagerConnection;
+import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;

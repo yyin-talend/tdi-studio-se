@@ -45,7 +45,6 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -58,6 +57,7 @@ import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC ggu class global comment. Detailled comment

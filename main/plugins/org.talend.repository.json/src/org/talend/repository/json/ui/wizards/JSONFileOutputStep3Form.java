@@ -33,8 +33,8 @@ import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.ui.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.repository.model.json.JSONFileNode;
 

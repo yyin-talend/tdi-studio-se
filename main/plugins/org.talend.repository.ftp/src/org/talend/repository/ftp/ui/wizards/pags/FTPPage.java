@@ -16,9 +16,9 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.metadata.managment.ui.wizard.AbstractForm;
 import org.talend.repository.ftp.i18n.Messages;
 import org.talend.repository.ftp.ui.wizards.forms.FTPForm;
+import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * DOC hwang class global comment. Detailled comment

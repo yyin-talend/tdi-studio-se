@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -32,6 +31,7 @@ import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 

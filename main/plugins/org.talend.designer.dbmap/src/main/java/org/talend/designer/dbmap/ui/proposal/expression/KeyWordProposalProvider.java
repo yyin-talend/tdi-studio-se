@@ -18,9 +18,9 @@ import java.util.Arrays;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
-import org.talend.commons.runtime.xml.XmlUtil;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
+import org.talend.commons.xml.XmlUtil;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

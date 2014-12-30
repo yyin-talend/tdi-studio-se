@@ -60,13 +60,13 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -102,7 +102,6 @@ public class TestComponentsAction extends Action {
     public void initialize() {
         Job job = new Job("Component Test") { //$NON-NLS-1$
 
-            @Override
             protected IStatus run(IProgressMonitor monitor) {
                 try {
 
@@ -183,7 +182,6 @@ public class TestComponentsAction extends Action {
         if (language == ECodeLanguage.JAVA) {
             itemFiles = directory.listFiles(new FileFilter() {
 
-                @Override
                 public boolean accept(File file) {
                     boolean result = false;
                     if (file.getName().toLowerCase().endsWith("java.item")) { //$NON-NLS-1$
@@ -196,7 +194,6 @@ public class TestComponentsAction extends Action {
         } else {
             itemFiles = directory.listFiles(new FileFilter() {
 
-                @Override
                 public boolean accept(File file) {
                     boolean result = false;
                     if (file.getName().toLowerCase().endsWith("perl.item")) { //$NON-NLS-1$

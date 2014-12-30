@@ -24,8 +24,8 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.repository.ui.editor.AbstractShowJobStartup;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.repository.editor.AbstractShowJobStartup;
 
 /**
  * DOC ggu class global comment. Detailled comment

@@ -26,11 +26,11 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.ui.context.model.table.ConectionAdaptContextVariableModel;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.metadata.managment.ui.model.IConnParamName;
-import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
-import org.talend.metadata.managment.ui.wizard.AbstractForm;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
 import org.talend.repository.json.util.JSONConnectionContextHelper;
+import org.talend.repository.model.IConnParamName;
+import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
  * hwang class global comment. Detailled comment

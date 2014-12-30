@@ -38,14 +38,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.dialogs.ResourceTreeAndListGroup;
+import org.eclipse.ui.internal.ide.dialogs.ResourceTreeAndListGroup;
 import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileExportOperation;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardArchiveFileResourceExportPage1;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
 import org.talend.core.runtime.CoreRuntimePlugin;
@@ -87,7 +87,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
         setDescription(Messages.getString("DataTransferMessages.ArchiveExport_description")); //$NON-NLS-1$
     }
 
-    @Override
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
@@ -141,7 +140,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
         ICheckStateListener listener = new ICheckStateListener() {
 
-            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 updateWidgetEnablements();
             }
@@ -177,17 +175,14 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
         return availableRows(parent) > 50;
     }
 
-    @Override
     protected Iterator getSelectedResourcesIterator() {
         return resourceGroup.getAllCheckedListItems().iterator();
     }
 
-    @Override
     protected List getWhiteCheckedResources() {
         return resourceGroup.getAllWhiteCheckedItems();
     }
 
-    @Override
     protected void setupBasedOnInitialSelections() {
         Iterator it = initialResourceSelection.iterator();
         while (it.hasNext()) {
@@ -203,7 +198,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
     private ITreeContentProvider getResourceProvider(final int resourceType) {
         return new WorkbenchContentProvider() {
 
-            @Override
             public Object[] getChildren(Object o) {
                 if (o instanceof IContainer) {
                     IResource[] members = null;
@@ -216,10 +210,10 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
                     // filter out the desired resource types
                     ArrayList results = new ArrayList();
-                    for (IResource member : members) {
+                    for (int i = 0; i < members.length; i++) {
                         // And the test bits with the resource types to see if they are what we want
-                        if ((member.getType() & resourceType) > 0) {
-                            results.add(member);
+                        if ((members[i].getType() & resourceType) > 0) {
+                            results.add(members[i]);
                         }
                     }
                     return results.toArray();
@@ -252,7 +246,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
         SelectionListener listener = new SelectionAdapter() {
 
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleTypesEditButtonPressed();
             }
@@ -265,7 +258,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
         listener = new SelectionAdapter() {
 
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 resourceGroup.setAllSelections(true);
                 updateWidgetEnablements();
@@ -279,7 +271,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
         listener = new SelectionAdapter() {
 
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 resourceGroup.setAllSelections(false);
                 updateWidgetEnablements();
@@ -291,7 +282,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
     }
 
-    @Override
     public boolean finish() {
         List resourcesToExport = getWhiteCheckedResources();
 
@@ -308,7 +298,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
         final List results = new ArrayList(1);
         CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().executeRepositoryWorkUnit(new RepositoryWorkUnit("refresh") {
 
-            @Override
             protected void run() throws LoginException, PersistenceException {
                 try {
                     ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -317,7 +306,6 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
                 }
                 Display.getCurrent().syncExec(new Runnable() {
 
-                    @Override
                     public void run() {
                         List resourcesToExport = getWhiteCheckedResources();
                         boolean r = executeExportOperation(new ArchiveFileExportOperation(null, resourcesToExport,

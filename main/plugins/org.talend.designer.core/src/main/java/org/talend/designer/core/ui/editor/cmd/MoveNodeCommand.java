@@ -21,7 +21,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.PlatformUI;
-import org.talend.core.ui.process.IGraphicalNode;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;

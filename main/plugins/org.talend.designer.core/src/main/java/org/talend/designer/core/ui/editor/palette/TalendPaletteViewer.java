@@ -18,8 +18,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.draw2d.FigureCanvas;
-import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.ui.palette.PaletteViewer;
@@ -44,7 +42,7 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
-import org.talend.core.ui.component.ComponentPaletteUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.designer.core.i18n.Messages;
 
 /**
@@ -339,13 +337,4 @@ public class TalendPaletteViewer extends PaletteViewer {
         filters.removeAll(disposed);
     }
 
-    // expose getLightweightSystem to public
-    public LightweightSystem getLightweightSys() {
-        return getLightweightSystem();
-    }
-
-    public void setFigureCanvas(FigureCanvas canvas) {
-        setControl(canvas);
-        hookRootFigure();
-    }
 }

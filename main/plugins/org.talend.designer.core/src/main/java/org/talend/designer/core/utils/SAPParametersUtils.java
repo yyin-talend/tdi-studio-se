@@ -24,8 +24,8 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.utils.SAPConnectionUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.SAPConnectionUtils;
 
 /**
  * DOC YeXiaowei class global comment. Detailled comment

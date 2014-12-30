@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
@@ -29,6 +28,7 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 

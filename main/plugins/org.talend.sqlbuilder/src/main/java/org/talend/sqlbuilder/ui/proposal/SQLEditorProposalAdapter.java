@@ -51,8 +51,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.ui.runtime.swt.proposal.IContentProposalExtendedListener;
-import org.talend.commons.ui.runtime.swt.proposal.IControlContentAdapterExtended;
+import org.talend.commons.ui.swt.proposal.IContentProposalExtendedListener;
+import org.talend.commons.ui.swt.proposal.IControlContentAdapterExtended;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 

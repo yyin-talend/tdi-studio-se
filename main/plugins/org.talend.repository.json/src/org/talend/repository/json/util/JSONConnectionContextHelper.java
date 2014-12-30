@@ -61,16 +61,16 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
 import org.talend.metadata.managment.ui.i18n.Messages;
-import org.talend.metadata.managment.ui.model.IConnParamName;
-import org.talend.metadata.managment.ui.utils.DBConnectionContextUtils.EDBParamName;
-import org.talend.metadata.managment.ui.utils.FileConnectionContextUtils.EFileParamName;
-import org.talend.metadata.managment.ui.utils.OtherConnectionContextUtils.EParamName;
-import org.talend.metadata.managment.ui.wizard.context.ContextModeWizard;
-import org.talend.metadata.managment.ui.wizard.metadata.ContextSetsSelectionDialog;
+import org.talend.repository.model.IConnParamName;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
+import org.talend.repository.ui.utils.DBConnectionContextUtils.EDBParamName;
+import org.talend.repository.ui.utils.FileConnectionContextUtils.EFileParamName;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils.EParamName;
+import org.talend.repository.ui.wizards.context.ContextModeWizard;
+import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 
 /**
  * ggu class global comment. Detailled comment

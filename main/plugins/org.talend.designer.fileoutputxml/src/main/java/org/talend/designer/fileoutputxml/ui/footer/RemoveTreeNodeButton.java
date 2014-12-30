@@ -22,7 +22,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.fileoutputxml.action.DeleteNodeAction;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
  * wchen class global comment. Detailled comment

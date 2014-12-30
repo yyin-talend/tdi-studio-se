@@ -44,6 +44,7 @@ Require-Bundle: org.talend.model,
  org.talend.libraries.apache,
  org.talend.libraries.dom4j-jaxen,
  org.talend.libraries.uniserv;resolution:=optional,
+ org.eclipse.update.scheduler,
  org.eclipse.ui.workbench.texteditor,
  org.talend.registration
 Eclipse-LazyStart: true
@@ -72,7 +73,6 @@ Export-Package: org.talend.designer.core;
  org.talend.designer.core.model.process.statsandlogs,
  org.talend.designer.core.repository,
  org.talend.designer.core.runprocess,
- org.talend.designer.core.sqlbuilder,
  org.talend.designer.core.ui;
   uses:="org.eclipse.core.runtime,
    org.talend.core.model.process,
@@ -221,5 +221,6 @@ Export-Package: org.talend.designer.core;
  org.talend.designer.core.ui.views.properties.composites,
  org.talend.designer.core.ui.views.statsandlogs,
  org.talend.designer.core.ui.wizards,
- org.talend.designer.core.utils
+ org.talend.designer.core.utils,
+ org.talend.sqlbuilder.repository.utility
 Bundle-Vendor: .Talend SA.

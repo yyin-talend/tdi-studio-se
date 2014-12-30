@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
-import org.talend.core.model.runprocess.shadow.TextElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 
 /**

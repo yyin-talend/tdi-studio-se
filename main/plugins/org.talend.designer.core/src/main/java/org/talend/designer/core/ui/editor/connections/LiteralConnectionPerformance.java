@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import org.talend.core.model.runprocess.data.LiteralPerformance;
+import org.talend.runprocess.data.LiteralPerformance;
 
 /**
  * DOC xtan Control the statistical message that display on "OnComponentOK/OnComponentError/OnSubJobOK/OnSubJobError/If"

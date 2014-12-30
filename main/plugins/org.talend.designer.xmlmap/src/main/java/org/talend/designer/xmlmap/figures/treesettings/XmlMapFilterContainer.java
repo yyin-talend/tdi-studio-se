@@ -18,15 +18,15 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.ui.runtime.expressionbuilder.IExpressionBuilderDialogController;
+import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
-import org.talend.core.runtime.services.IExpressionBuilderDialogService;
 import org.talend.designer.gefabstractmap.figures.manager.TableManager;
 import org.talend.designer.gefabstractmap.figures.treesettings.FilterContainer;
 import org.talend.designer.gefabstractmap.part.directedit.DirectEditType;
 import org.talend.designer.xmlmap.commands.TreeSettingDirectEditCommand;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
 /**
  * created by Administrator on 2013-1-16 Detailled comment

@@ -14,11 +14,11 @@ package org.talend.repository.json.action;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.repository.json.i18n.Messages;
 import org.talend.repository.json.node.JSONRepositoryNodeType;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.EditPropertiesAction;
 

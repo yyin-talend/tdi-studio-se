@@ -22,10 +22,10 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.ui.context.view.AbstractContextView;
-import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.editor.JobEditorInput;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

@@ -115,10 +115,10 @@ import org.talend.designer.filemultischemas.ui.preview.MultiSchemasShadowProcess
 import org.talend.designer.filemultischemas.ui.preview.MultiSchemasUIThreadProcessor;
 import org.talend.designer.filemultischemas.ui.provider.SchemasTreeContentProvider;
 import org.talend.designer.filemultischemas.ui.provider.SchemasTreeLabelProvider;
-import org.talend.metadata.managment.ui.preview.ProcessDescription;
-import org.talend.metadata.managment.ui.preview.ShadowProcessPreview;
-import org.talend.metadata.managment.ui.utils.ShadowProcessHelper;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.preview.ProcessDescription;
+import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
+import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
  * cLi class global comment. Detailled comment

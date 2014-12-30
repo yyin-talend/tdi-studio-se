@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.repository.ui.view.RepositoryLabelProvider;
+import org.talend.repository.ui.views.RepositoryLabelProvider;
 
 /**
  * DOC bqian class global comment. Detailled comment

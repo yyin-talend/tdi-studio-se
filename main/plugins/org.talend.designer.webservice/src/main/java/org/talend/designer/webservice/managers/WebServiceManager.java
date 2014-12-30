@@ -17,10 +17,10 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.ui.CoreUIPlugin;
-import org.talend.core.ui.process.IGEFProcess;
-import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.designer.webservice.WebServiceComponent;
 
 /**

@@ -13,8 +13,8 @@
 package org.talend.designer.runprocess.prefs;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.core.ui.token.AbstractTokenCollector;
-import org.talend.core.ui.token.PrefTokenKey;
+import org.talend.core.token.AbstractTokenCollector;
+import org.talend.core.token.PrefTokenKey;
 import org.talend.designer.runprocess.RunProcessPlugin;
 
 import us.monoid.json.JSONObject;

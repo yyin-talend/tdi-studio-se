@@ -46,8 +46,8 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.CoreUIPlugin;
-import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 

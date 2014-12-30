@@ -21,11 +21,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.wizards.SaveAsProcessWizard;
+import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 

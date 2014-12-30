@@ -44,7 +44,7 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;

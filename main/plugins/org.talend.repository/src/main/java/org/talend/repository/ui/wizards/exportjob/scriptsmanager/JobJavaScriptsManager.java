@@ -62,11 +62,10 @@ import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.runtime.xml.XmlUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
@@ -85,16 +84,14 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
-import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.utils.Log4jUtil;
-import org.talend.core.services.resource.IExportJobResourcesService;
+import org.talend.core.repository.model.ResourceModelUtils;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.service.IRulesProviderService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.ui.services.IDesignerCoreUIService;
-import org.talend.core.ui.services.IRulesProviderService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
@@ -105,6 +102,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
@@ -118,6 +116,8 @@ import org.talend.repository.preference.constants.IExportJobPrefConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.EsbConfigUtils;
+import org.talend.repository.utils.Log4jUtil;
+import org.talend.resource.IExportJobResourcesService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
@@ -1894,7 +1894,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             org.talend.core.model.general.Project projecdddt = ProjectManager.getInstance().getCurrentProject();
             IProject fsProject = null;
             try {
-                fsProject = ResourceUtils.getProject(projecdddt);
+                fsProject = ResourceModelUtils.getProject(projecdddt);
             } catch (PersistenceException e2) {
                 ExceptionHandler.process(e2);
             }

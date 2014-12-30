@@ -48,7 +48,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
@@ -59,6 +58,7 @@ import org.talend.designer.runprocess.storm.StormJavaProcessor;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
+import org.talend.runprocess.data.PerformanceData;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

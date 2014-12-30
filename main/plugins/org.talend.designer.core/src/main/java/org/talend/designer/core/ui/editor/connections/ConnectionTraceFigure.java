@@ -32,13 +32,13 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.runtime.image.OverlayImageProvider;
 import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.TraceData;
 import org.talend.core.ui.CoreUIPlugin;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.model.components.EParameterName;
 
 /**

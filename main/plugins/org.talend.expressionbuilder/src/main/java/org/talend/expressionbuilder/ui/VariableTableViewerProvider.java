@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.runtime.model.expressionbuilder.Variable;
+import org.talend.commons.expressionbuilder.Variable;
 
 /**
  * Content and label provider for table viewer on expression builder dialog.

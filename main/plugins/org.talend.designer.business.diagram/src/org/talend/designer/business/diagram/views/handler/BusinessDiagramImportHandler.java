@@ -14,7 +14,7 @@ package org.talend.designer.business.diagram.views.handler;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.talend.commons.runtime.model.emf.TalendXMIResource;
+import org.talend.commons.emf.TalendXMIResource;
 import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
 
 /**

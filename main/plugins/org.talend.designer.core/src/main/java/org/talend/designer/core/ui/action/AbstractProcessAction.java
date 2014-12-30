@@ -21,8 +21,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**

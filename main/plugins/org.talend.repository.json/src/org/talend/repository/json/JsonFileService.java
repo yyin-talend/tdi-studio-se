@@ -16,8 +16,8 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.service.IJsonFileService;
-import org.talend.metadata.managment.ui.wizard.documentation.LinkUtils;
 import org.talend.repository.model.json.JSONFileConnection;
+import org.talend.repository.ui.wizards.documentation.LinkUtils;
 
 /**
  * created by wchen on 2013-6-5 Detailled comment

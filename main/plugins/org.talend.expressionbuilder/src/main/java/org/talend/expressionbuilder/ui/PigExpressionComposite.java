@@ -37,7 +37,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.talend.commons.ui.runtime.expressionbuilder.IExpressionDataBean;
+import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;

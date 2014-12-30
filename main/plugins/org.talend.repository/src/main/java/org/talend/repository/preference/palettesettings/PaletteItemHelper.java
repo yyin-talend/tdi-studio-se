@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.AssertionFailedException;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
-import org.talend.core.ui.component.preference.provider.IPaletteItem;
+import org.talend.designer.components.preference.provider.IPaletteItem;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * created by nrousseau on Aug 11, 2014 Detailled comment

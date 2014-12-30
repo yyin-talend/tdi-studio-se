@@ -58,20 +58,18 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.process.IReplaceNodeInProcess;
-import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.ValidationRulesConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.ExternalNodesFactory;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.designer.core.IReplaceNodeInProcess;
+import org.talend.designer.core.ReplaceNodesInProcessProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -85,6 +83,8 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.utils.ValidationRulesUtil;
+import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.ExternalNodesFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -1809,7 +1809,7 @@ public class DataProcess implements IGeneratingProcess {
             IConnection connection = node.getIncomingConnections().get(0);
             if (connection.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)
                     || connection.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)
-                    || connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)
+                    || connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)
                     || connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)
                     || connection.getLineStyle().equals(EConnectionType.RUN_IF)) {// add if you think it should be count
                                                                                   // for parallel Iterator
@@ -1830,7 +1830,8 @@ public class DataProcess implements IGeneratingProcess {
         for (IConnection connection : node.getOutgoingSortedConnections()) {
             if (connection.getTarget().isActivate()) {
 
-                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN | IConnectionCategory.USE_ITERATE)) {
+                if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                        || connection.getLineStyle().equals(EConnectionType.ITERATE)) {
                     if (((AbstractNode) node).getParallelIterator() != null) {
                         ((AbstractNode) connection.getTarget()).setParallelIterator(((AbstractNode) node).getParallelIterator());
                     } else if (connection.getLineStyle().equals(EConnectionType.ITERATE)

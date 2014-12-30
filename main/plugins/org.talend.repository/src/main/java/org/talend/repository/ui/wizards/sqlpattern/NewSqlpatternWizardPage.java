@@ -21,8 +21,8 @@ import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.metadata.managment.ui.wizard.PropertiesWizardPage;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 /**
  * Page for new project details. <br/>

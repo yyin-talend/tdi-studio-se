@@ -14,9 +14,9 @@ package org.talend.designer.core.ui.editor;
 
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
+import org.talend.repository.editor.JobEditorInput;
 
 /**
  * smallet class global comment. Detailled comment <br/>

@@ -44,7 +44,6 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.temp.ETypeGen;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.codegen.config.CloseBlocksCodeArgument;
 import org.talend.designer.codegen.config.CodeGeneratorArgument;
 import org.talend.designer.codegen.config.EInternalTemplate;
@@ -59,6 +58,7 @@ import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactoryProvider;
 import org.talend.designer.codegen.proxy.JetProxy;
 import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * CodeGenerator.

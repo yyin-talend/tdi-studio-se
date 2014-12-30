@@ -57,8 +57,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.osgi.framework.Bundle;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
@@ -72,9 +72,9 @@ import org.talend.core.model.properties.CustomComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.services.ISVNProviderService;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.core.ui.ISVNProviderService;
 import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**

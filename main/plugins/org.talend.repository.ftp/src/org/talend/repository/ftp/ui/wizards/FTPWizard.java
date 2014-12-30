@@ -43,15 +43,15 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
-import org.talend.metadata.managment.ui.wizard.PropertiesWizardPage;
-import org.talend.metadata.managment.ui.wizard.RepositoryWizard;
-import org.talend.metadata.managment.ui.wizard.metadata.connection.Step0WizardPage;
 import org.talend.repository.ftp.i18n.Messages;
 import org.talend.repository.ftp.ui.wizards.pags.FTPPage;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.wizards.PropertiesWizardPage;
+import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
  * DOC hwang class global comment. Detailled comment

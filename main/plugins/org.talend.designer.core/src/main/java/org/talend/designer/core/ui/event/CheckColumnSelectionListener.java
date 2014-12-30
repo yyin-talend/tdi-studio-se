@@ -26,12 +26,12 @@ import java.util.List;
 import org.eclipse.swt.events.SelectionEvent;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.runtime.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
-import org.talend.commons.ui.runtime.swt.tableviewer.TableViewerCreatorNotModifiable;
-import org.talend.commons.ui.runtime.swt.tableviewer.selection.ITableColumnSelectionListener;
-import org.talend.commons.ui.runtime.swt.tableviewer.sort.IColumnSortedListener;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener;
+import org.talend.commons.ui.swt.tableviewer.sort.IColumnSortedListener;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.process.IElementParameter;
 

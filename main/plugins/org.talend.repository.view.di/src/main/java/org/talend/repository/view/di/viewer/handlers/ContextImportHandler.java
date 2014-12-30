@@ -14,7 +14,7 @@ package org.talend.repository.view.di.viewer.handlers;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.talend.commons.runtime.model.emf.TalendXMIResource;
+import org.talend.commons.emf.TalendXMIResource;
 import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
 
 /**

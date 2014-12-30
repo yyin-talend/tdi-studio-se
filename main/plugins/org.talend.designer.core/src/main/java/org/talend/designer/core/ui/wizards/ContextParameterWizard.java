@@ -18,9 +18,9 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
-import org.talend.core.ui.context.view.Contexts;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.views.contexts.Contexts;
 
 /**
  * Wizard for the creation of a new IContextParameter. <br/>

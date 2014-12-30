@@ -25,9 +25,9 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.SQLPatternItem;
-import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ISQLPatternSynchronizer;
+import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**

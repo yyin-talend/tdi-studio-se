@@ -56,8 +56,6 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.process.TraceData;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.runprocess.IEclipseProcessor;
-import org.talend.core.model.runprocess.data.PerformanceData;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -71,6 +69,7 @@ import org.talend.designer.runprocess.trace.TraceConnectionsManager;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
+import org.talend.runprocess.data.PerformanceData;
 import org.talend.utils.network.FreePortFinder;
 
 import routines.system.NoHeaderObjectInputStream;

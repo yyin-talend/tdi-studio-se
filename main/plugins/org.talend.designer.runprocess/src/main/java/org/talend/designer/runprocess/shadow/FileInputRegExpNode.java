@@ -19,7 +19,7 @@ import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>

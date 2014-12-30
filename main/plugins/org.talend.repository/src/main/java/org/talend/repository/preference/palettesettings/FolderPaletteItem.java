@@ -15,7 +15,7 @@ package org.talend.repository.preference.palettesettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.ui.component.preference.provider.IPaletteItem;
+import org.talend.designer.components.preference.provider.IPaletteItem;
 import org.talend.repository.ui.ERepositoryImages;
 
 /**

@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
-import org.talend.commons.runtime.model.expressionbuilder.Variable;
+import org.talend.commons.expressionbuilder.Variable;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.types.JavaTypesManager;

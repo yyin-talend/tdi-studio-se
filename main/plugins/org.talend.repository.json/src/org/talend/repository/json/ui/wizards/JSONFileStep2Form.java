@@ -70,13 +70,6 @@ import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.datatools.xml.utils.ATreeNode;
 import org.talend.datatools.xml.utils.XPathPopulationUtil;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.metadata.managment.ui.preview.AsynchronousPreviewHandler;
-import org.talend.metadata.managment.ui.preview.IPreviewHandlerListener;
-import org.talend.metadata.managment.ui.preview.ProcessDescription;
-import org.talend.metadata.managment.ui.preview.StoppablePreviewLoader;
-import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
-import org.talend.metadata.managment.ui.utils.ShadowProcessHelper;
-import org.talend.metadata.managment.ui.wizard.IRefreshable;
 import org.talend.repository.json.ui.preview.JSONShadowProcessPreview;
 import org.talend.repository.json.ui.shadow.JSONShadowProcessHelper;
 import org.talend.repository.json.ui.wizards.extraction.ExtractionFieldsWithJSONXPathEditorView;
@@ -90,6 +83,13 @@ import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.JsonFactory;
 import org.talend.repository.model.json.SchemaTarget;
+import org.talend.repository.preview.AsynchronousPreviewHandler;
+import org.talend.repository.preview.IPreviewHandlerListener;
+import org.talend.repository.preview.ProcessDescription;
+import org.talend.repository.preview.StoppablePreviewLoader;
+import org.talend.repository.ui.swt.utils.IRefreshable;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.ShadowProcessHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
 
 /**

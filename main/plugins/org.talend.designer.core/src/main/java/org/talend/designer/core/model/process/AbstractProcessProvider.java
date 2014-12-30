@@ -27,10 +27,10 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.process.IReplaceNodeInProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.designer.core.IReplaceNodeInProcess;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**

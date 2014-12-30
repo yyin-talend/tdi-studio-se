@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.runtime.xml.XmlUtil;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.context.ContextUtils;
@@ -67,8 +67,8 @@ import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.designer.core.utils.SAPParametersUtils;
-import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

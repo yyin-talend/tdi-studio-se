@@ -24,7 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.core.ui.component.ComponentPaletteUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 

@@ -12,8 +12,8 @@
 // ============================================================================
 package org.talend.repository.preference;
 
-import org.talend.core.ui.token.AbstractTokenCollector;
-import org.talend.core.ui.token.PrefTokenKey;
+import org.talend.core.token.AbstractTokenCollector;
+import org.talend.core.token.PrefTokenKey;
 import org.talend.repository.RepositoryPlugin;
 
 import us.monoid.json.JSONObject;

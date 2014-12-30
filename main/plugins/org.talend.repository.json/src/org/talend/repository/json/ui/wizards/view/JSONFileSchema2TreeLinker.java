@@ -38,7 +38,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.ui.runtime.utils.TableUtils;
 import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.drawing.link.ExtremityLink;
@@ -49,10 +48,11 @@ import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.LinksManager;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.linking.TableToTreeLinker;
+import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.utils.TreeUtils;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.XmlExtractorBgRefresher;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
 import org.talend.repository.json.ui.wizards.AbstractJSONStepForm;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
  * wzhang class global comment. Detailled comment

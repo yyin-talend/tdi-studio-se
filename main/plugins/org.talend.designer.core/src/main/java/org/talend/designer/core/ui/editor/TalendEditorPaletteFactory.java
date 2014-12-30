@@ -40,9 +40,8 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
-import org.talend.core.ui.component.TalendPaletteGroup;
-import org.talend.core.ui.component.settings.ComponentsSettingsHelper;
+import org.talend.core.model.components.TalendPaletteGroup;
+import org.talend.core.ui.componentsettings.ComponentsSettingsHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IPaletteFilter;
 import org.talend.designer.core.i18n.Messages;
@@ -51,6 +50,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * This class creates the palette in the Gef Editor. <br/>

@@ -29,7 +29,7 @@ import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
 import org.talend.designer.hl7.ui.data.NameSpaceNode;
-import org.talend.metadata.managment.ui.wizard.AbstractForm;
+import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * bqian Create a xml node. <br/>

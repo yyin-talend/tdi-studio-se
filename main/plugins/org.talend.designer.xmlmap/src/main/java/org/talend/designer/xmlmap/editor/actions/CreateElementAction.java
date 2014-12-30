@@ -30,7 +30,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.StringUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * wchen class global comment. Detailled comment

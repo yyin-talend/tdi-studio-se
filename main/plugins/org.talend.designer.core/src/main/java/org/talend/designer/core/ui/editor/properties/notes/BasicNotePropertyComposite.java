@@ -50,7 +50,7 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.ui.properties.tab.HorizontalTabFactory;
+import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeNoteOpacityCommand;

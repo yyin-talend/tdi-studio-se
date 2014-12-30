@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.runtime.model.components.IComponentConstants;
-import org.talend.commons.runtime.xml.XmlUtil;
+import org.talend.commons.model.components.IComponentConstants;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
@@ -90,13 +90,12 @@ import org.talend.core.model.update.UpdateManagerHelper;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
-import org.talend.core.model.utils.SAPConnectionUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.service.IEBCDICProviderService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IJobletProviderService;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.core.utils.SAPConnectionUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -108,8 +107,9 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.update.UpdateCheckResult;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.utils.SAPParametersUtils;
-import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * ggu class global comment. Detailled comment

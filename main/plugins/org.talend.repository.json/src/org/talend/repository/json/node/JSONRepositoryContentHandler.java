@@ -40,7 +40,6 @@ import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.repository.json.util.JSONImage;
-import org.talend.repository.metadata.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
@@ -49,7 +48,7 @@ import org.talend.repository.model.json.JSONFileConnectionItem;
 import org.talend.repository.model.json.JsonFactory;
 import org.talend.repository.model.json.JsonPackage;
 import org.talend.repository.model.json.util.JsonXMLProcessor;
-
+import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import orgomg.cwm.foundation.businessinformation.BusinessinformationPackage;
 
 /**

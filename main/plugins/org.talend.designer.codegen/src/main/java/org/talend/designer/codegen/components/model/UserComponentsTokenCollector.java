@@ -15,9 +15,9 @@ package org.talend.designer.codegen.components.model;
 import java.util.List;
 
 import org.talend.core.model.components.IComponent;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
-import org.talend.core.ui.token.AbstractTokenCollector;
-import org.talend.core.ui.token.TokenKey;
+import org.talend.core.token.AbstractTokenCollector;
+import org.talend.core.token.TokenKey;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.preference.TosTokenCollector;
 
 import us.monoid.json.JSONArray;

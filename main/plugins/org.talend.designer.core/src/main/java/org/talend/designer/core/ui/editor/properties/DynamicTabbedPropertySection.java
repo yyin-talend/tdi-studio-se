@@ -42,7 +42,6 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.IExtendedTableCommand;
 import org.talend.commons.utils.data.container.Content;
@@ -80,7 +79,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -97,6 +96,7 @@ import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.views.properties.DynamicPropertyGenerator;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**

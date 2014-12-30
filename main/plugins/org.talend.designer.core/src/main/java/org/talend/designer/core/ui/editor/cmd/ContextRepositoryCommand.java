@@ -20,7 +20,6 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.properties.ContextItem;
@@ -28,6 +27,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**

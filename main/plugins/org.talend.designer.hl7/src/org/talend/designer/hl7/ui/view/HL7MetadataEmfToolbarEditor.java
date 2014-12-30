@@ -42,7 +42,7 @@ import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
-import org.talend.core.ui.metadata.editor.MetadataEmfTableEditor;
+import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.ui.metadata.extended.command.ExtendedTableResetDBTypesCommand;
 import org.talend.core.ui.metadata.extended.command.MetadataEmfExportXmlCommand;
 import org.talend.core.ui.metadata.extended.command.MetadataEmfImportXmlCommand;

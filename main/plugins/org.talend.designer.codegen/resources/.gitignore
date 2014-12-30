@@ -48,8 +48,3 @@ storm_monitor_header.javajet
 storm_subprocess_footer.javajet
 storm_subprocess_header.javajet
 storm_subprocess_run.javajet
-
-header_additional_thales.javajet
-
-#Spark
-header_additional_spark.javajet

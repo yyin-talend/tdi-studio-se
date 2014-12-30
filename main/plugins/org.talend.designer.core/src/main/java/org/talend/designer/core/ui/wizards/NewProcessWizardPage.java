@@ -31,9 +31,9 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.metadata.managment.ui.wizard.PropertiesWizardPage;
 import org.talend.repository.model.IProxyRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 /**
  * Page for new project details. <br/>

@@ -16,12 +16,12 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 public class TalendEditorComponentCreationUtil {
 

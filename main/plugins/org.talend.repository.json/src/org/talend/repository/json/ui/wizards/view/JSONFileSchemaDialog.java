@@ -27,8 +27,8 @@ import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
-import org.talend.core.ui.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.repository.json.ui.wizards.AbstractJSONStepForm;
 

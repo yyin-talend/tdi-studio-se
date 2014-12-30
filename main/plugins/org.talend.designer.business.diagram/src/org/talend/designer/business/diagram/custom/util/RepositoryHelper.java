@@ -21,8 +21,6 @@ import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
-import org.talend.core.repository.model.repositoryObject.QueryRepositoryObject;
-import org.talend.core.repository.model.repositoryObject.SAPFunctionRepositoryObject;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
@@ -30,7 +28,9 @@ import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.Repository;
 import org.talend.designer.business.model.business.TalendItem;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.SAPFunctionRepositoryObject;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

@@ -26,7 +26,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
@@ -36,6 +35,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.ReferenceFileItem;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -44,7 +44,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class AddCopyBookXc2jFileMigrationTask extends AbstractItemMigrationTask {
 
-    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2012, 3, 19, 14, 0, 0);
         return gc.getTime();
@@ -120,7 +119,6 @@ public class AddCopyBookXc2jFileMigrationTask extends AbstractItemMigrationTask 
                 try {
                     source.close();
                 } catch (Exception e) {
-                    //
                 }
             }
         }
@@ -129,7 +127,7 @@ public class AddCopyBookXc2jFileMigrationTask extends AbstractItemMigrationTask 
     public static IFile getReferenceXc2jFile(ConnectionItem connectionItem) {
         IFile x2cjFile = null;
         try {
-            IProject currentProject = ResourceUtils.getProject(ProjectManager.getInstance().getCurrentProject());
+            IProject currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
             String label = connectionItem.getProperty().getLabel();
             String version = connectionItem.getProperty().getVersion();
             String xc2jFileName = label + "_" + version + ".xc2j";

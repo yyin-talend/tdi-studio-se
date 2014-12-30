@@ -44,14 +44,14 @@ import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
+import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.ui.CoreUIPlugin;
-import org.talend.core.ui.preference.metadata.MetadataTypeLengthConstants;
-import org.talend.core.ui.process.IGEFProcess;
-import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -64,7 +64,7 @@ import org.talend.designer.filemultischemas.data.MultiSchemaRowData;
 import org.talend.designer.filemultischemas.data.MultiSchemasMetadataColumn;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.fileprocess.FileInputDelimited;
-import org.talend.metadata.managment.ui.preview.ProcessDescription;
+import org.talend.repository.preview.ProcessDescription;
 
 /**
  * cLi class global comment. Detailled comment

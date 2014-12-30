@@ -34,7 +34,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQSurvivorshipService;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.RepositoryManagerHelper;
-import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.ProjectManager;

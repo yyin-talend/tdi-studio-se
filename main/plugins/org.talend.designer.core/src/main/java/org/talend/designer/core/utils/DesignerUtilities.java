@@ -31,7 +31,6 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
@@ -39,6 +38,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.editor.JobEditorInput;
 
 /**
  * DOC bqian class global comment. Detailled comment

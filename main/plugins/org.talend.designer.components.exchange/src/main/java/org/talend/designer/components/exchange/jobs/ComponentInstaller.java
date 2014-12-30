@@ -23,7 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.ui.services.IComponentsLocalProviderService;
+import org.talend.core.service.IComponentsLocalProviderService;
 
 /**
  * 

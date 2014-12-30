@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.talend.componentdesigner_feature"
+      label="Componentdesigner_feature Feature"
+      version="6.0.0.qualifier"
+      provider-name=".Talend SA.">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import feature="org.talend.core_feature" version="5.6.0.qualifier"/>
+      <import plugin="org.talend.model"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.navigator"/>
+      <import plugin="org.talend.core.runtime"/>
+      <import plugin="org.talend.metadata.managment"/>
+      <import plugin="org.apache.log4j"/>
+      <import plugin="org.talend.core"/>
+      <import plugin="org.talend.designer.components.localprovider"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.talend.datatools.xml"/>
+      <import plugin="org.apache.commons.lang" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="org.talend.libraries.dom4j-jaxen"/>
+      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.editors" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.views" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jet" version="0.8.0"/>
+      <import plugin="org.eclipse.emf.codegen.ecore" version="2.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.codegen.ecore.ui" version="2.2.0" match="compatible"/>
+      <import plugin="org.eclipse.text" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ant.core" version="3.1.100" match="compatible"/>
+      <import plugin="org.eclipse.debug.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.common" version="2.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.codegen" version="2.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore.xmi" version="2.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filebuffers" version="3.2.0" match="compatible"/>
+      <import plugin="org.apache.ant" version="1.6.5" match="compatible"/>
+      <import plugin="org.eclipse.jet.core" version="1.0.0" match="compatible"/>
+   </requires>
+
+   <plugin
+         id="org.talend.componentdesigner"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.componentdesigner.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jet.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jet.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ant.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

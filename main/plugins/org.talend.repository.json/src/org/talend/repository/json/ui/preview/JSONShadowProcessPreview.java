@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.utils.CsvArray;
-import org.talend.metadata.managment.ui.preview.ProcessDescription;
 import org.talend.repository.model.json.SchemaTarget;
+import org.talend.repository.preview.ProcessDescription;
 
 /**
  * Create SWT Table to show the content of a file. <br/>

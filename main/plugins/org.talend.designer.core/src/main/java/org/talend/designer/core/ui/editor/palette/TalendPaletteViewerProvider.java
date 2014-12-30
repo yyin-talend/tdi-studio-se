@@ -12,12 +12,20 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.FigureCanvas;
+import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.gef.EditDomain;
+import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
+import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
+import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * 
@@ -39,8 +47,34 @@ public class TalendPaletteViewerProvider extends PaletteViewerProvider {
         // }
         TalendPaletteViewer pViewer = new TalendPaletteViewer(this.getEditDomain());
 
-        FigureCanvas canvas = new TalendFigureCanvas(parent, pViewer.getLightweightSys(), pViewer);
-        pViewer.setFigureCanvas(canvas);
+        /*************************************/
+        // FIXME ggu
+        // use the following codes to replace this pViewer.createControl(parent);
+        try {
+            // reflect the mothed for supper class PaletteViewer/GraphicalViewerImpl
+            Method getLightweightSystemMethod = GraphicalViewerImpl.class.getDeclaredMethod("getLightweightSystem"); //$NON-NLS-1$
+            getLightweightSystemMethod.setAccessible(true);
+            Object lws = getLightweightSystemMethod.invoke(pViewer);
+            //
+            FigureCanvas canvas = new TalendFigureCanvas(parent, (LightweightSystem) lws, pViewer);
+            Method setControlMethod = EditPartViewer.class.getDeclaredMethod("setControl", Control.class); //$NON-NLS-1$
+            setControlMethod.invoke(pViewer, canvas);
+            //
+            Method installRootFigureMethod = ScrollingGraphicalViewer.class.getDeclaredMethod("installRootFigure"); //$NON-NLS-1$
+            installRootFigureMethod.setAccessible(true);
+            installRootFigureMethod.invoke(pViewer);
+        } catch (SecurityException e) {
+            handleReflectionFailure(e);
+        } catch (NoSuchMethodException e) {
+            handleReflectionFailure(e);
+        } catch (IllegalArgumentException e) {
+            handleReflectionFailure(e);
+        } catch (IllegalAccessException e) {
+            handleReflectionFailure(e);
+        } catch (InvocationTargetException e) {
+            handleReflectionFailure(e);
+        }
+        /*************************************/
 
         configurePaletteViewer(pViewer);
         hookPaletteViewer(pViewer);

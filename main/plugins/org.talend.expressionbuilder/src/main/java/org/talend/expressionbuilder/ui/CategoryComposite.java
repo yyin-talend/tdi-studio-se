@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.runtime.model.expressionbuilder.Variable;
+import org.talend.commons.expressionbuilder.Variable;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.designer.rowgenerator.data.Function;

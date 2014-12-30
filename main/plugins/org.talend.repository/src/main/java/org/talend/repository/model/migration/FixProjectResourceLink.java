@@ -19,8 +19,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.runtime.model.emf.EmfHelper;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.Item;

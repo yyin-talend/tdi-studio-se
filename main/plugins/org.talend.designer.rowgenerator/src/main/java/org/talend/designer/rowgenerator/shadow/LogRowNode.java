@@ -30,11 +30,11 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.runprocess.shadow.TextElementParameter;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.rowgenerator.PluginUtils;
 import org.talend.designer.rowgenerator.managers.UIManager;
+import org.talend.designer.runprocess.shadow.TextElementParameter;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

@@ -48,11 +48,10 @@ import org.talend.cwm.helper.CatalogHelper;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.SwitchHelpers;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.model.migration.TosMetadataMigrationFrom400to410;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
-
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.RelationalFactory;
 import orgomg.cwm.resource.relational.Schema;

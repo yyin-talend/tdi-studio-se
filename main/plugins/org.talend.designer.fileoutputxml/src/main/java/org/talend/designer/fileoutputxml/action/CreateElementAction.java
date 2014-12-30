@@ -19,11 +19,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Attribute;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.Element;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.FOXTreeNode;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.node.NameSpaceNode;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.utils.StringUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * bqian Create a xml node. <br/>

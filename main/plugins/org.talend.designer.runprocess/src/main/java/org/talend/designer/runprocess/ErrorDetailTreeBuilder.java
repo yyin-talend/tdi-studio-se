@@ -25,8 +25,8 @@ import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC chuang class global comment. Detailled comment

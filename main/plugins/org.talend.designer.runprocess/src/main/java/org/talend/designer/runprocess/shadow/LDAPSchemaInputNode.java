@@ -15,8 +15,7 @@ package org.talend.designer.runprocess.shadow;
 import java.util.List;
 
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.runprocess.shadow.TextElementParameter;
-import org.talend.core.repository.model.preview.LDAPSchemaBean;
+import org.talend.repository.preview.LDAPSchemaBean;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>

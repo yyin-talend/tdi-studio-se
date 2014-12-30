@@ -51,7 +51,6 @@ import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.NodeConnector;
@@ -60,6 +59,7 @@ import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**

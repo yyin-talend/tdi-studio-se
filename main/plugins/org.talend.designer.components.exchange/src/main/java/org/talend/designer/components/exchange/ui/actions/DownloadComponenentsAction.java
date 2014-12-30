@@ -47,10 +47,9 @@ import org.talend.core.download.DownloadListener;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentManager;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.ui.component.ComponentPaletteUtilities;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.exchange.ExchangeComponentsProvider;
 import org.talend.designer.components.exchange.ExchangeConstants;
@@ -64,6 +63,7 @@ import org.talend.designer.components.exchange.util.ExchangeWebService;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * 

@@ -23,9 +23,9 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
-import org.talend.metadata.managment.ui.utils.FileConnectionContextUtils.EFileParamName;
-import org.talend.metadata.managment.ui.utils.OtherConnectionContextUtils.EParamName;
-import org.talend.metadata.managment.ui.wizard.AbstractForm;
+import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.utils.FileConnectionContextUtils.EFileParamName;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils.EParamName;
 
 /**
  * DOC gcui class global comment. Detailled comment

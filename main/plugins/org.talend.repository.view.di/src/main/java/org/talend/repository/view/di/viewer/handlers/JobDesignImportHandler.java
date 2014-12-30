@@ -17,7 +17,7 @@ import java.io.IOException;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.talend.commons.runtime.model.emf.TalendXMIResource;
+import org.talend.commons.emf.TalendXMIResource;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;

@@ -59,7 +59,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;

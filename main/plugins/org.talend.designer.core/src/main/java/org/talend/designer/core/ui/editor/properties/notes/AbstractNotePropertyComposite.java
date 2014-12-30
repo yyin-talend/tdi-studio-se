@@ -16,7 +16,7 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
-import org.talend.core.ui.properties.tab.HorizontalTabFactory;
+import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.notes.Note;
 

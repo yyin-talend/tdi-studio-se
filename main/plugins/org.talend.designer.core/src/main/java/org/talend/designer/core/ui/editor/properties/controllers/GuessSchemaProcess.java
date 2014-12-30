@@ -39,7 +39,6 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.ProcessStreamTrashReaderUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
@@ -51,6 +50,7 @@ import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.utils.sql.ConnectionUtils;
 
 /**

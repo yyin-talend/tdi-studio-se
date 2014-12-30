@@ -32,7 +32,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
@@ -44,6 +43,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.DbInfo;
 import org.talend.designer.core.ui.editor.properties.controllers.GuessSchemaProcess;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC hyWang class global comment. Detailled comment

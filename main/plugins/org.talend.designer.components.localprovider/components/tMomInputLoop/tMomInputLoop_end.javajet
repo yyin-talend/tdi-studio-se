@@ -3,8 +3,6 @@
 		org.talend.core.model.process.INode 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser
-		
-		java.util.List
 	" 
 %>
 
@@ -12,7 +10,7 @@
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-    boolean isUseExistConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+    boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
 	String cid = node.getUniqueName();
 	cid = cid.replaceAll("_Loop", "");
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
@@ -23,40 +21,24 @@
 	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
 	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));	
     String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
-    
-    List<? extends INode> commitNodes=node.getProcess().getNodesOfType("tMomCommit");
-    List<? extends INode> rollBackNodes=node.getProcess().getNodesOfType("tMomRollback");
 
-    boolean isCommitRollback = false;
-    for(INode cNode:commitNodes){
-    	String cNodeName = ElementParameterParser.getValue(cNode,"__CONNECTION__");
-    	if(cid.equals(cNodeName)){
-    		isCommitRollback = true;
-    		break;
-    	}
-    }
-    if(!isCommitRollback){
-    	for(INode rNode:rollBackNodes){
-    		String rNodeName = ElementParameterParser.getValue(rNode,"__CONNECTION__");
-    		if(cid.equals(rNodeName)){
-    			isCommitRollback = true;
-    			break;
-    		}
-    	}
-    }
+    boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
+		|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
 	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
  
 
-    if (isUseExistConnection) {
+        if (isUseConnection) {
 		for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
 			if (pNode.getUniqueName().equals(connectionComponentName)) {
 				transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
 				serverType=ElementParameterParser.getValue(pNode, "__SERVER__");
 			}	
 		}
+
+
 	}
 	
-	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
+	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseConnection) {
 		if ("CLIENT_ACKNOWLEDGE".equals(acknowledgmentMode)) {
 		%>
 			message_<%=cid%>.acknowledge();
@@ -84,7 +66,7 @@
 				break;
 			<%			
 			}
-		}else if(("ActiveMQ").equals(serverType)) {
+		}else if(("ActiveMQ").equals(serverType) || isUseConnection) {
 			if (("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"))) {
 			%>
 				}
@@ -139,7 +121,7 @@
 		}
                 <%}%>
 		}
-		<%if( ("ActiveMQ").equals(serverType) && !isCommitRollback && !isUseExistConnection){%>
+		<%if( ("ActiveMQ").equals(serverType) && !isCommitRollback && !isUseConnection){%>
 			<%
 			if (isLog4jEnabled) {
 			%>
@@ -193,44 +175,32 @@
 		
 			}	
 			<%
-			if (!isUseExistConnection && isLog4jEnabled && !isCommitRollback) {
+			if (isLog4jEnabled) {
 			%>
-				log.info("<%=cid%> - Disconnecting connection...");
+				log.info("<%=cid%> - Closing connection...");
 			<%
 			}
 			%>
-			System.out.println("Disconnecting queue...");
+			System.out.println("Closing connection");
+			remoteQ<%=cid%>.close();
 			<%
 			if(isRollback){
 			%>
-				qMgr_<%=cid%>.backout();
+				qMgr<%=cid%>.backout();
 			<%
 			}
 			%>
-			remoteQ_<%=cid%>.close();
-			<%
-			if(!isUseExistConnection && !isCommitRollback){
+			qMgr<%=cid%>.disconnect();
+			<%	
+			if (isLog4jEnabled) {
 			%>
-				System.out.println("Disconnecting queue manager...");
-				qMgr_<%=cid%>.disconnect();
-			<%
-			}
-			if (!isUseExistConnection && isLog4jEnabled && !isCommitRollback) {
-			%>
-				log.info("<%=cid%> - Disconnected successfully.");
+				log.info("<%=cid%> - Closed successfully.");
 			<%
 			}
             %>
 		}catch(com.ibm.mq.MQException ex){
 			System.out.println("A WebSphere MQ error occurred : Completion code " + ex.completionCode + " Reason code " + ex.reasonCode);
-			<%
-			if(!isUseExistConnection){
-			%>
-				System.out.println("Disconnecting queue...");
-				remoteQ_<%=cid%>.close();
-			<%
-			}
-			%>
+			remoteQ<%=cid%>.close();
 		}
 	<%
 	}
@@ -238,7 +208,7 @@
 
 } finally {
 //        System.out.println("close connection after loop!");
-	<%if( ("ActiveMQ").equals(serverType) && !isUseExistConnection){%>
+	<%if( ("ActiveMQ").equals(serverType) && !isUseConnection){%>
 		<%
 		if (isLog4jEnabled) {
 		%>

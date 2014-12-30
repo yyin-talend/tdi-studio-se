@@ -42,8 +42,8 @@ import org.talend.commons.ui.swt.linking.TreeToTablesLinker;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.view.HL7MetadataEmfTableEditorView;
-import org.talend.metadata.managment.ui.wizard.metadata.xml.XmlExtractorBgRefresher;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
 
 /**
  * DOC hywang class global comment. Detailled comment

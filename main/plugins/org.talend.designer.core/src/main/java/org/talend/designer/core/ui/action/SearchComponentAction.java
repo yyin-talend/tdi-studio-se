@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.core.ui.utils.PluginUtil;
+import org.talend.core.utils.PluginUtil;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;

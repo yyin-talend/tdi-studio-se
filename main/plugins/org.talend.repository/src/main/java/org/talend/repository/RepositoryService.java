@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -49,7 +48,7 @@ import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.OperationCancelException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.runtime.model.components.IComponentConstants;
+import org.talend.commons.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.PasswordHelper;
 import org.talend.commons.utils.io.FilesUtils;
@@ -61,7 +60,6 @@ import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.action.DisableLanguageActions;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
@@ -88,7 +86,6 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryElementDelta;
 import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.model.utils.CloneConnectionUtils;
 import org.talend.core.model.utils.RepositoryManagerHelper;
@@ -96,29 +93,29 @@ import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.CoreRepositoryPlugin;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.IRepositoryFactory;
-import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
-import org.talend.core.repository.model.repositoryObject.SalesforceModuleRepositoryObject;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
+import org.talend.core.service.IRulesProviderService;
+import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
-import org.talend.core.ui.services.IRulesProviderService;
 import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
-import org.talend.metadata.managment.ui.model.ProjectNodeHelper;
-import org.talend.metadata.managment.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProjectNodeHelper;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.SalesforceModuleRepositoryObject;
 import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -130,6 +127,7 @@ import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
@@ -145,8 +143,6 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  */
 
 public class RepositoryService implements IRepositoryService, IRepositoryContextService {
-
-    private static Logger log = Logger.getLogger(RepositoryService.class);
 
     /*
      * (non-Javadoc)
@@ -744,8 +740,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                         .toOSString();
                 return path;
             } catch (SystemException e) {
-                // added by SeB, log it at least butthe devlopper should have a look at this
-                log.error("failed to get the Rules provider path", e); //$NON-NLS-1$
+                // no thing to do
             }
         }
         return ""; //$NON-NLS-1$
