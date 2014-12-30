@@ -19,6 +19,10 @@ class="MomConnection"
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 	
+	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
+	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+	
+	
 	if(("ActiveMQ").equals(serverType)){/***ActiveMQ*****/
 		boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
 		String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
@@ -67,34 +71,40 @@ class="MomConnection"
 			url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
 		<%}%>			
 		
-		System.out.println("Connecting to URL: " + url_<%=cid %>);
-	
-		org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
-			new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
 		<%
-			
-			/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
-		%>	
-					
-		<% if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) { %>
-				javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
-		<% } else { %>
-
-			<%
-			String passwordFieldName = "__PASS__";
-			%>
-
+		String passwordFieldName = "__PASS__";
+		%>
 			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-			
-			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,decryptedPassword_<%=cid%>);
-		<% } %>
-	
-	    connection_<%=cid %>.start();
-		globalMap.put("connection_<%=cid%>", connection_<%=cid %>);
-	
-		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
-	    globalMap.put("session_<%=cid %>", session_<%=cid %>);
 		<%
+		if(isUseSharedConnection){
+		%>
+			javax.jms.Connection connection_<%=cid %> = org.talend.mq.SharedActiveMQConnection.getMQConnection(url_<%=cid %>,<%=dbuser%>,decryptedPassword_<%=cid%>,<%=sharedConnectionName%>);
+		<%
+		}else{
+		%>
+			System.out.println("Connecting to URL: " + url_<%=cid %>);
+			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
+				new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
+			<%
+				
+				/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
+			%>	
+						
+			<% if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) { %>
+				javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
+			<% } else { %>
+				javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,decryptedPassword_<%=cid%>);
+			<% } %>
+		
+		    connection_<%=cid %>.start();
+		<%
+		}
+		%>
+		
+	    globalMap.put("connection_<%=cid%>", connection_<%=cid %>);
+	    javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
+	    globalMap.put("session_<%=cid %>", session_<%=cid %>);
+	<%
 	}else{	/***WebSphere MQ*****/
 	
 		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
@@ -119,8 +129,16 @@ class="MomConnection"
 			properties<%=cid%>.put("password",decryptedPassword_<%=cid%>);
 		<%
 		}
+		if(isUseSharedConnection){
 		%>
-		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
+			com.ibm.mq.MQQueueManager qMgr_<%=cid%> =  org.talend.mq.SharedWebSphereMQConnection.getMQConnection(<%=qm%>,properties<%=cid%>,<%=sharedConnectionName%>);
+		<%
+		}else{
+		%>
+			com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
+		<%
+		}
+		%>
 		globalMap.put("qMgr_<%=cid%>", qMgr_<%=cid%> );
 	<%
 	}
