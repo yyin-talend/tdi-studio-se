@@ -51,14 +51,12 @@ imports="
 	} else {
 	%>
 		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = (com.ibm.mq.MQQueueManager)globalMap.get("qMgr_<%=connectionCid%>");
-	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = (com.ibm.mq.MQQueue)globalMap.get("remoteQ_<%=connectionCid%>");
-		if(qMgr_<%=cid%> != null && remoteQ_<%=cid%> != null) {
+		if(qMgr_<%=cid%> != null) {
 			qMgr_<%=cid%>.backout();
 			<%  
 			if(close){
 			%>
-				remoteQ_<%=cid%>.close();
-			    qMgr_<%=cid%>.disconnect();;
+			    qMgr_<%=cid%>.disconnect();
 			<% 
 			}
 			%>

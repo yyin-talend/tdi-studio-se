@@ -3,6 +3,8 @@
 		org.talend.core.model.process.INode 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser
+		
+		java.util.List
 	" 
 %>
 
@@ -21,10 +23,28 @@
 	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
 	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));	
     String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
+    
+    List<? extends INode> commitNodes=node.getProcess().getNodesOfType("tMomCommit");
+    List<? extends INode> rollBackNodes=node.getProcess().getNodesOfType("tMomRollback");
 
-    boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
-		|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
- 
+    boolean isCommitRollback = false;
+    for(INode cNode:commitNodes){
+    	String cNodeName = ElementParameterParser.getValue(cNode,"__CONNECTION__");
+    	if(cid.equals(cNodeName)){
+    		isCommitRollback = true;
+    		break;
+    	}
+    }
+    if(!isCommitRollback){
+    	for(INode rNode:rollBackNodes){
+    		String rNodeName = ElementParameterParser.getValue(rNode,"__CONNECTION__");
+    		if(cid.equals(rNodeName)){
+    			isCommitRollback = true;
+    			break;
+    		}
+    	}
+    }
+	 
 
     if (isUseExistConnection) {
 		for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
@@ -103,16 +123,19 @@
 		%>
 		
 			}	
-			System.out.println("Closing connection");
+			System.out.println("Disconnecting queue...");
 			<%
 			if(isRollback){
 			%>
 				qMgr_<%=cid%>.backout();
 			<%
 			}
-			if(!isUseExistConnection && isCommitRollback){
 			%>
-				remoteQ<%=cid%>.close();
+			remoteQ_<%=cid%>.close();
+			<%
+			if(!isUseExistConnection && !isCommitRollback){
+			%>
+				System.out.println("Disconnecting queue manager...");
 				qMgr_<%=cid%>.disconnect();
 			<%
 			}
@@ -122,7 +145,8 @@
 			<%
 			if(!isUseExistConnection){
 			%>
-				remoteQ<%=cid%>.close();
+				System.out.println("Disconnecting queue...");
+				remoteQ_<%=cid%>.close();
 			<%
 			}
 			%>
