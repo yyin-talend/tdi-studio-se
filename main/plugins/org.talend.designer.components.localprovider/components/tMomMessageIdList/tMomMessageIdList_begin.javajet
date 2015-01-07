@@ -88,7 +88,6 @@ class="MomInput"
 	    	com.ibm.mq.MQException.log = null;
 	    	boolean flag_<%=cid%>=true;
 	    
-	    	qMgr_<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties_<%=cid%>);
 	    	while(flag_<%=cid%>){
 	    		remoteQ_<%=cid%>=qMgr_<%=cid%>.accessQueue(<%=queue%>,openOptions_<%=cid%>);
 	    		com.ibm.mq.MQMessage inMessage_<%=cid%>=new com.ibm.mq.MQMessage();
