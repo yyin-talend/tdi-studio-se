@@ -51,7 +51,35 @@ public class SetParallelizationAction extends SelectionAction {
         }
         if (parts.size() == 1) {
             Object o = parts.get(0);
-            return calculateAction(o);
+            if (o instanceof SubjobContainerPart) {
+                SubjobContainerPart part = (SubjobContainerPart) o;
+                SubjobContainer subjob = (SubjobContainer) part.getModel();
+                if (subjob.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
+                    if (subjob.isDisplayed()) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+
+            } else if (o instanceof NodePart) {
+                NodePart part = (NodePart) o;
+                Node node = (Node) part.getModel();
+                if (node.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
+                    if (node.isStart()) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+
+            } else {
+                return false;
+            }
         }
         return false;
     }
@@ -69,7 +97,7 @@ public class SetParallelizationAction extends SelectionAction {
                 boolean hasStartNode = false;
                 List<NodeContainerPart> childNodes = ((SubjobContainerPart) o).getChildren();
                 for (NodeContainerPart childNode : childNodes) {
-                    NodeContainerPart part = childNode;
+                    NodeContainerPart part = (NodeContainerPart) childNode;
                     NodeContainer node = (NodeContainer) part.getModel();
                     if (node.getNode().isStart()) {
                         hasStartNode = true;
@@ -78,7 +106,7 @@ public class SetParallelizationAction extends SelectionAction {
                 }
                 if (!hasStartNode) {
                     for (NodeContainerPart childNode : childNodes) {
-                        NodeContainerPart part = childNode;
+                        NodeContainerPart part = (NodeContainerPart) childNode;
                         NodeContainer node = (NodeContainer) part.getModel();
                         if (node.getNode().isSubProcessStart()) {
                             getCommandStack().execute(new SetParallelizationCommand(node.getNode()));
@@ -87,56 +115,5 @@ public class SetParallelizationAction extends SelectionAction {
                 }
             }
         }
-    }
-
-    private boolean calculateAction(Object object) {
-        if (object instanceof SubjobContainerPart) {
-            SubjobContainerPart part = (SubjobContainerPart) object;
-            SubjobContainer subjob = (SubjobContainer) part.getModel();
-            if (subjob.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
-                if (subjob.isDisplayed()) {
-                    for (NodeContainer nodeCon : subjob.getNodeContainers()) {
-                        if (nodeCon.getNode().isJoblet()) {
-                            return false;
-                        }
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-
-        } else if (object instanceof NodePart) {
-            NodePart part = (NodePart) object;
-            Node node = (Node) part.getModel();
-            if (node.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
-                if (node.isJoblet()) {
-                    return false;
-                } else if (node.isStart()) {
-                    SubjobContainer subjob = node.getNodeContainer().getSubjobContainer();
-                    if (subjob == null) {
-                        return false;
-                    }
-                    for (NodeContainer nodeCon : subjob.getNodeContainers()) {
-                        if (node.getUniqueName().equals(nodeCon.getNode().getUniqueName())) {
-                            continue;
-                        }
-                        if (nodeCon.getNode().isJoblet()) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-
-        }
-        return false;
     }
 }
