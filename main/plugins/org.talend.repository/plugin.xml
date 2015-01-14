@@ -2213,6 +2213,15 @@
               name="SetDieOnErrorFalse4tSCPDelete"
               version="5.4.3">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.2"
+              class="org.talend.repository.model.migration.ChangeMappingParameter4Redshift"
+              id="org.talend.repository.model.migration.ChangeMappingParameter4Redshift"
+              name="ChangeMappingParameter4Redshift"
+              description="change the mapping db id for redshift components"
+              version="5.4.3">
+        </projecttask>
    </extension>
    
    <extension
