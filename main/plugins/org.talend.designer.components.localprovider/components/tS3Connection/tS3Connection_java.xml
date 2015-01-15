@@ -56,7 +56,6 @@
     <PARAMETER 
 	    NAME="REGION" 
 	    FIELD="OPENED_LIST" 
-	    RAW="true" 
 	    NUM_ROW="30" 
 	    REQUIRED="true" 
 	 >
