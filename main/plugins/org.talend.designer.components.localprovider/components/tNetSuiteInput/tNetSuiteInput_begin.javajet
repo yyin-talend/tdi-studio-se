@@ -1,0 +1,230 @@
+<%@jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List
+    	java.util.Map
+    	java.lang.Character
+    	java.util.Calendar
+		java.util.Arrays
+	"
+%>
+
+<% 
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();	
+%>
+
+globalMap.put("<%=cid%>_NETSUITE_ERROR", null);
+int nb_line_<%=cid%> = 0;
+boolean continue_<%=cid%> = true;
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList(); // This is the Schema
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+		
+	if (metadata != null) {
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		
+		// Get the component link with an other component (FLOW_MAIN, FLOW_MERGE ...)
+		// See XML file to setup hoe the component should be linked to other component
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+		
+		// Get the two search criteria tables
+		List<Map<String, String>> bodyField = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__CONDITIONS__");
+		List<Map<String, String>> customField = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__CUSTOM_SEARCH__");
+		List<Map<String, String>> joinedMap = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__JOIN_SEARCH__");
+		
+		if (columnList.size() > 0 && outgoingConns != null && outgoingConns.size() > 0) {
+			
+			// Get the login credential for NetSuite
+			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+			String username = ElementParameterParser.getValue(node, "__USER__");
+			String password = ElementParameterParser.getValue(node, "__PASS__");
+			String role = ElementParameterParser.getValue(node, "__ROLE__");
+			String account = ElementParameterParser.getValue(node, "__ACCOUNT__");
+			
+			// Search configurations
+			String searchEntity = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
+			boolean bodySearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__ITEMS_LIST_CHKB__"));
+			boolean regularSearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__SHOW_CONDITIONS__"));
+			boolean customSearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__CUSTOM_SEARCH_CHKB__"));
+			boolean isJoin = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__JOIN_SEARCH_CHKB__"));
+%> 
+			
+			org.talend.netsuite.NetSuiteManagement nsMgr_<%=cid%> = new org.talend.netsuite.NetSuiteManagement(<%=username%>, <%=password%>, <%=role%>, <%=account%>, "<%=endpoint%>"); 
+
+<%
+			IConnection outgoingConn = outgoingConns.get(0);
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%> 
+
+			try {
+			
+<% 
+				if (searchEntity.endsWith("CustomRecord")) {
+					searchEntity = ElementParameterParser.getValue(node, "__CUSTOMRECORDID__").trim();	
+				}
+				
+				boolean isSearchId = false;
+				if (bodyField != null) {
+				
+					// To be modified to add saved search support
+					// nsMgr_cid.initialize("searchEntity", "savedSearchID");
+					// records_cid = nsMgr_cid.submitRequest(true);
+%> 
+
+					com.netsuite.webservices.platform.core_2014_2.Record[] records_<%=cid %> = null;
+					nsMgr_<%=cid%>.initialize("<%=searchEntity%>", null); 
+
+<%
+					if (customField != null) {
+						List<String> operator = Arrays.asList(new String[] { "between", "notBetween"});
+						
+						// Construct a search for body fields
+						if(regularSearch) {
+							for (Map<String, String> keyColumn : bodyField) {
+%> 
+
+								nsMgr_<%=cid%>.search("<%=searchEntity%>", "<%=keyColumn.get("INPUT_COLUMN")%>", "<%=keyColumn.get("OPERATOR")%>", (Object) (new String[] { <%=keyColumn.get("RVALUE")%> }), <%=bodySearch%>, "null"); 
+
+<%
+							}
+						}
+						
+						// Construct a search for custom fields.
+						if(customSearch) {
+							for (Map<String, String> keyColumn : customField) {
+%> 
+
+								nsMgr_<%=cid%>.search("<%=searchEntity%>", <%=keyColumn.get("CUSTOM_FIELD_ID")%>, "<%=keyColumn.get("OPERATOR")%>", (Object) (new String[] { <%=keyColumn.get("VALUE")%> }), <%=bodySearch%>, "<%=keyColumn.get("CUSTOM_FIELD_TYPE")%>"); 
+
+<%
+							}
+						}
+						
+						// Construct a search for joined record.
+						if(isJoin) {
+							for (Map<String, String> keyColumn : joinedMap) {
+%>
+
+								nsMgr_<%=cid%>.createJoinSearch("<%=keyColumn.get("JOIN_RECORD")%>", "<%=keyColumn.get("JOIN_FIELD")%>", "<%=keyColumn.get("JOIN_OPERATOR")%>", (Object) (new String[] { <%=keyColumn.get("JOIN_VALUE")%> }));
+
+<%
+							}
+							if (joinedMap.size() > 0) {
+%>
+								
+								nsMgr_<%=cid%>.joinSearch(); 
+
+<%
+							}
+						}
+						
+						// We execute the search.
+%> 
+
+						records_<%=cid%> = nsMgr_<%=cid%>.submitRequest(true);
+
+						// Get the value of a custom field.
+						Object customFieldValue_<%=cid%> = null;
+						while (continue_<%=cid%>) { // Block closed in END file
+						
+							if(records_<%=cid%> != null){
+    							for (int i_<%=cid%> = 0; i_<%=cid%> < records_<%=cid%>.length; i_<%=cid%>++) { // Block closed in END file
+    								nb_line_<%=cid%>++;
+    								<%=searchEntity%> record_<%=cid%> = (<%=searchEntity%>) records_<%=cid%>[i_<%=cid%>];
+
+<%
+									// Block Start [1]
+    								for (int i = 0; i < columnList.size(); i++) {
+    									
+    									IMetadataColumn column = columnList.get(i);
+    									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+    									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    									
+    									// We detect if the first caracter is lowerCase in order to detect if we want a custom field or a body field
+    									char first = column.getLabel().charAt(0);
+    									
+    									// If the first caracter is a UpperCase letter
+    									if (!Character.isLowerCase(first)) {
+%> 
+
+											if (record_<%=cid%>.get<%=column.getLabel()%>() != null) { 
+
+<%
+													if (javaType == JavaTypesManager.DATE) { 
+%> 
+
+														<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get<%=column.getLabel()%>().getTime(); 
+													
+<%
+													} else  {
+%> 
+
+														<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get<%=column.getLabel()%>(); 
+
+<%
+													}
+%> 
+
+    										} else {
+    											<%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+    										}
+
+<%
+    									} else {
+    										// We consider de following as a customfield
+%> 
+
+    										customFieldValue_<%=cid %> = nsMgr_<%=cid%>.getCustomFieldValue(record_<%=cid%>.getCustomFieldList(), "<%=column.getLabel()%>"); 
+    										if (customFieldValue_<%=cid %> != null) { 
+										
+<%
+												if (javaType == JavaTypesManager.DATE) {
+%>
+
+													<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ((Calendar) customFieldValue_<%=cid %>).getTime(); 
+
+<%
+												} else if (javaType == JavaTypesManager.OBJECT) {
+%> 
+
+													<%=outgoingConn.getName()%>.<%=column.getLabel()%> = customFieldValue_<%=cid %>; 
+												
+<%
+												} else {
+%> 
+
+													<%=outgoingConn.getName()%>.<%=column.getLabel()%> = (<%=javaType.getNullableClass().getSimpleName()%>)  customFieldValue_<%=cid %>; 
+
+<%
+												}
+%> 
+
+    										} else { 
+    											<%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>; 
+    										} 
+<%
+										}
+									}
+%> 
+							// Block End [1]
+							// Code continues in the END file.
+<%
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
+%>
