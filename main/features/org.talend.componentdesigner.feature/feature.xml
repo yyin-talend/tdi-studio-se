@@ -17,29 +17,6 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import plugin="org.talend.model"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui.navigator"/>
-      <import plugin="org.talend.core.runtime"/>
-      <import plugin="org.talend.metadata.managment"/>
-      <import plugin="org.apache.log4j"/>
-      <import plugin="org.talend.core"/>
-      <import plugin="org.talend.designer.components.localprovider"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.talend.datatools.xml"/>
-      <import plugin="org.apache.commons.lang" version="2.4.0" match="greaterOrEqual"/>
-      <import plugin="org.talend.libraries.dom4j-jaxen"/>
-      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
-      <import feature="org.talend.core.feature" version="1.0.0.qualifier"/>
-      <import plugin="org.talend.core.ui"/>
-      <import plugin="org.eclipse.xsd"/>
-      <import plugin="org.eclipse.core.variables" version="3.1.0" match="compatible"/>
-   </requires>
-
    <plugin
          id="org.talend.componentdesigner"
          download-size="0"
