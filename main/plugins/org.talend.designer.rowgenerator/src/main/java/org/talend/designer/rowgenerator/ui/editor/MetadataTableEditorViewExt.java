@@ -93,10 +93,9 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     public MetadataTableEditorViewExt(Composite parentComposite, int mainCompositeStyle,
             ExtendedTableModel<IMetadataColumn> extendedTableModel, boolean readOnly, boolean toolbarVisible,
             RowGeneratorComponent rGcomponent, FunctionManagerExt functionManager) {
-        super(parentComposite, mainCompositeStyle, extendedTableModel, readOnly, toolbarVisible, true, false);
+        super(parentComposite, mainCompositeStyle, extendedTableModel, readOnly, toolbarVisible, true);
         this.rGcomponent = rGcomponent;
         this.functionManager = functionManager;
-        initGraphicComponents();
     }
 
     @Override
@@ -140,15 +139,6 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     @Override
     protected void createColumns(TableViewerCreator<IMetadataColumn> tableViewerCreator, Table table) {
-        setShowKeyColumn(false);
-        setShowNullableColumn(false);
-        setShowPatternColumn(false);
-        setShowLengthColumn(false);
-        setShowPrecisionColumn(false);
-        setShowDefaultColumn(false);
-        setShowCommentColumn(false);
-
-        // System.out.println(editorView.isShowDefaultColumn());
         super.createColumns(tableViewerCreator, table);
         // ////////////////////////////////////////////
         configureFunctionColumns(tableViewerCreator);
