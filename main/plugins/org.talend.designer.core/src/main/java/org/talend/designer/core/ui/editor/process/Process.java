@@ -3280,7 +3280,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else if ((node.getComponent().getName() != null)) {
                     if (node.getComponent().getName().compareTo(componentName) == 0) {
                         addNodeIfNotInTheList(matchingNodes, node);
-                    } else {
+                    } else if (node.getComponent() instanceof EmfComponent){
                         EmfComponent component = (EmfComponent) node.getComponent();
                         String eqCompName = component.getEquivalent();
                         if (componentName.equals(eqCompName)) {
