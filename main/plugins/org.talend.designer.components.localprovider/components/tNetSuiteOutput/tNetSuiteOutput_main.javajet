@@ -17,29 +17,12 @@
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-    boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
+    
     boolean dieonerror = ElementParameterParser.getValue(node,"__CEASE_FOR_ERROR__").equals("true");
-    String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
-    String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
-    String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-    String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
     String action = ElementParameterParser.getValue(node, "__ACTION__");
     String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
 %>
 
-<%
-	if(useProxy){
-%>
-
-        java.util.Properties props = System.getProperties();
-        props.put("socksProxyHost",<%=proxyHost %>);  
-        props.put("socksProxyPort",<%=proxyPort %>);
-        props.put("java.net.socks.username", <%=proxyUsername %>);
-        props.put("java.net.socks.password", <%=proxyPassword %>); 
-    
-<%
-	}
-%>
 
 <%
     String entitytype=modulename;
@@ -66,10 +49,10 @@
                 //TODO detect Custom Recs and fields with a startsWith("cust")
                 
                 <%=modulename%> record_<%=cid%> = new <%=modulename%>();
-                // String id_<%=cid%> = <%=conn.getName() %>.InternalId;
                 boolean useExternal_<%=cid%> = false;
                 com.netsuite.webservices.platform.messages_2014_2.WriteResponse response_<%=cid%> = null;
                 
+                // String id_<%=cid%> = <%=conn.getName() %>.InternalId;
                 /*String id_<%=cid%> = <%=conn.getName() %>.InternalId;
                 if (id_<%=cid%>==null) {
                   id_<%=cid%> = <%=conn.getName() %>.ExternalId;
@@ -99,6 +82,7 @@
 
         	    		if (<%=conn.getName() %>.<%=column.getLabel() %> == null) {
         					com.netsuite.webservices.platform.core_2014_2.NullField fl = record_<%=cid%>.getNullFieldList();
+        					
         					if (fl==null) {
         						record_<%=cid%>.setNullFieldList(new com.netsuite.webservices.platform.core_2014_2.NullField());
         					}
@@ -162,6 +146,14 @@
         	try {
  				
 <%
+ 				boolean containsField = false;
+ 				for(java.lang.reflect.Field field : conn.getClass().getDeclaredFields()){
+					if(field.getName().equals("InternalId")){
+						containsField = true;
+						break;
+					}
+				}
+				
                 if ("insert".equals(action)) {
 %>
 
@@ -169,13 +161,23 @@
             		
             		if (!response_<%=cid%>.getStatus().isIsSuccess()) {
 						throw new java.rmi.RemoteException(nsMgr_<%=cid%>.getStatusDetails(response_<%=cid%>.getStatus()));
-					}/* else {
-						System.out.println(nsMgr_<%=cid%>.getStatusDetails(response_<%=cid%>.getStatus()));
-					}*/
-            		
-                    // globalMap.put("<%=cid%>_CURRENT_INTERNALID", <%=conn.getName() %>.InternalId);
+					}
+					
+            		java.lang.reflect.Field field = response_<%=cid%>.getBaseRef().getClass().getDeclaredField("internalId");
+					field.setAccessible(true);
+					String internalId = (String) field.get(response_<%=cid%>.getBaseRef());
 
 <%
+ 					if(containsField) {
+%>
+     					<%=conn%>.InternalId = internalId;
+<%
+ 					}
+%>
+                    globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(internalId));
+
+<%
+				// InternalId no need
 				} else if ("update".equals(action)) {
 %>
 
@@ -184,19 +186,32 @@
 					if (!response_<%=cid%>.getStatus().isIsSuccess()) {
 						throw new java.rmi.RemoteException(nsMgr_<%=cid%>.getStatusDetails(response_<%=cid%>.getStatus()));
 					}
+					
+					globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(<%=conn.getName() %>.InternalId));	
 
 <%
 				} else if ("upsert".equals(action)) {
 %> 
 
-                    <%=conn.getName() %>.InternalId=nsMgr_<%=cid%>.upsert("<%=entitytype %>", record_<%=cid%>);		
-                    globalMap.put("<%=cid%>_CURRENT_INTERNALID", <%=conn.getName() %>.InternalId);
+                    String internalId = nsMgr_<%=cid%>.upsert("<%=entitytype %>", record_<%=cid%>);
+
+<%
+ 					if(containsField) {
+%>
+     					<%=conn%>.InternalId = internalId;
+<%
+ 					}
+%>
+
+                    globalMap.put("<%=cid%>_CURRENT_INTERNALID", internalId);
 		
 <%
+				// InternalId no need
 				} else if ("delete".equals(action)) {
 %>
 
-					nsMgr_<%=cid%>.delete("<%=entitytype %>", useExternal_<%=cid%>, <%=conn.getName() %>.InternalId);		
+					nsMgr_<%=cid%>.delete("<%=entitytype %>", useExternal_<%=cid%>, <%=conn.getName() %>.InternalId);
+					globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(<%=conn.getName() %>.InternalId));	
 
 <%
 				}
@@ -222,110 +237,9 @@
 			}
 			
 			nb_line_<%=cid %>++; 
-			///////////////////////    			
 
 <%
     		}//4
-    		
-        	String rejectConnName = null;
-        	List< ? extends IConnection> outConns = node.getOutgoingConnections("REJECT");
-    		for (IConnection outConn : outConns) {//3
-    			if (outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
-    				rejectConnName = outConn.getName();
-    				List<IMetadataColumn> rejectColumnList = null;
-					IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
-					if(metadataTable != null) {
-					    rejectColumnList = metadataTable.getListColumns();	    
-					}
-					
- 					if ("insert".equals(action)) {
-%>
-
- 						<%=rejectConnName %> = new <%=rejectConnName %>Struct();
-
-<%
-	                    List<IMetadataColumn> columnList = metadata.getListColumns();
-	                    for(IMetadataColumn column2 : columnList) {
-%>
-
-	                     	<%=rejectConnName%>.<%=column2.getLabel()%> = <%=conn.getName()%>.<%=column2.getLabel()%>;
-
-<%
-	                     }
-%>
-
- 						<%=rejectConnName%>.isSuccess = response_<%=cid%>.getStatus().isIsSuccess();
- 						
- 						if(response_<%=cid%>.getStatus().isIsSuccess()){
- 							<%=rejectConnName%>.errorMessage = null;
- 							if(<%=isCustom%>) {
-<%
- 								boolean containsField = false;
- 								for(java.lang.reflect.Field field : rejectConnName.getClass().getDeclaredFields()){
-									if(field.getName().equals("InternalId")){
-										containsField = true;
-										break;
-									}
-								}
-						        
- 								if(containsField) {
- %>
-     								<%=rejectConnName%>.InternalId = ((com.netsuite.webservices.platform.core_2014_2.CustomRecordRef)response_<%=cid%>.getBaseRef()).getInternalId();
-<%
- 								}
-%>
- 							} else {
-<%
- 								if(containsField) {
-%>
-     								<%=rejectConnName%>.InternalId = ((com.netsuite.webservices.platform.core_2014_2.RecordRef)response_<%=cid%>.getBaseRef()).getInternalId();
-<%
- 								}
-%>
- 							}
- 						} else {
- 							<%=rejectConnName%>.errorMessage = new java.util.ArrayList<String>();
- 							for(int i=0;i<response_<%=cid%>.getStatus().getStatusDetail().length;i++) {
- 								<%=rejectConnName%>.errorMessage.add(response_<%=cid%>.getStatus().getStatusDetail(i).getMessage());
- 							}
- 						}
-    				
-<%
-    				} else if ("update".equals(action)) {
-%>
-    					<%=rejectConnName %> = new <%=rejectConnName %>Struct();
-
-<%
-	                    List<IMetadataColumn> columnList = metadata.getListColumns();
-	                    for(IMetadataColumn column2 : columnList) {
-%>
-
-	                     	<%=rejectConnName%>.<%=column2.getLabel()%> = <%=conn.getName()%>.<%=column2.getLabel()%>;
-
-<%
-	                    }
-%>
-
- 						<%=rejectConnName%>.isSuccess = response_<%=cid%>.getStatus().isIsSuccess();
- 						
- 						if(response_<%=cid%>.getStatus().isIsSuccess()){
- 							<%=rejectConnName%>.errorMessage = null;
- 							if(<%=isCustom%>) {
- 								<%=rejectConnName%>.InternalId = ((com.netsuite.webservices.platform.core_2014_2.CustomRecordRef)response_<%=cid%>.getBaseRef()).getInternalId();
- 							} else {
- 								<%=rejectConnName%>.InternalId = ((com.netsuite.webservices.platform.core_2014_2.RecordRef)response_<%=cid%>.getBaseRef()).getInternalId();
- 							}
- 						} else {
- 							<%=rejectConnName%>.errorMessage = new java.util.ArrayList<String>();
- 							for(int i=0;i<response_<%=cid%>.getStatus().getStatusDetail().length;i++) {
- 								<%=rejectConnName%>.errorMessage.add(response_<%=cid%>.getStatus().getStatusDetail(i).getMessage());
- 							}
- 						}
-    				
-<%
-    				}
-    			}
-    		}
     	}//2
 	}//1
 %>

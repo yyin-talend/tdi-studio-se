@@ -12,29 +12,12 @@
 	String cid = node.getUniqueName();    	
 	
 	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
-    
 	String username = ElementParameterParser.getValue(node, "__USER__");
 	String password = ElementParameterParser.getValue(node, "__PASS__");
 	String role = ElementParameterParser.getValue(node, "__ROLE__");
 	String account = ElementParameterParser.getValue(node, "__ACCOUNT__");
-	String action = ElementParameterParser.getValue(node, "__ACTION__");
-	String commitLevel = ElementParameterParser.getValue(node, "__COMMIT_LEVEL__");
-	boolean extendedInsert = ElementParameterParser.getValue(node, "__EXTENDINSERT__").equals("true");
-	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
-	boolean ceaseForError = ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__").equals("true");
-	
-	// if the extended insert is disabled set the commit level to 1
-	if (!extendedInsert) commitLevel = "1";
 %>       
 
 int nb_line_<%=cid %> = 0;
 
 org.talend.netsuite.NetSuiteManagement nsMgr_<%=cid%> = new org.talend.netsuite.NetSuiteManagement(<%=username%>, <%=password%>, <%=role%>, <%=account%>, "<%=endpoint%>");
-
-/*
-try{
-	//nsMgr_<%=cid%>.login();
-}catch(Exception e){
-	System.out.println("Error login : " + e.getMessage());
-}
-*/
