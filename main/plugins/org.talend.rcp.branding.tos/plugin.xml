@@ -32,6 +32,14 @@
             name="appName"
             value="%productName">
       </property>
+      <property
+            name="cssTheme"
+            value="org.talend.rcp.themes.default">
+      </property>
+      <property
+            name="applicationCSSResources"
+            value="platform:/plugin/org.talend.rcp/themes/">
+      </property>
    </product>
 </extension>
    <extension
