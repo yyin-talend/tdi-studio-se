@@ -8,7 +8,7 @@
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
 		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType	
+		org.talend.core.model.metadata.types.JavaType
 		java.util.List
 		java.util.ArrayList
 	"
@@ -53,11 +53,11 @@
     
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {//1
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {//2
-        String cid = node.getUniqueName();
-    	List< ? extends IConnection> conns = node.getIncomingConnections();
-    	IConnection conn = conns.get(0);
+        IMetadataTable metadata = metadatas.get(0);
+        if (metadata!=null) {//2
+            String cid = node.getUniqueName();
+        	List< ? extends IConnection> conns = node.getIncomingConnections();
+        	IConnection conn = conns.get(0);
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
                 
@@ -66,9 +66,11 @@
                 //TODO detect Custom Recs and fields with a startsWith("cust")
                 
                 <%=modulename%> record_<%=cid%> = new <%=modulename%>();
-                String id_<%=cid%> = <%=conn.getName() %>.InternalId;
+                // String id_<%=cid%> = <%=conn.getName() %>.InternalId;
                 boolean useExternal_<%=cid%> = false;
                 com.netsuite.webservices.platform.messages_2014_2.WriteResponse response_<%=cid%> = null;
+                
+                /*String id_<%=cid%> = <%=conn.getName() %>.InternalId;
                 if (id_<%=cid%>==null) {
                   id_<%=cid%> = <%=conn.getName() %>.ExternalId;
                   useExternal_<%=cid%>=true;
@@ -78,7 +80,7 @@
                 	record_<%=cid%>.setExternalId(id_<%=cid%>);
                 } else {
                 	record_<%=cid%>.setInternalId(id_<%=cid%>);
-                }
+                }*/
                 
 <%
                 if ("insert".equals(action) || "update".equals(action) || "upsert".equals(action)) { //************
@@ -100,7 +102,10 @@
         					if (fl==null) {
         						record_<%=cid%>.setNullFieldList(new com.netsuite.webservices.platform.core_2014_2.NullField());
         					}
-        					nsMgr_<%=cid%>.setNullFieldValue(record_<%=cid%>.getNullFieldList(), "<%=column.getLabel()%>");
+        					
+        					String label = "<%=column.getLabel()%>";
+        					String field = label.substring(0, 1).toLowerCase() + label.substring(1);
+        					nsMgr_<%=cid%>.setNullFieldValue(record_<%=cid%>.getNullFieldList(), field);
         	    		} else {
 
 <%
@@ -161,13 +166,24 @@
 %>
 
             		response_<%=cid%> = nsMgr_<%=cid%>.insert("<%=entitytype %>", record_<%=cid%>);
-                    globalMap.put("<%=cid%>_CURRENT_INTERNALID", <%=conn.getName() %>.InternalId);
+            		
+            		if (!response_<%=cid%>.getStatus().isIsSuccess()) {
+						throw new java.rmi.RemoteException(nsMgr_<%=cid%>.getStatusDetails(response_<%=cid%>.getStatus()));
+					}/* else {
+						System.out.println(nsMgr_<%=cid%>.getStatusDetails(response_<%=cid%>.getStatus()));
+					}*/
+            		
+                    // globalMap.put("<%=cid%>_CURRENT_INTERNALID", <%=conn.getName() %>.InternalId);
 
 <%
 				} else if ("update".equals(action)) {
 %>
 
 					response_<%=cid%> = nsMgr_<%=cid%>.update("<%=entitytype %>", record_<%=cid%>);
+					
+					if (!response_<%=cid%>.getStatus().isIsSuccess()) {
+						throw new java.rmi.RemoteException(nsMgr_<%=cid%>.getStatusDetails(response_<%=cid%>.getStatus()));
+					}
 
 <%
 				} else if ("upsert".equals(action)) {
@@ -180,7 +196,7 @@
 				} else if ("delete".equals(action)) {
 %>
 
-					nsMgr_<%=cid%>.delete("<%=entitytype %>", useExternal_<%=cid%>, id_<%=cid%>);		
+					nsMgr_<%=cid%>.delete("<%=entitytype %>", useExternal_<%=cid%>, <%=conn.getName() %>.InternalId);		
 
 <%
 				}
@@ -243,9 +259,29 @@
  						if(response_<%=cid%>.getStatus().isIsSuccess()){
  							<%=rejectConnName%>.errorMessage = null;
  							if(<%=isCustom%>) {
- 								<%=rejectConnName%>.InternalId = ((com.netsuite.webservices.platform.core_2014_2.CustomRecordRef)response_<%=cid%>.getBaseRef()).getInternalId();
+<%
+ 								boolean containsField = false;
+ 								for(java.lang.reflect.Field field : rejectConnName.getClass().getDeclaredFields()){
+									if(field.getName().equals("InternalId")){
+										containsField = true;
+										break;
+									}
+								}
+						        
+ 								if(containsField) {
+ %>
+     								<%=rejectConnName%>.InternalId = ((com.netsuite.webservices.platform.core_2014_2.CustomRecordRef)response_<%=cid%>.getBaseRef()).getInternalId();
+<%
+ 								}
+%>
  							} else {
- 								<%=rejectConnName%>.InternalId = ((com.netsuite.webservices.platform.core_2014_2.RecordRef)response_<%=cid%>.getBaseRef()).getInternalId();
+<%
+ 								if(containsField) {
+%>
+     								<%=rejectConnName%>.InternalId = ((com.netsuite.webservices.platform.core_2014_2.RecordRef)response_<%=cid%>.getBaseRef()).getInternalId();
+<%
+ 								}
+%>
  							}
  						} else {
  							<%=rejectConnName%>.errorMessage = new java.util.ArrayList<String>();
