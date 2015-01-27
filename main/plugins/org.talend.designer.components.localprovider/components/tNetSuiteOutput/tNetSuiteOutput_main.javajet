@@ -47,23 +47,8 @@
                 //TODO expand from only InternalId to selecting ExternalId and more??
                 //TODO handle upsert when record not found
                 //TODO detect Custom Recs and fields with a startsWith("cust")
-                
                 <%=modulename%> record_<%=cid%> = new <%=modulename%>();
                 boolean useExternal_<%=cid%> = false;
-                com.netsuite.webservices.platform.messages_2014_2.WriteResponse response_<%=cid%> = null;
-                
-                // String id_<%=cid%> = <%=conn.getName() %>.InternalId;
-                /*String id_<%=cid%> = <%=conn.getName() %>.InternalId;
-                if (id_<%=cid%>==null) {
-                  id_<%=cid%> = <%=conn.getName() %>.ExternalId;
-                  useExternal_<%=cid%>=true;
-                }
-                
-                if (useExternal_<%=cid%>) {
-                	record_<%=cid%>.setExternalId(id_<%=cid%>);
-                } else {
-                	record_<%=cid%>.setInternalId(id_<%=cid%>);
-                }*/
                 
 <%
                 if ("insert".equals(action) || "update".equals(action) || "upsert".equals(action)) { //************
@@ -71,11 +56,6 @@
                     int sizeColumns = columns.size();
                     for (int i = 0; i < sizeColumns; i++) { //5  			
                     	IMetadataColumn column = columns.get(i);
-                    	
-                    	//make sure to filter the schema "Id", when updating (but not when upserting)
-                  		if("Id".equals(column.getLabel()) && !("upsert".equals(action))) {
-                  			continue;
-                  		}
                   		
                 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 %>
@@ -93,54 +73,57 @@
         	    		} else {
 
 <%
-        				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-    					//TODO For now we will assume initial lower case is a custom field and upper case has getter
-    					char first=column.getLabel().charAt(0);
-    					if(first<'a' || first>'z'){
-        					if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
+            				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+            				
+        					// TODO For now we will assume initial lower case is a custom field and upper case has getter
+        					char first=column.getLabel().charAt(0);
+        					if(first<'a' || first>'z'){  // filter custom field
+            					if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
 
-        						java.util.Calendar cal_<%=cid%> = java.util.Calendar.getInstance();
-        						cal_<%=cid%>.setTime(<%=conn.getName() %>.<%=column.getLabel()%>);
-        						record_<%=cid%>.set<%=column.getLabel()%>(cal_<%=cid%>);
+            						java.util.Calendar cal_<%=cid%> = java.util.Calendar.getInstance();
+            						cal_<%=cid%>.setTime(<%=conn.getName() %>.<%=column.getLabel()%>);
+            						record_<%=cid%>.set<%=column.getLabel()%>(cal_<%=cid%>);
 
 <%
-							} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
+								} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
 
-								record_<%=cid%>.set<%=column.getLabel()%>(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString());
+									record_<%=cid%>.set<%=column.getLabel()%>(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString());
 
 <%
-							} else if (javaType == JavaTypesManager.OBJECT) {//byte[]
+								} else if (javaType == JavaTypesManager.OBJECT) {//byte[]
 %>
 
-								nsMgr_<%=cid%>.invokeSetter(record_<%=cid%>,"<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
+									nsMgr_<%=cid%>.invokeSetter(record_<%=cid%>,"<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
 
 <%
-							} else {//others
+								} else { //others
 %>
 
-								record_<%=cid%>.set<%=column.getLabel()%>(<%=conn.getName() %>.<%=column.getLabel() %>);
+									record_<%=cid%>.set<%=column.getLabel()%>(<%=conn.getName() %>.<%=column.getLabel() %>);
+
+<%
+								}
+							} else {  // custom field set to null
+%>
+        						com.netsuite.webservices.platform.core_2014_2.CustomFieldList fl = record_<%=cid%>.getCustomFieldList();
+        						
+        						if (fl==null) {
+        							record_<%=cid%>.setCustomFieldList(new com.netsuite.webservices.platform.core_2014_2.CustomFieldList());
+        						}
+        						
+        						nsMgr_<%=cid%>.setCustomFieldValue(record_<%=cid%>.getCustomFieldList(), "<%=javaType.getNullableClass().getSimpleName()%>", "<%=column.getLabel()%>", <%=conn.getName() %>.<%=column.getLabel() %>);
 
 <%
 							}
-						} else {
-%>
-    						com.netsuite.webservices.platform.core_2014_2.CustomFieldList fl = record_<%=cid%>.getCustomFieldList();
-    						if (fl==null) {
-    							record_<%=cid%>.setCustomFieldList(new com.netsuite.webservices.platform.core_2014_2.CustomFieldList());
-    						}
-    						nsMgr_<%=cid%>.setCustomFieldValue(record_<%=cid%>.getCustomFieldList(), "<%=javaType.getNullableClass().getSimpleName()%>", "<%=column.getLabel()%>", <%=conn.getName() %>.<%=column.getLabel() %>);
-
-<%
-						}
 %>
 			
-        	    		}//if !=null
+        	    			}//if !=null
 				
 <%
-                    }//5
-				}//upsert, insert, update	
+                    	}//5
+					}//upsert, insert, update	
 %> 
 
         	try {

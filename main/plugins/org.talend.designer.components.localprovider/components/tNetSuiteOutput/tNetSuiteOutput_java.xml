@@ -89,7 +89,7 @@
                 <ITEM NAME="CustomerRefund" VALUE="com.netsuite.webservices.transactions.customers_2014_2.CustomerRefund" />
                 <ITEM NAME="CustomerStatus" VALUE="com.netsuite.webservices.lists.relationships_2014_2.CustomerStatus" />
                 <ITEM NAME="CustomList" VALUE="com.netsuite.webservices.setup.customization_2014_2.CustomList" />
-                <ITEM NAME="CustomRecord" VALUE="com.netsuite.webservices.setup.customization_2014_2.CustomRecord" />
+                <!-- <ITEM NAME="CustomRecord" VALUE="com.netsuite.webservices.setup.customization_2014_2.CustomRecord" /> -->
                 <ITEM NAME="Department" VALUE="com.netsuite.webservices.lists.accounting_2014_2.Department" />
                 <ITEM NAME="DepositApplication" VALUE="com.netsuite.webservices.transactions.customers_2014_2.DepositApplication" />
                 <ITEM NAME="DescriptionItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.DescriptionItem" />
@@ -153,9 +153,11 @@
             </ITEMS>
         </PARAMETER>
 		
+		<!-- 
 		<PARAMETER NAME="CUSTOMRECORDID" FIELD="CUSTOMRECORDID"
 			REQUIRED="true" NUM_ROW="8" SHOW_IF="MODULENAME=='CustomRecord'">
-		</PARAMETER>
+		</PARAMETER> 
+		-->
 		
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="8" REQUIRED="true">
 			<TABLE IF="MODULENAME=='AccountingPeriod'">
@@ -3645,6 +3647,7 @@
 			    <COLUMN KEY="true" NAME="InternalId" LENGTH="200" TYPE="id_String"  />
 			    <COLUMN KEY="true" NAME="ExternalId" LENGTH="200" TYPE="id_String"  />
 			</TABLE>
+			<!-- 
 			<TABLE IF="MODULENAME=='CustomRecord'">
 			    <COLUMN KEY="false" NAME="CustomRecordId" LENGTH="200" TYPE="id_String"  />
 			    <COLUMN KEY="false" NAME="CustomForm" LENGTH="0" TYPE="id_Object"  />
@@ -3689,7 +3692,8 @@
 			    <COLUMN KEY="false" NAME="CustomFieldList" LENGTH="0" TYPE="id_Object"  />
 			    <COLUMN KEY="true" NAME="InternalId" LENGTH="200" TYPE="id_String"  />
 			    <COLUMN KEY="true" NAME="ExternalId" LENGTH="200" TYPE="id_String"  />
-			</TABLE>
+			</TABLE> 
+			-->
 			<TABLE IF="MODULENAME=='Vendor'">
 			    <COLUMN KEY="false" NAME="CustomForm" LENGTH="0" TYPE="id_Object"  />
 			    <COLUMN KEY="false" NAME="EntityId" LENGTH="200" TYPE="id_String"  />

@@ -70,10 +70,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 			try {
 			
-<% 
-				if (searchEntity.endsWith("CustomRecord")) {
-					searchEntity = ElementParameterParser.getValue(node, "__CUSTOMRECORDID__").trim();	
-				}
+<%
+				//if (searchEntity.endsWith("CustomRecord")) {
+					//searchEntity = ElementParameterParser.getValue(node, "__CUSTOMRECORDID__").trim();	
+				//}
 				
 				boolean isSearchId = false;
 				if (bodyField != null) {
@@ -81,14 +81,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					// To be modified to add saved search support
 					// nsMgr_cid.initialize("searchEntity", "savedSearchID");
 					// records_cid = nsMgr_cid.submitRequest(true);
-%> 
+%>
 
 					com.netsuite.webservices.platform.core_2014_2.Record[] records_<%=cid %> = null;
 					nsMgr_<%=cid%>.initialize("<%=searchEntity%>", null); 
 
 <%
 					if (customField != null) {
-						List<String> operator = Arrays.asList(new String[] { "between", "notBetween"});
 						
 						// Construct a search for body fields
 						if(regularSearch) {
@@ -217,14 +216,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 <%
 										}
 									}
-%> 
-							// Block End [1]
-							// Code continues in the END file.
-<%
+    							}
+    						}
     					}
     				}
     			}
     		}
-    	}
-    }
+    	//}
+    //}
+//}
 %>
