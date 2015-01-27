@@ -146,64 +146,26 @@
         	try {
  				
 <%
- 				boolean containsField = false;
- 				for(java.lang.reflect.Field field : conn.getClass().getDeclaredFields()){
-					if(field.getName().equals("InternalId")){
-						containsField = true;
-						break;
-					}
-				}
-				
                 if ("insert".equals(action)) {
 %>
 
-            		response_<%=cid%> = nsMgr_<%=cid%>.insert("<%=entitytype %>", record_<%=cid%>);
-            		
-            		if (!response_<%=cid%>.getStatus().isIsSuccess()) {
-						throw new java.rmi.RemoteException(nsMgr_<%=cid%>.getStatusDetails(response_<%=cid%>.getStatus()));
-					}
-					
-            		java.lang.reflect.Field field = response_<%=cid%>.getBaseRef().getClass().getDeclaredField("internalId");
-					field.setAccessible(true);
-					String internalId = (String) field.get(response_<%=cid%>.getBaseRef());
-
-<%
- 					if(containsField) {
-%>
-     					<%=conn%>.InternalId = internalId;
-<%
- 					}
-%>
-                    globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(internalId));
+            		String internalId_<%=cid%> = nsMgr_<%=cid%>.insert("<%=entitytype %>", record_<%=cid%>);
+                    globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(internalId_<%=cid%>));
 
 <%
 				// InternalId no need
 				} else if ("update".equals(action)) {
 %>
 
-					response_<%=cid%> = nsMgr_<%=cid%>.update("<%=entitytype %>", record_<%=cid%>);
-					
-					if (!response_<%=cid%>.getStatus().isIsSuccess()) {
-						throw new java.rmi.RemoteException(nsMgr_<%=cid%>.getStatusDetails(response_<%=cid%>.getStatus()));
-					}
-					
+					nsMgr_<%=cid%>.update("<%=entitytype %>", record_<%=cid%>);
 					globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(<%=conn.getName() %>.InternalId));	
 
 <%
 				} else if ("upsert".equals(action)) {
 %> 
 
-                    String internalId = nsMgr_<%=cid%>.upsert("<%=entitytype %>", record_<%=cid%>);
-
-<%
- 					if(containsField) {
-%>
-     					<%=conn%>.InternalId = internalId;
-<%
- 					}
-%>
-
-                    globalMap.put("<%=cid%>_CURRENT_INTERNALID", internalId);
+                    String internalId_<%=cid%> = nsMgr_<%=cid%>.upsert("<%=entitytype %>", record_<%=cid%>);
+                    globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(internalId_<%=cid%>));
 		
 <%
 				// InternalId no need
