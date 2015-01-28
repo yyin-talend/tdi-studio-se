@@ -1595,14 +1595,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (talendProcessJavaProject == null) {
             return null;
         }
-        IProject project = talendProcessJavaProject.getProject();
+        // IProject project = talendProcessJavaProject.getProject();
+        // IJavaProject javaProject = talendProcessJavaProject.getJavaProject();
+        // IPath binPath = javaProject.getOutputLocation();
+        // IPath root = project.getParent().getLocation();
+        // binPath = root.append(binPath);
 
-        IJavaProject javaProject = talendProcessJavaProject.getJavaProject();
-        IPath binPath = javaProject.getOutputLocation();
-
-        IPath root = project.getParent().getLocation();
-        binPath = root.append(binPath);
-        return binPath;
+        IFolder outputFolder = talendProcessJavaProject.getOutputFolder();
+        return outputFolder.getLocation();
     }
 
     /**

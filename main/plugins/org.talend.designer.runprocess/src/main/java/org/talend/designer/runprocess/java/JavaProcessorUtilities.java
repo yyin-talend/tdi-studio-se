@@ -65,7 +65,6 @@ import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.utils.JavaProcessUtil;
-import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.maven.utils.TalendJavaSourceProjectUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -304,29 +303,8 @@ public class JavaProcessorUtilities {
         }
         IJavaProject javaProject = jProject.getJavaProject();
         IClasspathEntry[] entries = javaProject.getRawClasspath();
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry srcClasspathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
-                MavenSystemFolders.JAVA.getPath()));
 
         boolean changesDone = false;
-        if (!ArrayUtils.contains(entries, jreClasspathEntry)) {
-            entries = (IClasspathEntry[]) ArrayUtils.add(entries, jreClasspathEntry);
-            changesDone = true;
-        }
-        if (!ArrayUtils.contains(entries, srcClasspathEntry)) {
-            IClasspathEntry source = null;
-            for (IClasspathEntry entry : entries) {
-                if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                    source = entry;
-                    break;
-                }
-            }
-            if (source != null) {
-                entries = (IClasspathEntry[]) ArrayUtils.remove(entries, ArrayUtils.indexOf(entries, source));
-            }
-            entries = (IClasspathEntry[]) ArrayUtils.add(entries, srcClasspathEntry);
-            changesDone = true;
-        }
 
         // Added by Marvin Wang on Nov. 8, 2012. Maybe some modules are in the list with a directory, so cut the
         // directory only file name remaining.

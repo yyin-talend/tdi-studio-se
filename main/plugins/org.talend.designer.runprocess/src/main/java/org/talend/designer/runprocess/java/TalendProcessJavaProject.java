@@ -133,8 +133,8 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
         IJavaProject jProject = getJavaProject();
         if (jProject != null) {
             try {
-                // IFolder folder = jProject.getProject().getFolder( MavenSystemFolders.JAVA.getOutputPath());
-                IFolder folder = jProject.getProject().getFolder(jProject.getOutputLocation());
+                IFolder folder = jProject.getProject().getFolder(MavenSystemFolders.JAVA.getOutputPath());
+                // IFolder folder = jProject.getProject().getParent().getFolder(jProject.getOutputLocation());
                 createSubFolder(null, folder);
                 return folder;
             } catch (CoreException e) {
