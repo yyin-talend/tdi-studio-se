@@ -42,7 +42,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
 import org.talend.core.PluginChecker;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
@@ -56,6 +55,7 @@ import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -498,10 +498,10 @@ public abstract class JobScriptsManager {
      * @param cmdSecondary
      * @param tmpFold
      */
-    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName, String tmpFold) {
+    private void createLauncherFile(ProcessItem process, List<URL> list, String cmd, String fileName, String tmpFold) {
         PrintWriter pw = null;
         try {
-
+            String cmdPrimary = cmd;
             // add for bug TDI-24935, add a string on comPrimary's start position.
             if (cmdPrimary != null && UNIX_LAUNCHER.equals(fileName)) {
                 StringBuffer strBuffer = new StringBuffer(cmdPrimary);
@@ -797,7 +797,12 @@ public abstract class JobScriptsManager {
             }
         }
         // maybe, not used
-        project = RepositoryPlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage());
+        ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
+                .getTalendProcessJavaProject();
+        if (talendProcessJavaProject == null) {
+            return null;
+        }
+        project = talendProcessJavaProject.getProject();
         IPath root = project.getParent().getLocation().append(getCorrespondingProjectName(item).toUpperCase());
         return root;
     }
@@ -959,11 +964,12 @@ public abstract class JobScriptsManager {
 
     }
 
-    protected void checkAndAddProjectResource(ExportFileResource[] allResources, ExportFileResource curResource,
-            String relativePath, URL projectURL) {
+    protected void checkAndAddProjectResource(ExportFileResource[] allResources, ExportFileResource curResource, String path,
+            URL projectURL) {
         if (allResources == null || curResource == null || projectURL == null) {
             return;
         }
+        String relativePath = path;
         if (relativePath == null) {
             relativePath = ""; //$NON-NLS-1$
         }

@@ -20,11 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -35,9 +31,12 @@ import org.talend.commons.runtime.model.expressionbuilder.Variable;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.RoutineFunctionParser;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.expressionbuilder.ui.CategoryComposite;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 
@@ -83,11 +82,20 @@ public class JavaTestShadow {
             ExpressionGenerator codeGenerator = new ExpressionGenerator();
             String fileContent = codeGenerator.generate(arguments);
 
-            IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            IProject project = workspace.getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
+            ITalendProcessJavaProject talendProcessJavaProject = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+                IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                        IRunProcessService.class);
+                talendProcessJavaProject = processService.getTalendProcessJavaProject();
+            }
+            if (talendProcessJavaProject == null) {
+                return;
+            }
+            IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
+            IFolder outputFolder = talendProcessJavaProject.getOutputFolder();
 
-            IFile file = project.getFile(new Path("src/routines/ExpressionVariableTest.java")); //$NON-NLS-1$
-            IFile classFile = project.getFile(new Path("classes/routines/ExpressionVariableTest.class")); //$NON-NLS-1$
+            IFile file = srcFolder.getFile(new Path(JavaUtils.JAVA_ROUTINES_DIRECTORY + "/ExpressionVariableTest.java")); //$NON-NLS-1$
+            IFile classFile = outputFolder.getFile(new Path(JavaUtils.JAVA_ROUTINES_DIRECTORY + "/ExpressionVariableTest.class")); //$NON-NLS-1$
 
             InputStream in = new ByteArrayInputStream(fileContent.getBytes());
             try {
@@ -116,12 +124,10 @@ public class JavaTestShadow {
                 RuntimeExceptionHandler.process(e2);
             }
 
-            String javaInterpreter = CorePlugin.getDefault().getPreferenceStore().getString(
-                    ITalendCorePrefConstants.JAVA_INTERPRETER);
+            String javaInterpreter = CorePlugin.getDefault().getPreferenceStore()
+                    .getString(ITalendCorePrefConstants.JAVA_INTERPRETER);
 
-            IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-            IResource javaProject = workSpaceRoot.findMember(".Java"); //$NON-NLS-1$
-            IPath path = javaProject.getLocation().append("classes"); //$NON-NLS-1$
+            IPath path = outputFolder.getLocation();
 
             String[] str = new String[] { javaInterpreter, "-cp", path.toOSString(), "routines.ExpressionVariableTest" }; //$NON-NLS-1$ //$NON-NLS-2$
 

@@ -30,6 +30,7 @@ import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.RepositoryConstants;
 
 public class Log4jPrefsSettingManager {
 
@@ -50,7 +51,7 @@ public class Log4jPrefsSettingManager {
 
         try {
             IProject project = ResourceUtils.getProject(ProjectManager.getInstance().getCurrentProject());
-            IFolder prefSettingFolder = ResourceUtils.getFolder(project, Log4jPrefsConstants.LOG4j_SETTING_SUFFIX, false);
+            IFolder prefSettingFolder = ResourceUtils.getFolder(project, RepositoryConstants.SETTING_DIRECTORY, false);
             IFile presLog4jFile = prefSettingFolder.getFile(Log4jPrefsConstants.LOG4J_RESOURCES
                     + Log4jPrefsConstants.LOG4j_PREFS_SUFFIX);
             if (presLog4jFile.exists()) {

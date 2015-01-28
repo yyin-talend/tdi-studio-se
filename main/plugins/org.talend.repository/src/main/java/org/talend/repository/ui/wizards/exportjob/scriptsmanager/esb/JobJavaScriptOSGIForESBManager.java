@@ -12,10 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
-import aQute.bnd.osgi.Analyzer;
-import aQute.bnd.osgi.FileResource;
-import aQute.bnd.osgi.Jar;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -37,20 +33,14 @@ import java.util.jar.Manifest;
 
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EMap;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IOsgiDependenciesService;
@@ -69,6 +59,7 @@ import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -79,6 +70,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -88,6 +80,10 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.TemplateProcessor;
+
+import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.FileResource;
+import aQute.bnd.osgi.Jar;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -165,9 +161,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 String processId = processItem.getProperty().getId();
 
-                IProcess iProcess = generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                            tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
-                            true /* isExportAsOSGI */, progressMonitor);
+                IProcess iProcess = generateJobFiles(processItem, contextName, jobVersion,
+                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
+                        isOptionChoosed(ExportChoice.applyToChildren), true /* isExportAsOSGI */, progressMonitor);
                 analysisModules(processId, jobVersion);
 
                 analysisMavenModule(processItem);
@@ -180,7 +176,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 // restJob
                 if (JOB.equals(itemType) && (null != getRESTRequestComponent(processItem))) {
-                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateRestJobBlueprintConfig(processItem, iProcess));
+                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME,
+                            generateRestJobBlueprintConfig(processItem, iProcess));
                 } else {
                     osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateBlueprintConfig(processItem, iProcess));
                 }
@@ -191,9 +188,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
 
                 /*
-                 *  export current item's dependencies.
-                 *  this used for TDM components specially
-                 *  and need more discussion about then
+                 * export current item's dependencies. this used for TDM components specially and need more discussion
+                 * about then
                  */
                 BuildExportManager.getInstance().exportDependencies(osgiResource, processItem);
             }
@@ -268,9 +264,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (module != null) {
             /*
              * If null, will add the lib always.
-             *
+             * 
              * If empty, nothing will be added.
-             *
+             * 
              * Else, add the bundle id in "Require-Bundle", but don't add the lib.
              */
             if (isIncludedLib(module)) {
@@ -333,8 +329,18 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @throws MalformedURLException
      */
     protected void addOSGIRouteResources(ExportFileResource osgiResource, ProcessItem processItem) throws Exception {
-        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
-        IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+        IFolder srcFolder = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+            if (talendProcessJavaProject != null) {
+                srcFolder = talendProcessJavaProject.getSrcFolder();
+            }
+        }
+        if (srcFolder == null) {
+            return;
+        }
         IPath srcPath = srcFolder.getLocation();
 
         // http://jira.talendforge.org/browse/TESB-6437
@@ -470,8 +476,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // job OSGi DataSources
         jobInfo.put("dataSources", DataSourceConfig.getAliases(process)); //$NON-NLS-1$
 
-        jobInfo.put("hasDestroyMethod",
-                !"MR".equals(ERepositoryObjectType.getItemType(processItem).getAlias()));
+        jobInfo.put("hasDestroyMethod", !"MR".equals(ERepositoryObjectType.getItemType(processItem).getAlias()));
 
         return jobInfo;
     }
@@ -536,9 +541,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // use Authorization
         if (isStudioEEVersion()) {
-            if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent))
-            endpointInfo.put("useAuthorization", //$NON-NLS-1$
-                    EmfModelUtils.computeCheckElementValue("NEED_AUTHORIZATION", restRequestComponent)); //$NON-NLS-1$
+            if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent)) {
+                endpointInfo.put("useAuthorization", //$NON-NLS-1$
+                        EmfModelUtils.computeCheckElementValue("NEED_AUTHORIZATION", restRequestComponent)); //$NON-NLS-1$
+            }
         } else {
             endpointInfo.put("useAuthorization", false); //$NON-NLS-1$
         }
@@ -579,21 +585,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-    *
-    * Ensure that the value is not surrounded by quotes.
-    *
-    * @param value
-    * @return
-    */
-   private static final String unquote(String value) {
-       String result = value;
-       if (null != value && 1 < value.length()) {
-           if (value.startsWith("\"") && value.endsWith("\"")) {
-               result = value.substring(1, value.length() - 1);
-           }
-       }
-       return result;
-   }
+     *
+     * Ensure that the value is not surrounded by quotes.
+     *
+     * @param value
+     * @return
+     */
+    private static final String unquote(String value) {
+        String result = value;
+        if (null != value && 1 < value.length()) {
+            if (value.startsWith("\"") && value.endsWith("\"")) {
+                result = value.substring(1, value.length() - 1);
+            }
+        }
+        return result;
+    }
 
     private static final String TEMPLATE_BLUEPRINT_JOB_REST = "/resources/job-rest-template.xml"; //$NON-NLS-1$
 
@@ -648,55 +654,54 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean hasCXFComponent = !cCXFs.isEmpty();
         cCXFs.addAll(EmfModelUtils.getComponentsByName(processItem, "cCXFRS"));
         if (!cCXFs.isEmpty()) {
-        	Set<String> consumerNodes = new HashSet<String>();
-        	@SuppressWarnings("unchecked")
-			List<ConnectionType> connections = processItem.getProcess().getConnection();
-        	for (ConnectionType conn : connections) {
-        		consumerNodes.add(conn.getTarget());
-        	}
+            Set<String> consumerNodes = new HashSet<String>();
+            @SuppressWarnings("unchecked")
+            List<ConnectionType> connections = processItem.getProcess().getConnection();
+            for (ConnectionType conn : connections) {
+                consumerNodes.add(conn.getTarget());
+            }
 
-        	boolean isEEVersion = isStudioEEVersion();
-			for (NodeType node : cCXFs) { //$NON-NLS-1$
-	        	boolean nodeUseSAM = false;
-	        	boolean nodeUseSaml = false;
-	        	boolean nodeUseAuthz = false;
-	        	boolean nodeUseRegistry = false;
+            boolean isEEVersion = isStudioEEVersion();
+            for (NodeType node : cCXFs) {
+                boolean nodeUseSAM = false;
+                boolean nodeUseSaml = false;
+                boolean nodeUseAuthz = false;
+                boolean nodeUseRegistry = false;
 
-	            // http://jira.talendforge.org/browse/TESB-3850
-	            String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
+                // http://jira.talendforge.org/browse/TESB-3850
+                String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
 
-	            if (!useSAM && !"RAW".equals(format)) { //$NON-NLS-1$
-	            	nodeUseSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node) //$NON-NLS-1$
-	            	    || EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node); //$NON-NLS-1$
-	            }
+                if (!useSAM && !"RAW".equals(format)) { //$NON-NLS-1$
+                    nodeUseSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node) //$NON-NLS-1$
+                            || EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node); //$NON-NLS-1$
+                }
 
-	            //security is disable in case CXF_MESSAGE or RAW dataFormat
-	            if (!"CXF_MESSAGE".equals(format) && !"RAW".equals(format)) { //$NON-NLS-1$  //$NON-NLS-2$
-	            	if (isEEVersion && EmfModelUtils.computeCheckElementValue("ENABLE_REGISTRY", node)) { //$NON-NLS-1$
-	            		nodeUseRegistry = true;
-	            		//https://jira.talendforge.org/browse/TESB-10725
-	            		nodeUseSAM = false;
-		        	} else if (EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
-	        			String securityType = EmfModelUtils.computeTextElementValue(
-	        					"SECURITY_TYPE", node); //$NON-NLS-1$
-	        			if ("SAML".equals(securityType)) { //$NON-NLS-1$
-	        				nodeUseSaml = true;
-	        				nodeUseAuthz = isEEVersion && EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node);
-	    				}
-	    			}
-				}
-	            useSAM |= nodeUseSAM;
-	            if (consumerNodes.contains(ElementParameterParser.getUNIQUENAME(node))) {
-	            	hasCXFSamlConsumer |= nodeUseSaml | nodeUseRegistry;
-	            } else {
-	            	hasCXFSamlProvider |= nodeUseSaml | nodeUseRegistry;
-	            	hasCXFRSSamlProviderAuthz |= nodeUseAuthz;
-				}
+                // security is disable in case CXF_MESSAGE or RAW dataFormat
+                if (!"CXF_MESSAGE".equals(format) && !"RAW".equals(format)) { //$NON-NLS-1$  //$NON-NLS-2$
+                    if (isEEVersion && EmfModelUtils.computeCheckElementValue("ENABLE_REGISTRY", node)) { //$NON-NLS-1$
+                        nodeUseRegistry = true;
+                        // https://jira.talendforge.org/browse/TESB-10725
+                        nodeUseSAM = false;
+                    } else if (EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
+                        String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node); //$NON-NLS-1$
+                        if ("SAML".equals(securityType)) { //$NON-NLS-1$
+                            nodeUseSaml = true;
+                            nodeUseAuthz = isEEVersion && EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node);
+                        }
+                    }
+                }
+                useSAM |= nodeUseSAM;
+                if (consumerNodes.contains(ElementParameterParser.getUNIQUENAME(node))) {
+                    hasCXFSamlConsumer |= nodeUseSaml | nodeUseRegistry;
+                } else {
+                    hasCXFSamlProvider |= nodeUseSaml | nodeUseRegistry;
+                    hasCXFRSSamlProviderAuthz |= nodeUseAuthz;
+                }
 
-	            if (useSAM && hasCXFSamlConsumer && hasCXFSamlConsumer && (!isEEVersion || hasCXFRSSamlProviderAuthz)) {
-	            	break;
-	            }
-	        }
+                if (useSAM && hasCXFSamlConsumer && hasCXFSamlConsumer && (!isEEVersion || hasCXFRSSamlProviderAuthz)) {
+                    break;
+                }
+            }
         }
         routeInfo.put("useSAM", useSAM); //$NON-NLS-1$
         routeInfo.put("hasCXFSamlConsumer", hasCXFSamlConsumer); //$NON-NLS-1$
@@ -734,7 +739,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     private Manifest getManifest(ExportFileResource libResource, ProcessItem processItem) throws IOException {
-    	Analyzer analyzer = createAnalyzer(libResource, processItem);
+        Analyzer analyzer = createAnalyzer(libResource, processItem);
         // Calculate the manifest
         Manifest manifest = null;
         try {
@@ -876,9 +881,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
 
         analyzer.setProperty(Analyzer.EXPORT_SERVICE, "routines.system.api.TalendJob;name=" + bundleName + ";type=" + itemType);
-		return analyzer;
-	}
-	/**
+        return analyzer;
+    }
+
+    /**
      * Add route resource packages.
      */
     private static Collection<String> addRouteResourcePackages(ProcessItem item) {
@@ -910,14 +916,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return pkgs;
     }
 
-    private void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource,
-            ProcessItem processItem) throws IOException {
-
-        IPath libPath = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME).getLocation()
-                .append(JavaUtils.JAVA_LIB_DIRECTORY);
-
-        IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault()
-                .getService(IOsgiDependenciesService.class);
+    private void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource, ProcessItem processItem)
+            throws IOException {
+        IPath libPath = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+            if (talendProcessJavaProject != null) {
+                libPath = talendProcessJavaProject.getLibFolder().getLocation();
+            }
+        }
+        if (libPath == null) {
+            return;
+        }
+        IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault().getService(
+                IOsgiDependenciesService.class);
         if (dependenciesService != null) {
             Map<String, String> bundleDependences = dependenciesService.getBundleDependences(processItem);
             // process external libs
@@ -951,10 +965,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     protected static boolean isStudioEEVersion() {
-	    return PluginChecker.isTIS();
-	}
+        return PluginChecker.isTIS();
+    }
 
-	@Override
+    @Override
     protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process, Set<String> neededLibraries) {
 
         if (!needLibraries) {
@@ -996,9 +1010,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
                     }
                     IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
-                    neededLibraries = iProcess.getNeededLibraries(true);
-                    if (neededLibraries != null) {
-                        listModulesReallyNeeded.addAll(neededLibraries);
+
+                    Set<String> processNeededLibraries = iProcess.getNeededLibraries(true);
+                    if (processNeededLibraries != null) {
+                        listModulesReallyNeeded.addAll(processNeededLibraries);
                     }
                 }
             } else {
@@ -1031,19 +1046,23 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     protected List<URL> getNeededModuleURLs(Set<String> neededModules) {
         List<URL> list = new ArrayList<URL>();
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-        IJavaProject project = JavaCore.create(prj);
-        IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-        File file = libPath.toFile();
-        File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
-        for (File tempFile : files) {
-            try {
-                if (neededModules.contains(tempFile.getName())) {
-                    list.add(tempFile.toURI().toURL());
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+            if (talendProcessJavaProject != null) {
+                IFolder libFolder = talendProcessJavaProject.getLibFolder();
+                File file = libFolder.getLocation().toFile();
+                File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
+                for (File tempFile : files) {
+                    try {
+                        if (neededModules.contains(tempFile.getName())) {
+                            list.add(tempFile.toURI().toURL());
+                        }
+                    } catch (MalformedURLException e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
-            } catch (MalformedURLException e) {
-                ExceptionHandler.process(e);
             }
         }
         return list;

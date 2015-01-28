@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -35,8 +34,6 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
@@ -171,14 +168,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
             // this will be used for example for the shadow process.
             if (!codeGenerated) {
                 generateCode(statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
-                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    try {
-                        CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
-                                .build(IncrementalProjectBuilder.AUTO_BUILD, null);
-                    } catch (CoreException e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
+                CorePlugin.getDefault().getRunProcessService().buildJavaProject();
             }
         }
         if (optionsParam == null) {

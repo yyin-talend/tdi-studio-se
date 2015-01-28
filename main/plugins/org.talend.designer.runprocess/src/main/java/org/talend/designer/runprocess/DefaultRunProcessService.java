@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
@@ -37,21 +38,21 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.osgi.framework.Bundle;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.runprocess.data.PerformanceData;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
+import org.talend.designer.runprocess.java.TalendProcessJavaProject;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.mapreduce.MapReduceJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
@@ -183,12 +184,20 @@ public class DefaultRunProcessService implements IRunProcessService {
 
     @Override
     public IProject getProject(ECodeLanguage language) throws CoreException {
-        return JavaProcessorUtilities.getProcessorProject();
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject != null) {
+            return talendJavaProject.getProject();
+        }
+        return null;
     }
 
     @Override
     public IJavaProject getJavaProject() throws CoreException {
-        return JavaProcessorUtilities.getJavaProject();
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject != null) {
+            return talendJavaProject.getJavaProject();
+        }
+        return null;
     }
 
     /*
@@ -204,12 +213,7 @@ public class DefaultRunProcessService implements IRunProcessService {
 
     @Override
     public void updateLibraries(Set<String> jobModuleList, IProcess process) {
-        switch (LanguageManager.getCurrentLanguage()) {
-        case JAVA:
-            JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), process);
-        default:
-            // nothing
-        }
+        JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), process);
     }
 
     @Override
@@ -347,41 +351,42 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void updateLogFiles(IProject project, boolean isLogForJob) {
         // if directly init or modify log4j,need handle with the log4j under .setting/,if not,means execute or export
         // job,need to copy the latest log4j from .setting/ to /java/src
-        if (project == null) {
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject == null) {
             return;
         }
         try {
             // get the .setting folder where we need to keep the log4j file
             // IFolder prefSettingFolder = ResourceUtils.getFolder(
             // ResourceModelHelper.getProject(ProjectManager.getInstance().getCurrentProject()), ".settings", false);
-            Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
-            IFolder srcFolder = project.getFolder(path);
-            IFile log4jFile = srcFolder.getFile(Log4jPrefsConstants.LOG4J_FILE_NAME);
+
+            IFolder resFolder = talendJavaProject.getResourcesFolder();
+            IFile log4jFile = resFolder.getFile(Log4jPrefsConstants.LOG4J_FILE_NAME);
             // create the .prefs file and save log4j.xml and common-logging.properties's content into it
             if (!Log4jPrefsSettingManager.getInstance().isLog4jPrefsExist()) {
-                Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE, "false");
+                Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE,
+                        Boolean.FALSE.toString());
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_CONTENT_NODE,
                         getLogTemplate(RESOURCE_LOG_FILE_PATH));
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.COMMON_LOGGING_NODE,
                         getLogTemplate(RESOURCE_COMMONLOG_FILE_PATH));
             }
-            if (srcFolder == null) {
-                return;
-            }
             if (isLogForJob) { // when execute or export job need the log4j files under .src folder
                 String log4jStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.LOG4J_CONTENT_NODE);
                 if (log4jStr != null) {
                     File ljFile = new File(log4jFile.getLocation().toOSString());
-                    FileOutputStream ljFileOutputStream = null;
-                    try {
-                        ljFileOutputStream = new FileOutputStream(ljFile);
-                        ljFileOutputStream.write(log4jStr.getBytes());
-                    } finally {
-                        ljFileOutputStream.close();
+                    if (!ljFile.exists()) {
+                        FileOutputStream ljFileOutputStream = null;
+                        try {
+                            ljFileOutputStream = new FileOutputStream(ljFile);
+                            ljFileOutputStream.write(log4jStr.getBytes());
+                        } finally {
+                            ljFileOutputStream.close();
+                        }
+                        resFolder.refreshLocal(IResource.DEPTH_ONE, null);
                     }
                 }
             }
-            srcFolder.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -435,10 +440,29 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public void buildJavaProject() {
         try {
-            getJavaProject().getProject().build(IncrementalProjectBuilder.AUTO_BUILD, null);
+            ITalendProcessJavaProject talendProcessJavaProject = getTalendProcessJavaProject();
+            if (talendProcessJavaProject != null) {
+                NullProgressMonitor monitor = new NullProgressMonitor();
+                IProject project = talendProcessJavaProject.getProject();
+                if (!project.isSynchronized(IResource.DEPTH_INFINITE)) {
+                    project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+                }
+                // project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
+                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+            }
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getTalendProcessJavaProject()
+     */
+    @Override
+    public ITalendProcessJavaProject getTalendProcessJavaProject() {
+        return JavaProcessorUtilities.getTalendJavaProject();
     }
 
 }

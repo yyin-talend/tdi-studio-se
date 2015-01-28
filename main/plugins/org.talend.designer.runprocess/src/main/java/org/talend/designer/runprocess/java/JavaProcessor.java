@@ -117,6 +117,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -223,12 +224,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             return;
         }
 
-        try {
-            this.project = JavaProcessorUtilities.getProcessorProject();
-            createInternalPackage();
-        } catch (CoreException e1) {
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedProjectException")); //$NON-NLS-1$
         }
+        this.project = talendJavaProject.getProject();
+        createInternalPackage();
 
         initCodePath(context);
         this.context = context;
@@ -258,7 +259,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             this.codePath = jobPackage.getPath().append(fileName + JavaUtils.JAVA_EXTENSION);
             this.codePath = this.codePath.removeFirstSegments(1);
             this.compiledCodePath = this.codePath.removeLastSegments(1).append(fileName);
-            this.compiledCodePath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledCodePath
+            this.compiledCodePath = new Path(MavenSystemFolders.JAVA.getOutputPath()).append(this.compiledCodePath
                     .removeFirstSegments(1));
 
             this.typeName = jobPackage.getPath().append(fileName).removeFirstSegments(2).toString().replace('/', '.');
@@ -267,7 +268,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                     escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION);
             this.contextPath = this.contextPath.removeFirstSegments(1);
             this.compiledContextPath = this.contextPath.removeLastSegments(1).append(fileName);
-            this.compiledContextPath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledContextPath
+            this.compiledContextPath = new Path(MavenSystemFolders.JAVA.getOutputPath()).append(this.compiledContextPath
                     .removeFirstSegments(1));
 
         } catch (CoreException e) {
@@ -721,29 +722,33 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @throws JavaModelException
      */
     private IPackageFragment getProjectPackage(String packageName) throws JavaModelException {
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject != null) {
+            IPackageFragmentRoot root = talendJavaProject.getJavaProject().getPackageFragmentRoot(
+                    talendJavaProject.getSrcFolder());
+            IPackageFragment leave = root.getPackageFragment(packageName);
+            if (!leave.exists()) {
+                root.createPackageFragment(packageName, true, null);
+            }
 
-        IJavaProject javaProject = JavaProcessorUtilities.getJavaProject();
-
-        IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(javaProject.getProject().getFolder(
-                JavaUtils.JAVA_SRC_DIRECTORY));
-        IPackageFragment leave = root.getPackageFragment(packageName);
-        if (!leave.exists()) {
-            root.createPackageFragment(packageName, true, null);
+            return root.getPackageFragment(packageName);
         }
-
-        return root.getPackageFragment(packageName);
+        return null;
     }
 
     public static void createInternalPackage() {
 
-        IJavaProject javaProject = JavaProcessorUtilities.getJavaProject();
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject == null) {
+            return;
+        }
+        IJavaProject javaProject = talendJavaProject.getJavaProject();
 
-        IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(javaProject.getProject().getFolder(
-                JavaUtils.JAVA_SRC_DIRECTORY));
-        IPackageFragment leave = root.getPackageFragment("internal"); //$NON-NLS-1$
+        IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(talendJavaProject.getSrcFolder());
+        IPackageFragment leave = root.getPackageFragment(JavaUtils.JAVA_INTERNAL_DIRECTORY);
         if (!leave.exists()) {
             try {
-                root.createPackageFragment("internal", true, null); //$NON-NLS-1$
+                root.createPackageFragment(JavaUtils.JAVA_INTERNAL_DIRECTORY, true, null);
             } catch (JavaModelException e) {
                 throw new RuntimeException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
             }
@@ -763,14 +768,17 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @throws JavaModelException
      */
     private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject != null) {
+            IPackageFragmentRoot root = talendJavaProject.getJavaProject().getPackageFragmentRoot(projectPackage.getResource());
+            IPackageFragment leave = root.getPackageFragment(jobName);
+            if (!leave.exists()) {
+                root.createPackageFragment(jobName, true, null);
+            }
 
-        IPackageFragmentRoot root = JavaProcessorUtilities.getJavaProject().getPackageFragmentRoot(projectPackage.getResource());
-        IPackageFragment leave = root.getPackageFragment(jobName);
-        if (!leave.exists()) {
-            root.createPackageFragment(jobName, true, null);
+            return root.getPackageFragment(jobName);
         }
-
-        return root.getPackageFragment(jobName);
+        return null;
 
     }
 
@@ -917,8 +925,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 routinePath = routinePath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
             }
         } else {
-            IFolder classesFolder = JavaProcessorUtilities.getJavaProject().getProject()
-                    .getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY);
+            TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            IFolder classesFolder = talendJavaProject.getOutputFolder();
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
             routinePath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
                     + classPathSeparator;
@@ -1034,7 +1042,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
         String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
         List<String> list = new ArrayList<String>();
-        
+
         list.add("-libjars"); //$NON-NLS-1$
         StringBuffer libJars = new StringBuffer("");
         Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
@@ -1359,8 +1367,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 return;
             }
 
-            IJavaProject javaProject = JavaProcessorUtilities.getJavaProject();
-            IFolder esbConfigsTargetFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+            TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            if (talendJavaProject == null) {
+                return;
+            }
+            // PTODO, need be src/main/java or src/main/resources?
+            IFolder esbConfigsTargetFolder = talendJavaProject.getSrcFolder();
 
             // add SAM config file to classpath
             if (samEnabled) {
@@ -1447,8 +1459,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             if (content == null) {
                 return;
             }
-
-            IProject processorProject = this.project == null ? JavaProcessorUtilities.getProcessorProject() : this.project;
+            IProject processorProject = this.project;
+            TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            if (processorProject == null && talendJavaProject != null) {
+                processorProject = talendJavaProject.getProject();
+            }
             if (processorProject == null) {
                 return;
             }

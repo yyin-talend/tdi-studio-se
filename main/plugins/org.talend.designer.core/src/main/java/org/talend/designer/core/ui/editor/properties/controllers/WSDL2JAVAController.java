@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,19 +29,11 @@ import org.apache.axis.utils.Messages;
 import org.apache.axis.wsdl.WSDL2Java;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionEvent;
@@ -55,7 +46,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
@@ -68,7 +58,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
@@ -82,6 +71,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -395,12 +385,10 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
     }
 
     private void refreshProject() {
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-        try {
-            prj.build(IncrementalProjectBuilder.AUTO_BUILD, null);
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            processService.buildJavaProject();
         }
     }
 
@@ -516,12 +504,14 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         FileOutputStream fos = null;
         try {
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getProject();
+            ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
+                return null;
+            }
+            IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
 
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
-                    + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+            IFile file = srcFolder.getFile(JavaUtils.JAVA_ROUTINES_DIRECTORY + '/' + routineItem.getProperty().getLabel()
+                    + JavaUtils.JAVA_EXTENSION);
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());

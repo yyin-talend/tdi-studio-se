@@ -34,18 +34,13 @@ import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -53,8 +48,10 @@ import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -218,12 +215,19 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
-            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            IProject rootProject = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-
-            IFile outputFile = rootProject
-                    .getFile("src/" + packageName.replace(".", "/") + "/" + jobName + "ListenerAction.java"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-
+            IFile outputFile = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+                IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                        IRunProcessService.class);
+                ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+                if (talendProcessJavaProject != null) {
+                    outputFile = talendProcessJavaProject.getSrcFolder().getFile(
+                            packageName.replace(".", "/") + "/" + jobName + "ListenerAction.java"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                }
+            }
+            if (outputFile == null) {
+                return;
+            }
             String line = br.readLine();
             StringBuffer stringBuff = new StringBuffer();
             while (line != null) {
@@ -251,12 +255,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
-        try {
-            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
-                    .build(IncrementalProjectBuilder.AUTO_BUILD, null);
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
-        }
+        CorePlugin.getDefault().getRunProcessService().buildJavaProject();
     }
 
     protected void addSubJobResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,

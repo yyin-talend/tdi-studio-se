@@ -16,23 +16,23 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.compiler.BuildContext;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -110,7 +110,11 @@ public class JavaCompilationParticipant extends CompilationParticipant {
 
         IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
         try {
-            IProject javaProject = runProcessService.getProject(ECodeLanguage.JAVA);
+            ITalendProcessJavaProject talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
+            IProject javaProject = talendProcessJavaProject.getProject();
+            if (talendProcessJavaProject == null) {
+                return;
+            }
             IFile file = javaProject.getFile(filePath);
             String fileName = file.getName();
 
@@ -134,15 +138,13 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             }
         } catch (SystemException e) {
             ExceptionHandler.process(e);
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
         }
     }
 
     private boolean isRoutineFile(String filePath) {
         int endIndex = filePath.lastIndexOf("/"); //$NON-NLS-1$
         String javaFileCatalog = filePath.substring(0, endIndex);
-        if (javaFileCatalog.contains("src/routines")) { //$NON-NLS-1$
+        if (javaFileCatalog.contains(JavaUtils.JAVA_ROUTINES_DIRECTORY)) {
             return true;
         }
         return false;
@@ -160,8 +162,9 @@ public class JavaCompilationParticipant extends CompilationParticipant {
                 || CodeGeneratorEmittersPoolFactory.isInitializeStart()) {
             return false;
         }
-        if (JavaProcessorUtilities.getJavaProject() != null) {
-            return JavaProcessorUtilities.getJavaProject().equals(project);
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject != null) {
+            return talendJavaProject.getJavaProject().equals(project);
         }
         return false;
     }

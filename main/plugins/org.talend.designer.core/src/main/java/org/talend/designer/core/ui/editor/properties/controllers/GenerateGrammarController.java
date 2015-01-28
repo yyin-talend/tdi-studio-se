@@ -23,11 +23,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
@@ -45,8 +40,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -56,7 +51,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -65,6 +59,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -385,11 +380,14 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
 
         try {
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
+            ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
+                return null;
+            }
             String label = routineItem.getProperty().getLabel();
 
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
-                    + label + JavaUtils.JAVA_EXTENSION);
+            IFile file = talendProcessJavaProject.getSrcFolder().getFile(
+                    JavaUtils.JAVA_ROUTINES_DIRECTORY + '/' + label + JavaUtils.JAVA_EXTENSION);
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
@@ -424,12 +422,10 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
      * DOC ytao Comment method "refreshProject".
      */
     private void refreshProject() {
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-        try {
-            prj.build(IncrementalProjectBuilder.AUTO_BUILD, null);
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            processService.buildJavaProject();
         }
     }
 

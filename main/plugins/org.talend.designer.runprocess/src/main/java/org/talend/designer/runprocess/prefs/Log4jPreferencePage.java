@@ -27,6 +27,7 @@ import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
+import org.talend.designer.runprocess.java.TalendProcessJavaProject;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -76,6 +77,7 @@ public class Log4jPreferencePage extends FieldEditorPreferencePage implements IW
      * 
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
+    @Override
     public void init(IWorkbench workbench) {
     }
 
@@ -114,13 +116,14 @@ public class Log4jPreferencePage extends FieldEditorPreferencePage implements IW
     }
 
     private void updateLogFiles() {
-        IRunProcessService service = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
-            service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
-        }
-        if (service != null) {
-            IProject project = JavaProcessorUtilities.getJavaProject().getProject();
-            service.updateLogFiles(project, false);
+            IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            if (service != null && talendJavaProject != null) {
+                IProject project = talendJavaProject.getProject();
+                service.updateLogFiles(project, false);
+            }
         }
     }
 
