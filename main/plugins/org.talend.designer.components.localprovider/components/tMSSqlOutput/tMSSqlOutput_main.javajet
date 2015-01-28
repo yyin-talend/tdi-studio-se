@@ -104,7 +104,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	 	} else if ( colStmt.isReplaced() ) { 
  		     List <Column> replacements = colStmt.getReplacement() ;          
 	 		 for (int i=0; i < replacements.size() ; i++) { 
-	 		      Column columnTest =columnTest = replacements.get(i); 
+	 		      Column columnTest = replacements.get(i); 
 	 		      String sqlExpression = columnTest.getSqlStmt(); 
 	 		      if (sqlExpression.contains("?")) { 
 	 		            colStruct.add(colStmt); 
@@ -484,6 +484,14 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 	}
 
     if(incomingConnName != null && columnList != null){
+    	int schemaOptNum = 100;
+		String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+		if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+			schemaOptNum = Integer.parseInt(schemaOptNumStr);
+		}
+		
+    	boolean optimize65535 = columnList.size() > schemaOptNum;//optimize for 65535 method size issue in java
+    	
     	if(identityInsert && useExistingConnection ) {
         %>
 		if ( isShareIdentity_<%=cid%> ) {
@@ -495,8 +503,6 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
         whetherReject_<%=cid%> = false;
         <%    
         if(("INSERT").equals(dataAction)) {
-            int counter = 1;   
-              
             //start issue0010403 date type     
 			if (rejectConnName != null) {
 %>
@@ -504,22 +510,33 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 <%
 			}//end issue0010403 date type
 			
+			int counter = 1;
             for(Column column : colStruct) {
-                if(column.isInsertable()) {
-                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-                    if(isSpecifyIdentityKey && (column.getName().equals(identityKey)) && column.isInsertable()) {
-                    	continue;
-                    }
-                    %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counter, incomingConnName, cid, NORMAL_TYPE,null)%>
-                    <%
-                    if(isEnableDebug) {
-                        %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
-                        <%
-                    }                    
-                    counter++;                        
+            	if(!column.isInsertable() || (isSpecifyIdentityKey && (column.getName().equals(identityKey)))) {
+                    continue;
                 }
+                
+                if(optimize65535) {
+                	if((counter-1)%schemaOptNum==0){
+%>
+					setPrepareStatementUtil_<%=cid%>.setInsert_<%=(counter-1)/schemaOptNum%>(<%=incomingConnName%>,pstmt_<%=cid%>
+						<%if(isEnableDebug) {%>,query_<%=cid%>,insertSQLSplits_<%=cid%><%}%>
+					);
+<%
+                	}
+                } else {
+	                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+	                %>
+	                <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counter, incomingConnName, cid, NORMAL_TYPE,null)%>
+	                <%
+	                if(isEnableDebug) {
+	                    %>
+	                    <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
+	                    <%
+	                }
+	            }
+	            
+                counter++;
             }
 			if(isDynamic) {
 				Column dynamicColumn = getColumn(talendDynCol);
@@ -710,18 +727,31 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 			}//end issue0010403 date type
 			
             for(Column column : colStruct) {
-                if(column.isUpdatable()) {
-                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-                    %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counterCol, incomingConnName, cid, NORMAL_TYPE,null)%>
-                    <%
-                    if(isEnableDebug) {
-                        %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
-                        <%
-                    }                    
-                    counterCol++;                   
+                if(!column.isUpdatable()) {
+                	continue;
                 }
+                
+                if(optimize65535) {
+        			if((counterCol-1)%schemaOptNum==0){
+%>
+					setPrepareStatementUtil_<%=cid%>.setUpdate_<%=(counterCol-1)/schemaOptNum%>(<%=incomingConnName%>,pstmt_<%=cid%>
+						<%if(isEnableDebug) {%>,query_<%=cid%>,updateSQLSplits_<%=cid%><%}%>
+					);
+<%
+            		}
+            	} else {
+		            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+		            %>
+		            <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counterCol, incomingConnName, cid, NORMAL_TYPE,null)%>
+		            <%
+		            if(isEnableDebug) {
+		                %>
+		                <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+		                <%
+		            }
+                }
+                
+                counterCol++;
             }
 			if(isDynamic) {
 				Column dynamicColumn = getColumn(talendDynCol);
@@ -756,11 +786,11 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 						if(isEnableDebug) {
 							if(isDynamic){
 							%>
-								query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
+								<%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
 							<%
 							}else{
 							%>
-								query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
+								<%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
 							<%
 							}
 						}
@@ -774,11 +804,11 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     if(isEnableDebug) {
 						if(isDynamic){
 						%>
-							query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+							<%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
 						<%
 						}else{
 						%>
-							query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+							<%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
 						<%
 						}
                     }                    
@@ -891,18 +921,31 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 			}//end issue0010403 date type
 			
                 for(Column column : colStruct) {
-                    if(column.isUpdatable()) {
-                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-                        %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counterCol, incomingConnName, cid, UPDATE_TYPE,null)%>
-                        <%
-                        if(isEnableDebug) {
-                            %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
-                            <%
-                        }                        
-                        counterCol++;
-                    }
+	                if(!column.isUpdatable()) {
+	                	continue;
+	                }
+	                
+	                if(optimize65535) {
+	        			if((counterCol-1)%schemaOptNum==0){
+	%>
+						setPrepareStatementUtil_<%=cid%>.setUpdate_<%=(counterCol-1)/schemaOptNum%>(<%=incomingConnName%>,pstmtUpdate_<%=cid%>
+							<%if(isEnableDebug) {%>,query_<%=cid%>,updateSQLSplits_<%=cid%><%}%>
+						);
+	<%
+	            		}
+	            	} else {
+	                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+	                    %>
+	                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counterCol, incomingConnName, cid, UPDATE_TYPE,null)%>
+	                    <%
+	                    if(isEnableDebug) {
+	                        %>
+	                        <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+	                        <%
+	                    }
+	                }
+	                
+                    counterCol++;
                 }
 				if(isDynamic) {
 					Column dynamicColumn = getColumn(talendDynCol);
@@ -941,11 +984,11 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 							 if(isEnableDebug) {
 							     if(isDynamic){
 							     %>
-    							     query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
+    							     <%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
 							     <%
 							     }else{
 							     %>
-							         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
+							         <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
 							     <%
 							     }
 							}
@@ -959,11 +1002,11 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 						if(isEnableDebug) {
 							if(isDynamic){
 							%>
-								query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+								<%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
 							<%
 							}else{
 							%>
-								query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+								<%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
 							<%
 							}
                         }                        
@@ -1031,21 +1074,31 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 <%
 			}//end issue0010403 date type
                 for(Column columnInsert : colStruct) {
-                    if(columnInsert.isInsertable()) {
-                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
-                        if(isSpecifyIdentityKey && (columnInsert.getName().equals(identityKey)) && columnInsert.isInsertable()) {
-                    		continue;
-                    	}
-                        %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE,null)%>
-                        <%
-                        if(isEnableDebug) {
-                            %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
-                            <%
-                        }                        
-                        counterInsert++;
-                    }
+	            	if(!columnInsert.isInsertable() || (isSpecifyIdentityKey && (columnInsert.getName().equals(identityKey)))) {
+	                    continue;
+	                }
+	                
+	                if(optimize65535) {
+	                	if((counterInsert-1)%schemaOptNum==0){
+%>
+						setPrepareStatementUtil_<%=cid%>.setInsert_<%=(counterInsert-1)/schemaOptNum%>(<%=incomingConnName%>,pstmtInsert_<%=cid%>
+							<%if(isEnableDebug) {%>,query_<%=cid%>,insertSQLSplits_<%=cid%><%}%>
+						);
+<%
+	                	}
+	                } else {
+	                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
+	                    %>
+	                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE,null)%>
+	                    <%
+	                    if(isEnableDebug) {
+	                        %>
+	                        <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
+	                        <%
+	                    }
+	                }
+	                
+                    counterInsert++;
                 }
 				if(isDynamic) {
 					Column dynamicColumn = getColumn(talendDynCol);
@@ -1128,18 +1181,31 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 			}//end issue0010403 date type
 			
             for(Column columnUpdate : colStruct) {
-                if(columnUpdate.isUpdatable()) {
+                if(!columnUpdate.isUpdatable()) {
+                	continue;
+                }
+                
+                if(optimize65535) {
+        			if((counterColUpdate-1)%schemaOptNum==0){
+%>
+					setPrepareStatementUtil_<%=cid%>.setUpdate_<%=(counterColUpdate-1)/schemaOptNum%>(<%=incomingConnName%>,pstmtUpdate_<%=cid%>
+						<%if(isEnableDebug) {%>,query_<%=cid%>,updateSQLSplits_<%=cid%><%}%>
+					);
+<%
+            		}
+            	} else {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE,null)%>
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
+                        <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
                         <%
-                    }                    
-                    counterColUpdate++;
+                    }
                 }
+                
+                counterColUpdate++;
             }
 			if(isDynamic) {
 				Column dynamicColumn = getColumn(talendDynCol);
@@ -1176,11 +1242,11 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 							if(isEnableDebug) {
 								if(isDynamic){
 								%>
-									query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_", "(("+incomingConnName+"."+columnUpdate.getName()+"==null))")%>;
+									<%=getManager(dbmsId, cid).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_", "(("+incomingConnName+"."+columnUpdate.getName()+"==null))")%>;
 								<%
 								}else{
 								%>
-									query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_", "(("+incomingConnName+"."+columnUpdate.getName()+"==null))")%>;
+									<%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_", "(("+incomingConnName+"."+columnUpdate.getName()+"==null))")%>;
 								<%
 								}
 
@@ -1195,11 +1261,11 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     if(isEnableDebug) {
 						if(isDynamic){
 						%>
-							query_<%=cid%> = <%=getManager(dbmsId, cid, node).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
+							<%=getManager(dbmsId, cid, node).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
 						<%
 						}else{
 						%>
-							query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
+							<%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
 						<%
 						}
                     }                    
@@ -1231,21 +1297,31 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
         		}
                 int counter = 1;
                 for(Column column : colStruct) {
-                    if(column.isInsertable()) {
-                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-                        if(isSpecifyIdentityKey && (column.getName().equals(identityKey)) && column.isInsertable()) {
-                    		continue;
-                    	}
-                        %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), column, counter, incomingConnName, cid, INSERT_TYPE,null)%>
-                        <%
-                        if(isEnableDebug) {
-                            %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
-                            <%
-                        }                        
-                        counter++;
+	            	if(!column.isInsertable() || (isSpecifyIdentityKey && (column.getName().equals(identityKey)))) {
+	                    continue;
+	                }
+	                
+	                if(optimize65535) {
+	                	if((counter-1)%schemaOptNum==0){
+	%>
+						setPrepareStatementUtil_<%=cid%>.setInsert_<%=(counter-1)/schemaOptNum%>(<%=incomingConnName%>,pstmtInsert_<%=cid%>
+							<%if(isEnableDebug) {%>,query_<%=cid%>,insertSQLSplits_<%=cid%><%}%>
+						);
+	<%
+	                	}
+	                } else {
+	                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+	                    %>
+	                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), column, counter, incomingConnName, cid, INSERT_TYPE,null)%>
+	                    <%
+	                    if(isEnableDebug) {
+	                        %>
+	                        <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
+	                        <%
+	                    }
                     }
+                    
+                    counter++;
                 }
 				if(isDynamic) {
 					Column dynamicColumn = getColumn(talendDynCol);
@@ -1331,7 +1407,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     <%  
                      if(isEnableDebug) {
 	                        %>
-	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
+	                        <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_", "("+incomingConnName+"."+column.getName()+"==null)")%>;
 	                        <%
 	                    	} 
                     	keyCounter++;
@@ -1343,7 +1419,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_")%>;
+                        <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_")%>;
                         <%
                     }                    
                     keyCounter++;
@@ -1458,21 +1534,31 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 			}//end issue0010403 date type
 			
             for(Column columnInsert : colStruct) {
-                if(columnInsert.isInsertable()) {
-                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
-                    if(isSpecifyIdentityKey && (columnInsert.getName().equals(identityKey)) && columnInsert.isInsertable() && !columnInsert.isDynamic()) {
-                    	continue;
-                   }
-                    %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE,null)%>
-                    <%
-                    if(isEnableDebug) {
-                        %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
-                        <%
-                    }                        
-                    counterInsert++;
+            	if(!columnInsert.isInsertable() || (isSpecifyIdentityKey && (columnInsert.getName().equals(identityKey)))) {
+                    continue;
                 }
+                
+                if(optimize65535) {
+                	if((counterInsert-1)%schemaOptNum==0){
+%>
+					setPrepareStatementUtil_<%=cid%>.setInsert_<%=(counterInsert-1)/schemaOptNum%>(<%=incomingConnName%>,pstmtInsert_<%=cid%>
+						<%if(isEnableDebug) {%>,query_<%=cid%>,insertSQLSplits_<%=cid%><%}%>
+					);
+<%
+                	}
+                } else {
+		            String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
+		            %>
+		            <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE,null)%>
+		            <%
+		            if(isEnableDebug) {
+		                %>
+		                <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
+		                <%
+		            }
+		        }
+		        
+	            counterInsert++;
             }
 			if(isDynamic) {
 					Column dynamicColumn = getColumn(talendDynCol);
