@@ -158,7 +158,8 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
      * 
      * will try to create the sub folders which under the base folder.
      */
-    private IFolder createSubFolder(IProgressMonitor monitor, IFolder baseFolder, String path) {
+    @Override
+    public IFolder createSubFolder(IProgressMonitor monitor, IFolder baseFolder, String path) {
         if (baseFolder != null && path != null && path.length() > 0) {
             try {
                 IFolder subFolder = baseFolder.getFolder(path);

@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
 import org.talend.core.PluginChecker;
@@ -100,7 +101,7 @@ public abstract class JobScriptsManager {
 
     protected static final String JOB_ITEMS_FOLDER_NAME = "items"; //$NON-NLS-1$
 
-    public static final String JOB_CONTEXT_FOLDER = "contexts"; //$NON-NLS-1$
+    public static final String JOB_CONTEXT_FOLDER = JavaUtils.JAVA_CONTEXTS_DIRECTORY; //$NON-NLS-1$
 
     public static final String CTX_PARAMETER_ARG = "--context_param"; //$NON-NLS-1$
 

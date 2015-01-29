@@ -880,7 +880,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String folderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
         try {
             IPath classRoot = getClassRootPath();
-            classRoot = classRoot.append(projectName).append(folderName).append(JOB_CONTEXT_FOLDER);
+            classRoot = classRoot.append(projectName).append(folderName).append(JavaUtils.JAVA_CONTEXTS_DIRECTORY);
             File contextDir = classRoot.toFile();
             if (contextDir.isDirectory()) {
                 list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), processItem));
@@ -888,7 +888,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             // list.add(classRoot.toFile().toURL());
 
-            String jobPackagePath = projectName + PATH_SEPARATOR + folderName + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
+            String jobPackagePath = projectName + PATH_SEPARATOR + folderName + PATH_SEPARATOR
+                    + JavaUtils.JAVA_CONTEXTS_DIRECTORY;
             resource.addResources(jobPackagePath, list);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -1537,7 +1538,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String jobPath = projectName + PATH_SEPARATOR + jobFolderName;
             jarbuilder.setIncludeDir(Collections.singleton(jobPath));
             // filter the context
-            String contextPath = jobPath + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
+            String contextPath = jobPath + PATH_SEPARATOR + JavaUtils.JAVA_CONTEXTS_DIRECTORY;
             jarbuilder.setExcludeDir(Collections.singleton(contextPath));
 
             jarbuilder.buildJar();

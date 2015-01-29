@@ -53,11 +53,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.Message;
 import org.eclipse.jdt.debug.core.IJavaBreakpoint;
 import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
@@ -117,7 +113,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -143,7 +138,7 @@ import org.talend.repository.utils.EsbConfigUtils;
 @SuppressWarnings("restriction")
 public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpointListener {
 
-    /** The compiled code path. */
+    /** The compiled job class path. */
     private IPath compiledCodePath;
 
     /** The compiled context file path. */
@@ -247,33 +242,33 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // Project project = repositoryContext.getProject();
 
         String projectFolderName = JavaResourcesHelper.getProjectFolderName(property);
-
         String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
         String fileName = filenameFromLabel ? escapeFilename(process.getName()) : process.getId();
-
-        try {
-            IPackageFragment projectPackage = getProjectPackage(projectFolderName);
-            IPackageFragment jobPackage = getProjectPackage(projectPackage, jobFolderName);
-            IPackageFragment contextPackage = getProjectPackage(jobPackage, "contexts"); //$NON-NLS-1$
-
-            this.codePath = jobPackage.getPath().append(fileName + JavaUtils.JAVA_EXTENSION);
-            this.codePath = this.codePath.removeFirstSegments(1);
-            this.compiledCodePath = this.codePath.removeLastSegments(1).append(fileName);
-            this.compiledCodePath = new Path(MavenSystemFolders.JAVA.getOutputPath()).append(this.compiledCodePath
-                    .removeFirstSegments(1));
-
-            this.typeName = jobPackage.getPath().append(fileName).removeFirstSegments(2).toString().replace('/', '.');
-
-            this.contextPath = contextPackage.getPath().append(
-                    escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION);
-            this.contextPath = this.contextPath.removeFirstSegments(1);
-            this.compiledContextPath = this.contextPath.removeLastSegments(1).append(fileName);
-            this.compiledContextPath = new Path(MavenSystemFolders.JAVA.getOutputPath()).append(this.compiledContextPath
-                    .removeFirstSegments(1));
-
-        } catch (CoreException e) {
+        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        if (talendJavaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
         }
+        final IFolder projectSrcFolder = talendJavaProject.getSrcSubFolder(null, projectFolderName);
+        final IFolder jobSrcFolder = talendJavaProject.createSubFolder(null, projectSrcFolder, jobFolderName);
+        final IFolder contextSrcFolder = talendJavaProject.createSubFolder(null, jobSrcFolder, JavaUtils.JAVA_CONTEXTS_DIRECTORY);
+        final IFolder outputFolder = talendJavaProject.getOutputFolder();
+
+        this.codePath = jobSrcFolder.getProjectRelativePath().append(fileName + JavaUtils.JAVA_EXTENSION);
+
+        IPath srcProjectRelativePath = talendJavaProject.getSrcFolder().getProjectRelativePath();
+        IPath jobPackagePath = jobSrcFolder.getProjectRelativePath().makeRelativeTo(srcProjectRelativePath);
+        // remove the job file part, xxx.java
+        IFolder jobClassFolder = outputFolder.getFolder(jobPackagePath);
+        this.compiledCodePath = jobClassFolder.getProjectRelativePath().append(fileName);
+
+        this.typeName = jobPackagePath.append(fileName).toString().replace('/', '.');
+
+        String contextFileName = escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION;
+        this.contextPath = contextSrcFolder.getProjectRelativePath().append(contextFileName);
+
+        IPath contextPackagePath = contextSrcFolder.getProjectRelativePath().makeRelativeTo(srcProjectRelativePath);
+        IFolder contextOutputFolder = outputFolder.getFolder(contextPackagePath);
+        this.compiledContextPath = contextOutputFolder.getProjectRelativePath().append(contextFileName);
     }
 
     /**
@@ -712,74 +707,13 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
-    /**
-     * Get the required project package under java project, if not existed new one will be created.
-     * 
-     * DOC yzhang Comment method "getProjectPackage".
-     * 
-     * @param packageName The required package name, should keep same with the T.O.S project name.
-     * @return The required packaged.
-     * @throws JavaModelException
-     */
-    private IPackageFragment getProjectPackage(String packageName) throws JavaModelException {
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
-        if (talendJavaProject != null) {
-            IPackageFragmentRoot root = talendJavaProject.getJavaProject().getPackageFragmentRoot(
-                    talendJavaProject.getSrcFolder());
-            IPackageFragment leave = root.getPackageFragment(packageName);
-            if (!leave.exists()) {
-                root.createPackageFragment(packageName, true, null);
-            }
-
-            return root.getPackageFragment(packageName);
-        }
-        return null;
-    }
-
     public static void createInternalPackage() {
 
         TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
         if (talendJavaProject == null) {
             return;
         }
-        IJavaProject javaProject = talendJavaProject.getJavaProject();
-
-        IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(talendJavaProject.getSrcFolder());
-        IPackageFragment leave = root.getPackageFragment(JavaUtils.JAVA_INTERNAL_DIRECTORY);
-        if (!leave.exists()) {
-            try {
-                root.createPackageFragment(JavaUtils.JAVA_INTERNAL_DIRECTORY, true, null);
-            } catch (JavaModelException e) {
-                throw new RuntimeException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
-            }
-        }
-    }
-
-    /**
-     * Get the required job package under the project package within the tranfered project, if not existed new one will
-     * be created.
-     * 
-     * DOC yzhang Comment method "getJobPackage".
-     * 
-     * @param projectPackage The project package within which the job package you need to get, can be getted by method
-     * getProjectPackage().
-     * @param jobName The required job package name.
-     * @return The required job package.
-     * @throws JavaModelException
-     */
-    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
-        if (talendJavaProject != null) {
-            IPackageFragmentRoot root = talendJavaProject.getJavaProject().getPackageFragmentRoot(projectPackage.getResource());
-            IPackageFragment leave = root.getPackageFragment(jobName);
-            if (!leave.exists()) {
-                root.createPackageFragment(jobName, true, null);
-            }
-
-            return root.getPackageFragment(jobName);
-        }
-        return null;
-
+        talendJavaProject.createSubFolder(null, talendJavaProject.getSrcFolder(), JavaUtils.JAVA_INTERNAL_DIRECTORY);
     }
 
     /*

@@ -43,7 +43,6 @@ import org.talend.designer.runprocess.IRunProcessService;
  */
 public class ContextModifyCommand extends Command {
 
-    private String JOB_CONTEXT_FOLDER = "contexts"; //$NON-NLS-1$
 
     IContext oldContext;
 
@@ -202,7 +201,7 @@ public class ContextModifyCommand extends Command {
      */
     private IResource getContextResource(IProcess2 process, IContext context) throws Exception {
         IPath path = new Path(JavaResourcesHelper.getProjectFolderName(process.getProperty().getItem()))
-                .append(JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion())).append(JOB_CONTEXT_FOLDER)
+                .append(JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion())).append(JavaUtils.JAVA_CONTEXTS_DIRECTORY)
                 .append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
 
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {

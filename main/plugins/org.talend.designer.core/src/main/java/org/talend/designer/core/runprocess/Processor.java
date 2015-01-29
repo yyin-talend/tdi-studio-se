@@ -83,7 +83,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
     /** Path to generated context code. */
     protected IPath contextPath;
 
-    /** Path to generated perl code. */
+    /** Path to generated job java code. */
     protected IPath codePath;
 
     protected String targetPlatform;
