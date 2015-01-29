@@ -132,13 +132,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 
-    private static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
+    private static final String USER_BEANS_PATH = JavaUtils.JAVA_BEANS_DIRECTORY;
 
-    private static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
+    private static final String USER_ROUTINES_PATH = JavaUtils.JAVA_ROUTINES_DIRECTORY;
 
-    private static final String USER_PIGUDF_PATH = "pigudf"; //$NON-NLS-1$
+    private static final String USER_PIGUDF_PATH = JavaUtils.JAVA_PIGUDF_DIRECTORY;
 
-    private static final String SYSTEM_ROUTINES_PATH = "routines/system"; //$NON-NLS-1$
+    private static final String SYSTEM_ROUTINES_PATH = USER_ROUTINES_PATH + '/' + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY;
 
     public static final String SYSTEMROUTINE_JAR = "systemRoutines.jar"; //$NON-NLS-1$
 
@@ -1147,10 +1147,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         return;
                     }
                     // for db mapping xml
-                    IFolder xmlMapping = talendProcessJavaProject.getSrcFolder().getFolder(JavaUtils.JAVA_XML_MAPPING);
+                    IFolder xmlMappingFolder = talendProcessJavaProject.getResourcesFolder()
+                            .getFolder(JavaUtils.JAVA_XML_MAPPING);
                     List<URL> xmlMappingFileUrls = new ArrayList<URL>();
-                    if (xmlMapping.exists()) {
-                        for (IResource fileResource : xmlMapping.members()) {
+                    if (xmlMappingFolder.exists()) {
+                        for (IResource fileResource : xmlMappingFolder.members()) {
                             if (XmlUtil.isXMLFile(fileResource.getName())) {
                                 xmlMappingFileUrls.add(fileResource.getLocationURI().toURL());
                             }
