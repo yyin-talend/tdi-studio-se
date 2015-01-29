@@ -18,12 +18,16 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.ui.palette.PaletteViewer;
+import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
 import org.eclipse.gef.ui.parts.PaletteViewerKeyHandler;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -40,11 +44,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.osgi.service.prefs.BackingStoreException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 
 /**
@@ -91,6 +98,35 @@ public class TalendPaletteViewer extends PaletteViewer {
         setKeyHandler(new PaletteViewerKeyHandler(this));
         setEditPartFactory(new TalendPaletteEditPartFactory());
         executor = new ThreadPoolExecutor(1, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(3));
+        this.enableVerticalScrollbar(true);
+        setupPreferences();
+    }
+
+    private void setupPreferences() {
+        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        final String firstTimeRunning = "org.talend.designer.core.ui.editor.palette.TalendPaletteViewer.isFirstTimeRunning"; //$NON-NLS-1$
+        boolean isFirstTimeRunning = true;
+        if (preferenceStore != null) {
+            String value = preferenceStore.getString(firstTimeRunning);
+            if (StringUtils.isNotEmpty(value)) {
+                isFirstTimeRunning = Boolean.valueOf(value);
+            }
+        }
+        if (isFirstTimeRunning) {
+            PaletteViewerPreferences paletteViewerPreferences = this.getPaletteViewerPreferences();
+            if (paletteViewerPreferences != null) {
+                paletteViewerPreferences.setAutoCollapseSetting(PaletteViewerPreferences.COLLAPSE_NEVER);
+                paletteViewerPreferences.getAutoCollapseSetting();
+                if (preferenceStore != null) {
+                    preferenceStore.setValue(firstTimeRunning, Boolean.FALSE.toString());
+                    try {
+                        InstanceScope.INSTANCE.getNode(DesignerPlugin.ID).flush();
+                    } catch (BackingStoreException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }
+        }
     }
 
     /**
