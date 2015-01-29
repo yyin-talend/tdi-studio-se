@@ -52,10 +52,10 @@ public class JavaSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
         }
         String basePath = JavaUtils.JAVA_SQLPATTERNS_DIRECTORY + '/' + item.getEltName();
         // init user defined folder
-        talendProcessJavaProject.getSrcSubFolder(null, basePath + '/' + JavaUtils.JAVA_USER_DEFINED);
+        talendProcessJavaProject.getResourceSubFolder(null, basePath + '/' + JavaUtils.JAVA_USER_DEFINED);
 
-        IFolder systemFolder = talendProcessJavaProject.getSrcSubFolder(null, basePath + '/'
-                + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
+        IFolder systemFolder = talendProcessJavaProject.getResourceSubFolder(null, basePath + '/'
+                + JavaUtils.JAVA_SYSTEM_DIRECTORY);
 
         IFile file = systemFolder.getFile(item.getProperty().getLabel() + JavaUtils.JAVA_SQLPATTERN_EXTENSION);
         return file;

@@ -138,7 +138,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     private static final String USER_PIGUDF_PATH = JavaUtils.JAVA_PIGUDF_DIRECTORY;
 
-    private static final String SYSTEM_ROUTINES_PATH = USER_ROUTINES_PATH + '/' + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY;
+    private static final String SYSTEM_ROUTINES_PATH = JavaUtils.JAVA_ROUTINES_DIRECTORY + PATH_SEPARATOR
+            + JavaUtils.JAVA_SYSTEM_DIRECTORY;
 
     public static final String SYSTEMROUTINE_JAR = "systemRoutines.jar"; //$NON-NLS-1$
 
@@ -1039,8 +1040,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 return;
             }
             IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
-            IFolder systemRoutineFolder = srcFolder.getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY + PATH_SEPARATOR
-                    + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
+            IFolder systemRoutineFolder = srcFolder.getFolder(SYSTEM_ROUTINES_PATH);
             List<URL> systemRoutinesFileUrls = new ArrayList<URL>();
             if (systemRoutineFolder.exists()) {
                 for (IResource fileResource : systemRoutineFolder.members()) {
@@ -1050,13 +1050,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     }
                 }
 
-                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                        + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY, systemRoutinesFileUrls);
+                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + SYSTEM_ROUTINES_PATH, systemRoutinesFileUrls);
             }
             // bug TDI-8647
             systemRoutinesFileUrls.clear(); // empty and re-use it
-            systemRoutineFolder = srcFolder.getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY + PATH_SEPARATOR
-                    + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_API_DIRECTORY);
+            systemRoutineFolder = srcFolder.getFolder(SYSTEM_ROUTINES_PATH + PATH_SEPARATOR
+                    + JavaUtils.JAVA_SYSTEM_ROUTINES_API_DIRECTORY);
             if (systemRoutineFolder.exists()) {
                 for (IResource fileResource : systemRoutineFolder.members()) {
                     if (fileResource instanceof IFile
@@ -1065,8 +1064,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     }
                 }
 
-                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                        + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR
+                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + SYSTEM_ROUTINES_PATH + PATH_SEPARATOR
                         + JavaUtils.JAVA_SYSTEM_ROUTINES_API_DIRECTORY, systemRoutinesFileUrls);
             }
             // add for routines

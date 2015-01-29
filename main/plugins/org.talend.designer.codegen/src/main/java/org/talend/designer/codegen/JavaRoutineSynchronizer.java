@@ -260,7 +260,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
                 return null;
             }
             IFolder systemFolder = talendProcessJavaProject.getSrcSubFolder(null, JavaUtils.JAVA_ROUTINES_DIRECTORY + '/'
-                    + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + '/' + directory);
+                    + JavaUtils.JAVA_SYSTEM_DIRECTORY + '/' + directory);
 
             for (File module : modules) {
                 if (!module.isDirectory()) {
