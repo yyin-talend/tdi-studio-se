@@ -12,20 +12,16 @@
 // ============================================================================
 package org.talend.designer.runprocess.mapreduce;
 
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
-import org.talend.core.service.IRemoteRunprocessorService;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.RunProcessContext;
+import org.talend.designer.runprocess.bigdata.RunBigDataProcessContext;
 
 /**
  * Created by Marvin Wang on Mar 5, 2013.
  */
-public class RunMapReduceProcessContext extends RunProcessContext {
+public class RunMapReduceProcessContext extends RunBigDataProcessContext {
 
     /**
      * DOC marvin RunRemoteMapReduceProcessContext constructor comment.
@@ -36,22 +32,16 @@ public class RunMapReduceProcessContext extends RunProcessContext {
         super(process);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.designer.runprocess.bigdata.RunBigDataProcessContext#createProcessor(org.talend.core.model.process
+     * .IProcess, org.talend.core.model.properties.Property, boolean)
+     */
     @Override
-    protected IProcessor getProcessor(IProcess process, Property property) {
-        ECodeLanguage currentLanguage = LanguageManager.getCurrentLanguage();
-        if (currentLanguage == ECodeLanguage.PERL) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IRemoteRunprocessorService.class)) {
-                IRemoteRunprocessorService service = (IRemoteRunprocessorService) GlobalServiceRegister.getDefault().getService(
-                        IRemoteRunprocessorService.class);
-                return service.createRemotePerlProcessor(process, property, true);
-            } else {
-                throw new RuntimeException("Language not found");
-            }
-        } else if (currentLanguage == ECodeLanguage.JAVA) {
-            return new MapReduceJavaProcessor(process, property, true);
-        } else {
-            throw new RuntimeException("Language not found");
-        }
+    protected IProcessor createProcessor(IProcess process, Property property, boolean filenameFromLabel) {
+        return new MapReduceJavaProcessor(process, property, filenameFromLabel);
     }
 
 }

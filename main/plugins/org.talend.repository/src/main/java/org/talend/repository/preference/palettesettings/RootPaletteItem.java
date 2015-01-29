@@ -38,6 +38,8 @@ public class RootPaletteItem extends AbstractPaletteItem implements IPaletteItem
         case CATEGORY_4_STORM:
             type = ERepositoryObjectType.valueOf("PROCESS_STORM");
             break;
+        case CATEGORY_4_SPARK:
+            type = ERepositoryObjectType.valueOf("PROCESS_SPARK");
         case CATEGORY_4_DI:
         default:
             type = ERepositoryObjectType.PROCESS;
