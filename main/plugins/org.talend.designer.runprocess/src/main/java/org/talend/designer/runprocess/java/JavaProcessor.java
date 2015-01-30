@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -233,7 +234,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         initCodePath(context);
     }
 
-    public void initCodePath(IContext context) throws ProcessorException {
+    public void initCodePath(IContext c) throws ProcessorException {
         // RepositoryContext repositoryContext = (RepositoryContext)
         // CorePlugin.getContext().getProperty(
         // Context.REPOSITORY_CONTEXT_KEY);
@@ -246,11 +247,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (talendJavaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
         }
+        IProgressMonitor monitor = new NullProgressMonitor();
+
         this.mainClass = projectFolderName + '.' + jobFolderName + '.' + fileName;
 
-        final IFolder projectSrcFolder = talendJavaProject.getSrcSubFolder(null, projectFolderName);
-        final IFolder jobSrcFolder = talendJavaProject.createSubFolder(null, projectSrcFolder, jobFolderName);
-        final IFolder contextSrcFolder = talendJavaProject.createSubFolder(null, jobSrcFolder, JavaUtils.JAVA_CONTEXTS_DIRECTORY);
+        final IFolder projectSrcFolder = talendJavaProject.getSrcSubFolder(monitor, projectFolderName);
+        final IFolder jobSrcFolder = talendJavaProject.createSubFolder(monitor, projectSrcFolder, jobFolderName);
         final IFolder outputFolder = talendJavaProject.getOutputFolder();
 
         this.codePath = jobSrcFolder.getProjectRelativePath().append(fileName + JavaUtils.JAVA_EXTENSION);
@@ -261,10 +263,15 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         IFolder jobClassFolder = outputFolder.getFolder(jobPackagePath);
         this.compiledCodePath = jobClassFolder.getProjectRelativePath().append(fileName);
 
-        String contextFileName = escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION;
+        // contexts
+        final IFolder contextSrcFolder = talendJavaProject.getResourceSubFolder(monitor, jobPackagePath.toString() + '/'
+                + JavaUtils.JAVA_CONTEXTS_DIRECTORY);
+
+        String contextFileName = escapeFilename(c.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION;
         this.contextPath = contextSrcFolder.getProjectRelativePath().append(contextFileName);
 
-        IPath contextPackagePath = contextSrcFolder.getProjectRelativePath().makeRelativeTo(srcProjectRelativePath);
+        IPath contextPackagePath = contextSrcFolder.getProjectRelativePath().makeRelativeTo(
+                talendJavaProject.getResourcesFolder().getProjectRelativePath());
         IFolder contextOutputFolder = outputFolder.getFolder(contextPackagePath);
         this.compiledContextPath = contextOutputFolder.getProjectRelativePath().append(contextFileName);
     }
@@ -320,7 +327,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI)
             throws ProcessorException {
-        this.exportAsOSGI = exportAsOSGI ? "true" : "false";
+        this.exportAsOSGI = exportAsOSGI ? Boolean.TRUE.toString() : Boolean.FALSE.toString();
         generateCode(statistics, trace, javaProperties);
     }
 
@@ -377,7 +384,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                                 INode node = allNodes.get(i);
                                 if (rulesService.isRuleComponent(node)
                                         && !node.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getValue()
-                                                .toString().equals("BUILT_IN")) {
+                                                .toString().equals("BUILT_IN")) { //$NON-NLS-1$
                                     useGenerateRuleFiles = true;
                                     break;
                                 }
@@ -400,11 +407,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             // format the code before save the file.
             final String toFormat = processCode;
             // fix for 21320
-            final Job job = new Job("t") {
+            final Job job = new Job("t") { //$NON-NLS-1$
 
                 @Override
                 protected IStatus run(IProgressMonitor monitor) {
-                    monitor.beginTask("Format code", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("Format code", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     formatedCode = formatCode(toFormat);
                     monitor.done();
                     return Status.OK_STATUS;
@@ -819,14 +826,14 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         boolean exportingJob = ProcessorUtilities.isExportConfig();
 
         Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
-        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+        boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
         if (isLog4jEnabled) {
             JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
         }
         JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);
 
         String unixRootPathVar = "$ROOT_PATH"; //$NON-NLS-1$
-        String unixRootPath = unixRootPathVar + "/"; //$NON-NLS-1$
+        String unixRootPath = unixRootPathVar + '/';
 
         StringBuffer libPath = new StringBuffer();
         File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
@@ -839,14 +846,14 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                     }
                     String singleLibPath = new Path(jarFile.getAbsolutePath()).toPortableString();
                     if (exportingJob) {
-                        singleLibPath = singleLibPath.replace(new Path(libDir.getAbsolutePath()).toPortableString(), "../lib");
+                        singleLibPath = singleLibPath.replace(new Path(libDir.getAbsolutePath()).toPortableString(), "../lib"); //$NON-NLS-1$
                     }
                     libPath.append(singleLibPath).append(classPathSeparator);
                 }
             }
         }
         if (!exportingJob) {
-            libPath.append(".").append(classPathSeparator);
+            libPath.append('.').append(classPathSeparator);
         }
 
         String outputPath;
@@ -868,12 +875,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (exportingJob) {
             String version = ""; //$NON-NLS-1$
             if (process.getVersion() != null) {
-                version = "_" + process.getVersion(); //$NON-NLS-1$
+                version = '_' + process.getVersion();
                 version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            exportJar = classPathSeparator
-                    + (!win32 && exportingJob ? unixRootPath : "") + process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
+            exportJar = classPathSeparator + (!win32 && exportingJob ? unixRootPath : "") + //$NON-NLS-1$ 
+                    process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$ 
 
             JobInfo lastMainJob = LastGenerationInfo.getInstance().getLastMainJob();
             Set<JobInfo> infos = null;
@@ -887,10 +894,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                     continue;
                 }
                 if (jobInfo.getJobVersion() != null) {
-                    version = "_" + jobInfo.getJobVersion(); //$NON-NLS-1$
+                    version = '_' + jobInfo.getJobVersion();
                     version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                exportJar += (!win32 && exportingJob ? unixRootPath : "") + jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
+                exportJar += (!win32 && exportingJob ? unixRootPath : "") + //$NON-NLS-1$
+                        jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             }
         }
         // TDI-17845:can't run job correctly in job Conductor
@@ -972,12 +980,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         List<String> list = new ArrayList<String>();
 
         list.add("-libjars"); //$NON-NLS-1$
-        StringBuffer libJars = new StringBuffer("");
+        StringBuffer libJars = new StringBuffer();
         Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
         if (libNames != null && libNames.size() > 0) {
             Iterator<String> itLibNames = libNames.iterator();
             while (itLibNames.hasNext()) {
-                libJars.append(getLibFolderInWorkingDir() + itLibNames.next()).append(",");
+                libJars.append(getLibFolderInWorkingDir() + itLibNames.next()).append(',');
             }
         }
         list.add(libJars.substring(0, libJars.length() - 1));
@@ -1037,12 +1045,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
         /* check parameter won't happened on exportingJob */
         if (!exportingJob) {
-            String fileEncoding = System.getProperty("file.encoding");
-            String encodingFromIni = "-Dfile.encoding=" + fileEncoding;
+            String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-1$
+            String encodingFromIni = "-Dfile.encoding=" + fileEncoding; //$NON-NLS-1$
             List<String> asList = convertArgsToList(vmargs);
             boolean encodingSetInjob = false;
             for (String arg : asList) {
-                if (arg.startsWith("-Dfile.encoding") && fileEncoding != null) {
+                if (arg.startsWith("-Dfile.encoding") && fileEncoding != null) { //$NON-NLS-1$
                     /* if user has set the encoding on .ini file,should use this when exetucte job */
                     arg = encodingFromIni;
                     encodingSetInjob = true;
@@ -1392,23 +1400,23 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             if (processorProject == null && talendJavaProject != null) {
                 processorProject = talendJavaProject.getProject();
             }
-            if (processorProject == null) {
+            if (processorProject == null || talendJavaProject == null) {
                 return;
             }
             processorProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-            IFolder srcFolder = processorProject.getFolder("src");// refreshLocal(IResource.DEPTH_INFINITE, null);
+            IFolder srcFolder = talendJavaProject.getSrcFolder();
             if (!srcFolder.exists()) {
                 srcFolder.create(true, true, null);
             }
-            IFolder metainfFolder = srcFolder.getFolder("META-INF");
+            IFolder metainfFolder = srcFolder.getFolder("META-INF"); //$NON-NLS-1$
             if (!metainfFolder.exists()) {
                 metainfFolder.create(true, true, null);
             }
-            IFolder springFolder = metainfFolder.getFolder("spring");
+            IFolder springFolder = metainfFolder.getFolder("spring"); //$NON-NLS-1$
             if (!springFolder.exists()) {
                 springFolder.create(true, true, null);
             }
-            IFile springFile = springFolder.getFile(process.getName().toLowerCase() + ".xml");
+            IFile springFile = springFolder.getFile(process.getName().toLowerCase() + ".xml"); //$NON-NLS-1$
             InputStream is = new ByteArrayInputStream(content.getBytes());
 
             if (!springFile.exists()) {

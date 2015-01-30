@@ -43,7 +43,6 @@ import org.talend.designer.runprocess.IRunProcessService;
  */
 public class ContextModifyCommand extends Command {
 
-
     IContext oldContext;
 
     IContext currentContext;
@@ -201,15 +200,15 @@ public class ContextModifyCommand extends Command {
      */
     private IResource getContextResource(IProcess2 process, IContext context) throws Exception {
         IPath path = new Path(JavaResourcesHelper.getProjectFolderName(process.getProperty().getItem()))
-                .append(JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion())).append(JavaUtils.JAVA_CONTEXTS_DIRECTORY)
-                .append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
+                .append(JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion()))
+                .append(JavaUtils.JAVA_CONTEXTS_DIRECTORY).append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
 
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
             IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
                     IRunProcessService.class);
             ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
             if (talendProcessJavaProject != null) {
-                IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
+                IFolder srcFolder = talendProcessJavaProject.getResourcesFolder();
                 return srcFolder.getFile(path);
             }
         }
