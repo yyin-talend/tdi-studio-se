@@ -14,9 +14,12 @@ package org.talend.designer.runprocess;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.ui.IStartup;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ILibrariesService;
@@ -33,8 +36,6 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 public class DeleteAllJobWhenStartUp implements IStartup {
 
     public static boolean executed;
-
-    public static final String PERL_PROJECT_NAME = ".Perl";
 
     private boolean startUnderPluginModel;
 
@@ -62,13 +63,14 @@ public class DeleteAllJobWhenStartUp implements IStartup {
         ITalendProcessJavaProject talendJavaProject = processService.getTalendProcessJavaProject();
         if (talendJavaProject != null) {
             IJavaProject jProject = talendJavaProject.getJavaProject();
+            IProgressMonitor moniter = new NullProgressMonitor();
             try {
                 if (!jProject.isOpen()) {
-                    jProject.open(null);
+                    jProject.open(moniter);
                 }
                 // empty the src/main/java...
                 IFolder srcFolder = talendJavaProject.getSrcFolder();
-                talendJavaProject.cleanFolder(null, srcFolder);
+                talendJavaProject.cleanFolder(moniter, srcFolder);
 
                 // empty lib/...
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
@@ -79,7 +81,16 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                     }
                 }
 
-                // anything else to do?
+                // rules
+                IFolder rulesResFolder = talendJavaProject.getResourceSubFolder(moniter, JavaUtils.JAVA_RULES_DIRECTORY);
+                talendJavaProject.cleanFolder(moniter, rulesResFolder);
+
+                // sqltempalte
+                IFolder sqlTemplateResFolder = talendJavaProject.getResourceSubFolder(moniter,
+                        JavaUtils.JAVA_SQLPATTERNS_DIRECTORY);
+                talendJavaProject.cleanFolder(moniter, sqlTemplateResFolder);
+
+                // anything else to do? esb?
 
             } catch (CoreException e) {
                 ExceptionHandler.process(e);
