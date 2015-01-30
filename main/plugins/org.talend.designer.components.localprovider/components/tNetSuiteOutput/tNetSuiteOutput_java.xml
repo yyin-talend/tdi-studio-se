@@ -35,7 +35,7 @@
 		<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true" NUM_ROW="1" REPOSITORY_VALUE="NETSUITE" />
 		
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="2" REQUIRED="true" REPOSITORY_VALUE="ENDPOINT">
-			<DEFAULT>https://webservices.netsuite.com/services/NetSuitePort_2014_2</DEFAULT>
+			<DEFAULT>"https://webservices.netsuite.com/services/NetSuitePort_2014_2"</DEFAULT>
 		</PARAMETER>
 		
 		<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="3" REQUIRED="true">
@@ -63,93 +63,93 @@
 			</ITEMS>
 		</PARAMETER>
 		
-        <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="7" REQUIRED="true" REPOSITORY_VALUE="MODULENAME">
+        <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="8" REQUIRED="true" REPOSITORY_VALUE="MODULENAME">
             <ITEMS DEFAULT="Account">
-                <ITEM NAME="Account" VALUE="com.netsuite.webservices.lists.accounting_2014_2.Account" />
-                <ITEM NAME="AccountingPeriod" VALUE="com.netsuite.webservices.lists.accounting_2014_2.AccountingPeriod" />
-                <ITEM NAME="AssemblyBuild" VALUE="com.netsuite.webservices.transactions.inventory_2014_2.AssemblyBuild" />
-                <ITEM NAME="AssemblyItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.AssemblyItem" />
-                <ITEM NAME="AssemblyUnbuild" VALUE="com.netsuite.webservices.transactions.inventory_2014_2.AssemblyUnbuild" />
-                <ITEM NAME="Bin" VALUE="com.netsuite.webservices.lists.accounting_2014_2.Bin" />
-                <ITEM NAME="Budget" VALUE="com.netsuite.webservices.transactions.financial_2014_2.Budget" />
-                <ITEM NAME="CalendarEvent" VALUE="com.netsuite.webservices.activities.scheduling_2014_2.CalendarEvent" />
-                <ITEM NAME="Campaign" VALUE="com.netsuite.webservices.lists.marketing_2014_2.Campaign" />
-                <ITEM NAME="CashRefund" VALUE="com.netsuite.webservices.transactions.customers_2014_2.CashRefund" />
-                <ITEM NAME="CashSale" VALUE="com.netsuite.webservices.transactions.sales_2014_2.CashSale" />
-                <ITEM NAME="Check" VALUE="com.netsuite.webservices.transactions.bank_2014_2.Check" />
-                <ITEM NAME="Classification" VALUE="com.netsuite.webservices.lists.accounting_2014_2.Classification" />
-                <ITEM NAME="ContactCategory" VALUE="com.netsuite.webservices.lists.accounting_2014_2.ContactCategory" />
-                <ITEM NAME="Contact" VALUE="com.netsuite.webservices.lists.relationships_2014_2.Contact" />
-                <ITEM NAME="ContactRole" VALUE="com.netsuite.webservices.lists.accounting_2014_2.ContactRole" />
-                <ITEM NAME="CreditMemo" VALUE="com.netsuite.webservices.transactions.customers_2014_2.CreditMemo" />
-                <ITEM NAME="Customer" VALUE="com.netsuite.webservices.lists.relationships_2014_2.Customer" />
-                <ITEM NAME="CustomerCategory" VALUE="com.netsuite.webservices.lists.accounting_2014_2.CustomerCategory" />
-                <ITEM NAME="CustomerDeposit" VALUE="com.netsuite.webservices.transactions.customers_2014_2.CustomerDeposit" />
-                <ITEM NAME="CustomerPayment" VALUE="com.netsuite.webservices.transactions.customers_2014_2.CustomerPayment" />
-                <ITEM NAME="CustomerRefund" VALUE="com.netsuite.webservices.transactions.customers_2014_2.CustomerRefund" />
-                <ITEM NAME="CustomerStatus" VALUE="com.netsuite.webservices.lists.relationships_2014_2.CustomerStatus" />
-                <ITEM NAME="CustomList" VALUE="com.netsuite.webservices.setup.customization_2014_2.CustomList" />
-                <!-- <ITEM NAME="CustomRecord" VALUE="com.netsuite.webservices.setup.customization_2014_2.CustomRecord" /> -->
-                <ITEM NAME="Department" VALUE="com.netsuite.webservices.lists.accounting_2014_2.Department" />
-                <ITEM NAME="DepositApplication" VALUE="com.netsuite.webservices.transactions.customers_2014_2.DepositApplication" />
-                <ITEM NAME="DescriptionItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.DescriptionItem" />
-                <ITEM NAME="DiscountItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.DiscountItem" />
-                <ITEM NAME="DownloadItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.DownloadItem" />
-                <ITEM NAME="Employee" VALUE="com.netsuite.webservices.lists.employees_2014_2.Employee" />
-                <ITEM NAME="EntityGroup" VALUE="com.netsuite.webservices.lists.relationships_2014_2.EntityGroup" />
-                <ITEM NAME="Estimate" VALUE="com.netsuite.webservices.transactions.sales_2014_2.Estimate" />
-                <ITEM NAME="ExpenseCategory" VALUE="com.netsuite.webservices.lists.accounting_2014_2.ExpenseCategory" />
-                <ITEM NAME="ExpenseReport" VALUE="com.netsuite.webservices.transactions.employees_2014_2.ExpenseReport" />
-                <ITEM NAME="File" VALUE="com.netsuite.webservices.documents.filecabinet_2014_2.File" />
-                <ITEM NAME="Folder" VALUE="com.netsuite.webservices.documents.filecabinet_2014_2.Folder" />
-                <ITEM NAME="GiftCertificate" VALUE="com.netsuite.webservices.lists.accounting_2014_2.GiftCertificate" />
-                <ITEM NAME="GiftCertificateItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.GiftCertificateItem" />
-                <ITEM NAME="InventoryAdjustment" VALUE="com.netsuite.webservices.transactions.inventory_2014_2.InventoryAdjustment" />
-                <ITEM NAME="InventoryItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.InventoryItem" />
-                <ITEM NAME="Invoice" VALUE="com.netsuite.webservices.transactions.sales_2014_2.Invoice" />
-                <ITEM NAME="Issue" VALUE="com.netsuite.webservices.lists.support_2014_2.Issue" />
-                <ITEM NAME="ItemFulfillment" VALUE="com.netsuite.webservices.transactions.sales_2014_2.ItemFulfillment" />
-                <ITEM NAME="ItemReceipt" VALUE="com.netsuite.webservices.transactions.purchases_2014_2.ItemReceipt" />
-                <ITEM NAME="Job" VALUE="com.netsuite.webservices.lists.relationships_2014_2.Job" />
-                <ITEM NAME="JobStatus" VALUE="com.netsuite.webservices.lists.relationships_2014_2.JobStatus" />
-                <ITEM NAME="JobType" VALUE="com.netsuite.webservices.lists.relationships_2014_2.JobType" />
-                <ITEM NAME="JournalEntry" VALUE="com.netsuite.webservices.transactions.general_2014_2.JournalEntry" />
-                <ITEM NAME="KitItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.KitItem" />
-                <ITEM NAME="Location" VALUE="com.netsuite.webservices.lists.accounting_2014_2.Location" />
-                <ITEM NAME="MarkupItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.MarkupItem" />
-                <ITEM NAME="Message" VALUE="com.netsuite.webservices.general.communication_2014_2.Message" />
-                <ITEM NAME="Note" VALUE="com.netsuite.webservices.general.communication_2014_2.Note" />
-                <ITEM NAME="NoteType" VALUE="com.netsuite.webservices.lists.accounting_2014_2.NoteType" />
-                <ITEM NAME="Opportunity" VALUE="com.netsuite.webservices.transactions.sales_2014_2.Opportunity" />
-                <ITEM NAME="Partner" VALUE="com.netsuite.webservices.lists.relationships_2014_2.Partner" />
-                <ITEM NAME="PartnerCategory" VALUE="com.netsuite.webservices.lists.accounting_2014_2.PartnerCategory" />
-                <ITEM NAME="PaymentItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.PaymentItem" />
-                <ITEM NAME="PaymentMethod" VALUE="com.netsuite.webservices.lists.accounting_2014_2.PaymentMethod" />
-                <ITEM NAME="PhoneCall" VALUE="com.netsuite.webservices.activities.scheduling_2014_2.PhoneCall" />
-                <ITEM NAME="PriceLevel" VALUE="com.netsuite.webservices.lists.accounting_2014_2.PriceLevel" />
-                <ITEM NAME="ProjectTask" VALUE="com.netsuite.webservices.activities.scheduling_2014_2.ProjectTask" />
-                <ITEM NAME="PricingGroup" VALUE="com.netsuite.webservices.lists.accounting_2014_2.PricingGroup" />
-                <ITEM NAME="PurchaseOrder" VALUE="com.netsuite.webservices.transactions.purchases_2014_2.PurchaseOrder" />
-                <ITEM NAME="PromotionCode" VALUE="com.netsuite.webservices.lists.marketing_2014_2.PromotionCode" />
-                <ITEM NAME="ReturnAuthorization" VALUE="com.netsuite.webservices.transactions.customers_2014_2.ReturnAuthorization" />
-                <ITEM NAME="SalesRole" VALUE="com.netsuite.webservices.lists.accounting_2014_2.SalesRole" />
-                <ITEM NAME="SalesOrder" VALUE="com.netsuite.webservices.transactions.sales_2014_2.SalesOrder" />
-                <ITEM NAME="SiteCategory" VALUE="com.netsuite.webservices.lists.website_2014_2.SiteCategory" />
-                <ITEM NAME="SubtotalItem" VALUE="com.netsuite.webservices.lists.accounting_2014_2.SubtotalItem" />
-                <ITEM NAME="Subsidiary" VALUE="com.netsuite.webservices.lists.accounting_2014_2.Subsidiary" />
-                <ITEM NAME="SupportCase" VALUE="com.netsuite.webservices.lists.support_2014_2.SupportCase" />
-                <ITEM NAME="Solution" VALUE="com.netsuite.webservices.lists.support_2014_2.Solution" />
-                <ITEM NAME="Task" VALUE="com.netsuite.webservices.activities.scheduling_2014_2.Task" />
-                <ITEM NAME="Term" VALUE="com.netsuite.webservices.lists.accounting_2014_2.Term" />
-                <ITEM NAME="TimeBill" VALUE="com.netsuite.webservices.transactions.employees_2014_2.TimeBill" />
-                <ITEM NAME="TransferOrder" VALUE="com.netsuite.webservices.transactions.inventory_2014_2.TransferOrder" />
-                <ITEM NAME="Topic" VALUE="com.netsuite.webservices.lists.support_2014_2.Topic" />
-                <ITEM NAME="UnitsType" VALUE="com.netsuite.webservices.lists.accounting_2014_2.UnitsType" />
-                <ITEM NAME="Vendor" VALUE="com.netsuite.webservices.lists.relationships_2014_2.Vendor" />
-                <ITEM NAME="VendorPayment" VALUE="com.netsuite.webservices.transactions.purchases_2014_2.VendorPayment" />
-                <ITEM NAME="VendorCategory" VALUE="com.netsuite.webservices.lists.accounting_2014_2.VendorCategory" />
-                <ITEM NAME="VendorBill" VALUE="com.netsuite.webservices.transactions.purchases_2014_2.VendorBill" />
-                <ITEM NAME="WinLossReason" VALUE="com.netsuite.webservices.lists.accounting_2014_2.WinLossReason" />
+                <ITEM NAME="Account" VALUE="Account" />
+                <ITEM NAME="AccountingPeriod" VALUE="AccountingPeriod" />
+                <ITEM NAME="AssemblyBuild" VALUE="AssemblyBuild" />
+                <ITEM NAME="AssemblyItem" VALUE="AssemblyItem" />
+                <ITEM NAME="AssemblyUnbuild" VALUE="AssemblyUnbuild" />
+                <ITEM NAME="Bin" VALUE="Bin" />
+                <ITEM NAME="Budget" VALUE="Budget" />
+                <ITEM NAME="CalendarEvent" VALUE="CalendarEvent" />
+                <ITEM NAME="Campaign" VALUE="Campaign" />
+                <ITEM NAME="CashRefund" VALUE="CashRefund" />
+                <ITEM NAME="CashSale" VALUE="CashSale" />
+                <ITEM NAME="Check" VALUE="Check" />
+                <ITEM NAME="Classification" VALUE="Classification" />
+                <ITEM NAME="ContactCategory" VALUE="ContactCategory" />
+                <ITEM NAME="Contact" VALUE="Contact" />
+                <ITEM NAME="ContactRole" VALUE="ContactRole" />
+                <ITEM NAME="CreditMemo" VALUE="CreditMemo" />
+                <ITEM NAME="Customer" VALUE="Customer" />
+                <ITEM NAME="CustomerCategory" VALUE="CustomerCategory" />
+                <ITEM NAME="CustomerDeposit" VALUE="CustomerDeposit" />
+                <ITEM NAME="CustomerPayment" VALUE="CustomerPayment" />
+                <ITEM NAME="CustomerRefund" VALUE="CustomerRefund" />
+                <ITEM NAME="CustomerStatus" VALUE="CustomerStatus" />
+                <ITEM NAME="CustomList" VALUE="CustomList" />
+                <!-- <ITEM NAME="CustomRecord" VALUE="CustomRecord" /> -->
+                <ITEM NAME="Department" VALUE="Department" />
+                <ITEM NAME="DepositApplication" VALUE="DepositApplication" />
+                <ITEM NAME="DescriptionItem" VALUE="DescriptionItem" />
+                <ITEM NAME="DiscountItem" VALUE="DiscountItem" />
+                <ITEM NAME="DownloadItem" VALUE="DownloadItem" />
+                <ITEM NAME="Employee" VALUE="Employee" />
+                <ITEM NAME="EntityGroup" VALUE="EntityGroup" />
+                <ITEM NAME="Estimate" VALUE="Estimate" />
+                <ITEM NAME="ExpenseCategory" VALUE="ExpenseCategory" />
+                <ITEM NAME="ExpenseReport" VALUE="ExpenseReport" />
+                <ITEM NAME="File" VALUE="File" />
+                <ITEM NAME="Folder" VALUE="Folder" />
+                <ITEM NAME="GiftCertificate" VALUE="GiftCertificate" />
+                <ITEM NAME="GiftCertificateItem" VALUE="GiftCertificateItem" />
+                <ITEM NAME="InventoryAdjustment" VALUE="InventoryAdjustment" />
+                <ITEM NAME="InventoryItem" VALUE="InventoryItem" />
+                <ITEM NAME="Invoice" VALUE="Invoice" />
+                <ITEM NAME="Issue" VALUE="Issue" />
+                <ITEM NAME="ItemFulfillment" VALUE="ItemFulfillment" />
+                <ITEM NAME="ItemReceipt" VALUE="ItemReceipt" />
+                <ITEM NAME="Job" VALUE="Job" />
+                <ITEM NAME="JobStatus" VALUE="JobStatus" />
+                <ITEM NAME="JobType" VALUE="JobType" />
+                <ITEM NAME="JournalEntry" VALUE="JournalEntry" />
+                <ITEM NAME="KitItem" VALUE="KitItem" />
+                <ITEM NAME="Location" VALUE="Location" />
+                <ITEM NAME="MarkupItem" VALUE="MarkupItem" />
+                <ITEM NAME="Message" VALUE="Message" />
+                <ITEM NAME="Note" VALUE="Note" />
+                <ITEM NAME="NoteType" VALUE="NoteType" />
+                <ITEM NAME="Opportunity" VALUE="Opportunity" />
+                <ITEM NAME="Partner" VALUE="Partner" />
+                <ITEM NAME="PartnerCategory" VALUE="PartnerCategory" />
+                <ITEM NAME="PaymentItem" VALUE="PaymentItem" />
+                <ITEM NAME="PaymentMethod" VALUE="PaymentMethod" />
+                <ITEM NAME="PhoneCall" VALUE="PhoneCall" />
+                <ITEM NAME="PriceLevel" VALUE="PriceLevel" />
+                <ITEM NAME="ProjectTask" VALUE="ProjectTask" />
+                <ITEM NAME="PricingGroup" VALUE="PricingGroup" />
+                <ITEM NAME="PurchaseOrder" VALUE="PurchaseOrder" />
+                <ITEM NAME="PromotionCode" VALUE="PromotionCode" />
+                <ITEM NAME="ReturnAuthorization" VALUE="ReturnAuthorization" />
+                <ITEM NAME="SalesRole" VALUE="SalesRole" />
+                <ITEM NAME="SalesOrder" VALUE="SalesOrder" />
+                <ITEM NAME="SiteCategory" VALUE="SiteCategory" />
+                <ITEM NAME="SubtotalItem" VALUE="SubtotalItem" />
+                <ITEM NAME="Subsidiary" VALUE="Subsidiary" />
+                <ITEM NAME="SupportCase" VALUE="SupportCase" />
+                <ITEM NAME="Solution" VALUE="Solution" />
+                <ITEM NAME="Task" VALUE="Task" />
+                <ITEM NAME="Term" VALUE="Term" />
+                <ITEM NAME="TimeBill" VALUE="TimeBill" />
+                <ITEM NAME="TransferOrder" VALUE="TransferOrder" />
+                <ITEM NAME="Topic" VALUE="Topic" />
+                <ITEM NAME="UnitsType" VALUE="UnitsType" />
+                <ITEM NAME="Vendor" VALUE="Vendor" />
+                <ITEM NAME="VendorPayment" VALUE="VendorPayment" />
+                <ITEM NAME="VendorCategory" VALUE="VendorCategory" />
+                <ITEM NAME="VendorBill" VALUE="VendorBill" />
+                <ITEM NAME="WinLossReason" VALUE="WinLossReason" />
             </ITEMS>
         </PARAMETER>
 		
@@ -159,7 +159,7 @@
 		</PARAMETER> 
 		-->
 		
-		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="8" REQUIRED="true">
+		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="9" REQUIRED="true">
 			<TABLE IF="MODULENAME=='AccountingPeriod'">
 			    <COLUMN KEY="false" NAME="PeriodName" LENGTH="200" TYPE="id_String"  />
 			    <COLUMN KEY="false" NAME="Parent" LENGTH="0" TYPE="id_Object"  />
@@ -3850,7 +3850,7 @@
 	
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="Netsuite_Client_2014_2" MODULE="Netsuite_Client_2014_2.jar" REQUIRED="true" />
+			<IMPORT NAME="Netsuite_Client" MODULE="Netsuite_Client.jar" REQUIRED="true" />
 			<IMPORT NAME="NetSuite_Management" MODULE="NetSuite_Management.jar" REQUIRED="true" />
 			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true" />
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true" />

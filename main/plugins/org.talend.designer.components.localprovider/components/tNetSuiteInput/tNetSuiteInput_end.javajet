@@ -37,6 +37,8 @@ if (metadatas != null) {
 						if (continue_<%=cid%>) {
 							records_<%=cid%> = nsMgr_<%=cid%>.getMoreRecords();
 						}
+					} else {
+							continue_tNetSuiteInput_1 = false;
 					}
 				}
 			} catch (Exception e) {

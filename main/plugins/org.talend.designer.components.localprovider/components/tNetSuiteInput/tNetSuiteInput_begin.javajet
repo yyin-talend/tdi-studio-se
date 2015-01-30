@@ -11,6 +11,7 @@
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
     	java.util.Map
+    	java.util.HashMap
     	java.lang.Character
     	java.util.Calendar
 		java.util.Arrays
@@ -28,6 +29,93 @@ int nb_line_<%=cid%> = 0;
 boolean continue_<%=cid%> = true;
 
 <%
+Map<String, String> typeMap = new HashMap<String, String>();
+typeMap.put("Account", "com.netsuite.webservices.lists.accounting_2014_2.Account");
+typeMap.put("AccountingPeriod", "com.netsuite.webservices.lists.accounting_2014_2.AccountingPeriod");
+typeMap.put("AssemblyBuild", "com.netsuite.webservices.transactions.inventory_2014_2.AssemblyBuild");
+typeMap.put("AssemblyItem", "com.netsuite.webservices.lists.accounting_2014_2.AssemblyItem");
+typeMap.put("AssemblyUnbuild", "com.netsuite.webservices.transactions.inventory_2014_2.AssemblyUnbuild");
+typeMap.put("Bin", "com.netsuite.webservices.lists.accounting_2014_2.Bin");
+typeMap.put("Budget", "com.netsuite.webservices.transactions.financial_2014_2.Budget");
+typeMap.put("CalendarEvent", "com.netsuite.webservices.activities.scheduling_2014_2.CalendarEvent");
+typeMap.put("Campaign", "com.netsuite.webservices.lists.marketing_2014_2.Campaign");
+typeMap.put("CashRefund", "com.netsuite.webservices.transactions.customers_2014_2.CashRefund");
+typeMap.put("CashSale", "com.netsuite.webservices.transactions.sales_2014_2.CashSale");
+typeMap.put("Check", "com.netsuite.webservices.transactions.bank_2014_2.Check");
+typeMap.put("Classification", "com.netsuite.webservices.lists.accounting_2014_2.Classification");
+typeMap.put("ContactCategory", "com.netsuite.webservices.lists.accounting_2014_2.ContactCategory");
+typeMap.put("Contact", "com.netsuite.webservices.lists.relationships_2014_2.Contact");
+typeMap.put("ContactRole", "com.netsuite.webservices.lists.accounting_2014_2.ContactRole");
+typeMap.put("CreditMemo", "com.netsuite.webservices.transactions.customers_2014_2.CreditMemo");
+typeMap.put("Customer", "com.netsuite.webservices.lists.relationships_2014_2.Customer");
+typeMap.put("CustomerCategory", "com.netsuite.webservices.lists.accounting_2014_2.CustomerCategory");
+typeMap.put("CustomerDeposit", "com.netsuite.webservices.transactions.customers_2014_2.CustomerDeposit");
+typeMap.put("CustomerPayment", "com.netsuite.webservices.transactions.customers_2014_2.CustomerPayment");
+typeMap.put("CustomerRefund", "com.netsuite.webservices.transactions.customers_2014_2.CustomerRefund");
+typeMap.put("CustomerStatus", "com.netsuite.webservices.lists.relationships_2014_2.CustomerStatus");
+typeMap.put("CustomList", "com.netsuite.webservices.setup.customization_2014_2.CustomList");
+typeMap.put("CustomRecord", "com.netsuite.webservices.setup.customization_2014_2.CustomRecord");
+typeMap.put("Department", "com.netsuite.webservices.lists.accounting_2014_2.Department");
+typeMap.put("DepositApplication", "com.netsuite.webservices.transactions.customers_2014_2.DepositApplication");
+typeMap.put("DescriptionItem", "com.netsuite.webservices.lists.accounting_2014_2.DescriptionItem");
+typeMap.put("DiscountItem", "com.netsuite.webservices.lists.accounting_2014_2.DiscountItem");
+typeMap.put("DownloadItem", "com.netsuite.webservices.lists.accounting_2014_2.DownloadItem");
+typeMap.put("Employee", "com.netsuite.webservices.lists.employees_2014_2.Employee");
+typeMap.put("EntityGroup", "com.netsuite.webservices.lists.relationships_2014_2.EntityGroup");
+typeMap.put("Estimate", "com.netsuite.webservices.transactions.sales_2014_2.Estimate");
+typeMap.put("ExpenseCategory", "com.netsuite.webservices.lists.accounting_2014_2.ExpenseCategory");
+typeMap.put("ExpenseReport", "com.netsuite.webservices.transactions.employees_2014_2.ExpenseReport");
+typeMap.put("File", "com.netsuite.webservices.documents.filecabinet_2014_2.File");
+typeMap.put("Folder", "com.netsuite.webservices.documents.filecabinet_2014_2.Folder");
+typeMap.put("GiftCertificate", "com.netsuite.webservices.lists.accounting_2014_2.GiftCertificate");
+typeMap.put("GiftCertificateItem", "com.netsuite.webservices.lists.accounting_2014_2.GiftCertificateItem");
+typeMap.put("InventoryAdjustment", "com.netsuite.webservices.transactions.inventory_2014_2.InventoryAdjustment");
+typeMap.put("InventoryItem", "com.netsuite.webservices.lists.accounting_2014_2.InventoryItem");
+typeMap.put("Invoice", "com.netsuite.webservices.transactions.sales_2014_2.Invoice");
+typeMap.put("Issue", "com.netsuite.webservices.lists.support_2014_2.Issue");
+typeMap.put("ItemFulfillment", "com.netsuite.webservices.transactions.sales_2014_2.ItemFulfillment");
+typeMap.put("ItemReceipt", "com.netsuite.webservices.transactions.purchases_2014_2.ItemReceipt");
+typeMap.put("Job", "com.netsuite.webservices.lists.relationships_2014_2.Job");
+typeMap.put("JobStatus", "com.netsuite.webservices.lists.relationships_2014_2.JobStatus");
+typeMap.put("JobType", "com.netsuite.webservices.lists.relationships_2014_2.JobType");
+typeMap.put("JournalEntry", "com.netsuite.webservices.transactions.general_2014_2.JournalEntry");
+typeMap.put("KitItem", "com.netsuite.webservices.lists.accounting_2014_2.KitItem");
+typeMap.put("Location", "com.netsuite.webservices.lists.accounting_2014_2.Location");
+typeMap.put("MarkupItem", "com.netsuite.webservices.lists.accounting_2014_2.MarkupItem");
+typeMap.put("Message", "com.netsuite.webservices.general.communication_2014_2.Message");
+typeMap.put("Note", "com.netsuite.webservices.general.communication_2014_2.Note");
+typeMap.put("NoteType", "com.netsuite.webservices.lists.accounting_2014_2.NoteType");
+typeMap.put("Opportunity", "com.netsuite.webservices.transactions.sales_2014_2.Opportunity");
+typeMap.put("Partner", "com.netsuite.webservices.lists.relationships_2014_2.Partner");
+typeMap.put("PartnerCategory", "com.netsuite.webservices.lists.accounting_2014_2.PartnerCategory");
+typeMap.put("PaymentItem", "com.netsuite.webservices.lists.accounting_2014_2.PaymentItem");
+typeMap.put("PaymentMethod", "com.netsuite.webservices.lists.accounting_2014_2.PaymentMethod");
+typeMap.put("PhoneCall", "com.netsuite.webservices.activities.scheduling_2014_2.PhoneCall");
+typeMap.put("PriceLevel", "com.netsuite.webservices.lists.accounting_2014_2.PriceLevel");
+typeMap.put("ProjectTask", "com.netsuite.webservices.activities.scheduling_2014_2.ProjectTask");
+typeMap.put("PricingGroup", "com.netsuite.webservices.lists.accounting_2014_2.PricingGroup");
+typeMap.put("PurchaseOrder", "com.netsuite.webservices.transactions.purchases_2014_2.PurchaseOrder");
+typeMap.put("PromotionCode", "com.netsuite.webservices.lists.marketing_2014_2.PromotionCode");
+typeMap.put("ReturnAuthorization", "com.netsuite.webservices.transactions.customers_2014_2.ReturnAuthorization");
+typeMap.put("SalesRole", "com.netsuite.webservices.lists.accounting_2014_2.SalesRole");
+typeMap.put("SalesOrder", "com.netsuite.webservices.transactions.sales_2014_2.SalesOrder");
+typeMap.put("SiteCategory", "com.netsuite.webservices.lists.website_2014_2.SiteCategory");
+typeMap.put("SubtotalItem", "com.netsuite.webservices.lists.accounting_2014_2.SubtotalItem");
+typeMap.put("Subsidiary", "com.netsuite.webservices.lists.accounting_2014_2.Subsidiary");
+typeMap.put("SupportCase", "com.netsuite.webservices.lists.support_2014_2.SupportCase");
+typeMap.put("Solution", "com.netsuite.webservices.lists.support_2014_2.Solution");
+typeMap.put("Task", "com.netsuite.webservices.activities.scheduling_2014_2.Task");
+typeMap.put("Term", "com.netsuite.webservices.lists.accounting_2014_2.Term");
+typeMap.put("TimeBill", "com.netsuite.webservices.transactions.employees_2014_2.TimeBill");
+typeMap.put("TransferOrder", "com.netsuite.webservices.transactions.inventory_2014_2.TransferOrder");
+typeMap.put("Topic", "com.netsuite.webservices.lists.support_2014_2.Topic");
+typeMap.put("UnitsType", "com.netsuite.webservices.lists.accounting_2014_2.UnitsType");
+typeMap.put("Vendor", "com.netsuite.webservices.lists.relationships_2014_2.Vendor");
+typeMap.put("VendorPayment", "com.netsuite.webservices.transactions.purchases_2014_2.VendorPayment");
+typeMap.put("VendorCategory", "com.netsuite.webservices.lists.accounting_2014_2.VendorCategory");
+typeMap.put("VendorBill", "com.netsuite.webservices.transactions.purchases_2014_2.VendorBill");
+typeMap.put("WinLossReason", "com.netsuite.webservices.lists.accounting_2014_2.WinLossReason");
+        
 List<IMetadataTable> metadatas = node.getMetadataList(); // This is the Schema
 if ((metadatas != null) && (metadatas.size() > 0)) {
 	IMetadataTable metadata = metadatas.get(0);
@@ -54,14 +142,16 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String account = ElementParameterParser.getValue(node, "__ACCOUNT__");
 			
 			// Search configurations
-			String searchEntity = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
+			String searchEntityKey = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
+			String searchEntity = typeMap.get(searchEntityKey);
+			
 			boolean bodySearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__ITEMS_LIST_CHKB__"));
 			boolean regularSearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__SHOW_CONDITIONS__"));
 			boolean customSearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__CUSTOM_SEARCH_CHKB__"));
 			boolean isJoin = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__JOIN_SEARCH_CHKB__"));
 %> 
 			
-			org.talend.netsuite.NetSuiteManagement nsMgr_<%=cid%> = new org.talend.netsuite.NetSuiteManagement(<%=username%>, <%=password%>, <%=role%>, <%=account%>, "<%=endpoint%>"); 
+			org.talend.netsuite.NetSuiteManagement nsMgr_<%=cid%> = new org.talend.netsuite.NetSuiteManagement(<%=username%>, <%=password%>, <%=role%>, <%=account%>, <%=endpoint%>); 
 
 <%
 			IConnection outgoingConn = outgoingConns.get(0);
@@ -216,13 +306,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 <%
 										}
 									}
-    							}
-    						}
-    					}
-    				}
-    			}
-    		}
-    	//}
-    //}
-//}
+					}
+				}
+			}
+		}
+	}
+}
 %>
