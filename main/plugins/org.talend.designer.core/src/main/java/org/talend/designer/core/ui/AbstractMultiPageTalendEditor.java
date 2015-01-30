@@ -1483,8 +1483,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             codePath = processor.getCodePath();
         }
 
-        IFile codeFile = ResourcesPlugin.getWorkspace().getRoot()
-                .getFile(processor.getCodeProject().getFullPath().append(codePath));
+        IFile codeFile = processor.getCodeProject().getFile(codePath);
         if (!codeFile.exists()) {
             // Create empty one
             try {

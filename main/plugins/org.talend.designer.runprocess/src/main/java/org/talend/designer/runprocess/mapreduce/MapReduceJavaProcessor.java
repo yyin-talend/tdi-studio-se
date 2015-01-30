@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Level;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -351,9 +350,7 @@ public class MapReduceJavaProcessor extends JavaProcessor {
 
     @Override
     public String extractMainClassSegments() {
-        IPath classPath = getCodePath().removeFirstSegments(1);
-        String className = classPath.toString().replace('/', '.');
-        return className;
+        return super.extractMainClassSegments();
     }
 
     @Override

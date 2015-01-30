@@ -54,7 +54,9 @@ public interface IJavaProcessor {
      * Extracts the main-class command segment. Added by Marvin Wang on Mar 22, 2013.
      * 
      * @return
+     * @deprecated getMainClass instead
      */
+    @Deprecated
     String extractMainClassSegments();
 
     /**

@@ -879,17 +879,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String projectName = getCorrespondingProjectName(processItem);
         String folderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
         try {
-            IPath classRoot = getClassRootPath();
-            classRoot = classRoot.append(projectName).append(folderName).append(JavaUtils.JAVA_CONTEXTS_DIRECTORY);
-            File contextDir = classRoot.toFile();
+            String jobPackagePath = projectName + PATH_SEPARATOR + folderName + PATH_SEPARATOR
+                    + JavaUtils.JAVA_CONTEXTS_DIRECTORY;
+            ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
+                    .getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
+                return;
+            }
+
+            IFolder outputFolder = talendProcessJavaProject.getOutputFolder();
+            IFolder contextsFolder = outputFolder.getFolder(jobPackagePath);
+            File contextDir = contextsFolder.getLocation().toFile();
             if (contextDir.isDirectory()) {
-                list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), processItem));
+                list.addAll(getActiveContextFiles(contextDir.listFiles(), processItem));
             }
 
             // list.add(classRoot.toFile().toURL());
 
-            String jobPackagePath = projectName + PATH_SEPARATOR + folderName + PATH_SEPARATOR
-                    + JavaUtils.JAVA_CONTEXTS_DIRECTORY;
             resource.addResources(jobPackagePath, list);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -1586,23 +1592,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     protected File getClassRootFileLocation() throws CoreException {
-        return getClassRootPath().toFile();
-    }
-
-    private IPath getClassRootPath() throws CoreException {
         ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
                 .getTalendProcessJavaProject();
         if (talendProcessJavaProject == null) {
             return null;
         }
-        // IProject project = talendProcessJavaProject.getProject();
-        // IJavaProject javaProject = talendProcessJavaProject.getJavaProject();
-        // IPath binPath = javaProject.getOutputLocation();
-        // IPath root = project.getParent().getLocation();
-        // binPath = root.append(binPath);
 
         IFolder outputFolder = talendProcessJavaProject.getOutputFolder();
-        return outputFolder.getLocation();
+        return outputFolder.getLocation().toFile();
     }
 
     /**

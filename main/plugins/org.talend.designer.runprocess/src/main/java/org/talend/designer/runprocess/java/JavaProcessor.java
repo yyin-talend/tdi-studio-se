@@ -147,8 +147,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     /** Tells if filename is based on id or label of the process. */
     private final boolean filenameFromLabel;
 
-    private String typeName;
-
     private IJavaProcessorStates states;
 
     private ISyntaxCheckableEditor checkableEditor;
@@ -248,6 +246,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (talendJavaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
         }
+        this.mainClass = projectFolderName + '.' + jobFolderName + '.' + fileName;
+
         final IFolder projectSrcFolder = talendJavaProject.getSrcSubFolder(null, projectFolderName);
         final IFolder jobSrcFolder = talendJavaProject.createSubFolder(null, projectSrcFolder, jobFolderName);
         final IFolder contextSrcFolder = talendJavaProject.createSubFolder(null, jobSrcFolder, JavaUtils.JAVA_CONTEXTS_DIRECTORY);
@@ -260,8 +260,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // remove the job file part, xxx.java
         IFolder jobClassFolder = outputFolder.getFolder(jobPackagePath);
         this.compiledCodePath = jobClassFolder.getProjectRelativePath().append(fileName);
-
-        this.typeName = jobPackagePath.append(fileName).toString().replace('/', '.');
 
         String contextFileName = escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION;
         this.contextPath = contextSrcFolder.getProjectRelativePath().append(contextFileName);
@@ -472,7 +470,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                     nodeNames[pos++] = "[" + nodeName + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
-                setBreakpoints(codeFile, getTypeName(), lineNumbers);
+                setBreakpoints(codeFile, getMainClass(), lineNumbers);
             }
         } catch (CoreException e1) {
             if (e1.getStatus() != null && e1.getStatus().getException() != null) {
@@ -851,24 +849,20 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             libPath.append(".").append(classPathSeparator);
         }
 
-        // init routine path
-        String routinePath;
+        String outputPath;
         if (exportingJob) {
-            routinePath = getCodeLocation();
-            if (routinePath != null) {
-                routinePath = routinePath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
+            outputPath = getCodeLocation();
+            if (outputPath != null) {
+                outputPath = outputPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
             }
         } else {
             TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
             IFolder classesFolder = talendJavaProject.getOutputFolder();
-            IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
-            routinePath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
-                    + classPathSeparator;
+            outputPath = Path.fromOSString(classesFolder.getLocation().toOSString()) + classPathSeparator;
         }
 
         // init class name
-        IPath classPath = getCodePath().removeFirstSegments(1);
-        String className = classPath.toString().replace('/', '.');
+        String className = getMainClass();
 
         String exportJar = ""; //$NON-NLS-1$
         if (exportingJob) {
@@ -911,7 +905,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
 
         String portableCommand = new Path(command).toPortableString();
-        String portableProjectPath = new Path(routinePath).toPortableString();
+        String portableProjectPath = new Path(outputPath).toPortableString();
 
         if (!win32 && exportingJob) {
             portableProjectPath = unixRootPathVar + classPathSeparator + portableProjectPath;
@@ -1109,7 +1103,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      */
     @Override
     public String getTypeName() {
-        return this.typeName;
+        return this.getMainClass();
     }
 
     /*
@@ -1134,7 +1128,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
                     launchManager.generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
-            wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
+            wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getMainClass());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, CTX_ARG + context.getName());
             config = wc.doSave();
@@ -1160,7 +1154,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
                     launchManager.generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
-            wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
+            wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getMainClass());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, CTX_ARG + context.getName() + parameterStr);
             config = wc.doSave();
