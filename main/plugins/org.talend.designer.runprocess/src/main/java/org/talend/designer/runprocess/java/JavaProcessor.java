@@ -90,7 +90,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IContext;
@@ -943,13 +942,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             tmpParams.add(portableProjectPath + exportJar + libPath.toString() + libFolder);
         }
         tmpParams.add(className);
-        strings = tmpParams.toArray(new String[0]);
 
-        // If the current job is m/r job, then add the argument "-libjars *.jar" for mapper and reducer method if
-        // required.
-        if (process.getComponentsType().equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) {
-            strings = addMapReduceJobCommands(strings);
+        String[] additionCommandStrings = getAdditionCommandStrings();
+        if (additionCommandStrings != null) {
+            tmpParams.addAll(Arrays.asList(additionCommandStrings));
         }
+        strings = tmpParams.toArray(new String[0]);
 
         String[] cmd2 = addVMArguments(strings, exportingJob);
         // achen modify to fix 0001268
@@ -970,42 +968,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // end
     }
 
+    protected String[] getAdditionCommandStrings() {
+        return new String[0];
+    }
+
     protected String getLibFolderInWorkingDir() {
         return JavaProcessorUtilities.getJavaProjectLibFolder().getAbsolutePath();
-    }
-
-    private List<String> getCommandSegmentsForMapReduceProcess() {
-        String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
-        String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
-        List<String> list = new ArrayList<String>();
-
-        list.add("-libjars"); //$NON-NLS-1$
-        StringBuffer libJars = new StringBuffer();
-        Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
-        if (libNames != null && libNames.size() > 0) {
-            Iterator<String> itLibNames = libNames.iterator();
-            while (itLibNames.hasNext()) {
-                libJars.append(getLibFolderInWorkingDir() + itLibNames.next()).append(',');
-            }
-        }
-        list.add(libJars.substring(0, libJars.length() - 1));
-        list.add("-fs");//$NON-NLS-1$
-        list.add(nameNodeURI == null ? "hdfs://localhost:8020" : nameNodeURI);//$NON-NLS-1$
-        list.add("-jt");//$NON-NLS-1$
-        list.add(jobTrackerURI == null ? "localhost:50300" : jobTrackerURI);//$NON-NLS-1$
-
-        return list;
-    }
-
-    private String[] addMapReduceJobCommands(String[] strings) {
-        List<String> list = new ArrayList<String>();
-        if (strings != null && strings.length > 0) {
-            for (String commandSegment : strings) {
-                list.add(commandSegment);
-            }
-        }
-        list.addAll(getCommandSegmentsForMapReduceProcess());
-        return list.toArray(new String[list.size()]);
     }
 
     protected String extractClassPathSeparator() {

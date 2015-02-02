@@ -459,4 +459,43 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         return jobJarName;
     }
 
+    @Override
+    protected String[] getAdditionCommandStrings() {
+        List<String> list = new ArrayList<String>();
+        // If the current job is m/r job, then add the argument "-libjars *.jar" for mapper and reducer method if
+        // required.
+        String[] additionCommandStrings = super.getAdditionCommandStrings();
+        if (additionCommandStrings != null) {
+            list.addAll(Arrays.asList(additionCommandStrings));
+        }
+        // If the current job is m/r job, then add the argument "-libjars *.jar" for mapper and reducer method if
+        // required.
+        // if (process.getComponentsType().equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) { //need or not?
+        list.addAll(getCommandSegmentsForMapReduceProcess());
+        // }
+        return list.toArray(new String[list.size()]);
+    }
+
+    private List<String> getCommandSegmentsForMapReduceProcess() {
+        String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
+        String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
+        List<String> list = new ArrayList<String>();
+
+        list.add("-libjars"); //$NON-NLS-1$
+        StringBuffer libJars = new StringBuffer();
+        Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
+        if (libNames != null && libNames.size() > 0) {
+            Iterator<String> itLibNames = libNames.iterator();
+            while (itLibNames.hasNext()) {
+                libJars.append(getLibFolderInWorkingDir() + itLibNames.next()).append(',');
+            }
+        }
+        list.add(libJars.substring(0, libJars.length() - 1));
+        list.add("-fs");//$NON-NLS-1$
+        list.add(nameNodeURI == null ? "hdfs://localhost:8020" : nameNodeURI);//$NON-NLS-1$
+        list.add("-jt");//$NON-NLS-1$
+        list.add(jobTrackerURI == null ? "localhost:50300" : jobTrackerURI);//$NON-NLS-1$
+
+        return list;
+    }
 }
