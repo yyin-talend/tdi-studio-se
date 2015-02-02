@@ -104,6 +104,7 @@ import org.talend.core.model.runprocess.IJavaProcessorStates;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.services.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -217,7 +218,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             return;
         }
 
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
         if (talendJavaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedProjectException")); //$NON-NLS-1$
         }
@@ -226,6 +227,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
         initCodePath(context);
         this.context = context;
+    }
+
+    protected String getJavaName() {
+        String fileName = filenameFromLabel ? escapeFilename(process.getName()) : process.getId();
+        return fileName;
     }
 
     @Override
@@ -239,10 +245,10 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // Context.REPOSITORY_CONTEXT_KEY);
         // Project project = repositoryContext.getProject();
 
-        String projectFolderName = JavaResourcesHelper.getProjectFolderName(property);
-        String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
-        String fileName = filenameFromLabel ? escapeFilename(process.getName()) : process.getId();
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        final String projectFolderName = JavaResourcesHelper.getProjectFolderName(property);
+        final String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+        final String fileName = getJavaName();
+        ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
         if (talendJavaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
         }
@@ -713,7 +719,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     public static void createInternalPackage() {
 
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
         if (talendJavaProject == null) {
             return;
         }
@@ -862,7 +868,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 outputPath = outputPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
             }
         } else {
-            TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
             IFolder classesFolder = talendJavaProject.getOutputFolder();
             outputPath = Path.fromOSString(classesFolder.getLocation().toOSString()) + classPathSeparator;
         }
@@ -1271,7 +1277,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 return;
             }
 
-            TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
             if (talendJavaProject == null) {
                 return;
             }
@@ -1364,7 +1370,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 return;
             }
             IProject processorProject = this.project;
-            TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
             if (processorProject == null && talendJavaProject != null) {
                 processorProject = talendJavaProject.getProject();
             }

@@ -118,11 +118,26 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
                     }
                 }
             }
+
+            // maven
+            syncRoutinesPom();
         } catch (IOException e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
 
+    }
+
+    private void syncRoutinesPom() {
+        if (!GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            return;
+        }
+        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+        ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+        if (talendProcessJavaProject == null) {
+            return;
+        }
+        talendProcessJavaProject.syncRoutinesPom();
     }
 
     @Override

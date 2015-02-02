@@ -23,11 +23,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
-import org.talend.designer.runprocess.java.TalendProcessJavaProject;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -119,7 +119,7 @@ public class Log4jPreferencePage extends FieldEditorPreferencePage implements IW
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
             IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
                     IRunProcessService.class);
-            TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
             if (service != null && talendJavaProject != null) {
                 IProject project = talendJavaProject.getProject();
                 service.updateLogFiles(project, false);

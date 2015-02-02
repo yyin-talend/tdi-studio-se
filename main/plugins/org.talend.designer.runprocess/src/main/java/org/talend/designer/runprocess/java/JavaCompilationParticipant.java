@@ -162,7 +162,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
                 || CodeGeneratorEmittersPoolFactory.isInitializeStart()) {
             return false;
         }
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
         if (talendJavaProject != null) {
             return talendJavaProject.getJavaProject().equals(project);
         }

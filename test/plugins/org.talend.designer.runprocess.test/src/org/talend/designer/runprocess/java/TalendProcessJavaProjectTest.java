@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.JavaSourceProjectConstants;
 import org.talend.designer.maven.model.MavenSystemFolders;
 
@@ -33,7 +34,7 @@ import org.talend.designer.maven.model.MavenSystemFolders;
 @SuppressWarnings("nls")
 public class TalendProcessJavaProjectTest {
 
-    private TalendProcessJavaProject talendJavaProject;
+    private ITalendProcessJavaProject talendJavaProject;
 
     /**
      * DOC ggu Comment method "setUp".

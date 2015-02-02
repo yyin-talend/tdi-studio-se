@@ -52,7 +52,6 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
-import org.talend.designer.runprocess.java.TalendProcessJavaProject;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.mapreduce.MapReduceJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
@@ -184,7 +183,7 @@ public class DefaultRunProcessService implements IRunProcessService {
 
     @Override
     public IProject getProject(ECodeLanguage language) throws CoreException {
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
         if (talendJavaProject != null) {
             return talendJavaProject.getProject();
         }
@@ -193,7 +192,7 @@ public class DefaultRunProcessService implements IRunProcessService {
 
     @Override
     public IJavaProject getJavaProject() throws CoreException {
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
         if (talendJavaProject != null) {
             return talendJavaProject.getJavaProject();
         }
@@ -351,7 +350,7 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void updateLogFiles(IProject project, boolean isLogForJob) {
         // if directly init or modify log4j,need handle with the log4j under .setting/,if not,means execute or export
         // job,need to copy the latest log4j from .setting/ to /java/src
-        TalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
         if (talendJavaProject == null) {
             return;
         }

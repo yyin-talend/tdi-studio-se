@@ -24,6 +24,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.MavenSystemFolders;
+import org.talend.designer.maven.template.MavenPomSynchronizer;
 
 /**
  * created by ggu on 26 Jan 2015 Detailled comment
@@ -219,5 +220,16 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
         if (!project.isOpen()) { // try to open project.
             project.open(monitor);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.runtime.process.ITalendProcessJavaProject#syncRoutinesPom()
+     */
+    @Override
+    public void syncRoutinesPom() {
+        MavenPomSynchronizer synch = new MavenPomSynchronizer(this);
+        synch.syncRoutinesPom();
     }
 }

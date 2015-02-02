@@ -62,10 +62,11 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.utils.JavaProcessUtil;
-import org.talend.designer.maven.utils.TalendJavaSourceProjectUtil;
+import org.talend.designer.maven.utils.TalendCodeProjectUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -76,7 +77,7 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
 public class JavaProcessorUtilities {
 
     /** The java project within the project. */
-    private static TalendProcessJavaProject talendJavaProject;
+    private static ITalendProcessJavaProject talendJavaProject;
 
     /**
      * A java project under folder .Java will be created if there is no existed.
@@ -86,12 +87,12 @@ public class JavaProcessorUtilities {
      * @return
      * @throws CoreException
      */
-    public static TalendProcessJavaProject getTalendJavaProject() {
+    public static ITalendProcessJavaProject getTalendJavaProject() {
         if (talendJavaProject == null) {
             synchronized (JavaProcessorUtilities.class) {
                 if (talendJavaProject == null) {
                     try {
-                        IProject project = TalendJavaSourceProjectUtil.initJavaProject(new NullProgressMonitor());
+                        IProject project = TalendCodeProjectUtil.initCodeProject(new NullProgressMonitor());
                         if (project != null) {
                             IJavaProject javaProject = JavaCore.create(project);
                             talendJavaProject = new TalendProcessJavaProject(javaProject);
@@ -297,7 +298,7 @@ public class JavaProcessorUtilities {
     // command
     // // line in run mode
     private static void sortClasspath(Set<String> jobModuleList, IProcess process) throws CoreException, BusinessException {
-        TalendProcessJavaProject jProject = getTalendJavaProject();
+        ITalendProcessJavaProject jProject = getTalendJavaProject();
         if (jProject == null) {
             return;
         }
@@ -593,7 +594,7 @@ public class JavaProcessorUtilities {
 
     public static void checkAndUpdateLog4jFile() {
         try {
-            TalendProcessJavaProject jProject = JavaProcessorUtilities.getTalendJavaProject();
+            ITalendProcessJavaProject jProject = JavaProcessorUtilities.getTalendJavaProject();
             if (jProject != null) {
                 IRunProcessService service = null;
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
@@ -616,7 +617,7 @@ public class JavaProcessorUtilities {
      */
     public static File getJavaProjectLibFolder() {
         try {
-            TalendProcessJavaProject jProject = getTalendJavaProject();
+            ITalendProcessJavaProject jProject = getTalendJavaProject();
             if (jProject != null) {
                 IFolder libFolder = jProject.getLibFolder();
                 if (libFolder != null) {
