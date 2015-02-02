@@ -64,6 +64,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.properties.tab.HorizontalTabFactory;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
@@ -383,6 +384,8 @@ public class ProcessView extends ViewPart {
             dc = processComposite;
         } else if (category == EComponentCategory.DEBUGRUN) {
             debugTisProcessComposite = this.debugViewHelper.getDebugComposite(parent);
+            // CSS
+            CoreUIPlugin.setCSSClass(debugTisProcessComposite, debugTisProcessComposite.getClass().getSimpleName());
             dc = debugTisProcessComposite;
         } else if (category == EComponentCategory.ADVANCESETTING) {
             advanceComposite = new AdvanceSettingComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
@@ -395,6 +398,8 @@ public class ProcessView extends ViewPart {
                 dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                         (Element) processContext.getProcess(), true, Display.getCurrent().getSystemColor(
                                 SWT.COLOR_WIDGET_BACKGROUND));
+                // CSS
+                CoreUIPlugin.setCSSClass(dc, dc.getClass().getSimpleName());
             } else {
                 dc = null;
             }
@@ -404,6 +409,8 @@ public class ProcessView extends ViewPart {
                 dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                         (Element) processContext.getProcess(), true, Display.getCurrent().getSystemColor(
                                 SWT.COLOR_WIDGET_BACKGROUND));
+                // CSS
+                CoreUIPlugin.setCSSClass(dc, dc.getClass().getSimpleName());
             } else {
                 dc = null;
             }

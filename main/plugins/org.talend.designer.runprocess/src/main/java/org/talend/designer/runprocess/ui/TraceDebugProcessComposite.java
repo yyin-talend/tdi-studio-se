@@ -59,6 +59,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
@@ -127,7 +128,8 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
     public TraceDebugProcessComposite(Composite parent, int style) {
         super(parent, style);
         // TODO Auto-generated constructor stub
-
+        // CSS
+        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
     }
 
     private void createLineLimitedControl(Composite container) {
@@ -164,6 +166,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
         lineLimitText.addListener(SWT.Verify, new Listener() {
 
             // this text only receive number here.
+            @Override
             public void handleEvent(Event e) {
                 String s = e.text;
                 if (!s.equals("")) { //$NON-NLS-1$
@@ -179,6 +182,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
         });
         lineLimitText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 RunProcessPlugin.getDefault().getPluginPreferences()
                         .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText());
@@ -273,12 +277,12 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
         style.start = consoleText.getText().length();
 
         String[] contents = content.split("\n");
-        for (int i = 0; i < contents.length; i++) {
-            if (isPattern(contents[i]) || isPatternFor(contents[i])) {
+        for (String content2 : contents) {
+            if (isPattern(content2) || isPatternFor(content2)) {
                 consoleText.append(""); //$NON-NLS-1$
                 content = ""; //$NON-NLS-1$
             } else {
-                consoleText.append(contents[i]);
+                consoleText.append(content2);
                 consoleText.append("\n");
             }
         }
@@ -355,6 +359,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
     protected void appendToConsole(final IProcessMessage message) {
         getDisplay().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
 
                 if (message.getType() == MsgType.CORE_OUT || message.getType() == MsgType.CORE_ERR) {
@@ -397,6 +402,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
             getShell().getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (!consoleText.isDisposed()) {
                         consoleText.setText(""); //$NON-NLS-1$
@@ -410,6 +416,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
         } else if (RunProcessContext.PROP_RUNNING.equals(propName)) {
             getShell().getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (isDisposed()) {
                         return;
@@ -504,6 +511,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getComposite()
      */
+    @Override
     public Composite getComposite() {
         // TODO Auto-generated method stub
         return null;
@@ -514,6 +522,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getCurRowSize()
      */
+    @Override
     public int getCurRowSize() {
         // TODO Auto-generated method stub
         return 0;
@@ -524,6 +533,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getElement()
      */
+    @Override
     public Element getElement() {
         // TODO Auto-generated method stub
         return null;
@@ -534,6 +544,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getHashCurControls()
      */
+    @Override
     public BidiMap getHashCurControls() {
         // TODO Auto-generated method stub
         return null;
@@ -544,6 +555,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getPart()
      */
+    @Override
     public IMultiPageTalendEditor getPart() {
         // TODO Auto-generated method stub
         return null;
@@ -555,6 +567,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * @seeorg.talend.core.properties.tab.IDynamicProperty#getRepositoryAliasName(org.talend.core.model.properties.
      * ConnectionItem)
      */
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         // TODO Auto-generated method stub
         return null;
@@ -596,6 +609,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getSection()
      */
+    @Override
     public EComponentCategory getSection() {
         // TODO Auto-generated method stub
         return null;
@@ -606,6 +620,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbSchemaMap() {
         // TODO Auto-generated method stub
         return null;
@@ -616,6 +631,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbTypeMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbTypeMap() {
         // TODO Auto-generated method stub
         return null;
@@ -626,6 +642,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#refresh()
      */
+    @Override
     public void refresh() {
         // TODO Auto-generated method stub
         if (!isDisposed()) {
@@ -638,6 +655,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#setCurRowSize(int)
      */
+    @Override
     public void setCurRowSize(int i) {
         // TODO Auto-generated method stub
 
@@ -651,7 +669,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
             String currenctJobName = processContext.getProcess().getName();
             for (int i = 0; i < linesMess.length; i++) {
                 String tRunJobName = currenctJobName;
-                String linemess = linesMess[i].trim(); //$NON-NLS-1$
+                String linemess = linesMess[i].trim();
                 Pattern pattern = Pattern.compile("^Exception\\s*in\\s*component\\s*(\\w)+_\\d$");//$NON-NLS-1$
                 Matcher m = pattern.matcher(linemess);
                 if (m.find()) {
@@ -671,11 +689,12 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
                                     break;
                                 }
                             }
-                            if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
+                            if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1) {
                                 tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1,
                                         tRunJobName.lastIndexOf(".java"));
-                            else
+                            } else {
                                 tRunJobName = currenctJobName;
+                            }
                         }
                     }
 
@@ -701,6 +720,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
     public void refreshNode(final IProcessMessage psMess) {
         Display.getDefault().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 if (processContext == null) {
                     return;
@@ -777,13 +797,13 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
         String uniqueName = ""; //$NON-NLS-1$
         String[] message = psMess.getContent().split("\n");
 
-        for (int i = 0; i < message.length; i++) {
-            if (isPattern(message[i])) {
+        for (String element : message) {
+            if (isPattern(element)) {
 
-                int firIndex = message[i].indexOf("$"); //$NON-NLS-1$
-                int secIndex = message[i].indexOf("%"); //$NON-NLS-1$
-                uniqueName = message[i].substring(0, firIndex);
-                mess = message[i].substring(firIndex + 1, secIndex);
+                int firIndex = element.indexOf("$"); //$NON-NLS-1$
+                int secIndex = element.indexOf("%"); //$NON-NLS-1$
+                uniqueName = element.substring(0, firIndex);
+                mess = element.substring(firIndex + 1, secIndex);
             }
 
             Double extentPro = new Double(0);
