@@ -26,6 +26,7 @@ import org.eclipse.gef.palette.PaletteTemplateEntry;
 import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
+import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
  * 
@@ -34,6 +35,8 @@ import org.eclipse.swt.graphics.Color;
  * DOC Administrator class global comment. Detailled comment
  */
 public class TalendDrawerEditPart extends DrawerEditPart {
+
+    protected TalendPaletteCSSStyleSetting cssStyleSetting;
 
     @Override
     protected void unregister() {
@@ -60,8 +63,9 @@ public class TalendDrawerEditPart extends DrawerEditPart {
 
     private int childLevel = 0;
 
-    public TalendDrawerEditPart(PaletteDrawer drawer) {
+    public TalendDrawerEditPart(PaletteDrawer drawer, TalendPaletteCSSStyleSetting cssStyleSetting) {
         super(drawer);
+        this.cssStyleSetting = cssStyleSetting;
     }
 
     @Override
@@ -76,7 +80,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
         }
         getViewer().getControl().setData("ANIMATE", Boolean.FALSE); //$NON-NLS-1$
 
-        TalendDrawerFigure fig = new TalendDrawerFigure(getViewer().getControl(), childLevel) {
+        TalendDrawerFigure fig = new TalendDrawerFigure(getViewer().getControl(), childLevel, cssStyleSetting) {
 
             @Override
             IFigure buildTooltip() {
@@ -122,12 +126,13 @@ public class TalendDrawerEditPart extends DrawerEditPart {
     protected void refreshVisuals() {
         getDrawerFigure().setToolTip(createToolTip());
 
-        ImageDescriptor img = getDrawer().getSmallIcon();
-        if (img == null && getDrawer().showDefaultIcon()) {
-            img = InternalImages.DESC_FOLDER_OPEN;
+        if (cssStyleSetting.isShowFolderImage()) {
+            ImageDescriptor img = getDrawer().getSmallIcon();
+            if (img == null && getDrawer().showDefaultIcon()) {
+                img = InternalImages.DESC_FOLDER_OPEN;
+            }
+            setImageDescriptor(img);
         }
-        // TODO maybe can customize
-        // setImageDescriptor(img);
 
         getDrawerFigure().setTitle(getPaletteEntry().getLabel());
         getDrawerFigure().setLayoutMode(getLayoutSetting());

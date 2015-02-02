@@ -21,7 +21,6 @@ import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ButtonBorder;
 import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MarginBorder;
@@ -32,38 +31,43 @@ import org.eclipse.gef.internal.ui.palette.editparts.DetailedLabelFigure;
 import org.eclipse.gef.internal.ui.palette.editparts.ToolEntryEditPart;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
  * DOC talend class global comment. Detailled comment
  */
 public class TalendEntryEditPart extends ToolEntryEditPart {
 
-    protected DetailedLabelFigure customLabel;
-
-    protected static int ARROW_WIDTH = 9;
+    protected DetailedLabelFigure talendCustomLabel;
 
     protected static Border TOOLBAR_ITEM_BORDER = new ButtonBorder(ButtonBorder.SCHEMES.TOOLBAR);
 
-    protected static Border LIST_BORDER = new MarginBorder(3, ARROW_WIDTH + 7, 4, 0);
+    protected static Border LIST_BORDER = null;
 
-    protected static Border ICON_BORDER = new MarginBorder(4, 4, 3, ARROW_WIDTH + 4);
-
-    protected static final Insets LIST_HIGHLIGHT_INSETS = new Insets(1, 5, 2, 0);
-
-    protected static final Insets ICON_HIGHLIGHT_INSETS = new Insets(2, 1, 2, 1);
+    protected static Border ICON_BORDER = null;
 
     protected static Method func_getSelectionRectangle;
+
+    protected TalendPaletteCSSStyleSetting cssStyleSetting;
 
     /**
      * DOC talend TalendEntryEditPart constructor comment.
      * 
      * @param paletteEntry
      */
-    public TalendEntryEditPart(PaletteEntry paletteEntry) {
+    public TalendEntryEditPart(PaletteEntry paletteEntry, TalendPaletteCSSStyleSetting cssStyleSetting) {
         super(paletteEntry);
+        this.cssStyleSetting = cssStyleSetting;
+        init();
+    }
+
+    protected void init() {
+        LIST_BORDER = cssStyleSetting.getEntryEditPartListBorder();
+        ICON_BORDER = cssStyleSetting.getEntryEditPartIconBorder();
     }
 
     @Override
@@ -75,14 +79,14 @@ public class TalendEntryEditPart extends ToolEntryEditPart {
     public IFigure createFigure() {
         Field customLabelField;
         try {
-            customLabel = new DetailedLabelFigure();
+            talendCustomLabel = new DetailedLabelFigure();
             customLabelField = ToolEntryEditPart.class.getDeclaredField("customLabel"); //$NON-NLS-1$
             customLabelField.setAccessible(true);
-            customLabelField.set(this, customLabel);
+            customLabelField.set(this, talendCustomLabel);
         } catch (Exception e) {
             CommonExceptionHandler.process(e);
         }
-        Clickable button = new ToolEntryToggle(customLabel);
+        Clickable button = new ToolEntryToggle(talendCustomLabel);
         button.addActionListener(new ActionListener() {
 
             @Override
@@ -115,9 +119,10 @@ public class TalendEntryEditPart extends ToolEntryEditPart {
         @Override
         public boolean containsPoint(int x, int y) {
             Rectangle rect = getBounds().getCopy();
-            if (customLabel.getBorder() == ICON_BORDER) {
+            int ARROW_WIDTH = cssStyleSetting.getEntryEditPartArrowWidth();
+            if (talendCustomLabel.getBorder() == ICON_BORDER) {
                 rect.width -= ARROW_WIDTH;
-            } else if (customLabel.getBorder() == LIST_BORDER) {
+            } else if (talendCustomLabel.getBorder() == LIST_BORDER) {
                 rect.width -= ARROW_WIDTH;
                 rect.x += ARROW_WIDTH;
             }
@@ -148,7 +153,8 @@ public class TalendEntryEditPart extends ToolEntryEditPart {
                     setBorder(null);
                 }
                 setRolloverEnabled(false);
-                setForegroundColor(ColorConstants.gray);
+                setForegroundColor(cssStyleSetting.getEntryEditPartToolEntryForgroundDisabledColor());
+                cssStyleSetting.disposeRelatedColor(cssStyleSetting.getEntryEditPartToolEntryForgroundDisabledColor());
             }
         }
 
@@ -161,12 +167,14 @@ public class TalendEntryEditPart extends ToolEntryEditPart {
 
                 if (model.isSelected()) {
                     // graphics.setBackgroundColor(PaletteColorUtil.getSelectedColor());
-                    graphics.setBackgroundColor(ColorConstants.blue);
-                    graphics.fillRoundRectangle(getSelectionRectangle(getLayoutSetting(), customLabel), 3, 3);
+                    graphics.setBackgroundColor(cssStyleSetting.getEntryEditPartToolEntrySelectedBackgroundColor());
+                    cssStyleSetting.disposeRelatedColor(cssStyleSetting.getEntryEditPartToolEntrySelectedBackgroundColor());
+                    graphics.fillRoundRectangle(getSelectionRectangle(getLayoutSetting(), talendCustomLabel), 3, 3);
                 } else if (model.isMouseOver() || showHoverFeedback) {
                     // graphics.setBackgroundColor(PaletteColorUtil.getHoverColor());
-                    graphics.setBackgroundColor(ColorConstants.yellow);
-                    graphics.fillRoundRectangle(getSelectionRectangle(getLayoutSetting(), customLabel), 3, 3);
+                    graphics.setBackgroundColor(cssStyleSetting.getEntryEditPartToolEntryHoverBackgroundColor());
+                    cssStyleSetting.disposeRelatedColor(cssStyleSetting.getEntryEditPartToolEntryHoverBackgroundColor());
+                    graphics.fillRoundRectangle(getSelectionRectangle(getLayoutSetting(), talendCustomLabel), 3, 3);
                 }
             }
         }
@@ -179,10 +187,13 @@ public class TalendEntryEditPart extends ToolEntryEditPart {
                     getBorder().paint(this, graphics, NO_INSETS);
                 }
                 if (hasFocus()) {
-                    graphics.setForegroundColor(ColorConstants.red);
-                    graphics.setBackgroundColor(ColorConstants.green);
+                    graphics.setForegroundColor(cssStyleSetting.getEntryEditPartToolEntryBorderFocusForgroundColor());
+                    cssStyleSetting.disposeRelatedColor(cssStyleSetting.getEntryEditPartToolEntryHoverBackgroundColor());
+                    graphics.setBackgroundColor(cssStyleSetting.getEntryEditPartToolEntryHoverBackgroundColor());
+                    cssStyleSetting.disposeRelatedColor(cssStyleSetting.getEntryEditPartToolEntryHoverBackgroundColor());
 
-                    Rectangle area = isToolbarItem() ? getClientArea() : getSelectionRectangle(getLayoutSetting(), customLabel);
+                    Rectangle area = isToolbarItem() ? getClientArea() : getSelectionRectangle(getLayoutSetting(),
+                            talendCustomLabel);
                     if (isStyle(STYLE_BUTTON)) {
                         graphics.drawFocus(area.x, area.y, area.width, area.height);
                     } else {
@@ -206,6 +217,42 @@ public class TalendEntryEditPart extends ToolEntryEditPart {
         }
     }
 
+    @Override
+    protected void refreshVisuals() {
+        PaletteEntry entry = getPaletteEntry();
+
+        talendCustomLabel.setName(entry.getLabel());
+        talendCustomLabel.setDescription(entry.getDescription());
+        if (getPreferenceSource().useLargeIcons()) {
+            setImageDescriptor(entry.getLargeIcon());
+        } else {
+            setImageDescriptor(entry.getSmallIcon());
+        }
+        int layoutMode = getLayoutSetting();
+        talendCustomLabel.setLayoutMode(layoutMode);
+        if (layoutMode == PaletteViewerPreferences.LAYOUT_COLUMNS) {
+            talendCustomLabel.setBorder(getTabbedBorder(ICON_BORDER));
+        } else if (layoutMode == PaletteViewerPreferences.LAYOUT_LIST || layoutMode == PaletteViewerPreferences.LAYOUT_DETAILS) {
+            talendCustomLabel.setBorder(getTabbedBorder(LIST_BORDER));
+        } else if (layoutMode == PaletteViewerPreferences.LAYOUT_ICONS && !isToolbarItem()) {
+            talendCustomLabel.setBorder(getTabbedBorder(ICON_BORDER));
+        } else {
+            talendCustomLabel.setBorder(null);
+        }
+
+    }
+
+    protected Border getTabbedBorder(Border border) {
+        Insets insets = border.getInsets(null);
+        PaletteEntry entry = (PaletteEntry) getModel();
+        int i = 0;
+        while ((entry = entry.getParent()) != null) {
+            ++i;
+        }
+        return new MarginBorder(insets.top, insets.left + 10 * i, insets.bottom, insets.right);
+
+    }
+
     protected static Rectangle getSelectionRectangle(int layoutMode, DetailedLabelFigure labelFigure) {
         Rectangle rect = Rectangle.SINGLETON;
 
@@ -222,5 +269,4 @@ public class TalendEntryEditPart extends ToolEntryEditPart {
 
         return rect;
     }
-
 }

@@ -53,6 +53,7 @@ import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
  * 
@@ -93,10 +94,10 @@ public class TalendPaletteViewer extends PaletteViewer {
         }
     };
 
-    public TalendPaletteViewer(EditDomain graphicalViewerDomain) {
+    public TalendPaletteViewer(EditDomain graphicalViewerDomain, TalendPaletteCSSStyleSetting cssStyleSetting) {
         setEditDomain(graphicalViewerDomain);
         setKeyHandler(new PaletteViewerKeyHandler(this));
-        setEditPartFactory(new TalendPaletteEditPartFactory());
+        setEditPartFactory(new TalendPaletteEditPartFactory(cssStyleSetting));
         executor = new ThreadPoolExecutor(1, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(3));
         this.enableVerticalScrollbar(true);
         setupPreferences();

@@ -245,7 +245,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
          * Because the field splitter and page are private, and need override this method, so do it by reflection.
          */
         TalendFlyoutPaletteComposite talendSplitter = new TalendFlyoutPaletteComposite(parent, SWT.NONE, getSite().getPage(),
-                getPaletteViewerProvider(), getPalettePreferences());
+                (TalendPaletteViewerProvider) getPaletteViewerProvider(), getPalettePreferences());
         try {
             // set the field splitter using reflection
             splitterField.set(this, talendSplitter);

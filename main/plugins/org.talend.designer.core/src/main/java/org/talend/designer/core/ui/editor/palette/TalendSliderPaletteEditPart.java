@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ToolbarLayout;
@@ -22,6 +21,7 @@ import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.editparts.PaletteAnimator;
 import org.eclipse.gef.ui.palette.editparts.PaletteEditPart;
 import org.eclipse.gef.ui.palette.editparts.PaletteToolbarLayout;
+import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
  * DOC cmeng class global comment. Detailled comment
@@ -30,8 +30,11 @@ public class TalendSliderPaletteEditPart extends SliderPaletteEditPart {
 
     private PaletteAnimator controller;
 
-    public TalendSliderPaletteEditPart(PaletteRoot paletteRoot) {
+    protected TalendPaletteCSSStyleSetting cssStyleSetting;
+
+    public TalendSliderPaletteEditPart(PaletteRoot paletteRoot, TalendPaletteCSSStyleSetting cssStyleSetting) {
         super(paletteRoot);
+        this.cssStyleSetting = cssStyleSetting;
     }
 
     @Override
@@ -40,8 +43,10 @@ public class TalendSliderPaletteEditPart extends SliderPaletteEditPart {
         figure.setOpaque(true);
         // figure.setForegroundColor(ColorConstants.listForeground);
         // figure.setBackgroundColor(ColorConstants.listBackground);
-        figure.setForegroundColor(ColorConstants.green);
-        figure.setBackgroundColor(ColorConstants.green);
+        figure.setForegroundColor(cssStyleSetting.getSliderPaletteForgroundColor());
+        cssStyleSetting.disposeRelatedColor(cssStyleSetting.getSliderPaletteForgroundColor());
+        figure.setBackgroundColor(cssStyleSetting.getSliderPaletteBackgroundColor());
+        cssStyleSetting.disposeRelatedColor(cssStyleSetting.getSliderPaletteBackgroundColor());
         return figure;
     }
 

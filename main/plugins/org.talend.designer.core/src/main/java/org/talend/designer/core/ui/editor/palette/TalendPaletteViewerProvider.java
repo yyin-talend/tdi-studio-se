@@ -18,6 +18,7 @@ import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
  * 
@@ -26,8 +27,11 @@ public class TalendPaletteViewerProvider extends PaletteViewerProvider {
 
     private static Logger log = Logger.getLogger(TalendPaletteViewerProvider.class);
 
+    protected TalendPaletteCSSStyleSetting cssStyleSetting;
+
     public TalendPaletteViewerProvider(EditDomain graphicalViewerDomain) {
         super(graphicalViewerDomain);
+        cssStyleSetting = new TalendPaletteCSSStyleSetting();
     }
 
     @Override
@@ -37,7 +41,7 @@ public class TalendPaletteViewerProvider extends PaletteViewerProvider {
         // // PTDO need check it later and fix the bug on MacOS.
         // return super.createPaletteViewer(parent);
         // }
-        TalendPaletteViewer pViewer = new TalendPaletteViewer(this.getEditDomain());
+        TalendPaletteViewer pViewer = new TalendPaletteViewer(this.getEditDomain(), cssStyleSetting);
 
         FigureCanvas canvas = new TalendFigureCanvas(parent, pViewer.getLightweightSys(), pViewer);
         pViewer.setFigureCanvas(canvas);
@@ -65,4 +69,7 @@ public class TalendPaletteViewerProvider extends PaletteViewerProvider {
         pViewer.addDragSourceListener(new TalendPaletteDragSourceListener(pViewer));
     }
 
+    public TalendPaletteCSSStyleSetting getCSSStyleSetting() {
+        return cssStyleSetting;
+    }
 }
