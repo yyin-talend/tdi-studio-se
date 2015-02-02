@@ -24,9 +24,13 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.commons.ui.gmf.draw2d.LineSeg;
 import org.talend.commons.ui.gmf.draw2d.LineSeg.KeyPoint;
+import org.talend.core.model.process.EConnectionCategory;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.ui.process.IGraphicalNode;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * DOC bqian class global comment. Detailled comment
@@ -178,19 +182,25 @@ public class NodeAnchor extends ChopboxAnchor {
         // }
 
         Point sourcePoint = null, targetPoint = null;
+        sourcePoint = getDirectionPosition(this.connection, sourceRect.getCenter(), true);
+        if (sourcePoint == null) {
+            if ((sourceLocation.y < targetRect.getCenter().y)
+                    && (targetRect.getCenter().y < (sourceLocation.y + sourceRect.height))) {
+                // contains
+                sourcePoint = new Point(sourceRect.getCenter().x, targetRect.getCenter().y);
+            }
 
-        if ((sourceLocation.y < targetRect.getCenter().y) && (targetRect.getCenter().y < (sourceLocation.y + sourceRect.height))) {
-            // contains
-            sourcePoint = new Point(sourceRect.getCenter().x, targetRect.getCenter().y);
+            if ((sourceLocation.x < targetRect.getCenter().x)
+                    && (targetRect.getCenter().x < (sourceLocation.x + sourceRect.width))) {
+                // contains
+                sourcePoint = new Point(targetRect.getCenter().x, sourceRect.getCenter().y);
+            }
         }
 
-        if ((sourceLocation.x < targetRect.getCenter().x) && (targetRect.getCenter().x < (sourceLocation.x + sourceRect.width))) {
-            // contains
-            sourcePoint = new Point(targetRect.getCenter().x, sourceRect.getCenter().y);
+        targetPoint = getDirectionPosition(this.connection, targetRect.getCenter(), false);
+        if (targetPoint == null) {
+            targetPoint = targetRect.getCenter();
         }
-
-        targetPoint = targetRect.getCenter();
-
         if (sourcePoint == null) {
             if ((targetLocation.y < sourceRect.getCenter().y)
                     && (sourceRect.getCenter().y < (targetLocation.y + targetRect.height))) {
@@ -211,9 +221,56 @@ public class NodeAnchor extends ChopboxAnchor {
             return super.getLocation(reference);
         }
         if (sourcePoint != null && targetPoint != null) {
-            return calculateLocationFromRef(sourcePoint, targetPoint);
+            if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+                return calculateLocationFromRef(sourcePoint, targetPoint);
+            }
+            if (!isTargetAnchor) {
+                return sourcePoint;
+            } else {
+                return targetPoint;
+            }
+
         }
         return super.getLocation(reference);
+    }
+
+    private Point getDirectionPosition(IConnection connection, Point figCenter, boolean isSource) {
+        if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            return null;
+        }
+        Dimension nodeSize = null;
+        if (isSource) {
+            nodeSize = ((Node) connection.getSource()).getSize();
+        } else {
+            nodeSize = ((Node) connection.getTarget()).getSize();
+        }
+
+        EConnectionCategory category = connection.getLineStyle().getCategory();
+        Point result = new Point(figCenter);
+        if (category == EConnectionCategory.MAIN && connection.getLineStyle() != EConnectionType.FLOW_REF) {
+            if (isSource) {
+                result.x = figCenter.x + nodeSize.width / 2;
+            } else {
+                result.x = figCenter.x - nodeSize.width / 2;
+            }
+            return result;
+        } else if (category == EConnectionCategory.OTHER
+                && (connection.getLineStyle() == EConnectionType.FLOW_REF || connection.getLineStyle() == EConnectionType.TABLE_REF)) {
+            if (isSource) {
+                result.x = figCenter.x + nodeSize.width / 2;
+                return result;
+            }
+
+            int sourceY = connection.getSource().getPosY();
+            int targetY = connection.getTarget().getPosY();
+            // if (sourceY < targetY) {
+            // result.y = figCenter.y - nodeSize.height / 2;
+            // } else {
+            result.y = figCenter.y + nodeSize.height / 2;
+            // }
+            return result;
+        }
+        return null;
     }
 
     /**
