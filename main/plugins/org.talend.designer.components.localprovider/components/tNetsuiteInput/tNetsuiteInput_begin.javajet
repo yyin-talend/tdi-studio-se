@@ -130,7 +130,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		// Get the two search criteria tables
 		List<Map<String, String>> bodyField = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__CONDITIONS__");
 		List<Map<String, String>> customField = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__CUSTOM_SEARCH__");
-		List<Map<String, String>> joinedMap = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__JOIN_SEARCH__");
 		
 		if (columnList.size() > 0 && outgoingConns != null && outgoingConns.size() > 0) {
 			
@@ -147,9 +146,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			
 			boolean bodySearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__ITEMS_LIST_CHKB__"));
 			boolean regularSearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__SHOW_CONDITIONS__"));
-			boolean customSearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__CUSTOM_SEARCH_CHKB__"));
-			boolean isJoin = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__JOIN_SEARCH_CHKB__"));
-%> 
+%>
 			
 			org.talend.netsuite.NetSuiteManagement nsMgr_<%=cid%> = new org.talend.netsuite.NetSuiteManagement(<%=username%>, <%=password%>, <%=role%>, <%=account%>, <%=endpoint%>); 
 
@@ -185,35 +182,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 %> 
 
 								nsMgr_<%=cid%>.search("<%=searchEntity%>", "<%=keyColumn.get("INPUT_COLUMN")%>", "<%=keyColumn.get("OPERATOR")%>", (Object) (new String[] { <%=keyColumn.get("RVALUE")%> }), <%=bodySearch%>, "null"); 
-
-<%
-							}
-						}
-						
-						// Construct a search for custom fields.
-						if(customSearch) {
-							for (Map<String, String> keyColumn : customField) {
-%> 
-
-								nsMgr_<%=cid%>.search("<%=searchEntity%>", <%=keyColumn.get("CUSTOM_FIELD_ID")%>, "<%=keyColumn.get("OPERATOR")%>", (Object) (new String[] { <%=keyColumn.get("VALUE")%> }), <%=bodySearch%>, "<%=keyColumn.get("CUSTOM_FIELD_TYPE")%>"); 
-
-<%
-							}
-						}
-						
-						// Construct a search for joined record.
-						if(isJoin) {
-							for (Map<String, String> keyColumn : joinedMap) {
-%>
-
-								nsMgr_<%=cid%>.createJoinSearch("<%=keyColumn.get("JOIN_RECORD")%>", "<%=keyColumn.get("JOIN_FIELD")%>", "<%=keyColumn.get("JOIN_OPERATOR")%>", (Object) (new String[] { <%=keyColumn.get("JOIN_VALUE")%> }));
-
-<%
-							}
-							if (joinedMap.size() > 0) {
-%>
-								
-								nsMgr_<%=cid%>.joinSearch(); 
 
 <%
 							}
