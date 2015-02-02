@@ -177,7 +177,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					nsMgr_<%=cid%>.initialize("<%=searchEntity%>", null); 
 
 <%
-					if (customField != null) {
+					//if (customField != null) {
 						
 						// Construct a search for body fields
 						if(regularSearch) {
@@ -306,7 +306,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 <%
 										}
 									}
-					}
+					//}
 				}
 			}
 		}
