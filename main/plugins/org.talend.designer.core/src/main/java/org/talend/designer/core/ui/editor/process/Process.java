@@ -2220,6 +2220,13 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         throw ex;
     }
 
+    /**
+     * This class will be overrided by SparkProcess in order to use AvroMetadata instead of MetadataTable.
+     */
+    protected void setMetadatableToFactory(MetadataType mType, MetadataEmfFactory factory) {
+        factory.setMetadataType(mType);
+    }
+
     private void loadSchema(Node nc, NodeType nType) {
         MetadataEmfFactory factory = new MetadataEmfFactory();
         MetadataType mType;
@@ -2234,7 +2241,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
         for (int j = 0; j < listMetaType.size(); j++) {
             mType = (MetadataType) listMetaType.get(j);
-            factory.setMetadataType(mType);
+            setMetadatableToFactory(mType, factory);
             metadataTable = factory.getMetadataTable();
             // add by wzhang
             // if a schema exist in node,won't add it again
@@ -3280,7 +3287,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else if ((node.getComponent().getName() != null)) {
                     if (node.getComponent().getName().compareTo(componentName) == 0) {
                         addNodeIfNotInTheList(matchingNodes, node);
-                    } else if (node.getComponent() instanceof EmfComponent){
+                    } else if (node.getComponent() instanceof EmfComponent) {
                         EmfComponent component = (EmfComponent) node.getComponent();
                         String eqCompName = component.getEquivalent();
                         if (componentName.equals(eqCompName)) {

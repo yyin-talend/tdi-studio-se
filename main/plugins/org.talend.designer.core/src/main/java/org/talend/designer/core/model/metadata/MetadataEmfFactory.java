@@ -24,6 +24,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.core.PluginChecker;
+// import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.AvroMetadataTable;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -111,10 +113,22 @@ public class MetadataEmfFactory {
         }
     }
 
-    public void setMetadataType(final MetadataType metadataType) {
-        this.metadataType = metadataType;
+    public void setAvroMetadataType(final MetadataType metadataType, String filePath, String technicalProjectName,
+            String jobName, String jobVersion) {
+        AvroMetadataTable avroMetadataTable = new AvroMetadataTable(filePath, technicalProjectName, jobName, jobVersion);
 
+        metadataTable = avroMetadataTable;
+        setMetadataTypeCommon(metadataType);
+
+    }
+
+    public void setMetadataType(final MetadataType metadataType) {
         metadataTable = new MetadataTable();
+        setMetadataTypeCommon(metadataType);
+    }
+
+    private void setMetadataTypeCommon(final MetadataType metadataType) {
+        this.metadataType = metadataType;
 
         IMetadataColumn metaCol;
         ColumnType colType;
