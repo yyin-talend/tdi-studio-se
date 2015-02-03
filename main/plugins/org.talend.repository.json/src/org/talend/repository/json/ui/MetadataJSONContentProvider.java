@@ -14,14 +14,15 @@ package org.talend.repository.json.ui;
 
 import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.repository.json.node.JSONRepositoryNodeType;
-import org.talend.repository.metadata.content.AbstractMetadataContentProvider;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.view.di.metadata.content.AbstractMetadataContentProvider;
 
 /**
  * DOC wanghong class global comment. Detailled comment
  */
 public class MetadataJSONContentProvider extends AbstractMetadataContentProvider {
 
+    @Override
     protected RepositoryNode getTopLevelNodeFromProjectRepositoryNode(ProjectRepositoryNode projectNode) {
         return projectNode.getRootRepositoryNode(JSONRepositoryNodeType.JSON);
     }

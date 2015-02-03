@@ -1655,8 +1655,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (elem == null || key == null) {
             return ""; //$NON-NLS-1$
         }
-
-        String actualKey = this.getParaNameFromRepositoryName(key, basePropertyParameter); // connKeyMap.get(key);
+        String actualKey = this.getParaNameFromRepositoryName(elem, key, basePropertyParameter);// connKeyMap.get(key);
         if (actualKey != null) {
             return fetchElementParameterValue(elem, context, actualKey);
         } else {
@@ -1775,6 +1774,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String hiveModel = getValueFromRepositoryName(elem, "CONNECTION_MODE");
         connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_HIVE_MODE, hiveModel);
+
+        String hiveServerVersion = getValueFromRepositoryName(elem, "HIVE_SERVER");
+        connParameters.getParameters().put(ConnParameterKeys.HIVE_SERVER_VERSION, hiveServerVersion);
 
         String nameNodeURI = getValueFromRepositoryName(element, EParameterNameForComponent.PARA_NAME_FS_DEFAULT_NAME.getName());
         connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_NAME_NODE_URL, nameNodeURI);
@@ -1923,7 +1925,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected boolean isConnectionExist() {
         setAllConnectionParameters(null, elem);
-        ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
+
+        ISQLBuilderService service = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ISQLBuilderService.class)) {
+            service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
+        }
+        if (service == null) {
+            return false;
+        }
+
         if (contextManager != null && contextManager.getDefaultContext().getContextParameterList().size() != 0) {
             initConnectionParametersWithContext(elem, contextManager.getDefaultContext());
         }
