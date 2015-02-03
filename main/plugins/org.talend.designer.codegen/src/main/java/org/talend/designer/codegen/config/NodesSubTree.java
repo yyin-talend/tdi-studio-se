@@ -124,7 +124,7 @@ public class NodesSubTree {
             allMainSubTreeConnections = new ArrayList<IConnection>();
 
             buildCamelSubTree(node, false);
-        } else if (typeGen == ETypeGen.MR) {
+        } else if ((typeGen == ETypeGen.MR) || (typeGen == ETypeGen.STORM) || (typeGen == ETypeGen.SPARK)) {
             this.rootNode = node;
             this.name = node.getUniqueName();
             this.nodes = new ArrayList<INode>();
@@ -133,17 +133,7 @@ public class NodesSubTree {
 
             allMainSubTreeConnections = new ArrayList<IConnection>();
 
-            buildMRSubTree(node);
-        } else if (typeGen == ETypeGen.STORM) {
-            this.rootNode = node;
-            this.name = node.getUniqueName();
-            this.nodes = new ArrayList<INode>();
-            afterSubProcesses = new ArrayList<String>();
-            beforeSubProcesses = new ArrayList<String>();
-
-            allMainSubTreeConnections = new ArrayList<IConnection>();
-
-            buildStormSubTree(node);
+            buildBigDataSubTree(node);
         }
     }
 
@@ -192,7 +182,7 @@ public class NodesSubTree {
         nodes.add(node);
     }
 
-    private void buildMRSubTree(INode node) {
+    private void buildBigDataSubTree(INode node) {
         if (((AbstractNode) node).isThereLinkWithRef()) {
             this.isRefSubTree = true;
             List<INode> newRefNodes = ((AbstractNode) node).getRefNodes();
@@ -203,7 +193,7 @@ public class NodesSubTree {
                     refNodes.addAll(((AbstractNode) node).getRefNodes());
                 }
                 for (INode refNode : newRefNodes) {
-                    buildMRSubTree(refNode);
+                    buildBigDataSubTree(refNode);
                 }
             }
         }
@@ -214,39 +204,7 @@ public class NodesSubTree {
                     if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         allMainSubTreeConnections.add(connection);
                     }
-                    buildMRSubTree(connection.getTarget());
-                }
-                if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
-                    afterSubProcesses.add(connection.getTarget().getUniqueName());
-                }
-                if (connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
-                    beforeSubProcesses.add(connection.getTarget().getUniqueName());
-                }
-            }
-        }
-
-        nodes.add(node);
-    }
-
-    private void buildStormSubTree(INode node) {
-        // Use a copy of buildMRSubTree for now. This will soon evolve.
-        if (((AbstractNode) node).isThereLinkWithRef()) {
-            this.isRefSubTree = true;
-            this.refNodes = ((AbstractNode) node).getRefNodes();
-            if (refNodes != null) {
-                for (INode refNode : refNodes) {
-                    buildStormSubTree(refNode);
-                }
-            }
-        }
-        for (IConnection connection : node.getOutgoingSortedConnections()) {
-            if (connection.getTarget().isActivate()) {
-
-                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
-                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
-                        allMainSubTreeConnections.add(connection);
-                    }
-                    buildStormSubTree(connection.getTarget());
+                    buildBigDataSubTree(connection.getTarget());
                 }
                 if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
                     afterSubProcesses.add(connection.getTarget().getUniqueName());
@@ -280,7 +238,7 @@ public class NodesSubTree {
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                     if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         allMainSubTreeConnections.add(connection);
-                    } 
+                    }
                     if (DEBUG) {
                         System.out.print(" -> "); //$NON-NLS-1$
                     }
