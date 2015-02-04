@@ -24,16 +24,21 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.Toggle;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.internal.ui.palette.editparts.ColumnsLayout;
 import org.eclipse.gef.internal.ui.palette.editparts.DrawerFigure;
+import org.eclipse.gef.internal.ui.palette.editparts.PaletteContainerFlowLayout;
 import org.eclipse.gef.internal.ui.palette.editparts.PinFigure;
+import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -69,6 +74,8 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
 
     protected int childLevel;
 
+    protected int talendLayoutMode = -1;
+
     public TalendDrawerFigure(Control control, int childLevel, TalendPaletteCSSStyleSetting cssStyleSetting) {
         super(null);// must be null
 
@@ -77,7 +84,7 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
 
         this.cssStyleSetting = cssStyleSetting;
         this.customizedCSSStyleSetting = new CustomizedCSSStyleSetting();
-        // cssStyleSetting.addStylingChangeListener(this);
+        cssStyleSetting.addStylingChangeListener(this);
 
         applyChange(cssStyleSetting);
 
@@ -207,14 +214,32 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
     }
 
     public void disposeColors() {
-        if (getContentPane().getBackgroundColor() != null && !getContentPane().getBackgroundColor().isDisposed()) {
-            // getContentPane().getBackgroundColor().dispose();
-        }
+        // here must not dispose colors, since they are managed by JFaceResource
     }
 
-    private int getNewValue(int oldValue) {
-        int result = oldValue - childLevel * customizedCSSStyleSetting.getColorIncrement();
-        return (result > 0 ? result : 0);
+    @Override
+    public void setLayoutMode(int layoutMode) {
+        if (this.talendLayoutMode == layoutMode) {
+            return;
+        }
+
+        this.talendLayoutMode = layoutMode;
+
+        LayoutManager manager;
+        if (layoutMode == PaletteViewerPreferences.LAYOUT_COLUMNS) {
+            manager = new ColumnsLayout();
+            getContentPane().setBorder(customizedCSSStyleSetting.getScrollPaneBorder());
+        } else if (layoutMode == PaletteViewerPreferences.LAYOUT_ICONS) {
+            PaletteContainerFlowLayout fl = new PaletteContainerFlowLayout();
+            fl.setMinorSpacing(0);
+            fl.setMajorSpacing(0);
+            manager = fl;
+            getContentPane().setBorder(customizedCSSStyleSetting.getScrollPaneBorder());
+        } else {
+            manager = new ToolbarLayout();
+            getContentPane().setBorder(customizedCSSStyleSetting.getScrollPaneListBorder());
+        }
+        getContentPane().setLayoutManager(manager);
     }
 
     @Override
@@ -268,7 +293,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
             if (color != null) {
                 g.setForegroundColor(color);
                 g.drawLine(r.getTopLeft(), r.getTopRight());
-                customizedCSSStyleSetting.disposeRelatedColor(color);
             }
 
             // g.setForegroundColor(ColorConstants.white);
@@ -278,7 +302,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
                 g.drawLine(r.getTopLeft().getTranslated(0, 1), r.getTopRight().getTranslated(0, 1));
                 // r.crop(new Insets(2, 0, 0, 0));
                 r.crop(new Insets(1, 0, 0, 0));
-                customizedCSSStyleSetting.disposeRelatedColor(color);
             }
             if (isExpanded()) {
                 // g.setForegroundColor(PaletteColorUtil.WIDGET_BACKGROUND_NORMAL_SHADOW_65);
@@ -288,7 +311,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
                     g.drawLine(r.getLocation(), r.getTopRight());
                     // r.crop(new Insets(1, 0, 0, 0));
                     r.crop(new Insets(1, 0, 0, 0));
-                    customizedCSSStyleSetting.disposeRelatedColor(color);
                 }
             }
 
@@ -301,7 +323,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
                     g.drawLine(r.getBottomLeft().getTranslated(0, -1), r.getBottomRight().getTranslated(0, -1));
                     // r.crop(new Insets(0, 0, 1, 0));
                     r.crop(new Insets(0, 0, 1, 0));
-                    customizedCSSStyleSetting.disposeRelatedColor(color);
                 }
             }
 
@@ -315,42 +336,29 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
         if (isExpanded()) {
             // g.setBackgroundColor(PaletteColorUtil.WIDGET_BACKGROUND_LIST_BACKGROUND_85);
             g.setBackgroundColor(customizedCSSStyleSetting.getExpandedBackgroundColor());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getExpandedBackgroundColor());
             g.fillRectangle(rect);
         } else if (collapseToggle.getModel().isMouseOver()) {
-            // Color color1 = ColorConstants.red;
-            // Color color2 = ColorConstants.red;
-            // Color color3 = ColorConstants.yellow;
-            // Color color4 = ColorConstants.yellow;
             // Color color1 = PaletteColorUtil.WIDGET_BACKGROUND_LIST_BACKGROUND_60;
             // Color color2 = PaletteColorUtil.WIDGET_BACKGROUND_NORMAL_SHADOW_90;
             // Color color3 = PaletteColorUtil.WIDGET_BACKGROUND_NORMAL_SHADOW_95;
             // Color color4 = PaletteColorUtil.WIDGET_BACKGROUND_LIST_BACKGROUND_90;
 
             g.setForegroundColor(customizedCSSStyleSetting.getMouseOverForgroundColor1());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getMouseOverForgroundColor1());
             g.setBackgroundColor(customizedCSSStyleSetting.getMouseOverBackgroundColor1());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getMouseOverBackgroundColor1());
             g.fillGradient(rect.x, rect.y, rect.width, rect.height - 4, true);
 
             g.setForegroundColor(customizedCSSStyleSetting.getMouseOverForgroundColor2());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getMouseOverForgroundColor2());
             g.setBackgroundColor(customizedCSSStyleSetting.getMouseOverBackgroundColor2());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getMouseOverBackgroundColor2());
             g.fillGradient(rect.x, rect.bottom() - 4, rect.width, 2, true);
 
             g.setForegroundColor(customizedCSSStyleSetting.getMouseOverForgroundColor3());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getMouseOverForgroundColor3());
             g.setBackgroundColor(customizedCSSStyleSetting.getMouseOverBackgroundColor3());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getMouseOverBackgroundColor3());
             g.fillGradient(rect.x, rect.bottom() - 2, rect.width, 2, true);
         } else {
             // g.setForegroundColor(PaletteColorUtil.WIDGET_BACKGROUND_LIST_BACKGROUND_85);
             // g.setBackgroundColor(PaletteColorUtil.WIDGET_BACKGROUND_NORMAL_SHADOW_45);
             g.setForegroundColor(customizedCSSStyleSetting.getCollapsedForgroundColor());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getCollapsedForgroundColor());
             g.setBackgroundColor(customizedCSSStyleSetting.getCollapsedBackgroundColor());
-            customizedCSSStyleSetting.disposeRelatedColor(customizedCSSStyleSetting.getCollapsedBackgroundColor());
             g.fillGradient(rect, true);
         }
     }
@@ -377,55 +385,58 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
 
         customizedCSSStyleSetting.setColorIncrement(cssStyleSetting.getColorIncrement());
         customizedCSSStyleSetting.setXOffset(cssStyleSetting.getxOffset());
+        // getIncrement must be called after setColorIncrement
+        int increment = getIncrement();
+
         customizedCSSStyleSetting.setTitleBorder(getTitleBorder());
 
-        TalendPaletteCSSStyleSetting.copyBorderSetting(this.cssStyleSetting.getScrollPaneBorder(), SCROLL_PANE_BORDER);
-        this.cssStyleSetting.setScrollPaneBorderInstance(SCROLL_PANE_BORDER);
-        TalendPaletteCSSStyleSetting.copyBorderSetting(this.cssStyleSetting.getScrollPaneListBorder(), SCROLL_PANE_LIST_BORDER);
-        this.cssStyleSetting.setScrollPaneListBorderInstance(SCROLL_PANE_LIST_BORDER);
+        customizedCSSStyleSetting.setScrollPaneBorder(cssStyleSetting.getScrollPaneBorder());
+        customizedCSSStyleSetting.setScrollPaneListBorder(cssStyleSetting.getScrollPaneListBorder());
 
-        customizedCSSStyleSetting.setBaseColor(getSubColor(cssStyleSetting.getDrawerFigureBaseColor()));
+        customizedCSSStyleSetting.setBaseColor(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getDrawerFigureBaseColor(), increment));
         customizedCSSStyleSetting.setTitleMarginBorder(cssStyleSetting.getTitleMarginBorder());
-        customizedCSSStyleSetting.setCollapseTopBorderForgroundLineColor1(getSubColor(cssStyleSetting
-                .getCollapseTopBorderForgroundLineColor1()));
-        customizedCSSStyleSetting.setCollapseTopBorderForgroundLineColor2(getSubColor(cssStyleSetting
-                .getCollapseTopBorderForgroundLineColor2()));
-        customizedCSSStyleSetting.setCollapseExpandedLineForgroundColor(getSubColor(cssStyleSetting
-                .getCollapseExpandedLineForgroundColor()));
-        customizedCSSStyleSetting.setCollapseNotExpandedLineForgroundColor(getSubColor(cssStyleSetting
-                .getCollapseNotExpandedLineForgroundColor()));
-        customizedCSSStyleSetting.setExpandedBackgroundColor(getSubColor(cssStyleSetting.getExpandedBackgroundColor()));
-        customizedCSSStyleSetting.setMouseOverForgroundColor1(getSubColor(cssStyleSetting.getMouseOverForgroundColor1()));
-        customizedCSSStyleSetting.setMouseOverForgroundColor2(getSubColor(cssStyleSetting.getMouseOverForgroundColor2()));
-        customizedCSSStyleSetting.setMouseOverForgroundColor3(getSubColor(cssStyleSetting.getMouseOverForgroundColor3()));
-        customizedCSSStyleSetting.setMouseOverBackgroundColor1(getSubColor(cssStyleSetting.getMouseOverBackgroundColor1()));
-        customizedCSSStyleSetting.setMouseOverBackgroundColor2(getSubColor(cssStyleSetting.getMouseOverBackgroundColor2()));
-        customizedCSSStyleSetting.setMouseOverBackgroundColor3(getSubColor(cssStyleSetting.getMouseOverBackgroundColor3()));
-        customizedCSSStyleSetting.setCollapsedForgroundColor(getSubColor(cssStyleSetting.getCollapsedForgroundColor()));
-        customizedCSSStyleSetting.setCollapsedBackgroundColor(getSubColor(cssStyleSetting.getCollapsedBackgroundColor()));
+        customizedCSSStyleSetting.setCollapseTopBorderForgroundLineColor1(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getCollapseTopBorderForgroundLineColor1(), increment));
+        customizedCSSStyleSetting.setCollapseTopBorderForgroundLineColor2(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getCollapseTopBorderForgroundLineColor2(), increment));
+        customizedCSSStyleSetting.setCollapseExpandedLineForgroundColor(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getCollapseExpandedLineForgroundColor(), increment));
+        customizedCSSStyleSetting.setCollapseNotExpandedLineForgroundColor(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getCollapseNotExpandedLineForgroundColor(), increment));
+        customizedCSSStyleSetting.setExpandedBackgroundColor(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getExpandedBackgroundColor(), increment));
+        customizedCSSStyleSetting.setMouseOverForgroundColor1(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getMouseOverForgroundColor1(), increment));
+        customizedCSSStyleSetting.setMouseOverForgroundColor2(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getMouseOverForgroundColor2(), increment));
+        customizedCSSStyleSetting.setMouseOverForgroundColor3(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getMouseOverForgroundColor3(), increment));
+        customizedCSSStyleSetting.setMouseOverBackgroundColor1(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getMouseOverBackgroundColor1(), increment));
+        customizedCSSStyleSetting.setMouseOverBackgroundColor2(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getMouseOverBackgroundColor2(), increment));
+        customizedCSSStyleSetting.setMouseOverBackgroundColor3(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getMouseOverBackgroundColor3(), increment));
+        customizedCSSStyleSetting.setCollapsedForgroundColor(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getCollapsedForgroundColor(), increment));
+        customizedCSSStyleSetting.setCollapsedBackgroundColor(TalendPaletteCSSStyleSetting.getSubColor(
+                cssStyleSetting.getCollapsedBackgroundColor(), increment));
 
         if (scrollpane != null) {
-            Color baseColor = customizedCSSStyleSetting.getBaseColor();
-            Color backgroundColor = new Color(Display.getCurrent(), getNewValue(baseColor.getRed()),
-                    getNewValue(baseColor.getGreen()), getNewValue(baseColor.getBlue()));
+            Color backgroundColor = TalendPaletteCSSStyleSetting.getSubColor(customizedCSSStyleSetting.getBaseColor(), increment);
             scrollpane.getContents().setBackgroundColor(backgroundColor);
         }
     }
 
-    protected Color getSubColor(Color color) {
-        Color newColor = null;
-
-        if (color != null) {
-            newColor = new Color(control.getDisplay(), getNewValue(color.getRed()), getNewValue(color.getGreen()),
-                    getNewValue(color.getBlue()));
-        }
-
-        return newColor;
+    protected int getIncrement() {
+        return childLevel * customizedCSSStyleSetting.getColorIncrement();
     }
 
     protected Border getTitleBorder() {
         Insets insets = cssStyleSetting.getTitleMarginBorder().getInsets(null);
-        Border talendTitleBorder = new MarginBorder(insets.top, insets.left + 10 * childLevel, insets.bottom, insets.right);
+        Border talendTitleBorder = new MarginBorder(insets.top,
+                insets.left + customizedCSSStyleSetting.getXOffset() * childLevel, insets.bottom, insets.right);
         return talendTitleBorder;
     }
 
@@ -467,6 +478,10 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
 
         protected Color collapsedBackgroundColor;
 
+        protected Border scrollPaneBorder;
+
+        protected Border scrollPaneListBorder;
+
         /**
          * Getter for titleBorder.
          * 
@@ -482,7 +497,11 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param titleBorder the titleBorder to set
          */
         public void setTitleBorder(Border titleBorder) {
-            this.titleBorder = titleBorder;
+            if (this.titleBorder == null) {
+                this.titleBorder = new MarginBorder(titleBorder.getInsets(null));
+            } else {
+                copyBorderSetting(titleBorder, this.titleBorder);
+            }
         }
 
         /**
@@ -500,7 +519,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param baseColor the baseColor to set
          */
         public void setBaseColor(Color baseColor) {
-            disposeRelatedBothColors(this.baseColor, baseColor);
             this.baseColor = baseColor;
         }
 
@@ -555,7 +573,11 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param titleMarginBorder the titleMarginBorder to set
          */
         public void setTitleMarginBorder(Border titleMarginBorder) {
-            this.titleMarginBorder = titleMarginBorder;
+            if (this.titleMarginBorder == null) {
+                this.titleMarginBorder = new MarginBorder(titleMarginBorder.getInsets(null));
+            } else {
+                copyBorderSetting(titleMarginBorder, this.titleMarginBorder);
+            }
         }
 
         /**
@@ -573,7 +595,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param collapseTopBorderForgroundLineColor1 the collapseTopBorderForgroundLineColor1 to set
          */
         public void setCollapseTopBorderForgroundLineColor1(Color collapseTopBorderForgroundLineColor1) {
-            disposeRelatedBothColors(this.collapseTopBorderForgroundLineColor1, collapseTopBorderForgroundLineColor1);
             this.collapseTopBorderForgroundLineColor1 = collapseTopBorderForgroundLineColor1;
         }
 
@@ -592,7 +613,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param collapseTopBorderForgroundLineColor2 the collapseTopBorderForgroundLineColor2 to set
          */
         public void setCollapseTopBorderForgroundLineColor2(Color collapseTopBorderForgroundLineColor2) {
-            disposeRelatedBothColors(this.collapseTopBorderForgroundLineColor2, collapseTopBorderForgroundLineColor2);
             this.collapseTopBorderForgroundLineColor2 = collapseTopBorderForgroundLineColor2;
         }
 
@@ -611,7 +631,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param collapseExpandedLineForgroundColor the collapseExpandedLineForgroundColor to set
          */
         public void setCollapseExpandedLineForgroundColor(Color collapseExpandedLineForgroundColor) {
-            disposeRelatedBothColors(this.collapseExpandedLineForgroundColor, collapseExpandedLineForgroundColor);
             this.collapseExpandedLineForgroundColor = collapseExpandedLineForgroundColor;
         }
 
@@ -630,7 +649,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param collapseNotExpandedLineForgroundColor the collapseNotExpandedLineForgroundColor to set
          */
         public void setCollapseNotExpandedLineForgroundColor(Color collapseNotExpandedLineForgroundColor) {
-            disposeRelatedBothColors(this.collapseNotExpandedLineForgroundColor, collapseNotExpandedLineForgroundColor);
             this.collapseNotExpandedLineForgroundColor = collapseNotExpandedLineForgroundColor;
         }
 
@@ -649,7 +667,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param expandedBackgroundColor the expandedBackgroundColor to set
          */
         public void setExpandedBackgroundColor(Color expandedBackgroundColor) {
-            disposeRelatedBothColors(this.expandedBackgroundColor, expandedBackgroundColor);
             this.expandedBackgroundColor = expandedBackgroundColor;
         }
 
@@ -668,7 +685,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param mouseOverForgroundColor1 the mouseOverForgroundColor1 to set
          */
         public void setMouseOverForgroundColor1(Color mouseOverForgroundColor1) {
-            disposeRelatedBothColors(this.mouseOverForgroundColor1, mouseOverForgroundColor1);
             this.mouseOverForgroundColor1 = mouseOverForgroundColor1;
         }
 
@@ -687,7 +703,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param mouseOverForgroundColor2 the mouseOverForgroundColor2 to set
          */
         public void setMouseOverForgroundColor2(Color mouseOverForgroundColor2) {
-            disposeRelatedBothColors(this.mouseOverForgroundColor2, mouseOverForgroundColor2);
             this.mouseOverForgroundColor2 = mouseOverForgroundColor2;
         }
 
@@ -706,7 +721,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param mouseOverForgroundColor3 the mouseOverForgroundColor3 to set
          */
         public void setMouseOverForgroundColor3(Color mouseOverForgroundColor3) {
-            disposeRelatedBothColors(this.mouseOverForgroundColor3, mouseOverForgroundColor3);
             this.mouseOverForgroundColor3 = mouseOverForgroundColor3;
         }
 
@@ -725,7 +739,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param mouseOverBackgroundColor1 the mouseOverBackgroundColor1 to set
          */
         public void setMouseOverBackgroundColor1(Color mouseOverBackgroundColor1) {
-            disposeRelatedBothColors(this.mouseOverBackgroundColor1, mouseOverBackgroundColor1);
             this.mouseOverBackgroundColor1 = mouseOverBackgroundColor1;
         }
 
@@ -744,7 +757,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param mouseOverBackgroundColor2 the mouseOverBackgroundColor2 to set
          */
         public void setMouseOverBackgroundColor2(Color mouseOverBackgroundColor2) {
-            disposeRelatedBothColors(this.mouseOverBackgroundColor2, mouseOverBackgroundColor2);
             this.mouseOverBackgroundColor2 = mouseOverBackgroundColor2;
         }
 
@@ -763,7 +775,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param mouseOverBackgroundColor3 the mouseOverBackgroundColor3 to set
          */
         public void setMouseOverBackgroundColor3(Color mouseOverBackgroundColor3) {
-            disposeRelatedBothColors(this.mouseOverBackgroundColor3, mouseOverBackgroundColor3);
             this.mouseOverBackgroundColor3 = mouseOverBackgroundColor3;
         }
 
@@ -782,7 +793,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param collapsedForgroundColor the collapsedForgroundColor to set
          */
         public void setCollapsedForgroundColor(Color collapsedForgroundColor) {
-            disposeRelatedBothColors(this.collapsedForgroundColor, collapsedForgroundColor);
             this.collapsedForgroundColor = collapsedForgroundColor;
         }
 
@@ -801,8 +811,51 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
          * @param collapsedBackgroundColor the collapsedBackgroundColor to set
          */
         public void setCollapsedBackgroundColor(Color collapsedBackgroundColor) {
-            disposeRelatedBothColors(this.collapsedBackgroundColor, collapsedBackgroundColor);
             this.collapsedBackgroundColor = collapsedBackgroundColor;
+        }
+
+        /**
+         * Getter for scrollPaneBorder.
+         * 
+         * @return the scrollPaneBorder
+         */
+        public Border getScrollPaneBorder() {
+            return this.scrollPaneBorder;
+        }
+
+        /**
+         * Sets the scrollPaneBorder.
+         * 
+         * @param scrollPaneBorder the scrollPaneBorder to set
+         */
+        public void setScrollPaneBorder(Border scrollPaneBorder) {
+            if (this.scrollPaneBorder == null) {
+                this.scrollPaneBorder = new MarginBorder(scrollPaneBorder.getInsets(null));
+            } else {
+                copyBorderSetting(scrollPaneBorder, this.scrollPaneBorder);
+            }
+        }
+
+        /**
+         * Getter for scrollPaneListBorder.
+         * 
+         * @return the scrollPaneListBorder
+         */
+        public Border getScrollPaneListBorder() {
+            return this.scrollPaneListBorder;
+        }
+
+        /**
+         * Sets the scrollPaneListBorder.
+         * 
+         * @param scrollPaneListBorder the scrollPaneListBorder to set
+         */
+        public void setScrollPaneListBorder(Border scrollPaneListBorder) {
+            if (this.scrollPaneListBorder == null) {
+                this.scrollPaneListBorder = new MarginBorder(scrollPaneListBorder.getInsets(null));
+            } else {
+                copyBorderSetting(scrollPaneListBorder, this.scrollPaneListBorder);
+            }
         }
 
     }

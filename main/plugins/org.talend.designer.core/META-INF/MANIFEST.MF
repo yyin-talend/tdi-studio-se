@@ -47,7 +47,8 @@ Require-Bundle: org.talend.model,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.e4.ui.services,
  org.talend.registration,
- org.talend.themes.core
+ org.talend.themes.core,
+ org.eclipse.swt
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;

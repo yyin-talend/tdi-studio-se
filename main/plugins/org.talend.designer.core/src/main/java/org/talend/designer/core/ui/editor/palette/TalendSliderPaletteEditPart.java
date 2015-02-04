@@ -44,9 +44,7 @@ public class TalendSliderPaletteEditPart extends SliderPaletteEditPart {
         // figure.setForegroundColor(ColorConstants.listForeground);
         // figure.setBackgroundColor(ColorConstants.listBackground);
         figure.setForegroundColor(cssStyleSetting.getSliderPaletteForgroundColor());
-        cssStyleSetting.disposeRelatedColor(cssStyleSetting.getSliderPaletteForgroundColor());
         figure.setBackgroundColor(cssStyleSetting.getSliderPaletteBackgroundColor());
-        cssStyleSetting.disposeRelatedColor(cssStyleSetting.getSliderPaletteBackgroundColor());
         return figure;
     }
 
