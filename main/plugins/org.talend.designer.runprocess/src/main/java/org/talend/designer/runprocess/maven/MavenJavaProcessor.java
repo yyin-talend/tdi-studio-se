@@ -39,6 +39,7 @@ public class MavenJavaProcessor extends JavaProcessor {
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
         generatePom();
+        checkProjectPomModules();
     }
 
     protected void generatePom() {
@@ -63,5 +64,10 @@ public class MavenJavaProcessor extends JavaProcessor {
             ExceptionHandler.process(e);
         }
 
+    }
+
+    protected void checkProjectPomModules() {
+        IPath jobPomPath = this.getSrcCodePath().removeLastSegments(1);
+        getTalendJavaProject().addJobModuleInProject(jobPomPath.toString());
     }
 }

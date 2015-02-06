@@ -253,4 +253,18 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             ExceptionHandler.process(e);
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.runtime.process.ITalendProcessJavaProject#addJobModuleInProject(java.lang.String)
+     */
+    @Override
+    public void addJobModuleInProject(String jobPomPath) {
+        try {
+            synchronizer.addJobModuleInProject(jobPomPath);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
 }
