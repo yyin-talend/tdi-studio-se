@@ -34,9 +34,13 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
     private IJavaProject javaProject;
 
+    private final MavenPomSynchronizer synchronizer;
+
     public TalendProcessJavaProject(IJavaProject javaProject) {
         super();
         this.javaProject = javaProject;
+        this.synchronizer = new MavenPomSynchronizer(this);
+
     }
 
     @Override
@@ -228,8 +232,25 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
      * @see org.talend.core.runtime.process.ITalendProcessJavaProject#syncRoutinesPom()
      */
     @Override
-    public void syncRoutinesPom() {
-        MavenPomSynchronizer synch = new MavenPomSynchronizer(this);
-        synch.syncRoutinesPom();
+    public void syncRoutinesPom(boolean overwrite) {
+        try {
+            synchronizer.syncRoutinesPom(overwrite);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.runtime.process.ITalendProcessJavaProject#syncTemplates(boolean)
+     */
+    @Override
+    public void syncTemplates(boolean overwrite) {
+        try {
+            synchronizer.syncTemplates(overwrite);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
     }
 }

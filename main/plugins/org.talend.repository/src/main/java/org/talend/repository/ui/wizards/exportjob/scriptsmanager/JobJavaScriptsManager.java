@@ -434,12 +434,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         String jobName = processItem.getProperty().getLabel();
         String jobVersion = processItem.getProperty().getVersion();
-        String jobExportedJarName = jobName + '_' + jobVersion.replaceAll("\\.", "_"); //$NON-NLS-1$//$NON-NLS-2$
-        jobExportedJarName = jobExportedJarName.toLowerCase();
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
         // set the maven properties
         final Map<String, String> mavenPropertiesMap = getMainMavenProperties(processItem);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemExportedJarName.getVarScript(), jobExportedJarName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemExportedJarName.getVarScript(), jobFolderName);
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_BUILD_FILE_NAME);
         File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
@@ -1476,13 +1475,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         try {
             String tmpFoler = getTmpFolder();
             String jobInfoPath = tmpFoler + File.separator + JOBINFO_FILE;
-            JobInfoBuilder jobInfoBuilder = null;
+
+            boolean addStat = false;// TDI-23641, in studio, false always.
             if (CommonsPlugin.isHeadless()) {
-                jobInfoBuilder = new JobInfoBuilder(process, contextName, exportChoice, jobInfoPath);
-            } else {
-                jobInfoBuilder = new JobInfoBuilder(process, contextName, isOptionChoosed(ExportChoice.applyToChildren),
-                        jobInfoPath);
+                addStat = isOptionChoosed(ExportChoice.addStatistics);
             }
+            JobInfoBuilder jobInfoBuilder = new JobInfoBuilder(process, contextName,
+                    isOptionChoosed(ExportChoice.applyToChildren), addStat, jobInfoPath);
             jobInfoBuilder.buildProperty();
             File jobInfoFile = new File(jobInfoPath);
             URL url = jobInfoFile.toURL();

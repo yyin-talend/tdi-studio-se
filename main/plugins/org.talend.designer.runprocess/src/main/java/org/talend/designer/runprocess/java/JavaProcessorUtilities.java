@@ -96,6 +96,7 @@ public class JavaProcessorUtilities {
                         if (project != null) {
                             IJavaProject javaProject = JavaCore.create(project);
                             talendJavaProject = new TalendProcessJavaProject(javaProject);
+                            talendJavaProject.syncTemplates(false);
                         }
                     } catch (Exception e) {
                         ExceptionHandler.process(e);

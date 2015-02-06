@@ -50,10 +50,10 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.runprocess.data.PerformanceData;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.mapreduce.MapReduceJavaProcessor;
+import org.talend.designer.runprocess.maven.MavenJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.storm.StormJavaProcessor;
 import org.talend.designer.runprocess.ui.views.ProcessView;
@@ -167,7 +167,7 @@ public class DefaultRunProcessService implements IRunProcessService {
         } else if (ComponentCategory.CATEGORY_4_STORM.getName().equals(process.getComponentsType())) {
             return new StormJavaProcessor(process, property, filenameFromLabel);
         } else {
-            return new JavaProcessor(process, property, filenameFromLabel);
+            return new MavenJavaProcessor(process, property, filenameFromLabel);
         }
     }
 

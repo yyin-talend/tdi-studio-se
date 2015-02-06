@@ -12,13 +12,9 @@
 // ============================================================================
 package org.talend.designer.runprocess.storm;
 
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
-import org.talend.core.service.IRemoteRunprocessorService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.RunProcessContext;
 
@@ -38,20 +34,7 @@ public class RunStormProcessContext extends RunProcessContext {
 
     @Override
     protected IProcessor getProcessor(IProcess process, Property property) {
-        ECodeLanguage currentLanguage = LanguageManager.getCurrentLanguage();
-        if (currentLanguage == ECodeLanguage.PERL) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IRemoteRunprocessorService.class)) {
-                IRemoteRunprocessorService service = (IRemoteRunprocessorService) GlobalServiceRegister.getDefault().getService(
-                        IRemoteRunprocessorService.class);
-                return service.createRemotePerlProcessor(process, property, true);
-            } else {
-                throw new RuntimeException("Language not found");
-            }
-        } else if (currentLanguage == ECodeLanguage.JAVA) {
-            return new StormJavaProcessor(process, property, true);
-        } else {
-            throw new RuntimeException("Language not found");
-        }
+        return new StormJavaProcessor(process, property, true);
     }
 
 }

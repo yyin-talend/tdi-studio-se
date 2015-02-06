@@ -120,7 +120,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             }
 
             // maven
-            syncRoutinesPom();
+            syncRoutinesPom(false);
         } catch (IOException e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);
@@ -128,7 +128,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     }
 
-    private void syncRoutinesPom() {
+    private void syncRoutinesPom(boolean overwrite) {
         if (!GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
             return;
         }
@@ -137,7 +137,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         if (talendProcessJavaProject == null) {
             return;
         }
-        talendProcessJavaProject.syncRoutinesPom();
+        talendProcessJavaProject.syncRoutinesPom(overwrite);
     }
 
     @Override

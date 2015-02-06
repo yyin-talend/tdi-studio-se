@@ -12,11 +12,17 @@
 // ============================================================================
 package org.talend.designer.runprocess.maven;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Property;
+import org.talend.designer.maven.model.MavenConstants;
+import org.talend.designer.maven.template.CreateJobTemplateMavenPom;
+import org.talend.designer.maven.template.MavenTemplateConstants;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.java.JavaProcessor;
 
 /**
@@ -29,13 +35,33 @@ public class MavenJavaProcessor extends JavaProcessor {
         super(process, property, filenameFromLabel);
     }
 
-    public void generatePom() {
+    @Override
+    public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
+        super.generateCode(statistics, trace, javaProperties);
+        generatePom();
+    }
+
+    protected void generatePom() {
         final IPath srcCodePath = getSrcCodePath();
         final IProject codeProject = getCodeProject();
+
         IPath jobCurPath = srcCodePath.removeLastSegments(1);
         IFolder jobCurFolder = codeProject.getFolder(jobCurPath);
+        IFile jobPomFile = jobCurFolder.getFile(MavenConstants.POM_FILE_NAME);
 
-        // generate the job pom
-        // add into the project for module.
+        if (jobPomFile.exists()) {// FIXME keep the old one? if no, remove this code.
+            return;
+        }
+
+        try {
+            CreateJobTemplateMavenPom createTemplatePom = new CreateJobTemplateMavenPom(this, jobPomFile,
+                    MavenTemplateConstants.JOB_TEMPLATE_FILE_NAME);
+            createTemplatePom.setOverwrite(true);
+            createTemplatePom.create(null);
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+
     }
 }
