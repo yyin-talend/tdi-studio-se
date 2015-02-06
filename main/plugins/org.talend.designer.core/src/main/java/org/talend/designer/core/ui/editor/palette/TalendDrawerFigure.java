@@ -279,6 +279,11 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
         }
 
         @Override
+        protected void paintBorder(Graphics graphics) {
+            // needn't to paint the focus border
+        }
+
+        @Override
         protected void paintFigure(Graphics g) {
             applyChange(null);
             super.paintFigure(g);

@@ -14,7 +14,6 @@ package org.talend.designer.core.ui.editor.palette;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FocusEvent;
 import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.IFigure;
@@ -143,7 +142,21 @@ public class TalendDrawerEditPart extends DrawerEditPart {
 
         Color background = getDrawer().getDrawerType().equals(PaletteTemplateEntry.PALETTE_TYPE_TEMPLATE) ? PaletteColorUtil.WIDGET_LIST_BACKGROUND
                 : null;
-        // getDrawerFigure().getScrollpane().setBackgroundColor(background);
-        getDrawerFigure().getScrollpane().setBackgroundColor(ColorConstants.red);
+        getDrawerFigure().getScrollpane().setBackgroundColor(background);
+    }
+
+    @Override
+    public EditPart createChild(Object model) {
+        return super.createChild(model);
+    }
+
+    @Override
+    public void addChild(EditPart child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override
+    public void removeChild(EditPart child) {
+        super.removeChild(child);
     }
 }

@@ -194,6 +194,7 @@ import org.talend.designer.core.ui.editor.palette.TalendDrawerEditPart;
 import org.talend.designer.core.ui.editor.palette.TalendFlyoutPaletteComposite;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteHelper;
+import org.talend.designer.core.ui.editor.palette.TalendPaletteViewer;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
 import org.talend.designer.core.ui.editor.process.CreateComponentOnLinkHelper;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -1317,6 +1318,16 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             talendPaletteViewerProvider = new TalendPaletteViewerProvider(getEditDomain());
         }
         return talendPaletteViewerProvider;
+    }
+
+    public TalendPaletteViewer getTalendPaletteViewer() {
+        TalendPaletteViewer talendPaletteViewer = null;
+
+        if (talendPaletteViewerProvider != null) {
+            talendPaletteViewer = talendPaletteViewerProvider.getTalendPaletteViewer();
+        }
+
+        return talendPaletteViewer;
     }
 
     public IComponent getComponent(String name) {

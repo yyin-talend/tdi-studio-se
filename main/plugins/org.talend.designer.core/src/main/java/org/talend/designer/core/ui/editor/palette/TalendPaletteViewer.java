@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.gef.EditDomain;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
@@ -46,13 +48,14 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.osgi.service.prefs.BackingStoreException;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
@@ -71,6 +74,12 @@ public class TalendPaletteViewer extends PaletteViewer {
     private static String currentFilterText;
 
     private ThreadPoolExecutor executor;
+
+    protected TalendDrawerEditPart favoritesEditPart;
+
+    protected TalendDrawerEditPart recentlyUsedEditPart;
+
+    protected TalendPaletteEditPartFactory paletteEditPartFactory;
 
     private final ExecutionLimiter expandLimiter = new ExecutionLimiter(500, true) {
 
@@ -97,8 +106,9 @@ public class TalendPaletteViewer extends PaletteViewer {
     public TalendPaletteViewer(EditDomain graphicalViewerDomain, TalendPaletteCSSStyleSetting cssStyleSetting) {
         setEditDomain(graphicalViewerDomain);
         setKeyHandler(new PaletteViewerKeyHandler(this));
-        setEditPartFactory(new TalendPaletteEditPartFactory(cssStyleSetting));
-        executor = new ThreadPoolExecutor(1, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(3));
+        paletteEditPartFactory = new TalendPaletteEditPartFactory(cssStyleSetting);
+        setEditPartFactory(paletteEditPartFactory);
+        executor = new ThreadPoolExecutor(1, 2, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(3));
         this.enableVerticalScrollbar(true);
         setupPreferences();
     }
@@ -150,19 +160,23 @@ public class TalendPaletteViewer extends PaletteViewer {
      * @see org.eclipse.gef.ui.parts.ScrollingGraphicalViewer#creatToolControl(org.eclipse.swt.widgets.Composite)
      */
     public Control creatToolControl(Composite parent) {
-        Composite container = new Composite(parent, SWT.NONE);
-        GridLayout layout = new GridLayout(3, false);
-        layout.marginLeft = 2;
-        layout.marginRight = 2;
-        layout.marginTop = 2;
-        layout.marginBottom = 2;
+        Composite container = new Composite(parent, SWT.BORDER);
+        // GridLayout layout = new GridLayout(3, false);
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginTop = 0;
+        layout.marginBottom = 0;
         layout.marginHeight = 0;
         layout.marginWidth = 0;
 
         container.setLayout(layout);
-        final Text text = new Text(container, SWT.BORDER);
+        final Text text = new Text(container, SWT.NONE);
 
-        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        GridData textGridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
+        textGridData.horizontalIndent = 0;
+        textGridData.verticalIndent = 0;
+        text.setLayoutData(textGridData);
         filters.add(text);
         initFilterTextControl(text);
 
@@ -176,8 +190,8 @@ public class TalendPaletteViewer extends PaletteViewer {
         toolbarLayout.marginWidth = 0;
         toolbar.setLayout(toolbarLayout);
 
-        Image clearImage = ImageProvider.getImage(ECoreImage.PALETTE_CLEAR_ICON);
         Image findImage = ImageProvider.getImage(EImage.FIND_ICON);
+        // Image findImage = ImageProvider.getImage(DesignerPlugin.getImageDescriptor("icons/studio_6.0_search.png"));
 
         ToolItem findItem = new ToolItem(toolbar, SWT.NONE);
         findItem.setImage(findImage);
@@ -195,17 +209,18 @@ public class TalendPaletteViewer extends PaletteViewer {
             }
         });
 
-        final ToolItem clearItem = new ToolItem(toolbar, SWT.NONE);
-        clearItem.setImage(clearImage);
-        clearItem.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                text.setText(""); //$NON-NLS-1$
-                // Reset to default palette
-                startFiltering(text);
-            }
-        });
+        // Image clearImage = ImageProvider.getImage(ECoreImage.PALETTE_CLEAR_ICON);
+        // final ToolItem clearItem = new ToolItem(toolbar, SWT.NONE);
+        // clearItem.setImage(clearImage);
+        // clearItem.addSelectionListener(new SelectionAdapter() {
+        //
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        //                text.setText(""); //$NON-NLS-1$
+        // // Reset to default palette
+        // startFiltering(text);
+        // }
+        // });
         return container;
     }
 
@@ -385,4 +400,132 @@ public class TalendPaletteViewer extends PaletteViewer {
         setControl(canvas);
         hookRootFigure();
     }
+
+    public void addFavoritesComponent(CombinedTemplateCreationEntry component) {
+
+        if (favoritesEditPart != null) {
+            List children = favoritesEditPart.getChildren();
+            int insertIndex = -1;
+            boolean alreadyExist = false;
+            if (children != null) {
+                for (int i = 0; i < children.size(); i++) {
+                    TalendEntryEditPart entryEditPart = (TalendEntryEditPart) children.get(i);
+                    CombinedTemplateCreationEntry entryModule = (CombinedTemplateCreationEntry) entryEditPart.getModel();
+                    int compareResult = entryModule.getLabel().compareTo(component.getLabel());
+                    if (0 == compareResult) {
+                        alreadyExist = true;
+                        break;
+                    }
+                    if (0 < compareResult) {
+                        insertIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (!alreadyExist) {
+                CombinedTemplateCreationEntry newFavorite = TalendEditorPaletteFactory.createEntryFrom(component);
+                newFavorite.setParent(favoritesEditPart.getDrawer());
+                EditPart child = favoritesEditPart.createChild(newFavorite);
+                if (insertIndex < 0) {
+                    insertIndex = 0;
+                }
+                favoritesEditPart.addChild(child, insertIndex);
+            }
+        }
+
+    }
+
+    public void removeFavoritesComponent(CombinedTemplateCreationEntry component) {
+
+        if (favoritesEditPart != null) {
+            List children = favoritesEditPart.getChildren();
+            if (children != null) {
+                for (Object obj : children) {
+                    TalendEntryEditPart entryEditPart = (TalendEntryEditPart) obj;
+                    CombinedTemplateCreationEntry entryModule = (CombinedTemplateCreationEntry) entryEditPart.getModel();
+                    if (entryModule.getLabel().equals(component.getLabel())) {
+                        favoritesEditPart.removeChild(entryEditPart);
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void addRecentlyUsedComponent(IComponent component) {
+        if (recentlyUsedEditPart != null) {
+            List children = recentlyUsedEditPart.getChildren();
+            int insertIndex = -1;
+            boolean alreadyExist = false;
+            if (children != null) {
+                for (int i = 0; i < children.size(); i++) {
+                    TalendEntryEditPart entryEditPart = (TalendEntryEditPart) children.get(i);
+                    CombinedTemplateCreationEntry entryModule = (CombinedTemplateCreationEntry) entryEditPart.getModel();
+                    int compareResult = entryModule.getLabel().compareTo(component.getName());
+                    if (0 == compareResult) {
+                        alreadyExist = true;
+                        break;
+                    }
+                    if (0 < compareResult) {
+                        insertIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (!alreadyExist) {
+                CombinedTemplateCreationEntry newRecently = TalendEditorPaletteFactory.createEntryFrom(component);
+                newRecently.setParent(recentlyUsedEditPart.getDrawer());
+                EditPart child = recentlyUsedEditPart.createChild(newRecently);
+                if (insertIndex < 0) {
+                    insertIndex = 0;
+                }
+                recentlyUsedEditPart.addChild(child, insertIndex);
+            }
+        }
+
+    }
+
+    public void removeRecentlyUsedComponent(IComponent component) {
+
+    }
+
+    /**
+     * Getter for favoritesEditPart.
+     * 
+     * @return the favoritesEditPart
+     */
+    public TalendDrawerEditPart getFavoritesEditPart() {
+        return this.favoritesEditPart;
+    }
+
+    /**
+     * Sets the favoritesEditPart.
+     * 
+     * @param favoritesEditPart the favoritesEditPart to set
+     */
+    public void setFavoritesEditPart(TalendDrawerEditPart favoritesEditPart) {
+        this.favoritesEditPart = favoritesEditPart;
+    }
+
+    /**
+     * Getter for recentlyUsedEditPart.
+     * 
+     * @return the recentlyUsedEditPart
+     */
+    public TalendDrawerEditPart getRecentlyUsedEditPart() {
+        return this.recentlyUsedEditPart;
+    }
+
+    /**
+     * Sets the recentlyUsedEditPart.
+     * 
+     * @param recentlyUsedEditPart the recentlyUsedEditPart to set
+     */
+    public void setRecentlyUsedEditPart(TalendDrawerEditPart recentlyUsedEditPart) {
+        this.recentlyUsedEditPart = recentlyUsedEditPart;
+    }
+
 }

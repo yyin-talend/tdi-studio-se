@@ -322,9 +322,9 @@ public class TalendEntryEditPart extends ToolEntryEditPart {
             entryCSSStyleSetting.setEntryEditPartToolEntryBorderFocusBackgroundColor(cssStyleSetting
                     .getEntryEditPartToolEntryBorderFocusBackgroundColor());
             entryCSSStyleSetting.setEntryEditPartToolEntryTopLineColor(TalendPaletteCSSStyleSetting.getSubColor(
-                    cssStyleSetting.getCollapseExpandedLineForgroundColor(), increment));
+                    cssStyleSetting.getCollapseTopBorderForgroundLineColor1(), increment));
             entryCSSStyleSetting.setEntryEditPartToolEntryBottomLineColor(TalendPaletteCSSStyleSetting.getSubColor(
-                    cssStyleSetting.getCollapseExpandedLineForgroundColor(), increment));
+                    cssStyleSetting.getCollapseTopBorderForgroundLineColor1(), increment));
             entryCSSStyleSetting.setEntryEditPartToolEntryBackgroundColor(TalendPaletteCSSStyleSetting.getSubColor(
                     cssStyleSetting.getCollapsedBackgroundColor(), increment));
         } else {

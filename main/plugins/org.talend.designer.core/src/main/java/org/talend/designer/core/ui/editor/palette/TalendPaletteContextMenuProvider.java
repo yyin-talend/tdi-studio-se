@@ -19,6 +19,7 @@ import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
+import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.tools.CreationTool;
@@ -43,6 +44,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ComponentSearcher;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.PaletteComponentFactory;
+import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.ui.actions.ShowFavoriteAction;
 
@@ -93,6 +95,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         List editParts = getPaletteViewer().getSelectedEditParts();
         if (!editParts.isEmpty()) {
             PaletteEntry element = (PaletteEntry) ((EditPart) editParts.get(0)).getModel();
+
             if (editParts.size() > 1) { // search component only process one .
                 hasSearchComponentAction = false;
             } else { // check the entry is component or folder
@@ -115,7 +118,18 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 if (hasSearchComponentAction) {
                     menu.appendToGroup(GEFActionConstants.MB_ADDITIONS, new SearchComponentAction(getPaletteViewer()));
                 }
-                if (ShowFavoriteAction.state == true) {
+                boolean showAddFavorAction = true;
+                PaletteContainer pContainer = element.getParent();
+                if (pContainer != null) {
+                    // Favorites Folder or components in Favorites Folder
+                    if ((pContainer instanceof PaletteRoot && TalendEditorPaletteFactory.FAVORITES.equals(element.getLabel()))
+                            || (pContainer.getParent() instanceof PaletteRoot && TalendEditorPaletteFactory.FAVORITES
+                                    .equals(pContainer.getLabel()))) {
+                        showAddFavorAction = false;
+                    }
+                }
+                // if (ShowFavoriteAction.state == true) {
+                if (showAddFavorAction) {
                     menu.appendToGroup(GEFActionConstants.GROUP_COPY, new FavoriteComponentAction(getPaletteViewer()));
                 } else {
                     menu.appendToGroup(GEFActionConstants.GROUP_COPY, new RemoveFavoriteComponentAction(getPaletteViewer()));
@@ -188,12 +202,12 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             if (element instanceof TalendPaletteDrawer) {
 
                 List eleList = ((TalendPaletteDrawer) element).getChildren();
-                addListNotes(eleList, project);
+                addListNotes(eleList, project, paletteViewer);
             } else if (element instanceof CombinedTemplateCreationEntry) {
-                addNotes((CombinedTemplateCreationEntry) element, project);
+                addNotes((CombinedTemplateCreationEntry) element, project, paletteViewer);
 
             }
-
+            // ComponentPaletteUtilities.updatePalette();
         }
 
     }
@@ -226,12 +240,13 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             if (element instanceof TalendPaletteDrawer) {
 
                 List eleList = ((TalendPaletteDrawer) element).getChildren();
-                removeListNotes(eleList, project);
+                removeListNotes(eleList, project, paletteViewer);
             } else if (element instanceof CombinedTemplateCreationEntry) {
-                removeNotes((CombinedTemplateCreationEntry) element, project);
+                removeNotes((CombinedTemplateCreationEntry) element, project, paletteViewer);
 
             }
-            ComponentPaletteUtilities.updatePalette(true);
+            // ComponentPaletteUtilities.updatePalette(true);
+            // ComponentPaletteUtilities.updatePalette();
         }
 
     }
@@ -292,7 +307,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         }
     }
 
-    public void addNotes(CombinedTemplateCreationEntry element, Project project) {
+    public void addNotes(CombinedTemplateCreationEntry element, Project project, PaletteViewer paletteViewer) {
         String label = element.getLabel();
         String[] fam = null;
         String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent());
@@ -322,7 +337,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                     for (String element2 : familyName) {
 
                         if (component.getName().equals(label) && (element2).equals(famName)) {
-                            String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                            //                            String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                            String key = TalendEditorPaletteFactory.getFavoriteKey(component.getName());
                             DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
                         }
                     }
@@ -339,7 +355,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (String element2 : familyName) {
                     if (component.getName().equals(label) && (element2).equals(famName)) {
-                        String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                        //                        String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                        String key = TalendEditorPaletteFactory.getFavoriteKey(component.getName());
                         DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
                     }
                 }
@@ -347,22 +364,26 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             }
 
         }
+        if (paletteViewer instanceof TalendPaletteViewer) {
+            ((TalendPaletteViewer) paletteViewer).addFavoritesComponent(element);
+        }
+
     }
 
-    public void addListNotes(List eleList, Project project) {
+    public void addListNotes(List eleList, Project project, PaletteViewer paletteViewer) {
         for (int i = 0; i < eleList.size(); i++) {
             PaletteEntry elementLi = (PaletteEntry) eleList.get(i);
             if (elementLi instanceof TalendPaletteDrawer) {
                 List list = ((TalendPaletteDrawer) elementLi).getChildren();
-                addListNotes(list, project);
+                addListNotes(list, project, paletteViewer);
             } else if (elementLi instanceof CombinedTemplateCreationEntry) {
-                addNotes((CombinedTemplateCreationEntry) elementLi, project);
+                addNotes((CombinedTemplateCreationEntry) elementLi, project, paletteViewer);
             }
 
         }
     }
 
-    public void removeNotes(CombinedTemplateCreationEntry element, Project project) {
+    public void removeNotes(CombinedTemplateCreationEntry element, Project project, PaletteViewer paletteViewer) {
         String label = element.getLabel();
         String[] fam = null;
         String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent());
@@ -390,8 +411,10 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                     famName = fam[i];
                     familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                     for (String element2 : familyName) {
-                        if (component.getName().equals(label) && (element2).equals(famName)) {
-                            String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                        // if (component.getName().equals(label) && (element2).equals(famName)) {
+                        if (component.getName().equals(label)) {
+                            //                            String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                            String key = TalendEditorPaletteFactory.getFavoriteKey(component.getName());
                             DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
                         }
                     }
@@ -406,8 +429,10 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 famName = family;
                 familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (String element2 : familyName) {
-                    if (component.getName().equals(label) && (element2).equals(famName)) {
-                        String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                    // if (component.getName().equals(label) && (element2).equals(famName)) {
+                    if (component.getName().equals(label)) {
+                        //                        String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                        String key = TalendEditorPaletteFactory.getFavoriteKey(component.getName());
                         DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
                     }
                 }
@@ -415,16 +440,20 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             }
 
         }
+
+        if (paletteViewer instanceof TalendPaletteViewer) {
+            ((TalendPaletteViewer) paletteViewer).removeFavoritesComponent(element);
+        }
     }
 
-    public void removeListNotes(List eleList, Project project) {
+    public void removeListNotes(List eleList, Project project, PaletteViewer paletteViewer) {
         for (int i = 0; i < eleList.size(); i++) {
             PaletteEntry elementLi = (PaletteEntry) eleList.get(i);
             if (elementLi instanceof TalendPaletteDrawer) {
                 List list = ((TalendPaletteDrawer) elementLi).getChildren();
-                removeListNotes(list, project);
+                removeListNotes(list, project, paletteViewer);
             } else if (elementLi instanceof CombinedTemplateCreationEntry) {
-                removeNotes((CombinedTemplateCreationEntry) elementLi, project);
+                removeNotes((CombinedTemplateCreationEntry) elementLi, project, paletteViewer);
             }
 
         }

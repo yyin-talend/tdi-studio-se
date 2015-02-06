@@ -34,8 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPage;
 import org.talend.core.ui.CoreUIPlugin;
-import org.talend.repository.ui.actions.ShowFavoriteAction;
-import org.talend.repository.ui.actions.ShowStandardAction;
+import org.talend.repository.ui.actions.OpenPaletteFilterAction;
 import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 import org.talend.themes.core.elements.widgets.ITalendPaletteWidget;
 
@@ -174,13 +173,15 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite impleme
         });
 
         //
-        ShowStandardAction showStandardAction = ShowStandardAction.getInstance();
-        ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
-        manager.add(showStandardAction);
-        manager.add(showFavoriteAction);
-        if (ShowFavoriteAction.state) {
-            showStandardAction.doSetEnable();
-        }
+        // ShowStandardAction showStandardAction = ShowStandardAction.getInstance();
+        // ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
+        // manager.add(showStandardAction);
+        // manager.add(showFavoriteAction);
+        // if (ShowFavoriteAction.state) {
+        // showStandardAction.doSetEnable();
+        // }
+        OpenPaletteFilterAction openPaletteFilterAction = OpenPaletteFilterAction.getInstance();
+        manager.add(openPaletteFilterAction);
         manager.add(mgr);
 
         addDisposeListener(new DisposeListener() {

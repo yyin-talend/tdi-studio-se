@@ -15,6 +15,7 @@ package org.talend.repository.ui.dialog;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -60,8 +61,7 @@ public class ProjectSettingDialog {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] configurationElements = registry
                 .getConfigurationElementsFor("org.talend.repository.projectsetting_page"); //$NON-NLS-1$
-        for (int i = 0; i < configurationElements.length; i++) {
-            IConfigurationElement element = configurationElements[i];
+        for (IConfigurationElement element : configurationElements) {
             ProjectSettingNode node = new ProjectSettingNode(element);
             try {
                 IPreferencePage page = (IPreferencePage) element.createExecutableExtension("class"); //$NON-NLS-1$
@@ -103,6 +103,7 @@ public class ProjectSettingDialog {
         // sort the rootSubNodes
         Arrays.sort(rootSubNodes, new Comparator() {
 
+            @Override
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof ProjectSettingNode && o2 instanceof ProjectSettingNode) {
                     ProjectSettingNode node1 = (ProjectSettingNode) o1;
@@ -116,19 +117,27 @@ public class ProjectSettingDialog {
         });
         manager.removeAll();
         // add the sorted list to manager
-        for (int i = 0; i < rootSubNodes.length; i++) {
-            manager.addToRoot(rootSubNodes[i]);
+        for (IPreferenceNode rootSubNode : rootSubNodes) {
+            manager.addToRoot(rootSubNode);
         }
         return manager;
     }
 
     public void open() {
+        open(null);
+    }
+
+    public void open(final String pageId) {
         PreferenceManager manager = getNodeManager();
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         final PreferenceDialog dialog = new ProjectSettingsPreferenceDialog(shell, manager);
         BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
 
+            @Override
             public void run() {
+                if (StringUtils.isNotEmpty(pageId)) {
+                    dialog.setSelectedNode(pageId);
+                }
                 dialog.create();
                 dialog.getShell().setText(TITLE);
                 dialog.getShell().setSize(DEFAULT_SIZE);

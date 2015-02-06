@@ -27,6 +27,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.talend.core.ui.CoreUIPlugin;
 
 /**
  * cli class global comment. Detailled comment
@@ -73,6 +74,7 @@ public class TalendFigureCanvas extends FigureCanvas {
 
         if (toolViewer != null) {
             toolControl = toolViewer.creatToolControl(this);
+            CoreUIPlugin.setCSSClass(toolControl, "PaletteSearchBar"); //$NON-NLS-1$
         }
 
         if (toolControl != null && toolViewer != null) {
@@ -97,12 +99,18 @@ public class TalendFigureCanvas extends FigureCanvas {
             // setup our own layout
             getLightweightSystem().getUpdateManager().addUpdateListener(new UpdateListener() {
 
+                @Override
                 public void notifyPainting(Rectangle damage, java.util.Map dirtyRegions) {
+                    if (toolControl != null) {
+                        toolControl.setBounds(0, 0, toolControl.getBounds().width, cashedToolHeight);
+                    }
                 }
 
+                @Override
                 public void notifyValidating() {
-                    if (!isDisposed())
+                    if (!isDisposed()) {
                         layoutViewport2();
+                    }
                 }
             });
         } catch (IllegalAccessException iae) {
@@ -142,10 +150,12 @@ public class TalendFigureCanvas extends FigureCanvas {
             handleReflectionFailure(e);
         }
         try {
-            if (getHorizontalBar().getVisible() != result.showH)
+            if (getHorizontalBar().getVisible() != result.showH) {
                 getHorizontalBar().setVisible(result.showH);
-            if (getVerticalBar().getVisible() != result.showV)
+            }
+            if (getVerticalBar().getVisible() != result.showV) {
                 getVerticalBar().setVisible(result.showV);
+            }
             Rectangle r = new Rectangle(getClientArea());
             if (toolControl != null) {
                 toolControl.setBounds(0, 0, r.width, cashedToolHeight);
