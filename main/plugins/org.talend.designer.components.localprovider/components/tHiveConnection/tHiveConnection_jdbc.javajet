@@ -355,6 +355,12 @@ imports="
 		}
 	}
 %>
+
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/PrepareTez.javajet"%>
+	<%
+	(new PrepareTez()).invoke(node, cid);
+	%>
+	
 	init_<%=cid%>.close();
 	
 	<%if("true".equalsIgnoreCase(storeByHBase) && !("EMBEDDED".equals(connectionMode) && "MAPR2".equals(hiveVersion))) {%>
