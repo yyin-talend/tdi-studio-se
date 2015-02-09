@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,7 +79,11 @@ public final class TalendEditorPaletteFactory {
 
     public static final String RECENTLY_USED = Messages.getString("TalendEditorPaletteFactory.palette.recentlyUsed"); //$NON-NLS-1$
 
-    private static final String FAVORITES_KEY_PREFIX = "Palette.Favorite."; //$NON-NLS-1$
+    protected static final String FAVORITES_KEY_PREFIX = "Palette.Favorite."; //$NON-NLS-1$
+
+    protected static final String RECENTLY_USED_LIST_KEY = "Palette.RecentlyUsed.List";
+
+    protected static final String RECENTLY_USED_LIST_SEPERATOR = ",";
 
     private static PaletteRoot palette;
 
@@ -150,6 +156,8 @@ public final class TalendEditorPaletteFactory {
 
         Collections.sort(families);
 
+        List<String> recentlyUsedList = null;
+
         if (a == 0) {
 
             families.add(0, FAVORITES);
@@ -157,6 +165,8 @@ public final class TalendEditorPaletteFactory {
 
             families.add(1, RECENTLY_USED);
             familyMap.put(RECENTLY_USED, RECENTLY_USED);
+
+            recentlyUsedList = getRecentlyUsedList();
 
             for (Object element : families) {
                 family = (String) element;
@@ -180,6 +190,7 @@ public final class TalendEditorPaletteFactory {
         boolean noteAeeded = false;
         boolean needAddNote = true;
         boolean needToAdd = false;
+        Map<String, IComponent> recentlyUsedMap = new HashMap<String, IComponent>();
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
 
@@ -254,6 +265,10 @@ public final class TalendEditorPaletteFactory {
                     }
                 }
 
+                if (recentlyUsedList != null && recentlyUsedList.contains(name)) {
+                    recentlyUsedMap.put(name, xmlComponent);
+                }
+
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
@@ -296,12 +311,58 @@ public final class TalendEditorPaletteFactory {
                 }
             }
         }
+
+        createRecentlyUsedEntry(ht, recentlyUsedList, recentlyUsedMap);
+
         if (a == 1) {
             for (CreationToolEntry entryCom : nodeList) {
                 entryCom.setParent(paGroup);
                 paGroup.add(entryCom);
             }
             palette.add(paGroup);
+        }
+    }
+
+    /**
+     * DOC cmeng Comment method "createRecentlyUsedEntry".
+     * 
+     * @param componentsDrawer
+     * @param ht
+     * @param recentlyUsedList
+     * @param recentlyUsedMap
+     * @return
+     */
+    protected static void createRecentlyUsedEntry(Hashtable<String, PaletteDrawer> ht, List<String> recentlyUsedList,
+            Map<String, IComponent> recentlyUsedMap) {
+        String name;
+        String longName;
+        CombinedTemplateCreationEntry component;
+        for (String componentName : recentlyUsedList) {
+            IComponent recentlyUsedComponent = recentlyUsedMap.get(componentName);
+            if (recentlyUsedComponent == null) {
+                continue;
+            }
+            PaletteDrawer componentsDrawer = ht.get(RECENTLY_USED);
+            if (componentsDrawer != null) {
+                name = recentlyUsedComponent.getName();
+                longName = recentlyUsedComponent.getLongName();
+
+                ImageDescriptor imageSmall = recentlyUsedComponent.getIcon16();
+                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+                ImageDescriptor imageLarge;
+                final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+                if (string.equals("24")) { //$NON-NLS-1$
+                    imageLarge = recentlyUsedComponent.getIcon24();
+                } else {
+                    imageLarge = recentlyUsedComponent.getIcon32();
+                }
+                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                        recentlyUsedComponent), imageSmall, imageLarge);
+
+                component.setDescription(longName);
+                component.setParent(componentsDrawer);
+                componentsDrawer.add(component);
+            }
         }
     }
 
@@ -412,6 +473,8 @@ public final class TalendEditorPaletteFactory {
 
         Collections.sort(families);
 
+        List<String> recentlyUsedList = null;
+
         if (a == 0) {
 
             families.add(0, FAVORITES);
@@ -419,6 +482,8 @@ public final class TalendEditorPaletteFactory {
 
             families.add(1, RECENTLY_USED);
             familyMap.put(RECENTLY_USED, RECENTLY_USED);
+
+            recentlyUsedList = getRecentlyUsedList();
 
             for (Object element : families) {
                 family = (String) element;
@@ -435,6 +500,7 @@ public final class TalendEditorPaletteFactory {
         boolean noteAeeded = false;
         boolean needAddNote = true;
         boolean needToAdd = false;
+        Map<String, IComponent> recentlyUsedMap = new HashMap<String, IComponent>();
 
         // For bug TDI-25745, to add "note" entry to Misc drawer for m/r job and common job editor. It should create
         // Misc drawer first if there is not the drawer in palette.
@@ -526,6 +592,10 @@ public final class TalendEditorPaletteFactory {
                     }
                 }
 
+                if (recentlyUsedList != null && recentlyUsedList.contains(name)) {
+                    recentlyUsedMap.put(name, xmlComponent);
+                }
+
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
@@ -571,6 +641,9 @@ public final class TalendEditorPaletteFactory {
                 }
             }
         }
+
+        createRecentlyUsedEntry(ht, recentlyUsedList, recentlyUsedMap);
+
         if (a == 1) {
             for (CreationToolEntry entryComponent : nodeList) {
                 entryComponent.setParent(paGroup);
@@ -590,6 +663,29 @@ public final class TalendEditorPaletteFactory {
 
     public static String getFavoriteKey(String componentName) {
         return FAVORITES_KEY_PREFIX + componentName;
+    }
+
+    protected static List<String> getRecentlyUsedList() {
+        String recentlyUsedListString = DesignerPlugin.getDefault().getPreferenceStore().getString(RECENTLY_USED_LIST_KEY);
+        List<String> recentlyUsedList = new ArrayList<String>();
+        if (StringUtils.isNotEmpty(recentlyUsedListString)) {
+            recentlyUsedList = Arrays.asList(recentlyUsedListString.split(RECENTLY_USED_LIST_SEPERATOR));
+        }
+        return recentlyUsedList;
+    }
+
+    public static void storeRecentlyUsedList(List<String> componentList) {
+        StringBuffer components = new StringBuffer(""); //$NON-NLS-1$
+        boolean needAddSeperator = false;
+        for (String component : componentList) {
+            if (needAddSeperator) {
+                components.append(RECENTLY_USED_LIST_SEPERATOR);
+            } else {
+                needAddSeperator = true;
+            }
+            components.append(component.trim());
+        }
+        DesignerPlugin.getDefault().getPreferenceStore().setValue(RECENTLY_USED_LIST_KEY, components.toString());
     }
 
     /**

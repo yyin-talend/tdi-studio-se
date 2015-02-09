@@ -1206,6 +1206,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     @Override
     public void dispose() {
         ProcessorUtilities.editorClosed(this);
+        TalendPaletteViewer talendPaletteViewer = getTalendPaletteViewer();
+        if (talendPaletteViewer != null) {
+            talendPaletteViewer.refreshRecentlyUsedComponentToReference();
+        }
+
         talendPaletteViewerProvider = null;
 
         // achen modify to fix bug 0006107

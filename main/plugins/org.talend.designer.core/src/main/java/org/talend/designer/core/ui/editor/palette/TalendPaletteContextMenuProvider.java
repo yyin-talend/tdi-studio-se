@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -201,7 +203,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             Project project = null;
             if (element instanceof TalendPaletteDrawer) {
 
-                List eleList = ((TalendPaletteDrawer) element).getChildren();
+                List<TalendPaletteDrawer> eleList = new ArrayList<TalendPaletteDrawer>(
+                        ((TalendPaletteDrawer) element).getChildren());
                 addListNotes(eleList, project, paletteViewer);
             } else if (element instanceof CombinedTemplateCreationEntry) {
                 addNotes((CombinedTemplateCreationEntry) element, project, paletteViewer);
@@ -239,7 +242,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             Project project = null;
             if (element instanceof TalendPaletteDrawer) {
 
-                List eleList = ((TalendPaletteDrawer) element).getChildren();
+                List<TalendPaletteDrawer> eleList = new ArrayList<TalendPaletteDrawer>(
+                        ((TalendPaletteDrawer) element).getChildren());
                 removeListNotes(eleList, project, paletteViewer);
             } else if (element instanceof CombinedTemplateCreationEntry) {
                 removeNotes((CombinedTemplateCreationEntry) element, project, paletteViewer);
@@ -447,8 +451,9 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
     }
 
     public void removeListNotes(List eleList, Project project, PaletteViewer paletteViewer) {
-        for (int i = 0; i < eleList.size(); i++) {
-            PaletteEntry elementLi = (PaletteEntry) eleList.get(i);
+        Iterator<PaletteEntry> iter = eleList.iterator();
+        while (iter.hasNext()) {
+            PaletteEntry elementLi = iter.next();
             if (elementLi instanceof TalendPaletteDrawer) {
                 List list = ((TalendPaletteDrawer) elementLi).getChildren();
                 removeListNotes(list, project, paletteViewer);
