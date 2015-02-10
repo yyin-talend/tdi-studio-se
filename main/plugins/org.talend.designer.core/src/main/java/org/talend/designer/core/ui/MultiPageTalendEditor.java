@@ -13,8 +13,6 @@
 package org.talend.designer.core.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -27,7 +25,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.services.ISVNProviderService;
-import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -75,14 +72,6 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     @Override
     protected void createPages() {
         super.createPages();
-        setCSSStylingId();
-    }
-
-    private void setCSSStylingId() {
-        Composite container = getContainer();
-        if (container instanceof CTabFolder) {
-            CoreUIPlugin.setCSSId(container, "org-talend-rcp-multiPageEditor-footer"); //$NON-NLS-1$
-        }
     }
 
     /**

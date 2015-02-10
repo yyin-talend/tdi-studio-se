@@ -133,6 +133,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.services.ICreateXtextProcessService;
 import org.talend.core.services.IUIRefresher;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.branding.IBrandingService;
@@ -164,6 +165,7 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTransferDragSourceListener;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
+import org.talend.designer.core.ui.editor.palette.TalendPaletteViewer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
@@ -265,6 +267,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public String revisionNumStr = null;
 
     public void changePaletteComponentHandler() {
+        TalendPaletteViewer talendPaletteViewer = designerEditor.getTalendPaletteViewer();
+        if (talendPaletteViewer != null) {
+            talendPaletteViewer.refreshRecentlyUsedComponentToReference();
+        }
         ComponentsFactoryProvider.getInstance().setComponentsHandler(designerEditor.getComponenentsHandler());
     }
 
@@ -772,6 +778,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     }
 
+    protected void setCSSStylingClass() {
+        Composite container = getContainer();
+        if (container instanceof CTabFolder) {
+            CoreUIPlugin.setCSSClass(container, "org-talend-rcp-abstractMultiPageEditor-footer"); //$NON-NLS-1$
+        }
+    }
+
     protected void createPage0() {
         try {
             int index = addPage(designerEditor, getEditorInput());
@@ -781,6 +794,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
+        setCSSStylingClass();
     }
 
     /**
