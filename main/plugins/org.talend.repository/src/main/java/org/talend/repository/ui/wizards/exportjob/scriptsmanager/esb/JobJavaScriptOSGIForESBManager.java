@@ -149,15 +149,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     itemType = ROUTE;
                 }
 
-                // generate the source files
-                String libPath = calculateLibraryPathFromDirectory(process.getDirectoryName());
-                // use character @ as temporary classpath separator, this one will
-                // be replaced during the export.
-                String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR
-                        + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + libPath + PATH_SEPARATOR + USERROUTINE_JAR
-                        + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + PACKAGE_SEPARATOR;
-
-                ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath);
+                ProcessorUtilities.setExportConfig(process.getDirectoryName(), true);
 
                 String processId = processItem.getProperty().getId();
 

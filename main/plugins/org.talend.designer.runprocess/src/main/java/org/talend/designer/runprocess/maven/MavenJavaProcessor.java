@@ -54,10 +54,20 @@ public class MavenJavaProcessor extends JavaProcessor {
             return;
         }
 
+        initJobClasspath();
+
         try {
             CreateJobTemplateMavenPom createTemplatePom = new CreateJobTemplateMavenPom(this, jobPomFile,
                     MavenTemplateConstants.JOB_TEMPLATE_FILE_NAME);
+            // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
+            createTemplatePom.setAddStat(false);
+            createTemplatePom.setApplyContextToChild(false);
+
+            createTemplatePom.setUnixClasspath(this.unixClasspath);
+            createTemplatePom.setWindowsClasspath(this.windowsClasspath);
+
             createTemplatePom.setOverwrite(true);
+
             createTemplatePom.create(null);
 
         } catch (Exception e) {

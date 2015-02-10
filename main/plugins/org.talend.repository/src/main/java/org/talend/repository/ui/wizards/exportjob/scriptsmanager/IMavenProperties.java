@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
+import org.talend.commons.utils.generation.JavaUtils;
+
 /**
  * DOC ggu class global comment. Detailled comment <br/>
  * 
@@ -22,7 +24,7 @@ public interface IMavenProperties {
 
     static final String PATH_SEPARATOR = "/"; //$NON-NLS-1$
 
-    static final String LIBRARY_FOLDER_NAME = "lib"; //$NON-NLS-1$
+    static final String LIBRARY_FOLDER_NAME = JavaUtils.JAVA_LIB_DIRECTORY;
 
     static final String PROVIDED_LIB_FOLDER_NAME = "provided-lib"; //$NON-NLS-1$
 

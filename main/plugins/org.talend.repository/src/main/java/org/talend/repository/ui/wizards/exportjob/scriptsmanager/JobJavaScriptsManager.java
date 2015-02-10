@@ -141,13 +141,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     private static final String SYSTEM_ROUTINES_PATH = JavaUtils.JAVA_ROUTINES_DIRECTORY + PATH_SEPARATOR
             + JavaUtils.JAVA_SYSTEM_DIRECTORY;
 
-    public static final String SYSTEMROUTINE_JAR = "systemRoutines.jar"; //$NON-NLS-1$
+    public static final String SYSTEMROUTINE_JAR = JavaUtils.SYSTEM_ROUTINE_JAR;
 
-    public static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
+    public static final String USERROUTINE_JAR = JavaUtils.USER_ROUTINE_JAR;
 
-    protected static final String USERBEANS_JAR = "userBeans.jar"; //$NON-NLS-1$
+    protected static final String USERBEANS_JAR = JavaUtils.USER_BEANS_JAR;
 
-    public static final String USERPIGUDF_JAR = "pigudf.jar"; //$NON-NLS-1$
+    public static final String USERPIGUDF_JAR = JavaUtils.USER_PIGUDF_JAR;
 
     private boolean needMappingInSystemRoutine = false;
 
@@ -675,11 +675,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             progressMonitor
                     .subTask(Messages.getString("JobJavaScriptsManager.buildJob") + process[i].getNode().getObject().getLabel() + "_" + sJobVersion); //$NON-NLS-1$//$NON-NLS-2$
         }
-        String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
-        // use character @ as temporary classpath separator, this one will be replaced during the export.
-        String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
-        ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
+        ProcessorUtilities.setExportConfig(process[i].getDirectoryName(), true);
         return sJobVersion;
     }
 

@@ -89,12 +89,7 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             String selectedJobVersion = processItem.getProperty().getVersion();
             String directoryName = processItem.getProperty().getLabel();
 
-            // Generate job files
-            String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
-            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
-
-            ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
+            ProcessorUtilities.setExportConfig(proces.getDirectoryName(), true);
             try {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
                         tracePort != IProcessor.NO_TRACES, APPLY_TO_CHILDREN, this.progressMonitor);

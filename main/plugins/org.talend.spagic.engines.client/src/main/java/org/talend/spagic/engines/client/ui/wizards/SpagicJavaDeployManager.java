@@ -57,11 +57,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         for (ExportFileResource proces : process) {
             ProcessItem processItem = (ProcessItem) proces.getItem();
 
-            String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
-            // use character @ as temporary classpath separator, this one will be replaced during the export.
-            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
-            ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
+            ProcessorUtilities.setExportConfig(proces.getDirectoryName(), true);
 
             IProcess jobProcess = null;
             if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {

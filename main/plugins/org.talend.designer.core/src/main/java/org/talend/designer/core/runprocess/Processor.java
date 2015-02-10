@@ -657,6 +657,9 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
     @Override
     public String getTargetPlatform() {
+        if (this.targetPlatform == null) {
+            this.targetPlatform = Platform.getOS();
+        }
         return targetPlatform;
     }
 
