@@ -98,6 +98,26 @@ public abstract class AbstractComponent implements IComponent {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.core.model.components.IComponent#getInputType()
+     */
+    @Override
+    public String getInputType() {
+        return "AUTO";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getOutputType()
+     */
+    @Override
+    public String getOutputType() {
+        return "AUTO";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.components.IComponent#getPartitioning()
      */
     @Override

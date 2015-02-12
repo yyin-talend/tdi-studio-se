@@ -3808,6 +3808,26 @@ public class EmfComponent extends AbstractComponent {
         return type;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getInputType()
+     */
+    @Override
+    public String getInputType() {
+        return compType.getHEADER().getINPUTTYPE();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getOutputType()
+     */
+    @Override
+    public String getOutputType() {
+        return compType.getHEADER().getOUTPUTTYPE();
+    }
+
     /**
      * Getter for reduce.
      * 

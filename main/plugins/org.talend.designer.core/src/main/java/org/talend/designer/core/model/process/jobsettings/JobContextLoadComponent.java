@@ -683,4 +683,26 @@ public class JobContextLoadComponent implements IComponent {
     public boolean isLog4JEnabled() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getInputType()
+     */
+    @Override
+    public String getInputType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getOutputType()
+     */
+    @Override
+    public String getOutputType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
