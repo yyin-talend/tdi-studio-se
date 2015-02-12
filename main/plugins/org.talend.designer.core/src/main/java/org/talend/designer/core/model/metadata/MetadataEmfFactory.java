@@ -31,6 +31,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -113,9 +114,8 @@ public class MetadataEmfFactory {
         }
     }
 
-    public void setAvroMetadataType(final MetadataType metadataType, String filePath, String technicalProjectName,
-            String jobName, String jobVersion) {
-        AvroMetadataTable avroMetadataTable = new AvroMetadataTable(filePath, technicalProjectName, jobName, jobVersion);
+    public void setAvroMetadataType(final MetadataType metadataType, IProcess2 process) {
+        AvroMetadataTable avroMetadataTable = new AvroMetadataTable(process);
 
         metadataTable = avroMetadataTable;
         setMetadataTypeCommon(metadataType);

@@ -43,6 +43,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -50,6 +51,7 @@ import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.metadata.AvroMetadataTable;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -416,6 +418,14 @@ public class Node extends Element implements IGraphicalNode {
         needlibrary = false;
     }
 
+    private MetadataTable getNewMetadataTable() {
+        if (this.component.getPaletteType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())) {
+            return new AvroMetadataTable(process);
+        } else {
+            return new MetadataTable();
+        }
+    }
+
     private void init(IComponent newComponent) {
         this.component = newComponent;
         this.label = component.getName();
@@ -464,7 +474,7 @@ public class Node extends Element implements IGraphicalNode {
         for (IElementParameter param : getElementParameters()) {
             if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                     || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
-                IMetadataTable table = new MetadataTable();
+                IMetadataTable table = getNewMetadataTable();
                 table.setAttachedConnector(param.getContext());
                 metadataList.add(table);
                 hasSchemaType = true;
@@ -478,7 +488,7 @@ public class Node extends Element implements IGraphicalNode {
             } else {
                 mainConnector = EConnectionType.FLOW_MAIN.getName();
             }
-            IMetadataTable table = new MetadataTable();
+            IMetadataTable table = getNewMetadataTable();
             table.setAttachedConnector(mainConnector);
             metadataList.add(table);
         }
