@@ -718,11 +718,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         jobProcess, processItem, selectedJobVersion, resources, codeOptions);
             } else {
                 String log4jOption = getLog4jLevel() != null ? LOG4J_LEVEL_ARG + getLog4jLevel().toLowerCase() : null;
+                String[] newCodeOptions = codeOptions;
                 if (!ArrayUtils.contains(codeOptions, log4jOption)) {
-                    codeOptions = (String[]) ArrayUtils.add(codeOptions, log4jOption);
+                    newCodeOptions = (String[]) ArrayUtils.add(codeOptions, log4jOption);
                 }
                 childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
-                        jobProcess, processItem, selectedJobVersion, resources, codeOptions);
+                        jobProcess, processItem, selectedJobVersion, resources, newCodeOptions);
             }
             resources.addAll(childrenList);
             process[i].addResources(resources);

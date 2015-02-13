@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +173,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String windowsClasspath, unixClasspath;
 
+    private Set<JobInfo> buildChildrenJobs;
+
     private final ITalendProcessJavaProject talendJavaProject;
 
     /**
@@ -215,8 +218,30 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
-    public ITalendProcessJavaProject getTalendJavaProject() {
+    protected ITalendProcessJavaProject getTalendJavaProject() {
         return this.talendJavaProject;
+    }
+
+    @Override
+    public Set<JobInfo> getBuildChildrenJobs() {
+        if (buildChildrenJobs == null) {
+            buildChildrenJobs = new HashSet<JobInfo>();
+
+            JobInfo lastMainJob = LastGenerationInfo.getInstance().getLastMainJob();
+            Set<JobInfo> infos = null;
+            if (lastMainJob == null && property != null) {
+                infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
+            } else {
+                infos = LastGenerationInfo.getInstance().getLastGeneratedjobs();
+            }
+            for (JobInfo jobInfo : infos) {
+                if (lastMainJob != null && lastMainJob.equals(jobInfo)) {
+                    continue;
+                }
+                buildChildrenJobs.add(jobInfo);
+            }
+        }
+        return this.buildChildrenJobs;
     }
 
     /*
@@ -247,6 +272,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     public void initCodePath(IContext c) throws ProcessorException {
+        if (buildChildrenJobs != null) {
+            buildChildrenJobs.clear();
+        }
         ITalendProcessJavaProject tProcessJvaProject = getTalendJavaProject();
         if (tProcessJvaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
@@ -300,14 +328,19 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     public void initJobClasspath() {
         final String label = getProperty().getLabel(); // just label as exported folder.
+        LastGenerationInfo.getInstance().setLastMainJob(null);
         // FIXME, must make sure the exportConfig is true, and the classpath is same as export.
         ProcessorUtilities.setExportConfig(label, false);
 
+        setClasspaths();
+
+        ProcessorUtilities.resetExportConfig();
+    }
+
+    protected void setClasspaths() {
         String contextName = JavaResourcesHelper.getJobContextName(this.context);
         this.windowsClasspath = getClasspath(Platform.OS_WIN32, contextName);
         this.unixClasspath = getClasspath(Platform.OS_LINUX, contextName);
-
-        ProcessorUtilities.resetExportConfig();
     }
 
     /**
@@ -990,7 +1023,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                     libPath.append(libPrefixPath);
                     String singleLibPath = new Path(jarFile.getAbsolutePath()).toPortableString();
                     if (exportingJob) {
-                        singleLibPath = singleLibPath.replace(new Path(libDir.getAbsolutePath()).toPortableString(), "../lib"); //$NON-NLS-1$
+                        singleLibPath = singleLibPath.replace(new Path(libDir.getAbsolutePath()).toPortableString(),
+                                getBaseLibPath());
                     }
                     libPath.append(singleLibPath).append(classPathSeparator);
                 }
@@ -1003,6 +1037,10 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return libPath.toString();
     }
 
+    protected String getBaseLibPath() {
+        return "../" + JavaUtils.JAVA_LIB_DIRECTORY; //$NON-NLS-1$
+    }
+
     protected String getExportJarsStr() {
         final String libPrefixPath = getLibPrefixPath(true);
         final String classPathSeparator = extractClassPathSeparator();
@@ -1010,18 +1048,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String jarName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
         String exportJar = libPrefixPath + jarName + FileExtensions.JAR_FILE_SUFFIX;
 
-        JobInfo lastMainJob = LastGenerationInfo.getInstance().getLastMainJob();
-        Set<JobInfo> infos = null;
-        if (lastMainJob == null && property != null) {
-            infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
-        } else {
-            infos = LastGenerationInfo.getInstance().getLastGeneratedjobs();
-        }
+        Set<JobInfo> infos = getBuildChildrenJobs();
         for (JobInfo jobInfo : infos) {
-            if (lastMainJob != null && lastMainJob.equals(jobInfo)) {
-                continue;
-            }
-
             String childJarName = JavaResourcesHelper.getJobFolderName(jobInfo.getJobName(), jobInfo.getJobVersion());
             exportJar += classPathSeparator + libPrefixPath + childJarName + FileExtensions.JAR_FILE_SUFFIX;
         }
