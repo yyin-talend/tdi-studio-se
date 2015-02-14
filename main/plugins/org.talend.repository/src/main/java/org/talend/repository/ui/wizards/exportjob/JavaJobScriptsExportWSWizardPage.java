@@ -19,8 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -289,6 +292,26 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     @Override
+    protected boolean validateDestinationGroup() {
+        boolean superValidationResult = super.validateDestinationGroup();
+        if (!superValidationResult) {
+            return false;
+        }
+        boolean additionalValidationResult = true;
+        String fName = this.getDestinationValue().trim();
+        String jobName = new Path(fName).removeFileExtension().lastSegment();
+
+        @SuppressWarnings("restriction")
+        IStatus nameStauts = JavaPlugin.getWorkspace().validateName(jobName, IResource.FILE);
+        if (!nameStauts.isOK()) {
+            setErrorMessage(nameStauts.getMessage());
+            setPageComplete(false);
+            additionalValidationResult = false;
+        }
+        return superValidationResult && additionalValidationResult;
+    }
+
+    @Override
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
@@ -326,6 +349,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         destinationNameFieldInnerComposite.setLayout(layout);
 
         createDestinationGroup(destinationNameFieldInnerComposite);
+
+        // this.getDestinationValue()
         // createExportTree(pageComposite);
         if (!isMultiNodes()) {
             IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
@@ -1273,15 +1298,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
         }
 
-		// TESB-13867 Export limitations for ESB 'Jobs'
-		// add extra checks.
-		if (isValid) {
-			String errorMsg = presenter.extraCheck(getCurrentExportType1(), getCheckNodes());
-			if (errorMsg != null) {
-				setErrorMessage(errorMsg);
-				return false;
-			}
-		}
+        // TESB-13867 Export limitations for ESB 'Jobs'
+        // add extra checks.
+        if (isValid) {
+            String errorMsg = presenter.extraCheck(getCurrentExportType1(), getCheckNodes());
+            if (errorMsg != null) {
+                setErrorMessage(errorMsg);
+                return false;
+            }
+        }
         setPageComplete(isValid);
         return isValid;
     }
@@ -1576,15 +1601,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
         boolean noError = getErrorMessage() == null;
 
-		// TESB-13867 Export limitations for ESB 'Jobs'
-		// add extra checks.
-		if (noError) {
-			String errorMsg = presenter.extraCheck(getCurrentExportType1(), getCheckNodes());
-			if (errorMsg != null) {
-				setErrorMessage(errorMsg);
-				return false;
-			}
-		}
+        // TESB-13867 Export limitations for ESB 'Jobs'
+        // add extra checks.
+        if (noError) {
+            String errorMsg = presenter.extraCheck(getCurrentExportType1(), getCheckNodes());
+            if (errorMsg != null) {
+                setErrorMessage(errorMsg);
+                return false;
+            }
+        }
 
         setPageComplete(noError);
         return noError;
@@ -1627,7 +1652,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
             } catch (Exception e) {
                 ExceptionHandler.process(e);
-
             }
 
             return ok;
