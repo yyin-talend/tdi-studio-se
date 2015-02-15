@@ -54,6 +54,11 @@ public class DesignerCoreUIService implements IDesignerCoreUIService {
     }
 
     @Override
+    public void deleteJobletConfigurationsFromPalette(String jobletName) {
+        TalendEditorPaletteFactory.deleteJobletConfigurationsFromPalette(jobletName);
+    }
+
+    @Override
     public PaletteRoot getAllNodeStructure(IComponentsFactory factory) {
         return TalendEditorPaletteFactory.getAllNodeStructure(factory);
     }

@@ -39,6 +39,7 @@ import org.eclipse.gef.internal.ui.palette.editparts.DrawerFigure;
 import org.eclipse.gef.internal.ui.palette.editparts.PaletteContainerFlowLayout;
 import org.eclipse.gef.internal.ui.palette.editparts.PinFigure;
 import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -107,6 +108,7 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
             Field drawerLabelField = DrawerFigure.class.getDeclaredField("drawerLabel");
             drawerLabelField.setAccessible(true);
             talendDrawerLabel = new Label();
+            talendDrawerLabel.setFont(JFaceResources.getFontRegistry().getBold("TalendDrawerFigureSymbolicName"));
             talendDrawerLabel.setLabelAlignment(Label.LEFT);
             drawerLabelField.set(this, talendDrawerLabel);
 

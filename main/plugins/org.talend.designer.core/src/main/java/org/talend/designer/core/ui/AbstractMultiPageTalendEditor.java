@@ -165,7 +165,6 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTransferDragSourceListener;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
-import org.talend.designer.core.ui.editor.palette.TalendPaletteViewer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
@@ -267,10 +266,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public String revisionNumStr = null;
 
     public void changePaletteComponentHandler() {
-        TalendPaletteViewer talendPaletteViewer = designerEditor.getTalendPaletteViewer();
-        if (talendPaletteViewer != null) {
-            talendPaletteViewer.refreshRecentlyUsedComponentToReference();
-        }
         ComponentsFactoryProvider.getInstance().setComponentsHandler(designerEditor.getComponenentsHandler());
     }
 

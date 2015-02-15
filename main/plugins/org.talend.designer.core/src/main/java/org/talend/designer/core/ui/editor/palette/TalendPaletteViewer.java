@@ -53,11 +53,13 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
+import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory.RecentlyUsedComponent;
 import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
@@ -305,7 +307,6 @@ public class TalendPaletteViewer extends PaletteViewer {
 
     private void startFiltering(final Text text) {
         String keyword = text.getText();
-        refreshRecentlyUsedComponentToReference();
         if (!SEARCH_COMPONENT.equals(keyword)) {
             expandLimiter.resetTimer();
             expandLimiter.startIfExecutable(true, text);
@@ -424,7 +425,7 @@ public class TalendPaletteViewer extends PaletteViewer {
                 for (; insertIndex < children.size(); insertIndex++) {
                     TalendEntryEditPart entryEditPart = (TalendEntryEditPart) children.get(insertIndex);
                     CombinedTemplateCreationEntry entryModule = (CombinedTemplateCreationEntry) entryEditPart.getModel();
-                    int compareResult = entryModule.getLabel().compareTo(component.getLabel());
+                    int compareResult = entryModule.getLabel().toLowerCase().compareTo(component.getLabel().toLowerCase());
                     if (0 == compareResult) {
                         alreadyExist = true;
                         break;
@@ -436,7 +437,7 @@ public class TalendPaletteViewer extends PaletteViewer {
             }
 
             if (!alreadyExist) {
-                TalendEditorPaletteFactory.storeFavoritesValue(component.getLabel(), true);
+                TalendEditorPaletteFactory.addNewFavoriteIntoPreference(component.getLabel());
                 CombinedTemplateCreationEntry newFavorite = TalendEditorPaletteFactory.createEntryFrom(component);
                 newFavorite.setParent(favoritesEditPart.getDrawer());
                 EditPart child = favoritesEditPart.createChild(newFavorite);
@@ -454,7 +455,7 @@ public class TalendPaletteViewer extends PaletteViewer {
     public void removeFavoritesComponent(CombinedTemplateCreationEntry component) {
 
         if (favoritesEditPart != null) {
-            TalendEditorPaletteFactory.storeFavoritesValue(component.getLabel(), false);
+            TalendEditorPaletteFactory.deleteFavoriteFromPreference(component.getLabel());
             List children = favoritesEditPart.getChildren();
             if (children != null) {
                 for (Object obj : children) {
@@ -476,6 +477,10 @@ public class TalendPaletteViewer extends PaletteViewer {
     }
 
     public void addRecentlyUsedComponent(IComponent component) {
+        EComponentType componentType = component.getComponentType();
+        if (componentType == EComponentType.JOBLET_INPUT_OUTPUT || componentType == EComponentType.JOBLET_TRIGGER) {
+            return;
+        }
         if (recentlyUsedEditPart != null) {
             List children = recentlyUsedEditPart.getChildren();
             int insertIndex = 0;
@@ -530,29 +535,40 @@ public class TalendPaletteViewer extends PaletteViewer {
             // recentlyUsedEditPart.addChild(child, insertIndex);
             // }
 
-            // refreshRecentlyUsedComponentToReference();
+            refreshRecentlyUsedComponentToReference();
         }
 
     }
 
-    public void refreshRecentlyUsedComponentToReference() {
+    protected void refreshRecentlyUsedComponentToReference() {
         if (recentlyUsedEditPart == null) {
             return;
         }
-        List children = recentlyUsedEditPart.getChildren();
-        if (children == null) {
-            return;
-        }
 
-        List<TalendCombinedTemplateCreationEntry> recentlyUsedList = new ArrayList<TalendCombinedTemplateCreationEntry>();
+        new Thread(new Runnable() {
 
-        for (Object obj : children) {
-            TalendEntryEditPart entryEditPart = (TalendEntryEditPart) obj;
-            TalendCombinedTemplateCreationEntry entryModule = (TalendCombinedTemplateCreationEntry) entryEditPart.getModel();
-            recentlyUsedList.add(entryModule);
-        }
+            @Override
+            public void run() {
+                if (recentlyUsedEditPart == null) {
+                    return;
+                }
+                List children = recentlyUsedEditPart.getModelChildren();
+                if (children == null) {
+                    return;
+                }
+                List<RecentlyUsedComponent> recentlyUsedList = new ArrayList<RecentlyUsedComponent>();
 
-        TalendEditorPaletteFactory.storeRecentlyUsedList(recentlyUsedList);
+                for (Object obj : children) {
+                    TalendCombinedTemplateCreationEntry entryModule = (TalendCombinedTemplateCreationEntry) obj;
+                    RecentlyUsedComponent recentlyUsedComponent = new RecentlyUsedComponent();
+                    recentlyUsedComponent.setName(entryModule.getLabel());
+                    recentlyUsedComponent.setTimestamp(entryModule.getTimestemp());
+                    recentlyUsedList.add(recentlyUsedComponent);
+                }
+
+                TalendEditorPaletteFactory.storeRecentlyUsedList(recentlyUsedList);
+            }
+        }).start();
 
     }
 
