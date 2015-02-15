@@ -2505,7 +2505,7 @@ public class Node extends Element implements IGraphicalNode {
                 } else if ("DQRULES_LIST".equals(param.getName()) || "PATTERN_LIST".equals(param.getName())) {
                     // MOD for TDI-19063 Do not check value for these 2 parameters.
                 } else {
-                    if (!ArrayUtils.contains(param.getListItemsValue(), param.getValue())) {
+                    if (!ArrayUtils.contains(param.getListItemsValue(), param.getValue()) && !param.isDynamicSettings()) {
                         Problems.add(ProblemStatus.ERROR, this, "Unknown value in the list [" + param.getDisplayName()
                                 + "] / Value set not supported by the component");
                     }
