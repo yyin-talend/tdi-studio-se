@@ -28,7 +28,7 @@ public class OpenPaletteFilterAction extends Action {
     private OpenPaletteFilterAction() {
         super("PaletteFilter"); //$NON-NLS-1$
         setId(getClass().getCanonicalName());
-        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.BUSINESS_PROCESS_ICON));
+        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PALETTE_FILTER));
     }
 
     public static OpenPaletteFilterAction getInstance() {
