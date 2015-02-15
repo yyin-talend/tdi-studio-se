@@ -272,6 +272,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (buildChildrenJobs != null) {
             buildChildrenJobs.clear();
         }
+
         ITalendProcessJavaProject tProcessJvaProject = getTalendJavaProject();
         if (tProcessJvaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
@@ -285,14 +286,27 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         /*
          * assum the job is "TestJob 0.1", project is "Test" .
          */
-        Item item = getProperty().getItem();
-        // test.testjob_0_1.TestJob
-        this.mainClass = JavaResourcesHelper.getJobPackagedClass(item, filenameFromLabel);
-
-        // test/testjob_0_1
-        String jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolder(item);
-        // test/testjob_0_1/TestJob.java
-        String jobClassFilePath = JavaResourcesHelper.getJobClassFilePath(item, filenameFromLabel);
+        String jobClassPackageFolder = null;
+        String jobClassFilePath = null;
+        if (property != null) {
+            Item item = property.getItem();
+            // test/testjob_0_1
+            jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolder(item);
+            // test/testjob_0_1/TestJob.java
+            jobClassFilePath = JavaResourcesHelper.getJobClassFilePath(item, filenameFromLabel);
+            // test.testjob_0_1.TestJob
+            this.mainClass = JavaResourcesHelper.getJobPackagedClass(item, filenameFromLabel);
+        } else { // for shadow process
+            // test/shadowfileinputtodelimitedoutput_0_1
+            jobClassPackageFolder = JavaResourcesHelper.getProjectFolderName(property) + JavaUtils.PATH_SEPARATOR
+                    + JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+            // test/shadowfileinputtodelimitedoutput_0_1/ShadowFileInputToDelimitedOutput.java
+            jobClassFilePath = jobClassPackageFolder + JavaUtils.PATH_SEPARATOR
+                    + (filenameFromLabel ? JavaResourcesHelper.escapeFileName(process.getName()) : process.getId())
+                    + JavaUtils.JAVA_EXTENSION;
+            // test.shadowfileinputtodelimitedoutput_0_1.ShadowFileInputToDelimitedOutput
+            this.mainClass = new Path(jobClassFilePath).removeFileExtension().toString().replace('/', '.');
+        }
 
         // create job packages, src/main/java/test/testjob_0_1
         tProcessJvaProject.createSubFolder(monitor, srcFolder, jobClassPackageFolder);

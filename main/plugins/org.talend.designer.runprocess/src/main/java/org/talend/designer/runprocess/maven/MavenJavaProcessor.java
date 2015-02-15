@@ -48,8 +48,10 @@ public class MavenJavaProcessor extends JavaProcessor {
     @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
-        generatePom();
-        checkProjectPomModules();
+        if (property != null) { // only job, if Shadow Process, will be null.
+            generatePom();
+            checkProjectPomModules();
+        }
     }
 
     @Override
