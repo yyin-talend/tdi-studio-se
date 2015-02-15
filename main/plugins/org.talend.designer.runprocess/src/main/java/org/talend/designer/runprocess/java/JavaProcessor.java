@@ -173,7 +173,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String windowsClasspath, unixClasspath;
 
-    private Set<JobInfo> buildChildrenJobs;
+    protected Set<JobInfo> buildChildrenJobs;
 
     private final ITalendProcessJavaProject talendJavaProject;
 
@@ -235,9 +235,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 infos = LastGenerationInfo.getInstance().getLastGeneratedjobs();
             }
             for (JobInfo jobInfo : infos) {
-                if (lastMainJob != null && lastMainJob.equals(jobInfo)) {
-                    continue;
-                }
                 buildChildrenJobs.add(jobInfo);
             }
         }

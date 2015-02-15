@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.runprocess.maven;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -23,6 +24,7 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
@@ -48,6 +50,21 @@ public class MavenJavaProcessor extends JavaProcessor {
         super.generateCode(statistics, trace, javaProperties);
         generatePom();
         checkProjectPomModules();
+    }
+
+    @Override
+    public Set<JobInfo> getBuildChildrenJobs() {
+        if (buildChildrenJobs == null || buildChildrenJobs.isEmpty()) {
+            buildChildrenJobs = new HashSet<JobInfo>();
+
+            if (property != null) {
+                Set<JobInfo> infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
+                for (JobInfo jobInfo : infos) {
+                    buildChildrenJobs.add(jobInfo);
+                }
+            }
+        }
+        return this.buildChildrenJobs;
     }
 
     @Override
@@ -110,12 +127,13 @@ public class MavenJavaProcessor extends JavaProcessor {
         final String classPathSeparator = extractClassPathSeparator();
 
         String jarName = JavaResourcesHelper.getJobJarName(process.getName(), process.getVersion());
-        String exportJar = libPrefixPath + jarName + FileExtensions.JAR_FILE_SUFFIX;
+        String exportJar = libPrefixPath + getBaseLibPath() + JavaUtils.PATH_SEPARATOR + jarName + FileExtensions.JAR_FILE_SUFFIX;
 
         Set<JobInfo> infos = getBuildChildrenJobs();
         for (JobInfo jobInfo : infos) {
             String childJarName = JavaResourcesHelper.getJobJarName(jobInfo.getJobName(), jobInfo.getJobVersion());
-            exportJar += classPathSeparator + libPrefixPath + childJarName + FileExtensions.JAR_FILE_SUFFIX;
+            exportJar += classPathSeparator + libPrefixPath + getBaseLibPath() + JavaUtils.PATH_SEPARATOR + childJarName
+                    + FileExtensions.JAR_FILE_SUFFIX;
         }
         return exportJar;
 
