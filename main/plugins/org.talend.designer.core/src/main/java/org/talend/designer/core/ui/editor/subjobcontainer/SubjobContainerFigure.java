@@ -165,7 +165,7 @@ public class SubjobContainerFigure extends Figure {
         Dimension preferedSize = titleFigure.getPreferredSize();
         preferedSize = preferedSize.getExpanded(0, 2);
         titleFigure.setSize(rectangle.width - preferedSize.height, preferedSize.height);
-        titleFigure.setLocation(location);
+        titleFigure.setLocation(new Point(location.x + collapseFigure.getPreferredSize().width + 4, location.y));
         titleFigure.setVisible(showTitle);
 
         outlineFigure.setLocation(location);

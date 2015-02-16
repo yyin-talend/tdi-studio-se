@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.FreeformFigure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -42,11 +43,11 @@ public class TalendGridLayer extends GridLayer {
     }
 
     protected void paintGrid(Graphics g, IFigure f, org.eclipse.draw2d.geometry.Point origin, int distanceX, int distanceY) {
-        // FreeformFigure ff = (FreeformFigure) this.getParent();
-        // Rectangle clientArea = getClientArea();
-        // Rectangle bounds = ff.getFreeformExtent().getCopy();
-        // bounds.union(0, 0, clientArea.width, clientArea.height);
-        // ff.setFreeformBounds(bounds);
+        FreeformFigure ff = (FreeformFigure) this.getParent();
+        Rectangle clientArea = getClientArea();
+        Rectangle bounds = ff.getFreeformExtent().getCopy();
+        bounds.union(0, 0, clientArea.width, clientArea.height);
+        ff.setFreeformBounds(bounds);
 
         Rectangle original = g.getClip(Rectangle.SINGLETON);
 
