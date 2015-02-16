@@ -61,4 +61,5 @@ public interface DbMapSqlConstants {
 
     public final static String ORDER_BY_PATTERN = "\\s*order\\s+by.*"; //$NON-NLS-1$
 
+    public final static String AS = "AS"; //$NON-NLS-1$
 }

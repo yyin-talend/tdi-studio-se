@@ -61,7 +61,7 @@ public abstract class DbGenerationManager {
 
     protected IDbLanguage language;
 
-    private final Set<String> aliasAlreadyDeclared = new HashSet<String>();
+    protected final Set<String> aliasAlreadyDeclared = new HashSet<String>();
 
     protected String queryColumnsName = "";
 
@@ -506,7 +506,7 @@ public abstract class DbGenerationManager {
         return sqlQuery;
     }
 
-    private String handleQuery(String query) {
+    protected String handleQuery(String query) {
         if (query != null) {
             if (!query.trim().endsWith("\"")) { //$NON-NLS-1$
                 query = query + "\""; //$NON-NLS-1$
@@ -521,7 +521,7 @@ public abstract class DbGenerationManager {
         return query;
     }
 
-    private boolean containWith(String expression, String pattern, boolean start) {
+    protected boolean containWith(String expression, String pattern, boolean start) {
         if (expression != null) {
             expression = expression.trim();
             try {
@@ -557,7 +557,7 @@ public abstract class DbGenerationManager {
      * @param writeForJoin TODO
      * @param isFirstClause TODO
      */
-    private boolean buildConditions(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable,
+    protected boolean buildConditions(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable,
             boolean writeForJoin, boolean isFirstClause) {
         List<ExternalDbMapEntry> inputEntries = inputTable.getMetadataTableEntries();
         int lstSizeEntries = inputEntries.size();
@@ -665,7 +665,7 @@ public abstract class DbGenerationManager {
      * @param crCouldBeAdded TODO
      * @param writingInJoin TODO
      */
-    private void buildTableDeclaration(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable,
+    protected void buildTableDeclaration(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable,
             boolean commaCouldBeAdded, boolean crCouldBeAdded, boolean writingInJoin) {
         sb.append(DbMapSqlConstants.SPACE);
         String alias = inputTable.getAlias();
