@@ -256,18 +256,37 @@ public class NodeAnchor extends ChopboxAnchor {
             return result;
         } else if (category == EConnectionCategory.OTHER
                 && (connection.getLineStyle() == EConnectionType.FLOW_REF || connection.getLineStyle() == EConnectionType.TABLE_REF)) {
+            Rectangle sourceBounds = new Rectangle(((Node) connection.getSource()).getLocation(),
+                    ((Node) connection.getSource()).getSize());
+            Rectangle targetBounds = new Rectangle(((Node) connection.getTarget()).getLocation(),
+                    ((Node) connection.getTarget()).getSize());
+
             if (isSource) {
-                result.x = figCenter.x + nodeSize.width / 2;
+                int sourceY = connection.getSource().getPosY();
+                int targetY = connection.getTarget().getPosY();
+                if (sourceY <= targetY) {
+                    if ((targetBounds.getTopRight().y == sourceBounds.getBottomLeft().y)) {
+                        result.y = figCenter.y - nodeSize.height / 2;
+                    } else {
+                        result.y = figCenter.y + nodeSize.height / 2;
+                    }
+                } else {
+                    if (targetBounds.getBottomLeft().y == sourceBounds.getTopRight().y) {
+                        result.y = figCenter.y + nodeSize.height / 2;
+                    } else {
+                        result.y = figCenter.y - nodeSize.height / 2;
+                    }
+                }
                 return result;
             }
 
             int sourceY = connection.getSource().getPosY();
             int targetY = connection.getTarget().getPosY();
-            // if (sourceY < targetY) {
-            // result.y = figCenter.y - nodeSize.height / 2;
-            // } else {
-            result.y = figCenter.y + nodeSize.height / 2;
-            // }
+            if (sourceY < targetY) {
+                result.y = figCenter.y - nodeSize.height / 2;
+            } else {
+                result.y = figCenter.y + nodeSize.height / 2;
+            }
             return result;
         }
         return null;

@@ -99,73 +99,29 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
             }
         } else if (category == EConnectionCategory.OTHER
                 && (connection.getLineStyle() == EConnectionType.FLOW_REF || connection.getLineStyle() == EConnectionType.TABLE_REF)) {
-            if ((sourceBounds.y == targetBounds.y) && sourceBounds.x < targetBounds.x) {
+            if (targetBounds.y == sourceBounds.y) {
                 pointList.addPoint(firstpoint);
-                pointList.addPoint((sourceBounds.getCenter().x + targetBounds.getCenter().x) / 2, sourceBounds.getCenter().y);
-                pointList.addPoint((sourceBounds.getCenter().x + targetBounds.getCenter().x) / 2, lastpoint.y + OFFSET);
+                pointList.addPoint(firstpoint.x, firstpoint.y + OFFSET);
 
-                pointList.addPoint(lastpoint.x, lastpoint.y + OFFSET);
+                pointList.addPoint(lastpoint.x, firstpoint.y + OFFSET);
                 pointList.addPoint(lastpoint);
                 alreadyHandle = true;
-            } else if ((sourceBounds.y == targetBounds.y) && sourceBounds.x >= targetBounds.x) {
+            } else if ((targetBounds.getTopRight().y == sourceBounds.getBottomLeft().y)) {
                 pointList.addPoint(firstpoint);
-                pointList.addPoint(firstpoint.x + OFFSET, firstpoint.y);
-                pointList.addPoint(firstpoint.x + OFFSET, firstpoint.y + 2 * OFFSET);
+                pointList.addPoint(firstpoint.x, firstpoint.y - OFFSET);
 
-                pointList.addPoint(lastpoint.x, lastpoint.y + OFFSET);
+                pointList.addPoint(lastpoint.x, firstpoint.y - OFFSET);
                 pointList.addPoint(lastpoint);
                 alreadyHandle = true;
-            } else if (targetBounds.getBottomRight().y == sourceBounds.getTopLeft().y) {
+            } else if (targetBounds.getBottomLeft().y == sourceBounds.getTopRight().y) {
                 pointList.addPoint(firstpoint);
-                pointList.addPoint(firstpoint.x + OFFSET, firstpoint.y);
-                pointList.addPoint(firstpoint.x + OFFSET, firstpoint.y + 2 * OFFSET);
+                pointList.addPoint(firstpoint.x, firstpoint.y + OFFSET);
 
-                pointList.addPoint(lastpoint.x, lastpoint.y + 3 * OFFSET);
+                pointList.addPoint(lastpoint.x, firstpoint.y + OFFSET);
                 pointList.addPoint(lastpoint);
                 alreadyHandle = true;
-            } else if (sourceBounds.getBottomRight().x == targetBounds.getTopLeft().x) {
-                pointList.addPoint(firstpoint);
-                pointList.addPoint(firstpoint.x + 3 * OFFSET, firstpoint.y);
-
-                pointList.addPoint(firstpoint.x + 3 * OFFSET, lastpoint.y + OFFSET);
-                pointList.addPoint(lastpoint.x, lastpoint.y + OFFSET);
-                pointList.addPoint(lastpoint);
-                alreadyHandle = true;
-            } else if (sourceBounds.x >= targetBounds.x) {
-                firstpoint = new Point(sourceBounds.getCenter().x + sourceBounds.width / 2, sourceBounds.getCenter().y);
-                pointList.addPoint(firstpoint);
-                pointList.addPoint(firstpoint.x + OFFSET, firstpoint.y);
-                if (targetBounds.getTopRight().x == sourceBounds.getBottomLeft().x) {
-                    if (sourceBounds.y > targetBounds.y) {
-                        pointList.addPoint(firstpoint.x + OFFSET, firstpoint.y - 2 * OFFSET);
-                        pointList.addPoint(lastpoint.x, firstpoint.y - 2 * OFFSET);
-                    } else {
-                        pointList.addPoint(firstpoint.x + OFFSET, lastpoint.y + OFFSET);
-                        pointList.addPoint(lastpoint.x, lastpoint.y + OFFSET);
-                    }
-                } else {
-                    if (sourceBounds.y < targetBounds.y) {
-                        pointList.addPoint(firstpoint.x + OFFSET, lastpoint.y + OFFSET);
-                        pointList.addPoint(lastpoint.x, lastpoint.y + OFFSET);
-                    } else {
-                        pointList.addPoint(firstpoint.x + OFFSET, (sourceBounds.getCenter().y + targetBounds.getCenter().y) / 2);
-                        pointList.addPoint(lastpoint.x, (sourceBounds.getCenter().y + targetBounds.getCenter().y) / 2);
-                    }
-                }
-                pointList.addPoint(lastpoint);
-                alreadyHandle = true;
-            } else if (sourceBounds.y < targetBounds.y) {
-                if ((targetBounds.getTopRight().y == sourceBounds.getBottomLeft().y)) {
-                    ((ConnectionFigure) conn).setRoundedBendpointsRadius(16);
-                }
-                firstpoint = new Point(sourceBounds.getCenter().x + sourceBounds.width / 2, sourceBounds.getCenter().y);
-                pointList.addPoint(firstpoint);
-                pointList.addPoint((sourceBounds.getCenter().x + targetBounds.getCenter().x) / 2, firstpoint.y);
-
-                pointList.addPoint((sourceBounds.getCenter().x + targetBounds.getCenter().x) / 2, lastpoint.y + OFFSET);
-                pointList.addPoint(lastpoint.x, lastpoint.y + OFFSET);
-                pointList.addPoint(lastpoint);
-                alreadyHandle = true;
+            } else if (Math.abs(sourceBounds.x - targetBounds.x) == 4 * OFFSET) {
+                ((ConnectionFigure) conn).setRoundedBendpointsRadius(16);
             }
         }
         if (alreadyHandle && pointList.size() > 0) {
