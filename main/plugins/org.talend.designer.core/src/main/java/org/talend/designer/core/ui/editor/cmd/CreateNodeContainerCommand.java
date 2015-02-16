@@ -26,7 +26,10 @@ import org.talend.core.ui.process.IGraphicalNode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
+import org.talend.designer.core.ui.editor.palette.TalendPaletteViewer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 
@@ -84,6 +87,9 @@ public class CreateNodeContainerCommand extends CreateCommand {
         if (this.location != null) {
             this.nodeContainer.getNode().setLocation(this.location);
         }
+
+        updatePaletteRecentlyUsedList();
+
         AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
                 .getComponent().getPluginExtension());
         IElementParameter ep = nodeContainer.getNode().getElementParameter(EParameterName.UNIQUE_NAME.getName());
@@ -114,6 +120,25 @@ public class CreateNodeContainerCommand extends CreateCommand {
                     MessageDialog.OK, new String[] { "OK" }, 0);
             warningMessageDialog.open();
 
+        }
+    }
+
+    /**
+     * DOC cmeng Comment method "updatePaletteRecentlyUsedList".
+     */
+    protected void updatePaletteRecentlyUsedList() {
+        if (this.process == null) {
+            return;
+        }
+        Object editor = this.process.getEditor();
+        if (editor instanceof AbstractMultiPageTalendEditor) {
+            AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) editor).getTalendEditor();
+            if (talendEditor != null) {
+                TalendPaletteViewer talendPaletteViewer = talendEditor.getTalendPaletteViewer();
+                if (talendPaletteViewer != null) {
+                    talendPaletteViewer.addRecentlyUsedComponent(this.nodeContainer.getNode().getComponent());
+                }
+            }
         }
     }
 

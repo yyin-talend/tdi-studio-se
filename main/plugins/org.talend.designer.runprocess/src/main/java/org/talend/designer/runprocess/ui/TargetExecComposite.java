@@ -31,6 +31,7 @@ import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.runprocess.RunProcessContext;
@@ -57,6 +58,8 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      */
     public TargetExecComposite(Composite parent, int style) {
         super(parent, style);
+        // CSS
+        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
         // TODO Auto-generated constructor stub
         setExpandHorizontal(true);
         setExpandVertical(true);
@@ -121,6 +124,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getComposite()
      */
+    @Override
     public Composite getComposite() {
         // TODO Auto-generated method stub
         return null;
@@ -131,6 +135,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getCurRowSize()
      */
+    @Override
     public int getCurRowSize() {
         // TODO Auto-generated method stub
         return 0;
@@ -141,6 +146,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getElement()
      */
+    @Override
     public Element getElement() {
         // TODO Auto-generated method stub
         return null;
@@ -151,6 +157,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getHashCurControls()
      */
+    @Override
     public BidiMap getHashCurControls() {
         // TODO Auto-generated method stub
         return null;
@@ -161,6 +168,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getPart()
      */
+    @Override
     public IMultiPageTalendEditor getPart() {
         // TODO Auto-generated method stub
         return null;
@@ -172,6 +180,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * @seeorg.talend.core.properties.tab.IDynamicProperty#getRepositoryAliasName(org.talend.core.model.properties.
      * ConnectionItem)
      */
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         // TODO Auto-generated method stub
         return null;
@@ -213,6 +222,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getSection()
      */
+    @Override
     public EComponentCategory getSection() {
         // TODO Auto-generated method stub
         return null;
@@ -223,6 +233,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbSchemaMap() {
         // TODO Auto-generated method stub
         return null;
@@ -233,6 +244,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbTypeMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbTypeMap() {
         // TODO Auto-generated method stub
         return null;
@@ -243,6 +255,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#refresh()
      */
+    @Override
     public void refresh() {
         // TODO Auto-generated method stub
         if (!isDisposed()) {
@@ -255,6 +268,7 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#setCurRowSize(int)
      */
+    @Override
     public void setCurRowSize(int i) {
         // TODO Auto-generated method stub
 

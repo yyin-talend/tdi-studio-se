@@ -34,11 +34,13 @@ import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeFigure;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
@@ -72,7 +74,9 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
     @Override
     protected void unregisterVisuals() {
         super.unregisterVisuals();
+
         ((ConnectionFigure) getFigure()).disposeColors();
+        ((ConnectionFigure) getFigure()).disposeResource();
     }
 
     /*
@@ -179,6 +183,13 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         IConnection conn = (IConnection) getModel();
         ConnectionFigure connection = new ConnectionFigure(conn, conn.getSourceNodeConnector().getConnectionProperty(
                 conn.getLineStyle()), conn.getSource());
+
+        if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            connection.setLineWidth(2);
+            connection.setConnectionRouter(new TalendBorderItemRectilinearRouter());
+        } else {
+            connection.setLineWidth(1);
+        }
 
         if (((Connection) getModel()).isActivate()) {
             connection.setAlpha(-1);

@@ -39,6 +39,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
+import org.talend.designer.core.ui.editor.connections.DummyConnectionFigure;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.ResourceDisposeUtil;
 
@@ -59,7 +60,9 @@ public class NodeFigure extends Figure {
 
     private final NodeBorder lineBorder = new NodeBorder();
 
-    private Map<ConnectionFigure, ConnectionFigure> sourceDummyMap;
+    private Map<ConnectionFigure, DummyConnectionFigure> sourceDummyMap;
+
+    private Map<ConnectionFigure, DummyConnectionFigure> targetDummyMap;
 
     private boolean dummy;
 
@@ -67,7 +70,7 @@ public class NodeFigure extends Figure {
 
     private ConnectionFigure targetConnection;
 
-    private ConnectionFigure targetDummy;
+    private DummyConnectionFigure targetDummy;
 
     private List<ConnectionFigure> newSourceConnections = new ArrayList<ConnectionFigure>();
 
@@ -93,7 +96,8 @@ public class NodeFigure extends Figure {
 
         INodeConnector mainNodeConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
         if (mainNodeConnector != null) {
-            sourceDummyMap = new HashMap<ConnectionFigure, ConnectionFigure>();
+            sourceDummyMap = new HashMap<ConnectionFigure, DummyConnectionFigure>();
+            targetDummyMap = new HashMap<ConnectionFigure, DummyConnectionFigure>();
         }
         this.setSize(node.getSize());
         this.setOpaque(false);
@@ -112,13 +116,12 @@ public class NodeFigure extends Figure {
     }
 
     private ConnectionFigure updateSource(ConnectionFigure curConn) {
-        ConnectionFigure connection = sourceDummyMap.get(curConn);
+        DummyConnectionFigure connection = sourceDummyMap.get(curConn);
         if (curConn.getTargetAnchor() == null || curConn.getSourceAnchor() == null) {
             connection.setVisible(false);
             return curConn;
         }
-        Point figCenter = fig.getBounds().getCenter();
-
+        Point figCenter = new Rectangle(this.node.getLocation(), this.node.getSize()).getCenter();
         curConn.getConnectionRouter().route(curConn);
         Point endPoint = curConn.getStart();
         if (!figCenter.equals(connection.getStart())) {
@@ -135,7 +138,7 @@ public class NodeFigure extends Figure {
         if (targetConnection == null) {
             return;
         }
-        Point figCenter = fig.getBounds().getCenter();
+        Point figCenter = new Rectangle(this.node.getLocation(), this.node.getSize()).getCenter();
         if (targetConnection.getTargetAnchor() == null) {
             targetDummy.setVisible(false);
         } else {
@@ -227,12 +230,12 @@ public class NodeFigure extends Figure {
         dummy = value;
         if (sourceDummyMap != null) {
             if (dummy) {
-                for (ConnectionFigure connection : sourceDummyMap.values()) {
+                for (DummyConnectionFigure connection : sourceDummyMap.values()) {
                     connection.setAlpha(255);
                     connection.setVisible(true);
                 }
             } else {
-                for (ConnectionFigure connection : sourceDummyMap.values()) {
+                for (DummyConnectionFigure connection : sourceDummyMap.values()) {
                     connection.setVisible(false);
                 }
             }
@@ -306,14 +309,15 @@ public class NodeFigure extends Figure {
      * 
      * @param startConnection the startConnection to set
      */
-    ConnectionFigure connection = null;
+    DummyConnectionFigure connection = null;
 
     public void addSourceConnection(ConnectionFigure sourceConnection) {
         if (!sourceDummyMap.keySet().contains(sourceConnection)) {
             if (connection != null) {
                 connection.disposeColors();
             }
-            connection = new ConnectionFigure(sourceConnection.getConnection(), sourceConnection.getConnectionProperty(), node);
+            connection = new DummyConnectionFigure(sourceConnection.getConnection(), sourceConnection.getConnectionProperty(),
+                    node);
             connection.setTargetDecoration(null);
             add(connection);
             if (dummy) {
@@ -333,28 +337,38 @@ public class NodeFigure extends Figure {
      * @param endConnection the endConnection to set
      */
     public void setTargetConnection(ConnectionFigure targetConnection) {
-        if (targetConnection != null && targetConnection.getSourceAnchor() != null) {
-            targetConnection.getSourceAnchor().removeAnchorListener(targetListener);
-        }
-        this.targetConnection = targetConnection;
-        if (connection != null) {
-            connection.disposeColors();
-        }
-        connection = new ConnectionFigure(targetConnection.getConnection(), targetConnection.getConnectionProperty(), node);
-        connection.setTargetDecoration(null);
-        add(connection);
-        if (dummy) {
-            connection.setAlpha(255);
-            connection.setVisible(true);
-        } else {
-            connection.setVisible(false);
-        }
-        targetDummy = connection;
+        if (!targetDummyMap.keySet().contains(targetConnection)) {
+            if (targetConnection != null && targetConnection.getSourceAnchor() != null) {
+                targetConnection.getSourceAnchor().removeAnchorListener(targetListener);
+            }
+            if (this.targetConnection == null) {
+                this.targetConnection = targetConnection;
+            } else if (targetConnection.getConnection().getLineStyle() == EConnectionType.FLOW_MAIN) {
+                this.targetConnection = targetConnection;
+            } else {
+                return;
+            }
 
-        if (targetConnection.getSourceAnchor() != null && targetConnection.getSourceAnchor().getOwner() != null) {
-            targetConnection.getSourceAnchor().addAnchorListener(targetListener);
-        }
+            if (connection != null) {
+                connection.disposeColors();
+            }
+            connection = new DummyConnectionFigure(targetConnection.getConnection(), targetConnection.getConnectionProperty(),
+                    node);
+            connection.setTargetDecoration(null);
+            add(connection);
+            if (dummy) {
+                connection.setAlpha(255);
+                connection.setVisible(true);
+            } else {
+                connection.setVisible(false);
+            }
+            targetDummy = connection;
 
+            if (targetConnection.getSourceAnchor() != null && targetConnection.getSourceAnchor().getOwner() != null) {
+                targetConnection.getSourceAnchor().addAnchorListener(targetListener);
+            }
+            targetDummyMap.put(targetConnection, targetDummy);
+        }
     }
 
     public void removeSourceConnection(ConnectionFigure connectionFigure) {
@@ -371,7 +385,11 @@ public class NodeFigure extends Figure {
         if (targetConnection != null && targetConnection.getSourceAnchor() != null
                 && targetConnection.getSourceAnchor().getOwner() != null) {
             targetConnection.getSourceAnchor().removeAnchorListener(targetListener);
-            targetConnection = null;
+            if (targetConnection != null
+                    && connectionFigure.getConnection().getUniqueName().equals(targetConnection.getConnection().getUniqueName())) {
+                targetConnection = null;
+                targetDummyMap.remove(targetConnection);
+            }
         }
     }
 
@@ -392,5 +410,4 @@ public class NodeFigure extends Figure {
     public ImageFigure getImageFigure() {
         return fig;
     }
-
 }

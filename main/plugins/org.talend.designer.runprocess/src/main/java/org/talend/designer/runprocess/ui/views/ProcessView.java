@@ -383,6 +383,8 @@ public class ProcessView extends ViewPart {
             dc = processComposite;
         } else if (category == EComponentCategory.DEBUGRUN) {
             debugTisProcessComposite = this.debugViewHelper.getDebugComposite(parent);
+            // CSS
+            CoreUIPlugin.setCSSClass(debugTisProcessComposite, debugTisProcessComposite.getClass().getSimpleName());
             dc = debugTisProcessComposite;
         } else if (category == EComponentCategory.ADVANCESETTING) {
             advanceComposite = new AdvanceSettingComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
@@ -396,6 +398,8 @@ public class ProcessView extends ViewPart {
                 dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                         (Element) processContext.getProcess(), true, Display.getCurrent().getSystemColor(
                                 SWT.COLOR_WIDGET_BACKGROUND));
+                // CSS
+                CoreUIPlugin.setCSSClass(dc, dc.getClass().getSimpleName());
             } else {
                 dc = null;
             }
@@ -483,9 +487,6 @@ public class ProcessView extends ViewPart {
             }
             if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_STORM.getName())) {
                 categories = (EComponentCategory[]) ArrayUtils.add(categories, 1, EComponentCategory.STORM_JOB_CONFIG);
-            }
-            if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())) {
-                categories = (EComponentCategory[]) ArrayUtils.add(categories, 1, EComponentCategory.SPARK_JOB_CONFIG);
             }
         }
         return categories;

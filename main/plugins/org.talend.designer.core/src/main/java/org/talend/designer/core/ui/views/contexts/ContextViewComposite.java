@@ -19,6 +19,7 @@ import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.context.ContextComposite;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -40,6 +41,8 @@ public class ContextViewComposite extends ContextComposite {
      */
     public ContextViewComposite(Composite parent, ContextsView contextView) {
         super(parent, false);
+        // CSS
+        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
     }
 
     @Override

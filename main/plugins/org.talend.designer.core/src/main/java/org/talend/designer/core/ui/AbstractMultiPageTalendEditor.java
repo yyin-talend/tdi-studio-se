@@ -133,6 +133,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.services.ICreateXtextProcessService;
 import org.talend.core.services.IUIRefresher;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.branding.IBrandingService;
@@ -772,6 +773,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     }
 
+    protected void setCSSStylingClass() {
+        Composite container = getContainer();
+        if (container instanceof CTabFolder) {
+            CoreUIPlugin.setCSSClass(container, "org-talend-rcp-abstractMultiPageEditor-footer"); //$NON-NLS-1$
+        }
+    }
+
     protected void createPage0() {
         try {
             int index = addPage(designerEditor, getEditorInput());
@@ -781,6 +789,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
+        setCSSStylingClass();
     }
 
     /**

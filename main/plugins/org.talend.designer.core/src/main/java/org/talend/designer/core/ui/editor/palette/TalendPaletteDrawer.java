@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.palette;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.talend.designer.core.IPaletteFilter;
+import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 
 /**
  * 
@@ -30,7 +31,12 @@ public class TalendPaletteDrawer extends PaletteDrawer implements IPaletteFilter
      * 
      * @return the filtered
      */
+    @Override
     public boolean isFiltered() {
+        String label = this.getLabel();
+        if (TalendEditorPaletteFactory.FAVORITES.equals(label) || TalendEditorPaletteFactory.RECENTLY_USED.equals(label)) {
+            return false;
+        }
         return this.filtered;
     }
 
@@ -39,6 +45,7 @@ public class TalendPaletteDrawer extends PaletteDrawer implements IPaletteFilter
      * 
      * @param filtered the filtered to set
      */
+    @Override
     public void setFiltered(boolean filtered) {
         this.filtered = filtered;
         PaletteContainer parentContainer = getParent();
@@ -57,10 +64,12 @@ public class TalendPaletteDrawer extends PaletteDrawer implements IPaletteFilter
         return true;
     }
 
+    @Override
     public String getOriginalName() {
         return this.originalName;
     }
 
+    @Override
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
     }

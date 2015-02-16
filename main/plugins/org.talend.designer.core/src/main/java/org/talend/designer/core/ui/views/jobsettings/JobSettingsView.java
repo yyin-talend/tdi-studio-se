@@ -49,6 +49,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.services.ISVNProviderService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.properties.tab.HorizontalTabFactory;
@@ -245,11 +246,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 dynamicComposite = new MultipleThreadDynamicComposite(parent, style, category, (Element) data, true);
             } else {
                 dynamicComposite = new ExtraComposite(parent, style, category, (Element) data, true);
+                CoreUIPlugin.setCSSId(dynamicComposite.getComposite(),
+                        "org-talend-designer-core-ui-views-jobsettings-JobSettingsView-ExtraComposite");//$NON-NLS-1$
             }
 
         } else if (EComponentCategory.STATSANDLOGS.equals(category)) {
             dynamicComposite = new StatsAndLogsComposite(parent, style, category, (Element) data);
-
+            CoreUIPlugin.setCSSId(dynamicComposite.getComposite(),
+                    "org-talend-designer-core-ui-views-jobsettings-JobSettingsView-StatsAndLogsComposite");//$NON-NLS-1$
         } else if (EComponentCategory.CONTEXT.equals(category)) {
             // TODO
             // dynamicComposite = new ContextDynamicComposite(parent, style, category, element);

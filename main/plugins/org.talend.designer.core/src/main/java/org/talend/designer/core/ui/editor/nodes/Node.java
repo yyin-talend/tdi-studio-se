@@ -68,12 +68,14 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
+import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
@@ -2002,6 +2004,11 @@ public class Node extends Element implements IGraphicalNode {
                         || connection.getSource().isDummy()) {
                     connection.setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
                 }
+                if (!connection.getTarget().isActivate() && !activate) {
+                    if (connection instanceof IPerformance) {
+                        ((IPerformance) connection).setPerformanceData(""); //$NON-NLS-1$
+                    }
+                }
             }
             for (Connection connection : connectionsInputs) {
                 if (connection.getSource().isActivate() || connection.getSource().isDummy()) {
@@ -2018,6 +2025,17 @@ public class Node extends Element implements IGraphicalNode {
                     if (!hasActivatedOutput) {
                         connection.getSource().setPropertyValue(EParameterName.DUMMY.getName(), false);
                         connection.getSource().setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+                    }
+                    if (connection instanceof IPerformance) {
+                        ((IPerformance) connection).setPerformanceData(""); //$NON-NLS-1$
+                    }
+                }
+            }
+        }else{
+            for (Connection connection : connectionsInputs) {
+                if (!connection.getSource().isActivate() && !activate) {
+                    if (connection instanceof IPerformance) {
+                        ((IPerformance) connection).setPerformanceData(""); //$NON-NLS-1$
                     }
                 }
             }
@@ -2514,7 +2532,7 @@ public class Node extends Element implements IGraphicalNode {
                 } else if ("DQRULES_LIST".equals(param.getName()) || "PATTERN_LIST".equals(param.getName())) {
                     // MOD for TDI-19063 Do not check value for these 2 parameters.
                 } else {
-                    if (!ArrayUtils.contains(param.getListItemsValue(), param.getValue())) {
+                    if (!ArrayUtils.contains(param.getListItemsValue(), param.getValue()) && !param.isDynamicSettings()) {
                         Problems.add(ProblemStatus.ERROR, this, "Unknown value in the list [" + param.getDisplayName()
                                 + "] / Value set not supported by the component");
                     }
@@ -2724,6 +2742,15 @@ public class Node extends Element implements IGraphicalNode {
                                 String errorMessage = Messages.getString("Node.parameterNotExist", param.getDisplayName(), value); //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
+                        }
+                    }
+                    break;
+                case COMPONENT_LIST:
+                    if (param != null) {
+                        String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                        INode useNode = getUseExistedConnetion(this);
+                        if (useNode != null && !useNode.isActivate()) {
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     }
                     break;
@@ -3570,7 +3597,7 @@ public class Node extends Element implements IGraphicalNode {
                                         "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
                                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
-                        } else if (connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() == 0) {
+                        } else if (connector != null && connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() == 0) {
                             if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)) {
                                 schemaSynchronized = false;
                                 String errorMessage = Messages.getString(
@@ -4822,5 +4849,35 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
+    }
+
+    public INode getUseExistedConnetion(IElement currentElem) {
+        IElementParameter param = currentElem.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+        if (param != null) {
+            Object value = param.getValue();
+            boolean used = false;
+            if (value instanceof Boolean) {
+                used = (Boolean) value;
+            } else if (value instanceof String) {
+                used = Boolean.parseBoolean((String) value);
+            }
+            if (used) {
+                IElementParameter elementParameter = currentElem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
+                if (elementParameter != null && elementParameter.getName().equals("CONNECTION")) { //$NON-NLS-1$
+                    String connNodeName = (String) elementParameter.getValue();
+                    if (connNodeName != null && currentElem instanceof INode) {
+                        IProcess process = ((INode) currentElem).getProcess();
+                        if (process != null) {
+                            for (INode node : process.getGraphicalNodes()) {
+                                if (connNodeName.equals(node.getUniqueName())) {
+                                    return node;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

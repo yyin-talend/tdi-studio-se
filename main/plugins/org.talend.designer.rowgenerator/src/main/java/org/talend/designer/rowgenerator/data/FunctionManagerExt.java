@@ -91,10 +91,16 @@ public class FunctionManagerExt extends FunctionManager {
     }
 
     public String[] getFunctionArrays(List<Function> functions) {
-        String[] arrayTalendFunctions2 = new String[functions.size()];
+        List<String> listTalendFunctions = new ArrayList<String>();
         for (int i = 0; i < functions.size(); i++) {
-            arrayTalendFunctions2[i] = getFunctionLable(functions.get(i));
+            String functionLable = getFunctionLable(functions.get(i));
+            if (!listTalendFunctions.contains(functionLable)) {
+                listTalendFunctions.add(functionLable);
+            }
         }
+        String[] arrayTalendFunctions2 = new String[listTalendFunctions.size()];
+        listTalendFunctions.toArray(arrayTalendFunctions2);
+
         Arrays.sort(arrayTalendFunctions2, new Comparator<String>() {
 
             @Override
@@ -285,8 +291,24 @@ public class FunctionManagerExt extends FunctionManager {
     }
 
     public static String getFunctionLable(Function function) {
-        return function.getClassName() == null ? function.getName()
-                : (function.getClassName() + FunctionManager.JAVA_METHOD_SEPARATED) + function.getName();
+        StringBuffer sb = new StringBuffer();
+        sb.append(function.getClassName() == null ? function.getName()
+                : (function.getClassName() + FunctionManager.JAVA_METHOD_SEPARATED) + function.getName());
+        if (!PURE_PERL_NAME.equals(function.getName())) {
+            sb.append(FunctionManager.FUN_PREFIX);
+            int i = 0;
+            for (Object objectParameter : function.getParameters()) {
+                if (objectParameter instanceof Parameter) {
+                    sb.append(((Parameter) objectParameter).getType());
+                }
+                i++;
+                if (i != function.getParameters().size()) {
+                    sb.append(FunctionManager.FUN_PARAM_SEPARATED);
+                }
+            }
+            sb.append(FunctionManager.FUN_SUFFIX);
+        }
+        return sb.toString();
     }
 
     private Function getFunnctionByLabel(List<Function> functions, String value) {

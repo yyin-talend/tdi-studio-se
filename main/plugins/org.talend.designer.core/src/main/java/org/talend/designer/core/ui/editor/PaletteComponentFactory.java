@@ -35,6 +35,7 @@ public class PaletteComponentFactory implements CreationFactory {
      * 
      * @see org.eclipse.gef.requests.CreationFactory#getNewObject()
      */
+    @Override
     public Object getNewObject() {
         return new Node(component);
     }
@@ -44,6 +45,7 @@ public class PaletteComponentFactory implements CreationFactory {
      * 
      * @see org.eclipse.gef.requests.CreationFactory#getObjectType()
      */
+    @Override
     public Object getObjectType() {
         return null;
     }
@@ -52,4 +54,7 @@ public class PaletteComponentFactory implements CreationFactory {
         return component.getOriginalFamilyName();
     }
 
+    public IComponent getComponent() {
+        return component;
+    }
 }

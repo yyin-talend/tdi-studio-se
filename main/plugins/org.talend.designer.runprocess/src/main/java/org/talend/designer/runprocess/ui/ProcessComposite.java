@@ -94,6 +94,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
@@ -228,6 +229,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         initGraphicComponents(parent);
         processManager = ProcessManager.getInstance();
         this.composite = parent;
+        // CSS
+        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
     }
 
     /**

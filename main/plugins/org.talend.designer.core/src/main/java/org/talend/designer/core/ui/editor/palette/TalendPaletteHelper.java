@@ -27,8 +27,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.TalendPartAdapter2;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.repository.ui.actions.ShowFavoriteAction;
-import org.talend.repository.ui.actions.ShowStandardAction;
+import org.talend.repository.ui.actions.OpenPaletteFilterAction;
 
 /**
  * ggu class global comment. Detailled comment
@@ -41,6 +40,7 @@ public final class TalendPaletteHelper {
         if (talendPartListener == null) {
             talendPartListener = new TalendPartAdapter2() {
 
+                @Override
                 public void partActivated(IWorkbenchPartReference partRef) {
                     checkAndInitToolBar();
                 }
@@ -77,15 +77,19 @@ public final class TalendPaletteHelper {
             // find existing or not, and add it.
             IActionBars actionBars = paletteViewPart.getViewSite().getActionBars();
 
-            ShowStandardAction showStandardAction = ShowStandardAction.getInstance();
-            updatePaletteActions(actionBars, showStandardAction, isTalendEditor);
+            // ShowStandardAction showStandardAction = ShowStandardAction.getInstance();
+            // updatePaletteActions(actionBars, showStandardAction, isTalendEditor);
+            //
+            // ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
+            // updatePaletteActions(actionBars, showFavoriteAction, isTalendEditor);
+            //
+            // if (ShowFavoriteAction.state) {
+            // showStandardAction.doSetEnable();
+            // }
 
-            ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
-            updatePaletteActions(actionBars, showFavoriteAction, isTalendEditor);
+            OpenPaletteFilterAction openPaletteFilterAction = OpenPaletteFilterAction.getInstance();
+            updatePaletteActions(actionBars, openPaletteFilterAction, isTalendEditor);
 
-            if (ShowFavoriteAction.state) {
-                showStandardAction.doSetEnable();
-            }
             actionBars.updateActionBars();
         }
     }

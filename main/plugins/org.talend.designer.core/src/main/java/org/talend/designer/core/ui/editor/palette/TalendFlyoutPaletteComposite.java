@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.gef.ui.palette.PaletteMessages;
-import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -34,15 +33,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPage;
-import org.talend.repository.ui.actions.ShowFavoriteAction;
-import org.talend.repository.ui.actions.ShowStandardAction;
+import org.talend.core.ui.CoreUIPlugin;
+import org.talend.repository.ui.actions.OpenPaletteFilterAction;
+import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
+import org.talend.themes.core.elements.widgets.ITalendPaletteWidget;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
+public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite implements ITalendPaletteWidget {
 
     private static Logger log = Logger.getLogger(TalendFlyoutPaletteComposite.class);
+
+    protected TalendPaletteCSSStyleSetting cssTtyleSetting;
 
     private static Field paletteContainerField;
 
@@ -58,13 +61,13 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
 
             Class<?>[] classes = FlyoutPaletteComposite.class.getDeclaredClasses();
             if (classes != null) {
-                for (int i = 0; i < classes.length; i++) {
-                    if (classes[i].getSimpleName().equals("PaletteComposite")) { //$NON-NLS-1$
-                        paletteCompositeClass = classes[i];
-                    } else if (classes[i].getSimpleName().equals("ChangeDockAction")) { //$NON-NLS-1$
-                        changeDockActionClass = classes[i];
-                    } else if (classes[i].getSimpleName().equals("ResizeAction")) { //$NON-NLS-1$
-                        resizeActionClass = classes[i];
+                for (Class<?> classe : classes) {
+                    if (classe.getSimpleName().equals("PaletteComposite")) { //$NON-NLS-1$
+                        paletteCompositeClass = classe;
+                    } else if (classe.getSimpleName().equals("ChangeDockAction")) { //$NON-NLS-1$
+                        changeDockActionClass = classe;
+                    } else if (classe.getSimpleName().equals("ResizeAction")) { //$NON-NLS-1$
+                        resizeActionClass = classe;
                     }
                 }
             }
@@ -84,9 +87,13 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
      * @param pvProvider
      * @param preferences
      */
-    public TalendFlyoutPaletteComposite(Composite parent, int style, IWorkbenchPage page, PaletteViewerProvider pvProvider,
+    public TalendFlyoutPaletteComposite(Composite parent, int style, IWorkbenchPage page, TalendPaletteViewerProvider pvProvider,
             FlyoutPreferences preferences) {
         super(parent, style, page, pvProvider, preferences);
+
+        this.cssTtyleSetting = pvProvider.getCSSStyleSetting();
+        CoreUIPlugin.setCSSClass(this, "TalendPaletteCls");
+        CoreUIPlugin.setCSSId(this, "TalendPaletteID");
 
         // FIXME ggu
         // use the following codes to add two menu on the palette in Method init of class TitleCanvas
@@ -156,26 +163,30 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
         manager.add(mgr);
         mgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager menuMgr) {
                 IContributionItem[] items = menuMgr.getItems();
-                for (int i = 0; i < items.length; i++) {
-                    ((ActionContributionItem) items[i]).update();
+                for (IContributionItem item : items) {
+                    ((ActionContributionItem) item).update();
                 }
             }
         });
 
         //
-        ShowStandardAction showStandardAction = ShowStandardAction.getInstance();
-        ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
-        manager.add(showStandardAction);
-        manager.add(showFavoriteAction);
-        if (ShowFavoriteAction.state) {
-            showStandardAction.doSetEnable();
-        }
+        // ShowStandardAction showStandardAction = ShowStandardAction.getInstance();
+        // ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
+        // manager.add(showStandardAction);
+        // manager.add(showFavoriteAction);
+        // if (ShowFavoriteAction.state) {
+        // showStandardAction.doSetEnable();
+        // }
+        OpenPaletteFilterAction openPaletteFilterAction = OpenPaletteFilterAction.getInstance();
+        manager.add(openPaletteFilterAction);
         manager.add(mgr);
 
         addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 manager.dispose();
 
@@ -194,6 +205,16 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
         log.error("Talend Editor hook failed", e);
         throw new RuntimeException(e);
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.themes.core.elements.widgets.ITalendPaletteWidget#getCSSStyleSetting()
+     */
+    @Override
+    public TalendPaletteCSSStyleSetting getCSSStyleSetting() {
+        return cssTtyleSetting;
     }
 
 }

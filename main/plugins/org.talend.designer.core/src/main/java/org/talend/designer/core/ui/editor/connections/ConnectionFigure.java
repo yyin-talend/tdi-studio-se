@@ -19,7 +19,11 @@ import java.util.Set;
 
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
-import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.Translatable;
+import org.eclipse.gmf.runtime.draw2d.ui.figures.PolylineConnectionEx;
+import org.eclipse.gmf.runtime.draw2d.ui.mapmode.IMapMode;
 import org.eclipse.swt.graphics.Color;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -30,9 +34,11 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.ParallelExecutionUtils;
 import org.talend.designer.core.utils.ResourceDisposeUtil;
 
@@ -42,7 +48,7 @@ import org.talend.designer.core.utils.ResourceDisposeUtil;
  * $Id$
  * 
  */
-public class ConnectionFigure extends PolylineConnection {
+public class ConnectionFigure extends PolylineConnectionEx implements IMapMode {
 
     private IConnectionProperty connectionProperty;
 
@@ -76,9 +82,9 @@ public class ConnectionFigure extends PolylineConnection {
     public ConnectionFigure(IConnection connection, IConnectionProperty connectionProperty, INode node) {
         linkedNode = node;
         this.connection = connection;
-        setTargetDecoration(new PolygonDecoration());
+        setDecoration();
+        this.setRoundedBendpointsRadius(32);
         setConnectionProperty(connectionProperty);
-
         if (PluginChecker.isAutoParalelPluginLoaded()) {
             addParallelFigure();
             // TDI-26611
@@ -86,6 +92,40 @@ public class ConnectionFigure extends PolylineConnection {
                 initFigureMap();
             }
         }
+    }
+
+    private void setDecoration() {
+        if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            this.setTargetDecoration(new PolygonDecoration());
+            this.setLineWidth(1);
+            return;
+        }
+        this.setLineWidth(2);
+        PointList template = new PointList();
+        PolygonDecoration targetDecoration = new DecorationFigure(this, false);
+        targetDecoration.setScale(1, 1);
+        template.addPoint(new Point(-11, -5.5));
+        template.addPoint(new Point(-2, -5.5));
+        template.addPoint(0, -1);
+        template.addPoint(0, 1);
+        template.addPoint(new Point(-2, 5.5));
+        template.addPoint(new Point(-11, 5.5));
+        targetDecoration.setTemplate(template);
+        setTargetDecoration(targetDecoration);
+
+        PolygonDecoration sourceDecoration = new DecorationFigure(this, true);
+        sourceDecoration.setScale(1, 1);
+        template = new PointList();
+
+        template.addPoint(new Point(0, 5.5));
+        template.addPoint(new Point(-9, 5.5));
+        template.addPoint(-11, 1);
+        template.addPoint(-11, -1);
+        template.addPoint(new Point(-9, -5.5));
+        template.addPoint(new Point(0, -5.5));
+
+        sourceDecoration.setTemplate(template);
+        setSourceDecoration(sourceDecoration);
     }
 
     private void initFigureMap() {
@@ -263,6 +303,15 @@ public class ConnectionFigure extends PolylineConnection {
         // ResourceDisposeUtil.disposeColor(getForegroundColor());
     }
 
+    public void disposeResource() {
+        if ((getSourceDecoration() != null) && (getSourceDecoration() instanceof DecorationFigure)) {
+            ((DecorationFigure) getSourceDecoration()).disposeResource();
+        }
+        if ((getTargetDecoration() != null) && (getTargetDecoration() instanceof DecorationFigure)) {
+            ((DecorationFigure) getTargetDecoration()).disposeResource();
+        }
+    }
+
     /**
      * Getter for connectionProperty.
      * 
@@ -279,6 +328,67 @@ public class ConnectionFigure extends PolylineConnection {
      */
     public IConnection getConnection() {
         return this.connection;
+    }
+
+    @Override
+    protected void outlineShape(Graphics g) {
+        super.outlineShape(g);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gmf.runtime.draw2d.ui.mapmode.IMapMode#LPtoDP(int)
+     */
+    @Override
+    public int LPtoDP(int logicalUnit) {
+        return logicalUnit;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gmf.runtime.draw2d.ui.mapmode.IMapMode#DPtoLP(int)
+     */
+    @Override
+    public int DPtoLP(int deviceUnit) {
+        return deviceUnit;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gmf.runtime.draw2d.ui.mapmode.IMapMode#LPtoDP(org.eclipse.draw2d.geometry.Translatable)
+     */
+    @Override
+    public Translatable LPtoDP(Translatable t) {
+        t.performScale(32.0);
+        return t;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gmf.runtime.draw2d.ui.mapmode.IMapMode#DPtoLP(org.eclipse.draw2d.geometry.Translatable)
+     */
+    @Override
+    public Translatable DPtoLP(Translatable t) {
+        t.performScale(32.0);
+        return t;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gmf.runtime.draw2d.ui.figures.PolylineConnectionEx#setLineWidth(int)
+     */
+    @Override
+    public void setLineWidth(int w) {
+        if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            super.setLineWidth(1);
+        } else {
+            super.setLineWidth(2);
+        }
     }
 
 }

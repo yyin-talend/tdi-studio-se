@@ -13,17 +13,22 @@
 package org.talend.designer.core.ui.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.CreationToolEntry;
 import org.eclipse.gef.palette.PaletteContainer;
@@ -31,6 +36,7 @@ import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
+import org.eclipse.gef.tools.CreationTool;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -49,6 +55,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
+import org.talend.designer.core.ui.editor.palette.TalendCombinedTemplateCreationEntry;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -71,6 +78,20 @@ public final class TalendEditorPaletteFactory {
     /** Preference ID used to persist the flyout palette's state. */
     public static final String PALETTE_STATE = "TalendEditorPaletteFactory.State"; //$NON-NLS-1$
 
+    public static final String FAVORITES = Messages.getString("TalendEditorPaletteFactory.palette.favorites"); //$NON-NLS-1$
+
+    public static final String RECENTLY_USED = Messages.getString("TalendEditorPaletteFactory.palette.recentlyUsed"); //$NON-NLS-1$
+
+    protected static final String FAVORITES_KEY = "Palette.Favorite.ComponentsList"; //$NON-NLS-1$
+
+    protected static final String FAVORITES_KEY_LIST_SEPERATOR = ","; //$NON-NLS-1$
+
+    protected static final String RECENTLY_USED_KEY = "Palette.RecentlyUsed.ComponentsList"; //$NON-NLS-1$
+
+    protected static final String RECENTLY_USED_LIST_SEPERATOR = ","; //$NON-NLS-1$
+
+    protected static final String RECENTLY_USED_COMPONENT_NAME_TIMESTEMP_SEPERATOR = ":"; //$NON-NLS-1$
+
     private static PaletteRoot palette;
 
     private static String filter;
@@ -86,15 +107,17 @@ public final class TalendEditorPaletteFactory {
         String name, longName;
         String family;
         String oraFamily;
-        LinkedList<CreationToolEntry> nodeList = new LinkedList<CreationToolEntry>();
+        List<CreationToolEntry> nodeList = new LinkedList<CreationToolEntry>();
         List<String> families = new ArrayList<String>();
         HashMap<String, String> familyMap = new HashMap<String, String>();
         CombinedTemplateCreationEntry component;
         Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
+        List<String> favoriteComponentNames = null;
         if (a == 0) {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
+            favoriteComponentNames = getFavoritesList();
         }
-        List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+        List<IComponent> componentList = new LinkedList<IComponent>(compFac.getComponents());
 
         String paletteType = ComponentCategory.CATEGORY_4_DI.getName();
         // Added by Marvin Wang on Jan. 10, 2012
@@ -108,15 +131,16 @@ public final class TalendEditorPaletteFactory {
 
             @Override
             public int compare(IComponent component1, IComponent component2) {
-                return component1.getName().compareTo(component2.getName());
+                return component1.getName().toLowerCase().compareTo(component2.getName().toLowerCase());
             }
 
         });
 
         Set<String> displayedFamilies = ComponentsSettingsHelper.getDisplayedFamilies(paletteType);
 
-        for (int i = 0; i < componentList.size(); i++) {
-            IComponent xmlComponent = componentList.get(i);
+        Iterator<IComponent> componentIter = componentList.iterator();
+        while (componentIter.hasNext()) {
+            IComponent xmlComponent = componentIter.next();
 
             if (xmlComponent.isTechnical()) {
                 continue;
@@ -141,13 +165,38 @@ public final class TalendEditorPaletteFactory {
         }
 
         Collections.sort(families);
+
+        List<String> recentlyUsedComponentNames = null;
+        List<RecentlyUsedComponent> recentlyUsedComponents = null;
         if (a == 0) {
+            // if a==1, then means hide folder mode
+            recentlyUsedComponents = new LinkedList<TalendEditorPaletteFactory.RecentlyUsedComponent>();
+            recentlyUsedComponentNames = getRecentlyUsedList(recentlyUsedComponents);
+            Collections.sort(recentlyUsedComponents, new Comparator<TalendEditorPaletteFactory.RecentlyUsedComponent>() {
+
+                @Override
+                public int compare(RecentlyUsedComponent arg0, RecentlyUsedComponent arg1) {
+                    return -1 * arg0.getTimestamp().compareTo(arg1.getTimestamp());
+                }
+            });
+
+            families.add(0, FAVORITES);
+            familyMap.put(FAVORITES, FAVORITES);
+
+            families.add(1, RECENTLY_USED);
+            familyMap.put(RECENTLY_USED, RECENTLY_USED);
+
             for (Object element : families) {
                 family = (String) element;
                 String oraFam = familyMap.get(family);
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
                     componentsDrawer = createComponentDrawer(ht, family);
+                    // if (TalendEditorPaletteFactory.FAVORITES.equals(family)) {
+                    // ((TalendPaletteViewer) componentsDrawer .getViewer()).setFavoritesEditPart(drawerEditPart);
+                    // } else if (TalendEditorPaletteFactory.RECENTLY_USED.equals(family)) {
+                    // ((TalendPaletteViewer) componentsDrawer.getViewer()).setRecentlyUsedEditPart(drawerEditPart);
+                    // }
                     if (componentsDrawer instanceof IPaletteFilter) {
                         ((IPaletteFilter) componentsDrawer).setOriginalName(oraFam);
                     }
@@ -159,8 +208,10 @@ public final class TalendEditorPaletteFactory {
         boolean noteAeeded = false;
         boolean needAddNote = true;
         boolean needToAdd = false;
-        for (int i = 0; i < componentList.size(); i++) {
-            IComponent xmlComponent = componentList.get(i);
+        Map<String, IComponent> recentlyUsedMap = new HashMap<String, IComponent>();
+        componentIter = componentList.iterator();
+        while (componentIter.hasNext()) {
+            IComponent xmlComponent = componentIter.next();
 
             if (xmlComponent.isTechnical()) {
                 continue;
@@ -195,7 +246,6 @@ public final class TalendEditorPaletteFactory {
                         // paGroup.add(noteCreationToolEntry);
                     }
                 }
-
                 noteAeeded = true;
             }
 
@@ -222,6 +272,22 @@ public final class TalendEditorPaletteFactory {
                     imageLarge = xmlComponent.getIcon32();
                 }
 
+                if (favoriteComponentNames != null && favoriteComponentNames.contains(xmlComponent.getName())) {
+                    componentsDrawer = ht.get(FAVORITES);
+                    if (componentsDrawer != null) {
+                        component = new TalendCombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                                xmlComponent), imageSmall, imageLarge);
+
+                        component.setDescription(longName);
+                        component.setParent(componentsDrawer);
+                        componentsDrawer.add(component);
+                    }
+                }
+
+                if (recentlyUsedComponentNames != null && recentlyUsedComponentNames.contains(name)) {
+                    recentlyUsedMap.put(name, xmlComponent);
+                }
+
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
@@ -229,7 +295,7 @@ public final class TalendEditorPaletteFactory {
                         continue;
                     }
 
-                    component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                    component = new TalendCombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
                             xmlComponent), imageSmall, imageLarge);
 
                     component.setDescription(longName);
@@ -249,8 +315,9 @@ public final class TalendEditorPaletteFactory {
                         // canAdd = false;
                         // }
                         // }
-                        for (int z = 0; z < nodeList.size(); z++) {
-                            if ((nodeList.get(z).getLabel()).equals(component.getLabel())) {
+                        Iterator<CreationToolEntry> iter = nodeList.iterator();
+                        while (iter.hasNext()) {
+                            if ((iter.next().getLabel()).equals(component.getLabel())) {
                                 canAdd = false;
                             }
                         }
@@ -264,8 +331,15 @@ public final class TalendEditorPaletteFactory {
                 }
             }
         }
+
+        if (a == 0) {
+            createRecentlyUsedEntryList(ht, recentlyUsedComponents, recentlyUsedMap);
+        }
+
         if (a == 1) {
-            for (CreationToolEntry entryCom : nodeList) {
+            Iterator<CreationToolEntry> iter = nodeList.iterator();
+            while (iter.hasNext()) {
+                CreationToolEntry entryCom = iter.next();
                 entryCom.setParent(paGroup);
                 paGroup.add(entryCom);
             }
@@ -273,12 +347,95 @@ public final class TalendEditorPaletteFactory {
         }
     }
 
+    public static final int RECENTLY_USED_LIMIT_SIZE = 12;
+
+    /**
+     * DOC cmeng Comment method "createRecentlyUsedEntry".
+     * 
+     * @param componentsDrawer
+     * @param ht
+     * @param recentlyUsedList
+     * @param recentlyUsedMap
+     * @return
+     */
+    protected static void createRecentlyUsedEntryList(Hashtable<String, PaletteDrawer> ht,
+            List<RecentlyUsedComponent> recentlyUsedList, Map<String, IComponent> recentlyUsedMap) {
+        String name;
+        String longName;
+        TalendCombinedTemplateCreationEntry component;
+        int i = 1;
+        for (RecentlyUsedComponent recentlyUsed : recentlyUsedList) {
+            if (RECENTLY_USED_LIMIT_SIZE < i) {
+                break;
+            }
+            IComponent recentlyUsedComponent = recentlyUsedMap.get(recentlyUsed.getName());
+            if (recentlyUsedComponent == null) {
+                continue;
+            }
+            ++i;
+            PaletteDrawer componentsDrawer = ht.get(RECENTLY_USED);
+            if (componentsDrawer != null) {
+                name = recentlyUsedComponent.getName();
+                longName = recentlyUsedComponent.getLongName();
+
+                ImageDescriptor imageSmall = recentlyUsedComponent.getIcon16();
+                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+                ImageDescriptor imageLarge;
+                final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+                if (string.equals("24")) { //$NON-NLS-1$
+                    imageLarge = recentlyUsedComponent.getIcon24();
+                } else {
+                    imageLarge = recentlyUsedComponent.getIcon32();
+                }
+                component = new TalendCombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                        recentlyUsedComponent), imageSmall, imageLarge);
+
+                component.setDescription(longName);
+                component.setParent(componentsDrawer);
+                component.setTimestemp(recentlyUsed.getTimestamp());
+                componentsDrawer.add(component);
+            }
+        }
+    }
+
+    public static TalendCombinedTemplateCreationEntry createEntryFrom(CombinedTemplateCreationEntry entry) {
+        String name = entry.getLabel();
+        IComponent component = ((PaletteComponentFactory) entry.getToolProperty(CreationTool.PROPERTY_CREATION_FACTORY))
+                .getComponent();
+        TalendCombinedTemplateCreationEntry newEntry = new TalendCombinedTemplateCreationEntry(name, name, Node.class,
+                new PaletteComponentFactory(component), entry.getSmallIcon(), entry.getLargeIcon());
+
+        newEntry.setDescription(entry.getDescription());
+        return newEntry;
+    }
+
+    public static TalendCombinedTemplateCreationEntry createEntryFrom(IComponent component) {
+        if (component == null) {
+            return null;
+        }
+        String name = component.getName();
+        ImageDescriptor imageSmall = component.getIcon16();
+        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+        ImageDescriptor imageLarge;
+        final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+        if (string.equals("24")) { //$NON-NLS-1$
+            imageLarge = component.getIcon24();
+        } else {
+            imageLarge = component.getIcon32();
+        }
+        TalendCombinedTemplateCreationEntry newEntry = new TalendCombinedTemplateCreationEntry(name, name, Node.class,
+                new PaletteComponentFactory(component), imageSmall, imageLarge);
+
+        newEntry.setDescription(component.getLongName());
+        return newEntry;
+    }
+
     /** Create the "Shapes" drawer. */
     private static void createComponentsDrawer(final IComponentsFactory compFac, boolean needHiddenComponent, boolean isFavorite,
             int a) {
 
         clearGroup();
-        LinkedList<CreationToolEntry> nodeList = new LinkedList<CreationToolEntry>();
+        List<CreationToolEntry> nodeList = new LinkedList<CreationToolEntry>();
         // } else if (a == 0) {
         PaletteDrawer componentsDrawer;
         String name, longName;
@@ -286,15 +443,17 @@ public final class TalendEditorPaletteFactory {
         String oraFamily;
         List<String> families = new ArrayList<String>();
         HashMap<String, String> familyMap = new HashMap<String, String>();
-        boolean favoriteFlag;
-        List listName = new ArrayList();
+        // boolean favoriteFlag;
+        // List listName = new ArrayList();
         CombinedTemplateCreationEntry component;
         Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
         paletteState = isFavorite;
+        List<String> favoriteComponentNames = null;
         if (a == 0) {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
+            favoriteComponentNames = getFavoritesList();
         }
-        List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+        List<IComponent> componentList = new LinkedList<IComponent>(compFac.getComponents());
 
         // Added by Marvin Wang on Jan. 10, 2012
         if (compFac.getComponentsHandler() != null) {
@@ -306,13 +465,14 @@ public final class TalendEditorPaletteFactory {
 
             @Override
             public int compare(IComponent component1, IComponent component2) {
-                return component1.getName().compareTo(component2.getName());
+                return component1.getName().toLowerCase().compareTo(component2.getName().toLowerCase());
             }
 
         });
 
-        for (int i = 0; i < componentList.size(); i++) {
-            IComponent xmlComponent = componentList.get(i);
+        Iterator<IComponent> componentIter = componentList.iterator();
+        while (componentIter.hasNext()) {
+            IComponent xmlComponent = componentIter.next();
 
             if (xmlComponent.isTechnical()) {
                 continue;
@@ -328,12 +488,14 @@ public final class TalendEditorPaletteFactory {
                     if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j])) {
                         continue;
                     }
-                    String key = null;
-                    key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
+                    // String key = null;
+                    // key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
 
                     if (a == 0) {
                         if (!oraStrings[j].equals("Misc")) {//$NON-NLS-1$
-                            if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
+                            if (isFavorite
+                                    && !(favoriteComponentNames != null && favoriteComponentNames
+                                            .contains(xmlComponent.getName()))) {
 
                                 continue;
                             }
@@ -347,7 +509,27 @@ public final class TalendEditorPaletteFactory {
         }
 
         Collections.sort(families);
+
+        List<String> recentlyUsedComponentNames = null;
+        List<RecentlyUsedComponent> recentlyUsedComponents = null;
         if (a == 0) {
+            // if a==1, then means hide folder mode
+            recentlyUsedComponents = new LinkedList<TalendEditorPaletteFactory.RecentlyUsedComponent>();
+            recentlyUsedComponentNames = getRecentlyUsedList(recentlyUsedComponents);
+            Collections.sort(recentlyUsedComponents, new Comparator<TalendEditorPaletteFactory.RecentlyUsedComponent>() {
+
+                @Override
+                public int compare(RecentlyUsedComponent arg0, RecentlyUsedComponent arg1) {
+                    return -1 * arg0.getTimestamp().compareTo(arg1.getTimestamp());
+                }
+            });
+
+            families.add(0, FAVORITES);
+            familyMap.put(FAVORITES, FAVORITES);
+
+            families.add(1, RECENTLY_USED);
+            familyMap.put(RECENTLY_USED, RECENTLY_USED);
+
             for (Object element : families) {
                 family = (String) element;
                 String oraFam = familyMap.get(family);
@@ -363,6 +545,7 @@ public final class TalendEditorPaletteFactory {
         boolean noteAeeded = false;
         boolean needAddNote = true;
         boolean needToAdd = false;
+        Map<String, IComponent> recentlyUsedMap = new HashMap<String, IComponent>();
 
         // For bug TDI-25745, to add "note" entry to Misc drawer for m/r job and common job editor. It should create
         // Misc drawer first if there is not the drawer in palette.
@@ -384,8 +567,9 @@ public final class TalendEditorPaletteFactory {
         noteCreationToolEntry.setParent(drawer);
         drawer.add(noteCreationToolEntry);
 
-        for (int i = 0; i < componentList.size(); i++) {
-            IComponent xmlComponent = componentList.get(i);
+        componentIter = componentList.iterator();
+        while (componentIter.hasNext()) {
+            IComponent xmlComponent = componentIter.next();
 
             if (xmlComponent.isTechnical()) {
                 continue;
@@ -417,16 +601,16 @@ public final class TalendEditorPaletteFactory {
             family = xmlComponent.getTranslatedFamilyName();
             oraFamily = xmlComponent.getOriginalFamilyName();
 
-            String[] keys = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-            String[] oraKeys = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-            for (int j = 0; j < keys.length; j++) {
-                String key = null;
-                key = xmlComponent.getName() + "#" + oraKeys[j];//$NON-NLS-1$
-                if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
-                    continue;
-                }
-
+            // String[] keys = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+            // String[] oraKeys = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+            // for (String key2 : keys) {
+            // String key = null;
+            //                key = xmlComponent.getName() + "#" + oraKeys[j];//$NON-NLS-1$
+            if (isFavorite && !(favoriteComponentNames != null && favoriteComponentNames.contains(xmlComponent.getName()))) {
+                continue;
             }
+
+            // }
 
             if (xmlComponent.isLoaded()) {
                 name = xmlComponent.getName();
@@ -442,20 +626,36 @@ public final class TalendEditorPaletteFactory {
                     imageLarge = xmlComponent.getIcon32();
                 }
 
+                if (favoriteComponentNames != null && favoriteComponentNames.contains(xmlComponent.getName())) {
+                    componentsDrawer = ht.get(FAVORITES);
+                    if (componentsDrawer != null) {
+                        component = new TalendCombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                                xmlComponent), imageSmall, imageLarge);
+
+                        component.setDescription(longName);
+                        component.setParent(componentsDrawer);
+                        componentsDrawer.add(component);
+                    }
+                }
+
+                if (recentlyUsedComponentNames != null && recentlyUsedComponentNames.contains(name)) {
+                    recentlyUsedMap.put(name, xmlComponent);
+                }
+
+                if (isFavorite && !(favoriteComponentNames != null && favoriteComponentNames.contains(xmlComponent.getName()))) {
+                    continue;
+                }
+
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
                     if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j])) {
                         continue;
                     }
-                    String key = null;
-                    key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
+                    // String key = null;
+                    // key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
 
-                    if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
-                        continue;
-                    }
-
-                    component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                    component = new TalendCombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
                             xmlComponent), imageSmall, imageLarge);
 
                     component.setDescription(longName);
@@ -471,9 +671,10 @@ public final class TalendEditorPaletteFactory {
                         // canAdd = false;
                         // }
                         // }
-                        for (int z = 0; z < nodeList.size(); z++) {
+                        Iterator<CreationToolEntry> iter = nodeList.iterator();
+                        while (iter.hasNext()) {
 
-                            if ((nodeList.get(z).getLabel()).equals(component.getLabel())) {
+                            if ((iter.next().getLabel()).equals(component.getLabel())) {
                                 canAdd = false;
                             }
                         }
@@ -487,14 +688,156 @@ public final class TalendEditorPaletteFactory {
                 }
             }
         }
+
+        if (a == 0) {
+            createRecentlyUsedEntryList(ht, recentlyUsedComponents, recentlyUsedMap);
+        }
+
         if (a == 1) {
-            for (CreationToolEntry entryComponent : nodeList) {
+            Iterator<CreationToolEntry> iter = nodeList.iterator();
+            while (iter.hasNext()) {
+                CreationToolEntry entryComponent = iter.next();
                 entryComponent.setParent(paGroup);
                 paGroup.add(entryComponent);
             }
             palette.add(paGroup);
         }
         setFilter(""); //$NON-NLS-1$
+    }
+
+    public static void addNewFavoriteIntoPreference(String componentName) {
+        List<String> favoritesList = getFavoritesList();
+        if (favoritesList.contains(componentName)) {
+            return;
+        }
+
+        favoritesList.add(componentName);
+        storeFavoritesList(favoritesList);
+    }
+
+    public static void deleteFavoriteFromPreference(String componentName) {
+        List<String> favoritesList = getFavoritesList();
+        if (!favoritesList.contains(componentName)) {
+            return;
+        }
+
+        favoritesList.remove(componentName);
+        storeFavoritesList(favoritesList);
+    }
+
+    protected static void storeFavoritesList(List<String> favoritesList) {
+        StringBuffer favoritesBuffer = new StringBuffer();
+        // List<String> alreadyExistsFavorList = getFavoritesList();
+        // Set<String> allFavoritesList = new HashSet<String>();
+        // allFavoritesList.addAll(favoritesList);
+        // allFavoritesList.addAll(alreadyExistsFavorList);
+        boolean needAddSeperator = false;
+        for (String favorite : favoritesList) {
+            if (needAddSeperator) {
+                favoritesBuffer.append(FAVORITES_KEY_LIST_SEPERATOR);
+            } else {
+                needAddSeperator = true;
+            }
+            favoritesBuffer.append(favorite);
+        }
+        DesignerPlugin.getDefault().getPreferenceStore().putValue(FAVORITES_KEY, favoritesBuffer.toString());
+    }
+
+    public static List<String> getFavoritesList() {
+        List<String> favoritesList = null;
+        String favoritesString = DesignerPlugin.getDefault().getPreferenceStore().getString(FAVORITES_KEY);
+        if (StringUtils.isNotEmpty(favoritesString)) {
+            String[] favoritesArray = favoritesString.split(FAVORITES_KEY_LIST_SEPERATOR);
+            if (favoritesArray != null && 0 < favoritesArray.length) {
+                favoritesList = new ArrayList<String>(Arrays.asList(favoritesArray));
+            }
+        }
+        if (favoritesList == null) {
+            favoritesList = new ArrayList<String>();
+        }
+        return favoritesList;
+    }
+
+    public static void storeRecentlyUsedList(List<RecentlyUsedComponent> recentlyUsedList) {
+        StringBuffer recentlyUsedBuffer = new StringBuffer();
+        boolean needAddSeperator = false;
+        Set<RecentlyUsedComponent> allRecentlyUsedList = new HashSet<TalendEditorPaletteFactory.RecentlyUsedComponent>();
+        // **MUST** add recently used list first
+        allRecentlyUsedList.addAll(recentlyUsedList);
+
+        List<RecentlyUsedComponent> alreadyExistRecentlyUsedList = new ArrayList<TalendEditorPaletteFactory.RecentlyUsedComponent>();
+        getRecentlyUsedList(alreadyExistRecentlyUsedList);
+        allRecentlyUsedList.addAll(alreadyExistRecentlyUsedList);
+        for (RecentlyUsedComponent recentlyUsedEntry : allRecentlyUsedList) {
+            if (needAddSeperator) {
+                recentlyUsedBuffer.append(RECENTLY_USED_LIST_SEPERATOR);
+            } else {
+                needAddSeperator = true;
+            }
+            recentlyUsedBuffer.append(recentlyUsedEntry.getName() + RECENTLY_USED_COMPONENT_NAME_TIMESTEMP_SEPERATOR
+                    + recentlyUsedEntry.getTimestamp().getTime());
+        }
+        DesignerPlugin.getDefault().getPreferenceStore().putValue(RECENTLY_USED_KEY, recentlyUsedBuffer.toString());
+    }
+
+    public static List<String> getRecentlyUsedList(List<RecentlyUsedComponent> recentlyUsedList) {
+        List<String> recentlyUsedNameList = new ArrayList<String>();
+        String recentlyUsedString = DesignerPlugin.getDefault().getPreferenceStore().getString(RECENTLY_USED_KEY);
+        if (StringUtils.isNotEmpty(recentlyUsedString)) {
+            List<String> nameWithTimestampList = Arrays.asList(recentlyUsedString.split(RECENTLY_USED_LIST_SEPERATOR));
+            for (String nameWithTimestamp : nameWithTimestampList) {
+                String[] nameWithTimestampArray = nameWithTimestamp.split(RECENTLY_USED_COMPONENT_NAME_TIMESTEMP_SEPERATOR);
+                if (nameWithTimestampArray == null || nameWithTimestampArray.length < 2) {
+                    continue;
+                }
+                RecentlyUsedComponent recentlyUsedComponent = new RecentlyUsedComponent();
+                try {
+                    recentlyUsedComponent.setTimestamp(new Date(Long.valueOf(nameWithTimestampArray[1])));
+                } catch (Exception e) {
+                    continue;
+                }
+                recentlyUsedComponent.setName(nameWithTimestampArray[0]);
+                recentlyUsedNameList.add(nameWithTimestampArray[0]);
+                recentlyUsedList.add(recentlyUsedComponent);
+            }
+        }
+
+        return recentlyUsedNameList;
+    }
+
+    public static void deleteJobletConfigurationsFromPalette(String jobletName) {
+        deleteFavoriteFromPreference(jobletName);
+        deleteRecentlyUsedComponentFromPreference(jobletName);
+    }
+
+    /**
+     * DOC cmeng Comment method "deleteRecentlyUsedComponentFromPreference".
+     * 
+     * @param jobletName
+     */
+    protected static void deleteRecentlyUsedComponentFromPreference(String jobletName) {
+        List<RecentlyUsedComponent> recentlyUsedList = new LinkedList<TalendEditorPaletteFactory.RecentlyUsedComponent>();
+        getRecentlyUsedList(recentlyUsedList);
+
+        StringBuffer recentlyUsedBuffer = new StringBuffer();
+        boolean needAddSeperator = false;
+        boolean finded = false;
+        for (TalendEditorPaletteFactory.RecentlyUsedComponent recentlyUsedEntry : recentlyUsedList) {
+            if (recentlyUsedEntry.getName().equals(jobletName)) {
+                finded = true;
+                continue;
+            }
+            if (needAddSeperator) {
+                recentlyUsedBuffer.append(RECENTLY_USED_LIST_SEPERATOR);
+            } else {
+                needAddSeperator = true;
+            }
+            recentlyUsedBuffer.append(recentlyUsedEntry.getName() + RECENTLY_USED_COMPONENT_NAME_TIMESTEMP_SEPERATOR
+                    + recentlyUsedEntry.getTimestamp().getTime());
+        }
+        if (finded) {
+            DesignerPlugin.getDefault().getPreferenceStore().putValue(RECENTLY_USED_KEY, recentlyUsedBuffer.toString());
+        }
     }
 
     /**
@@ -733,5 +1076,76 @@ public final class TalendEditorPaletteFactory {
         palette = new PaletteRoot();
         palette.add(createToolsGroup());
         return palette;
+    }
+
+    public static class RecentlyUsedComponent {
+
+        protected String name;
+
+        protected Date timestamp;
+
+        /**
+         * Getter for name.
+         * 
+         * @return the name
+         */
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * Sets the name.
+         * 
+         * @param name the name to set
+         */
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        /**
+         * Getter for timestamp.
+         * 
+         * @return the timestamp
+         */
+        public Date getTimestamp() {
+            return this.timestamp;
+        }
+
+        /**
+         * Sets the timestamp.
+         * 
+         * @param timestamp the timestamp to set
+         */
+        public void setTimestamp(Date timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof RecentlyUsedComponent)) {
+                return false;
+            }
+            RecentlyUsedComponent recentlyUsed = (RecentlyUsedComponent) obj;
+            return this.getName().equals(recentlyUsed.getName());
+        }
+
+        @Override
+        public int hashCode() {
+            String hashName = name;
+            if (hashName == null) {
+                hashName = ""; //$NON-NLS-1$
+            }
+            return hashName.hashCode();
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }
