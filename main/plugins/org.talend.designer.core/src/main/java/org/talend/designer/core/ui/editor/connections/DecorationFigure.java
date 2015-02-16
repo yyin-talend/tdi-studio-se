@@ -273,6 +273,7 @@ public class DecorationFigure extends PolygonDecoration implements RotatableDeco
             }
             break;
         case FLOW_REF:
+        case TABLE_REF:
             title = "L"; //$NON-NLS-1$
             break;
         case RUN_IF:

@@ -16,10 +16,12 @@ import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gmf.runtime.draw2d.ui.internal.routers.BorderItemRectilinearRouter;
 import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -28,6 +30,16 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRouter {
 
     private final static int OFFSET = 16;
+
+    private CreateConnectionRequest request;
+
+    public TalendBorderItemRectilinearRouter() {
+
+    }
+
+    public TalendBorderItemRectilinearRouter(CreateConnectionRequest request) {
+        this.request = request;
+    }
 
     /*
      * (non-Javadoc)
@@ -39,6 +51,28 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
     public void routeBendpoints(Connection conn) {
         super.routeBendpoints(conn);
         manualPosition(conn);
+        dummyPosition(conn);
+    }
+
+    private void dummyPosition(Connection conn) {
+        if (!(conn instanceof TalendDummyConnection)) {
+            return;
+        }
+        EConnectionType connStyle = ConnectionManager.getNewConnectionType();
+        if (conn.getPoints().size() <= 2) {
+            Point firstPoint = conn.getPoints().getFirstPoint();
+            Point lastPoint = conn.getPoints().getLastPoint();
+            PointList pointList = new PointList();
+            pointList.addPoint(firstPoint);
+            pointList.addPoint((lastPoint.x + firstPoint.x) / 2, firstPoint.y);
+
+            pointList.addPoint((lastPoint.x + firstPoint.x) / 2, (lastPoint.y + firstPoint.y) / 2);
+
+            pointList.addPoint((lastPoint.x + firstPoint.x) / 2, lastPoint.y);
+            pointList.addPoint(lastPoint);
+
+            conn.setPoints(pointList);
+        }
     }
 
     private boolean manualPosition(Connection conn) {

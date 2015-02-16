@@ -14,6 +14,8 @@ package org.talend.designer.core.ui.editor.nodes;
 
 import java.util.List;
 
+import org.eclipse.draw2d.ConnectionRouter;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
@@ -21,6 +23,8 @@ import org.eclipse.gef.requests.ReconnectRequest;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionReconnectCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.TalendBorderItemRectilinearRouter;
+import org.talend.designer.core.ui.editor.connections.TalendDummyConnection;
 
 /**
  * Edit policy that will allow connections to connect to the node. <br/>
@@ -30,13 +34,15 @@ import org.talend.designer.core.ui.editor.connections.Connection;
  */
 public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
 
+    @Override
     protected Command getConnectionCompleteCommand(CreateConnectionRequest request) {
         ConnectionCreateCommand cmd = (ConnectionCreateCommand) request.getStartCommand();
         cmd.setTarget((Node) getHost().getModel());
         return cmd;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @Override
+    @SuppressWarnings("unchecked")
     protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
         Node source = (Node) getHost().getModel();
         if (source.isReadOnly()) {
@@ -48,6 +54,7 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
         return cmd;
     }
 
+    @Override
     protected Command getReconnectSourceCommand(ReconnectRequest request) {
         Connection conn = (Connection) request.getConnectionEditPart().getModel();
         Node newSource = (Node) getHost().getModel();
@@ -59,6 +66,7 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
         return cmd;
     }
 
+    @Override
     protected Command getReconnectTargetCommand(ReconnectRequest request) {
         Connection conn = (Connection) request.getConnectionEditPart().getModel();
         Node newTarget = (Node) getHost().getModel();
@@ -69,5 +77,29 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
         ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
         cmd.setNewTarget(newTarget);
         return cmd;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#createDummyConnection(org.eclipse.gef.Request)
+     */
+    @Override
+    protected org.eclipse.draw2d.Connection createDummyConnection(Request req) {
+        TalendDummyConnection dummyConn = new TalendDummyConnection();
+        dummyConn.setRoundedBendpointsRadius(32);
+        // dummyConn.setConnectionRouter(new TalendBorderItemRectilinearRouter());
+        return dummyConn;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getDummyConnectionRouter(org.eclipse.gef.requests.
+     * CreateConnectionRequest)
+     */
+    @Override
+    protected ConnectionRouter getDummyConnectionRouter(CreateConnectionRequest request) {
+        return new TalendBorderItemRectilinearRouter();
     }
 }
