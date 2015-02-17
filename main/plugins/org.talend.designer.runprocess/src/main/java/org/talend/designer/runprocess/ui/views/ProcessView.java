@@ -64,6 +64,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.properties.tab.HorizontalTabFactory;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
