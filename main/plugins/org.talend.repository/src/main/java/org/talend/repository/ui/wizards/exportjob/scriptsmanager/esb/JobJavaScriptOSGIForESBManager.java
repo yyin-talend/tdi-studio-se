@@ -456,8 +456,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             if (!useSAM && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
                 useSAM = true;
             }
-            if (!useSAML && EmfModelUtils.computeCheckElementValue("NEED_AUTH", node) //$NON-NLS-1$
-                    && "SAML".equals(EmfModelUtils.computeTextElementValue("AUTH_TYPE", node))) { //$NON-NLS-1$
+            if (!useSAML
+                    && (EmfModelUtils.computeCheckElementValue("NEED_AUTH", node) //$NON-NLS-1$
+                            || EmfModelUtils.computeTextElementValue("NEED_AUTH", node).contains("context.")) //$NON-NLS-1$ //$NON-NLS-2$
+                    && ("SAML".equals(EmfModelUtils.computeTextElementValue("AUTH_TYPE", node)) //$NON-NLS-1$
+                            || EmfModelUtils.computeTextElementValue("AUTH_TYPE", node).contains("context."))) { //$NON-NLS-1$ //$NON-NLS-2$
                 useSAML = true;
             }
             if (useSAM && useSAML) {
