@@ -73,6 +73,7 @@ import org.talend.designer.codegen.config.TalendJetEmitter;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.spark.SparkPlugin;
 
 /**
  * Pool of initialized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation
@@ -391,6 +392,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
+            jetBean.addClassPath("SPARK_LIBRARIES", SparkPlugin.PLUGIN_ID); //$NON-NLS-1$
 
             if (PluginChecker.isGEFAbstractMapLoaded()) {
                 jetBean.addClassPath("GEF_MAP", "org.talend.designer.gefabstractmap"); //$NON-NLS-1$ //$NON-NLS-2$
