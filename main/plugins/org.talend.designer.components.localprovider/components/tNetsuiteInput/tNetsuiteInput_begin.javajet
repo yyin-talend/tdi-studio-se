@@ -148,7 +148,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			boolean regularSearch = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__SHOW_CONDITIONS__"));
 %>
 			
-			org.talend.netsuite.NetSuiteManagement nsMgr_<%=cid%> = new org.talend.netsuite.NetSuiteManagement(<%=username%>, <%=password%>, <%=role%>, <%=account%>, <%=endpoint%>); 
+			org.talend.netsuite.NetsuiteManagement_CXF nsMgr_<%=cid%> = new org.talend.netsuite.NetsuiteManagement_CXF(<%=username%>, <%=password%>, <%=role%>, <%=account%>); 
 
 <%
 			IConnection outgoingConn = outgoingConns.get(0);
@@ -170,7 +170,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					// records_cid = nsMgr_cid.submitRequest(true);
 %>
 
-					com.netsuite.webservices.platform.core_2014_2.Record[] records_<%=cid %> = null;
+					java.util.List<com.netsuite.webservices.platform.core_2014_2.Record> records_<%=cid %> = null;
 					nsMgr_<%=cid%>.initialize("<%=searchEntity%>", null); 
 
 <%
@@ -181,7 +181,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							for (Map<String, String> keyColumn : bodyField) {
 %> 
 
-								nsMgr_<%=cid%>.search("<%=searchEntity%>", "<%=keyColumn.get("INPUT_COLUMN")%>", "<%=keyColumn.get("OPERATOR")%>", (Object) (new String[] { <%=keyColumn.get("RVALUE")%> }), <%=bodySearch%>, "null"); 
+								String[] rValues = new String[] { <%=keyColumn.get("RVALUE")%> };
+								java.util.ArrayList<String> searchCriteria = new java.util.ArrayList<String>();
+								searchCriteria.addAll(java.util.Arrays.asList(rValues));
+								nsMgr_<%=cid%>.search("<%=searchEntity%>", "<%=keyColumn.get("INPUT_COLUMN")%>", "<%=keyColumn.get("OPERATOR")%>", searchCriteria, "null"); 
 
 <%
 							}
@@ -197,9 +200,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						while (continue_<%=cid%>) { // Block closed in END file
 						
 							if(records_<%=cid%> != null){
-    							for (int i_<%=cid%> = 0; i_<%=cid%> < records_<%=cid%>.length; i_<%=cid%>++) { // Block closed in END file
+    							for (int i_<%=cid%> = 0; i_<%=cid%> < records_<%=cid%>.size(); i_<%=cid%>++) { // Block closed in END file
     								nb_line_<%=cid%>++;
-    								<%=searchEntity%> record_<%=cid%> = (<%=searchEntity%>) records_<%=cid%>[i_<%=cid%>];
+    								<%=searchEntity%> record_<%=cid%> = (<%=searchEntity%>) records_<%=cid%>.get(i_<%=cid%>);
 
 <%
 									// Block Start [1]
@@ -216,24 +219,43 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     									if (!Character.isLowerCase(first)) {
 %> 
 
-											if (record_<%=cid%>.get<%=column.getLabel()%>() != null) { 
-
 <%
-													if (javaType == JavaTypesManager.DATE) { 
+											if (javaType == JavaTypesManager.BOOLEAN) { 
 %> 
 
-														<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get<%=column.getLabel()%>().getTime(); 
+												if (record_<%=cid%>.is<%=column.getLabel()%>() != null) { 
 													
 <%
-													} else  {
+											} else  {
 %> 
 
-														<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get<%=column.getLabel()%>(); 
+												if (record_<%=cid%>.get<%=column.getLabel()%>() != null) { 
 
 <%
-													}
+											}
 %> 
 
+<%
+											if (javaType == JavaTypesManager.DATE) { 
+%> 
+
+												<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get<%=column.getLabel()%>().toGregorianCalendar().getTime(); 
+													
+<%
+											} else if(javaType == JavaTypesManager.BOOLEAN) {
+%> 
+
+												<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.is<%=column.getLabel()%>(); 
+
+<%
+											} else {
+%> 
+
+												<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get<%=column.getLabel()%>();
+
+<%
+											}
+%>
     										} else {
     											<%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
     										}
@@ -250,7 +272,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 												if (javaType == JavaTypesManager.DATE) {
 %>
 
-													<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ((Calendar) customFieldValue_<%=cid %>).getTime(); 
+													<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ((Calendar) customFieldValue_<%=cid %>).toGregorianCalendar().getTime(); 
 
 <%
 												} else if (javaType == JavaTypesManager.OBJECT) {

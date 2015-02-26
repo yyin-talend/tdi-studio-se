@@ -231,7 +231,7 @@
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="AvailableToPartners" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SalesDescription" LENGTH="200" TYPE="id_String"  />
@@ -258,7 +258,7 @@
                 <COLUMN KEY="false" NAME="PageTitle" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="MetaTagHtml" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ExcludeFromSitemap" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="SearchKeywords" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="IsDonationItem" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="ShowDefaultDonationAmount" LENGTH="0" TYPE="id_Boolean"  />
@@ -304,7 +304,7 @@
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Memo" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Status" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="TransactionNumber" LENGTH="200" TYPE="id_String"  />
@@ -330,7 +330,7 @@
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="AvailableToPartners" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TranslationsList" LENGTH="0" TYPE="id_Object"  />
@@ -502,7 +502,7 @@
                 <COLUMN KEY="false" NAME="BinNumbers" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Memo" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ComponentList" LENGTH="0" TYPE="id_Object"  />
@@ -575,7 +575,7 @@
                 <COLUMN KEY="false" NAME="MetaTagHtml" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ExcludeFromSitemap" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="UrlComponent" LENGTH="200" TYPE="id_String"  />
-                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="SearchKeywords" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="PresentationItemList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TranslationsList" LENGTH="0" TYPE="id_Object"  />
@@ -604,7 +604,7 @@
                 <COLUMN KEY="false" NAME="AllDayEvent" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="TimedEvent" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="ReminderType" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="ReminderMinutes" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="ReminderMinutes" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Status" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="AccessLevel" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Organizer" LENGTH="0" TYPE="id_Object"  />
@@ -633,7 +633,7 @@
                 <COLUMN KEY="false" NAME="CreatedFrom" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="PostingPeriod" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="LeadSource" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
@@ -755,7 +755,7 @@
                 <COLUMN KEY="false" NAME="AvailableToPartners" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="IncludeChildren" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Description" LENGTH="200" TYPE="id_String"  />
@@ -828,7 +828,7 @@
                 <COLUMN KEY="false" NAME="UrlComponent" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="MetaTagHtml" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ExcludeFromSitemap" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="SearchKeywords" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ItemOptionsList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="IsDonationItem" LENGTH="0" TYPE="id_Boolean"  />
@@ -867,7 +867,7 @@
                 <COLUMN KEY="false" NAME="CreatedFrom" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="PostingPeriod" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Job" LENGTH="0" TYPE="id_Object"  />
@@ -965,7 +965,7 @@
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="AvailableToPartners" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TaxSchedule" LENGTH="0" TYPE="id_Object"  />
@@ -990,7 +990,7 @@
                 <COLUMN KEY="false" NAME="TranId" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Source" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="IntercoTransaction" LENGTH="0" TYPE="id_Object"  />
@@ -1088,7 +1088,7 @@
                 <COLUMN KEY="false" NAME="PostingPeriod" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Opportunity" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Terms" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
@@ -1264,7 +1264,7 @@
                 <COLUMN KEY="false" NAME="CcNumber" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="CcExpireDate" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="DebitCardIssueNo" LENGTH="200" TYPE="id_String"  />
@@ -1378,7 +1378,7 @@
                 <COLUMN KEY="false" NAME="TrackingNumbers" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="LinkedTrackingNumbers" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Total" LENGTH="0" TYPE="id_Double"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
@@ -1581,7 +1581,7 @@
                 <COLUMN KEY="false" NAME="BillingSchedule" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="CcSecurityCode" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ThreeDStatusCode" LENGTH="200" TYPE="id_String"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="IntercoTransaction" LENGTH="0" TYPE="id_Object"  />
@@ -1635,7 +1635,7 @@
                 <COLUMN KEY="false" NAME="Message" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="AccessLevel" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="ReminderType" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="ReminderMinutes" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="ReminderMinutes" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="CreatedDate" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="LastModifiedDate" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="Owner" LENGTH="0" TYPE="id_Object"  />
@@ -1681,7 +1681,7 @@
                 <COLUMN KEY="false" NAME="CreatedFrom" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Opportunity" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SalesRep" LENGTH="0" TYPE="id_Object"  />
@@ -1869,7 +1869,7 @@
                 <COLUMN KEY="false" NAME="Employee" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Firmed" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TransferLocation" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Memo" LENGTH="200" TYPE="id_String"  />
@@ -1964,7 +1964,7 @@
                 <COLUMN KEY="false" NAME="ManufacturerTaxId" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ScheduleBNumber" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ScheduleBQuantity" LENGTH="0" TYPE="id_Long"  />
-                <COLUMN KEY="false" NAME="ScheduleBCode" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="ScheduleBCode" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ManufacturerTariff" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="PreferenceCriterion" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="MinimumQuantity" LENGTH="0" TYPE="id_Long"  />
@@ -2026,7 +2026,7 @@
                 <COLUMN KEY="false" NAME="PageTitle" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="MetaTagHtml" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ExcludeFromSitemap" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="SearchKeywords" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="IsDonationItem" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="ShowDefaultDonationAmount" LENGTH="0" TYPE="id_Boolean"  />
@@ -2062,7 +2062,7 @@
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="AvailableToPartners" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="CostingMethod" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Currency" LENGTH="200" TYPE="id_String"  />
@@ -2137,7 +2137,7 @@
                 <COLUMN KEY="false" NAME="UseMultiCurrency" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Tax2Amt" LENGTH="0" TYPE="id_Double"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="ExpenseList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="CustomFieldList" LENGTH="0" TYPE="id_Object"  />
@@ -2164,7 +2164,7 @@
                 <COLUMN KEY="false" NAME="Workplace" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Item" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Hours" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Price" LENGTH="0" TYPE="id_Object"  />
@@ -2201,7 +2201,7 @@
                 <COLUMN KEY="false" NAME="CurDocNum" LENGTH="0" TYPE="id_Long"  />
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Inventory" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Eliminate" LENGTH="0" TYPE="id_Boolean"  />
@@ -2250,7 +2250,7 @@
                 <COLUMN KEY="false" NAME="Priority" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="AccessLevel" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="ReminderType" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="ReminderMinutes" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="ReminderMinutes" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="CreatedDate" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="LastModifiedDate" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="ContactList" LENGTH="0" TYPE="id_Object"  />
@@ -2273,7 +2273,7 @@
                 <COLUMN KEY="false" NAME="Year" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Customer" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Item" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Account" LENGTH="0" TYPE="id_Object"  />
@@ -2342,7 +2342,7 @@
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Applied" LENGTH="0" TYPE="id_Double"  />
                 <COLUMN KEY="false" NAME="Unapplied" LENGTH="0" TYPE="id_Double"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Status" LENGTH="200" TYPE="id_String"  />
@@ -2373,7 +2373,7 @@
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="IncludeChildren" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="IncomeAccount" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="NumOfAllowedDownloads" LENGTH="0" TYPE="id_Long"  />
@@ -2406,7 +2406,7 @@
                 <COLUMN KEY="false" NAME="PageTitle" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="MetaTagHtml" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ExcludeFromSitemap" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="SearchKeywords" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="IsDonationItem" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="ShowDefaultDonationAmount" LENGTH="0" TYPE="id_Boolean"  />
@@ -2485,7 +2485,7 @@
                 <COLUMN KEY="false" NAME="ShippingAddress" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="ShipIsResidential" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="ShipAddressList" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="CloseDate" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="CreatedDate" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="LastModifiedDate" LENGTH="0" TYPE="id_Date"  />
@@ -2515,7 +2515,7 @@
                 <COLUMN KEY="false" NAME="EstimatedTotalValue" LENGTH="0" TYPE="id_Double"  />
                 <COLUMN KEY="false" NAME="Customer" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="AdjLocation" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Memo" LENGTH="200" TYPE="id_String"  />
@@ -2595,12 +2595,12 @@
                 <COLUMN KEY="false" NAME="Comments" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Bcn" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Image" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="TaxFractionUnit" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="TaxFractionUnit" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="EmailPreference" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TaxRounding" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="HomePhone" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="MobilePhone" LENGTH="200" TYPE="id_String"  />
@@ -2779,7 +2779,7 @@
                 <COLUMN KEY="false" NAME="Tax2Total" LENGTH="0" TYPE="id_Double"  />
                 <COLUMN KEY="false" NAME="CreditLimit" LENGTH="0" TYPE="id_Double"  />
                 <COLUMN KEY="false" NAME="Currency" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Status" LENGTH="200" TYPE="id_String"  />
@@ -2814,7 +2814,7 @@
                 <COLUMN KEY="false" NAME="Memo" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TaxTotal" LENGTH="0" TYPE="id_Double"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Tax2Total" LENGTH="0" TYPE="id_Double"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="UserTotal" LENGTH="0" TYPE="id_Double"  />
@@ -2846,7 +2846,7 @@
                 <COLUMN KEY="false" NAME="ForecastType" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Opportunity" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Terms" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="DueDate" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
@@ -2934,7 +2934,7 @@
                 <COLUMN KEY="false" NAME="ReversalEntry" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="CreatedFrom" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="ToSubsidiary" LENGTH="0" TYPE="id_Object"  />
@@ -2959,7 +2959,7 @@
                 <COLUMN KEY="false" NAME="Group" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Parent" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="FolderType" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="true" NAME="InternalId" LENGTH="200" TYPE="id_String"  />
@@ -2984,7 +2984,7 @@
                 <COLUMN KEY="false" NAME="BinNumbers" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Revision" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Memo" LENGTH="200" TYPE="id_String"  />
@@ -3025,7 +3025,7 @@
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="AvailableToPartners" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TranslationsList" LENGTH="0" TYPE="id_Object"  />
@@ -3089,7 +3089,7 @@
                 <COLUMN KEY="false" NAME="AltTagCaption" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="IsOnline" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="200" TYPE="id_String"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Bundleable" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="HideInBundle" LENGTH="0" TYPE="id_Boolean"  />
@@ -3161,7 +3161,7 @@
                 <COLUMN KEY="false" NAME="Total" LENGTH="0" TYPE="id_Double"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Applied" LENGTH="0" TYPE="id_Double"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Unapplied" LENGTH="0" TYPE="id_Double"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TranId" LENGTH="200" TYPE="id_String"  />
@@ -3189,7 +3189,7 @@
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="AvailableToPartners" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TaxSchedule" LENGTH="0" TYPE="id_Object"  />
@@ -3223,10 +3223,10 @@
                 <COLUMN KEY="false" NAME="IssueRole" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="IsManufacturingWorkCenter" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="CalendarName" LENGTH="200" TYPE="id_String"  />
-                <COLUMN KEY="false" NAME="CalendarStartTime" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="CalendarEndTime" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="CalendarStartTime" LENGTH="200" TYPE="id_String"  />
+                <COLUMN KEY="false" NAME="CalendarEndTime" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="CalendarDefaultView" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="CalendarPeriod" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="CalendarPeriod" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="MachineResources" LENGTH="0" TYPE="id_Long"  />
                 <COLUMN KEY="false" NAME="LaborResources" LENGTH="0" TYPE="id_Long"  />
@@ -3257,7 +3257,7 @@
                 <COLUMN KEY="false" NAME="HomePhone" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="MobilePhone" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="BillingClass" LENGTH="0" TYPE="id_Object"  />
@@ -3308,7 +3308,7 @@
                 <COLUMN KEY="false" NAME="Password2" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="RequirePwdChange" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="InheritIPRules" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="IPAddressRule" LENGTH="200" TYPE="id_String"  />
+                <COLUMN KEY="false" NAME="IpAddressRule" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="CommissionPaymentPreference" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="BillPay" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="EligibleForCommission" LENGTH="0" TYPE="id_Boolean"  />
@@ -3344,7 +3344,7 @@
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="IncludeChildren" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Description" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="CogsAccount" LENGTH="0" TYPE="id_Object"  />
@@ -3493,7 +3493,7 @@
                 <COLUMN KEY="false" NAME="UrlComponent" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="MetaTagHtml" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="ExcludeFromSitemap" LENGTH="0" TYPE="id_Boolean"  />
-                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="SitemapPriority" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="SearchKeywords" LENGTH="200" TYPE="id_String"  />
                 <COLUMN KEY="false" NAME="IsDonationItem" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="ShowDefaultDonationAmount" LENGTH="0" TYPE="id_Boolean"  />
@@ -3768,7 +3768,7 @@
                 <COLUMN KEY="false" NAME="IsInactive" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="AvailableToPartners" LENGTH="0" TYPE="id_Boolean"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="SubsidiaryList" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="TranslationsList" LENGTH="0" TYPE="id_Object"  />
@@ -3805,7 +3805,7 @@
                 <COLUMN KEY="false" NAME="ValidFrom" LENGTH="0" TYPE="id_Date"  />
                 <COLUMN KEY="false" NAME="Subsidiary" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Department" LENGTH="0" TYPE="id_Object"  />
-                <COLUMN KEY="false" NAME="_class" LENGTH="0" TYPE="id_Object"  />
+                <COLUMN KEY="false" NAME="Clazz" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="Location" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="CreditCard" LENGTH="0" TYPE="id_Object"  />
                 <COLUMN KEY="false" NAME="CcIsPurchaseCardBin" LENGTH="0" TYPE="id_Boolean"  />
@@ -3910,7 +3910,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='GiftCertificateItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='GiftCertificateItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='GiftCertificateItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='GiftCertificateItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='GiftCertificateItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='GiftCertificateItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='GiftCertificateItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='GiftCertificateItem'"/>
@@ -4210,7 +4210,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='VendorPayment'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='VendorPayment'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='VendorPayment'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='VendorPayment'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='VendorPayment'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='VendorPayment'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='VendorPayment'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='VendorPayment'"/>
@@ -4498,7 +4498,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='PaymentItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='PaymentItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='PaymentItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='PaymentItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='PaymentItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='PaymentItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='PaymentItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='PaymentItem'"/>
@@ -4865,7 +4865,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='ItemFulfillment'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='ItemFulfillment'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='ItemFulfillment'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='ItemFulfillment'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='ItemFulfillment'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='ItemFulfillment'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='ItemFulfillment'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='ItemFulfillment'"/>
@@ -5183,7 +5183,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='AssemblyUnbuild'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='AssemblyUnbuild'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='AssemblyUnbuild'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='AssemblyUnbuild'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='AssemblyUnbuild'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='AssemblyUnbuild'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='AssemblyUnbuild'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='AssemblyUnbuild'"/>
@@ -5584,7 +5584,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='CashRefund'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='CashRefund'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='CashRefund'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='CashRefund'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='CashRefund'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='CashRefund'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='CashRefund'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='CashRefund'"/>
@@ -5886,7 +5886,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='KitItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='KitItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='KitItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='KitItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='KitItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='KitItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='KitItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='KitItem'"/>
@@ -6186,7 +6186,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='CreditMemo'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='CreditMemo'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='CreditMemo'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='CreditMemo'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='CreditMemo'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='CreditMemo'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='CreditMemo'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='CreditMemo'"/>
@@ -6474,7 +6474,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='DiscountItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='DiscountItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='DiscountItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='DiscountItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='DiscountItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='DiscountItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='DiscountItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='DiscountItem'"/>
@@ -6774,7 +6774,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='ReturnAuthorization'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='ReturnAuthorization'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='ReturnAuthorization'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='ReturnAuthorization'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='ReturnAuthorization'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='ReturnAuthorization'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='ReturnAuthorization'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='ReturnAuthorization'"/>
@@ -7092,7 +7092,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='Invoice'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='Invoice'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='Invoice'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='Invoice'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='Invoice'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='Invoice'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='Invoice'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='Invoice'"/>
@@ -7437,7 +7437,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='CustomerDeposit'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='CustomerDeposit'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='CustomerDeposit'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='CustomerDeposit'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='CustomerDeposit'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='CustomerDeposit'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='CustomerDeposit'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='CustomerDeposit'"/>
@@ -7795,7 +7795,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='PurchaseOrder'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='PurchaseOrder'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='PurchaseOrder'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='PurchaseOrder'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='PurchaseOrder'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='PurchaseOrder'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='PurchaseOrder'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='PurchaseOrder'"/>
@@ -8191,7 +8191,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='SalesOrder'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='SalesOrder'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='SalesOrder'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='SalesOrder'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='SalesOrder'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='SalesOrder'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='SalesOrder'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='SalesOrder'"/>
@@ -8536,7 +8536,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='ItemReceipt'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='ItemReceipt'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='ItemReceipt'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='ItemReceipt'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='ItemReceipt'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='ItemReceipt'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='ItemReceipt'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='ItemReceipt'"/>
@@ -8854,7 +8854,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='CashSale'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='CashSale'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='CashSale'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='CashSale'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='CashSale'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='CashSale'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='CashSale'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='CashSale'"/>
@@ -9190,7 +9190,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='TransferOrder'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='TransferOrder'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='TransferOrder'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='TransferOrder'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='TransferOrder'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='TransferOrder'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='TransferOrder'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='TransferOrder'"/>
@@ -9484,7 +9484,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='InventoryItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='InventoryItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='InventoryItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='InventoryItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='InventoryItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='InventoryItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='InventoryItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='InventoryItem'"/>
@@ -9784,7 +9784,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='ExpenseReport'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='ExpenseReport'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='ExpenseReport'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='ExpenseReport'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='ExpenseReport'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='ExpenseReport'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='ExpenseReport'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='ExpenseReport'"/>
@@ -10059,7 +10059,7 @@
                         <ITEM NAME="sync" VALUE="Sync" SHOW_IF="MODULENAME=='ContactCategory'"/>
                         <ITEM NAME="approved" VALUE="Approved" SHOW_IF="MODULENAME=='TimeBill'"/>
                         <ITEM NAME="billable" VALUE="Billable" SHOW_IF="MODULENAME=='TimeBill'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='TimeBill'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='TimeBill'"/>
                         <ITEM NAME="customer" VALUE="Customer" SHOW_IF="MODULENAME=='TimeBill'"/>
                         <ITEM NAME="date" VALUE="Date" SHOW_IF="MODULENAME=='TimeBill'"/>
                         <ITEM NAME="dateCreated" VALUE="DateCreated" SHOW_IF="MODULENAME=='TimeBill'"/>
@@ -10147,7 +10147,7 @@
                         <ITEM NAME="account" VALUE="Account" SHOW_IF="MODULENAME=='Budget'"/>
                         <ITEM NAME="amount" VALUE="Amount" SHOW_IF="MODULENAME=='Budget'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='Budget'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='Budget'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='Budget'"/>
                         <ITEM NAME="currency" VALUE="Currency" SHOW_IF="MODULENAME=='Budget'"/>
                         <ITEM NAME="customer" VALUE="Customer" SHOW_IF="MODULENAME=='Budget'"/>
                         <ITEM NAME="department" VALUE="Department" SHOW_IF="MODULENAME=='Budget'"/>
@@ -10212,7 +10212,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='CustomerPayment'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='CustomerPayment'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='CustomerPayment'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='CustomerPayment'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='CustomerPayment'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='CustomerPayment'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='CustomerPayment'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='CustomerPayment'"/>
@@ -10500,7 +10500,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='DownloadItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='DownloadItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='DownloadItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='DownloadItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='DownloadItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='DownloadItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='DownloadItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='DownloadItem'"/>
@@ -10808,7 +10808,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='Opportunity'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='Opportunity'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='Opportunity'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='Opportunity'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='Opportunity'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='Opportunity'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='Opportunity'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='Opportunity'"/>
@@ -11126,7 +11126,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='InventoryAdjustment'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='InventoryAdjustment'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='InventoryAdjustment'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='InventoryAdjustment'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='InventoryAdjustment'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='InventoryAdjustment'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='InventoryAdjustment'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='InventoryAdjustment'"/>
@@ -11435,7 +11435,7 @@
                         <ITEM NAME="billAddress" VALUE="BillAddress" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="city" VALUE="City" SHOW_IF="MODULENAME=='Partner'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='Partner'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="comments" VALUE="Comments" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="commissionPlan" VALUE="CommissionPlan" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="country" VALUE="Country" SHOW_IF="MODULENAME=='Partner'"/>
@@ -11479,7 +11479,7 @@
                         <ITEM NAME="state" VALUE="State" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="subsidiary" VALUE="Subsidiary" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="title" VALUE="Title" SHOW_IF="MODULENAME=='Partner'"/>
-                        <ITEM NAME="URL" VALUE="URL" SHOW_IF="MODULENAME=='Partner'"/>
+                        <ITEM NAME="url" VALUE="Url" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="zipCode" VALUE="ZipCode" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="customFieldList" VALUE="CustomFieldList" SHOW_IF="MODULENAME=='Partner'"/>
                         <ITEM NAME="externalId" VALUE="ExternalId" SHOW_IF="MODULENAME=='WinLossReason'"/>
@@ -11691,7 +11691,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='VendorBill'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='VendorBill'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='VendorBill'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='VendorBill'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='VendorBill'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='VendorBill'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='VendorBill'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='VendorBill'"/>
@@ -12009,7 +12009,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='Check'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='Check'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='Check'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='Check'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='Check'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='Check'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='Check'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='Check'"/>
@@ -12327,7 +12327,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='Estimate'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='Estimate'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='Estimate'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='Estimate'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='Estimate'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='Estimate'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='Estimate'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='Estimate'"/>
@@ -12645,7 +12645,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='JournalEntry'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='JournalEntry'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='JournalEntry'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='JournalEntry'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='JournalEntry'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='JournalEntry'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='JournalEntry'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='JournalEntry'"/>
@@ -12910,7 +12910,7 @@
                         <ITEM NAME="vsoePrice" VALUE="VsoePrice" SHOW_IF="MODULENAME=='JournalEntry'"/>
                         <ITEM NAME="webSite" VALUE="WebSite" SHOW_IF="MODULENAME=='JournalEntry'"/>
                         <ITEM NAME="customFieldList" VALUE="CustomFieldList" SHOW_IF="MODULENAME=='JournalEntry'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='Folder'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='Folder'"/>
                         <ITEM NAME="department" VALUE="Department" SHOW_IF="MODULENAME=='Folder'"/>
                         <ITEM NAME="description" VALUE="Description" SHOW_IF="MODULENAME=='Folder'"/>
                         <ITEM NAME="externalId" VALUE="ExternalId" SHOW_IF="MODULENAME=='Folder'"/>
@@ -12983,7 +12983,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='AssemblyBuild'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='AssemblyBuild'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='AssemblyBuild'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='AssemblyBuild'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='AssemblyBuild'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='AssemblyBuild'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='AssemblyBuild'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='AssemblyBuild'"/>
@@ -13287,7 +13287,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='DescriptionItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='DescriptionItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='DescriptionItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='DescriptionItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='DescriptionItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='DescriptionItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='DescriptionItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='DescriptionItem'"/>
@@ -13684,7 +13684,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='DepositApplication'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='DepositApplication'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='DepositApplication'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='DepositApplication'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='DepositApplication'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='DepositApplication'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='DepositApplication'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='DepositApplication'"/>
@@ -13972,7 +13972,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='MarkupItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='MarkupItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='MarkupItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='MarkupItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='MarkupItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='MarkupItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='MarkupItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='MarkupItem'"/>
@@ -14253,7 +14253,7 @@
                         <ITEM NAME="birthDay" VALUE="BirthDay" SHOW_IF="MODULENAME=='Employee'"/>
                         <ITEM NAME="cContribution" VALUE="CContribution" SHOW_IF="MODULENAME=='Employee'"/>
                         <ITEM NAME="city" VALUE="City" SHOW_IF="MODULENAME=='Employee'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='Employee'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='Employee'"/>
                         <ITEM NAME="comments" VALUE="Comments" SHOW_IF="MODULENAME=='Employee'"/>
                         <ITEM NAME="commissionPlan" VALUE="CommissionPlan" SHOW_IF="MODULENAME=='Employee'"/>
                         <ITEM NAME="concurrentWebServicesUser" VALUE="ConcurrentWebServicesUser" SHOW_IF="MODULENAME=='Employee'"/>
@@ -14362,7 +14362,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='AssemblyItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='AssemblyItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='AssemblyItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='AssemblyItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='AssemblyItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='AssemblyItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='AssemblyItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='AssemblyItem'"/>
@@ -14830,7 +14830,7 @@
                         <ITEM NAME="buyItNowPrice" VALUE="BuyItNowPrice" SHOW_IF="MODULENAME=='SubtotalItem'"/>
                         <ITEM NAME="caption" VALUE="Caption" SHOW_IF="MODULENAME=='SubtotalItem'"/>
                         <ITEM NAME="category" VALUE="Category" SHOW_IF="MODULENAME=='SubtotalItem'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='SubtotalItem'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='SubtotalItem'"/>
                         <ITEM NAME="component" VALUE="Component" SHOW_IF="MODULENAME=='SubtotalItem'"/>
                         <ITEM NAME="componentOf" VALUE="ComponentOf" SHOW_IF="MODULENAME=='SubtotalItem'"/>
                         <ITEM NAME="componentYield" VALUE="ComponentYield" SHOW_IF="MODULENAME=='SubtotalItem'"/>
@@ -15130,7 +15130,7 @@
                         <ITEM NAME="ccName" VALUE="CcName" SHOW_IF="MODULENAME=='CustomerRefund'"/>
                         <ITEM NAME="ccNumber" VALUE="CcNumber" SHOW_IF="MODULENAME=='CustomerRefund'"/>
                         <ITEM NAME="chargeType" VALUE="ChargeType" SHOW_IF="MODULENAME=='CustomerRefund'"/>
-                        <ITEM NAME="_class" VALUE="_class" SHOW_IF="MODULENAME=='CustomerRefund'"/>
+                        <ITEM NAME="clazz" VALUE="Clazz" SHOW_IF="MODULENAME=='CustomerRefund'"/>
                         <ITEM NAME="cleared" VALUE="Cleared" SHOW_IF="MODULENAME=='CustomerRefund'"/>
                         <ITEM NAME="closed" VALUE="Closed" SHOW_IF="MODULENAME=='CustomerRefund'"/>
                         <ITEM NAME="closeDate" VALUE="CloseDate" SHOW_IF="MODULENAME=='CustomerRefund'"/>
@@ -15475,14 +15475,10 @@
         <IMPORTS>
             <IMPORT NAME="Netsuite_Client" MODULE="Netsuite_Client.jar" REQUIRED="true" />
             <IMPORT NAME="NetSuite_Management" MODULE="NetSuite_Management.jar" REQUIRED="true" />
-            <IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true" />
-            <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true" />
-            <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />
-            <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.5.1.jar" REQUIRED="true" />
-            <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true" />
-            <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
-            <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="true" />
-            <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-CORE" MODULE="cxf-core-3.0.3.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-RT-DATABINDING-JAXB" MODULE="cxf-rt-databinding-jaxb-3.0.3.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-RT-FRONTEND-SIMPLE" MODULE="cxf-rt-frontend-simple-3.0.3.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-RT-TRANSPORTS-HTTP" MODULE="cxf-rt-transports-http-3.0.3.jar" REQUIRED="true" />
         </IMPORTS>
     </CODEGENERATION>
     
