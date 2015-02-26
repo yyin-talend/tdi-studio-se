@@ -20,4 +20,4 @@
 
 int nb_line_<%=cid %> = 0;
 
-org.talend.netsuite.NetSuiteManagement nsMgr_<%=cid%> = new org.talend.netsuite.NetSuiteManagement(<%=username%>, <%=password%>, <%=role%>, <%=account%>, <%=endpoint%>);
+org.talend.netsuite.NetsuiteManagement_CXF nsMgr_<%=cid%> = new org.talend.netsuite.NetsuiteManagement_CXF(<%=username%>, <%=password%>, <%=role%>, <%=account%>);

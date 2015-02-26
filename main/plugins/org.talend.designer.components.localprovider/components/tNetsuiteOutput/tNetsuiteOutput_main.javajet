@@ -172,9 +172,11 @@
             					if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
 
-            						java.util.Calendar cal_<%=cid%> = java.util.Calendar.getInstance();
-            						cal_<%=cid%>.setTime(<%=conn.getName() %>.<%=column.getLabel()%>);
-            						record_<%=cid%>.set<%=column.getLabel()%>(cal_<%=cid%>);
+            						java.util.GregorianCalendar cal_<%=cid%> = new java.util.GregorianCalendar();
+							        cal_<%=cid%>.setTime(<%=conn.getName() %>.<%=column.getLabel()%>);
+							        javax.xml.datatype.XMLGregorianCalendar gc_<%=cid%> = javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar(cal_<%=cid%>);
+            						
+            						record_<%=cid%>.set<%=column.getLabel()%>(gc_<%=cid%>);
 
 <%
 								} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
@@ -223,7 +225,7 @@
                 if ("insert".equals(action)) {
 %>
 
-            		String internalId_<%=cid%> = nsMgr_<%=cid%>.insert("<%=entitytype %>", record_<%=cid%>);
+            		String internalId_<%=cid%> = nsMgr_<%=cid%>.insert(record_<%=cid%>);
                     globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(internalId_<%=cid%>));
 
 <%
@@ -231,14 +233,14 @@
 				} else if ("update".equals(action)) {
 %>
 
-					nsMgr_<%=cid%>.update("<%=entitytype %>", record_<%=cid%>);
+					nsMgr_<%=cid%>.update(record_<%=cid%>);
 					globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(<%=conn.getName() %>.InternalId));	
 
 <%
 				} else if ("upsert".equals(action)) {
 %> 
 
-                    String internalId_<%=cid%> = nsMgr_<%=cid%>.upsert("<%=entitytype %>", record_<%=cid%>);
+                    String internalId_<%=cid%> = nsMgr_<%=cid%>.upsert(record_<%=cid%>);
                     globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(internalId_<%=cid%>));
 		
 <%
@@ -246,7 +248,7 @@
 				} else if ("delete".equals(action)) {
 %>
 
-					nsMgr_<%=cid%>.delete("<%=entitytype %>", useExternal_<%=cid%>, <%=conn.getName() %>.InternalId);
+					nsMgr_<%=cid%>.delete("<%=entitytype %>", <%=conn.getName() %>.InternalId);
 					globalMap.put("<%=cid%>_CURRENT_INTERNALID", Integer.parseInt(<%=conn.getName() %>.InternalId));	
 
 <%
