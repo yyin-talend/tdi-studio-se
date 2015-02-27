@@ -178,15 +178,17 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						
 						// Construct a search for body fields
 						if(regularSearch) {
+							int index = 0;
 							for (Map<String, String> keyColumn : bodyField) {
 %> 
 
-								String[] rValues = new String[] { <%=keyColumn.get("RVALUE")%> };
-								java.util.ArrayList<String> searchCriteria = new java.util.ArrayList<String>();
-								searchCriteria.addAll(java.util.Arrays.asList(rValues));
-								nsMgr_<%=cid%>.search("<%=searchEntity%>", "<%=keyColumn.get("INPUT_COLUMN")%>", "<%=keyColumn.get("OPERATOR")%>", searchCriteria, "null"); 
+								String[] rValues_<%=cid %>_<%=index %> = new String[] { <%=keyColumn.get("RVALUE")%> };
+								java.util.ArrayList<String> searchCriteria_<%=cid %>_<%=index %> = new java.util.ArrayList<String>();
+								searchCriteria_<%=cid %>_<%=index %>.addAll(java.util.Arrays.asList(rValues_<%=cid %>_<%=index %>));
+								nsMgr_<%=cid%>.search("<%=searchEntity%>", "<%=keyColumn.get("INPUT_COLUMN")%>", "<%=keyColumn.get("OPERATOR")%>", searchCriteria_<%=cid %>_<%=index %>, "null"); 
 
 <%
+								index++;
 							}
 						}
 						
