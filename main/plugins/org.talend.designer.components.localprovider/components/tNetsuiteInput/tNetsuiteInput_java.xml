@@ -15475,10 +15475,10 @@
         <IMPORTS>
             <IMPORT NAME="Netsuite_Client" MODULE="Netsuite_Client.jar" REQUIRED="true" />
             <IMPORT NAME="NetSuite_Management" MODULE="NetSuite_Management.jar" REQUIRED="true" />
-            <IMPORT NAME="CXF-CORE" MODULE="cxf-core-3.0.3.jar" REQUIRED="true" />
-            <IMPORT NAME="CXF-RT-DATABINDING-JAXB" MODULE="cxf-rt-databinding-jaxb-3.0.3.jar" REQUIRED="true" />
-            <IMPORT NAME="CXF-RT-FRONTEND-SIMPLE" MODULE="cxf-rt-frontend-simple-3.0.3.jar" REQUIRED="true" />
-            <IMPORT NAME="CXF-RT-TRANSPORTS-HTTP" MODULE="cxf-rt-transports-http-3.0.3.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-CORE" MODULE="cxf-core-3.0.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.0.3.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-RT-DATABINDING-JAXB" MODULE="cxf-rt-databinding-jaxb-3.0.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-databinding-jaxb-3.0.3.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-RT-FRONTEND-SIMPLE" MODULE="cxf-rt-frontend-simple-3.0.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-frontend-simple-3.0.3.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-RT-TRANSPORTS-HTTP" MODULE="cxf-rt-transports-http-3.0.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-transports-http-3.0.3.jar" REQUIRED="true" />
         </IMPORTS>
     </CODEGENERATION>
     
