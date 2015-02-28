@@ -204,7 +204,7 @@ public class FileUtils{
 
     public static byte[] readFilePer8Mb(File srcFile,int index) throws java.io.IOException{
         if(index < 0){
-            throw new IllegalArgumentException("Index must be positive integer.");
+            throw new IllegalArgumentException("Index must be nonnegative integer.");
         }
 
         byte[] readBytsArr = null;

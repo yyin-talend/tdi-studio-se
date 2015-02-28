@@ -33,11 +33,19 @@
 
     <PARAMETERS>
         <PARAMETER
+          NAME="PROPERTY"
+          FIELD="PROPERTY_TYPE"
+          SHOW="true"
+          NUM_ROW="10"
+          REPOSITORY_VALUE="SALESFORCE" />
+
+        <PARAMETER
           NAME="USER"
           FIELD="TEXT"
           NUM_ROW="20"
           REQUIRED="true"
           GROUP="CONNECTION_INFO"
+          REPOSITORY_VALUE="USER_NAME"
         >
           <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -48,6 +56,7 @@
           NUM_ROW="20"
           REQUIRED="true"
           GROUP="CONNECTION_INFO"
+          REPOSITORY_VALUE="PASSWORD"
         >
           <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -58,6 +67,7 @@
           NUM_ROW="30"
           REQUIRED="true"
           GROUP="CONNECTION_INFO"
+          REPOSITORY_VALUE="ENDPOINT"
         >
           <DEFAULT>"https://login.salesforce.com/services/Soap/u/32.0"</DEFAULT>
         </PARAMETER>
@@ -105,69 +115,23 @@
         >
         <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
         </PARAMETER>
-
-    <!-- hidden parameters -->
-    <PARAMETER
-      NAME="CHARSET"
-      FIELD="TEXT"
-      NUM_ROW="900"
-      REQUIRED="true"
-      SHOW="false"
-      GROUP="HIDDEN_GROUP"
-    >
-      <DEFAULT>"UTF-8"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="FIELDS_DELIMITED_BY"
-      FIELD="TEXT"
-      NUM_ROW="900"
-      REQUIRED="true"
-      SHOW="false"
-      GROUP="HIDDEN_GROUP"
-    >
-      <DEFAULT>","</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="FIELDS_ENCLOSED_BY"
-      FIELD="TEXT"
-      NUM_ROW="950"
-      REQUIRED="true"
-      SHOW="false"
-      GROUP="HIDDEN_GROUP"
-    >
-      <DEFAULT>"\\\""</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="LINES_TERMINATED_BY"
-      FIELD="TEXT"
-      NUM_ROW="950"
-      REQUIRED="true"
-      SHOW="false"
-      GROUP="HIDDEN_GROUP"
-    >
-      <DEFAULT>"\\n"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="NUMERIC_FORMAT"
-      FIELD="TEXT"
-      NUM_ROW="950"
-      REQUIRED="true"
-      SHOW="false"
-      GROUP="HIDDEN_GROUP"
-    >
-      <DEFAULT>"#.#"</DEFAULT>
-    </PARAMETER>
     </PARAMETERS>
 
     <ADVANCED_PARAMETERS>
         <PARAMETER
+          NAME="ENCODING"
+          FIELD="ENCODING_TYPE"
+          NUM_ROW="15"
+          REQUIRED="true"
+          NOT_SHOW_IF="UPLODE_JSON_METADATA == 'false'">
+          <DEFAULT>"UTF-8"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
           NAME="UPLODE_JSON_METADATA"
           FIELD="CHECK"
           NUM_ROW="30"
+          SHOW="false"
         >
         <DEFAULT>true</DEFAULT>
         </PARAMETER>
@@ -177,6 +141,7 @@
           FIELD="CHECK"
           NUM_ROW="35"
           GROUP="JSON_SCHMEA"
+          NOT_SHOW_IF="UPLODE_JSON_METADATA == 'false'"
         >
         <DEFAULT>true</DEFAULT>
         </PARAMETER>
@@ -188,7 +153,8 @@
           REQUIRED="true"
           GROUP="JSON_SCHMEA"
           NOT_SHOW_IF="(AUTO_GENERATE_JSON_METADATA_DESCRIPTION == 'true')
-                    OR (SPECIFY_JSON_METADATA == 'true')"
+                    OR (SPECIFY_JSON_METADATA == 'true')
+                    OR (UPLODE_JSON_METADATA == 'false')"
         >
           <DEFAULT>0</DEFAULT>
         </PARAMETER>
@@ -200,7 +166,8 @@
           REQUIRED="true"
           GROUP="JSON_SCHMEA"
           NOT_SHOW_IF="(AUTO_GENERATE_JSON_METADATA_DESCRIPTION == 'true')
-                    OR (SPECIFY_JSON_METADATA == 'true')"
+                    OR (SPECIFY_JSON_METADATA == 'true')
+                    OR (UPLODE_JSON_METADATA == 'false')"
         >
         <DEFAULT>"SalesData"</DEFAULT>
         </PARAMETER>
@@ -212,7 +179,8 @@
           REQUIRED="true"
           GROUP="JSON_SCHMEA"
           NOT_SHOW_IF="(AUTO_GENERATE_JSON_METADATA_DESCRIPTION == 'true')
-                    OR (SPECIFY_JSON_METADATA == 'true')"
+                    OR (SPECIFY_JSON_METADATA == 'true')
+                    OR (UPLODE_JSON_METADATA == 'false')"
         >
         <DEFAULT>"Sales Data"</DEFAULT>
         </PARAMETER>
@@ -224,9 +192,66 @@
           REQUIRED="true"
           GROUP="JSON_SCHMEA"
           NOT_SHOW_IF="(AUTO_GENERATE_JSON_METADATA_DESCRIPTION == 'true')
-                    OR (SPECIFY_JSON_METADATA == 'true')"
+                    OR (SPECIFY_JSON_METADATA == 'true')
+                    OR (UPLODE_JSON_METADATA == 'false')"
         >
-        <DEFAULT>"CRM.SalesData"</DEFAULT>
+        <DEFAULT>"CRM"</DEFAULT>
+        </PARAMETER>
+
+        <!-- hidden parameters -->
+        <PARAMETER
+          NAME="CHARSET"
+          FIELD="TEXT"
+          NUM_ROW="45"
+          REQUIRED="true"
+          SHOW="false"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"UTF-8"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="FIELDS_DELIMITED_BY"
+          FIELD="TEXT"
+          NUM_ROW="45"
+          REQUIRED="true"
+          SHOW="false"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>","</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="FIELDS_ENCLOSED_BY"
+          FIELD="TEXT"
+          NUM_ROW="48"
+          REQUIRED="true"
+          SHOW="false"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"\""</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="LINES_TERMINATED_BY"
+          FIELD="TEXT"
+          NUM_ROW="48"
+          REQUIRED="true"
+          SHOW="false"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"\n"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="NUMERIC_FORMAT"
+          FIELD="TEXT"
+          NUM_ROW="48"
+          REQUIRED="true"
+          SHOW="false"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"#.##"</DEFAULT>
         </PARAMETER>
 
         <PARAMETER
@@ -257,7 +282,8 @@
           NAME="GENERATE_JSON_IN_FILE"
           FIELD="CHECK"
           NUM_ROW="70"
-          SHOW_IF="(SPECIFY_JSON_METADATA == 'false') AND (UPLODE_JSON_METADATA == 'true')"
+          SHOW_IF="(SPECIFY_JSON_METADATA == 'false')
+               AND (UPLODE_JSON_METADATA == 'true')"
         >
         <DEFAULT>false</DEFAULT>
         </PARAMETER>

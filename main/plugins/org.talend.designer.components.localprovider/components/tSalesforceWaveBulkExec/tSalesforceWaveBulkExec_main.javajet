@@ -16,13 +16,21 @@ imports="
         java.util.HashMap
 "
 %>
+
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
 
     String userName = ElementParameterParser.getValue(node,"__USER__");
-    String password = ElementParameterParser.getValue(node,"__PASSWORD__");
+%>
+
+   <%
+    String passwordFieldName = "__PASSWORD__";
+    %>
+   <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+<%
     String endPoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
 
     String datasetName = ElementParameterParser.getValue(node,"__DATASET__");
@@ -31,17 +39,16 @@ imports="
 
     String jsonMetadataPath = ElementParameterParser.getValue(node,"__JSON_METADATA_PATH__");
     boolean uploadJsonMetadata = "true".equals(ElementParameterParser.getValue(node,"__UPLODE_JSON_METADATA__"));
-
     boolean specifyJsonMetadata = "true".equals(ElementParameterParser.getValue(node,"__SPECIFY_JSON_METADATA__"));
 
-    boolean willGenerateJsonMetadata = !specifyJsonMetadata && uploadJsonMetadata;
     boolean generateJsonInFile = "true".equals(ElementParameterParser.getValue(node,"__GENERATE_JSON_IN_FILE__"));
-    boolean doCleanWork = generateJsonInFile;
+    boolean doCleanWork = generateJsonInFile && !specifyJsonMetadata;
+    String  encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
         //Step one: Connect to salesforce
         com.sforce.ws.ConnectorConfig connectorConfig_<%= cid %> = new com.sforce.ws.ConnectorConfig();
         connectorConfig_<%= cid %>.setUsername(<%= userName %>);
-        connectorConfig_<%= cid %>.setPassword(<%= password %>);
+        connectorConfig_<%= cid %>.setPassword(decryptedPassword_<%=cid%>);
         connectorConfig_<%= cid %>.setAuthEndpoint(<%= endPoint %>);
 
         com.sforce.soap.partner.PartnerConnection partnerConnection_<%= cid %> = null;
@@ -56,6 +63,19 @@ imports="
         sobject_<%= cid %>.setType("InsightsExternalData");
         sobject_<%= cid %>.setField("Format","CSV");
         sobject_<%= cid %>.setField("EdgemartAlias", <%= datasetName %>);
+        <%
+          if("".equals(datasetName) || "\"\"".equals(datasetName)){
+             %>
+//////////////////////////////////////// Compile Error //////////////////////////////////////////////////
+            datasetName can't be empty string or ""
+//////////////////////////////////////// Compile Error //////////////////////////////////////////////////
+             <%
+          }
+         %>
+        if(!com.talend.salesforce.wave.SalesforceWaveHelper.isValidValue(<%= datasetName %>)){
+             System.err.println("DatasetName is invalid,thus it may lead to upload failed.");
+             System.err.println("Names can use only alpha-numeric or '_' characters");
+        }
         <%
           if(uploadJsonMetadata){
         %>
@@ -77,14 +97,14 @@ imports="
                             throw e;
                     }
                      <%
-                }else if(!specifyJsonMetadata && !generateJsonInFile){
+                }else if(!specifyJsonMetadata && !generateJsonInFile){//Generate JSON Metadata in Memory
                      %>
                         metadataJsonInBytes_<%= cid %> = com.talend.salesforce.wave.SalesforceWaveHelper
                                                             .generateJsonMetadata(
                                                                null
                                                                ,metadataColumnRuntimeList_<%= cid %>
                                                                ,customConfig_<%= cid %>
-                                                               ).getBytes();
+                                                            ).getBytes(<%= encoding %>);
                      <%
                 }else{
                     %>
@@ -109,7 +129,15 @@ imports="
                 if(result.isSuccess()){
                     parentId_<%= cid %> = result.getId();
                 }else{
-                    throw new RuntimeException("Saving InsightsExternalData failed.");
+                    throw new RuntimeException("Saving InsightsExternalData failed."
+                        <%
+                          if(uploadJsonMetadata){
+                              %>
+                                 + "There is something wrong with JSON metadata."
+                              <%
+                          }
+                        %>
+                    );
                 }
             }
         }catch(com.sforce.ws.ConnectionException e){
@@ -123,11 +151,10 @@ imports="
         }
 
         <% 
-           if(generateJsonInFile){
+           if(generateJsonInFile && !specifyJsonMetadata){
                 %>
         //Spilt file to 8 MB
         List<java.io.File> splitFileList_<%= cid %> = com.talend.io.FileUtils.splitFilePer8Mb(csvFile_<%= cid %>,tempDirectory_<%= cid %>);
-
 
         for(int i=0,j=splitFileList_<%= cid %>.size(); i < j; i++){
             com.sforce.soap.partner.sobject.SObject sobject_for_<%= cid %> = new com.sforce.soap.partner.sobject.SObject();

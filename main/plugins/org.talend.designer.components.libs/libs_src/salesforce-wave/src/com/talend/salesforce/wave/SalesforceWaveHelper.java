@@ -7,15 +7,14 @@ import java.util.List;
 
 public class SalesforceWaveHelper{
     public static String generateJsonMetadata(java.io.File jsonFile,List<MetadataColumnRuntime> imatadataColumnList,java.util.Map<String,Object> customedConfig){
-      	String jsonMetadataStr = null;
+        String jsonMetadataStr = null;
         StringBuilder strBuilder = new StringBuilder("{");//The left brace
             strBuilder.append("\"fileFormat\":{");
             strBuilder.append("\"charsetName\":");                       strBuilder.append("\"").append(customedConfig.get("charsetName")).append("\"");
             strBuilder.append(",\"fieldsDelimitedBy\":");                strBuilder.append("\"").append(customedConfig.get("fieldsDelimitedBy")).append("\"");
             strBuilder.append(",\"fieldsEnclosedBy\":");                 strBuilder.append("\"").append(customedConfig.get("fieldsEnclosedBy")).append("\"");
             strBuilder.append(",\"linesTerminatedBy\":");                strBuilder.append("\"").append(customedConfig.get("linesTerminatedBy")).append("\"");
-
-            strBuilder.append(customedConfig.get("numberOfLinesToIgnore"));
+            strBuilder.append(",\"numberOfLinesToIgnore\":");            strBuilder.append(customedConfig.get("numberOfLinesToIgnore"));
             strBuilder.append("},");//File Format Section done.
 
             strBuilder.append("\"objects\":[{");
@@ -37,7 +36,7 @@ public class SalesforceWaveHelper{
                }
                 strBuilder.append("{");
                 strBuilder.append("\"name\":");                           strBuilder.append("\"").append(imetadataColumn.getLabel()).append("\"");
-                strBuilder.append(",\"fullyQualifiedName\":");            strBuilder.append("\"").append(customedConfig.get("UniqueApiName").replace("\"",""));
+                strBuilder.append(",\"fullyQualifiedName\":");            strBuilder.append("\"").append(customedConfig.get("UniqueApiName"));
                                                                           strBuilder.append(".");
                                                                           strBuilder.append(imetadataColumn.getLabel()).append("\"");
                 String description = imetadataColumn.getComment();
@@ -50,10 +49,12 @@ public class SalesforceWaveHelper{
                 String salesforceWaveType = SalesforceWaveHelper.convertTalendType2SalesforceWaveType(imetadataColumn);
                 strBuilder.append(",\"type\":");                          strBuilder.append("\"").append(salesforceWaveType).append("\"");
             if("Numeric".equalsIgnoreCase(salesforceWaveType)){
-                strBuilder.append(",\"precision\":");                     strBuilder.append("\"").append(imetadataColumn.getLength()).append("\"");
-                strBuilder.append(",\"scale\":");                         strBuilder.append("\"").append(imetadataColumn.getPrecision()).append("\"");
+                strBuilder.append(",\"precision\":");                     strBuilder.append(imetadataColumn.getLength());
+                strBuilder.append(",\"scale\":");                         strBuilder.append(imetadataColumn.getPrecision());
                     if(defaultValue != null && !"".equals(defaultValue)){
-                strBuilder.append(",\"defaultValue\":");                  strBuilder.append("\"").append(defaultValue).append("\"");
+                strBuilder.append(",\"defaultValue\":");                  strBuilder.append(defaultValue);
+                    }else{
+                strBuilder.append(",\"defaultValue\":");                  strBuilder.append(0);
                     }
               }
 
@@ -79,7 +80,6 @@ public class SalesforceWaveHelper{
              strBuilder.append("}");//The right brace
              
              jsonMetadataStr = strBuilder.toString();
-
              if(jsonFile != null){
                  java.io.BufferedWriter buffWriter = null;
                  try{
@@ -115,5 +115,17 @@ public class SalesforceWaveHelper{
             }else{
                 return "Text";
             }
+        }
+
+        public static boolean isValidUniqueApiName(String uniqueApiName){
+            boolean valid = true;
+            valid = uniqueApiName.matches("^[A-Za-z][A-Za-z0-9_]*$");
+            valid = valid && !uniqueApiName.endsWith("_");
+            valid = valid && !uniqueApiName.contains("__");
+            return valid;
+        }
+
+        public static boolean isValidValue(String value){
+               return value.matches("^[A-Za-z0-9_]+$");
         }
     }

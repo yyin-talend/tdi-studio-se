@@ -22,42 +22,44 @@ imports="
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
 
-    String nLines2Ingore = ElementParameterParser.getValue(node,"__NUMBER_OF_LINES_TO_IGNORE__");
-    String csvDataPath = ElementParameterParser.getValue(node,"__LOAD_DATA_PATH__");
-
-    boolean specifyJsonMetadata = "true".equals(ElementParameterParser.getValue(node,"__SPECIFY_JSON_METADATA__"));
-    String jsonMetadataPath = ElementParameterParser.getValue(node,"__JSON_METADATA_PATH__");
     boolean uploadJsonMetadata = "true".equals(ElementParameterParser.getValue(node,"__UPLODE_JSON_METADATA__"));
+    boolean specifyJsonMetadata = "true".equals(ElementParameterParser.getValue(node,"__SPECIFY_JSON_METADATA__"));
+    String  jsonMetadataPath = ElementParameterParser.getValue(node,"__JSON_METADATA_PATH__");
     boolean autoGenerateMetadataDesc = "true".equals(ElementParameterParser.getValue(node,"__AUTO_GENERATE_JSON_METADATA_DESCRIPTION__"));
             autoGenerateMetadataDesc = autoGenerateMetadataDesc && !specifyJsonMetadata;
 
+    String nLines2Ingore = ElementParameterParser.getValue(node,"__NUMBER_OF_LINES_TO_IGNORE__");
     String uniqueApiName = ElementParameterParser.getValue(node,"__UNIQUE_API_NAME__");
-    String fullyQualifiedName = ElementParameterParser.getValue(node,"__FULLY_QUALIFIED_NAME__");
     String label = ElementParameterParser.getValue(node,"__DATA_LABEL__");
+    String fullyQualifiedName = ElementParameterParser.getValue(node,"__FULLY_QUALIFIED_NAME__");
 
+    //hidden parameters
     String charsetName = ElementParameterParser.getValue(node,"__CHARSET__");
     String fieldsDelimitedBy = ElementParameterParser.getValue(node,"__FIELDS_DELIMITED_BY__");
     String fieldsEnclosedBy = ElementParameterParser.getValue(node,"__FIELDS_ENCLOSED_BY__");
     String linesTerminatedBy = ElementParameterParser.getValue(node,"__LINES_TERMINATED_BY__");
     String numericFormat = ElementParameterParser.getValue(node,"__NUMERIC_FORMAT__");
 
-    String storagePath = ElementParameterParser.getValue(node,"__CUSTOM_FOLDER__");
     boolean generateJsonInFile = "true".equals(ElementParameterParser.getValue(node,"__GENERATE_JSON_IN_FILE__"));
+    String storagePath = ElementParameterParser.getValue(node,"__CUSTOM_FOLDER__");
 
     boolean willGenerateJsonMetadata = !specifyJsonMetadata && uploadJsonMetadata;//In File or Memory
-
 %>
 
 <%
+    //Generate JSON in File
     if(willGenerateJsonMetadata && generateJsonInFile){
 %>
         String generateJsonMetadataPath_<%= cid %> = null;
-        String tempDirectoryPath_<%= cid %> = <%= storagePath %>.replace("\\","/");
+        String tempDirectoryPath_<%= cid %> = (<%= storagePath %>).replace("\\","/");
+        if(tempDirectoryPath_<%= cid %>.endsWith("/")){
+            tempDirectoryPath_<%= cid %> = tempDirectoryPath_<%= cid %>.substring(0,tempDirectoryPath_<%= cid %>.length()-1);
+        }
 
         String timestamp_<%= cid %> = null;
         String jsonMetadataFileName_<%= cid %> = null;
         timestamp_<%= cid %> = new java.text.SimpleDateFormat("yyyyMMdd_HH_mm_ss").format(new java.util.Date());
-        jsonMetadataFileName_<%= cid %> = "salesforce_wave_json_metadata_<%= cid %>_"+timestamp_<%= cid %>+".json";
+        jsonMetadataFileName_<%= cid %> = "SFwaveMetadata_"+timestamp_<%= cid %>+".json";
         generateJsonMetadataPath_<%= cid %> = tempDirectoryPath_<%= cid %> + java.io.File.separator + jsonMetadataFileName_<%= cid %>;
         generateJsonMetadataPath_<%= cid %> = generateJsonMetadataPath_<%= cid %>.replace("\\","/");
 
@@ -65,7 +67,7 @@ imports="
         if(!tempDirectory_<%= cid %>.exists()){
              boolean createDirOK_<%= cid %> = tempDirectory_<%= cid %>.mkdir();
              if(!createDirOK_<%= cid %>){
-                  throw new RuntimeException("Can not create temporary directory: tempDirectoryPath_<%= cid %>, please set the right file permission and try again!");
+                  throw new RuntimeException("Can not create temporary directory: tempDirectoryPath_<%= cid %>, please set the right file permission and try again.");
              }
         }
 <%
@@ -132,15 +134,14 @@ imports="
         }
 
         %>
-
            java.util.Map<String,Object> customConfig_<%= cid %> = new java.util.HashMap<String,Object>();
                     <% 
                         if(autoGenerateMetadataDesc){
                             %>
                                customConfig_<%= cid %>.put("numberOfLinesToIgnore",0);
-                               customConfig_<%= cid %>.put("UniqueApiName","\"SalesData\"");
-                               customConfig_<%= cid %>.put("fullyQualifiedName","\"Sales Data\"");
-                               customConfig_<%= cid %>.put("label","\"CRM.SalesData\"");
+                               customConfig_<%= cid %>.put("UniqueApiName","SalesData");
+                               customConfig_<%= cid %>.put("fullyQualifiedName","Sales Data");
+                               customConfig_<%= cid %>.put("label","CRM.SalesData");
                             <%
                         }else{
                             %>
@@ -148,10 +149,33 @@ imports="
                                customConfig_<%= cid %>.put("UniqueApiName",<%= uniqueApiName %>);
                                customConfig_<%= cid %>.put("fullyQualifiedName",<%= fullyQualifiedName %>);
                                customConfig_<%= cid %>.put("label",<%= label %>);
+                               if(!com.talend.salesforce.wave.SalesforceWaveHelper.isValidUniqueApiName(<%= uniqueApiName %>)){
+                                    System.err.println("UniqueApiName is invalid,thus it may lead to upload failed.");
+                                    System.err.println("UniqueApiName must begin with a letter and use only alphanumeric characters and underscores."
+                                                      + "It can't include spaces, end with an underscore, or have two consecutive underscores.");
+                               }
+                               if(!com.talend.salesforce.wave.SalesforceWaveHelper.isValidValue(<%= fullyQualifiedName %>)){
+                                    System.err.println("fullyQualifiedName is invalid,thus it may lead to upload failed.");
+                                    System.err.println("Names can use only alpha-numeric or '_' characters");
+                               }
                             <%
                         }
                      %>
+                          <%
+                              if("\"\n\"".equals(linesTerminatedBy)){
+                                    linesTerminatedBy = "\"\\\\n\"";
+                              }else if("\"\r\n\"".equals(linesTerminatedBy)){
+                                    linesTerminatedBy = "\"\\\\r\\\\n\"";
+                              }else if("\"\r\"".equals(linesTerminatedBy)){
+                                    linesTerminatedBy = "\"\\\\r\"";
+                              }else{
+                                   linesTerminatedBy = "\"\\\\n\"";
+                              }
 
+                              if("\"\\\"\"".equals(fieldsEnclosedBy)){
+                                   fieldsEnclosedBy = "\"\\\\\\\"\"";
+                              }
+                           %>
                               customConfig_<%= cid %>.put("charsetName",<%= charsetName %>);
                               customConfig_<%= cid %>.put("fieldsDelimitedBy",<%= fieldsDelimitedBy %>);
                               customConfig_<%= cid %>.put("fieldsEnclosedBy",<%= fieldsEnclosedBy %>);
