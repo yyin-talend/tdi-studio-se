@@ -125,6 +125,7 @@
 		<module>main/plugins/org.talend.libraries.salesforce</module>
 		<module>main/plugins/org.talend.libraries.servlet</module>
 		<module>main/plugins/org.talend.libraries.slf4j</module>
+		<module>main/plugins/org.talend.libraries.uniserv</module>
 		<module>main/plugins/org.talend.libraries.w3c</module>
 		<module>main/plugins/org.talend.libraries.xml</module>
 		<module>main/plugins/org.talend.rcp.branding.tos</module>
