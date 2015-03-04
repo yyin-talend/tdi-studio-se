@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.model.process.jobsettings;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,6 +46,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -289,7 +291,7 @@ public class JobSettingsManager {
         param = new ElementParameter(process);
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
         param.setValue(false);
-        param.setGroupDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName()); //$NON-NLS-1$
+        param.setGroupDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
@@ -718,6 +720,7 @@ public class JobSettingsManager {
 
     private final static class IgnoreCaseComparator implements Comparator<String> {
 
+        @Override
         public int compare(String o1, String o2) {
             return o1.compareToIgnoreCase(o2);
         }
@@ -936,7 +939,18 @@ public class JobSettingsManager {
                     .getValue();
             String fileSparator = (String) process.getElementParameter(EParameterName.FIELDSEPARATOR.getName()).getValue();
             tContextLoadNode.getElementParameter(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName()).setValue(inputFile);
-            tContextLoadNode.getElementParameter(EParameterName.FIELDSEPARATOR.getName()).setValue(fileSparator);
+            if (getMetadataChars().contains(TalendQuoteUtils.removeQuotes(fileSparator))) {
+                // TDI-31730: in case the fileSeparator is one of the metacharacters,need to set the backslash
+                fileSparator = TalendQuoteUtils.removeQuotes(fileSparator);
+                if (fileSparator.equals(File.separator)) {
+                    fileSparator = TalendQuoteUtils.addQuotes("\\\\\\" + fileSparator); //$NON-NLS-1$
+                } else {
+                    fileSparator = TalendQuoteUtils.addQuotes("\\\\" + fileSparator); //$NON-NLS-1$
+                }
+            }
+            String regex = "\"^([^\"+" + fileSparator + "+\"]*)\"+" + fileSparator + "+\"(.*)$\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+            tContextLoadNode.getElementParameter(JobSettingsConstants.IMPLICIT_TCONTEXTLOAD_REGEX).setValue(regex);
         } else {
             // is db
             paramName = JobSettingsConstants.getExtraParameterName(EParameterName.URL.getName());
@@ -1172,9 +1186,9 @@ public class JobSettingsManager {
             }
         }
 
-        if (driverJarValue != null && driverJarValue.startsWith("[") && driverJarValue.endsWith("]")) { //$NON-NLS-N$ //$NON-NLS-N$
+        if (driverJarValue != null && driverJarValue.startsWith("[") && driverJarValue.endsWith("]")) {
             driverJarValue = driverJarValue.substring(1, driverJarValue.length() - 1);
-            if (driverJarValue != null && driverJarValue.startsWith("{") && driverJarValue.endsWith("}")) { //$NON-NLS-N$ //$NON-NLS-N$
+            if (driverJarValue != null && driverJarValue.startsWith("{") && driverJarValue.endsWith("}")) {
                 driverJarValue = driverJarValue.substring(1, driverJarValue.length() - 1);
             }
         }
@@ -1189,5 +1203,10 @@ public class JobSettingsManager {
             realDbTypeForJDBC = ExtractMetaDataUtils.getInstance().getDbTypeByClassName(driverClassValue);
         }
         return realDbTypeForJDBC;
+    }
+
+    private static List<String> getMetadataChars() {
+        String[] metaChars = new String[] { "\\", "^", "$", ".", "?", "|", "[", "+", "*", "{", "(", ")", "}", "]" };
+        return Arrays.asList(metaChars);
     }
 }
