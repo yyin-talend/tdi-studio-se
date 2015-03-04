@@ -180,10 +180,11 @@ public class NodeAnchor extends ChopboxAnchor {
         // System.out.println("Simple: refresh target anchor of:" + source + " to:" + target);
         // }
         // }
-
+        boolean curvedStyle = DesignerPlugin.getDefault().getPreferenceStore()
+                .getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE);
         Point sourcePoint = null, targetPoint = null;
         sourcePoint = getDirectionPosition(this.connection, sourceRect.getCenter(), true);
-        if (sourcePoint == null) {
+        if ((sourcePoint == null) && !curvedStyle) {
             if ((sourceLocation.y < targetRect.getCenter().y)
                     && (targetRect.getCenter().y < (sourceLocation.y + sourceRect.height))) {
                 // contains
@@ -201,7 +202,7 @@ public class NodeAnchor extends ChopboxAnchor {
         if (targetPoint == null) {
             targetPoint = targetRect.getCenter();
         }
-        if (sourcePoint == null) {
+        if ((sourcePoint == null) && !curvedStyle) {
             if ((targetLocation.y < sourceRect.getCenter().y)
                     && (sourceRect.getCenter().y < (targetLocation.y + targetRect.height))) {
                 // contains

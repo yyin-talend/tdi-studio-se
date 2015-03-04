@@ -45,6 +45,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -382,6 +383,9 @@ public class EmfComponent extends AbstractComponent {
                     try {
                         ExternalNodesFactory.getInstance(this.getPluginExtension());
                     } catch (RuntimeException re) {// unfortunatly this methos throws a runtime Exception which is bad
+                        Exception compLoadException = new Exception("Component " + this.name //$NON-NLS-1$
+                                + " load error.\nbecause the exception:" + re.getCause().getMessage(), re); //$NON-NLS-1$
+                        MessageBoxExceptionHandler.process(compLoadException);
                         throw new BusinessException("Failed to load plugin :" + this.getPluginExtension(), re); //$NON-NLS-1$
                     }
                 }

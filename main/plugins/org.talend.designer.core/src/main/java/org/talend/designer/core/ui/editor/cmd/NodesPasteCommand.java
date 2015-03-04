@@ -437,36 +437,39 @@ public class NodesPasteCommand extends Command {
                     copyOfMetadataList.add(newTable);
                 }
                 pastedNode.setMetadataList(copyOfMetadataList);
-                IExternalNode externalNode = pastedNode.getExternalNode();
-                if (externalNode != null) {
-                    if (copiedNode.getExternalData() != null) {
-                        try {
-                            externalNode.setExternalData(copiedNode.getExternalData().clone());
-                        } catch (CloneNotSupportedException e) {
-                            ExceptionHandler.process(e);
-                        }
-                        ((Node) pastedNode).setExternalData(externalNode.getExternalData());
-                    }
-                    if (copiedNode.getExternalNode().getExternalEmfData() != null) {
-                        externalNode.setExternalEmfData(EcoreUtil.copy(copiedNode.getExternalNode().getExternalEmfData()));
-                    }
 
-                    for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
-                        String oldName = metaTable.getTableName();
-                        String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
-                        externalNode.renameOutputConnection(oldName, newName);
-                        CorePlugin.getDefault().getMapperService()
-                                .renameJoinTable(process, externalNode.getExternalData(), createdNames);
+            }
+            // TDQ-10039,Extract externalNode from above "else" to here.make copy tMatcheGroup works.
+            IExternalNode externalNode = pastedNode.getExternalNode();
+            if (externalNode != null) {
+                if (copiedNode.getExternalData() != null) {
+                    try {
+                        externalNode.setExternalData(copiedNode.getExternalData().clone());
+                    } catch (CloneNotSupportedException e) {
+                        ExceptionHandler.process(e);
                     }
-                    // when copy a external node, should also copy screeshot
-                    if (copiedNode.getExternalNode() != null) {
-                        ImageDescriptor screenshot = copiedNode.getExternalNode().getScreenshot();
-                        if (screenshot != null) {
-                            externalNode.setScreenshot(screenshot);
-                        }
+                    ((Node) pastedNode).setExternalData(externalNode.getExternalData());
+                }
+                if (copiedNode.getExternalNode().getExternalEmfData() != null) {
+                    externalNode.setExternalEmfData(EcoreUtil.copy(copiedNode.getExternalNode().getExternalEmfData()));
+                }
+
+                for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
+                    String oldName = metaTable.getTableName();
+                    String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
+                    externalNode.renameOutputConnection(oldName, newName);
+                    CorePlugin.getDefault().getMapperService()
+                            .renameJoinTable(process, externalNode.getExternalData(), createdNames);
+                }
+                // when copy a external node, should also copy screeshot
+                if (copiedNode.getExternalNode() != null) {
+                    ImageDescriptor screenshot = copiedNode.getExternalNode().getScreenshot();
+                    if (screenshot != null) {
+                        externalNode.setScreenshot(screenshot);
                     }
                 }
             }
+
             ((Node) pastedNode).getNodeLabel().setOffset(new Point(((Node) copiedNode).getNodeLabel().getOffset()));
             oldNameTonewNameMap.put(copiedNode.getUniqueName(), pastedNode.getUniqueName());
             if (copiedNode.getElementParametersWithChildrens() != null) {
@@ -481,7 +484,7 @@ public class NodesPasteCommand extends Command {
                                     Map<String, Object> newMap = new HashMap<String, Object>();
                                     newMap.putAll(map);
                                     // rename schemas
-									if (!oldMetaToNewMeta.isEmpty()) {
+                                    if (!oldMetaToNewMeta.isEmpty()) {
                                         boolean isSAPBapiInputSchema = "MAPPING_INPUT".equals(param.getName()) //$NON-NLS-1$
                                                 && "tSAPBapi".equals(copiedNode.getComponent().getName()); //$NON-NLS-1$
                                         if (EParameterName.SCHEMAS.name().equals(param.getName()) || isSAPBapiInputSchema) {
@@ -491,8 +494,8 @@ public class NodesPasteCommand extends Command {
                                                 newMap.put(EParameterName.SCHEMA.getName(), newSchemaName);
                                             }
                                         }
-                                    
-									}
+
+                                    }
 
                                     newValues.add(newMap);
                                 }

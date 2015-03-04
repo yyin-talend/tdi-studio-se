@@ -1513,6 +1513,10 @@ public class RunProcessContext {
         this.debugProcess = debugProcess;
     }
 
+    public org.eclipse.debug.core.model.IProcess getDebugProcess() {
+        return this.debugProcess;
+    }
+
     public void setSaveBeforeRun(boolean saveBeforeRun) {
         this.saveBeforeRun = saveBeforeRun;
     }
