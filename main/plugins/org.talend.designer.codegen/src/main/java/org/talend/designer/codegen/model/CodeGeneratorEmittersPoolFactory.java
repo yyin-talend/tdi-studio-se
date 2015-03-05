@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -45,6 +46,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.commons.runtime.utils.io.IOUtils;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
@@ -73,7 +75,6 @@ import org.talend.designer.codegen.config.TalendJetEmitter;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.spark.SparkPlugin;
 
 /**
  * Pool of initialized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation
@@ -392,7 +393,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
-            jetBean.addClassPath("SPARK_LIBRARIES", SparkPlugin.PLUGIN_ID); //$NON-NLS-1$
+            //jetBean.addClassPath("SPARK_LIBRARIES", SparkPlugin.PLUGIN_ID); //$NON-NLS-1$
 
             if (PluginChecker.isGEFAbstractMapLoaded()) {
                 jetBean.addClassPath("GEF_MAP", "org.talend.designer.gefabstractmap"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -415,6 +416,15 @@ public final class CodeGeneratorEmittersPoolFactory {
                         .getClassLoader());
             } else {
                 jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
+            }
+            if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && "SPARK".equals(component.getPaletteType())) { //$NON-NLS-1$ //$NON-NLS-2$
+                jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
+                try {
+                    jetBean.setClassLoader(Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
+                            .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader()); //$NON-NLS-1$
+                } catch (ClassNotFoundException e) {
+                    ExceptionHandler.process(e);
+                }
             }
             jetBeans.add(jetBean);
         }
