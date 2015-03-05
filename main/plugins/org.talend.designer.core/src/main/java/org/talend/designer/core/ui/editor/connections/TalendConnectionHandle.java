@@ -29,6 +29,7 @@ import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.ui.action.TalendCreateConnectionTool;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 
@@ -52,8 +53,13 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
      */
     @Override
     protected DragTracker createDragTracker() {
-        final List<Object> listArgs = new ArrayList<Object>();
 
+        final INodeConnector mainConnector = new NodeConnectorTool(nodePart).getConnector();
+        if (mainConnector == null) {
+            return null;
+        }
+
+        final List<Object> listArgs = new ArrayList<Object>();
         listArgs.add(null);
         listArgs.add(null);
         listArgs.add(null);
@@ -66,9 +72,9 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
 
             @Override
             public Object getObjectType() {
-                return "FLOW";
+                return mainConnector.getName();
             }
-        });
+        }, nodePart);
 
         return myConnectTool;
     }
@@ -122,8 +128,8 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
 
         ImageFigure imageFigure = new ImageFigure(image);
         imageFigure.setSize(image.getBounds().width, image.getBounds().height);
-        add(imageFigure);
 
+        add(imageFigure);
         setSize(imageFigure.getSize());
         super.validate();
     }

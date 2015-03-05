@@ -134,7 +134,6 @@ import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -184,6 +183,7 @@ import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
+import org.talend.designer.core.ui.editor.connections.NodeConnectorTool;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -1888,34 +1888,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 return;
             }
 
-            Node node = (Node) part.getModel();
-
-            final INodeConnector mainConnector;
-            if (node.isELTComponent()) {
-                mainConnector = node.getConnectorFromType(EConnectionType.TABLE);
-            } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getType())) {
-                INodeConnector tmp = null;
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                            .getService(ICamelDesignerCoreService.class);
-                    tmp = node.getConnectorFromType(camelService.getTargetConnectionType(node));
-                } else {
-                    tmp = node.getConnectorFromType(EConnectionType.ROUTE);
-                }
-                mainConnector = tmp;
-            } else {
-                mainConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
-            }
-
+            final INodeConnector mainConnector = new NodeConnectorTool((NodePart) part).getConnector();
             if (mainConnector == null) {
-                return;
-            }
-            if (mainConnector.getMaxLinkOutput() != -1) {
-                if (mainConnector.getCurLinkNbOutput() >= mainConnector.getMaxLinkOutput()) {
-                    return;
-                }
-            }
-            if (mainConnector.getMaxLinkOutput() == 0) {
                 return;
             }
 

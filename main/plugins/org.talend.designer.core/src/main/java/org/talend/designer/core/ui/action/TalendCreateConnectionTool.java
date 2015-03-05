@@ -13,29 +13,54 @@
 package org.talend.designer.core.ui.action;
 
 import org.eclipse.gef.DragTracker;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.CreationFactory;
+import org.talend.designer.core.ui.editor.nodes.NodePart;
 
 /**
  * DOC Talend class global comment. Detailled comment
  */
 public class TalendCreateConnectionTool extends TalendConnectionCreationTool implements DragTracker {
 
-    public TalendCreateConnectionTool(CreationFactory factory) {
+    private NodePart nodePart;
+
+    public TalendCreateConnectionTool(CreationFactory factory, NodePart nodePart) {
         super(factory, false);
         setUnloadWhenFinished(true);
+        this.nodePart = nodePart;
     }
 
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.eclipse.gef.tools.AbstractConnectionCreationTool#handleButtonUp(int)
-    // */
-    // @Override
-    // protected boolean handleButtonUp(int button) {
-    // // if (button == 3) {
-    // // super.handleButtonDown(1);
-    // // }
-    // return handleCreateConnection();
-    // }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.tools.AbstractConnectionCreationTool#handleButtonUp(int)
+     */
+    @Override
+    protected boolean handleButtonUp(int button) {
+        if (button == 1 && stateTransition(STATE_CONNECTION_STARTED, STATE_TERMINAL)) {
+            return handleCreateConnection();
+        }
 
+        super.handleButtonDown(button);
+        if (isInState(STATE_CONNECTION_STARTED)) {
+            // Fake a drag to cause feedback to be displayed immediately on
+            // mouse down.
+            handleDrag();
+        }
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.action.TalendConnectionCreationTool#handleCreateConnection()
+     */
+    @Override
+    protected boolean handleCreateConnection() {
+        Command endCommand = getCommand();
+        if (endCommand != null) {
+            nodePart.getViewer().getSelectionManager().deselect(nodePart);
+        }
+        return super.handleCreateConnection();
+    }
 }

@@ -189,12 +189,16 @@ public class TalendSelectionManager extends SelectionManager {
                 for (NodeContainerPart nodeContainerPart : nodeContainerParts) {
                     for (Object object : nodeContainerPart.getChildren()) {
                         if (object instanceof NodePart) {
-                            newSelection.add(object);
+                            if (!newSelection.contains(object)) {
+                                newSelection.add(object);
+                            }
                         }
                     }
                 }
             } else if (element instanceof NoteEditPart) {
-                newSelection.add(element);
+                if (!newSelection.contains(element)) {
+                    newSelection.add(element);
+                }
             } else if (!(element instanceof NodePart)) {
                 newSelection.remove(element);
             }

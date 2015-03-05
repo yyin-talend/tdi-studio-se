@@ -21,6 +21,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editpolicies.SelectionEditPolicy;
 import org.eclipse.gmf.runtime.diagram.ui.handles.ConnectionHandleLocator;
+import org.talend.core.model.process.INodeConnector;
+import org.talend.designer.core.ui.editor.connections.NodeConnectorTool;
 import org.talend.designer.core.ui.editor.connections.TalendConnectionHandle;
 
 /**
@@ -32,6 +34,8 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
 
     public static final String TALEND_FEEDBACK_LAYER = "TalendFeedbackLayer";
 
+    public static final String SELECTION_FEEDBACK = "SelectionFeedback";
+
     private IFigure layer;
 
     private FigureListener figureListener;
@@ -42,6 +46,8 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
 
     private TalendConnectionHandle handle = null;
 
+    private boolean hideHandle = false;
+
     public SelectionFeedbackEditPolicy(NodePart nodePart) {
         this.nodePart = nodePart;
         this.figureListener = new FigureListener() {
@@ -50,8 +56,7 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
             public void figureMoved(IFigure source) {
                 List selectedEditPart = getHost().getViewer().getSelectedEditParts();
                 if (selectedEditPart.contains(getHost())) {
-                    hideSelection();
-                    showFeedback();
+                    showFeedback(true);
                 }
 
             }
@@ -69,27 +74,91 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
             this.sourceFigure = getHostFigure();
             this.sourceFigure.addFigureListener(this.figureListener);
         }
-        showFeedback();
+        INodeConnector connector = new NodeConnectorTool(nodePart).getConnector();
+        if (connector == null) {
+            this.setHideHandle(true);
+            return;
+        } else {
+            this.setHideHandle(false);
+        }
+        showFeedback(false);
     }
 
-    void showFeedback() {
-        Rectangle bounds;
+    private void init() {
+        if (!(getHost().getModel() instanceof Node)) {
+            return;
+        }
         if (this.layer == null) {
             this.layer = getLayer(TALEND_FEEDBACK_LAYER);
         }
-        bounds = this.nodePart.getFigure().getBounds();
+
+        if (this.handle == null) {
+            this.handle = new TalendConnectionHandle(this.nodePart);
+            this.layer.add(this.handle);
+
+            // Register this figure with it's host editpart so mouse events
+            // will be propagated to it's host.
+            getHost().getViewer().getVisualPartMap().put(handle, getHost());
+        }
+    }
+
+    private void showFeedback() {
+        if (!(getHost().getModel() instanceof Node)) {
+            return;
+        }
+        if (this.layer == null) {
+            init();
+        }
+        if (this.handle == null) {
+            init();
+        }
+        if (!(this.layer.getChildren().contains(this.handle))) {
+            this.layer.add(this.handle);
+        }
+        Rectangle bounds = this.nodePart.getFigure().getBounds();
         Point center = bounds.getCenter();
         Point referencePoint = new Point(center.x + bounds.width / 2, center.y);
+        // if (figureIsDisplayed()) {
+        // return;
+        // }
+
+        ConnectionHandleLocator locator = new ConnectionHandleLocator(getHostFigure(), referencePoint);
+        handle.setLocator(locator);
+        // locator.addHandle(handle);
+        // handle.addMouseMotionListener(this);
+    }
+
+    void showFeedback(boolean isMove) {
+        if (this.layer == null) {
+            this.layer = getLayer(TALEND_FEEDBACK_LAYER);
+        }
+        if (isHideHandle()) {
+            return;
+        }
+        ConnectionHandleLocator locator = null;
         if (figureIsDisplayed()) {
+            if (isMove) {
+                Rectangle bounds = this.nodePart.getFigure().getBounds();
+                Point center = bounds.getCenter();
+                Point referencePoint = new Point(center.x + bounds.width / 2, center.y);
+
+                locator = new ConnectionHandleLocator(getHostFigure(), referencePoint);
+                handle.setLocator(locator);
+            }
             return;
         }
 
-        ConnectionHandleLocator locator = new ConnectionHandleLocator(getHostFigure(), referencePoint);
+        Rectangle bounds = this.nodePart.getFigure().getBounds();
+        Point center = bounds.getCenter();
+        Point referencePoint = new Point(center.x + bounds.width / 2, center.y);
+
+        locator = new ConnectionHandleLocator(getHostFigure(), referencePoint);
 
         if (getHost().getModel() instanceof Node) {
-            // if (handle == null) {
-            handle = new TalendConnectionHandle(this.nodePart);
-            handle.setLocator(locator);
+            if (handle == null) {
+                handle = new TalendConnectionHandle(this.nodePart);
+                handle.setLocator(locator);
+            }
             layer.add(handle);
             // }
 
@@ -120,7 +189,9 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
 
     @Override
     public void deactivate() {
+        hideSelection();
         super.deactivate();
+        this.handle = null;
     }
 
     @Override
@@ -141,4 +212,23 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
     protected void addSelectionListener() {
         super.addSelectionListener();
     }
+
+    /**
+     * Getter for hideHandle.
+     * 
+     * @return the hideHandle
+     */
+    public boolean isHideHandle() {
+        return this.hideHandle;
+    }
+
+    /**
+     * Sets the hideHandle.
+     * 
+     * @param hideHandle the hideHandle to set
+     */
+    public void setHideHandle(boolean hideHandle) {
+        this.hideHandle = hideHandle;
+    }
+
 }

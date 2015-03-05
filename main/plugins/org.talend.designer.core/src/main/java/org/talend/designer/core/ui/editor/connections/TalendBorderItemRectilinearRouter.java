@@ -17,6 +17,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.requests.CreateConnectionRequest;
+import org.eclipse.gmf.runtime.draw2d.ui.figures.PolylineConnectionEx;
 import org.eclipse.gmf.runtime.draw2d.ui.internal.routers.BorderItemRectilinearRouter;
 import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -51,50 +52,83 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
     public void routeBendpoints(Connection conn) {
         super.routeBendpoints(conn);
         manualPosition(conn);
-        dummyPosition(conn);
-    }
-
-    private void dummyPosition(Connection conn) {
-        if (!(conn instanceof TalendDummyConnection)) {
-            return;
-        }
-        EConnectionType connStyle = ConnectionManager.getNewConnectionType();
-        if (conn.getPoints().size() <= 2) {
-            Point firstPoint = conn.getPoints().getFirstPoint();
-            Point lastPoint = conn.getPoints().getLastPoint();
-            PointList pointList = new PointList();
-            pointList.addPoint(firstPoint);
-            pointList.addPoint((lastPoint.x + firstPoint.x) / 2, firstPoint.y);
-
-            pointList.addPoint((lastPoint.x + firstPoint.x) / 2, (lastPoint.y + firstPoint.y) / 2);
-
-            pointList.addPoint((lastPoint.x + firstPoint.x) / 2, lastPoint.y);
-            pointList.addPoint(lastPoint);
-
-            conn.setPoints(pointList);
-        }
     }
 
     private boolean manualPosition(Connection conn) {
         boolean alreadyHandle = false;
-        if (!(conn instanceof ConnectionFigure)) {
+        if (!(conn instanceof PolylineConnectionEx)) {
             return false;
         }
-        IConnection connection = ((ConnectionFigure) conn).getConnection();
-        if (!(connection.getSource() instanceof Node)) {
+        IConnection connection = null;
+        EConnectionCategory category = null;
+        EConnectionType lineStyle = null;
+        Rectangle sourceBounds = null;
+        Rectangle targetBounds = null;
+        if (conn instanceof ConnectionFigure) {
+            connection = ((ConnectionFigure) conn).getConnection();
+            if (!(connection.getSource() instanceof Node)) {
+                return false;
+            }
+            lineStyle = connection.getLineStyle();
+            category = lineStyle.getCategory();
+            sourceBounds = new Rectangle(((Node) connection.getSource()).getLocation(), ((Node) connection.getSource()).getSize());
+            targetBounds = new Rectangle(((Node) connection.getTarget()).getLocation(), ((Node) connection.getTarget()).getSize());
+        }
+
+        if (lineStyle == null) {
+            lineStyle = ConnectionManager.getNewConnectionType();
+            category = lineStyle.getCategory();
+        }
+
+        if (this.request != null) {
+            if (this.request.getSourceEditPart() == null) {
+                return false;
+            }
+
+            if (this.request.getTargetEditPart() == null) {
+                if (conn.getPoints().size() <= 2) {
+                    Point firstPoint = conn.getPoints().getFirstPoint();
+                    Point lastPoint = conn.getPoints().getLastPoint();
+                    PointList pointList = new PointList();
+                    pointList.addPoint(firstPoint);
+                    pointList.addPoint((lastPoint.x + firstPoint.x) / 2, firstPoint.y);
+
+                    pointList.addPoint((lastPoint.x + firstPoint.x) / 2, (lastPoint.y + firstPoint.y) / 2);
+
+                    pointList.addPoint((lastPoint.x + firstPoint.x) / 2, lastPoint.y);
+                    pointList.addPoint(lastPoint);
+
+                    conn.setPoints(pointList);
+                }
+                return false;
+            }
+
+        }
+
+        if ((sourceBounds == null) && this.request != null) {
+            Node source = (Node) this.request.getSourceEditPart().getModel();
+            if (source != null) {
+                sourceBounds = new Rectangle(source.getLocation(), source.getSize());
+            }
+        }
+
+        if ((targetBounds == null) && this.request != null) {
+            Node target = (Node) this.request.getTargetEditPart().getModel();
+            if (target != null) {
+                targetBounds = new Rectangle(target.getLocation(), target.getSize());
+            }
+        }
+
+        if (targetBounds == null) {
             return false;
         }
-        ((ConnectionFigure) conn).setRoundedBendpointsRadius(32);
-        EConnectionCategory category = connection.getLineStyle().getCategory();
-        Rectangle sourceBounds = new Rectangle(((Node) connection.getSource()).getLocation(),
-                ((Node) connection.getSource()).getSize());
-        Rectangle targetBounds = new Rectangle(((Node) connection.getTarget()).getLocation(),
-                ((Node) connection.getTarget()).getSize());
+
+        ((PolylineConnectionEx) conn).setRoundedBendpointsRadius(32);
         PointList points = conn.getPoints();
         PointList pointList = new PointList();
         Point firstpoint = points.getFirstPoint();
         Point lastpoint = points.getLastPoint();
-        if (category == EConnectionCategory.MAIN && connection.getLineStyle() != EConnectionType.FLOW_REF) {
+        if (category == EConnectionCategory.MAIN && lineStyle != EConnectionType.FLOW_REF) {
             if ((sourceBounds.x > targetBounds.x) && (sourceBounds.y == targetBounds.y)) {
                 pointList.addPoint(firstpoint);
                 pointList.addPoint(firstpoint.x + OFFSET, firstpoint.y);
@@ -129,10 +163,10 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
                 if ((firstpoint.x + lastpoint.x) / 2 - OFFSET <= firstpoint.x) {
                     return false;
                 }
-                ((ConnectionFigure) conn).setRoundedBendpointsRadius(16);
+                ((PolylineConnectionEx) conn).setRoundedBendpointsRadius(16);
             }
         } else if (category == EConnectionCategory.OTHER
-                && (connection.getLineStyle() == EConnectionType.FLOW_REF || connection.getLineStyle() == EConnectionType.TABLE_REF)) {
+                && (lineStyle == EConnectionType.FLOW_REF || lineStyle == EConnectionType.TABLE_REF)) {
             if (targetBounds.y == sourceBounds.y) {
                 pointList.addPoint(firstpoint);
                 pointList.addPoint(firstpoint.x, firstpoint.y + OFFSET);
@@ -155,7 +189,7 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
                 pointList.addPoint(lastpoint);
                 alreadyHandle = true;
             } else if (Math.abs(sourceBounds.x - targetBounds.x) == 4 * OFFSET) {
-                ((ConnectionFigure) conn).setRoundedBendpointsRadius(16);
+                ((PolylineConnectionEx) conn).setRoundedBendpointsRadius(16);
             }
         }
         if (alreadyHandle && pointList.size() > 0) {

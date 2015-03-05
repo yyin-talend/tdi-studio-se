@@ -308,7 +308,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeEditPolicy());
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new NodeGraphicalEditPolicy());
         installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeResizableEditPolicy());
-        installEditPolicy("SelectionFeedback", new SelectionFeedbackEditPolicy(this));
+        installEditPolicy(SelectionFeedbackEditPolicy.SELECTION_FEEDBACK, new SelectionFeedbackEditPolicy(this));
     }
 
     // ------------------------------------------------------------------------
