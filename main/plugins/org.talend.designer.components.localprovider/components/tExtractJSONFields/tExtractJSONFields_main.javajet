@@ -95,10 +95,10 @@ if(outConns!=null){
     }
 }
 
-boolean read_by_xpath = "true".equals(ElementParameterParser.getValue(node, "__READBYXPATH__"));
+String readBy = ElementParameterParser.getValue(node, "__READ_BY__");
 %>
 
-<%if(read_by_xpath) {
+<%if(!"JSONPATH".equals(readBy)) {
 	List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MAPPING__");
 	String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__");
 %>
