@@ -415,19 +415,20 @@ public final class CodeGeneratorEmittersPoolFactory {
                         .getClassLoader());
             } else {
                 jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
-            }
 
-            // Spark, M/R and Storm requires the plugin org.talend.designer.spark to be in the classpath in order to
-            // generate the code.
-            if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
-                try {
-                    jetBean.setClassLoader(Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
-                            .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader()); //$NON-NLS-1$
-                } catch (ClassNotFoundException e) {
-                    ExceptionHandler.process(e);
+                // Spark, M/R and Storm requires the plugin org.talend.designer.spark to be in the classpath in order to
+                // generate the code.
+                if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
+                    try {
+                        jetBean.setClassLoader(Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
+                                .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader()); //$NON-NLS-1$
+                    } catch (ClassNotFoundException e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
             }
+
             jetBeans.add(jetBean);
         }
         // When building the main part of the component, also attempt to build the other parts.
