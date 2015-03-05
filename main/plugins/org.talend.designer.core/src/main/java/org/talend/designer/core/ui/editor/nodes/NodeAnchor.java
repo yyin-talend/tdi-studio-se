@@ -29,6 +29,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.ui.process.IGraphicalNode;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -241,14 +242,23 @@ public class NodeAnchor extends ChopboxAnchor {
         }
         Dimension nodeSize = null;
         if (isSource) {
-            nodeSize = ((Node) connection.getSource()).getSize();
+            nodeSize = this.source.getSize();
         } else {
-            nodeSize = ((Node) connection.getTarget()).getSize();
+            nodeSize = this.target.getSize();
         }
 
-        EConnectionCategory category = connection.getLineStyle().getCategory();
+        EConnectionCategory category = null;
+        EConnectionType lineStyle = null;
+        if (connection != null) {
+            lineStyle = connection.getLineStyle();
+            category = lineStyle.getCategory();
+        } else {
+            lineStyle = ConnectionManager.getNewConnectionType();
+            category = lineStyle.getCategory();
+        }
+
         Point result = new Point(figCenter);
-        if (category == EConnectionCategory.MAIN && connection.getLineStyle() != EConnectionType.FLOW_REF) {
+        if (category == EConnectionCategory.MAIN && lineStyle != EConnectionType.FLOW_REF) {
             if (isSource) {
                 result.x = figCenter.x + nodeSize.width / 2;
             } else {
@@ -256,15 +266,13 @@ public class NodeAnchor extends ChopboxAnchor {
             }
             return result;
         } else if (category == EConnectionCategory.OTHER
-                && (connection.getLineStyle() == EConnectionType.FLOW_REF || connection.getLineStyle() == EConnectionType.TABLE_REF)) {
-            Rectangle sourceBounds = new Rectangle(((Node) connection.getSource()).getLocation(),
-                    ((Node) connection.getSource()).getSize());
-            Rectangle targetBounds = new Rectangle(((Node) connection.getTarget()).getLocation(),
-                    ((Node) connection.getTarget()).getSize());
+                && (lineStyle == EConnectionType.FLOW_REF || lineStyle == EConnectionType.TABLE_REF)) {
+            Rectangle sourceBounds = new Rectangle(this.source.getLocation(), this.source.getSize());
+            Rectangle targetBounds = new Rectangle(this.target.getLocation(), this.target.getSize());
 
             if (isSource) {
-                int sourceY = connection.getSource().getPosY();
-                int targetY = connection.getTarget().getPosY();
+                int sourceY = this.source.getPosY();
+                int targetY = this.target.getPosY();
                 if (sourceY <= targetY) {
                     if ((targetBounds.getTopRight().y == sourceBounds.getBottomLeft().y)) {
                         result.y = figCenter.y - nodeSize.height / 2;
@@ -281,8 +289,8 @@ public class NodeAnchor extends ChopboxAnchor {
                 return result;
             }
 
-            int sourceY = connection.getSource().getPosY();
-            int targetY = connection.getTarget().getPosY();
+            int sourceY = this.source.getPosY();
+            int targetY = this.target.getPosY();
             if (sourceY < targetY) {
                 result.y = figCenter.y - nodeSize.height / 2;
             } else {

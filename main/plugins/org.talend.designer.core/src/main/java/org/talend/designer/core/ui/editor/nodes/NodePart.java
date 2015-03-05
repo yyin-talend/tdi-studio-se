@@ -36,6 +36,7 @@ import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -74,6 +75,7 @@ import org.talend.core.ui.editor.JobEditorHandlerManager;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.process.IGraphicalNode;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
@@ -88,6 +90,7 @@ import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -305,6 +308,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeEditPolicy());
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new NodeGraphicalEditPolicy());
         installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeResizableEditPolicy());
+        installEditPolicy("SelectionFeedback", new SelectionFeedbackEditPolicy(this));
     }
 
     // ------------------------------------------------------------------------
@@ -469,16 +473,18 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      */
     @Override
     public ConnectionAnchor getSourceConnectionAnchor(final Request request) {
-        return new ChopboxAnchor(getFigure());
-        // CreateConnectionRequest connReq = (CreateConnectionRequest) request;
-        // Node source = (Node) ((NodePart) connReq.getSourceEditPart()).getModel();
+        if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            return new ChopboxAnchor(getFigure());
+        }
+        CreateConnectionRequest connReq = (CreateConnectionRequest) request;
+        Node source = (Node) ((NodePart) connReq.getSourceEditPart()).getModel();
         // Node target = (Node) ((NodePart) connReq.getTargetEditPart()).getModel();
         // // System.out.println("getSource=> location:" + connReq.getLocation() + " / source:" + source.getLocation() +
         // "
         // // / target:"
         // // + target.getLocation());
-        // sourceAnchor = new NodeAnchor((NodeFigure) getFigure(), source, false);
-        // return sourceAnchor;
+        sourceAnchor = new DummyNodeAnchor((NodeFigure) getFigure(), source, false);
+        return sourceAnchor;
     }
 
     /*
@@ -488,18 +494,20 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      */
     @Override
     public ConnectionAnchor getTargetConnectionAnchor(final Request request) {
-        return new ChopboxAnchor(getFigure());
-        // CreateConnectionRequest connReq = (CreateConnectionRequest) request;
-        // Node source = (Node) ((NodePart) connReq.getSourceEditPart()).getModel();
-        // Node target = (Node) ((NodePart) connReq.getTargetEditPart()).getModel();
+        if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            return new ChopboxAnchor(getFigure());
+        }
+        CreateConnectionRequest connReq = (CreateConnectionRequest) request;
+        Node source = (Node) ((NodePart) connReq.getSourceEditPart()).getModel();
+        Node target = (Node) ((NodePart) connReq.getTargetEditPart()).getModel();
         // // System.out.println("getTarget=> location:" + connReq.getLocation() + " / source:" + source.getLocation() +
         // "
         // // / target:"
         // // + target.getLocation());
-        // if (sourceAnchor != null) {
-        // sourceAnchor.setTarget(target);
-        // }
-        // return new NodeAnchor((NodeFigure) getFigure(), target, source, true);
+        if (sourceAnchor != null) {
+            sourceAnchor.setTarget(target);
+        }
+        return new DummyNodeAnchor((NodeFigure) getFigure(), source, target, true);
     }
 
     @Override

@@ -100,6 +100,6 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
      */
     @Override
     protected ConnectionRouter getDummyConnectionRouter(CreateConnectionRequest request) {
-        return new TalendBorderItemRectilinearRouter();
+        return new TalendBorderItemRectilinearRouter(request);
     }
 }
