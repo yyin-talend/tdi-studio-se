@@ -393,7 +393,6 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
-            //jetBean.addClassPath("SPARK_LIBRARIES", SparkPlugin.PLUGIN_ID); //$NON-NLS-1$
 
             if (PluginChecker.isGEFAbstractMapLoaded()) {
                 jetBean.addClassPath("GEF_MAP", "org.talend.designer.gefabstractmap"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -417,7 +416,10 @@ public final class CodeGeneratorEmittersPoolFactory {
             } else {
                 jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
             }
-            if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && "SPARK".equals(component.getPaletteType())) { //$NON-NLS-1$ //$NON-NLS-2$
+
+            // Spark, M/R and Storm requires the plugin org.talend.designer.spark to be in the classpath in order to
+            // generate the code.
+            if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
                 try {
                     jetBean.setClassLoader(Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
