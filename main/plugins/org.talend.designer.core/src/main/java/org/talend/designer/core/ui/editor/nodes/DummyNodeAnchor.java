@@ -57,31 +57,27 @@ public class DummyNodeAnchor extends NodeAnchor {
      */
     @Override
     public Point getLocation(Point reference) {
-        if ((target == null) || target.equals(source)) {
-            int nb = 0;
-            int connectionId = 0;
-            for (Connection connection : (List<Connection>) source.getOutgoingConnections()) {
-                if (connection.getTarget().equals(target)) {
-                    nb++;
-                    if (connection.equals(this.connection)) {
-                        connectionId = nb;
-                    }
+        int nb = 0;
+        int connectionId = 0;
+        for (Connection connection : (List<Connection>) source.getOutgoingConnections()) {
+            if (connection.getTarget().equals(target)) {
+                nb++;
+                if (connection.equals(this.connection)) {
+                    connectionId = nb;
                 }
             }
-            if (nb <= 1) {
-                return getSourceAnchorLocation(reference);
-            } else {
-                return getLocationForMultipleConnections(connectionId);
-            }
-
         }
-        return super.getLocation(reference);
 
+        if (nb <= 1) {
+            return getSourceAnchorLocation(reference);
+        } else {
+            return getLocationForMultipleConnections(connectionId);
+        }
     }
 
     public Point getSourceAnchorLocation(Point reference) {
         Point sourceCenter = new Rectangle(source.getLocation(), source.getSize()).getCenter();
-        Point sourcePoint = getDirectionPosition(sourceCenter);
+        Point sourcePoint = getDirectionPosition(sourceCenter, reference);
 
         if (!isTargetAnchor && sourcePoint == null) {
             return super.getLocation(reference);
@@ -92,11 +88,24 @@ public class DummyNodeAnchor extends NodeAnchor {
             }
 
         }
-        return super.getLocation(reference);
+        if (target != null) {
+            Point targetCenter = new Rectangle(target.getLocation(), target.getSize()).getCenter();
+            Point targetPoint = getDirectionPosition(targetCenter, reference);
 
+            if (isTargetAnchor && targetPoint == null) {
+                return super.getLocation(reference);
+            }
+            if (targetPoint != null) {
+                if (isTargetAnchor) {
+                    return targetPoint;
+                }
+
+            }
+        }
+        return super.getLocation(reference);
     }
 
-    private Point getDirectionPosition(Point figCenter) {
+    private Point getDirectionPosition(Point figCenter, Point reference) {
         Dimension nodeSize = this.source.getSize();
         EConnectionCategory category = null;
         EConnectionType lineStyle = null;
@@ -110,22 +119,52 @@ public class DummyNodeAnchor extends NodeAnchor {
 
         Point result = new Point(figCenter);
         if (category == EConnectionCategory.MAIN && lineStyle != EConnectionType.FLOW_REF) {
-            result.x = figCenter.x + nodeSize.width / 2;
+
+            if (!isTargetAnchor) {
+                result.x = figCenter.x + nodeSize.width / 2;
+            } else {
+                result.x = figCenter.x - nodeSize.width / 2;
+            }
+
             return result;
         } else if (category == EConnectionCategory.OTHER
                 && (lineStyle == EConnectionType.FLOW_REF || lineStyle == EConnectionType.TABLE_REF)) {
-            Rectangle sourceBounds = new Rectangle(this.source.getLocation(), this.source.getSize());
+            if (target != null) {
+                int sourceY = this.source.getPosY();
+                int targetY = this.target.getPosY();
+                Rectangle sourceBounds = new Rectangle(this.source.getLocation(), this.source.getSize());
+                Rectangle targetBounds = new Rectangle(this.target.getLocation(), this.target.getSize());
+                if (!isTargetAnchor) {
 
-            int sourceY = this.source.getPosY();
-            // if (sourceY <= targetY) {
-            // if ((targetBounds.getTopRight().y == sourceBounds.getBottomLeft().y)) {
-            result.y = figCenter.y - nodeSize.height / 2;
-            // } else {
-            // result.y = figCenter.y + nodeSize.height / 2;
-            // }
-            // }
-            return result;
+                    if (target.equals(source)) {
+                        Point tempPoint = new Point(reference.x - nodeSize.width / 2, reference.y - nodeSize.height / 2);
+                        targetBounds = new Rectangle(tempPoint, this.target.getSize());
+                        targetY = reference.y - nodeSize.height / 2;
+                    }
 
+                    if (sourceY <= targetY) {
+                        if ((targetBounds.getTopRight().y == sourceBounds.getBottomLeft().y)) {
+                            result.y = figCenter.y - nodeSize.height / 2;
+                        } else {
+                            result.y = figCenter.y + nodeSize.height / 2;
+                        }
+                    } else {
+                        if (targetBounds.getBottomLeft().y == sourceBounds.getTopRight().y) {
+                            result.y = figCenter.y + nodeSize.height / 2;
+                        } else {
+                            result.y = figCenter.y - nodeSize.height / 2;
+                        }
+                    }
+                    return result;
+                }
+                //
+                if (sourceY < targetY) {
+                    result.y = figCenter.y - nodeSize.height / 2;
+                } else {
+                    result.y = figCenter.y + nodeSize.height / 2;
+                }
+                return result;
+            }
         }
         return null;
     }

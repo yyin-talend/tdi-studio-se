@@ -20,11 +20,13 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionReconnectCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.TalendBorderItemRectilinearRouter;
 import org.talend.designer.core.ui.editor.connections.TalendDummyConnection;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * Edit policy that will allow connections to connect to the node. <br/>
@@ -86,10 +88,12 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
      */
     @Override
     protected org.eclipse.draw2d.Connection createDummyConnection(Request req) {
-        TalendDummyConnection dummyConn = new TalendDummyConnection();
-        dummyConn.setRoundedBendpointsRadius(32);
-        // dummyConn.setConnectionRouter(new TalendBorderItemRectilinearRouter());
-        return dummyConn;
+        if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            TalendDummyConnection dummyConn = new TalendDummyConnection();
+            dummyConn.setRoundedBendpointsRadius(32);
+            return dummyConn;
+        }
+        return super.createDummyConnection(req);
     }
 
     /*
@@ -100,6 +104,9 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
      */
     @Override
     protected ConnectionRouter getDummyConnectionRouter(CreateConnectionRequest request) {
-        return new TalendBorderItemRectilinearRouter(request);
+        if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            return new TalendBorderItemRectilinearRouter(request);
+        }
+        return super.getDummyConnectionRouter(request);
     }
 }
