@@ -421,7 +421,7 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     private MetadataTable getNewMetadataTable() {
-        if (this.component.getPaletteType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())) {
+        if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(this.component.getPaletteType())) {
             return new AvroMetadataTable(process);
         } else {
             return new MetadataTable();
