@@ -62,6 +62,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
@@ -843,6 +844,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         if (getCommandStack() != null) {
             getCommandStack().addCommandStackEventListener(commandStackEventListener);
         }
+
+        // add CSS class
+        CoreUIPlugin.setCSSClass(this, MultipleThreadDynamicComposite.class.getSimpleName());
     }
 
     /*

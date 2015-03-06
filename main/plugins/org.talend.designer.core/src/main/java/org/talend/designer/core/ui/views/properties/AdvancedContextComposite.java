@@ -56,6 +56,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.process.IGEFProcess;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.core.ui.proposal.TalendProposalProvider;
@@ -154,6 +155,9 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
 
         tableViewer.getTableViewerCreator().refresh();
         tableViewer.getExtendedToolbar().updateEnabledStateOfButtons();
+
+        // add CSS class
+        CoreUIPlugin.setCSSClass(this, AdvancedContextComposite.class.getSimpleName());
     }
 
     private void needContextModeParameters() {

@@ -129,7 +129,7 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
         super(parent, style);
         // TODO Auto-generated constructor stub
         // CSS
-        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
+        CoreUIPlugin.setCSSClass(this, TraceDebugProcessComposite.class.getSimpleName());
     }
 
     private void createLineLimitedControl(Composite container) {
