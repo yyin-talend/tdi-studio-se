@@ -60,7 +60,32 @@ public class TalendCreateConnectionTool extends TalendConnectionCreationTool imp
         Command endCommand = getCommand();
         if (endCommand != null) {
             nodePart.getViewer().getSelectionManager().deselect(nodePart);
+        } else {
+            // final GraphicalViewer graphicalViewer = (GraphicalViewer) nodePart.getViewer();
+            // final CommandStack commandStack = nodePart.getViewer().getEditDomain().getCommandStack();
+            // final String categoryName = ComponentsFactoryProvider.getInstance().getComponentsHandler()
+            // .extractComponentsCategory().getName();
+            // final IProcess2 process = (IProcess2) ((Node) nodePart.getModel()).getProcess();
+            // TalendEditorComponentCreationAssist assist = new TalendEditorComponentCreationAssist(categoryName,
+            // graphicalViewer,
+            // commandStack, process);
+            // char start = '*';
+            // assist.showComponentCreationAssist(start);
         }
         return super.handleCreateConnection();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.tools.TargetingTool#getCommand()
+     */
+    @Override
+    protected Command getCommand() {
+        if (getTargetEditPart() == null) {
+            return null;
+        }
+        return getTargetEditPart().getCommand(getTargetRequest());
+    }
+
 }

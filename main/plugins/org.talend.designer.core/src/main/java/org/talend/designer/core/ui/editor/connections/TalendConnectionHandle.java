@@ -29,6 +29,7 @@ import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.ui.action.TalendCreateConnectionTool;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -39,6 +40,8 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 public class TalendConnectionHandle extends SquareHandle implements PropertyChangeListener {
 
     private NodePart nodePart;
+
+    private INodeConnector mainConnector;
 
     public TalendConnectionHandle(NodePart nodePart) {
         this.nodePart = nodePart;
@@ -53,9 +56,11 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
      */
     @Override
     protected DragTracker createDragTracker() {
-
-        final INodeConnector mainConnector = new NodeConnectorTool(nodePart).getConnector();
-        if (mainConnector == null) {
+        if (this.mainConnector == null) {
+            this.mainConnector = new NodeConnectorTool(nodePart).getConnector();
+        }
+        final INodeConnector connector = this.mainConnector;
+        if (connector == null) {
             return null;
         }
 
@@ -72,7 +77,7 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
 
             @Override
             public Object getObjectType() {
-                return mainConnector.getName();
+                return connector.getName();
             }
         }, nodePart);
 
@@ -124,13 +129,19 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
         }
 
         removeAll();
-        Image image = ImageProvider.getImage(ECoreImage.UNKNOWN);
-
+        Image image = ImageProvider.getImage(ECoreImage.CONN_HANDLE);
+        if (this.mainConnector == null) {
+            this.mainConnector = new NodeConnectorTool(nodePart).getConnector();
+        }
+        if (this.mainConnector.getName().equals(EConnectionType.TABLE.getName())) {
+            image = ImageProvider.getImage(ECoreImage.GREEN_HANDLE);
+        }
         ImageFigure imageFigure = new ImageFigure(image);
         imageFigure.setSize(image.getBounds().width, image.getBounds().height);
 
         add(imageFigure);
         setSize(imageFigure.getSize());
+
         super.validate();
     }
 

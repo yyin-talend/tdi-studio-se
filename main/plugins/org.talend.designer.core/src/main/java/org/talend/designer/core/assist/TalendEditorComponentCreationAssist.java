@@ -42,7 +42,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.process.Process;
 
-class TalendEditorComponentCreationAssist {
+public class TalendEditorComponentCreationAssist {
 
     private static Text assistText;
 
