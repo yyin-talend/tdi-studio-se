@@ -16,12 +16,22 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
+import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.CreateRequest;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.process.IGraphicalNode;
+import org.talend.designer.core.assist.TalendEditorComponentCreationUtil;
+import org.talend.designer.core.assist.TalendEditorConnectionTargetAssist;
+import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNoteCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
@@ -51,6 +61,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
      * 
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChildEditPolicy(org.eclipse.gef.EditPart)
      */
+    @Override
     protected EditPolicy createChildEditPolicy(final EditPart child) {
         ProcessResizableEditPolicy policy = new ProcessResizableEditPolicy();
         policy.setResizeDirections(0);
@@ -66,6 +77,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createAddCommand(org.eclipse.gef.EditPart,
      * java.lang.Object)
      */
+    @Override
     protected Command createAddCommand(final EditPart child, final Object constraint) {
         if (child instanceof NodePart) {
             if (((Node) child.getModel()).isReadOnly()) {
@@ -96,6 +108,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
      * org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
      * java.lang.Object)
      */
+    @Override
     public Command createChangeConstraintCommand(final EditPart child, final Object constraint) {
         // return a command to move the part to the location given by the constraint
         if (child instanceof NodePart) {
@@ -140,6 +153,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
      * 
      * @see org.eclipse.gef.editpolicies.LayoutEditPolicy#getCreateCommand(org.eclipse.gef.requests.CreateRequest)
      */
+    @Override
     protected Command getCreateCommand(final CreateRequest request) {
         if (((Process) getHost().getModel()).isReadOnly()) {
             return null;
@@ -168,7 +182,63 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
      * 
      * @see org.eclipse.gef.editpolicies.LayoutEditPolicy#getDeleteDependantCommand(org.eclipse.gef.Request)
      */
+    @Override
     protected Command getDeleteDependantCommand(final Request request) {
         return null; // no support for deleting a dependant
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getCommand(org.eclipse.gef.Request)
+     */
+    @Override
+    public Command getCommand(Request request) {
+        if (RequestConstants.REQ_CONNECTION_END.equals(request.getType()) && request instanceof CreateConnectionRequest) {
+            return getConnectionAndEndCommands((CreateConnectionRequest) request);
+        }
+        return super.getCommand(request);
+    }
+
+    protected Command getConnectionAndEndCommands(CreateConnectionRequest request) {
+
+        CompoundCommand cc = new CompoundCommand("CreateNodeCommand");
+
+        ProcessPart processPart = (ProcessPart) this.getHost();
+
+        final GraphicalViewer graphicalViewer = (GraphicalViewer) processPart.getViewer();
+        final CommandStack commandStack = processPart.getViewer().getEditDomain().getCommandStack();
+        final String categoryName = ComponentsFactoryProvider.getInstance().getComponentsHandler().extractComponentsCategory()
+                .getName();
+        final IProcess2 process = (IProcess2) processPart.getModel();
+        TalendEditorConnectionTargetAssist assist = new TalendEditorConnectionTargetAssist(categoryName, graphicalViewer,
+                commandStack, process);
+        char start = '*';
+        assist.showComponentCreationAssist(start);
+        ConnectionCreateCommand cmd = (ConnectionCreateCommand) request.getStartCommand();
+        if (assist.getComponentName() == null) {
+            return cmd;
+        }
+        IComponent component = TalendEditorComponentCreationUtil.getComponentsInCategory("DI").get(assist.getComponentName());
+        if (component == null) {
+            return cmd;
+        }
+        assist.releaseText();
+        Node newNode = new Node(component);
+        NodeContainer nodeContainer = null;
+        if (newNode.isJoblet() || newNode.isMapReduce()) {
+            nodeContainer = new JobletContainer(newNode);
+        } else {
+            nodeContainer = new NodeContainer(newNode);
+        }
+
+        CreateNodeContainerCommand command = new CreateNodeContainerCommand(
+                (org.talend.designer.core.ui.editor.process.Process) newNode.getProcess(), nodeContainer, request.getLocation());
+        cc.add(command);
+
+        cmd.setTarget(newNode);
+        cc.add(cmd);
+
+        return cc;
     }
 }

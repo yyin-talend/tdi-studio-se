@@ -44,7 +44,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 
 public class TalendEditorComponentCreationAssist {
 
-    private static Text assistText;
+    protected static Text assistText;
 
     private GraphicalViewer graphicViewer;
 
@@ -57,13 +57,13 @@ public class TalendEditorComponentCreationAssist {
     /*
      * this used to disable all other key listeners registered on Display during assistant activate
      */
-    private IBindingService bindingService = null;
+    protected IBindingService bindingService = null;
 
-    private boolean isKeyFilterEnabled = true;
+    protected boolean isKeyFilterEnabled = true;
 
     private IProcess2 process;
 
-    private static ConnectionFigure overedConnection = null;
+    protected static ConnectionFigure overedConnection = null;
 
     public TalendEditorComponentCreationAssist(String categoryName, GraphicalViewer viewer, CommandStack commandStack,
             IProcess2 process) {
