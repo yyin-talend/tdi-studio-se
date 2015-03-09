@@ -437,6 +437,10 @@ public class NodesPasteCommand extends Command {
                     copyOfMetadataList.add(newTable);
                 }
                 pastedNode.setMetadataList(copyOfMetadataList);
+            }
+
+            // TDQ-10039 extract this code from above "else",aslo consider tMatchGroup.
+            if (mainConnector.isMultiSchema() || copiedNode.getComponent().getName().startsWith("tMatchGroup")) { //$NON-NLS-1$
                 IExternalNode externalNode = pastedNode.getExternalNode();
                 if (externalNode != null) {
                     if (copiedNode.getExternalData() != null) {
@@ -467,6 +471,7 @@ public class NodesPasteCommand extends Command {
                     }
                 }
             }
+
             ((Node) pastedNode).getNodeLabel().setOffset(new Point(((Node) copiedNode).getNodeLabel().getOffset()));
             oldNameTonewNameMap.put(copiedNode.getUniqueName(), pastedNode.getUniqueName());
             if (copiedNode.getElementParametersWithChildrens() != null) {
@@ -481,7 +486,7 @@ public class NodesPasteCommand extends Command {
                                     Map<String, Object> newMap = new HashMap<String, Object>();
                                     newMap.putAll(map);
                                     // rename schemas
-									if (!oldMetaToNewMeta.isEmpty()) {
+                                    if (!oldMetaToNewMeta.isEmpty()) {
                                         boolean isSAPBapiInputSchema = "MAPPING_INPUT".equals(param.getName()) //$NON-NLS-1$
                                                 && "tSAPBapi".equals(copiedNode.getComponent().getName()); //$NON-NLS-1$
                                         if (EParameterName.SCHEMAS.name().equals(param.getName()) || isSAPBapiInputSchema) {
@@ -491,8 +496,8 @@ public class NodesPasteCommand extends Command {
                                                 newMap.put(EParameterName.SCHEMA.getName(), newSchemaName);
                                             }
                                         }
-                                    
-									}
+
+                                    }
 
                                     newValues.add(newMap);
                                 }
