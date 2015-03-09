@@ -58,8 +58,6 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
      */
     public TargetExecComposite(Composite parent, int style) {
         super(parent, style);
-        // CSS
-        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
         // TODO Auto-generated constructor stub
         setExpandHorizontal(true);
         setExpandVertical(true);
@@ -88,6 +86,8 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
         panel.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_RED));
 
         jobComposite = this.processViewHelper.getProcessComposite(panel);
+        // CSS
+        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
     }
 
     protected Composite createTargetExecutionComposite(Composite parent) {
