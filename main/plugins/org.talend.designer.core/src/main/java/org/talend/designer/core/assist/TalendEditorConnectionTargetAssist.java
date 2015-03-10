@@ -27,6 +27,7 @@ public class TalendEditorConnectionTargetAssist extends TalendEditorComponentCre
     public TalendEditorConnectionTargetAssist(String categoryName, GraphicalViewer viewer, CommandStack commandStack,
             IProcess2 process) {
         super(categoryName, viewer, commandStack, process);
+        this.components = TalendEditorComponentCreationUtil.getComponentsInType(categoryName, null);
     }
 
     /**
@@ -37,7 +38,9 @@ public class TalendEditorConnectionTargetAssist extends TalendEditorComponentCre
     @Override
     public void showComponentCreationAssist(char triggerChar) {
         super.showComponentCreationAssist(triggerChar);
-
+        if (assistText == null) {
+            return;
+        }
         Display display = assistText.getDisplay();
         while (!assistText.isDisposed() && assistText.isVisible()) {
             if (!display.readAndDispatch()) {
@@ -59,7 +62,21 @@ public class TalendEditorConnectionTargetAssist extends TalendEditorComponentCre
         disposeAssistText();
     }
 
-    private void disposeAssistText() {
+    public String getComponentName() {
+        return this.componentName;
+    }
+
+    public void releaseText() {
+        assistText = null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.assist.TalendEditorComponentCreationAssist#disposeAssistText()
+     */
+    @Override
+    protected void disposeAssistText() {
         if (assistText != null && !assistText.isDisposed()) {
             assistText.dispose();
         }
@@ -71,14 +88,6 @@ public class TalendEditorConnectionTargetAssist extends TalendEditorComponentCre
             overedConnection.setLineWidth(1);
             overedConnection = null;
         }
-    }
-
-    public String getComponentName() {
-        return this.componentName;
-    }
-
-    public void releaseText() {
-        assistText = null;
     }
 
 }
