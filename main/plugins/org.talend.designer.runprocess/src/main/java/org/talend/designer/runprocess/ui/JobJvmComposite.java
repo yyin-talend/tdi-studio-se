@@ -45,7 +45,7 @@ public class JobJvmComposite extends Composite {
         layout.marginWidth = 0;
         this.setLayout(layout);
         Composite targetExecutionComposite = createTargetExecutionComposite(this);
-        targetExecutionComposite.setBackground(this.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        // targetExecutionComposite.setBackground(this.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 
     }
 
