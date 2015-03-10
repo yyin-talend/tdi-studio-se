@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.components.ComponentCategory;
@@ -701,6 +702,17 @@ public class JobContextLoadComponent implements IComponent {
      */
     @Override
     public String getOutputType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getCONNECTORList()
+     */
+    @Override
+    public EList getCONNECTORList() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -1,10 +1,10 @@
 package org.talend.designer.core.assist;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.events.KeyEvent;
@@ -14,22 +14,18 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionCategory;
-import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.process.ConnectionManager;
+import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 public class TalendEditorComponentCreationUtil {
@@ -199,8 +195,8 @@ public class TalendEditorComponentCreationUtil {
 
     private static boolean isComponentAllowed(IComponent component, EConnectionType lineStyle) {
         String connectorName = lineStyle.getName();
-        Node target = new Node(component);
-        if (target.isFileScaleComponent()) {
+
+        if (component.getOriginalFamilyName().equals("FileScale")) {
             if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && !connectorName.equals("FSCOMBINE")) { //$NON-NLS-1$
                 return false;
             }
@@ -208,11 +204,11 @@ public class TalendEditorComponentCreationUtil {
 
         // TDI-25765 : avoid any connection for components not accepting PIG
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && "PIGCOMBINE".equals(connectorName)) { //$NON-NLS-1$
-            if (!target.getComponent().getName().startsWith("tPig")) { //$NON-NLS-1$
+            if (!component.getName().startsWith("tPig")) { //$NON-NLS-1$
                 return false;
             }
         }
-        if (target.getComponent() != null && target.getComponent().getName().startsWith("tPig")) { //$NON-NLS-1$
+        if (component != null && component.getName().startsWith("tPig")) { //$NON-NLS-1$
             if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && !"PIGCOMBINE".equals(connectorName)) { //$NON-NLS-1$
                 return false;
             }
@@ -220,37 +216,54 @@ public class TalendEditorComponentCreationUtil {
 
         // TDI-29775 : avoid any connection for components not accepting SPARK
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && "SPARKCOMBINE".equals(connectorName)) { //$NON-NLS-1$
-            if (!target.getComponent().getName().startsWith("tSpark")) { //$NON-NLS-1$
+            if (!component.getName().startsWith("tSpark")) { //$NON-NLS-1$
                 return false;
             }
         }
-        if (target.getComponent() != null && target.getComponent().getName().startsWith("tSpark")) { //$NON-NLS-1$
+        if (component != null && component.getName().startsWith("tSpark")) { //$NON-NLS-1$
             if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && !"SPARKCOMBINE".equals(connectorName)) { //$NON-NLS-1$
                 return false;
             }
         }
 
-        boolean isJoblet = false;
-        if (PluginChecker.isJobLetPluginLoaded()) {
-            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                    IJobletProviderService.class);
-            if (service != null && service.isJobletComponent(target)
-                    && !lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
-                List<INodeConnector> inputConnector = service.getFreeTriggerBuiltConnectors(target, lineStyle, true);
-                if (inputConnector.isEmpty()) {
-                    return false;
-                }
-                isJoblet = true;
-            }
-        }
-        if (!isJoblet) {
-            INodeConnector connectorFromType = target.getConnectorFromType(lineStyle);
-            int maxInput = connectorFromType.getMaxLinkInput();
-            if (maxInput != -1 && (connectorFromType.getCurLinkNbInput() >= maxInput)) {
-                return false;
-            }
-        }
-        return true;
+        // if (PluginChecker.isJobLetPluginLoaded()) {
+        // IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+        // IJobletProviderService.class);
+        // if (service != null && service.isJobletComponent(target)
+        // && !lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
+        // List<INodeConnector> inputConnector = service.getFreeTriggerBuiltConnectors(target, lineStyle, true);
+        // if (inputConnector.isEmpty()) {
+        // return false;
+        // }
+        // isJoblet = true;
+        // }
+        // }
+
+        return isTypeAllowed(lineStyle, component.getCONNECTORList());
     }
 
+    public static boolean isTypeAllowed(final EConnectionType connType, EList listConnType) {
+        if (listConnType == null) {
+            return false;
+        }
+        EConnectionType testedType;
+        if (connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
+            testedType = EConnectionType.FLOW_MAIN;
+        } else {
+            testedType = connType;
+        }
+
+        CONNECTORType currentType;
+        for (int i = 0; i < listConnType.size(); i++) {
+            currentType = (CONNECTORType) listConnType.get(i);
+            EConnectionType tempType = EConnectionType.getTypeFromName(currentType.getCTYPE());
+            if (tempType == testedType) {
+                int maxInput = currentType.getMAXINPUT();
+                if (maxInput > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
