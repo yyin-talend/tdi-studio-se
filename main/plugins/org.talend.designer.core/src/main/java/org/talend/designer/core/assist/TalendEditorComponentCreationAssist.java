@@ -50,7 +50,7 @@ public class TalendEditorComponentCreationAssist {
 
     private Control graphicControl;
 
-    private Map<String, IComponent> components;
+    protected Map<String, IComponent> components;
 
     private ContentProposalAdapter contentProposalAdapter;
 
@@ -324,7 +324,7 @@ public class TalendEditorComponentCreationAssist {
         return true;
     }
 
-    private void disposeAssistText() {
+    protected void disposeAssistText() {
         if (assistText != null && !assistText.isDisposed()) {
             assistText.dispose();
         }

@@ -217,10 +217,13 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
         assist.showComponentCreationAssist(start);
         ConnectionCreateCommand cmd = (ConnectionCreateCommand) request.getStartCommand();
         if (assist.getComponentName() == null) {
+            assist.releaseText();
             return cmd;
         }
-        IComponent component = TalendEditorComponentCreationUtil.getComponentsInCategory("DI").get(assist.getComponentName());
+        IComponent component = TalendEditorComponentCreationUtil.getComponentsInCategory(categoryName).get(
+                assist.getComponentName());
         if (component == null) {
+            assist.releaseText();
             return cmd;
         }
         assist.releaseText();
