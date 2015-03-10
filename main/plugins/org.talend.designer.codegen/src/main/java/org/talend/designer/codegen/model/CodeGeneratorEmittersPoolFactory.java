@@ -414,8 +414,11 @@ public final class CodeGeneratorEmittersPoolFactory {
             if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
                 try {
-                    jetBean.setClassLoader(Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
-                            .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader()); //$NON-NLS-1$
+                    // We use a delegate classloader made of the org.talend.designer.codegen class loader as a parent
+                    // and the org.talend.libraries.spark as a delegate.
+                    jetBean.setClassLoader(new DelegateClassLoader(new CodeGeneratorEmittersPoolFactory().getClass()
+                            .getClassLoader(), Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
+                            .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader())); //$NON-NLS-1$
                 } catch (ClassNotFoundException e) {
                     ExceptionHandler.process(e);
                 }

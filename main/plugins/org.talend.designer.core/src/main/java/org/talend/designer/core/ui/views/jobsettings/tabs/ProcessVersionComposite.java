@@ -61,10 +61,10 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.ui.action.OpenExistVersionProcessAction;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.actions.EditPropertiesAction;
@@ -85,6 +85,7 @@ public class ProcessVersionComposite extends AbstractTabComposite {
      */
     private static class IRepositoryObjectComparator implements Comparator {
 
+        @Override
         public int compare(Object o1, Object o2) {
             return VersionUtils.compareTo(((IRepositoryObject) o1).getVersion(), ((IRepositoryObject) o2).getVersion());
         }
@@ -158,6 +159,7 @@ public class ProcessVersionComposite extends AbstractTabComposite {
 
         tableViewer.setContentProvider(new IStructuredContentProvider() {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 IRepositoryViewObject repositoryObject = ((IRepositoryViewObject) inputElement);
                 if (repositoryObject.getProperty() == null) {
@@ -199,19 +201,23 @@ public class ProcessVersionComposite extends AbstractTabComposite {
                 return repositoryNode;
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
         });
 
         tableViewer.setLabelProvider(new ITableLabelProvider() {
 
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 return null;
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 RepositoryNode repositoryNode = (RepositoryNode) element;
                 switch (columnIndex) {
@@ -241,16 +247,20 @@ public class ProcessVersionComposite extends AbstractTabComposite {
                 }
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
         });
@@ -269,6 +279,7 @@ public class ProcessVersionComposite extends AbstractTabComposite {
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager mgr) {
                 if (getParentWizard() == null) {
                     ISelection selection = tableViewer.getSelection();
@@ -316,6 +327,7 @@ public class ProcessVersionComposite extends AbstractTabComposite {
 
             private int direction = 1;
 
+            @Override
             public void handleEvent(Event e) {
                 final TableColumn column = (TableColumn) e.widget;
 
@@ -362,6 +374,7 @@ public class ProcessVersionComposite extends AbstractTabComposite {
              * @seeorg.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.
              * SelectionChangedEvent)
              */
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 ProcessVersionComposite.this.selection = event.getSelection();
                 if (getParentWizard() != null) {
@@ -379,6 +392,7 @@ public class ProcessVersionComposite extends AbstractTabComposite {
 
         tableViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 if (getParentWizard() == null) {
                     ITreeContextualAction editPropertiesAction = getEditPropertiesAction(EditPropertiesAction.class);

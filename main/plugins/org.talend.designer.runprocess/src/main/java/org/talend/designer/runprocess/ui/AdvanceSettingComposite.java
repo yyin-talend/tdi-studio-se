@@ -86,8 +86,6 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         setExpandHorizontal(true);
         setExpandVertical(true);
         this.setLayout(new FormLayout());
-        // CSS
-        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
         processManager = ProcessManager.getInstance();
         FormData layoutData = new FormData();
         layoutData.left = new FormAttachment(0, 0);
@@ -212,6 +210,8 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
                 .getBoolean(RunProcessPrefsConstants.ISSTATISTICSRUN));
 
         initializeLog4j();
+        // CSS
+        CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
     }
 
     private void addLog4jListener() {
