@@ -17,6 +17,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.i18n.Messages;
 
@@ -47,6 +48,8 @@ public class JobJvmComposite extends Composite {
         Composite targetExecutionComposite = createTargetExecutionComposite(this);
         // targetExecutionComposite.setBackground(this.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 
+        // CSS
+        CoreUIPlugin.setCSSClass(this, JobJvmComposite.class.getSimpleName());
     }
 
     protected Composite createTargetExecutionComposite(Composite parent) {
