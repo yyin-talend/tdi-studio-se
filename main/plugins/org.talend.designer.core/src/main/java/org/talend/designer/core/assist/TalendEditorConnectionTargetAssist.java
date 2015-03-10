@@ -38,7 +38,7 @@ public class TalendEditorConnectionTargetAssist extends TalendEditorComponentCre
     @Override
     public void showComponentCreationAssist(char triggerChar) {
         super.showComponentCreationAssist(triggerChar);
-        if (assistText == null) {
+        if (assistText == null || assistText.isDisposed()) {
             return;
         }
         Display display = assistText.getDisplay();

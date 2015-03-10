@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.connections;
 
 import org.eclipse.draw2d.Connection;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -113,10 +114,17 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
         }
 
         if ((targetBounds == null) && this.request != null) {
-            Node target = (Node) this.request.getTargetEditPart().getModel();
-            if (target != null) {
-                targetBounds = new Rectangle(target.getLocation(), target.getSize());
+            Object obj = this.request.getTargetEditPart().getModel();
+            if (obj instanceof Node) {
+                Node target = (Node) obj;
+                if (target != null) {
+                    targetBounds = new Rectangle(target.getLocation(), target.getSize());
+                }
+            } else {
+                Point lastPoint = conn.getPoints().getLastPoint();
+                targetBounds = new Rectangle(lastPoint, new Dimension(2 * OFFSET, 2 * OFFSET));
             }
+
         }
 
         if (targetBounds == null) {

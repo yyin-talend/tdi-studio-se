@@ -259,7 +259,8 @@ public class TalendEditorComponentCreationUtil {
             EConnectionType tempType = EConnectionType.getTypeFromName(currentType.getCTYPE());
             if (tempType == testedType) {
                 int maxInput = currentType.getMAXINPUT();
-                if (maxInput > 0) {
+                int minInput = currentType.getMININPUT();
+                if (maxInput > 0 || minInput > 0) {
                     return true;
                 }
             }
