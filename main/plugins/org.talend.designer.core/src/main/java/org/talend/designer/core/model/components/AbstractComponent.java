@@ -152,4 +152,9 @@ public abstract class AbstractComponent implements IComponent {
         return null;
     }
 
+    @Override
+    public boolean isAllowedPropagated() {
+        return true;
+    }
+
 }

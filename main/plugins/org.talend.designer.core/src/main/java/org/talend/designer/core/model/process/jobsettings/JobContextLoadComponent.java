@@ -716,4 +716,9 @@ public class JobContextLoadComponent implements IComponent {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public boolean isAllowedPropagated() {
+        return true;
+    }
 }
