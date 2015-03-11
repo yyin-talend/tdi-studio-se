@@ -120,6 +120,7 @@ import org.talend.core.ui.process.IGEFProcess;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.designer.core.ITestContainerGEFService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EOozieParameterName;
@@ -2029,6 +2030,18 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      * @return
      */
     protected Node loadNode(NodeType nType, IComponent component, Hashtable<String, Node> nodesHashtable, EList listParamType) {
+        return loadNode(nType, component, nodesHashtable, listParamType, false);
+    }
+
+    /**
+     * DOC qzhang Comment method "loadNode".
+     * 
+     * @param nType
+     * @param component
+     * @return
+     */
+    protected Node loadNode(NodeType nType, IComponent component, Hashtable<String, Node> nodesHashtable, EList listParamType,
+            boolean isJunitContainer) {
         Node nc;
         nc = new Node(component, this);
         nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
@@ -2078,7 +2091,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
         loadColumnsBasedOnSchema(nc, listParamType);
         NodeContainer nodeContainer = null;// loadNodeContainer(nc, nType);
-        if (nc.isJoblet()) {
+        if (isJunitContainer) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerGEFService.class)) {
+                ITestContainerGEFService testContainerService = (ITestContainerGEFService) GlobalServiceRegister.getDefault()
+                        .getService(ITestContainerGEFService.class);
+                if (testContainerService != null) {
+                    nodeContainer = testContainerService.createJunitContainer(nc);
+                }
+            }
+        } else if (nc.isJoblet()) {
             nodeContainer = new JobletContainer(nc);
         } else if (nc.isMapReduce()) {
             nodeContainer = new JobletContainer(nc);
@@ -2321,6 +2342,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     protected void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable) {
+        loadConnections(process, nodesHashtable, null);
+    }
+
+    protected void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable, List<INode> testNodes) {
         EList listParamType;
         EList connecList;
         ConnectionType cType;
@@ -2340,6 +2365,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             // qli
             if (source == null || target == null) {
                 continue;
+            }
+            if (testNodes != null) {
+                if (!testNodes.contains(target) || !testNodes.contains(source)) {
+                    continue;
+                }
             }
             Integer lineStyleId = new Integer(cType.getLineStyle());
             String connectorName = cType.getConnectorName();
