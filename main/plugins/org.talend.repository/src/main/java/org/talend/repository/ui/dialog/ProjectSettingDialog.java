@@ -32,11 +32,13 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProjectSettingNode;
 import org.talend.repository.preference.CustomComponentSettingPage;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -66,15 +68,21 @@ public class ProjectSettingDialog {
             try {
                 IPreferencePage page = (IPreferencePage) element.createExecutableExtension("class"); //$NON-NLS-1$
                 node.setPage(page);
-                String id = element.getAttribute("id");
-                if (id.equals("org.talend.repository.preference.VersionManagementPage")) {
+                String id = element.getAttribute("id");//$NON-NLS-1$
+                if (id.equals("org.talend.repository.preference.VersionManagementPage")) {//$NON-NLS-1$
                     IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                             IBrandingService.class);
                     boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
                     if (!allowVerchange) {
                         continue;
                     }
+                } else if (id.equals("jobsettings.treeview")) {//$NON-NLS-1$
+                    IRepositoryView repositoryView = RepositoryManager.getRepositoryView();
+                    if (repositoryView == null) {
+                        continue;
+                    }
                 }
+
                 page.setDescription(element.getAttribute("description")); //$NON-NLS-1$
                 page.setTitle(element.getAttribute("title")); //$NON-NLS-1$
             } catch (CoreException e) {

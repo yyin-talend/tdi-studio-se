@@ -24,11 +24,14 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.core.PluginChecker;
+// import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.AvroMetadataTable;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -111,10 +114,21 @@ public class MetadataEmfFactory {
         }
     }
 
-    public void setMetadataType(final MetadataType metadataType) {
-        this.metadataType = metadataType;
+    public void setAvroMetadataType(final MetadataType metadataType, IProcess2 process) {
+        AvroMetadataTable avroMetadataTable = new AvroMetadataTable(process);
 
+        metadataTable = avroMetadataTable;
+        setMetadataTypeCommon(metadataType);
+
+    }
+
+    public void setMetadataType(final MetadataType metadataType) {
         metadataTable = new MetadataTable();
+        setMetadataTypeCommon(metadataType);
+    }
+
+    private void setMetadataTypeCommon(final MetadataType metadataType) {
+        this.metadataType = metadataType;
 
         IMetadataColumn metaCol;
         ColumnType colType;

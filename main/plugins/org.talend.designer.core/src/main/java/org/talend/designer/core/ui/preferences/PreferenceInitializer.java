@@ -89,7 +89,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         Bundle refBundle = Platform.getBundle("org.talend.dataquality.reporting"); //$NON-NLS-1$
         if (refBundle != null) {
             try {
-                String dirPath = FileLocator.getBundleFile(refBundle).getPath();
+                String dirPath = FileLocator.getBundleFile(refBundle).getPath().replace(File.separatorChar, '/');
                 store.setDefault(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR, dirPath);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -173,7 +173,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                     }
                 });
             }
-            store.setDefault(TalendDesignerPrefConstants.EDITOR_ANTIALIASING, false);
+            store.setDefault(TalendDesignerPrefConstants.EDITOR_ANTIALIASING, true);
+            store.setDefault(TalendDesignerPrefConstants.EDITOR_LINESTYLE, true);
             // store.setDefault(TalendDesignerPrefConstants.EDITOR_INTERPOLATION, false);
 
             // designer color

@@ -752,7 +752,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         if (generatingProcess == null) {
             generatingProcess = new DataProcess(this);
         }
-        List<INode> generatedNodeList = generatingProcess.getNodeList();
+        List<? extends INode> generatedNodeList = generatingProcess.getNodeList();
         if (!isBuilding()) {
             if (isProcessModified() || routinesDependencies == null || routinesDependencies.isEmpty()) {
                 checkRoutineDependencies();
@@ -879,7 +879,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         if (generatingProcess == null) {
             return true;
         }
-        List<INode> generatedNodeList = generatingProcess.getNodeList();
+        List<? extends INode> generatedNodeList = generatingProcess.getNodeList();
         if (generatedNodeList == null || generatedNodeList.isEmpty() || (this.getEditor() == null && processModified)) {
             return true;
         }
@@ -2220,6 +2220,13 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         throw ex;
     }
 
+    /**
+     * This class will be overrided by SparkProcess in order to use AvroMetadata instead of MetadataTable.
+     */
+    protected void setMetadatableToFactory(MetadataType mType, MetadataEmfFactory factory) {
+        factory.setMetadataType(mType);
+    }
+
     private void loadSchema(Node nc, NodeType nType) {
         MetadataEmfFactory factory = new MetadataEmfFactory();
         MetadataType mType;
@@ -2234,7 +2241,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
         for (int j = 0; j < listMetaType.size(); j++) {
             mType = (MetadataType) listMetaType.get(j);
-            factory.setMetadataType(mType);
+            setMetadatableToFactory(mType, factory);
             metadataTable = factory.getMetadataTable();
             // add by wzhang
             // if a schema exist in node,won't add it again
@@ -3255,14 +3262,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     private void getMatchingNodes(String componentName, List<INode> matchingNodes, List<INode> generatingNodes) {
         for (INode node : generatingNodes) {
             if (node.isActivate()) {
-                // joblet
-                if (PluginChecker.isJobLetPluginLoaded()) {
-                    IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault()
-                            .getService(IJobletProviderService.class);
-                    if (jobletService.isJobletComponent(node)) {
-                        getMatchingNodes(componentName, matchingNodes, (List<INode>) jobletService.getGraphNodesForJoblet(node));
-                    }
-                }
                 if (componentName == null) { // means all nodes will be
                     // returned
                     addNodeIfNotInTheList(matchingNodes, node);
@@ -3288,7 +3287,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else if ((node.getComponent().getName() != null)) {
                     if (node.getComponent().getName().compareTo(componentName) == 0) {
                         addNodeIfNotInTheList(matchingNodes, node);
-                    } else if (node.getComponent() instanceof EmfComponent){
+                    } else if (node.getComponent() instanceof EmfComponent) {
                         EmfComponent component = (EmfComponent) node.getComponent();
                         String eqCompName = component.getEquivalent();
                         if (componentName.equals(eqCompName)) {

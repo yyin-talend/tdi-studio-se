@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -45,6 +47,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.commons.runtime.utils.io.IOUtils;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
@@ -406,14 +409,42 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
             jetBean.setFamily(StringUtils.removeSpecialCharsForPackage(familyName.toLowerCase()));
 
-            if (component.getPluginExtension() != null) {
+            // Spark, M/R and Storm requires the plugin org.talend.designer.spark to be in the classpath in order to
+            // generate the code.
+            if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
+                try {
+                    // We use a delegate classloader made of the org.talend.designer.codegen class loader as a parent
+                    // and the org.talend.libraries.spark as a delegate.
+                    jetBean.setClassLoader(new DelegateClassLoader(new CodeGeneratorEmittersPoolFactory().getClass()
+                            .getClassLoader(), Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
+                            .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader())); //$NON-NLS-1$
+                } catch (ClassNotFoundException e) {
+                    ExceptionHandler.process(e);
+                }
+
+                // If Spark AND with an external component, use the external component as the parent classloader and
+                // spark as a secondary, delegate classloader.
+                if (component.getPluginExtension() != null) {
+                    jetBean.addClassPath(
+                            "EXTERNAL_COMPONENT_" + component.getPluginExtension().toUpperCase().replaceAll("\\.", "_"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                            component.getPluginExtension());
+                    jetBean.setClassLoader(new DelegateClassLoader(ExternalNodesFactory
+                            .getInstance(component.getPluginExtension()).getClass().getClassLoader(), jetBean.getClassLoader()));
+                }
+
+            } else if (component.getPluginExtension() != null) {
+
                 jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginExtension().toUpperCase().replaceAll("\\.", "_"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         component.getPluginExtension());
                 jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginExtension()).getClass()
                         .getClassLoader());
             } else {
+
                 jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
+
             }
+
             jetBeans.add(jetBean);
         }
         // When building the main part of the component, also attempt to build the other parts.
@@ -804,5 +835,38 @@ public final class CodeGeneratorEmittersPoolFactory {
             IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
             return (ICodeGeneratorService) service;
         }
+    }
+
+    /**
+     * A simple classloader that permits a "delegate" to be added to a "parent" classloader. With the model used by the
+     * Java ClassLoader, this permits classes that are in the delegate to be instantiated, and are able to use objects
+     * created from the parent ClassLoader.
+     * 
+     * Objects in the parent ClassLoader must not use objects instantiated from the delegate.
+     */
+    public static class DelegateClassLoader extends ClassLoader {
+
+        private ClassLoader delegate;
+
+        public DelegateClassLoader(ClassLoader parent, ClassLoader delegate) {
+            super(parent);
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            return delegate.loadClass(name);
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            return delegate.getResource(name);
+        }
+
+        @Override
+        protected Enumeration<URL> findResources(String name) throws IOException {
+            return delegate.getResources(name);
+        }
+
     }
 }

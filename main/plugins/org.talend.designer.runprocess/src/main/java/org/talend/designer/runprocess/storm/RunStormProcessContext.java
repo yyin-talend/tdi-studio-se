@@ -16,12 +16,12 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.RunProcessContext;
+import org.talend.designer.runprocess.bigdata.RunBigDataProcessContext;
 
 /**
  * 
  */
-public class RunStormProcessContext extends RunProcessContext {
+public class RunStormProcessContext extends RunBigDataProcessContext {
 
     /**
      * DOC marvin RunStormProcessContext constructor comment.
@@ -32,9 +32,15 @@ public class RunStormProcessContext extends RunProcessContext {
         super(process);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.designer.runprocess.bigdata.RunBigDataProcessContext#createProcessor(org.talend.core.model.process
+     * .IProcess, org.talend.core.model.properties.Property, boolean)
+     */
     @Override
-    protected IProcessor getProcessor(IProcess process, Property property) {
-        return new StormJavaProcessor(process, property, true);
+    protected IProcessor createProcessor(IProcess process, Property property, boolean filenameFromLabel) {
+        return new StormJavaProcessor(process, property, filenameFromLabel);
     }
-
 }

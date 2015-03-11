@@ -45,6 +45,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -382,6 +383,9 @@ public class EmfComponent extends AbstractComponent {
                     try {
                         ExternalNodesFactory.getInstance(this.getPluginExtension());
                     } catch (RuntimeException re) {// unfortunatly this methos throws a runtime Exception which is bad
+                        Exception compLoadException = new Exception("Component " + this.name //$NON-NLS-1$
+                                + " load error.\nbecause the exception:" + re.getCause().getMessage(), re); //$NON-NLS-1$
+                        MessageBoxExceptionHandler.process(compLoadException);
                         throw new BusinessException("Failed to load plugin :" + this.getPluginExtension(), re); //$NON-NLS-1$
                     }
                 }
@@ -3808,6 +3812,26 @@ public class EmfComponent extends AbstractComponent {
         return type;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getInputType()
+     */
+    @Override
+    public String getInputType() {
+        return compType.getHEADER().getINPUTTYPE();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getOutputType()
+     */
+    @Override
+    public String getOutputType() {
+        return compType.getHEADER().getOUTPUTTYPE();
+    }
+
     /**
      * Getter for reduce.
      * 
@@ -3940,5 +3964,25 @@ public class EmfComponent extends AbstractComponent {
             }
         }
         return compType.getHEADER().getEQUIVALENT();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getCONNECTORList()
+     */
+    @Override
+    public EList getCONNECTORList() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
+        EList listConnType = compType.getCONNECTORS().getCONNECTOR();
+        return listConnType;
     }
 }

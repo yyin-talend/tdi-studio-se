@@ -43,6 +43,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -50,6 +51,7 @@ import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.metadata.AvroMetadataTable;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -73,6 +75,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
+import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
@@ -417,6 +420,14 @@ public class Node extends Element implements IGraphicalNode {
         needlibrary = false;
     }
 
+    private MetadataTable getNewMetadataTable() {
+        if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(this.component.getPaletteType())) {
+            return new AvroMetadataTable(process);
+        } else {
+            return new MetadataTable();
+        }
+    }
+
     private void init(IComponent newComponent) {
         this.component = newComponent;
         this.label = component.getName();
@@ -465,7 +476,7 @@ public class Node extends Element implements IGraphicalNode {
         for (IElementParameter param : getElementParameters()) {
             if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                     || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
-                IMetadataTable table = new MetadataTable();
+                IMetadataTable table = getNewMetadataTable();
                 table.setAttachedConnector(param.getContext());
                 metadataList.add(table);
                 hasSchemaType = true;
@@ -479,7 +490,7 @@ public class Node extends Element implements IGraphicalNode {
             } else {
                 mainConnector = EConnectionType.FLOW_MAIN.getName();
             }
-            IMetadataTable table = new MetadataTable();
+            IMetadataTable table = getNewMetadataTable();
             table.setAttachedConnector(mainConnector);
             metadataList.add(table);
         }
@@ -1993,6 +2004,11 @@ public class Node extends Element implements IGraphicalNode {
                         || connection.getSource().isDummy()) {
                     connection.setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
                 }
+                if (!connection.getTarget().isActivate() && !activate) {
+                    if (connection instanceof IPerformance) {
+                        ((IPerformance) connection).setPerformanceData(""); //$NON-NLS-1$
+                    }
+                }
             }
             for (Connection connection : connectionsInputs) {
                 if (connection.getSource().isActivate() || connection.getSource().isDummy()) {
@@ -2009,6 +2025,17 @@ public class Node extends Element implements IGraphicalNode {
                     if (!hasActivatedOutput) {
                         connection.getSource().setPropertyValue(EParameterName.DUMMY.getName(), false);
                         connection.getSource().setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+                    }
+                    if (connection instanceof IPerformance) {
+                        ((IPerformance) connection).setPerformanceData(""); //$NON-NLS-1$
+                    }
+                }
+            }
+        }else{
+            for (Connection connection : connectionsInputs) {
+                if (!connection.getSource().isActivate() && !activate) {
+                    if (connection instanceof IPerformance) {
+                        ((IPerformance) connection).setPerformanceData(""); //$NON-NLS-1$
                     }
                 }
             }
@@ -2505,7 +2532,7 @@ public class Node extends Element implements IGraphicalNode {
                 } else if ("DQRULES_LIST".equals(param.getName()) || "PATTERN_LIST".equals(param.getName())) {
                     // MOD for TDI-19063 Do not check value for these 2 parameters.
                 } else {
-                    if (!ArrayUtils.contains(param.getListItemsValue(), param.getValue())) {
+                    if (!ArrayUtils.contains(param.getListItemsValue(), param.getValue()) && !param.isDynamicSettings()) {
                         Problems.add(ProblemStatus.ERROR, this, "Unknown value in the list [" + param.getDisplayName()
                                 + "] / Value set not supported by the component");
                     }

@@ -385,7 +385,7 @@ public class ProcessView extends ViewPart {
         } else if (category == EComponentCategory.DEBUGRUN) {
             debugTisProcessComposite = this.debugViewHelper.getDebugComposite(parent);
             // CSS
-            CoreUIPlugin.setCSSClass(debugTisProcessComposite, debugTisProcessComposite.getClass().getSimpleName());
+            CoreUIPlugin.setCSSClass(debugTisProcessComposite, TraceDebugProcessComposite.class.getSimpleName());
             dc = debugTisProcessComposite;
         } else if (category == EComponentCategory.ADVANCESETTING) {
             advanceComposite = new AdvanceSettingComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
@@ -393,18 +393,8 @@ public class ProcessView extends ViewPart {
         } else if (category == EComponentCategory.TARGET) {
             targetComposite = new TargetExecComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = targetComposite;
-        } else if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)) {
-            if (processContext != null) {
-                dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
-                        (Element) processContext.getProcess(), true, Display.getCurrent().getSystemColor(
-                                SWT.COLOR_WIDGET_BACKGROUND));
-                // CSS
-                CoreUIPlugin.setCSSClass(dc, dc.getClass().getSimpleName());
-            } else {
-                dc = null;
-            }
-            sash.setWeights(new int[] { 24, 0 });
-        } else if (EComponentCategory.STORM_JOB_CONFIG.equals(category)) {
+        } else if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)
+                || EComponentCategory.STORM_JOB_CONFIG.equals(category) || EComponentCategory.SPARK_JOB_CONFIG.equals(category)) {
             if (processContext != null) {
                 dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                         (Element) processContext.getProcess(), true, Display.getCurrent().getSystemColor(
@@ -498,6 +488,10 @@ public class ProcessView extends ViewPart {
             }
             if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_STORM.getName())) {
                 categories = (EComponentCategory[]) ArrayUtils.add(categories, 1, EComponentCategory.STORM_JOB_CONFIG);
+            }
+
+            if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())) {
+                categories = (EComponentCategory[]) ArrayUtils.add(categories, 1, EComponentCategory.SPARK_JOB_CONFIG);
             }
         }
         return categories;

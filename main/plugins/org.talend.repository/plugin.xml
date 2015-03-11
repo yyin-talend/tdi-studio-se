@@ -12,7 +12,7 @@
       <view
             category="org.talend.core.root"
             class="org.talend.repository.ui.views.RepositoryView"
-            icon="icons/nav_home_003.gif"
+            icon="icons/nav_home_003.png"
             id="org.talend.repository.views.repository.deprecated"
             name="Repository [deprecated]"/>
     -->
@@ -326,7 +326,7 @@
          </action>
          <!--action
                class="org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction"
-               icon="icons/delete.gif"
+               icon="icons/delete.png"
                id="org.talend.repository.deleteProjects"
                label="%deleteProjectsAction.title"
                style="push"
@@ -2328,6 +2328,24 @@
               id="org.talend.repository.model.migration.ChangeReadByParameter4tFileInputJSON"
               name="ChangeReadByParameter4tFileInputJSON"
               description="change the checkbox parameter to closedlist parameter for tFileInputJSON"
+              version="5.6.2">
+        </projecttask>
+  		<projecttask
+        	beforeLogon="false"
+        	breaks="5.6.1"
+        	class="org.talend.repository.model.migration.ChangeDefaultValue4tMarketoOutput"
+        	description="Change the default value of IS_VIRTUAL_COMPONENT for syncMultipleLeads mode"
+        	id="org.talend.repository.model.migration.ChangeDefaultValue4tMarketoOutput"
+        	name="ChangeDefaultValue4tMarketoOutput"
+        	version="6.0.0">
+  		</projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.1"
+              class="org.talend.repository.model.migration.ChangeParameter4tSAPIDocOutput"
+              id="org.talend.repository.model.migration.ChangeParameter4tSAPIDocOutput"
+              name="ChangeParameter4tSAPIDocOutput"
+              description="change parameter for tsapidocoutput"
               version="5.6.2">
         </projecttask>
    </extension>

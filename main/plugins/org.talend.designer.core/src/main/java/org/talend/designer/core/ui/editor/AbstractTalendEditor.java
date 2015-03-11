@@ -134,7 +134,6 @@ import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -184,6 +183,7 @@ import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
+import org.talend.designer.core.ui.editor.connections.NodeConnectorTool;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -245,6 +245,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
          * 
          * Because the field splitter and page are private, and need override this method, so do it by reflection.
          */
+
+        init();
+
         TalendFlyoutPaletteComposite talendSplitter = new TalendFlyoutPaletteComposite(parent, SWT.NONE, getSite().getPage(),
                 (TalendPaletteViewerProvider) getPaletteViewerProvider(), getPalettePreferences());
         try {
@@ -1885,34 +1888,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 return;
             }
 
-            Node node = (Node) part.getModel();
-
-            final INodeConnector mainConnector;
-            if (node.isELTComponent()) {
-                mainConnector = node.getConnectorFromType(EConnectionType.TABLE);
-            } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getType())) {
-                INodeConnector tmp = null;
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                            .getService(ICamelDesignerCoreService.class);
-                    tmp = node.getConnectorFromType(camelService.getTargetConnectionType(node));
-                } else {
-                    tmp = node.getConnectorFromType(EConnectionType.ROUTE);
-                }
-                mainConnector = tmp;
-            } else {
-                mainConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
-            }
-
+            final INodeConnector mainConnector = new NodeConnectorTool((NodePart) part).getConnector();
             if (mainConnector == null) {
-                return;
-            }
-            if (mainConnector.getMaxLinkOutput() != -1) {
-                if (mainConnector.getCurLinkNbOutput() >= mainConnector.getMaxLinkOutput()) {
-                    return;
-                }
-            }
-            if (mainConnector.getMaxLinkOutput() == 0) {
                 return;
             }
 
@@ -2013,10 +1990,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     for (ConnectionPart part : connectionParts) {
                         if (part.getFigure() instanceof PolylineConnection) {
                             PolylineConnection connection = (PolylineConnection) part.getFigure();
-                            Point pt1 = connection.getStart();
-                            Point pt2 = connection.getEnd();
                             double distance = CreateComponentOnLinkHelper.getDistanceOrthogonal(draw2dPosition.x,
-                                    draw2dPosition.y, pt1, pt2, zoom);
+                                    draw2dPosition.y, connection, zoom);
                             if (distance < minDistance) {
                                 selectedConnectionPart = part;
                                 minDistance = Math.min(distance, minDistance);
@@ -2223,7 +2198,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     showPage(ID_OUTLINE);
                 }
             };
-            showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/outline.gif")); //$NON-NLS-1$
+            showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/outline.png")); //$NON-NLS-1$
             tbm.add(showOutlineAction);
             showOverviewAction = new Action() {
 

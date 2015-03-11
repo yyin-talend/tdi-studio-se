@@ -24,9 +24,14 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.commons.ui.gmf.draw2d.LineSeg;
 import org.talend.commons.ui.gmf.draw2d.LineSeg.KeyPoint;
+import org.talend.core.model.process.EConnectionCategory;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.ui.process.IGraphicalNode;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * DOC bqian class global comment. Detailled comment
@@ -176,22 +181,29 @@ public class NodeAnchor extends ChopboxAnchor {
         // System.out.println("Simple: refresh target anchor of:" + source + " to:" + target);
         // }
         // }
-
+        boolean curvedStyle = DesignerPlugin.getDefault().getPreferenceStore()
+                .getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE);
         Point sourcePoint = null, targetPoint = null;
+        sourcePoint = getDirectionPosition(this.connection, sourceRect.getCenter(), true);
+        if ((sourcePoint == null) && !curvedStyle) {
+            if ((sourceLocation.y < targetRect.getCenter().y)
+                    && (targetRect.getCenter().y < (sourceLocation.y + sourceRect.height))) {
+                // contains
+                sourcePoint = new Point(sourceRect.getCenter().x, targetRect.getCenter().y);
+            }
 
-        if ((sourceLocation.y < targetRect.getCenter().y) && (targetRect.getCenter().y < (sourceLocation.y + sourceRect.height))) {
-            // contains
-            sourcePoint = new Point(sourceRect.getCenter().x, targetRect.getCenter().y);
+            if ((sourceLocation.x < targetRect.getCenter().x)
+                    && (targetRect.getCenter().x < (sourceLocation.x + sourceRect.width))) {
+                // contains
+                sourcePoint = new Point(targetRect.getCenter().x, sourceRect.getCenter().y);
+            }
         }
 
-        if ((sourceLocation.x < targetRect.getCenter().x) && (targetRect.getCenter().x < (sourceLocation.x + sourceRect.width))) {
-            // contains
-            sourcePoint = new Point(targetRect.getCenter().x, sourceRect.getCenter().y);
+        targetPoint = getDirectionPosition(this.connection, targetRect.getCenter(), false);
+        if (targetPoint == null) {
+            targetPoint = targetRect.getCenter();
         }
-
-        targetPoint = targetRect.getCenter();
-
-        if (sourcePoint == null) {
+        if ((sourcePoint == null) && !curvedStyle) {
             if ((targetLocation.y < sourceRect.getCenter().y)
                     && (sourceRect.getCenter().y < (targetLocation.y + targetRect.height))) {
                 // contains
@@ -211,9 +223,82 @@ public class NodeAnchor extends ChopboxAnchor {
             return super.getLocation(reference);
         }
         if (sourcePoint != null && targetPoint != null) {
-            return calculateLocationFromRef(sourcePoint, targetPoint);
+            if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+                return calculateLocationFromRef(sourcePoint, targetPoint);
+            }
+            if (!isTargetAnchor) {
+                return sourcePoint;
+            } else {
+                return targetPoint;
+            }
+
         }
         return super.getLocation(reference);
+    }
+
+    private Point getDirectionPosition(IConnection connection, Point figCenter, boolean isSource) {
+        if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            return null;
+        }
+        Dimension nodeSize = null;
+        if (isSource) {
+            nodeSize = this.source.getSize();
+        } else {
+            nodeSize = this.target.getSize();
+        }
+
+        EConnectionCategory category = null;
+        EConnectionType lineStyle = null;
+        if (connection != null) {
+            lineStyle = connection.getLineStyle();
+            category = lineStyle.getCategory();
+        } else {
+            lineStyle = ConnectionManager.getNewConnectionType();
+            category = lineStyle.getCategory();
+        }
+
+        Point result = new Point(figCenter);
+        if (category == EConnectionCategory.MAIN && lineStyle != EConnectionType.FLOW_REF) {
+            if (isSource) {
+                result.x = figCenter.x + nodeSize.width / 2;
+            } else {
+                result.x = figCenter.x - nodeSize.width / 2;
+            }
+            return result;
+        } else if (category == EConnectionCategory.OTHER
+                && (lineStyle == EConnectionType.FLOW_REF || lineStyle == EConnectionType.TABLE_REF)) {
+            Rectangle sourceBounds = new Rectangle(this.source.getLocation(), this.source.getSize());
+            Rectangle targetBounds = new Rectangle(this.target.getLocation(), this.target.getSize());
+
+            if (isSource) {
+                int sourceY = this.source.getPosY();
+                int targetY = this.target.getPosY();
+                if (sourceY <= targetY) {
+                    if ((targetBounds.getTopRight().y == sourceBounds.getBottomLeft().y)) {
+                        result.y = figCenter.y - nodeSize.height / 2;
+                    } else {
+                        result.y = figCenter.y + nodeSize.height / 2;
+                    }
+                } else {
+                    if (targetBounds.getBottomLeft().y == sourceBounds.getTopRight().y) {
+                        result.y = figCenter.y + nodeSize.height / 2;
+                    } else {
+                        result.y = figCenter.y - nodeSize.height / 2;
+                    }
+                }
+                return result;
+            }
+
+            int sourceY = this.source.getPosY();
+            int targetY = this.target.getPosY();
+            if (sourceY < targetY) {
+                result.y = figCenter.y - nodeSize.height / 2;
+            } else {
+                result.y = figCenter.y + nodeSize.height / 2;
+            }
+            return result;
+        }
+        return null;
     }
 
     /**

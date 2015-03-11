@@ -27,6 +27,7 @@ import org.eclipse.gef.editparts.ViewportAutoexposeHelper;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.ui.IEditorInput;
 import org.talend.commons.ui.gmf.draw2d.AnimatableZoomManager;
+import org.talend.designer.core.ui.editor.nodes.SelectionFeedbackEditPolicy;
 
 /**
  * Modification of the default RootEditPart to add the possibility to change the color of the background and change the
@@ -49,7 +50,7 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
 
     private double[] zoomLevels = { .05, .1, .25, .5, .75, 1, 1.25, 1.5, 1.75, 2, 4 };
 
-    private TalendGridLayer gridLayer;
+    private GridLayer gridLayer;
 
     private FeedbackLayer feedbackLayer;
 
@@ -96,6 +97,7 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
         layers.add(createGridLayer(), GRID_LAYER);
         layers.add(getPrintableLayers(), PRINTABLE_LAYERS);
         layers.add(new FreeformLayer(), MAP_REDUCE_LAYER);
+        layers.add(new FreeformLayer(), SelectionFeedbackEditPolicy.TALEND_FEEDBACK_LAYER);
         layers.add(new FeedbackLayer(), SCALED_FEEDBACK_LAYER);
         feedbackLayer = new FeedbackLayer();
         return layers;

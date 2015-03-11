@@ -57,26 +57,26 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      */
     @Override
     public ICodeGenerator createCodeGenerator(IProcess process, boolean statistics, boolean trace, String... options) {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRCodeGeneratorService.class)) {
-            IMRCodeGeneratorService service = (IMRCodeGeneratorService) GlobalServiceRegister.getDefault().getService(
-                    IMRCodeGeneratorService.class);
-            if (service.validProcess(process)) {
-                return service.createCodeGenerator(process, statistics, trace, options);
-            }
+        ICodeGeneratorService codeGenService = null;
+
+        codeGenService = CodeGeneratorService.getService(ISparkCodeGeneratorService.class);
+        if (codeGenService != null && ((ISparkCodeGeneratorService) codeGenService).validProcess(process)) {
+            return codeGenService.createCodeGenerator(process, statistics, trace, options);
         }
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelCodeGeneratorService.class)) {
-            ICamelCodeGeneratorService service = (ICamelCodeGeneratorService) GlobalServiceRegister.getDefault().getService(
-                    ICamelCodeGeneratorService.class);
-            if (service.validProcess(process)) {
-                return service.createCodeGenerator(process, statistics, trace, options);
-            }
+
+        codeGenService = CodeGeneratorService.getService(IMRCodeGeneratorService.class);
+        if (codeGenService != null && ((IMRCodeGeneratorService) codeGenService).validProcess(process)) {
+            return codeGenService.createCodeGenerator(process, statistics, trace, options);
         }
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IStormCodeGeneratorService.class)) {
-            IStormCodeGeneratorService service = (IStormCodeGeneratorService) GlobalServiceRegister.getDefault().getService(
-                    IStormCodeGeneratorService.class);
-            if (service.validProcess(process)) {
-                return service.createCodeGenerator(process, statistics, trace, options);
-            }
+
+        codeGenService = CodeGeneratorService.getService(ICamelCodeGeneratorService.class);
+        if (codeGenService != null && ((ICamelCodeGeneratorService) codeGenService).validProcess(process)) {
+            return codeGenService.createCodeGenerator(process, statistics, trace, options);
+        }
+
+        codeGenService = CodeGeneratorService.getService(IStormCodeGeneratorService.class);
+        if (codeGenService != null && ((IStormCodeGeneratorService) codeGenService).validProcess(process)) {
+            return codeGenService.createCodeGenerator(process, statistics, trace, options);
         }
 
         return new CodeGenerator(process, statistics, trace, options);
@@ -166,7 +166,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
                 IDesignerCoreService.class);
         designerCoreService.getLastGeneratedJobsDateMap().clear();
 
-        if (oldComponent != null) {
+        if (oldComponent != null && viewer != null) {
             viewer.setElement(oldComponent);
         }
         if (!CommonUIPlugin.isFullyHeadless()) {
@@ -179,5 +179,12 @@ public class CodeGeneratorService implements ICodeGeneratorService {
     @Override
     public boolean isInitializingJet() {
         return !CodeGeneratorEmittersPoolFactory.isInitialized() && CodeGeneratorEmittersPoolFactory.isInitializeStart();
+    }
+
+    private static ICodeGeneratorService getService(Class<? extends ICodeGeneratorService> klass) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(klass)) {
+            return (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(klass);
+        }
+        return null;
     }
 }
