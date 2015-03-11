@@ -936,7 +936,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     @SuppressWarnings("unchecked")
-    private void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
+    protected void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
             EList listParamType, ProcessType process) {
         IElementParameter param;
         for (int j = 0; j < paramList.size(); j++) {
@@ -1443,7 +1443,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         process.getNote().add(noteType);
     }
 
-    private void saveNode(TalendFileFactory fileFact, ProcessType process, EList nList, EList cList, Node node,
+    protected void saveNode(TalendFileFactory fileFact, ProcessType process, EList nList, EList cList, Node node,
             MetadataEmfFactory factory) {
         NodeType nType;
         List<Connection> connList;
@@ -2320,7 +2320,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
     }
 
-    private void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable) {
+    protected void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable) {
         EList listParamType;
         EList connecList;
         ConnectionType cType;
