@@ -55,6 +55,7 @@ import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.mapreduce.MapReduceJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
+import org.talend.designer.runprocess.spark.SparkJavaProcessor;
 import org.talend.designer.runprocess.storm.StormJavaProcessor;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 import org.talend.repository.constants.Log4jPrefsConstants;
@@ -164,6 +165,8 @@ public class DefaultRunProcessService implements IRunProcessService {
     protected IProcessor createJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
             return new MapReduceJavaProcessor(process, property, filenameFromLabel);
+        } else if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())) {
+            return new SparkJavaProcessor(process, property, filenameFromLabel);
         } else if (ComponentCategory.CATEGORY_4_STORM.getName().equals(process.getComponentsType())) {
             return new StormJavaProcessor(process, property, filenameFromLabel);
         } else {
