@@ -47,6 +47,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants.ContextLoadInfo;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -56,6 +57,7 @@ import org.talend.designer.core.ui.views.jobsettings.ExtraComposite;
 import org.talend.designer.core.ui.views.jobsettings.ImplicitContextLoadHelper;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -176,12 +178,23 @@ public class ProjectSettingManager extends Utils {
     public static void reloadStatsAndLogFromProjectSettings(Element process, Project pro, StatsAndLogsComposite statsComposite) {
         createStatsAndLogsElement(pro);
         ParametersType stats = pro.getEmfProject().getStatAndLogsSettings().getParameters();
-        // load the project settings to process
-        ElementParameter2ParameterType.loadElementParameters(process, stats, EParameterName.PROPERTY_TYPE.getName() + ":"
-                + EParameterName.PROPERTY_TYPE.getName());
-        // change repository item
-        // TODO
-        // StatsAndLogsHelper.changeRepositoryConnection(process, statsComposite);
+        ElementParameterType eleType = ElementParameter2ParameterType.findElementParameterType(stats,
+                EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        if (eleType != null) {
+            String value = eleType.getValue();
+            IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(value);
+            if (lastVersion != null && lastVersion.getProperty() != null) {
+                Item item = lastVersion.getProperty().getItem();
+                if (item != null) {
+                    // load the project settings to process
+                    ElementParameter2ParameterType.loadElementParameters(process, stats, EParameterName.PROPERTY_TYPE.getName()
+                            + ":" + EParameterName.PROPERTY_TYPE.getName());
+                    // change repository item
+                    // TODO
+                    // StatsAndLogsHelper.changeRepositoryConnection(process, statsComposite);
+                }
+            }
+        }
     }
 
     public static void reloadStatsAndLogFromProjectSettings(ParametersType processType, Project pro) {
