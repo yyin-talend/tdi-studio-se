@@ -4,6 +4,7 @@
 class PrepareTez{
 	public void invoke(INode node, String cid){
         boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
+        boolean changePathSeparator = !"MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(theNode, "__DISTRIBUTION__"));
         String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
         String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
         List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_PROPERTIES__");
@@ -15,7 +16,7 @@ class PrepareTez{
     	%>
     		init_<%=cid%>.execute("SET hive.execution.engine=tez");
 			//collect tez jars
-			String[] classPaths_<%=cid%> = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
+			String[] classPaths_<%=cid%> = System.getProperty("java.class.path").split(<%if(changePathSeparator){%>String.valueOf(globalMap.get("current_client_path_separator"))<%}else{%>System.getProperty("path.separator")<%}%>);
 			java.util.Map<String, String> jarPaths_<%=cid%> = new java.util.HashMap<String, String>();
 			for(String classPath_<%=cid%> : classPaths_<%=cid%>){
     			<%
