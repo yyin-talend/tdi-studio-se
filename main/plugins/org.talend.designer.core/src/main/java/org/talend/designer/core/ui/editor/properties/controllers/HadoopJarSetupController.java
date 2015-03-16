@@ -148,18 +148,10 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
                     }
                 };
                 customVersionDialog.setReadonly(readonly);
-                Set<String> oldLibList = customVersionDialog.getLibList(versionType.getGroup());
                 if (customVersionDialog.open() == Window.OK) {
-                    Set<String> newLibList = customVersionDialog.getLibList(versionType.getGroup());
-                    if (oldLibList != null && newLibList != null && oldLibList.size() == newLibList.size()
-                            && oldLibList.containsAll(newLibList)) {
-                        // means nothing changes, so nothing need to do
-                    } else {
-                        // changed
-                        String customJars = customVersionDialog.getLibListStr(versionType.getGroup());
-                        executeCommand(new PropertyChangeCommand(elem, EParameterName.HADOOP_CUSTOM_JARS.getName(), StringUtils
-                                .trimToEmpty(customJars)));
-                    }
+                    String customJars = customVersionDialog.getLibListStr(versionType.getGroup());
+                    executeCommand(new PropertyChangeCommand(elem, EParameterName.HADOOP_CUSTOM_JARS.getName(), StringUtils
+                            .trimToEmpty(customJars)));
                 }
             }
 
