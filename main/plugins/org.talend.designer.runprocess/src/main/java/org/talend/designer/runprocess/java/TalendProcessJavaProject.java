@@ -13,16 +13,21 @@
 package org.talend.designer.runprocess.java;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.designer.maven.launch.TalendMavenLauncher;
+import org.talend.designer.maven.model.MavenConstants;
 import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.maven.template.MavenPomSynchronizer;
 
@@ -265,6 +270,41 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             synchronizer.addChildModules(childModules);
         } catch (Exception e) {
             ExceptionHandler.process(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.runtime.process.ITalendProcessJavaProject#buildModules(java.lang.String[])
+     */
+    @Override
+    public void buildModules(String... childModules) {
+        if (childModules == null) {
+            // build whole project
+            try {
+                NullProgressMonitor monitor = new NullProgressMonitor();
+                IProject project = getProject();
+                if (!project.isSynchronized(IResource.DEPTH_INFINITE)) {
+                    project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+                }
+                // project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
+                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+        } else if (childModules.length > 0) {
+            for (String module : childModules) {
+                IFile childModulePomFile = this.getProject().getFolder(module).getFile(MavenConstants.POM_FILE_NAME);
+                if (childModulePomFile.exists()) { // existed
+                    TalendMavenLauncher mavenLauncher = new TalendMavenLauncher(childModulePomFile);
+                    mavenLauncher.execute();
+                } else {
+                    throw new RuntimeException("The pom.xml is not existed. Can't build"); //$NON-NLS-1$
+                }
+            }
+        } else { // ==0
+            // nothing do for empty modules.
         }
     }
 }

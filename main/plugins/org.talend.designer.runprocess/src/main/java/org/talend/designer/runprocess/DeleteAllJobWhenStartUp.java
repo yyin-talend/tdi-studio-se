@@ -72,6 +72,10 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 IFolder srcFolder = talendJavaProject.getSrcFolder();
                 talendJavaProject.cleanFolder(moniter, srcFolder);
 
+                // empty the outputs, target/classes
+                IFolder outputFolder = talendJavaProject.getOutputFolder();
+                talendJavaProject.cleanFolder(moniter, outputFolder);
+
                 // empty lib/...
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
                     ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(

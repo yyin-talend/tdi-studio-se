@@ -18,7 +18,10 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
@@ -146,5 +149,47 @@ public class MavenJavaProcessor extends JavaProcessor {
         // job self
         String jobModule = this.getSrcCodePath().removeLastSegments(1).toPortableString();
         talendJavaProject.addChildModules(jobModule);
+    }
+
+    @Override
+    public void build() {
+        // find the children jobs for maven build
+        Set<JobInfo> infos = getBuildChildrenJobs();
+        JobInfo[] childrenJobs = infos.toArray(new JobInfo[0]);
+
+        // src/main/java
+        IPath srcRelativePath = this.getTalendJavaProject().getSrcFolder().getProjectRelativePath();
+        String srcRootPath = srcRelativePath.toString();
+
+        String[] jobswithChildren = new String[childrenJobs.length + 1];
+
+        for (int i = 0; i < childrenJobs.length; i++) {
+            JobInfo child = childrenJobs[i];
+            ProcessItem processItem = child.getProcessItem();
+            String childJobFolder = null;
+            if (processItem != null) {
+                childJobFolder = JavaResourcesHelper.getJobClassPackageFolder(processItem);
+            } else {
+                String projectFolderName = child.getProjectFolderName();
+                childJobFolder = JavaResourcesHelper.getJobClassPackageFolder(projectFolderName, child.getJobName(),
+                        child.getJobVersion());
+            }
+            jobswithChildren[i] = srcRootPath + '/' + childJobFolder;
+        }
+
+        // the main job is last one.
+        jobswithChildren[infos.size()] = this.getSrcCodePath().removeLastSegments(1).toString();
+
+        getTalendJavaProject().buildModules(jobswithChildren);
+
+        // refresh
+        try {
+            IFolder outputFolder = this.getTalendJavaProject().getOutputFolder();
+            // maybe only refresh the current job's outputs .
+            // outputFolder= this.getTalendJavaProject().getProject().getFolder(this.getCompiledCodePath());
+            outputFolder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
     }
 }

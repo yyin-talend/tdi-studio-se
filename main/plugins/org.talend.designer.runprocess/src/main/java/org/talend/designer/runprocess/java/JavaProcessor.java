@@ -1672,4 +1672,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return property;
     }
 
+    @Override
+    public void build() {
+        // build whole project by default.
+        getTalendJavaProject().buildModules();
+    }
 }
