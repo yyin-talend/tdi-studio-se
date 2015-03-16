@@ -133,9 +133,11 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
         if (this.mainConnector == null) {
             this.mainConnector = new NodeConnectorTool(nodePart).getConnector();
         }
-        if (this.mainConnector.getName().equals(EConnectionType.TABLE.getName())) {
+        if (this.mainConnector.getName().equals(EConnectionType.TABLE.getName()) || this.mainConnector.getName().equals("FILTER")
+                || this.mainConnector.getName().equals("UNIQUE")) {
             image = ImageProvider.getImage(ECoreImage.GREEN_HANDLE);
         }
+
         ImageFigure imageFigure = new ImageFigure(image);
         imageFigure.setSize(image.getBounds().width, image.getBounds().height);
 

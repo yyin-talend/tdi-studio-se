@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import java.util.List;
+
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -33,8 +35,7 @@ public class NodeConnectorTool {
 
     public INodeConnector getConnector() {
         Node node = (Node) nodePart.getModel();
-
-        INodeConnector mainConnector;
+        INodeConnector mainConnector = null;
         if (node.isELTComponent()) {
             mainConnector = node.getConnectorFromType(EConnectionType.TABLE);
         } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getType())) {
@@ -48,21 +49,35 @@ public class NodeConnectorTool {
             }
             mainConnector = tmp;
         } else {
-            mainConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
-        }
-
-        if (mainConnector == null) {
-            return null;
-        }
-        if (mainConnector.getMaxLinkOutput() != -1) {
-            if (mainConnector.getCurLinkNbOutput() >= mainConnector.getMaxLinkOutput()) {
-                return null;
+            List<? extends INodeConnector> nodeConnList = node.getConnectorsFromType(EConnectionType.FLOW_MAIN);
+            for (INodeConnector nodeConn : nodeConnList) {
+                if (isRelustUseful(nodeConn)) {
+                    return nodeConn;
+                }
             }
         }
-        if (mainConnector.getMaxLinkOutput() == 0) {
+
+        if (!isRelustUseful(mainConnector)) {
             return null;
         }
         return mainConnector;
+    }
+
+    private boolean isRelustUseful(INodeConnector mainConnector) {
+
+        if (mainConnector == null) {
+            return false;
+        }
+        if (mainConnector.getMaxLinkOutput() != -1) {
+            if (mainConnector.getCurLinkNbOutput() >= mainConnector.getMaxLinkOutput()) {
+                return false;
+            }
+        }
+        if (mainConnector.getMaxLinkOutput() == 0) {
+            return false;
+        }
+
+        return true;
     }
 
 }
