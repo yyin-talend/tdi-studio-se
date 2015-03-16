@@ -133,10 +133,19 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
             public void widgetSelected(SelectionEvent e) {
                 initHadoopVersionType();
                 boolean readonly = false;
-                IElementParameter propertyParameter = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-                if (propertyParameter != null) {
-                    if (EmfComponent.REPOSITORY.equals(propertyParameter.getValue())) {
+                String readOnlyIfString = param.getReadOnlyIf();
+                if (StringUtils.isNotEmpty(readOnlyIfString)) {
+                    if (param.isReadOnly(elem.getElementParameters())) {
                         readonly = true;
+                    }
+                }
+                // if readonly is true, then needn't to do this check, since it's aim is check readonly also
+                if (readonly == false) {
+                    IElementParameter propertyParameter = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+                    if (propertyParameter != null) {
+                        if (EmfComponent.REPOSITORY.equals(propertyParameter.getValue())) {
+                            readonly = true;
+                        }
                     }
                 }
                 HadoopCustomVersionDefineDialog customVersionDialog = new HadoopCustomVersionDefineDialog(PlatformUI
