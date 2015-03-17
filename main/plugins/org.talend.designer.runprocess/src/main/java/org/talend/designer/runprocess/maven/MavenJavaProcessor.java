@@ -12,16 +12,15 @@
 // ============================================================================
 package org.talend.designer.runprocess.maven;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
@@ -32,6 +31,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.MavenConstants;
+import org.talend.designer.maven.model.TalendMavenContants;
 import org.talend.designer.maven.template.CreateJobTemplateMavenPom;
 import org.talend.designer.maven.template.MavenTemplateConstants;
 import org.talend.designer.runprocess.ProcessorException;
@@ -44,6 +44,14 @@ import org.talend.designer.runprocess.java.JavaProcessor;
  */
 public class MavenJavaProcessor extends JavaProcessor {
 
+    /**
+     * FIXME, maybe, this is not good.
+     * 
+     * But when build the routine will spend more than 2 seconds, so only build it first time. when modify or change
+     * something for routine will build again.
+     */
+    private static boolean buildRoutinesOnce;
+
     public MavenJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process, property, filenameFromLabel);
     }
@@ -53,7 +61,16 @@ public class MavenJavaProcessor extends JavaProcessor {
         super.generateCode(statistics, trace, javaProperties);
         if (property != null) { // only job, if Shadow Process, will be null.
             generatePom();
-            checkProjectPomModules();
+
+            if (!buildRoutinesOnce) {
+                // build routines
+                // IFolder routinesSrcFolder = this.getTalendJavaProject().getSrcFolder()
+                // .getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+                // if (routinesSrcFolder.getLocation().toFile().exists()) {
+                // getTalendJavaProject().buildModules(routinesSrcFolder.getProjectRelativePath().toString());
+                // buildRoutinesOnce = true;
+                // }
+            }
         }
     }
 
@@ -144,27 +161,38 @@ public class MavenJavaProcessor extends JavaProcessor {
 
     }
 
-    protected void checkProjectPomModules() {
-        final ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
-        // job self
-        String jobModule = this.getSrcCodePath().removeLastSegments(1).toPortableString();
-        talendJavaProject.addChildModules(jobModule);
-    }
-
     @Override
     public void build() {
+        String[] jobswithChildren = getJobModules();
+
+        ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
+        talendJavaProject.addChildModules(true, jobswithChildren);
+
+        if (buildRoutinesOnce) {
+            // build each job module with children. If don't build the project level, maybe will be some problem for the
+            // xmlMappins and log4j.xml file when run job.
+            talendJavaProject.buildModules(jobswithChildren);
+        } else {
+            // build project level.
+            talendJavaProject.buildModules(TalendMavenContants.CURRENT_PATH);
+        }
+    }
+
+    private String[] getJobModules() {
         // find the children jobs for maven build
         Set<JobInfo> infos = getBuildChildrenJobs();
         JobInfo[] childrenJobs = infos.toArray(new JobInfo[0]);
+        List<String> jobswithChildren = new ArrayList<String>();
 
+        // add routines always.
+        if (!buildRoutinesOnce) {
+            jobswithChildren.add(getRoutineModule());
+        }
         // src/main/java
         IPath srcRelativePath = this.getTalendJavaProject().getSrcFolder().getProjectRelativePath();
         String srcRootPath = srcRelativePath.toString();
 
-        String[] jobswithChildren = new String[childrenJobs.length + 1];
-
-        for (int i = 0; i < childrenJobs.length; i++) {
-            JobInfo child = childrenJobs[i];
+        for (JobInfo child : childrenJobs) {
             ProcessItem processItem = child.getProcessItem();
             String childJobFolder = null;
             if (processItem != null) {
@@ -174,22 +202,19 @@ public class MavenJavaProcessor extends JavaProcessor {
                 childJobFolder = JavaResourcesHelper.getJobClassPackageFolder(projectFolderName, child.getJobName(),
                         child.getJobVersion());
             }
-            jobswithChildren[i] = srcRootPath + '/' + childJobFolder;
+            jobswithChildren.add(srcRootPath + '/' + childJobFolder);
         }
 
         // the main job is last one.
-        jobswithChildren[infos.size()] = this.getSrcCodePath().removeLastSegments(1).toString();
+        jobswithChildren.add(this.getSrcCodePath().removeLastSegments(1).toString());
 
-        getTalendJavaProject().buildModules(jobswithChildren);
+        return jobswithChildren.toArray(new String[0]);
+    }
 
-        // refresh
-        try {
-            IFolder outputFolder = this.getTalendJavaProject().getOutputFolder();
-            // maybe only refresh the current job's outputs .
-            // outputFolder= this.getTalendJavaProject().getProject().getFolder(this.getCompiledCodePath());
-            outputFolder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
-        }
+    private String getRoutineModule() {
+        // routine module
+        IFolder routinesSrcFolder = this.getTalendJavaProject().getSrcFolder().getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+        String routineModule = routinesSrcFolder.getProjectRelativePath().toString();
+        return routineModule;
     }
 }

@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.runprocess.java;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -19,6 +21,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -29,7 +32,9 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.launch.TalendMavenLauncher;
 import org.talend.designer.maven.model.MavenConstants;
 import org.talend.designer.maven.model.MavenSystemFolders;
+import org.talend.designer.maven.model.TalendMavenContants;
 import org.talend.designer.maven.template.MavenPomSynchronizer;
+import org.talend.utils.io.FilesUtils;
 
 /**
  * created by ggu on 26 Jan 2015 Detailled comment
@@ -265,9 +270,9 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
      * @see org.talend.core.runtime.process.ITalendProcessJavaProject#addChildModule(java.lang.String[])
      */
     @Override
-    public void addChildModules(String... childModules) {
+    public void addChildModules(boolean removeOld, String... childModules) {
         try {
-            synchronizer.addChildModules(childModules);
+            synchronizer.addChildModules(removeOld, childModules);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -295,16 +300,61 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             }
         } else if (childModules.length > 0) {
             for (String module : childModules) {
-                IFile childModulePomFile = this.getProject().getFolder(module).getFile(MavenConstants.POM_FILE_NAME);
-                if (childModulePomFile.exists()) { // existed
+
+                IPath modulePath = new Path(module);
+                // remove pom.xml
+                if (modulePath.lastSegment().equals(MavenConstants.POM_FILE_NAME)) {
+                    modulePath = modulePath.removeLastSegments(1);
+                }
+
+                // clean before classes for current job.
+                String newModule = modulePath.toString();
+                cleanBeforeBuilds(newModule);
+
+                IFile childModulePomFile;
+                if (TalendMavenContants.CURRENT_PATH.equals(newModule)) {
+                    childModulePomFile = this.getProject().getFile(MavenConstants.POM_FILE_NAME);
+                } else {
+                    IFolder moduleFolder = this.getProject().getFolder(newModule);
+                    childModulePomFile = moduleFolder.getFile(MavenConstants.POM_FILE_NAME);
+
+                }
+                if (childModulePomFile.getLocation().toFile().exists()) { // existed
                     TalendMavenLauncher mavenLauncher = new TalendMavenLauncher(childModulePomFile);
                     mavenLauncher.execute();
+
+                    try {
+                        childModulePomFile.getParent().refreshLocal(IResource.DEPTH_ONE, null);
+                    } catch (CoreException e) {
+                        ExceptionHandler.process(e);
+                    }
                 } else {
-                    throw new RuntimeException("The pom.xml is not existed. Can't build"); //$NON-NLS-1$
+                    throw new RuntimeException("The pom.xml is not existed. Can't build the job: " + module); //$NON-NLS-1$
                 }
             }
         } else { // ==0
             // nothing do for empty modules.
+        }
+    }
+
+    private void cleanBeforeBuilds(String module) {
+        IPath srcPath = this.getSrcFolder().getProjectRelativePath();
+        IContainer outputContainer;
+        if (TalendMavenContants.CURRENT_PATH.equals(module)) {
+            outputContainer = this.getOutputFolder();
+        } else {
+            IFolder moduleFolder = this.getProject().getFolder(module);
+            IPath modulePath = moduleFolder.getProjectRelativePath().makeRelativeTo(srcPath);
+            outputContainer = this.getOutputFolder().getFolder(modulePath);
+        }
+        try {
+            File jobFolder = outputContainer.getLocation().toFile();
+            if (jobFolder.exists()) {
+                FilesUtils.deleteFile(jobFolder, true);
+            }
+            outputContainer.refreshLocal(IResource.DEPTH_ONE, null);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
         }
     }
 }
