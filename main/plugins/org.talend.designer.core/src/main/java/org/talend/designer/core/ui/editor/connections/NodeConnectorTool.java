@@ -51,19 +51,19 @@ public class NodeConnectorTool {
         } else {
             List<? extends INodeConnector> nodeConnList = node.getConnectorsFromType(EConnectionType.FLOW_MAIN);
             for (INodeConnector nodeConn : nodeConnList) {
-                if (isRelustUseful(nodeConn)) {
+                if (isConnectorValid(nodeConn)) {
                     return nodeConn;
                 }
             }
         }
 
-        if (!isRelustUseful(mainConnector)) {
+        if (!isConnectorValid(mainConnector)) {
             return null;
         }
         return mainConnector;
     }
 
-    private boolean isRelustUseful(INodeConnector mainConnector) {
+    private boolean isConnectorValid(INodeConnector mainConnector) {
 
         if (mainConnector == null) {
             return false;
