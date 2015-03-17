@@ -28,9 +28,6 @@ imports="
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	    String connectionKey = "\"conn_" + connection+"\"";
 		
-		String boxPath = ElementParameterParser.getValue(node, "__PATH__");
-		String filePath = ElementParameterParser.getValue(node, "__FILE_PATH__");
-		
 		String exposeOutput = ElementParameterParser.getValue(node, "__EXPOSE_OUTPUT_STREAM__");
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
@@ -94,17 +91,7 @@ if(!"true".equals(useExistingConn)){
 	com.box.boxjavalibv2.BoxClient <%=cid%>_client = (com.box.boxjavalibv2.BoxClient)globalMap.get(<%=connectionKey%>);
 <%
 }
-%>
-	String <%=cid%>_filePath = normalizePath(<%=filePath%>);
-	String <%=cid%>_remotePath = normalizePath(<%=boxPath%>);
-	
-	if(<%=cid%>_remotePath == null || "".equals(<%=cid%>_remotePath.trim()))
-	{
-		throw new Exception("The Box remote path can't be null");
-	}
-	boolean <%=cid%>_hasError = false;
-	String <%=cid%>_remoteName = getFolderFromPath(<%=cid%>_remotePath);
-	
+%>	
 	com.box.boxjavalibv2.dao.BoxFile <%=cid%>_boxFile = null;
 	com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_boxFolder = null;
 <%if("true".equals(exposeOutput)){%>
