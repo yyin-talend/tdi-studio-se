@@ -21,10 +21,20 @@ imports="
 		String exposeOutput = ElementParameterParser.getValue(node, "__EXPOSE_OUTPUT_STREAM__");
 		String fileName = ElementParameterParser.getValue(node, "__FILE_NAME__");
 		String overwrite = ElementParameterParser.getValue(node, "__REPLACE_IF_EXIST__");
+		String boxPath = ElementParameterParser.getValue(node, "__PATH__");
+		String filePath = ElementParameterParser.getValue(node, "__FILE_PATH__");
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 <%if("true".equals(exposeOutput)){%>
+	String <%=cid%>_filePath = normalizePath(<%=filePath%>);
+	String <%=cid%>_remotePath = normalizePath(<%=boxPath%>);
+	
+	if(<%=cid%>_remotePath == null || "".equals(<%=cid%>_remotePath.trim()))
+	{
+		throw new Exception("The Box remote path can't be null");
+	}
+	String <%=cid%>_remoteName = getFolderFromPath(<%=cid%>_remotePath);
 	if(<%=cid%>_remoteName == null || <%=cid%>_remoteName.isEmpty())
 	{
 		throw new Exception("File name can not be empty");

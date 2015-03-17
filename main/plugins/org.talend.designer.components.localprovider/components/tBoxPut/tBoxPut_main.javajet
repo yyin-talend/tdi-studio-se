@@ -58,11 +58,21 @@ imports="
 	        } // if(conn) end
 	    } // for(conns) end
 %>
+
+	
+	
 	
 <%if("true".equals(readContentFromInput)){%>
 
 	<%if(dataInputConnection != null)
 	{%>
+		String <%=cid%>_remotePath = normalizePath(<%=boxPath%>);
+		
+		if(<%=cid%>_remotePath == null || "".equals(<%=cid%>_remotePath.trim()))
+		{
+			throw new Exception("The Box remote path can't be null");
+		}
+		String <%=cid%>_remoteName = getFolderFromPath(<%=cid%>_remotePath);
 		Object <%=cid%>_content = <%=dataInputConnection%>.content;
 		java.io.InputStream <%=cid%>_InputStream = null;
 		try
@@ -139,8 +149,15 @@ imports="
 <%
 } else if ("true".equals(uploadLocalFile)) {
 %>	
-	java.io.InputStream <%=cid%>_InputStream = null;
-	
+		String <%=cid%>_remotePath = normalizePath(<%=boxPath%>);
+		
+		if(<%=cid%>_remotePath == null || "".equals(<%=cid%>_remotePath.trim()))
+		{
+			throw new Exception("The Box remote path can't be null");
+		}
+		String <%=cid%>_remoteName = getFolderFromPath(<%=cid%>_remotePath);
+		java.io.InputStream <%=cid%>_InputStream = null;
+		String <%=cid%>_filePath = normalizePath(<%=filePath%>);
 		java.io.File <%=cid%>_fileToUpload = new java.io.File(<%=cid%>_filePath);
 		if(!<%=cid%>_fileToUpload.exists())
 		{
