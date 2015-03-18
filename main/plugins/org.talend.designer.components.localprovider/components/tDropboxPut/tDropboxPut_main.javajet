@@ -103,5 +103,14 @@ imports="
 	<%if(dataOutputConnection != null){%>
 		<%=dataOutputConnection%>.content = <%=cid%>_content;
 	<%}%>
+<%} else if("true".equals(exposeOutput)){%>
+     <%=cid%>_uploader.finish();
+	 <%=cid%>_uploader.close();
+	 <%=cid%>_uploader = <%=cid%>_client.startUploadFile(<%=filePath%>, <%=mode%>, -1);
+	 <%=cid%>_uploader_body = <%=cid%>_uploader.getBody();
+	 <%=cid%>_uploader_output = new java.io.FilterOutputStream(new com.dropbox.core.NoThrowOutputStream(<%=cid%>_uploader_body)){
+		public void close(){}
+	 };
+	 globalMap.put("<%=cid%>_OUTPUTSTREAM", <%=cid%>_uploader_output);
 <%}%>
 			
