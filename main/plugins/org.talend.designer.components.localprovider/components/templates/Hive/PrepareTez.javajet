@@ -4,7 +4,7 @@
 class PrepareTez{
 	public void invoke(INode node, String cid){
         boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
-        boolean changePathSeparator = !"MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(theNode, "__DISTRIBUTION__"));
+        boolean changePathSeparator = !"MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
         String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
         String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
         List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_PROPERTIES__");
