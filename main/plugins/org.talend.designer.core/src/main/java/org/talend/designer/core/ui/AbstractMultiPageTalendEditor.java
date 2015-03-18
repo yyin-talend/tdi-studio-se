@@ -1436,7 +1436,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     protected IImage getEditorTitleImage() {
-        return ECoreImage.PROCESS_ICON;
+        return ECoreImage.PROCESS_ICON_EDITOR;
     }
 
     /**

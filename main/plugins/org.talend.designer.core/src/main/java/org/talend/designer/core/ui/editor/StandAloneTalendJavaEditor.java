@@ -48,6 +48,7 @@ import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
@@ -194,7 +195,13 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             if (viewPart != null) {
                 RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
                 if (repositoryNode != null) {
-                    return ImageProvider.getImage(repositoryNode.getIcon());
+                    Image titleImage = null;
+                    if (ERepositoryObjectType.SQLPATTERNS == repositoryNode.getObjectType()) {
+                        titleImage = ImageProvider.getImage(ECoreImage.METADATA_SQLPATTERN_ICON_EDITOR);
+                    } else {
+                        titleImage = ImageProvider.getImage(repositoryNode.getIcon());
+                    }
+                    return titleImage;
                 }
             }
         }

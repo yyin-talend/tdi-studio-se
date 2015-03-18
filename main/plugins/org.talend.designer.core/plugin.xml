@@ -192,7 +192,7 @@
                         allowMultiple="false"
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.views.properties.ComponentSettingsView"
-                        icon="icons/palette_view.gif"
+                        icon="icons/palette_view.png"
                         id="org.talend.designer.core.ui.views.properties.ComponentSettingsView"
                         name="%componentSettingsView">
                   </view>

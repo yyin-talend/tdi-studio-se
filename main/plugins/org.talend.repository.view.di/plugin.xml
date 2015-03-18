@@ -189,7 +189,7 @@
       <navigatorContent
             activeByDefault="true"
             contentProvider="org.talend.repository.view.di.viewer.content.code.RoutinesContentProvider"
-            icon="icons/routines.gif"
+            icon="icons/routines.png"
             id="org.talend.repository.viewer.code.routines"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="%NavigatorContent.routines"
@@ -445,7 +445,7 @@
          point="org.talend.core.repository.repository_node_provider">
       <repositoryNode
             folder="code/routines"
-            icon="icons/routines.gif"
+            icon="icons/routines.png"
             isResouce="true"
             key="repository.routines"
             label="%NavigatorContent.routines"
