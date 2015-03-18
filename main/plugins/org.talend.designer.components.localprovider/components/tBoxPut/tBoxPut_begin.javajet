@@ -72,26 +72,24 @@ if(!"true".equals(useExistingConn)){
 			throw new Exception("One of Access token or Refresh token should be provided");
 		} else {
 			java.util.Map<String, Object> <%=cid%>_map = new java.util.HashMap<String, Object>();
-		if (<%=cid%>_accessToken != null && !<%=cid%>_accessToken.isEmpty()  && !<%=cid%>_accessToken.trim().matches("\"?\"?")
-		 && <%=cid%>_refreshToken != null && !<%=cid%>_refreshToken.isEmpty() && !<%=cid%>_refreshToken.trim().matches("\"?\"?")) {
-			<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=cid%>_accessToken);
-			<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=cid%>_refreshToken);
-		    <%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
-		} else if (<%=cid%>_accessToken != null && !<%=cid%>_accessToken.isEmpty() && !<%=cid%>_accessToken.trim().matches("\"?\"?")) {
-		    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=cid%>_accessToken);
-		} else if (<%=cid%>_refreshToken != null && !"".equals(<%=cid%>_refreshToken.trim()) && !<%=cid%>_refreshToken.trim().matches("\"?\"?")) {
-		    <%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=cid%>_refreshToken);
-		    <%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
-		}   
-    <%=cid%>_client.authenticate(new com.box.boxjavalibv2.dao.BoxOAuthToken(<%=cid%>_map));
-}
+			if (<%=cid%>_accessToken != null && !<%=cid%>_accessToken.isEmpty()  && !<%=cid%>_accessToken.trim().matches("\"?\"?")
+		 		&& <%=cid%>_refreshToken != null && !<%=cid%>_refreshToken.isEmpty() && !<%=cid%>_refreshToken.trim().matches("\"?\"?")) {
+				<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=cid%>_accessToken);
+				<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=cid%>_refreshToken);
+		    	<%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
+			} else if (<%=cid%>_accessToken != null && !<%=cid%>_accessToken.isEmpty() && !<%=cid%>_accessToken.trim().matches("\"?\"?")) {
+		    	<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_ACCESS_TOKEN, <%=cid%>_accessToken);
+			} else if (<%=cid%>_refreshToken != null && !"".equals(<%=cid%>_refreshToken.trim()) && !<%=cid%>_refreshToken.trim().matches("\"?\"?")) {
+		    	<%=cid%>_map.put(com.box.boxjavalibv2.dao.BoxOAuthToken.FIELD_REFRESH_TOKEN, <%=cid%>_refreshToken);
+		    	<%=cid%>_client.getOAuthDataController().setAutoRefreshOAuth(true);
+			}   
+    	<%=cid%>_client.authenticate(new com.box.boxjavalibv2.dao.BoxOAuthToken(<%=cid%>_map));
+		}
 <%
-	} else {
+} else {
 %>
 	com.box.boxjavalibv2.BoxClient <%=cid%>_client = (com.box.boxjavalibv2.BoxClient)globalMap.get(<%=connectionKey%>);
-<%
-}
-%>	
+<%}%>	
 	com.box.boxjavalibv2.dao.BoxFile <%=cid%>_boxFile = null;
 	com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_boxFolder = null;
 <%if("true".equals(exposeOutput)){%>
