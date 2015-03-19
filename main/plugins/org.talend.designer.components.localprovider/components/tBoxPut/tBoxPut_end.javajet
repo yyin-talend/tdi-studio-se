@@ -19,74 +19,24 @@ imports="
 		String cid = node.getUniqueName();
 		
 		String exposeOutput = ElementParameterParser.getValue(node, "__EXPOSE_OUTPUT_STREAM__");
-		String fileName = ElementParameterParser.getValue(node, "__FILE_NAME__");
-		String overwrite = ElementParameterParser.getValue(node, "__REPLACE_IF_EXIST__");
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 <%if("true".equals(exposeOutput)){%>
-	if(<%=cid%>_remoteName == null || <%=cid%>_remoteName.isEmpty())
-	{
-		throw new Exception("File name can not be empty");
-	}
-	<%=cid%>_uploader_input = new java.io.ByteArrayInputStream(<%=cid%>_uploader_output.toByteArray());
-	if(<%=cid%>_remotePath.equals("All Files"))
-		{
-			<%=cid%>_boxFolder = <%=cid%>_client.getFoldersManager().getFolder("0", null);
-		}
-		else
-		{
-			if (<%=cid%>_remotePath.startsWith("All Files"))
-			{
-				<%=cid%>_boxFolder = <%=cid%>_client.getFoldersManager().getFolder("0", null);
-			}
-			else
-			{
-				throw new Exception("Remote path should start with " + "\"" + "All Files" + "\"");
-			}
-			<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length() - <%=cid%>_remoteName.length()));
-		}
-		
-		if (<%=cid%>_boxFolder == null)
-			throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
-		com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_uploader_input);
-		boolean <%=cid%>_exists = false;
-		String <%=cid%>_fileId = null;
-		for (com.box.boxjavalibv2.dao.BoxTypedObject obj : <%=cid%>_boxFolder.getItemCollection().getEntries())
-        {
-        	if (obj.getType().equals("file") && obj.getValue("name").equals(<%=cid%>_remoteName))
-        	{
-        		<%=cid%>_exists = true;
-        		<%=cid%>_fileId = obj.getId();
-        		break;
-        	}
-        }
-        if (<%=cid%>_exists)
-        {
-			<% if ("true".equals(overwrite))
-			{ %>
-				<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_fileId, null);
-				<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
-			<%} else {%>
-				throw new Exception("File with the same name already exist");
-			<%}%>
-		}
-		else
-		{
-			<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
-		}
 	} finally {
-		if (<%=cid%>_uploader_input != null)
+		if (<%=cid%>_uploader_input != null) {
 			try {
 				<%=cid%>_uploader_input.close();
 			} catch (IOException e)
 			{
 			}
-		if (<%=cid%>_uploader_output != null)
+		}
+		if (<%=cid%>_uploader_output != null) {
 			try {
 				<%=cid%>_uploader_output.close();
 			} catch (IOException e)
 			{
 			}
+		}
 	}
 <%}%>

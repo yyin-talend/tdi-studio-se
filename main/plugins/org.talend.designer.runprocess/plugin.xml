@@ -17,7 +17,7 @@
             allowMultiple="false"
             category="org.talend.core.root"
             class="org.talend.designer.runprocess.ui.views.ProcessView"
-            icon="icons/process_view.gif"
+            icon="icons/process_view.png"
             id="org.talend.designer.runprocess.ui.views.processview"
             name="%runJobAction.title"/>
    </extension>

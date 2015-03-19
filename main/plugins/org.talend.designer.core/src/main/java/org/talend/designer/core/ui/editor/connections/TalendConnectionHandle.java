@@ -19,17 +19,18 @@ import java.util.List;
 
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.Locator;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.TreeSearch;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.handles.SquareHandle;
 import org.eclipse.gef.requests.CreationFactory;
-import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.runtime.image.ECoreImage;
-import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.model.process.EConnectionType;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.ui.action.TalendCreateConnectionTool;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -127,20 +128,35 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
         if (isValid()) {
             return;
         }
-
         removeAll();
-        Image image = ImageProvider.getImage(ECoreImage.CONN_HANDLE);
+
         if (this.mainConnector == null) {
             this.mainConnector = new NodeConnectorTool(nodePart).getConnector();
         }
-        if (this.mainConnector.getName().equals(EConnectionType.TABLE.getName())) {
-            image = ImageProvider.getImage(ECoreImage.GREEN_HANDLE);
-        }
-        ImageFigure imageFigure = new ImageFigure(image);
-        imageFigure.setSize(image.getBounds().width, image.getBounds().height);
 
-        add(imageFigure);
-        setSize(imageFigure.getSize());
+        Rectangle rec = new Rectangle(0, 0, 12, 12);
+        PentagonShape sourceShape = new PentagonShape(this.mainConnector);
+        sourceShape.addPoint(new Point(0, 0));
+        sourceShape.addPoint(new Point(9, 0));
+        sourceShape.addPoint(new Point(11, 4.5));
+        sourceShape.addPoint(new Point(11, 6.5));
+        sourceShape.addPoint(new Point(9, 11));
+        sourceShape.addPoint(new Point(0, 11));
+
+        sourceShape.setFill(true);
+        Color whiteColor = ColorUtils.getCacheColor(new RGB(255, 255, 255));
+        sourceShape.setBackgroundColor(whiteColor);
+        sourceShape.setPreferredSize(rec.getSize());
+        if (mainConnector != null) {
+            RGB shapeColor = this.mainConnector.getConnectionProperty(this.mainConnector.getDefaultConnectionType()).getRGB();
+            sourceShape.setForegroundColor(ColorUtils.getCacheColor(shapeColor));
+        }
+
+        sourceShape.setBounds(rec);
+        sourceShape.setLayoutManager(new ToolbarLayout());
+
+        add(sourceShape);
+        setSize(sourceShape.getPreferredSize());
 
         super.validate();
     }

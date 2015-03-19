@@ -58,11 +58,18 @@ imports="
 	        } // if(conn) end
 	    } // for(conns) end
 %>
-	
+
 <%if("true".equals(readContentFromInput)){%>
 
 	<%if(dataInputConnection != null)
 	{%>
+		String <%=cid%>_remotePath = normalizePath(<%=boxPath%>);
+		
+		if(<%=cid%>_remotePath == null || "".equals(<%=cid%>_remotePath.trim()))
+		{
+			throw new Exception("The Box remote path can't be null");
+		}
+		String <%=cid%>_remoteName = getFolderFromPath(<%=cid%>_remotePath);
 		Object <%=cid%>_content = <%=dataInputConnection%>.content;
 		java.io.InputStream <%=cid%>_InputStream = null;
 		try
@@ -139,65 +146,145 @@ imports="
 <%
 } else if ("true".equals(uploadLocalFile)) {
 %>	
-	java.io.InputStream <%=cid%>_InputStream = null;
+	String <%=cid%>_remotePath = normalizePath(<%=boxPath%>);
 	
-		java.io.File <%=cid%>_fileToUpload = new java.io.File(<%=cid%>_filePath);
-		if(!<%=cid%>_fileToUpload.exists())
-		{
-			throw new Exception("The Uploaded Box file doesn't exist");
-		}
-		if(<%=cid%>_fileToUpload.isDirectory())
-		{
-			throw new Exception("The specified path is a directory (file expected)");
-		}
-		<%=cid%>_InputStream = new java.io.FileInputStream(<%=cid%>_fileToUpload);
-		if(<%=cid%>_remotePath.equals("All Files"))
+	if(<%=cid%>_remotePath == null || "".equals(<%=cid%>_remotePath.trim()))
+	{
+		throw new Exception("The Box remote path can't be null");
+	}
+	String <%=cid%>_remoteName = getFolderFromPath(<%=cid%>_remotePath);
+	java.io.InputStream <%=cid%>_InputStream = null;
+	String <%=cid%>_filePath = normalizePath(<%=filePath%>);
+	java.io.File <%=cid%>_fileToUpload = new java.io.File(<%=cid%>_filePath);
+	if(!<%=cid%>_fileToUpload.exists())
+	{
+		throw new Exception("The Uploaded Box file doesn't exist");
+	}
+	if(<%=cid%>_fileToUpload.isDirectory())
+	{
+		throw new Exception("The specified path is a directory (file expected)");
+	}
+	<%=cid%>_InputStream = new java.io.FileInputStream(<%=cid%>_fileToUpload);
+	if(<%=cid%>_remotePath.equals("All Files"))
+	{
+		<%=cid%>_boxFolder = <%=cid%>_client.getFoldersManager().getFolder("0", null);
+	}
+	else
+	{
+		if (<%=cid%>_remotePath.startsWith("All Files"))
 		{
 			<%=cid%>_boxFolder = <%=cid%>_client.getFoldersManager().getFolder("0", null);
 		}
 		else
 		{
-			if (<%=cid%>_remotePath.startsWith("All Files"))
-			{
-				<%=cid%>_boxFolder = <%=cid%>_client.getFoldersManager().getFolder("0", null);
-			}
-			else
-			{
-				throw new Exception("Remote path should start with " + "\"" + "All Files" + "\"");
-			}
-			<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length() - <%=cid%>_remoteName.length()));
+			throw new Exception("Remote path should start with " + "\"" + "All Files" + "\"");
 		}
-		if (<%=cid%>_boxFolder == null)
-			throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
-		com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_InputStream);
-		boolean <%=cid%>_exists = false;
-		String <%=cid%>_fileId = null;
-        for (com.box.boxjavalibv2.dao.BoxTypedObject obj : <%=cid%>_boxFolder.getItemCollection().getEntries())
-        {
-        	if (obj.getType().equals("file") && obj.getValue("name").equals(<%=cid%>_remoteName))
-        	{
-        		<%=cid%>_exists = true;
-        		<%=cid%>_fileId = obj.getId();
-        		break;
-        	}
-        }
-        if (<%=cid%>_exists)
-        {
-			<% if ("true".equals(overwrite))
-			{ %>
-				<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_fileId, null);
-				<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
-			<%} else {%>
-				throw new Exception("File with the same name already exist");
-			<%}%>
+		<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length() - <%=cid%>_remoteName.length()));
+	}
+	if (<%=cid%>_boxFolder == null)
+		throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
+	com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_InputStream);
+	boolean <%=cid%>_exists = false;
+	String <%=cid%>_fileId = null;
+    for (com.box.boxjavalibv2.dao.BoxTypedObject obj : <%=cid%>_boxFolder.getItemCollection().getEntries())
+    {
+    	if (obj.getType().equals("file") && obj.getValue("name").equals(<%=cid%>_remoteName))
+    	{
+    		<%=cid%>_exists = true;
+    		<%=cid%>_fileId = obj.getId();
+    		break;
+    	}
+    }
+    if (<%=cid%>_exists)
+    {
+		<% if ("true".equals(overwrite))
+		{ %>
+			<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_fileId, null);
+			<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+		<%} else {%>
+			throw new Exception("File with the same name already exist");
+		<%}%>
+	}
+	else
+	{
+		<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+	}
+	<%if(dataOutputConnection != null) {%>
+	<%=dataOutputConnection%>.content = <%=cid%>_InputStream;
+	<%}%>
+<%} else if("true".equals(exposeOutput)) {%>
+	String <%=cid%>_filePath = normalizePath(<%=filePath%>);
+	String <%=cid%>_remotePath = normalizePath(<%=boxPath%>);
+	
+	if(<%=cid%>_remotePath == null || "".equals(<%=cid%>_remotePath.trim()))
+	{
+		throw new Exception("The Box remote path can't be null");
+	}
+	String <%=cid%>_remoteName = getFolderFromPath(<%=cid%>_remotePath);
+	if(<%=cid%>_remoteName == null || <%=cid%>_remoteName.isEmpty())
+	{
+		throw new Exception("File name can not be empty");
+	}
+	<%=cid%>_uploader_input = new java.io.ByteArrayInputStream(<%=cid%>_uploader_output.toByteArray());
+	if(<%=cid%>_remotePath.equals("All Files"))
+	{
+		<%=cid%>_boxFolder = <%=cid%>_client.getFoldersManager().getFolder("0", null);
+	}
+	else
+	{
+		if (<%=cid%>_remotePath.startsWith("All Files"))
+		{
+			<%=cid%>_boxFolder = <%=cid%>_client.getFoldersManager().getFolder("0", null);
 		}
 		else
 		{
-			<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+			throw new Exception("Remote path should start with " + "\"" + "All Files" + "\"");
 		}
-		<%if(dataOutputConnection != null){%>
-		<%=dataOutputConnection%>.content = <%=cid%>_InputStream;
-	<%}%>
-<%
-}
-%>
+		<%=cid%>_boxFolder = createSubDirectories(<%=cid%>_client, <%=cid%>_boxFolder, <%=cid%>_remotePath.substring("All Files/".length(), <%=cid%>_remotePath.length() - <%=cid%>_remoteName.length()));
+	}
+		
+	if (<%=cid%>_boxFolder == null)
+		throw new Exception("No destination folder found under path " + <%=cid%>_remotePath);
+	com.box.restclientv2.requestsbase.BoxFileUploadRequestObject <%=cid%>_fileUploadObj = com.box.restclientv2.requestsbase.BoxFileUploadRequestObject.uploadFileRequestObject(<%=cid%>_boxFolder.getId(), <%=cid%>_remoteName, <%=cid%>_uploader_input);
+	boolean <%=cid%>_exists = false;
+	String <%=cid%>_fileId = null;
+	for (com.box.boxjavalibv2.dao.BoxTypedObject obj : <%=cid%>_boxFolder.getItemCollection().getEntries())
+    {
+    	if (obj.getType().equals("file") && obj.getValue("name").equals(<%=cid%>_remoteName))
+    	{
+    		<%=cid%>_exists = true;
+    		<%=cid%>_fileId = obj.getId();
+    		break;
+    	}
+    }
+    if (<%=cid%>_exists)
+    {
+		<% if ("true".equals(overwrite))
+		{ %>
+			<%=cid%>_client.getFilesManager().deleteFile(<%=cid%>_fileId, null);
+			<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+		<%} else {%>
+			throw new Exception("File with the same name already exist");
+		<%}%>
+	}
+	else
+	{
+		<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().uploadFile(<%=cid%>_fileUploadObj);
+	}
+	if (<%=cid%>_uploader_input != null) {
+		try {
+			<%=cid%>_uploader_input.close();
+		} catch (IOException e)
+		{
+		}
+	}
+	if (<%=cid%>_uploader_output != null) {
+		try {
+			<%=cid%>_uploader_output.close();
+		} catch (IOException e)
+		{
+		}
+	}
+	<%=cid%>_uploader_output = new java.io.ByteArrayOutputStream();
+	globalMap.put("<%=cid%>_OUTPUTSTREAM", <%=cid%>_uploader_output);
+<%}%>
