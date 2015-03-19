@@ -19,7 +19,10 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -163,9 +166,20 @@ public class MavenJavaProcessor extends JavaProcessor {
 
     @Override
     public void build() {
+        final ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
+        try {
+            // before build, remove all old error markers
+            IFile jobSrcFile = talendJavaProject.getProject().getFile(this.getSrcCodePath());
+            if (jobSrcFile.exists()) {
+                jobSrcFile.refreshLocal(IResource.DEPTH_ZERO, null);
+                jobSrcFile.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
+            }
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+
         String[] jobswithChildren = getJobModules();
 
-        ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
         talendJavaProject.addChildModules(true, jobswithChildren);
 
         if (buildRoutinesOnce) {
@@ -175,6 +189,26 @@ public class MavenJavaProcessor extends JavaProcessor {
         } else {
             // build project level.
             talendJavaProject.buildModules(TalendMavenContants.CURRENT_PATH);
+        }
+        // refresh
+        try {
+            // maybe will be more for the performance
+            // talendJavaProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
+
+            IFolder jobSrcFolder = talendJavaProject.getProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
+            if (jobSrcFolder.exists()) {
+                jobSrcFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+            }
+            // IFolder jobClassFolder =
+            // talendJavaProject.getProject().getFolder(this.getCompiledCodePath().removeLastSegments(1));
+            // if (jobClassFolder.exists()) { //always false, because it's delete before and recreate. refresh whole
+            // output folder instead.
+            // jobClassFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+            // }
+            talendJavaProject.getOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
+
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
         }
     }
 

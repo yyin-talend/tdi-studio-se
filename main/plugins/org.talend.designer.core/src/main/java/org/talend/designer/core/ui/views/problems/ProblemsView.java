@@ -372,7 +372,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
             for (IRepositoryViewObject repositoryObject : list) {
                 String name = repositoryObject.getProperty().getLabel();
                 String id = repositoryObject.getProperty().getId();
-                if (matchRoutine(id, name, problem.getMarker().getResource().getName())) {
+                if (matchRoutine(id, name, problem.getMarker() != null ? problem.getMarker().getResource().getName() : "")) {
                     return (RoutineItem) repositoryObject.getProperty().getItem();
                 }
             }

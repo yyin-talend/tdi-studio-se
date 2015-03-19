@@ -19,22 +19,32 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.compiler.IProblem;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -54,6 +64,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.services.ISVNProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -71,6 +82,9 @@ import com.ibm.icu.text.MessageFormat;
  * 
  */
 public class Problems {
+
+    // if build whole project, means no need some codes to check.
+    public static boolean buildWholeProject = true;
 
     /**
      * This enum is used for marking the group type for problems. <br/>
@@ -604,7 +618,7 @@ public class Problems {
         return informations;
     }
 
-    public static List<Information> addJobRoutineFile(IFile file, ProblemType type, Item Item, boolean... fromJob) {
+    public static List<Information> addJobRoutineFile(IFile file, ProblemType type, Item item, boolean... fromJob) {
         if (file == null || !file.exists()) {
             return null;
         }
@@ -612,10 +626,16 @@ public class Problems {
 
         List<Information> informations = new ArrayList<Information>();
         try {
-            IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+            Set<IMarker> fullMarker = new HashSet<IMarker>();
 
-            Problems.clearAllComliationError(Item.getProperty().getLabel());
-            for (IMarker marker : markers) {
+            IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+            if (markers != null) {
+                fullMarker.addAll(Arrays.asList(markers));
+            }
+            // remove old
+            Problems.clearAllComliationError(item.getProperty().getLabel());
+
+            for (IMarker marker : fullMarker) {
                 Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
                 String message = (String) marker.getAttribute(IMarker.MESSAGE);
                 Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
@@ -656,10 +676,14 @@ public class Problems {
                         if ("".equals(uniName) || uniName == null) { //$NON-NLS-1$
                             uniName = "uniName";//$NON-NLS-1$
                         }
-                        add(status, marker, Item, message, lineNr, uniName, start, end, type);
+                        add(status, marker, item, message, lineNr, uniName, start, end, type);
                     }
                 }
 
+            }
+            // TalendProcessJavaProject.buildModules for buildWholeCodeProject (about line 324)
+            if (!buildWholeProject) {
+                addAll(computeCompilationUnit(file, type, item));
             }
             if (fromJob.length > 0 && fromJob[0]) {
                 addErrorMark();
@@ -670,6 +694,50 @@ public class Problems {
         }
 
         return informations;
+    }
+
+    @SuppressWarnings("restriction")
+    private static List<Problem> computeCompilationUnit(IFile file, ProblemType type, Item item) throws CoreException {
+        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+        // FIXME, only for standard job first, also for JobLaunchShortcut.launch
+        if (itemType == null || !itemType.equals(ERepositoryObjectType.PROCESS)) {
+            return Collections.emptyList();
+        }
+        List<Problem> compilProblems = new ArrayList<Problem>();
+        final ICompilationUnit unit = JavaPlugin.getDefault().getWorkingCopyManager()
+                .getWorkingCopy(new FileEditorInput(file), false);
+        if (unit != null) {
+            CompilationUnit ast = unit.reconcile(ASTProvider.SHARED_AST_LEVEL, ICompilationUnit.FORCE_PROBLEM_DETECTION, null,
+                    null);
+            IProblem[] problems = ast.getProblems();
+            if (problems != null) {
+                for (IProblem p : problems) {
+                    String[] arguments = p.getArguments();
+                    int id = p.getID();
+                    String message = p.getMessage();
+                    int sourceLineNumber = p.getSourceLineNumber();
+                    int sourceStart = p.getSourceStart();
+                    int sourceEnd = p.getSourceEnd();
+
+                    String uniName = null;
+                    IPath location = file.getLocation();
+                    if (location != null) {
+                        String path = location.toString();
+                        uniName = setErrorMark(path, sourceLineNumber);
+                    }
+                    ProblemStatus status = ProblemStatus.WARNING;
+                    if (p.isError()) {
+                        status = ProblemStatus.ERROR;
+                    }
+
+                    TalendProblem tp = new TalendProblem(status, item, null, message, sourceLineNumber, uniName, sourceStart,
+                            sourceEnd, type);
+                    compilProblems.add(tp);
+                }
+            }
+
+        }
+        return compilProblems;
     }
 
     /**
@@ -882,7 +950,8 @@ public class Problems {
                                                     continue;
                                                 }
                                             }
-                                            if (tProblem.getUnitName().equals(node.getUniqueName())) {
+                                            if (tProblem.getUnitName() != null
+                                                    && tProblem.getUnitName().equals(node.getUniqueName())) {
                                                 // nodeList.add(node);
                                                 if (nodeList.get(node) != null) {
                                                     nodeList.get(node).append("\r\n");

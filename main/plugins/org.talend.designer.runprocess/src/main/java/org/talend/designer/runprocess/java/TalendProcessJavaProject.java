@@ -29,6 +29,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.maven.launch.TalendMavenLauncher;
 import org.talend.designer.maven.model.MavenConstants;
 import org.talend.designer.maven.model.MavenSystemFolders;
@@ -286,18 +287,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     @Override
     public void buildModules(String... childModules) {
         if (childModules == null) {
-            // build whole project
-            try {
-                NullProgressMonitor monitor = new NullProgressMonitor();
-                IProject project = getProject();
-                if (!project.isSynchronized(IResource.DEPTH_INFINITE)) {
-                    project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-                }
-                // project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
-                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
+            buildWholeCodeProject();
         } else if (childModules.length > 0) {
             for (String module : childModules) {
 
@@ -323,10 +313,17 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                     TalendMavenLauncher mavenLauncher = new TalendMavenLauncher(childModulePomFile);
                     mavenLauncher.execute();
 
-                    try {
-                        childModulePomFile.getParent().refreshLocal(IResource.DEPTH_ONE, null);
-                    } catch (CoreException e) {
-                        ExceptionHandler.process(e);
+                    /*
+                     * FIXME, because the marker issue, we have to build whole project to get the markers.
+                     * 
+                     * Even thought can use the API Problems.computeCompilationUnit to get the code problems. but can't
+                     * get the markers still and the status is not good still.
+                     * 
+                     * Later, will try to use another way to fix this, maybe need change the problem view, because it
+                     * based on markers.
+                     */
+                    if (Problems.buildWholeProject) {
+                        buildWholeCodeProject();
                     }
                 } else {
                     throw new RuntimeException("The pom.xml is not existed. Can't build the job: " + module); //$NON-NLS-1$
@@ -334,6 +331,24 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             }
         } else { // ==0
             // nothing do for empty modules.
+        }
+    }
+
+    /**
+     * DOC ggu Comment method "buildWholeCodeProject".
+     */
+    private void buildWholeCodeProject() {
+        // build whole project
+        try {
+            NullProgressMonitor monitor = new NullProgressMonitor();
+            IProject project = getProject();
+            if (!project.isSynchronized(IResource.DEPTH_INFINITE)) {
+                project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+            }
+            // project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
+            project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
         }
     }
 
@@ -352,7 +367,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             if (jobFolder.exists()) {
                 FilesUtils.deleteFile(jobFolder, true);
             }
-            outputContainer.refreshLocal(IResource.DEPTH_ONE, null);
+            outputContainer.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
