@@ -385,7 +385,7 @@ public class ProcessView extends ViewPart {
         } else if (category == EComponentCategory.DEBUGRUN) {
             debugTisProcessComposite = this.debugViewHelper.getDebugComposite(parent);
             // CSS
-            CoreUIPlugin.setCSSClass(debugTisProcessComposite, debugTisProcessComposite.getClass().getSimpleName());
+            CoreUIPlugin.setCSSClass(debugTisProcessComposite, TraceDebugProcessComposite.class.getSimpleName());
             dc = debugTisProcessComposite;
         } else if (category == EComponentCategory.ADVANCESETTING) {
             advanceComposite = new AdvanceSettingComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);

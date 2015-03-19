@@ -3965,4 +3965,24 @@ public class EmfComponent extends AbstractComponent {
         }
         return compType.getHEADER().getEQUIVALENT();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getCONNECTORList()
+     */
+    @Override
+    public EList getCONNECTORList() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
+        EList listConnType = compType.getCONNECTORS().getCONNECTOR();
+        return listConnType;
+    }
 }

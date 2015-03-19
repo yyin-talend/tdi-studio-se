@@ -12,7 +12,7 @@
       <view
             category="org.talend.core.root"
             class="org.talend.repository.ui.views.RepositoryView"
-            icon="icons/nav_home_003.gif"
+            icon="icons/nav_home_003.png"
             id="org.talend.repository.views.repository.deprecated"
             name="Repository [deprecated]"/>
     -->

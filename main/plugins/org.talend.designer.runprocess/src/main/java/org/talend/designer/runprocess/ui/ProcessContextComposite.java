@@ -43,6 +43,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -125,6 +126,9 @@ public class ProcessContextComposite extends Composite {
 
         // Add listeners
         rubjobManager = ProcessManager.getInstance();
+
+        // set CSS class
+        CoreUIPlugin.setCSSClass(this, ProcessContextComposite.class.getSimpleName());
     }
 
     ISelectionChangedListener contextComboListener = new ISelectionChangedListener() {

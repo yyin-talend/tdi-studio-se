@@ -102,7 +102,6 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
     }
 	<%if ("false".equals(helper.getStringParam("__INCLUDSUBDIR__"))) { %> //without subfolders
     do {
-      try {
       
       if(!<%=cid%>_folderName.equals("root")) {
       		<%=cid%>_request.setQ("title = '" + <%=cid%>_folderName + "' and mimeType = 'application/vnd.google-apps.folder'");
@@ -136,10 +135,6 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
         }
         <%=cid%>_result.addAll(files.getItems());
         <%=cid%>_request.setPageToken(files.getNextPageToken());
-      } catch (IOException e) {
-        System.out.println("An error occurred: " + e);
-        <%=cid%>_request.setPageToken(null);
-      }
     } while (<%=cid%>_request.getPageToken() != null &&
              <%=cid%>_request.getPageToken().length() > 0);
    <%} else {%>
@@ -160,7 +155,6 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 	}
 	while (subfolders_<%=cid %>.size()>0) {
     do {
-      try {
 	  	<%if ("DIRECTORIES".equals(helper.getStringParam("__LIST_MODE__"))) {%>
 	  		<%=cid%>_request.setQ("'"+subfolders_<%=cid %>.get(0)+"' in parents and mimeType = 'application/vnd.google-apps.folder'");
      	<%} else {%>
@@ -190,10 +184,6 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 		  }
  		}
         <%=cid%>_request.setPageToken(files.getNextPageToken());
-      } catch (IOException e) {
-        System.out.println("An error occurred: " + e);
-        <%=cid%>_request.setPageToken(null);
-      }
     } while (<%=cid%>_request.getPageToken() != null &&
              <%=cid%>_request.getPageToken().length() > 0);
     subfolders_<%=cid %>.remove(0);

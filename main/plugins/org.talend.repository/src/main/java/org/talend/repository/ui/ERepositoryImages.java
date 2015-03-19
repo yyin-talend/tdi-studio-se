@@ -35,7 +35,7 @@ public enum ERepositoryImages implements IImage {
     LOGIN_CORRECT_ICON("/icons/messagebox_greenCoche.png"), //
     ADD_ICON("/icons/add.gif"), //$NON-NLS-N$
     DEFAULT_COMPONENT_ICON("/icons/default-32.png"), //$NON-NLS-N$
-    DEFAULT_PROCESS_ICON("/icons/process_icon.gif"), //$NON-NLS-N$
+    DEFAULT_PROCESS_ICON("/icons/process_icon.png"), //$NON-NLS-N$
     MODIFIED_ICON("/icons/refresh.gif"), //$NON-NLS-N$
     SCHEMA_ICON("/icons/table.gif"), //$NON-NLS-N$
     CONNECTOR_ICON("/icons/connection.gif"), //$NON-NLS-N$
