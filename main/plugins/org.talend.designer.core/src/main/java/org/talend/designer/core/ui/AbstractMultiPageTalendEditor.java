@@ -970,20 +970,37 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // remove all error status at any change of the job when save it.
         Property property = getProcess().getProperty();
         ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
-        try {
-            Item item = property.getItem();
-            List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(item), property, true);
-            property.getInformations().clear();
-            for (Information info : informations) {
-                if (!info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
-                    property.getInformations().add(info);
+        if (synchronizer != null) {
+            try {
+                List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(curItem), property, true);
+                property.getInformations().clear();
+                boolean hasErrorStatus = false;
+                for (Information info : informations) {
+                    if (!info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
+                        property.getInformations().add(info);
+                    } else {
+                        hasErrorStatus = true;
+                    }
                 }
+                Problems.computePropertyMaxInformationLevel(property, false);
+                // remove error for all the nodes
+                if (hasErrorStatus) {
+                    for (INode psNode : getProcess().getGraphicalNodes()) {
+                        if (psNode instanceof Node) {
+                            Node node = (Node) psNode;
+                            node.setErrorFlag(false);
+                            node.setCompareFlag(false);
+                            node.setErrorInfo(null);
+                            node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
+                            node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
+                        }
+                    }
+                }
+            } catch (SystemException e) {
+                ExceptionHandler.process(e);
             }
-            Problems.computePropertyMaxInformationLevel(property, false);
-        } catch (SystemException e) {
-            ExceptionHandler.process(e);
+            Problems.refreshProblemTreeView();
         }
-        Problems.refreshProblemTreeView();
 
         Map<String, Boolean> jobletMap = new HashMap<String, Boolean>();
         changeCollapsedState(true, jobletMap);
