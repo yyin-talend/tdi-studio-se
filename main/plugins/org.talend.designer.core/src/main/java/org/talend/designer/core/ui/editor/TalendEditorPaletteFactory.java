@@ -55,8 +55,8 @@ import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.help.internal.search.federated.FederatedSearchJob;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.ComponentCategory;
@@ -73,6 +73,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendCombinedTemplateCreationEntry;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
+import org.talend.designer.core.ui.preferences.PaletteSettingsPreferencePage;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
@@ -116,6 +117,8 @@ public final class TalendEditorPaletteFactory {
 
     private static PaletteGroup paGroup = new PaletteGroup(""); //$NON-NLS-1$
 
+    protected static final String SEARCHING_FROM_HELP = Messages.getString("TalendEditorPaletteFactory.searchingFromHelp"); //$NON-NLS-1$
+
     protected static void createComponentsDrawer(final IComponentsFactory compFac, final boolean needHiddenComponent, final int a) {
         List<IComponent> componentList = null;
         componentList = getRelatedComponents(compFac);
@@ -139,7 +142,7 @@ public final class TalendEditorPaletteFactory {
 
         final List<IComponent> finalComponentList = componentList;
         final String finalPaletteType = paletteType;
-        Display.getDefault().syncExec(new Runnable() {
+        DisplayUtils.getDisplay().syncExec(new Runnable() {
 
             @Override
             public void run() {
@@ -389,8 +392,7 @@ public final class TalendEditorPaletteFactory {
                 && 0 < TalendEditorPaletteFactory.filter.trim().length() && componentNameMap != null) {
             componentSet = new HashSet<IComponent>();
             addComponentsByNameFilter(compFac, componentSet);
-            boolean shouldSearchFromHelpAPI = true;
-            // shouldSearchFromHelpAPI = componentSet.isEmpty();
+            boolean shouldSearchFromHelpAPI = PaletteSettingsPreferencePage.isPaletteSearchFromHelp();
 
             if (shouldSearchFromHelpAPI) {
                 Set<String> componentNames = getRelatedComponentNamesFromHelp(TalendEditorPaletteFactory.filter.trim());
@@ -449,8 +451,6 @@ public final class TalendEditorPaletteFactory {
         }
     }
 
-    public static final int RECENTLY_USED_LIMIT_SIZE = 12;
-
     /**
      * DOC cmeng Comment method "createRecentlyUsedEntry".
      * 
@@ -465,9 +465,10 @@ public final class TalendEditorPaletteFactory {
         String name;
         String longName;
         TalendCombinedTemplateCreationEntry component;
+        final int recentlyUsedSize = PaletteSettingsPreferencePage.getPaletteRencentlyUsedListSize();
         int i = 1;
         for (RecentlyUsedComponent recentlyUsed : recentlyUsedList) {
-            if (RECENTLY_USED_LIMIT_SIZE < i) {
+            if (recentlyUsedSize < i) {
                 break;
             }
             IComponent recentlyUsedComponent = recentlyUsedMap.get(recentlyUsed.getName());
@@ -554,7 +555,7 @@ public final class TalendEditorPaletteFactory {
 
         final List<IComponent> finalComponentList = componentList;
 
-        Display.getDefault().syncExec(new Runnable() {
+        DisplayUtils.getDisplay().syncExec(new Runnable() {
 
             @Override
             public void run() {
@@ -1168,7 +1169,7 @@ public final class TalendEditorPaletteFactory {
         if (searchInHelpJob != null && searchInHelpJob.getState() != Job.NONE) {
             searchInHelpJob.cancel();
         }
-        searchInHelpJob = new Job("Searching from Help for Palette Filter") {
+        searchInHelpJob = new Job(SEARCHING_FROM_HELP) {
 
             @SuppressWarnings("restriction")
             @Override
@@ -1198,29 +1199,30 @@ public final class TalendEditorPaletteFactory {
                 return family.equals(FederatedSearchJob.FAMILY);
             }
         };
+
         try {
-            searchInHelpJob.setUser(false);
             searchInHelpJob.setPriority(Job.INTERACTIVE);
             searchInHelpJob.schedule();
             searchInHelpJob.join();
-        } catch (InterruptedException e) {
+        } catch (Throwable e) {
             CommonExceptionHandler.process(e, Priority.WARN);
         }
 
         Set<String> componentNames = new HashSet<String>();
-        int i = 0;
+        int limit = PaletteSettingsPreferencePage.getPaletteSearchResultLimitFromHelp();
+        int i = 1;
         Iterator<SearchHit> iter = querySearchResult.iterator();
         while (iter.hasNext()) {
+            if (limit < i) {
+                break;
+            }
             SearchHit result = iter.next();
             String label = result.getLabel();
             if (label == null || label.trim().length() == 0) {
                 continue;
             }
-            i++;
-            if (10 < i) {
-                break;
-            }
             componentNames.add(label);
+            i++;
         }
 
         return componentNames;

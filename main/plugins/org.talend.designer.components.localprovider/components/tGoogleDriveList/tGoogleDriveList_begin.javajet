@@ -91,7 +91,7 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
     String <%=cid%>_folderName = <%=folderName%>;
     if (<%=cid%>_folderName == null || <%=cid%>_folderName.isEmpty())
     {
-    	throw new Exception("Folder name can not be ampty");
+    	throw new Exception("Folder name can not be empty");
     }
 	
     if(<%=cid%>_folderName.startsWith("\"")){
