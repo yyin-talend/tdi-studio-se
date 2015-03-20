@@ -983,9 +983,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             Item item = property.getItem();
             List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(item), property, true);
             property.getInformations().clear();
-            for (Information info : informations) {
-                if (!info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
-                    property.getInformations().add(info);
+            if (informations != null) {
+                for (Information info : informations) {
+                    if (!info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
+                        property.getInformations().add(info);
+                    }
                 }
             }
             Problems.computePropertyMaxInformationLevel(property, false);
