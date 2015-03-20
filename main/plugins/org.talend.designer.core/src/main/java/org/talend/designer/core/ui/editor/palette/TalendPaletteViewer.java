@@ -50,6 +50,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.osgi.service.prefs.BackingStoreException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
@@ -60,6 +61,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory.RecentlyUsedComponent;
+import org.talend.designer.core.ui.preferences.PaletteSettingsPreferencePage;
 import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
@@ -388,10 +390,12 @@ public class TalendPaletteViewer extends PaletteViewer {
 
     private void filterPalette(final Text text) {
         final List<Text> disposed = new ArrayList<Text>();
-        Display.getDefault().syncExec(new Runnable() {
+        final Display display = DisplayUtils.getDisplay();
+        display.syncExec(new Runnable() {
 
             @Override
             public void run() {
+                TalendPaletteViewer.this.setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_APPSTARTING));
                 prepareFilterPalette(text, disposed);
             }
         });
@@ -400,6 +404,13 @@ public class TalendPaletteViewer extends PaletteViewer {
         }
 
         filters.removeAll(disposed);
+        display.asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                TalendPaletteViewer.this.setCursor(null);
+            }
+        });
     }
 
     protected boolean prepareFilterPalette(Text text, List<Text> disposed) {
@@ -546,9 +557,9 @@ public class TalendPaletteViewer extends PaletteViewer {
             children = recentlyUsedEditPart.getChildren();
             if (children != null) {
                 int size = children.size();
-                if (TalendEditorPaletteFactory.RECENTLY_USED_LIMIT_SIZE < size) {
-                    TalendEntryEditPart entryEditPart = (TalendEntryEditPart) children
-                            .get(TalendEditorPaletteFactory.RECENTLY_USED_LIMIT_SIZE);
+                final int recentlyUsedSize = PaletteSettingsPreferencePage.getPaletteRencentlyUsedListSize();
+                if (recentlyUsedSize < size) {
+                    TalendEntryEditPart entryEditPart = (TalendEntryEditPart) children.get(recentlyUsedSize);
                     CombinedTemplateCreationEntry entryModule = (CombinedTemplateCreationEntry) entryEditPart.getModel();
                     removeRecentlyUsedComponent(entryModule);
                 }

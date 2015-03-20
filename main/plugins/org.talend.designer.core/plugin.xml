@@ -83,6 +83,12 @@
             name="%exchange">
       </page>
       <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.PaletteSettingsPreferencePage"
+            id="org.talend.repository.prefs.palettesettings"
+            name="%palettesettings">
+      </page>
+      <page
             category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
             class="org.talend.designer.core.ui.preferences.ColorsCodeViewerPreferencePage"
             id="org.talend.designer.core.ui.pref.colorCodeViewer"
