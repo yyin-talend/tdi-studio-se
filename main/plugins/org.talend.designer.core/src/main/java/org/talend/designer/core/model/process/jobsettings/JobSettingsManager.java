@@ -197,7 +197,7 @@ public class JobSettingsManager {
     }
 
     /**
-     *
+     * 
      * create parameter for extra tab.
      */
     private static List<IElementParameter> getExtraParameters(IProcess process) {
@@ -641,7 +641,7 @@ public class JobSettingsManager {
         final String schemaCondition = JobSettingsConstants
                 .addBrackets(dbTypeName
                         + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
-                        + " =='POSTGRESQL' or " + dbTypeName + " =='POSTGRESPLUS' or " + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='MSSQL' or " + dbTypeName + " =='INFORMIX' or " + dbTypeName + " =='IBM_DB2' or " + dbTypeName + " =='SYBASE'"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
+                        + " =='POSTGRESQL' or " + dbTypeName + " =='POSTGRESPLUS' or " + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='MSSQL' or " + dbTypeName + " =='INFORMIX' or " + dbTypeName + " =='IBM_DB2' or " + dbTypeName + " =='SYBASE'"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$//$NON-NLS-6$//$NON-NLS-7$
         param.setShowIf(schemaCondition + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
@@ -827,9 +827,9 @@ public class JobSettingsManager {
     }
 
     /**
-     *
+     * 
      * DOC ggu Comment method "isStatsAndLogsActivated".
-     *
+     * 
      * for stats & logs settings
      */
     public static boolean isStatsAndLogsActivated(IProcess process) {
@@ -841,9 +841,9 @@ public class JobSettingsManager {
     }
 
     /**
-     *
+     * 
      * DOC ggu Comment method "isImplicittContextLoadActived".
-     *
+     * 
      * for implictit tContextLoad in extra settings
      */
     public static boolean isImplicittContextLoadActived(IProcess process) {
