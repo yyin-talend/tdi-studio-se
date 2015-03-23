@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.UpdateHelpIndexJob;
 
 /**
  * DOC cmeng class global comment. Detailled comment
@@ -39,6 +40,8 @@ public class PaletteSettingsPreferencePage extends FieldEditorPreferencePage imp
 
     protected static final int SEARCH_RESULT_LIMIT_FROM_HELP_DEFAULT = 10;
 
+    protected boolean originalSearchFromHelpValue;
+
     public PaletteSettingsPreferencePage() {
         super(GRID);
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
@@ -46,6 +49,8 @@ public class PaletteSettingsPreferencePage extends FieldEditorPreferencePage imp
 
     @Override
     public void init(IWorkbench workbench) {
+        originalSearchFromHelpValue = getPreferenceStore().getBoolean(
+                TalendDesignerPrefConstants.PALETTE_SETTINGS_SEARCH_FROM_HELP);
     }
 
     public static int getPaletteSearchResultLimitFromHelp() {
@@ -86,10 +91,29 @@ public class PaletteSettingsPreferencePage extends FieldEditorPreferencePage imp
         initListeners();
     }
 
+    @Override
+    protected void performApply() {
+        super.performApply();
+        if (originalSearchFromHelpValue == false
+                && getPreferenceStore().getBoolean(TalendDesignerPrefConstants.PALETTE_SETTINGS_SEARCH_FROM_HELP)) {
+            new UpdateHelpIndexJob().schedule();
+        }
+    }
+
+    @Override
+    public boolean performOk() {
+        boolean performResult = super.performOk();
+        if (originalSearchFromHelpValue == false
+                && getPreferenceStore().getBoolean(TalendDesignerPrefConstants.PALETTE_SETTINGS_SEARCH_FROM_HELP)) {
+            new UpdateHelpIndexJob().schedule();
+        }
+        return performResult;
+    }
+
     protected void initStatus() {
         resultLimitFromHelp.setEnabled(
-                DesignerPlugin.getDefault().getPreferenceStore()
-                        .getBoolean(TalendDesignerPrefConstants.PALETTE_SETTINGS_SEARCH_FROM_HELP), getFieldEditorParent());
+                getPreferenceStore().getBoolean(TalendDesignerPrefConstants.PALETTE_SETTINGS_SEARCH_FROM_HELP),
+                getFieldEditorParent());
     }
 
     protected void initListeners() {

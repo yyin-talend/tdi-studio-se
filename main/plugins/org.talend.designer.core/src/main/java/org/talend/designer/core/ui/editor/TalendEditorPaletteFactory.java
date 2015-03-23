@@ -375,48 +375,46 @@ public final class TalendEditorPaletteFactory {
     protected static List<IComponent> getRelatedComponents(final IComponentsFactory compFac) {
         Set<IComponent> componentSet = null;
 
-        Map<String, Map<String, Set<IComponent>>> componentNameMap = compFac.getComponentNameMap();
-
-        if (TalendEditorPaletteFactory.filter != null && 0 < TalendEditorPaletteFactory.filter.trim().length()
-                && componentNameMap != null) {
-            Map<String, Set<IComponent>> map = componentNameMap.get(TalendEditorPaletteFactory.filter.trim().toLowerCase());
-            if (map != null) {
-                Collection<Set<IComponent>> componentSets = map.values();
-                Iterator<Set<IComponent>> componentSetIter = componentSets.iterator();
-                while (componentSetIter.hasNext()) {
-                    componentSet = new HashSet<IComponent>(componentSetIter.next());
-                }
-            }
-        }
-        if (componentSet == null && TalendEditorPaletteFactory.filter != null
-                && 0 < TalendEditorPaletteFactory.filter.trim().length() && componentNameMap != null) {
-            componentSet = new HashSet<IComponent>();
-            addComponentsByNameFilter(compFac, componentSet);
-            boolean shouldSearchFromHelpAPI = PaletteSettingsPreferencePage.isPaletteSearchFromHelp();
-
-            if (shouldSearchFromHelpAPI) {
-                Set<String> componentNames = getRelatedComponentNamesFromHelp(TalendEditorPaletteFactory.filter.trim());
-                if (componentNames != null && 0 < componentNames.size()) {
-                    Iterator<String> nameIter = componentNames.iterator();
-                    while (nameIter.hasNext()) {
-                        String componentName = nameIter.next();
-                        Map<String, Set<IComponent>> map = componentNameMap.get(componentName.toLowerCase());
-                        if (map == null) {
-                            continue;
-                        }
-                        Set<IComponent> findedComponents = map.get(componentName);
-                        if (findedComponents != null && !findedComponents.isEmpty()) {
-                            componentSet.addAll(findedComponents);
-                        }
+        if (TalendEditorPaletteFactory.filter != null && 0 < TalendEditorPaletteFactory.filter.trim().length()) {
+            Map<String, Map<String, Set<IComponent>>> componentNameMap = compFac.getComponentNameMap();
+            String filterString = TalendEditorPaletteFactory.filter.trim();
+            if (componentNameMap != null) {
+                Map<String, Set<IComponent>> map = componentNameMap.get(filterString.toLowerCase());
+                if (map != null) {
+                    Collection<Set<IComponent>> componentSets = map.values();
+                    Iterator<Set<IComponent>> componentSetIter = componentSets.iterator();
+                    while (componentSetIter.hasNext()) {
+                        componentSet = new HashSet<IComponent>(componentSetIter.next());
                     }
                 }
             }
-            if (componentSet.isEmpty()) {
-                componentSet = null;
-            }
-        }
+            if (componentSet == null && componentNameMap != null) {
+                componentSet = new HashSet<IComponent>();
+                addComponentsByNameFilter(compFac, componentSet);
+                boolean shouldSearchFromHelpAPI = PaletteSettingsPreferencePage.isPaletteSearchFromHelp();
 
-        if (componentSet == null && StringUtils.isEmpty(TalendEditorPaletteFactory.filter)) {
+                if (shouldSearchFromHelpAPI) {
+                    Set<String> componentNames = getRelatedComponentNamesFromHelp(filterString);
+                    if (componentNames != null && 0 < componentNames.size()) {
+                        Iterator<String> nameIter = componentNames.iterator();
+                        while (nameIter.hasNext()) {
+                            String componentName = nameIter.next();
+                            Map<String, Set<IComponent>> map = componentNameMap.get(componentName.toLowerCase());
+                            if (map == null) {
+                                continue;
+                            }
+                            Set<IComponent> findedComponents = map.get(componentName);
+                            if (findedComponents != null && !findedComponents.isEmpty()) {
+                                componentSet.addAll(findedComponents);
+                            }
+                        }
+                    }
+                }
+                if (componentSet.isEmpty()) {
+                    componentSet = null;
+                }
+            }
+        } else {
             componentSet = compFac.getComponents();
         }
 
