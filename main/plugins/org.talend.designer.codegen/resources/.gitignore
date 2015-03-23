@@ -1,12 +1,7 @@
 # To be removed when JIRA TUP-2233 is implemented.
 
 #Camel
-camel_end_block.javajet
-camel_footer.javajet
-camel_header.javajet
-camel_run_if.javajet
-camel_run_if.javajet
-camel_speciallinks.javajet
+camel_*.javajet
 footer_route.javajet
 header_additional_petalsesb.javajet
 header_additional_talendesb_rest.javajet
@@ -24,32 +19,13 @@ header_additional_box.javajet
 header_additional_mdmtrigger.javajet
 
 #MR
-mr_basicflow_withrejectoutput_mrconfig.javajet
-mr_comparator_helper.javajet
-mr_component_mrconfig_footer.javajet
-mr_component_mrconfig_header.javajet
-mr_footer.javajet
-mr_header.javajet
-mr_mapper_helper.javajet
-mr_onereducepartitioner.javajet
-mr_reducer_helper.javajet
-mr_struct_helper.javajet
-mr_subprocess_footer.javajet
-mr_subprocess_header.javajet
-mr_subprocess_run.javajet
+mr_*.javajet
 
 #Storm
-storm_component_config_footer.javajet
-storm_component_config_header.javajet
-storm_footer.javajet
-storm_header.javajet
-storm_monitor_footer.javajet
-storm_monitor_header.javajet
-storm_subprocess_footer.javajet
-storm_subprocess_header.javajet
-storm_subprocess_run.javajet
+storm_*.javajet
 
 header_additional_thales.javajet
 
 #Spark
 header_additional_spark.javajet
+spark_*.javajet

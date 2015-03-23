@@ -490,7 +490,9 @@ public class ProcessView extends ViewPart {
                 categories = (EComponentCategory[]) ArrayUtils.add(categories, 1, EComponentCategory.STORM_JOB_CONFIG);
             }
 
-            if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())) {
+            if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())
+                    || processContext.getProcess().getComponentsType()
+                            .equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName())) {
                 categories = (EComponentCategory[]) ArrayUtils.add(categories, 1, EComponentCategory.SPARK_JOB_CONFIG);
             }
         }

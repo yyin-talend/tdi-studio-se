@@ -536,11 +536,9 @@ public class Problems {
         }
 
         List<Information> listInfos = addRoutineFile(file, type, routineFileName, version, fromJob);
-
-        if (property == null) {
-            return null;
+        if (property == null || listInfos == null) {
+            return Collections.emptyList();
         }
-
         return listInfos;
     }
 
@@ -552,7 +550,7 @@ public class Problems {
      */
     public static List<Information> addRoutineFile(IFile file, ProblemType type, String label, String version, boolean... fromJob) {
         if (file == null || !file.exists()) {
-            return null;
+            return Collections.emptyList();
         }
         String uniName = null;
 
@@ -620,7 +618,7 @@ public class Problems {
 
     public static List<Information> addJobRoutineFile(IFile file, ProblemType type, Item item, boolean... fromJob) {
         if (file == null || !file.exists()) {
-            return null;
+            return Collections.emptyList();
         }
         String uniName = null;
 

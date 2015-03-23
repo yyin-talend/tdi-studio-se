@@ -115,14 +115,14 @@ com.google.api.client.http.HttpTransport httpTransport = new com.google.api.clie
 		{
 			throw new Exception("File/folder name can not be null");
 		}
-		<%=cid%>_listRequest.setQ("title = '" + <%=fileName%> + "' and mimeType != 'application/vnd.google-apps.folder'");
+		<%=cid%>_listRequest.setQ("trashed = false and title = '" + <%=fileName%> + "' and mimeType != 'application/vnd.google-apps.folder'");
 <%} else {%>
 		String sourceFolder_<%=cid %> = <%=folderName%>; 
 		if(sourceFolder_<%=cid %> == null || "".equals(sourceFolder_<%=cid %>.trim()) || destFolderName_<%=cid %> == null || "".equals(destFolderName_<%=cid %>.trim()) )
 		{
 			throw new Exception("File/folder name can not be null");
 		}
-		<%=cid%>_listRequest.setQ("title = '" + sourceFolder_<%=cid %> + "' and mimeType = 'application/vnd.google-apps.folder'");
+		<%=cid%>_listRequest.setQ("trashed = false and title = '" + sourceFolder_<%=cid %> + "' and mimeType = 'application/vnd.google-apps.folder'");
 <%}%>
 		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
 		if (<%=cid%>_files.getItems().size() > 1)
@@ -154,7 +154,7 @@ com.google.api.client.http.HttpTransport httpTransport = new com.google.api.clie
 			com.google.api.services.drive.model.FileList <%=cid%>_destFolders = null;
 			String <%=cid%>_destFolderId = "root";
 		<% if(!dest_folderName.equals("\"root\"")) { %>
-			<%=cid%>_listRequest.setQ("title = '" + <%=dest_folderName%> + "' and mimeType = 'application/vnd.google-apps.folder'");
+			<%=cid%>_listRequest.setQ("trashed = false and title = '" + <%=dest_folderName%> + "' and mimeType = 'application/vnd.google-apps.folder'");
 			<%=cid%>_destFolders = <%=cid%>_listRequest.execute();
 			if (<%=cid%>_destFolders.getItems().size() > 1)
 			{

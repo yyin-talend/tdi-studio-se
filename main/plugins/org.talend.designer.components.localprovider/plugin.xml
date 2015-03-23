@@ -425,28 +425,28 @@
          	name="commons-configuration-1.6.jar"
          	uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-configuration-1.6.jar">
     	</libraryNeeded>
-    	
-	   	<libraryNeeded
-	   		context="plugin:org.talend.libraries.apache.common"
-        	id="commons-lang-2.6.jar"       
-         	name="commons-lang-2.6.jar"
-         	uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar">
-    	</libraryNeeded>
-    	
-	   	<libraryNeeded
-	   		context="plugin:org.talend.libraries.apache.common"
-        	id="commons-logging-1.1.3.jar"       
-         	name="commons-logging-1.1.3.jar"
-         	uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.3.jar">
-    	</libraryNeeded>
-    	
-	   	<libraryNeeded
-	   		context="plugin:org.talend.libraries.apache.common"
-        	id="commons-logging-1.1.1.jar"       
-         	name="commons-logging-1.1.1.jar"
-         	uripath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar">
-    	</libraryNeeded>
-    	
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.apache.common"
+            id="commons-lang-2.6.jar"       
+            name="commons-lang-2.6.jar"
+            uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar"
+            bundleID="" />
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.apache.common"
+            id="commons-logging-1.1.3.jar"
+            name="commons-logging-1.1.3.jar"
+            uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.3.jar"
+            bundleID="" />
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.apache.common"
+            id="commons-logging-1.1.1.jar"
+            name="commons-logging-1.1.1.jar"
+            uripath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar"
+            bundleID="" />
+
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.apache.common"
         	id="commons-cli-1.2.jar"       
@@ -467,14 +467,14 @@
          	name="commons-codec-1.7.jar"
          	uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.7.jar">
     	</libraryNeeded>    	
-    	
-	   	<libraryNeeded
-	   		context="plugin:org.talend.libraries.apache.common"
-        	id="commons-collections-3.2.1.jar"       
-         	name="commons-collections-3.2.1.jar"
-         	uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.1.jar">
-    	</libraryNeeded>   
-    	
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.apache.common"
+            id="commons-collections-3.2.1.jar"
+            name="commons-collections-3.2.1.jar"
+            uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.1.jar"
+            bundleID="" />
+
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.guava"
         	id="guava-11.0.2.jar"       
@@ -495,28 +495,28 @@
          	name="protobuf-java-2.5.0.jar"
          	uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.0/lib/protobuf-java-2.5.0.jar">
     	</libraryNeeded> 
-    	
-	   	<libraryNeeded
-	   		context="plugin:org.talend.libraries.apache"
-        	id="log4j-1.2.17.jar"       
-         	name="log4j-1.2.17.jar"
-         	uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2.17.jar">
-    	</libraryNeeded> 
-    	
-	   	<libraryNeeded
-	   		context="plugin:org.talend.libraries.slf4j"
-        	id="slf4j-api-1.7.5.jar"       
-         	name="slf4j-api-1.7.5.jar"
-         	uripath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-api-1.7.5.jar">
-    	</libraryNeeded>     
-    	
-	   	<libraryNeeded
-	   		context="plugin:org.talend.libraries.slf4j"
-        	id="slf4j-log4j12-1.7.5.jar"       
-         	name="slf4j-log4j12-1.7.5.jar"
-         	uripath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-log4j12-1.7.5.jar">
-    	</libraryNeeded>
-    	
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.apache"
+            id="log4j-1.2.17.jar"
+            name="log4j-1.2.17.jar"
+            uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2.17.jar"
+            bundleID="" />
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.slf4j"
+            id="slf4j-api-1.7.5.jar"
+            name="slf4j-api-1.7.5.jar"
+            uripath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-api-1.7.5.jar"
+            bundleID="" />
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.slf4j"
+            id="slf4j-log4j12-1.7.5.jar"
+            name="slf4j-log4j12-1.7.5.jar"
+            uripath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-log4j12-1.7.5.jar"
+            bundleID="" />
+
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hadoop.cloudera.cdh5.1"
         	id="jersey-core-1.9.jar"       

@@ -411,7 +411,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
             // Spark, M/R and Storm requires the plugin org.talend.designer.spark to be in the classpath in order to
             // generate the code.
-            if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()) || "SPARKSTREAMING".equals(component.getPaletteType()))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
                 try {
                     // We use a delegate classloader made of the org.talend.designer.codegen class loader as a parent

@@ -64,6 +64,11 @@ public class CodeGeneratorService implements ICodeGeneratorService {
             return codeGenService.createCodeGenerator(process, statistics, trace, options);
         }
 
+        codeGenService = CodeGeneratorService.getService(ISparkStreamingCodeGeneratorService.class);
+        if (codeGenService != null && ((ISparkStreamingCodeGeneratorService) codeGenService).validProcess(process)) {
+            return codeGenService.createCodeGenerator(process, statistics, trace, options);
+        }
+
         codeGenService = CodeGeneratorService.getService(IMRCodeGeneratorService.class);
         if (codeGenService != null && ((IMRCodeGeneratorService) codeGenService).validProcess(process)) {
             return codeGenService.createCodeGenerator(process, statistics, trace, options);

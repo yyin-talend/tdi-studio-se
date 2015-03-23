@@ -97,7 +97,7 @@ if(!useExistingConn) {
 		throw new Exception("File/folder name can not be null");
 	}
 	com.google.api.services.drive.Drive.Files.List <%=cid%>_listRequest =  <%=cid%>_client.files().list();
-	<%=cid%>_listRequest.setQ("title = '" + fileName_<%=cid %> + "'");
+	<%=cid%>_listRequest.setQ("trashed = false and title = '" + fileName_<%=cid %> + "'");
 	com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
 	if (<%=cid%>_files.getItems().size() > 1)
 	{
