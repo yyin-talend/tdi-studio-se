@@ -141,4 +141,19 @@
           name="RunProcess">
     </provider>
  </extension>
+ <extension
+       point="org.talend.core.runtime.librariesNeeded">
+    <libraryNeeded
+          context="Required by junit"
+          id="junit.jar"
+          name="junit.jar"
+          uripath="platform:/base/plugins/org.junit_4.11.0.v201303080030/junit.jar">
+    </libraryNeeded>
+    <libraryNeeded
+          context="Required by junit"
+          id="org.hamcrest.core_1.3.0.v201303031735.jar"
+          name="org.hamcrest.core_1.3.0.v201303031735.jar"
+          uripath="platform:/base/plugins/org.hamcrest.core_1.3.0.v201303031735.jar">
+    </libraryNeeded>
+ </extension>
 </plugin>

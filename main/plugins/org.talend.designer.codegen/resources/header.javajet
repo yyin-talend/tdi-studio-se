@@ -81,7 +81,14 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.util.Comparator;
-
+<%
+if(true) {
+%>
+import org.junit.Test;
+<%
+}
+%>
+ 
 <%=ElementParameterParser.getValue(process, "__HEADER_IMPORT__") %>
 <%=ElementParameterParser.getValue(process, "__FOOTER_IMPORT__") %>
 

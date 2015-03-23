@@ -17,6 +17,7 @@
         org.talend.core.model.metadata.types.JavaType
         org.talend.core.model.utils.JavaResourcesHelper
         org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.IContext
     "
     class="Footer"
     skeleton="footer_java.skeleton"
@@ -189,6 +190,19 @@
         System.exit(exitCode);
     }
 
+   <% 
+    List<IContext> contexts = process.getContextManager().getListContext();   
+    for (IContext context : contexts)
+    {
+    %>
+        @Test
+        public void test<%=context.getName()%>() {
+            final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
+            <%=process.getName() %>Class.runJobInTOS(new String[] { "--context=<%=context.getName()%>" });
+        }
+    <%
+    }
+    %>
 
     public String[][] runJob(String[] args) {
 
