@@ -15,10 +15,13 @@ package org.talend.designer.core.ui.views.jobsettings;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.ui.CoreUIPlugin;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -53,8 +56,16 @@ public class ExtraComposite extends AbstractPreferenceComposite {
         super(parentComposite, styles, section, element, isCompactView);
         setDialogTitle(Messages.getString("ExtraComposite.ImplicitContextSettings")); //$NON-NLS-1$
         Process process = (Process) elem;
-        ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
-        pType = pItem.getProcess().getParameters();
+        Item pItem = process.getProperty().getItem();
+        if (pItem instanceof ProcessItem) {
+            pType = ((ProcessItem) pItem).getProcess().getParameters();
+        } else if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+            ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                    .getDefault().getService(ITestContainerProviderService.class);
+            if (testContainerService != null) {
+                pType = testContainerService.getTestContainerProcess(pItem).getParameters();
+            }
+        }
         // achen modify to fix 0005993
         isUsingProjectSetting = true;
         // wzhang modified to fixed bug 8218

@@ -281,6 +281,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 if (process.getEditor() == null) {
                     ((Process) process).setEditor(AbstractMultiPageTalendEditor.this);
                 }
+                refreshTestContaierView();
             }
         }
 
@@ -312,6 +313,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     ExceptionHandler.process(e);
                 }
                 changeContextsViewStatus(true);
+                refreshTestContaierView();
             }
         }
 
@@ -1120,6 +1122,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 }
             }
         }
+    }
+
+    /**
+     * Added by hwang for refreshing the tab of testContaier view.
+     */
+    protected void refreshTestContaierView() {
     }
 
     private void refreshPropertyDirtyStatus() {
