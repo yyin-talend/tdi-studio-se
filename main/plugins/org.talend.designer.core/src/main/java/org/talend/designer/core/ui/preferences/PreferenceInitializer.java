@@ -31,6 +31,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
@@ -165,9 +166,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);
         store.setDefault(IRepositoryPrefConstants.ADD_CLASSPATH_JAR, false);
 
-        store.setDefault(
-                TalendDesignerPrefConstants.NOT_SHOW_WARNING_WHEN_DELETE_LINK_WITH_JOBLETTRIGGERLINKCOMPONENT,
-                false);
+        store.setDefault(TalendDesignerPrefConstants.NOT_SHOW_WARNING_WHEN_DELETE_LINK_WITH_JOBLETTRIGGERLINKCOMPONENT, false);
+
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            store.setDefault(ITalendCorePrefConstants.SVN_UPDATE_INFO_AUTO_CHECK, true);
+            store.setDefault(ITalendCorePrefConstants.SVN_UPDATE_INFO_AUTO_CHECK_TIME_INTERVAL, 1);
+        }
 
         if (!CommonUIPlugin.isFullyHeadless()) {
             Display display = Display.getDefault();
@@ -175,7 +179,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                 display = Display.getCurrent();
             }
             if (display != null) {
-                display.syncExec(new Runnable() {
+                display.asyncExec(new Runnable() {
 
                     @Override
                     public void run() {
