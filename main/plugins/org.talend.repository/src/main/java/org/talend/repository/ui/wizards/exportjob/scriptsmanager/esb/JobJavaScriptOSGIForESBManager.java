@@ -1005,15 +1005,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 listModulesReallyNeeded.addAll(neededLibraries);
             }
         }
-        String includePath;
-        if (useBeans) {
-            includePath = "beans"; //$NON-NLS-1$
-        } else {
-            includePath = "routines"; //$NON-NLS-1$
-        }
 
         // jar from routines
-        for (IRepositoryViewObject object : collectRoutines(process, includePath)) {
+        for (IRepositoryViewObject object : collectRoutines(process, useBeans ? USER_BEANS_PATH : USER_ROUTINES_PATH)) {
             Item item = object.getProperty().getItem();
             if (item instanceof RoutineItem) {
                 @SuppressWarnings("unchecked")
