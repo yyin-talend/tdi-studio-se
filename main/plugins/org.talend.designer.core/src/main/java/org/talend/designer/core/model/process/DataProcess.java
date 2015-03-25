@@ -25,6 +25,7 @@ import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.common.util.EMap;
+import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.PluginChecker;
@@ -79,6 +80,7 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -3061,8 +3063,13 @@ public class DataProcess implements IGeneratingProcess {
         buildGraphicalMap.clear();
 
         Property property = null;
+        AbstractMultiPageTalendEditor editor = null;
         if (process instanceof IProcess2) {
             property = ((IProcess2) process).getProperty();
+            IEditorPart editorPart = ((IProcess2) process).getEditor();
+            if (editorPart instanceof AbstractMultiPageTalendEditor) {
+                editor = (AbstractMultiPageTalendEditor) editorPart;
+            }
         } else {
             property = PropertiesFactory.eINSTANCE.createProperty();
             property.setId(graphicalNodeList.get(0).getProcess().getId() + "_generated");
@@ -3075,6 +3082,7 @@ public class DataProcess implements IGeneratingProcess {
         ((Process) duplicatedProcess).setProcessModified(false);
         ((Process) duplicatedProcess).setNeededRoutines(process.getNeededRoutines());
         ((Process) duplicatedProcess).setNeededPigudf(process.getNeededPigudf());
+        ((Process) duplicatedProcess).setEditor(editor);
         List<RoutinesParameterType> routines = null;
         if (process instanceof Process) {
             routines = ((Process) process).getRoutineDependencies();

@@ -36,6 +36,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -176,7 +177,7 @@ public class JavaProcessUtil {
             }
         }
 
-        if (true) {// if it is a test container, add junit jars.
+        if (ProcessUtils.isTestContainer(process)) {// if it is a test container, add junit jars.
             addJunitNeededModules(modulesNeeded);
         }
 

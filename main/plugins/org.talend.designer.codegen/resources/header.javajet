@@ -21,6 +21,7 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.utils.NodeUtil
 		org.talend.core.model.utils.JavaResourcesHelper
+		org.talend.core.model.process.ProcessUtils
 	"
 	class="Header"
 %>
@@ -82,9 +83,10 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.util.Comparator;
 <%
-if(true) {
+if(ProcessUtils.isTestContainer(process)) {
 %>
 import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 <%
 }
 %>
