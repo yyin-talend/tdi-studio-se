@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070806A"
@@ -28,11 +28,24 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
-    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" 
-				NOT_SHOW_IF="((((DATA_ACTION == 'INSERT') AND (USE_BATCH_SIZE == 'true') AND USE_EXISTING_CONNECTION == 'false') 
-								OR ((DATA_ACTION == 'UPDATE') AND (USE_BATCH_SIZE == 'true') AND USE_EXISTING_CONNECTION == 'false') 
-    							OR ((DATA_ACTION == 'DELETE') AND (USE_BATCH_SIZE == 'true') AND USE_EXISTING_CONNECTION == 'false'))
-    							OR (DIE_ON_ERROR == 'true'))"/>
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
+        NOT_SHOW_IF="(
+                        (
+                                         ((DATA_ACTION == 'INSERT') AND (USE_BATCH_SIZE == 'true'))
+                                      OR ((DATA_ACTION == 'UPDATE') AND (USE_BATCH_SIZE == 'true'))
+                                      OR ((DATA_ACTION == 'DELETE') AND (USE_BATCH_SIZE == 'true'))
+                        )
+                                      OR (DIE_ON_ERROR == 'true')
+                    )
+                    OR
+                    (
+                                            (
+                                                             ((DATA_ACTION == 'INSERT') AND (USE_BATCH_AND_USE_CONN == 'true'))
+                                                          OR ((DATA_ACTION == 'UPDATE') AND (USE_BATCH_AND_USE_CONN == 'true'))
+                                                          OR ((DATA_ACTION == 'DELETE') AND (USE_BATCH_AND_USE_CONN == 'true'))
+                                            )
+                                                          OR (DIE_ON_ERROR == 'true')
+                                        )"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -50,14 +63,14 @@
       REPOSITORY_VALUE="DATABASE:JDBC"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-    
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
       NUM_ROW="2"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>
 
     <PARAMETER
       NAME="CONNECTION"
@@ -67,7 +80,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
-	
+
     <PARAMETER
       NAME="URL"
       FIELD="TEXT"
@@ -78,21 +91,21 @@
     >
       <DEFAULT>"jdbc:"</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="DRIVER_JAR"
       FIELD="TABLE"
       NUM_ROW="4"
-      NB_LINES="2" 
+      NB_LINES="2"
       REPOSITORY_VALUE="DRIVER_JAR"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      	<ITEMS> 
-			<ITEM NAME="JAR_NAME" FIELD="MODULE_LIST"  /> 
-		</ITEMS> 
+        <ITEMS>
+      <ITEM NAME="JAR_NAME" FIELD="MODULE_LIST"  />
+    </ITEMS>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="DRIVER_CLASS"
       FIELD="TEXT"
@@ -103,7 +116,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -114,7 +127,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="PASSWORD"
@@ -125,7 +138,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
@@ -133,7 +146,7 @@
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>   
+    </PARAMETER>
 
     <PARAMETER
       NAME="DATA_ACTION"
@@ -148,14 +161,14 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="CLEAR_TABLE"
       FIELD="CHECK"
       NUM_ROW="8"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>     
+    </PARAMETER>
 
     <PARAMETER
       NAME="SCHEMA_FLOW"
@@ -164,7 +177,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -177,47 +190,47 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
       NUM_ROW="10"
     >
       <DEFAULT>false</DEFAULT>
-	</PARAMETER>
-		
-	<PARAMETER
-	  NAME="NOTE"
+  </PARAMETER>
+
+  <PARAMETER
+    NAME="NOTE"
       FIELD="LABEL"
       NUM_ROW="63"
-	  GROUP="DATASOURCE"
-	  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+    GROUP="DATASOURCE"
+    SHOW_IF="USE_EXISTING_CONNECTION=='false'"
     >
-    	<DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT>
+      <DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT>
     </PARAMETER>
-	<PARAMETER
+  <PARAMETER
       NAME="SPECIFY_DATASOURCE_ALIAS"
-	  FIELD="CHECK"
+    FIELD="CHECK"
       NUM_ROW="64"
       REQUIRED="true"
-	  GROUP="DATASOURCE"
-	  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
-    >      
+    GROUP="DATASOURCE"
+    SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+    >
     </PARAMETER>
-	<PARAMETER
+  <PARAMETER
       NAME="DATASOURCE_ALIAS"
-	  FIELD="TEXT"
+    FIELD="TEXT"
       NUM_ROW="65"
       REQUIRED="true"
-	  GROUP="DATASOURCE"
-	  SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_EXISTING_CONNECTION=='false')"
-    >      
-	<DEFAULT>""</DEFAULT>
+    GROUP="DATASOURCE"
+    SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_EXISTING_CONNECTION=='false')"
+    >
+  <DEFAULT>""</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
-  
+
   <ADVANCED_PARAMETERS>
-  	<PARAMETER
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="9"
@@ -232,7 +245,7 @@
       FIELD="TEXT"
       NUM_ROW="9"
       REQUIRED="true"
-	  SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
@@ -258,7 +271,7 @@
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
@@ -282,35 +295,45 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
-    
-  	<PARAMETER 
-  	  NAME="ENABLE_DEBUG_MODE" 
-  	  FIELD="CHECK"
-	  NUM_ROW="15">
-	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>  
-	  
-	<PARAMETER 
-  	  NAME="USE_BATCH_SIZE" 
-  	  FIELD="CHECK"
-	  NUM_ROW="30"
-	  SHOW_IF="(USE_EXISTING_CONNECTION != 'true') AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
-	  >
-	  <DEFAULT>true</DEFAULT>
-	</PARAMETER>            
 
-  	<PARAMETER 
-  	  NAME="BATCH_SIZE" 
-  	  FIELD="TEXT"
-	  NUM_ROW="30"
-	  SHOW_IF="((USE_BATCH_SIZE == 'true') AND (USE_EXISTING_CONNECTION != 'true')) AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE'))"
-	  >
-	  <DEFAULT>10000</DEFAULT>
-	</PARAMETER> 
+    <PARAMETER
+      NAME="ENABLE_DEBUG_MODE"
+      FIELD="CHECK"
+    NUM_ROW="15">
+    <DEFAULT>false</DEFAULT>
+  </PARAMETER>
+
+  <PARAMETER
+      NAME="USE_BATCH_SIZE"
+      FIELD="CHECK"
+      NUM_ROW="30"
+      SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_EXISTING_CONNECTION == 'false')"
+    >
+    <DEFAULT>true</DEFAULT>
+  </PARAMETER>
+
+  <PARAMETER
+      NAME="USE_BATCH_AND_USE_CONN"
+      FIELD="CHECK"
+      NUM_ROW="30"
+      SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_EXISTING_CONNECTION == 'true')"
+    >
+    <DEFAULT>false</DEFAULT>
+  </PARAMETER>
+
+    <PARAMETER
+      NAME="BATCH_SIZE"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      SHOW_IF="((USE_BATCH_SIZE == 'true') AND (isShow[USE_BATCH_SIZE]))
+            OR ((USE_BATCH_AND_USE_CONN == 'true') AND (isShow[USE_BATCH_AND_USE_CONN]))"
+    >
+    <DEFAULT>10000</DEFAULT>
+  </PARAMETER>
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION></CODEGENERATION>
-   
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
