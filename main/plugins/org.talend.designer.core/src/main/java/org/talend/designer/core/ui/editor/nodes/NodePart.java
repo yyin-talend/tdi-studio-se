@@ -37,6 +37,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.requests.CreateConnectionRequest;
+import org.eclipse.gef.requests.ReconnectRequest;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -87,6 +88,7 @@ import org.talend.designer.core.ui.editor.TalendSelectionManager;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
+import org.talend.designer.core.ui.editor.connections.TalendBorderItemRectilinearRouter;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
@@ -476,6 +478,15 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
             return new ChopboxAnchor(getFigure());
         }
+        if (!(request instanceof CreateConnectionRequest)) {
+            if (request instanceof ReconnectRequest) {
+                IFigure figure = ((ReconnectRequest) request).getConnectionEditPart().getFigure();
+                if (figure instanceof ConnectionFigure) {
+                    ((ConnectionFigure) figure).setConnectionRouter(new TalendBorderItemRectilinearRouter(request));
+                }
+            }
+            return new ChopboxAnchor(getFigure());
+        }
         CreateConnectionRequest connReq = (CreateConnectionRequest) request;
         Node source = (Node) ((NodePart) connReq.getSourceEditPart()).getModel();
         // Node target = (Node) ((NodePart) connReq.getTargetEditPart()).getModel();
@@ -495,6 +506,15 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     @Override
     public ConnectionAnchor getTargetConnectionAnchor(final Request request) {
         if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_LINESTYLE)) {
+            return new ChopboxAnchor(getFigure());
+        }
+        if (!(request instanceof CreateConnectionRequest)) {
+            if (request instanceof ReconnectRequest) {
+                IFigure figure = ((ReconnectRequest) request).getConnectionEditPart().getFigure();
+                if (figure instanceof ConnectionFigure) {
+                    ((ConnectionFigure) figure).setConnectionRouter(new TalendBorderItemRectilinearRouter(request));
+                }
+            }
             return new ChopboxAnchor(getFigure());
         }
         CreateConnectionRequest connReq = (CreateConnectionRequest) request;

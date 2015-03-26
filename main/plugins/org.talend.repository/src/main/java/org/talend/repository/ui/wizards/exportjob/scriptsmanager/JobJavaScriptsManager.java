@@ -138,9 +138,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 
-    private static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
+    protected static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
 
-    private static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
+    protected static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
 
     private static final String USER_PIGUDF_PATH = "pigudf"; //$NON-NLS-1$
 

@@ -169,6 +169,8 @@ public class DefaultRunProcessService implements IRunProcessService {
             return new SparkJavaProcessor(process, property, filenameFromLabel);
         } else if (ComponentCategory.CATEGORY_4_STORM.getName().equals(process.getComponentsType())) {
             return new StormJavaProcessor(process, property, filenameFromLabel);
+        } else if (ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
+            return new SparkJavaProcessor(process, property, filenameFromLabel);
         } else {
             return new JavaProcessor(process, property, filenameFromLabel);
         }

@@ -9,6 +9,12 @@
  <extension-point id="process_convert" name="process_convert" schema="schema/process_convert.exsd"/>
  <extension-point id="extended_node_handler" name="extended_node_handler" schema="schema/extended_node_handler.exsd"/>
  <extension-point id="connection_validator" name="Validate New Connection or Re-Connection" schema="schema/connection_validator.exsd"/>
+ <extension
+       point="org.eclipse.ui.startup">
+    <startup
+          class="org.talend.designer.core.DesignerCorePreparation">
+    </startup>
+ </extension>
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -81,6 +87,12 @@
             class="org.talend.designer.core.ui.preferences.ExchangePreferencePage"
             id="org.talend.repository.prefs.exchange"
             name="%exchange">
+      </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.PaletteSettingsPreferencePage"
+            id="org.talend.repository.prefs.palettesettings"
+            name="%palettesettings">
       </page>
       <page
             category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
@@ -192,7 +204,7 @@
                         allowMultiple="false"
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.views.properties.ComponentSettingsView"
-                        icon="icons/palette_view.gif"
+                        icon="icons/palette_view.png"
                         id="org.talend.designer.core.ui.views.properties.ComponentSettingsView"
                         name="%componentSettingsView">
                   </view>

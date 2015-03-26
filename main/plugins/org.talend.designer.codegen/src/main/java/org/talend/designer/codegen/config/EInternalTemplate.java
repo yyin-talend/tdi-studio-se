@@ -70,7 +70,11 @@ public enum EInternalTemplate {
     SPARK_HEADER("spark_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     SPARK_FOOTER("spark_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     SPARK_SUBPROCESS_HEADER("spark_subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
-    SPARK_SUBPROCESS_FOOTER("spark_subprocess_footer", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
+    SPARK_SUBPROCESS_FOOTER("spark_subprocess_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SPARKSTREAMING_HEADER("sparkstreaming_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SPARKSTREAMING_FOOTER("sparkstreaming_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SPARKSTREAMING_SUBPROCESS_HEADER("sparkstreaming_subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SPARKSTREAMING_SUBPROCESS_FOOTER("sparkstreaming_subprocess_footer", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private String templateName;
 

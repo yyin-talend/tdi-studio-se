@@ -19,6 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -522,11 +523,9 @@ public class Problems {
         }
 
         List<Information> listInfos = addRoutineFile(file, type, routineFileName, version, fromJob);
-
-        if (property == null) {
-            return null;
+        if (property == null || listInfos == null) {
+            return Collections.emptyList();
         }
-
         return listInfos;
     }
 
@@ -538,7 +537,7 @@ public class Problems {
      */
     public static List<Information> addRoutineFile(IFile file, ProblemType type, String label, String version, boolean... fromJob) {
         if (file == null || !file.exists()) {
-            return null;
+            return Collections.emptyList();
         }
         String uniName = null;
 
@@ -606,7 +605,7 @@ public class Problems {
 
     public static List<Information> addJobRoutineFile(IFile file, ProblemType type, Item Item, boolean... fromJob) {
         if (file == null || !file.exists()) {
-            return null;
+            return Collections.emptyList();
         }
         String uniName = null;
 

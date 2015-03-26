@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.process.AbstractNode;
+import org.talend.core.model.process.BigDataNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ETypeGen;
@@ -24,7 +25,7 @@ import org.talend.core.model.temp.ETypeGen;
 /**
  * A NodesTree is the Code Gerator Implementation of a process. A NodesTree is built using the Nodes of the Process.
  * It's made of a list of NodesSubTree.
- * 
+ *
  * $Id$
  */
 public class NodesTree {
@@ -37,7 +38,7 @@ public class NodesTree {
 
     /**
      * Constuctor for NodesTree. Note: the param init=false, when it is called in generateComponentCodeWithRows().
-     * 
+     *
      * @param List of Available Nodes in this tree.
      * @param execute init method or not
      */
@@ -113,16 +114,26 @@ public class NodesTree {
     private void buildSparkSubTrees(ETypeGen typeGen) {
         subTrees = new ArrayList<NodesSubTree>();
         for (INode node : nodes) {
-            if (((node == node.getSubProcessStartNode(false)) && (node.isActivate()) && !((AbstractNode) node)
-                    .isThereLinkWithHash())) {
-                subTrees.add(new NodesSubTree(node, nodes, typeGen));
+            if (node instanceof BigDataNode) {
+                BigDataNode bigDataNode = (BigDataNode) node;
+                if (((bigDataNode == bigDataNode.getSubProcessStartNode(false))
+                        && (bigDataNode.getDesignSubjobStartNode() == null || bigDataNode == bigDataNode
+                                .getDesignSubjobStartNode()) && (bigDataNode.isActivate()) && !((AbstractNode) node)
+                            .isThereLinkWithHash())) {
+                    subTrees.add(new NodesSubTree(node, nodes, typeGen));
+                }
+            } else {
+                if (((node.isSubProcessStart()) && (node.isActivate()) && !((AbstractNode) node).isRefNode())
+                        || (rootNodes.contains(node))) {
+                    subTrees.add(new NodesSubTree(node, nodes, typeGen));
+                }
             }
         }
     }
 
     /**
      * Build Root Nodes List.
-     * 
+     *
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -155,7 +166,7 @@ public class NodesTree {
 
     /**
      * Getter for RootNodes.
-     * 
+     *
      * @return
      */
     public List<INode> getRootNodes() {
@@ -170,7 +181,7 @@ public class NodesTree {
 
     /**
      * Getter for subTrees.
-     * 
+     *
      * @return the subTrees
      */
     public List<NodesSubTree> getSubTrees() {
