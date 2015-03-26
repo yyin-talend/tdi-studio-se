@@ -2249,7 +2249,7 @@
               id="org.talend.repository.model.migration.UnifyPasswordEncryption4ContextMigrationTask"
               name="UnifyPasswordEncryption4ContextMigrationTask"
               version="5.6.0">
-        </projecttask> 
+        </projecttask>
         <projecttask
               beforeLogon="false"
               breaks="5.6.0"
@@ -2319,10 +2319,10 @@
               id="org.talend.repository.model.migration.ChangeMappingParameter4Redshift"
               name="ChangeMappingParameter4Redshift"
               description="change the mapping db id for redshift components"
-			  version="5.6.2">
-		</projecttask>
-		<projecttask
-			  beforeLogon="false"
+        version="5.6.2">
+    </projecttask>
+    <projecttask
+        beforeLogon="false"
               breaks="5.6.1"
               class="org.talend.repository.model.migration.ChangeReadByParameter4tFileInputJSON"
               id="org.talend.repository.model.migration.ChangeReadByParameter4tFileInputJSON"
@@ -2330,15 +2330,31 @@
               description="change the checkbox parameter to closedlist parameter for tFileInputJSON"
               version="5.6.2">
         </projecttask>
-  		<projecttask
-        	beforeLogon="false"
-        	breaks="5.6.1"
-        	class="org.talend.repository.model.migration.ChangeDefaultValue4tMarketoOutput"
-        	description="Change the default value of IS_VIRTUAL_COMPONENT for syncMultipleLeads mode"
-        	id="org.talend.repository.model.migration.ChangeDefaultValue4tMarketoOutput"
-        	name="ChangeDefaultValue4tMarketoOutput"
-        	version="6.0.0">
-  		</projecttask>
+      <projecttask
+          beforeLogon="false"
+          breaks="5.6.1"
+          class="org.talend.repository.model.migration.ChangeDefaultValue4tMarketoOutput"
+          description="Change the default value of IS_VIRTUAL_COMPONENT for syncMultipleLeads mode"
+          id="org.talend.repository.model.migration.ChangeDefaultValue4tMarketoOutput"
+          name="ChangeDefaultValue4tMarketoOutput"
+          version="6.0.0">
+      </projecttask>
+      <projecttask
+              beforeLogon="false"
+              breaks="3.1.2"
+              class="org.talend.repository.model.migration.CorrectBatchModeForDBComponents"
+              id="org.talend.repository.model.migration.CorrectBatchModeForDBComponents"
+              name="CorrectBatchModeForDBComponents"
+              version="5.6.2">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="3.1.2"
+              class="org.talend.repository.model.migration.CorrectBatchModeForTeradataOutput"
+              id="org.talend.repository.model.migration.CorrectBatchModeForTeradataOutput"
+              name="CorrectBatchModeForTeradataOutput"
+              version="5.6.2">
+        </projecttask>
         <projecttask
               beforeLogon="false"
               breaks="5.6.1"
@@ -2365,7 +2381,7 @@
               id="org.talend.repository.model.migration.SetDefaultVauleMDMServerVersionFeatureTDI31722"
               name="SetDefaultVauleMDMServerVersionFeatureTDI31722"
               version="6.0.0">
-        </projecttask>
+          </projecttask>
    </extension>
 
    <extension

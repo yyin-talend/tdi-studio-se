@@ -1,4 +1,4 @@
-<%@ jet 
+<%@ jet
 imports="
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.INode
@@ -18,6 +18,7 @@ String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+String useBatchAndUseConn = ElementParameterParser.getValue(node,"__USE_BATCH_AND_USE_CONN__");
 
 //------get first reject name
 String rejectConnName = null;
@@ -27,43 +28,57 @@ if(rejectConns != null && rejectConns.size() > 0) {
     rejectConnName = rejectConn.getName();
 }
 
+boolean useBatch = true;
+if(useExistingConnection){
+    useBatch = (rejectConnName == null)
+                   && (
+                        ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                      )
+                   && "true".equals(useBatchAndUseConn);
+}else{
+    useBatch = (rejectConnName == null)
+                   && (
+                        ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                      )
+                   && "true".equals(useBatchSize);
+}
+
 // Close SQL statements
 if(("INSERT_OR_UPDATE").equals(dataAction)) {
     %>
     if(pstmtUpdate_<%=cid%> != null){
 
         pstmtUpdate_<%=cid %>.close();
-        
-    } 
+
+    }
     if(pstmtInsert_<%=cid %> != null){
 
         pstmtInsert_<%=cid %>.close();
-        
+
     }
     if(pstmt_<%=cid %> != null) {
 
         pstmt_<%=cid %>.close();
-        
-    }        
+
+    }
     <%
 } else if(("UPDATE_OR_INSERT").equals(dataAction)) {
     %>
     if(pstmtUpdate_<%=cid%> != null){
 
         pstmtUpdate_<%=cid %>.close();
-        
-    } 
+
+    }
     if(pstmtInsert_<%=cid %> != null){
 
         pstmtInsert_<%=cid %>.close();
-        
-    }        
+
+    }
     <%
 } else {
     //----------------------batch size
-	if ((rejectConnName==null && ("true").equals(useBatchSize)&& !useExistingConnection) 
-		&& (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
-%>                
+	if (useBatch) {
+%>
 				int[] status_<%=cid%> = null;
 				int countSum_<%=cid%> = 0;
                 try {
@@ -90,18 +105,18 @@ if(("INSERT_OR_UPDATE").equals(dataAction)) {
                 	System.err.println(e.getMessage());
                 	<%
                 	}
-                	%>                	
-            	}                                  
+                	%>
+            	}
             	if(pstmt_<%=cid %>!=null && batchSizeCounter_<%=cid%> > 0 ){
         			try {
         				tmp_batchUpdateCount_<%=cid%> = pstmt_<%=cid %>.getUpdateCount();
 					}catch (java.sql.SQLException e){
-	                	                	
-					} 
+
+					}
 					tmp_batchUpdateCount_<%=cid%> = tmp_batchUpdateCount_<%=cid%> > countSum_<%=cid%> ? tmp_batchUpdateCount_<%=cid%> : countSum_<%=cid%>;
         	    	<%if (("INSERT").equals(dataAction)) {
         	    	%>
-        	    		insertedCount_<%=cid%> += tmp_batchUpdateCount_<%=cid%>; 
+        	    		insertedCount_<%=cid%> += tmp_batchUpdateCount_<%=cid%>;
         	    	<%
         	    	}else if (("UPDATE").equals(dataAction)) {
         	    	%>
@@ -115,12 +130,12 @@ if(("INSERT_OR_UPDATE").equals(dataAction)) {
             	}
 <%
 	}//--------end batch
-%>    
+%>
     if(pstmt_<%=cid %> != null) {
 
         pstmt_<%=cid %>.close();
-        
-    }        
+
+    }
     <%
 }
 %>
