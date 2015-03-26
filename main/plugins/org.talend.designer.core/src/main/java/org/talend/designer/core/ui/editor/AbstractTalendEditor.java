@@ -154,6 +154,7 @@ import org.talend.core.model.repository.job.JobResourceManager;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.service.IMRProcessService;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.editor.JobEditorInput;
@@ -596,6 +597,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
 
         JobSettings.switchToCurJobSettingsView();
+
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+            ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                    .getDefault().getService(ITestContainerProviderService.class);
+            if (testContainerService != null) {
+                testContainerService.switchToCurTestContainerView();
+            }
+        }
 
         super.setFocus();
 

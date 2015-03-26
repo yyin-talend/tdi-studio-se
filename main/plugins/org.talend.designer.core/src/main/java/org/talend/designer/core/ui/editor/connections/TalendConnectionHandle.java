@@ -133,7 +133,9 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
         if (this.mainConnector == null) {
             this.mainConnector = new NodeConnectorTool(nodePart).getConnector();
         }
-
+        if (this.mainConnector == null) {
+            return;
+        }
         Rectangle rec = new Rectangle(0, 0, 12, 12);
         PentagonShape sourceShape = new PentagonShape(this.mainConnector);
         sourceShape.addPoint(new Point(0, 0));
