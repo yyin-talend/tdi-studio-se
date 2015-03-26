@@ -32,19 +32,15 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PigudfItem;
@@ -53,6 +49,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
@@ -121,11 +118,26 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
                     }
                 }
             }
+
+            // maven
+            syncRoutinesPom(false);
         } catch (IOException e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
 
+    }
+
+    private void syncRoutinesPom(boolean overwrite) {
+        if (!GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            return;
+        }
+        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+        ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+        if (talendProcessJavaProject == null) {
+            return;
+        }
+        talendProcessJavaProject.syncRoutinesPom(overwrite);
     }
 
     @Override
@@ -199,94 +211,40 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
     }
 
     private IFile getRoutineFile(RoutineItem routineItem) throws SystemException {
-        try {
-            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            // ProjectManager projectManager = ProjectManager.getInstance();
-            // org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
-            initRoutineFolder(javaProject, routineItem);
-            String routinesFolder = getRoutinesFolder(routineItem);
-            if (!routineItem.isBuiltIn()) {
-                routinesFolder = getRoutinesFolder(routineItem);
-            }
-            IFile file = javaProject.getFile(routinesFolder + "/" //$NON-NLS-1$
-                    + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
-            return file;
-        } catch (CoreException e) {
-            throw new SystemException(e);
+        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+        ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+        if (talendProcessJavaProject == null) {
+            return null;
         }
+        IFolder routineFolder = talendProcessJavaProject.getSrcSubFolder(null, routineItem.getPackageType());
+        IFile file = routineFolder.getFile(routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+        return file;
     }
 
     @Override
     public IFile getProcessFile(JobInfo jobInfo) throws SystemException {
-        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-        try {
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-
-            String projectFolderName = jobInfo.getProjectFolderName();
-
-            String folderName = JavaResourcesHelper.getJobFolderName(jobInfo.getJobName(), jobInfo.getJobVersion());
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
-                    + projectFolderName + "/" + folderName + "/" //$NON-NLS-1$ //$NON-NLS-2$
-                    + jobInfo.getJobName() + JavaUtils.JAVA_EXTENSION);
-            return file;
-        } catch (CoreException e) {
-            throw new SystemException(e);
-        }
+        String projectFolderName = jobInfo.getProjectFolderName();
+        String jobName = jobInfo.getJobName();
+        String folderName = JavaResourcesHelper.getJobFolderName(jobName, jobInfo.getJobVersion());
+        return getProcessFile(projectFolderName, folderName, jobName);
     }
 
     private IFile getProcessFile(ProcessItem item) throws SystemException {
+        String projectFolderName = JavaResourcesHelper.getProjectFolderName(item);
+        String jobName = item.getProperty().getLabel();
+        String folderName = JavaResourcesHelper.getJobFolderName(jobName, item.getProperty().getVersion());
+        return getProcessFile(projectFolderName, folderName, jobName);
+    }
+
+    private IFile getProcessFile(String projectFolderName, String folderName, String jobName) {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-        try {
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-
-            String projectFolderName = JavaResourcesHelper.getProjectFolderName(item);
-
-            String folderName = JavaResourcesHelper.getJobFolderName(item.getProperty().getLabel(), item.getProperty()
-                    .getVersion());
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
-                    + projectFolderName + "/" + folderName + "/" //$NON-NLS-1$ //$NON-NLS-2$
-                    + item.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
-            return file;
-        } catch (CoreException e) {
-            throw new SystemException(e);
+        ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+        if (talendProcessJavaProject == null) {
+            return null;
         }
-    }
-
-    /**
-     * DOC mhirt Comment method "initRoutineFolder".
-     * 
-     * @param javaProject
-     * @param project
-     * @throws CoreException
-     */
-    private void initRoutineFolder(IProject javaProject, RoutineItem item) throws CoreException {
-        IFolder rep = javaProject.getFolder(getRoutinesFolder(item));
-        if (!rep.exists()) {
-            rep.create(true, true, null);
-        }
-        // if (project != null) {
-        // rep = javaProject.getFolder(getRoutinesFolder(project));
-        // if (!rep.exists()) {
-        // rep.create(true, true, null);
-        // }
-        // }
-    }
-
-    private String getRoutinesFolder(RoutineItem routineItem) {
-        String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
-                + routineItem.getPackageType();
-
-        return routinesPath;
-    }
-
-    private void initModuleFolder(IProject javaProject, Project project, String directory) throws CoreException {
-        IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
-                + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$
-                + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + directory);
-        if (!rep.exists()) {
-            rep.create(true, true, null);
-        }
+        IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
+        IFile file = srcFolder.getFile(projectFolderName + '/' + folderName + '/' + jobName + JavaUtils.JAVA_EXTENSION);
+        return file;
     }
 
     public void copyFile(File in, IFile out) throws Exception {
@@ -312,20 +270,20 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
     private IFile syncModules(File[] modules, String directory) throws SystemException {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getProject();
-            initModuleFolder(javaProject, project, directory);
+            ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
+                return null;
+            }
+            IFolder systemFolder = talendProcessJavaProject.getSrcSubFolder(null, JavaUtils.JAVA_ROUTINES_DIRECTORY + '/'
+                    + JavaUtils.JAVA_SYSTEM_DIRECTORY + '/' + directory);
 
             for (File module : modules) {
                 if (!module.isDirectory()) {
-                    IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
-                            + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$
-                            + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + directory + module.getName()); //$NON-NLS-1$
+                    IFile file = systemFolder.getFile(module.getName());
 
                     copyFile(module, file);
                 } else if (!module.getName().startsWith(".") && !FilesUtils.isSVNFolder(module.getName())) {
-                    syncModules(module.listFiles(), directory + module.getName() + "/");
+                    syncModules(module.listFiles(), directory + module.getName() + '/');
                 }
             }
         } catch (CoreException e) {
@@ -446,16 +404,16 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         Item item = objToDelete.getProperty().getItem();
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + ((RoutineItem) item).getPackageType() + "/" //$NON-NLS-1$ //$NON-NLS-2$
-                    + objToDelete.getLabel() + JavaUtils.JAVA_EXTENSION);
-            /*
-             * File f = file.getLocation().toFile(); f.delete();
-             */
+            ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
+                return;
+            }
+            IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
+            IFile file = srcFolder.getFile(((RoutineItem) item).getPackageType() + '/' + objToDelete.getLabel()
+                    + JavaUtils.JAVA_EXTENSION);
             file.delete(true, null);
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
@@ -463,16 +421,16 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
     public void deleteBeanfile(IRepositoryViewObject objToDelete) {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_BEANS_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
-                    + objToDelete.getLabel() + JavaUtils.JAVA_EXTENSION);
-            /*
-             * File f = file.getLocation().toFile(); f.delete();
-             */
+            ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
+                return;
+            }
+            IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
+            IFile file = srcFolder.getFile(JavaUtils.JAVA_BEANS_DIRECTORY + '/' + objToDelete.getLabel()
+                    + JavaUtils.JAVA_EXTENSION);
             file.delete(true, null);
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            org.talend.commons.exception.ExceptionHandler.process(e);
         }
     }
 

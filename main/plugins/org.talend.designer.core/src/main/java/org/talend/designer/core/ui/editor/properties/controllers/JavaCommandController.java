@@ -20,13 +20,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionEvent;
@@ -41,15 +37,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.runprocess.IRunProcessService;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -102,12 +99,20 @@ public class JavaCommandController extends AbstractElementPropertySectionControl
                     List<URL> listURL = new ArrayList<URL>();
                     ILibraryManagerService libManager = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
                             ILibraryManagerService.class);
-
+                    IFolder javaLibFolder = null;
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+                        IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                                IRunProcessService.class);
+                        ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+                        if (talendProcessJavaProject != null) {
+                            javaLibFolder = talendProcessJavaProject.getLibFolder();
+                        }
+                    }
+                    if (javaLibFolder == null) {
+                        return;
+                    }
                     for (String jarString : fullParam.getJar().split(";")) {
-                        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-                        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-                        IJavaProject project = JavaCore.create(prj);
-                        IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+                        IPath libPath = javaLibFolder.getLocation();
                         libManager.retrieve(jarString, libPath.toPortableString(), new NullProgressMonitor());
 
                         jar = libPath.append(jarString).toFile();

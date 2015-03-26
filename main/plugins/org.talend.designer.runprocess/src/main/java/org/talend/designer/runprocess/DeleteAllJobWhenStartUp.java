@@ -12,29 +12,18 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
-import java.io.File;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
-import org.talend.designer.runprocess.java.JavaProcessorUtilities;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 
 /**
  * Delete all the perl and java jobs when T.O.S start up.
@@ -47,8 +36,6 @@ import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 public class DeleteAllJobWhenStartUp implements IStartup {
 
     public static boolean executed;
-
-    public static final String PERL_PROJECT_NAME = ".Perl";
 
     private boolean startUnderPluginModel;
 
@@ -68,95 +55,51 @@ public class DeleteAllJobWhenStartUp implements IStartup {
         if (!startUnderPluginModel && !CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
             return;
         }
-
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IWorkspaceRoot workspaceRoot = workspace.getRoot();
-
-        IProject rootProject = null;
-        try {
-            rootProject = JavaProcessorUtilities.getProcessorProject();
-        } catch (CoreException e1) {
-            ExceptionHandler.process(e1);
+        if (!GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            return;
         }
-        IResource javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME);
-        if (javaRecs != null && javaRecs.getType() == IResource.PROJECT) {
-            rootProject = (IProject) javaRecs;
+        IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                IRunProcessService.class);
+        ITalendProcessJavaProject talendJavaProject = processService.getTalendProcessJavaProject();
+        if (talendJavaProject != null) {
+            IJavaProject jProject = talendJavaProject.getJavaProject();
+            IProgressMonitor moniter = new NullProgressMonitor();
             try {
-                if (!rootProject.isOpen()) {
-                    rootProject.open(null);
+                if (!jProject.isOpen()) {
+                    jProject.open(moniter);
                 }
-                javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME + File.separator + JavaUtils.JAVA_SRC_DIRECTORY);
-                if (javaRecs != null && javaRecs.getType() == IResource.FOLDER) {
-                    IFolder javaSrcFolder = (IFolder) javaRecs;
+                // empty the src/main/java...
+                IFolder srcFolder = talendJavaProject.getSrcFolder();
+                talendJavaProject.cleanFolder(moniter, srcFolder);
 
-                    IResource[] javaProRecs = javaSrcFolder.members();
-                    if (javaProRecs.length > 0) {
-                        for (IResource javaProRec : javaProRecs) {
-                            javaProRec.delete(true, null);
-                        }
+                // empty the outputs, target/classes
+                IFolder outputFolder = talendJavaProject.getOutputFolder();
+                talendJavaProject.cleanFolder(moniter, outputFolder);
+
+                // empty lib/...
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
+                    ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
+                            ILibrariesService.class);
+                    if (libService != null) {
+                        libService.cleanLibs();
                     }
-
                 }
 
-                IResource libRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME + File.separator + "lib");
-                if (libRecs != null && libRecs.getType() == IResource.FOLDER) {
-                    IFolder javaLibFolder = (IFolder) libRecs;
+                // rules
+                IFolder rulesResFolder = talendJavaProject.getResourceSubFolder(moniter, JavaUtils.JAVA_RULES_DIRECTORY);
+                talendJavaProject.cleanFolder(moniter, rulesResFolder);
 
-                    IResource[] javaProRecs = javaLibFolder.members();
-                    if (javaProRecs.length > 0) {
-                        for (IResource javaProRec : javaProRecs) {
-                            javaProRec.delete(true, null);
-                        }
-                    }
+                // sqltempalte
+                IFolder sqlTemplateResFolder = talendJavaProject.getResourceSubFolder(moniter,
+                        JavaUtils.JAVA_SQLPATTERNS_DIRECTORY);
+                talendJavaProject.cleanFolder(moniter, sqlTemplateResFolder);
 
-                }
-                IExtensionRegistry registry = Platform.getExtensionRegistry();
-                IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID); //$NON-NLS-1$
-
-                if (rootProject.getNature(JavaCore.NATURE_ID) == null && nature != null) {
-                    IProjectDescription description = rootProject.getDescription();
-                    String[] natures = description.getNatureIds();
-                    String[] newNatures = new String[natures.length + 1];
-                    System.arraycopy(natures, 0, newNatures, 0, natures.length);
-                    newNatures[natures.length] = JavaCore.NATURE_ID;
-                    description.setNatureIds(newNatures);
-                    rootProject.open(IResource.BACKGROUND_REFRESH, null);
-                    rootProject.setDescription(description, null);
-                }
-                IJavaProject javaProject = JavaCore.create(rootProject);
-
-                IClasspathEntry[] entries = new IClasspathEntry[] {};
-
-                IClasspathEntry jreClasspathEntry = JavaCore
-                        .newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-                IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
-                        JavaUtils.JAVA_SRC_DIRECTORY));
-
-                entries = (IClasspathEntry[]) ArrayUtils.add(entries, jreClasspathEntry);
-                entries = (IClasspathEntry[]) ArrayUtils.add(entries, classpathEntry);
-
-                javaProject.setRawClasspath(entries, null);
-                javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+                // anything else to do? esb?
 
             } catch (CoreException e) {
                 ExceptionHandler.process(e);
             }
         }
-
-        // no need to synchronize the routines here, as it will be done in the code generation.
-
-        // // fix bug 1151, move the sync all routines here from JavaProcessor and PerlProcessor.
-        // Display.getDefault().asyncExec(new Runnable() {
-        //
-        // public void run() {
-        // try {
-        // RunProcessPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
-        // } catch (Exception e) {
-        // ExceptionHandler.process(e);
-        // }
-        // }
-        // });
-
         executed = true;
 
     }

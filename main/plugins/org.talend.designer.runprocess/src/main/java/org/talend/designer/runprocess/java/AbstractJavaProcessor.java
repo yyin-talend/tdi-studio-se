@@ -23,6 +23,9 @@ import org.talend.designer.core.runprocess.Processor;
  */
 public abstract class AbstractJavaProcessor extends Processor implements IJavaProcessor {
 
+    /** main class of job */
+    protected String mainClass;
+
     /**
      * DOC marvin AbstractJavaProcessor constructor comment.
      * 
@@ -95,7 +98,12 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
      */
     @Override
     public String extractMainClassSegments() {
-        return null;
+        return getMainClass();
+    }
+
+    @Override
+    public String getMainClass() {
+        return this.mainClass;
     }
 
     /*

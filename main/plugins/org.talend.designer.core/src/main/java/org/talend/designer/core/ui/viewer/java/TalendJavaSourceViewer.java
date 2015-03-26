@@ -22,12 +22,10 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.SourceField;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
@@ -63,13 +61,13 @@ import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
 import org.eclipse.ui.texteditor.DefaultRangeIndicator;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.expressionbuilder.Variable;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.expressionbuilder.IExpressionDataBean;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
@@ -77,6 +75,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.core.ui.viewer.ReconcilerViewer;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
@@ -147,25 +146,27 @@ public class TalendJavaSourceViewer extends ReconcilerViewer {
         super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles, annotationAccess, sharedColors, checkCode,
                 document, null);
 
-        IPath packagePath = new Path("/.Java/src/internal"); //$NON-NLS-1$
         int id = currentId++;
         className = TalendJavaSourceViewer.VIEWER_CLASS_NAME + id;
-        filename = TalendJavaSourceViewer.VIEWER_CLASS_NAME + id++ + ".java"; //$NON-NLS-1$
+        filename = TalendJavaSourceViewer.VIEWER_CLASS_NAME + id++ + JavaUtils.JAVA_EXTENSION;
         IPackageFragment packageFragment;
         try {
 
             IRunProcessService runProcessService = getRunProcessService();
-            if (runProcessService != null && runProcessService.getJavaProject() instanceof IJavaProject) {
-
-                packageFragment = runProcessService.getJavaProject().findPackageFragment(packagePath);
+            if (runProcessService != null) {
+                ITalendProcessJavaProject talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
+                if (talendProcessJavaProject == null) {
+                    return;
+                }
+                IPackageFragmentRoot root = talendProcessJavaProject.getJavaProject().getPackageFragmentRoot(
+                        talendProcessJavaProject.getSrcFolder());
+                packageFragment = root.getPackageFragment(JavaUtils.JAVA_INTERNAL_DIRECTORY);
                 if (packageFragment != null) {
                     compilationUnit = packageFragment.createCompilationUnit(filename, document.get(), false,
                             new NullProgressMonitor());
                 }
             }
         } catch (JavaModelException e) {
-            ExceptionHandler.process(e);
-        } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
         updateContents();
@@ -537,7 +538,6 @@ public class TalendJavaSourceViewer extends ReconcilerViewer {
      */
     @Override
     public void updateContents() {
-        IPath filePath = new Path("src/internal/" + filename); //$NON-NLS-1$
         if (getDocument() == null) {
             return;
         }
@@ -545,7 +545,11 @@ public class TalendJavaSourceViewer extends ReconcilerViewer {
         try {
             IRunProcessService runProcessService = getRunProcessService();
             if (file == null && runProcessService != null) {
-                file = runProcessService.getProject(LanguageManager.getCurrentLanguage()).getFile(filePath);
+                ITalendProcessJavaProject talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
+                if (talendProcessJavaProject == null) {
+                    return;
+                }
+                file = talendProcessJavaProject.getSrcFolder().getFile(JavaUtils.JAVA_INTERNAL_DIRECTORY + '/' + filename);
                 file.setContents(codeStream, true, false, null);
                 initializeModel();
             } else {

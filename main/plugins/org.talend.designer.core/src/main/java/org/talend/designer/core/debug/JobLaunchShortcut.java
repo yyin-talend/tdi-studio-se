@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -26,14 +27,17 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
+import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.RepositoryNode;
 
@@ -113,6 +117,7 @@ public class JobLaunchShortcut implements ILaunchShortcut {
      * @param mode one of the launch modes defined by the launch manager
      * @see org.eclipse.debug.core.ILaunchManager
      */
+    @Override
     public void launch(ISelection selection, String mode) {
         if (selection instanceof IStructuredSelection) {
             Object object = ((IStructuredSelection) selection).getFirstElement();
@@ -133,6 +138,7 @@ public class JobLaunchShortcut implements ILaunchShortcut {
      * @param mode one of the launch modes defined by the launch manager
      * @see org.eclipse.debug.core.ILaunchManager
      */
+    @Override
     public void launch(IEditorPart editor, String mode) {
         IEditorInput input = editor.getEditorInput();
         if (input instanceof RepositoryEditorInput) {
@@ -151,7 +157,27 @@ public class JobLaunchShortcut implements ILaunchShortcut {
         if (item instanceof ProcessItem) {
             ILaunchConfiguration config = findLaunchConfiguration((ProcessItem) item, mode);
             if (config != null) {
-                DebugUITools.launch(config, mode);
+                IPreferenceStore debugUiStore = DebugUITools.getPreferenceStore();
+                // boolean oldBuildBeforeLaunch = debugUiStore.getBoolean(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH);
+                try {
+                    if (!Problems.buildWholeProject) {
+                        // don't build auto, because will be in one Job, so can't set back the old value
+                        debugUiStore.setValue(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH, false);
+
+                        // FIXME, only for standard job, same as Problems.computeCompilationUnit
+                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+                        if (itemType == null || !ERepositoryObjectType.PROCESS.equals(itemType)) {
+                            try {
+                                config.getFile().getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+                            } catch (CoreException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
+                    }
+                    DebugUITools.launch(config, mode);
+                } finally {
+                    // debugUiStore.setValue(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH, oldBuildBeforeLaunch);
+                }
             }
         }
     }
@@ -170,8 +196,7 @@ public class JobLaunchShortcut implements ILaunchShortcut {
         try {
             ILaunchConfiguration[] configs = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations();
             candidateConfigs = new ArrayList(configs.length);
-            for (int i = 0; i < configs.length; i++) {
-                ILaunchConfiguration config = configs[i];
+            for (ILaunchConfiguration config : configs) {
                 String projectName = config.getAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, (String) null);
                 if (projectName == null) {
                     continue;

@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -76,6 +77,7 @@ public class Log4jPreferencePage extends FieldEditorPreferencePage implements IW
      * 
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
+    @Override
     public void init(IWorkbench workbench) {
     }
 
@@ -114,13 +116,14 @@ public class Log4jPreferencePage extends FieldEditorPreferencePage implements IW
     }
 
     private void updateLogFiles() {
-        IRunProcessService service = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
-            service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
-        }
-        if (service != null) {
-            IProject project = JavaProcessorUtilities.getJavaProject().getProject();
-            service.updateLogFiles(project, false);
+            IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            ITalendProcessJavaProject talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+            if (service != null && talendJavaProject != null) {
+                IProject project = talendJavaProject.getProject();
+                service.updateLogFiles(project, false);
+            }
         }
     }
 

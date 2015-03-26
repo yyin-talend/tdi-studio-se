@@ -155,12 +155,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 selectedJobVersion = this.getSelectedJobVersion();
             }
 
-            // generate the source files
-            String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
-            // use character @ as temporary classpath separator, this one will be replaced during the export.
-            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
-            ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
+            ProcessorUtilities.setExportConfig(proces.getDirectoryName(), true);
 
             // if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
             // generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,

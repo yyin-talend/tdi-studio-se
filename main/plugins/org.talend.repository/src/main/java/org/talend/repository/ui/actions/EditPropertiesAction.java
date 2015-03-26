@@ -17,14 +17,12 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
@@ -73,8 +71,10 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.services.IUIRefresher;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.metadata.managment.ui.wizard.PropertiesWizard;
 import org.talend.metadata.managment.ui.wizard.process.EditProcessPropertiesWizard;
 import org.talend.repository.ProjectManager;
@@ -204,17 +204,17 @@ public class EditPropertiesAction extends AContextualAction {
 
     protected void processRename(RepositoryNode node, String originalName) {
         try {
-            IJavaProject javaProject = CorePlugin.getDefault().getRunProcessService().getJavaProject();
-            if (javaProject == null) {
+            IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
+            ITalendProcessJavaProject talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
                 return;
             }
 
-            IProject project = javaProject.getProject();
-            IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
-            IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
+            IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
+            IPackageFragmentRoot root = talendProcessJavaProject.getJavaProject().getPackageFragmentRoot(srcFolder);
 
             // add for bug TDI-24379 on August 23, 2013.
-            IFolder srcInterFolder = srcFolder.getFolder("internal");//$NON-NLS-1$
+            IFolder srcInterFolder = srcFolder.getFolder(JavaUtils.JAVA_INTERNAL_DIRECTORY);
             if (srcInterFolder.exists()) {
                 File file = new File(srcInterFolder.getLocationURI());
                 for (File f : file.listFiles()) {

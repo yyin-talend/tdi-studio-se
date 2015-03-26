@@ -23,17 +23,9 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -49,7 +41,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.utils.data.extractor.ModuleNameExtractor;
-import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -71,9 +62,11 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.utils.JavaProcessUtil;
+import org.talend.designer.maven.utils.TalendCodeProjectUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -84,99 +77,34 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
 public class JavaProcessorUtilities {
 
     /** The java project within the project. */
-    private static IJavaProject javaProject;
-
-    private static IProject rootProject;
+    private static ITalendProcessJavaProject talendJavaProject;
 
     /**
      * A java project under folder .Java will be created if there is no existed.
      * 
-     * DOC yzhang Comment method "getProject".
+     * DOC ggu Comment method "getTalendJavaProject".
      * 
      * @return
      * @throws CoreException
      */
-    public static IProject getProcessorProject() throws CoreException {
-        if (rootProject != null) {
-            return rootProject;
-        }
-        return initializeProject();
-
-    }
-
-    /**
-     * DOC mhirt Comment method "initJavaProject".
-     * 
-     * @param prj
-     * @throws CoreException
-     */
-    private static void initJavaProject(IProject prj) throws CoreException {
-        // Does the java nature exists in the environment
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID); //$NON-NLS-1$
-
-        if (!prj.exists()) {
-            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            final IProjectDescription desc = workspace.newProjectDescription(prj.getName());
-            if (nature != null) {
-                desc.setNatureIds(new String[] { JavaCore.NATURE_ID });
-            }
-            prj.create(null);
-            prj.open(IResource.BACKGROUND_REFRESH, null);
-            prj.setDescription(desc, null);
-
-            IFolder runtimeFolder = prj.getFolder(new Path(JavaUtils.JAVA_CLASSES_DIRECTORY));
-            if (!runtimeFolder.exists()) {
-                runtimeFolder.create(false, true, null);
-            }
-
-            IFolder sourceFolder = prj.getFolder(new Path(JavaUtils.JAVA_SRC_DIRECTORY));
-            if (!sourceFolder.exists()) {
-                sourceFolder.create(false, true, null);
-            }
-        } else {
-            if (!prj.isOpen()) {
-                prj.open(null);
-            }
-            if (prj.getNature(JavaCore.NATURE_ID) == null && nature != null) {
-                IProjectDescription description = prj.getDescription();
-                String[] natures = description.getNatureIds();
-                String[] newNatures = new String[natures.length + 1];
-                System.arraycopy(natures, 0, newNatures, 0, natures.length);
-                newNatures[natures.length] = JavaCore.NATURE_ID;
-                description.setNatureIds(newNatures);
-                prj.open(IResource.BACKGROUND_REFRESH, null);
-                prj.setDescription(description, null);
+    public static ITalendProcessJavaProject getTalendJavaProject() {
+        if (talendJavaProject == null) {
+            synchronized (JavaProcessorUtilities.class) {
+                if (talendJavaProject == null) {
+                    try {
+                        IProject project = TalendCodeProjectUtil.initCodeProject(new NullProgressMonitor());
+                        if (project != null) {
+                            IJavaProject javaProject = JavaCore.create(project);
+                            talendJavaProject = new TalendProcessJavaProject(javaProject);
+                            talendJavaProject.syncTemplates(false);
+                        }
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
             }
         }
-
-        // initLogFiles(prj, false);
-    }
-
-    /**
-     * DOC ycbai Comment method "initLogFiles".
-     * 
-     * Create common-logging.properties and log4j.properties files if they are non-existent.
-     * 
-     * @param project
-     */
-    private static void initLogFiles(IProject project, boolean isLogForJob) {
-        IRunProcessService service = null;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
-            service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
-        }
-        if (service != null) {
-            service.updateLogFiles(project, isLogForJob);
-        }
-    }
-
-    private static IProject initializeProject() throws CoreException {
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        rootProject = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-
-        initJavaProject(rootProject);
-        javaProject = JavaCore.create(rootProject);
-        return rootProject;
+        return talendJavaProject;
     }
 
     /**
@@ -339,28 +267,6 @@ public class JavaProcessorUtilities {
         }
     }
 
-    /**
-     * DOC ycbai Comment method "getJavaProjectLibPath".
-     * 
-     * @return
-     */
-    public static File getJavaProjectLibFolder() {
-        try {
-            if (javaProject == null) {
-                initializeProject();
-            }
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
-        }
-
-        IPath libPath = javaProject.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-        File libDir = libPath.toFile();
-        if (!libDir.exists()) {
-            libDir.mkdirs();
-        }
-        return libDir;
-    }
-
     private static String projectSetup;
 
     /*
@@ -393,29 +299,14 @@ public class JavaProcessorUtilities {
     // command
     // // line in run mode
     private static void sortClasspath(Set<String> jobModuleList, IProcess process) throws CoreException, BusinessException {
+        ITalendProcessJavaProject jProject = getTalendJavaProject();
+        if (jProject == null) {
+            return;
+        }
+        IJavaProject javaProject = jProject.getJavaProject();
         IClasspathEntry[] entries = javaProject.getRawClasspath();
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
 
         boolean changesDone = false;
-        if (!ArrayUtils.contains(entries, jreClasspathEntry)) {
-            entries = (IClasspathEntry[]) ArrayUtils.add(entries, jreClasspathEntry);
-            changesDone = true;
-        }
-        if (!ArrayUtils.contains(entries, classpathEntry)) {
-            IClasspathEntry source = null;
-            for (IClasspathEntry entry : entries) {
-                if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                    source = entry;
-                    break;
-                }
-            }
-            if (source != null) {
-                entries = (IClasspathEntry[]) ArrayUtils.remove(entries, ArrayUtils.indexOf(entries, source));
-            }
-            entries = (IClasspathEntry[]) ArrayUtils.add(entries, classpathEntry);
-            changesDone = true;
-        }
 
         // Added by Marvin Wang on Nov. 8, 2012. Maybe some modules are in the list with a directory, so cut the
         // directory only file name remaining.
@@ -567,7 +458,7 @@ public class JavaProcessorUtilities {
         }
         if (changesDone) {
             javaProject.setRawClasspath(entries, null);
-            javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+            // javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
         }
         if (missingJars != null) {
             handleMissingJarsForProcess(missingJarsForRoutinesOnly, missingJarsForProcessOnly, missingJars);
@@ -702,27 +593,44 @@ public class JavaProcessorUtilities {
         return -1;
     }
 
-    public static IJavaProject getJavaProject() {
-        if (javaProject == null) {
-            try {
-                initializeProject();
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return javaProject;
-    }
-
     public static void checkAndUpdateLog4jFile() {
         try {
-            if (javaProject == null) {
-                initializeProject();
-            }
+            ITalendProcessJavaProject jProject = JavaProcessorUtilities.getTalendJavaProject();
+            if (jProject != null) {
+                IRunProcessService service = null;
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+                    service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+                }
+                if (service != null) {
+                    service.updateLogFiles(jProject.getProject(), true);
+                }
 
-            initLogFiles(javaProject.getProject(), true);
-        } catch (CoreException e) {
+            }
+        } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    /**
+     * DOC ycbai Comment method "getJavaProjectLibPath".
+     * 
+     * @return
+     */
+    public static File getJavaProjectLibFolder() {
+        try {
+            ITalendProcessJavaProject jProject = getTalendJavaProject();
+            if (jProject != null) {
+                IFolder libFolder = jProject.getLibFolder();
+                if (libFolder != null) {
+                    File libDir = libFolder.getLocation().toFile();
+                    return libDir;
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
+
     }
 
 }

@@ -16,7 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
@@ -315,12 +314,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         try {
             ByteArray byteArray = item.getContent();
             byteArray.setInnerContentFromFile(((FileEditorInput) getEditorInput()).getFile());
-            try {
-                CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
-                        .build(IncrementalProjectBuilder.AUTO_BUILD, null);
-            } catch (CoreException e1) {
-                ExceptionHandler.process(e1);
-            }
+            CorePlugin.getDefault().getRunProcessService().buildJavaProject();
             // check syntax error
             addProblems();
             String name = "Save Routine";

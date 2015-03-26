@@ -26,7 +26,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -773,12 +772,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     @Override
     public String exportPigudf(IProcessor processor, Property property, boolean isExport) throws ProcessorException {
         // build java project
-        try {
-            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
-                    .build(IncrementalProjectBuilder.AUTO_BUILD, null);
-        } catch (CoreException e) {
-            throw new ProcessorException(e);
-        }
+        CorePlugin.getDefault().getRunProcessService().buildJavaProject();
 
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needPigudf, true);

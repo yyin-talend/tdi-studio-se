@@ -47,8 +47,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -60,7 +58,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -95,6 +92,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.Log4jUtil;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.services.resource.IExportJobResourcesService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
@@ -138,21 +136,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 
-    protected static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
+    protected static final String USER_BEANS_PATH = JavaUtils.JAVA_BEANS_DIRECTORY;
 
-    protected static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
+    protected static final String USER_ROUTINES_PATH = JavaUtils.JAVA_ROUTINES_DIRECTORY;
 
-    private static final String USER_PIGUDF_PATH = "pigudf"; //$NON-NLS-1$
+    private static final String USER_PIGUDF_PATH = JavaUtils.JAVA_PIGUDF_DIRECTORY;
 
-    private static final String SYSTEM_ROUTINES_PATH = "routines/system"; //$NON-NLS-1$
+    private static final String SYSTEM_ROUTINES_PATH = JavaUtils.JAVA_ROUTINES_DIRECTORY + PATH_SEPARATOR
+            + JavaUtils.JAVA_SYSTEM_DIRECTORY;
 
-    public static final String SYSTEMROUTINE_JAR = "systemRoutines.jar"; //$NON-NLS-1$
+    public static final String SYSTEMROUTINE_JAR = JavaUtils.SYSTEM_ROUTINE_JAR;
 
-    public static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
+    public static final String USERROUTINE_JAR = JavaUtils.USER_ROUTINE_JAR;
 
-    protected static final String USERBEANS_JAR = "userBeans.jar"; //$NON-NLS-1$
+    protected static final String USERBEANS_JAR = JavaUtils.USER_BEANS_JAR;
 
-    public static final String USERPIGUDF_JAR = "pigudf.jar"; //$NON-NLS-1$
+    public static final String USERPIGUDF_JAR = JavaUtils.USER_PIGUDF_JAR;
 
     private boolean needMappingInSystemRoutine = false;
 
@@ -439,12 +438,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         String jobName = processItem.getProperty().getLabel();
         String jobVersion = processItem.getProperty().getVersion();
-        String jobExportedJarName = jobName + '_' + jobVersion.replaceAll("\\.", "_"); //$NON-NLS-1$//$NON-NLS-2$
-        jobExportedJarName = jobExportedJarName.toLowerCase();
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
         // set the maven properties
         final Map<String, String> mavenPropertiesMap = getMainMavenProperties(processItem);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemExportedJarName.getVarScript(), jobExportedJarName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemExportedJarName.getVarScript(), jobFolderName);
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_BUILD_FILE_NAME);
         File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
@@ -672,20 +670,17 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param selectedJobVersion
      * @return
      */
-    protected String preExportResource(ExportFileResource[] process, int i, String selectedJobVersion) {
+    protected String preExportResource(ExportFileResource[] process, int i, final String selectedVersion) {
+        String sJobVersion = selectedVersion;
         if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
-            selectedJobVersion = this.getSelectedJobVersion();
+            sJobVersion = this.getSelectedJobVersion();
         }
         if (progressMonitor != null) {
             progressMonitor
-                    .subTask(Messages.getString("JobJavaScriptsManager.buildJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$//$NON-NLS-2$
+                    .subTask(Messages.getString("JobJavaScriptsManager.buildJob") + process[i].getNode().getObject().getLabel() + "_" + sJobVersion); //$NON-NLS-1$//$NON-NLS-2$
         }
-        String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
-        // use character @ as temporary classpath separator, this one will be replaced during the export.
-        String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
-        ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
-        return selectedJobVersion;
+        ProcessorUtilities.setExportConfig(process[i].getDirectoryName(), true);
+        return sJobVersion;
     }
 
     /*
@@ -727,11 +722,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         jobProcess, processItem, selectedJobVersion, resources, codeOptions);
             } else {
                 String log4jOption = getLog4jLevel() != null ? LOG4J_LEVEL_ARG + getLog4jLevel().toLowerCase() : null;
+                String[] newCodeOptions = codeOptions;
                 if (!ArrayUtils.contains(codeOptions, log4jOption)) {
-                    codeOptions = (String[]) ArrayUtils.add(codeOptions, log4jOption);
+                    newCodeOptions = (String[]) ArrayUtils.add(codeOptions, log4jOption);
                 }
                 childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
-                        jobProcess, processItem, selectedJobVersion, resources, codeOptions);
+                        jobProcess, processItem, selectedJobVersion, resources, newCodeOptions);
             }
             resources.addAll(childrenList);
             process[i].addResources(resources);
@@ -883,16 +879,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String projectName = getCorrespondingProjectName(processItem);
         String folderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
         try {
-            IPath classRoot = getClassRootPath();
-            classRoot = classRoot.append(projectName).append(folderName).append(JOB_CONTEXT_FOLDER);
-            File contextDir = classRoot.toFile();
+            String jobPackagePath = projectName + PATH_SEPARATOR + folderName + PATH_SEPARATOR
+                    + JavaUtils.JAVA_CONTEXTS_DIRECTORY;
+            ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
+                    .getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
+                return;
+            }
+
+            IFolder outputFolder = talendProcessJavaProject.getOutputFolder();
+            IFolder contextsFolder = outputFolder.getFolder(jobPackagePath);
+            File contextDir = contextsFolder.getLocation().toFile();
             if (contextDir.isDirectory()) {
-                list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), processItem));
+                list.addAll(getActiveContextFiles(contextDir.listFiles(), processItem));
             }
 
             // list.add(classRoot.toFile().toURL());
 
-            String jobPackagePath = projectName + PATH_SEPARATOR + folderName + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
             resource.addResources(jobPackagePath, list);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -1069,39 +1072,36 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // get different routines.
 
             IRunProcessService service = CorePlugin.getDefault().getRunProcessService();
-            IProject javaProject;
-
-            javaProject = service.getProject(ECodeLanguage.JAVA);
-
-            IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                    + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
+            ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+            if (talendProcessJavaProject == null) {
+                return;
+            }
+            IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
+            IFolder systemRoutineFolder = srcFolder.getFolder(SYSTEM_ROUTINES_PATH);
             List<URL> systemRoutinesFileUrls = new ArrayList<URL>();
-            if (rep.exists()) {
-                for (IResource fileResource : rep.members()) {
+            if (systemRoutineFolder.exists()) {
+                for (IResource fileResource : systemRoutineFolder.members()) {
                     if (fileResource instanceof IFile
                             && ((IFile) fileResource).getFileExtension().equals(ECodeLanguage.JAVA.getExtension())) {
                         systemRoutinesFileUrls.add(fileResource.getLocationURI().toURL());
                     }
                 }
 
-                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                        + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY, systemRoutinesFileUrls);
+                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + SYSTEM_ROUTINES_PATH, systemRoutinesFileUrls);
             }
             // bug TDI-8647
             systemRoutinesFileUrls.clear(); // empty and re-use it
-            rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                    + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR
+            systemRoutineFolder = srcFolder.getFolder(SYSTEM_ROUTINES_PATH + PATH_SEPARATOR
                     + JavaUtils.JAVA_SYSTEM_ROUTINES_API_DIRECTORY);
-            if (rep.exists()) {
-                for (IResource fileResource : rep.members()) {
+            if (systemRoutineFolder.exists()) {
+                for (IResource fileResource : systemRoutineFolder.members()) {
                     if (fileResource instanceof IFile
                             && ((IFile) fileResource).getFileExtension().equals(ECodeLanguage.JAVA.getExtension())) {
                         systemRoutinesFileUrls.add(fileResource.getLocationURI().toURL());
                     }
                 }
 
-                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                        + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR
+                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + SYSTEM_ROUTINES_PATH + PATH_SEPARATOR
                         + JavaUtils.JAVA_SYSTEM_ROUTINES_API_DIRECTORY, systemRoutinesFileUrls);
             }
             // add for routines
@@ -1113,14 +1113,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     useBeans = true;
                 }
             }
-            addRoutinesSourceCodes(process, resource, javaProject, useBeans);
+            addRoutinesSourceCodes(process, resource, talendProcessJavaProject, useBeans);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
     }
 
-    protected void addRoutinesSourceCodes(ExportFileResource[] process, ExportFileResource resource, IProject javaProject,
-            boolean useBeans) throws Exception {
+    protected void addRoutinesSourceCodes(ExportFileResource[] process, ExportFileResource resource,
+            ITalendProcessJavaProject talendProcessJavaProject, boolean useBeans) throws Exception {
         List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
         String include;
         if (useBeans) {
@@ -1136,15 +1136,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             dependedRoutines.add(obj.getLabel() + "." //$NON-NLS-1$
                     + ECodeLanguage.JAVA.getExtension());
         }
-        IFolder rep = null;
+        IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
+        IFolder folder = null;
         if (useBeans) {
-            rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + USER_BEANS_PATH);
+            folder = srcFolder.getFolder(USER_BEANS_PATH);
         } else {
-            rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY);
+            folder = srcFolder.getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY);
         }
         List<URL> userRoutinesFileUrls = new ArrayList<URL>();
-        if (rep.exists()) {
-            for (IResource fileResource : rep.members()) {
+        if (folder.exists()) {
+            for (IResource fileResource : folder.members()) {
                 if (fileResource instanceof IFile
                         && ((IFile) fileResource).getFileExtension().equals(ECodeLanguage.JAVA.getExtension())
                         && dependedRoutines.contains(((IFile) fileResource).getName())) {
@@ -1176,18 +1177,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 needMappingInSystemRoutine = true;
                 if (needSource) {
                     IRunProcessService service = CorePlugin.getDefault().getRunProcessService();
-                    IProject javaProject = service.getProject(ECodeLanguage.JAVA);
+                    ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+                    if (talendProcessJavaProject == null) {
+                        return;
+                    }
                     // for db mapping xml
-                    IFolder xmlMapping = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR
-                            + JavaUtils.JAVA_XML_MAPPING);
+                    IFolder xmlMappingFolder = talendProcessJavaProject.getResourcesFolder()
+                            .getFolder(JavaUtils.JAVA_XML_MAPPING);
                     List<URL> xmlMappingFileUrls = new ArrayList<URL>();
-                    if (xmlMapping.exists()) {
-                        for (IResource fileResource : xmlMapping.members()) {
+                    if (xmlMappingFolder.exists()) {
+                        for (IResource fileResource : xmlMappingFolder.members()) {
                             if (XmlUtil.isXMLFile(fileResource.getName())) {
                                 xmlMappingFileUrls.add(fileResource.getLocationURI().toURL());
                             }
                         }
-                        resource.addResources(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING,
+                        resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING,
                                 xmlMappingFileUrls);
 
                     }
@@ -1200,12 +1204,20 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected void addLog4jSetting(ExportFileResource resource) {
         try {
-            if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
-                IPath srcRootPath = getSrcRootLocation();
-                File log4jFileForRoot = (srcRootPath.append(Log4jPrefsConstants.LOG4J_FILE_NAME)).toFile();
-                List<URL> log4jFileUrls = new ArrayList<URL>();
-                log4jFileUrls.add(FileLocator.toFileURL(log4jFileForRoot.toURL()));
-                resource.addResources(PATH_SEPARATOR, log4jFileUrls);
+            if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()
+                    && GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+                IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                        IRunProcessService.class);
+                ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+                if (talendProcessJavaProject != null) {
+                    IFolder resourcesFolder = talendProcessJavaProject.getResourcesFolder();
+                    IFile log4jFile = resourcesFolder.getFile(Log4jPrefsConstants.LOG4J_FILE_NAME);
+                    if (log4jFile.exists()) {
+                        List<URL> log4jFileUrls = new ArrayList<URL>();
+                        log4jFileUrls.add(FileLocator.toFileURL(log4jFile.getLocationURI().toURL()));
+                        resource.addResources(PATH_SEPARATOR, log4jFileUrls);
+                    }
+                }
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -1291,19 +1303,25 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param boolean1
      * @return
      */
-    protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process, Set<String> neededLibraries) {
+    protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process,
+            final Set<String> neededLibraries) {
         List<URL> list = new ArrayList<URL>();
         if (!needLibraries) {
             return list;
         }
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-        IJavaProject project = JavaCore.create(prj);
-        IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-        File file = libPath.toFile();
-        if (!file.exists()) {
-            file.mkdir();
+        IFolder libFolder = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+            if (talendProcessJavaProject != null) {
+                libFolder = talendProcessJavaProject.getLibFolder();
+            }
         }
+        if (libFolder == null) {
+            return list;
+        }
+        File file = libFolder.getLocation().toFile();
         File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
@@ -1325,9 +1343,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
                 }
                 IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
-                neededLibraries = iProcess.getNeededLibraries(true);
-                if (neededLibraries != null) {
-                    listModulesReallyNeeded.addAll(neededLibraries);
+                Set<String> processNeededLibraries = iProcess.getNeededLibraries(true);
+                if (processNeededLibraries != null) {
+                    listModulesReallyNeeded.addAll(processNeededLibraries);
                 }
             }
         } else {
@@ -1400,16 +1418,20 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected List<URL> getLog4jFiles() {
         List<URL> list = new ArrayList<URL>();
         if (Log4jUtil.isEnable()
-                && Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
+                && Boolean.parseBoolean(Log4jPrefsSettingManager.getInstance().getValueOfPreNode(
+                        Log4jPrefsConstants.LOG4J_ENABLE_NODE))
+                && GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
             try {
-                IPath srcPath = getSrcRootLocation();// .append(JavaUtils.JAVA_SRC_DIRECTORY);
-                File file = srcPath.toFile();
-                if (!file.exists()) {
-                    file.mkdir();
+                ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+                if (talendProcessJavaProject != null) {
+                    IFolder resourcesFolder = talendProcessJavaProject.getResourcesFolder();
+                    IFile log4jFile = resourcesFolder.getFile(Log4jPrefsConstants.LOG4J_FILE_NAME);
+                    if (log4jFile.exists()) {
+                        list.add(FileLocator.toFileURL(log4jFile.getLocationURI().toURL()));
+                    }
                 }
-                File log4jFile = (srcPath.append(Log4jPrefsConstants.LOG4J_FILE_NAME)).toFile();
-
-                list.add(log4jFile.toURL());
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
             } catch (Exception e) {
@@ -1421,16 +1443,19 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected void addLog4jXmlToRes(ExportFileResource libResource) {
         List<URL> list = new ArrayList<URL>();
-        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()
+                && GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
             try {
-                IPath srcPath = getSrcRootLocation();// .append(JavaUtils.JAVA_SRC_DIRECTORY);
-                File file = srcPath.toFile();
-                if (!file.exists()) {
-                    file.mkdir();
+                ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
+                if (talendProcessJavaProject != null) {
+                    IFolder resourcesFolder = talendProcessJavaProject.getResourcesFolder();
+                    IFile log4jFile = resourcesFolder.getFile(Log4jPrefsConstants.LOG4J_FILE_NAME);
+                    if (log4jFile.exists()) {
+                        list.add(log4jFile.getLocationURI().toURL());
+                    }
                 }
-                File log4jFile = (srcPath.append(Log4jPrefsConstants.LOG4J_FILE_NAME)).toFile();
-
-                list.add(log4jFile.toURL());
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
             } catch (Exception e) {
@@ -1481,13 +1506,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         try {
             String tmpFoler = getTmpFolder();
             String jobInfoPath = tmpFoler + File.separator + JOBINFO_FILE;
-            JobInfoBuilder jobInfoBuilder = null;
+
+            boolean addStat = false;// TDI-23641, in studio, false always.
             if (CommonsPlugin.isHeadless()) {
-                jobInfoBuilder = new JobInfoBuilder(process, contextName, exportChoice, jobInfoPath);
-            } else {
-                jobInfoBuilder = new JobInfoBuilder(process, contextName, isOptionChoosed(ExportChoice.applyToChildren),
-                        jobInfoPath);
+                addStat = isOptionChoosed(ExportChoice.addStatistics);
             }
+            JobInfoBuilder jobInfoBuilder = new JobInfoBuilder(process, contextName,
+                    isOptionChoosed(ExportChoice.applyToChildren), addStat, jobInfoPath);
             jobInfoBuilder.buildProperty();
             File jobInfoFile = new File(jobInfoPath);
             URL url = jobInfoFile.toURL();
@@ -1549,7 +1574,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String jobPath = projectName + PATH_SEPARATOR + jobFolderName;
             jarbuilder.setIncludeDir(Collections.singleton(jobPath));
             // filter the context
-            String contextPath = jobPath + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
+            String contextPath = jobPath + PATH_SEPARATOR + JavaUtils.JAVA_CONTEXTS_DIRECTORY;
             jarbuilder.setExcludeDir(Collections.singleton(contextPath));
 
             jarbuilder.buildJar();
@@ -1597,18 +1622,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     protected File getClassRootFileLocation() throws CoreException {
-        return getClassRootPath().toFile();
-    }
+        ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
+                .getTalendProcessJavaProject();
+        if (talendProcessJavaProject == null) {
+            return null;
+        }
 
-    private IPath getClassRootPath() throws CoreException {
-        IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.JAVA);
-
-        IJavaProject javaProject = JavaCore.create(project);
-        IPath binPath = javaProject.getOutputLocation();
-
-        IPath root = project.getParent().getLocation();
-        binPath = root.append(binPath);
-        return binPath;
+        IFolder outputFolder = talendProcessJavaProject.getOutputFolder();
+        return outputFolder.getLocation().toFile();
     }
 
     /**
@@ -1617,9 +1638,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @throws Exception
      */
     protected IPath getSrcRootLocation() throws Exception {
-        IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.JAVA);
-
-        IJavaProject javaProject = JavaCore.create(project);
+        ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
+                .getTalendProcessJavaProject();
+        if (talendProcessJavaProject == null) {
+            return null;
+        }
+        IProject project = talendProcessJavaProject.getProject();
+        IJavaProject javaProject = talendProcessJavaProject.getJavaProject();
         IPackageFragmentRoot[] pp = javaProject.getAllPackageFragmentRoots();
         IPackageFragmentRoot src = null;
         for (IPackageFragmentRoot root : pp) {

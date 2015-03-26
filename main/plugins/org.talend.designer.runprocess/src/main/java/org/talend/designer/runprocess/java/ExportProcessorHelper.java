@@ -20,8 +20,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -127,12 +125,7 @@ public class ExportProcessorHelper {
     public void exportPigudf(IProcessor processor, Property property, int statisticsPort, int tracePort)
             throws ProcessorException {
         // build java project
-        try {
-            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
-                    .build(IncrementalProjectBuilder.AUTO_BUILD, null);
-        } catch (CoreException e) {
-            throw new ProcessorException(e);
-        }
+        CorePlugin.getDefault().getRunProcessService().buildJavaProject();
 
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needPigudf, true);

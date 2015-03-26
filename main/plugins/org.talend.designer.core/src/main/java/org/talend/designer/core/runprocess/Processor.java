@@ -24,19 +24,16 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
@@ -86,7 +83,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
     /** Path to generated context code. */
     protected IPath contextPath;
 
-    /** Path to generated perl code. */
+    /** Path to generated job java code. */
     protected IPath codePath;
 
     protected String targetPlatform;
@@ -171,14 +168,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
             // this will be used for example for the shadow process.
             if (!codeGenerated) {
                 generateCode(statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
-                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    try {
-                        CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
-                                .build(IncrementalProjectBuilder.AUTO_BUILD, null);
-                    } catch (CoreException e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
+                CorePlugin.getDefault().getRunProcessService().buildJavaProject();
             }
         }
         if (optionsParam == null) {
@@ -274,7 +264,8 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
-        cmd = addCommmandLineAttch(needContext, cmd, context.getName(), statOption, traceOption, codeOptions);
+        cmd = addCommmandLineAttch(needContext, cmd, context != null ? context.getName() : IContext.DEFAULT, statOption,
+                traceOption, codeOptions);
 
         // (feature 4258)
         if (Platform.OS_LINUX.equals(getTargetPlatform())) {
@@ -667,6 +658,9 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
     @Override
     public String getTargetPlatform() {
+        if (this.targetPlatform == null) {
+            this.targetPlatform = Platform.getOS();
+        }
         return targetPlatform;
     }
 

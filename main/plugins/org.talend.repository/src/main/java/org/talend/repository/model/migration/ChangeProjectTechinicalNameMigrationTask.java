@@ -29,13 +29,13 @@ import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ltk.internal.core.refactoring.resource.RenameResourceProcessor;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.model.general.TalendNature;
 import org.talend.core.model.properties.Project;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.migration.AbstractMigrationTask;
 import org.talend.migration.IWorkspaceMigrationTask;
 import org.talend.repository.ProjectManager;
+import org.talend.utils.io.FilesUtils;
 
 /**
  * DOC ggu class global comment. Detailled comment <br/>
@@ -62,6 +62,7 @@ public class ChangeProjectTechinicalNameMigrationTask extends AbstractMigrationT
      * 
      * @see org.talend.migration.IMigrationTask#getOrder()
      */
+    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2012, 9, 10, 0, 0, 0);
         return gc.getTime();
@@ -72,6 +73,7 @@ public class ChangeProjectTechinicalNameMigrationTask extends AbstractMigrationT
      * 
      * @see org.talend.migration.IWorkspaceMigrationTask#execute()
      */
+    @Override
     public boolean execute() {
         if (!ProjectManager.enableSpecialTechnicalProjectName()) {
             return false; // no need to do migration.

@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.constants;
 
+@SuppressWarnings("nls")
 public class Log4jPrefsConstants {
 
     public static final String COMMON_LOGGING_PROPERTIES_TEMPLATE = "COMMON_LOGGING_PROPERTIES_TEMPLATE";
@@ -29,8 +30,6 @@ public class Log4jPrefsConstants {
     public static final String LOG4J_RESOURCES = "org.talend.log4j";
 
     public static final String LOG4j_SCOPE = "<project>";
-
-    public static final String LOG4j_SETTING_SUFFIX = ".settings";
 
     public static final String LOG4j_PREFS_SUFFIX = ".prefs";
 

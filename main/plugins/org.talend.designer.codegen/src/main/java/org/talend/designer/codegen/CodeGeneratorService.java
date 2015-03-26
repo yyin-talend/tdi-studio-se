@@ -22,14 +22,11 @@ import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.views.IComponentSettingsView;
-import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -97,7 +94,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      */
     @Override
     public ITalendSynchronizer createPerlRoutineSynchronizer() {
-        return new PerlRoutineSynchronizer();
+        return null; // no perl
     }
 
     /*
@@ -107,43 +104,27 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      */
     @Override
     public ITalendSynchronizer createJavaRoutineSynchronizer() {
-        // TODO Auto-generated method stub
         return new JavaRoutineSynchronizer();
     }
 
     @Override
     public ITalendSynchronizer createRoutineSynchronizer() {
-        ECodeLanguage lan = LanguageManager.getCurrentLanguage();
-        if (lan.equals(ECodeLanguage.PERL)) {
-            return createPerlRoutineSynchronizer();
-        } else if (lan.equals(ECodeLanguage.JAVA)) {
-            return createJavaRoutineSynchronizer();
-        }
-        throw new IllegalArgumentException(Messages.getString("CodeGeneratorService.invalidLanguage1")); //$NON-NLS-1$
+        return createJavaRoutineSynchronizer();
     }
 
     @Override
     public ITalendSynchronizer createCamelBeanSynchronizer() {
-        ECodeLanguage lan = LanguageManager.getCurrentLanguage();
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
             ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                     ICamelDesignerCoreService.class);
-            if (lan.equals(ECodeLanguage.JAVA)) {
-                return service.createCamelJavaSynchronizer();
-            }
+            return service.createCamelJavaSynchronizer();
         }
         return null;
     }
 
     @Override
     public ISQLPatternSynchronizer getSQLPatternSynchronizer() {
-        ECodeLanguage lan = LanguageManager.getCurrentLanguage();
-        if (lan.equals(ECodeLanguage.PERL)) {
-            return new PerlSQLPatternSynchronizer();
-        } else if (lan.equals(ECodeLanguage.JAVA)) {
-            return new JavaSQLPatternSynchronizer();
-        }
-        throw new IllegalArgumentException(Messages.getString("CodeGeneratorService.invalidLanguage2")); //$NON-NLS-1$
+        return new JavaSQLPatternSynchronizer();
     }
 
     /*

@@ -28,6 +28,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
@@ -58,6 +59,7 @@ public class RunProcessService implements IRunProcessService {
      * org.talend.designer.runprocess.IRunProcessService#createCodeProcessor(org.talend.core.model.process.IProcess,
      * org.talend.core.language.ECodeLanguage, boolean)
      */
+    @Override
     public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language, boolean filenameFromLabel) {
         return delegateService.createCodeProcessor(process, property, language, filenameFromLabel);
     }
@@ -67,6 +69,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#createPerformanceData(java.lang.String)
      */
+    @Override
     public IPerformanceData createPerformanceData(String data) {
         return delegateService.createPerformanceData(data);
     }
@@ -76,6 +79,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getProject(org.talend.core.language.ECodeLanguage)
      */
+    @Override
     public IProject getProject(ECodeLanguage language) throws CoreException {
         return delegateService.getProject(language);
     }
@@ -85,6 +89,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getRoutineFilenameExt()
      */
+    @Override
     public String getRoutineFilenameExt() {
         return delegateService.getRoutineFilenameExt();
     }
@@ -94,6 +99,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getSyntaxChecker(org.talend.core.language.ECodeLanguage)
      */
+    @Override
     public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
         return delegateService.getSyntaxChecker(codeLanguage);
     }
@@ -103,6 +109,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getSelectedContext()
      */
+    @Override
     public IContext getSelectedContext() {
         RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         if (activeContext != null) {
@@ -119,6 +126,7 @@ public class RunProcessService implements IRunProcessService {
      * org.eclipse.core.runtime.IPath, java.lang.String, org.apache.log4j.Level, java.lang.String, java.lang.String,
      * int, int, java.lang.String[])
      */
+    @Override
     public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
             String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
@@ -131,6 +139,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#removeProcess(org.talend.core.model.process.IProcess)
      */
+    @Override
     public void removeProcess(IProcess activeProcess) {
         delegateService.removeProcess(activeProcess);
     }
@@ -140,10 +149,12 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#setActiveProcess(org.talend.core.model.process.IProcess)
      */
+    @Override
     public void setActiveProcess(IProcess2 activeProcess) {
         delegateService.setActiveProcess(activeProcess);
     }
 
+    @Override
     public void setActiveProcess(IProcess2 activeProcess, boolean refreshUI) {
         delegateService.setActiveProcess(activeProcess, refreshUI);
     }
@@ -154,6 +165,7 @@ public class RunProcessService implements IRunProcessService {
      * @seeorg.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.
      * IRunProcessService)
      */
+    @Override
     public void setDelegateService(IRunProcessService delegateService) {
         boolean isValidDelegate = delegateService != null && !(delegateService instanceof RunProcessService);
         if (isValidDelegate) {
@@ -163,10 +175,12 @@ public class RunProcessService implements IRunProcessService {
         }
     }
 
+    @Override
     public void updateLibraries(Set<String> jobModuleList, IProcess process) {
         delegateService.updateLibraries(jobModuleList, process);
     }
 
+    @Override
     public void refreshView() {
         delegateService.refreshView();
     }
@@ -176,6 +190,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getJavaProject()
      */
+    @Override
     public IJavaProject getJavaProject() throws CoreException {
         return delegateService.getJavaProject();
     }
@@ -185,6 +200,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getPauseTime()
      */
+    @Override
     public int getPauseTime() {
         return delegateService.getPauseTime();
     }
@@ -194,6 +210,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#deleteAllJobs(boolean)
      */
+    @Override
     public void deleteAllJobs(boolean fromPluginModel) {
         new DeleteAllJobWhenStartUp().startup(fromPluginModel);
     }
@@ -203,14 +220,17 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#needDeleteAllJobs()
      */
+    @Override
     public boolean needDeleteAllJobs() {
         return !DeleteAllJobWhenStartUp.executed;
     }
 
+    @Override
     public IAction getRunProcessAction() {
         return new RunProcessAction();
     }
 
+    @Override
     public boolean enableTraceForActiveRunProcess() {
         RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         if (activeContext != null) {
@@ -224,14 +244,17 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#saveJobBeforeRun(org.talend.core.model.process.IProcess)
      */
+    @Override
     public void saveJobBeforeRun(IProcess activeProcess) {
         new SaveJobBeforeRunAction(activeProcess).run();
     }
 
+    @Override
     public IPreferenceStore getPreferenceStore() {
         return RunProcessPlugin.getDefault().getPreferenceStore();
     }
 
+    @Override
     public IProcess getActiveProcess() {
         if (RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext() == null) {
             return null;
@@ -239,6 +262,7 @@ public class RunProcessService implements IRunProcessService {
         return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getProcess();
     }
 
+    @Override
     public boolean checkExportProcess(IStructuredSelection selection, boolean isJob) {
         return delegateService.checkExportProcess(selection, isJob);
     }
@@ -297,6 +321,16 @@ public class RunProcessService implements IRunProcessService {
     @Override
     public void buildJavaProject() {
         delegateService.buildJavaProject();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getTalendProcessJavaProject()
+     */
+    @Override
+    public ITalendProcessJavaProject getTalendProcessJavaProject() {
+        return delegateService.getTalendProcessJavaProject();
     }
 
 }
