@@ -63,6 +63,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.services.IUIRefresher;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.branding.IBrandingService;
@@ -72,6 +73,7 @@ import org.talend.designer.core.ui.action.SaveAsRoutineAction;
 import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerColorUtils;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -266,6 +268,12 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         if (bgColorForEditabeItem != null) {
             bgColorForEditabeItem.dispose();
         }
+
+        ITalendProcessJavaProject talendProcessJavaProject = CorePlugin.getDefault().getRunProcessService()
+                .getTalendProcessJavaProject();
+        if (talendProcessJavaProject != null) {
+            talendProcessJavaProject.updateRoutinesPom(true, true);
+        }
     }
 
     @Override
@@ -314,10 +322,11 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         try {
             ByteArray byteArray = item.getContent();
             byteArray.setInnerContentFromFile(((FileEditorInput) getEditorInput()).getFile());
-            CorePlugin.getDefault().getRunProcessService().buildJavaProject();
+            final IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
+            runProcessService.buildJavaProject();
             // check syntax error
             addProblems();
-            String name = "Save Routine";
+            String name = "Save Routine"; //$NON-NLS-1$
             RepositoryWorkUnit<Object> repositoryWorkUnit = new RepositoryWorkUnit<Object>(name, this) {
 
                 @Override

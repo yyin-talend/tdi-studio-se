@@ -34,7 +34,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.MavenConstants;
-import org.talend.designer.maven.model.TalendMavenContants;
 import org.talend.designer.maven.template.CreateJobTemplateMavenPom;
 import org.talend.designer.maven.template.MavenTemplateConstants;
 import org.talend.designer.runprocess.ProcessorException;
@@ -47,14 +46,6 @@ import org.talend.designer.runprocess.java.JavaProcessor;
  */
 public class MavenJavaProcessor extends JavaProcessor {
 
-    /**
-     * FIXME, maybe, this is not good.
-     * 
-     * But when build the routine will spend more than 2 seconds, so only build it first time. when modify or change
-     * something for routine will build again.
-     */
-    private static boolean buildRoutinesOnce;
-
     public MavenJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process, property, filenameFromLabel);
     }
@@ -64,16 +55,6 @@ public class MavenJavaProcessor extends JavaProcessor {
         super.generateCode(statistics, trace, javaProperties);
         if (property != null) { // only job, if Shadow Process, will be null.
             generatePom();
-
-            if (!buildRoutinesOnce) {
-                // build routines
-                // IFolder routinesSrcFolder = this.getTalendJavaProject().getSrcFolder()
-                // .getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY);
-                // if (routinesSrcFolder.getLocation().toFile().exists()) {
-                // getTalendJavaProject().buildModules(routinesSrcFolder.getProjectRelativePath().toString());
-                // buildRoutinesOnce = true;
-                // }
-            }
         }
     }
 
@@ -182,14 +163,16 @@ public class MavenJavaProcessor extends JavaProcessor {
 
         talendJavaProject.addChildModules(true, jobswithChildren);
 
-        if (buildRoutinesOnce) {
-            // build each job module with children. If don't build the project level, maybe will be some problem for the
-            // xmlMappins and log4j.xml file when run job.
-            talendJavaProject.buildModules(jobswithChildren);
-        } else {
-            // build project level.
-            talendJavaProject.buildModules(TalendMavenContants.CURRENT_PATH);
-        }
+        // if (buildRoutinesOnce) { // use RoutinesMavenInstallLoginTask instead to build once
+        /*
+         * build each job module with children. If don't build the project level, maybe will be some problem for the
+         * xmlMappins and log4j.xml file when run job.
+         */
+        // talendJavaProject.buildModules(MavenConstants.GOAL_COMPILE, jobswithChildren);
+        // } else {
+        // build project level.
+        talendJavaProject.buildModules(MavenConstants.GOAL_COMPILE, null);
+        // }
         // refresh
         try {
             // maybe will be more for the performance
@@ -219,9 +202,9 @@ public class MavenJavaProcessor extends JavaProcessor {
         List<String> jobswithChildren = new ArrayList<String>();
 
         // add routines always.
-        if (!buildRoutinesOnce) {
-            jobswithChildren.add(getRoutineModule());
-        }
+        // if (!buildRoutinesOnce) { //RoutinesMavenInstallLoginTask
+        // jobswithChildren.add(getRoutineModule());
+        // }
         // src/main/java
         IPath srcRelativePath = this.getTalendJavaProject().getSrcFolder().getProjectRelativePath();
         String srcRootPath = srcRelativePath.toString();

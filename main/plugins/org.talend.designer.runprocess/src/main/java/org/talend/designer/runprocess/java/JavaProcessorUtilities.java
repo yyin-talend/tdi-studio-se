@@ -66,6 +66,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.utils.JavaProcessUtil;
+import org.talend.designer.maven.template.MavenPomSynchronizer;
 import org.talend.designer.maven.utils.TalendCodeProjectUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -96,7 +97,12 @@ public class JavaProcessorUtilities {
                         if (project != null) {
                             IJavaProject javaProject = JavaCore.create(project);
                             talendJavaProject = new TalendProcessJavaProject(javaProject);
-                            talendJavaProject.syncTemplates(false);
+
+                            // synchronize templates
+                            if (talendJavaProject != null) {
+                                MavenPomSynchronizer pomSynchronizer = new MavenPomSynchronizer(talendJavaProject);
+                                pomSynchronizer.syncTemplates(false);
+                            }
                         }
                     } catch (Exception e) {
                         ExceptionHandler.process(e);
@@ -172,11 +178,7 @@ public class JavaProcessorUtilities {
                     // }
                 }
             } else {
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider
-                        .getModulesNeededForRoutines(ERepositoryObjectType.ROUTINES)) {
-                    neededLibraries.add(moduleNeeded.getModuleName());
-                }
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.PIG_UDF)) {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getRunningModules()) {
                     neededLibraries.add(moduleNeeded.getModuleName());
                 }
             }
@@ -205,11 +207,7 @@ public class JavaProcessorUtilities {
                 }
 
             } else {
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider
-                        .getModulesNeededForRoutines(ERepositoryObjectType.ROUTINES)) {
-                    neededLibraries.add(moduleNeeded.getModuleName());
-                }
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.PIG_UDF)) {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getRunningModules()) {
                     neededLibraries.add(moduleNeeded.getModuleName());
                 }
             }
@@ -325,20 +323,10 @@ public class JavaProcessorUtilities {
         }
 
         // only for wizards or additional jars only to make the java project compile without any error.
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.ROUTINES)) {
+        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getRunningModules()) {
             optionalJarsOnlyForRoutines.add(moduleNeeded.getModuleName());
         }
 
-        if (ERepositoryObjectType.getType("BEANS") != null) {
-            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType
-                    .getType("BEANS"))) {
-                optionalJarsOnlyForRoutines.add(moduleNeeded.getModuleName());
-            }
-        }
-
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.PIG_UDF)) {
-            optionalJarsOnlyForRoutines.add(moduleNeeded.getModuleName());
-        }
         // list contains all routines linked to job as well as routines not used in the job
         // rebuild the list to have only the libs linked to routines "not used".
         optionalJarsOnlyForRoutines.removeAll(listModulesReallyNeeded);
