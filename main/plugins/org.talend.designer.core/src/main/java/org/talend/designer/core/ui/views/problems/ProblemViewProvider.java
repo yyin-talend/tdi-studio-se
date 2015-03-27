@@ -39,6 +39,7 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
      * 
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         Problem problem = (Problem) element;
         switch (columnIndex) {
@@ -48,6 +49,8 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
                     return ImageProvider.getImage(EImage.WARNING_SMALL);
                 } else if (problem.getStatus().equals(ProblemStatus.ERROR)) {
                     return ImageProvider.getImage(EImage.ERROR_SMALL);
+                } else if (problem.getStatus().equals(ProblemStatus.INFO)) {
+                    return ImageProvider.getImage(EImage.INFORMATION_ICON);
                 }
 
             } else {
@@ -71,6 +74,7 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
      * 
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
      */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         Problem problem = (Problem) element;
         switch (columnIndex) {
@@ -89,6 +93,7 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
      * 
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         Problem problem = (Problem) parentElement;
         return problem.getChildren();
@@ -99,6 +104,7 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
      * 
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
      */
+    @Override
     public Object getParent(Object element) {
         return null;
     }
@@ -108,6 +114,7 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
      * 
      * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
      */
+    @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length != 0;
     }
@@ -117,6 +124,7 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
      * 
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof List) {
             return ((List) inputElement).toArray();
@@ -133,6 +141,7 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
      * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object,
      * java.lang.Object)
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
     }
