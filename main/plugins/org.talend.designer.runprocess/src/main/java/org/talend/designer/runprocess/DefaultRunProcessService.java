@@ -443,7 +443,7 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void buildJavaProject() {
         ITalendProcessJavaProject talendProcessJavaProject = getTalendProcessJavaProject();
         if (talendProcessJavaProject != null) {
-            talendProcessJavaProject.buildModules();
+            talendProcessJavaProject.buildModules(null, null);
         }
     }
 
