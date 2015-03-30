@@ -22,6 +22,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
@@ -83,6 +84,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
 
             addField(dbConnTimeoutActive);
             addField(dbConnTimeout);
+            addSVNInforAutoCheckFiled();
         } else {
             addField(new BooleanFieldEditor(ITalendCorePrefConstants.DEACTIVE_REPOSITORY_UPDATE,
                     Messages.getString("PerformancePreferencePage.display.deactiveRepositoryUpdate"),//$NON-NLS-1$
@@ -127,7 +129,35 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
             // addField(new BooleanFieldEditor(ITalendCorePrefConstants.ADD_SYSTEM_ROUTINES, Messages
             //                .getString("PerformancePreferencePage.addAllSystemRoutines"),//$NON-NLS-1$
             // getFieldEditorParent()));
+            addSVNInforAutoCheckFiled();
         }
+    }
+
+    private void addSVNInforAutoCheckFiled() {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            final CheckBoxFieldEditor autoCheckField = new CheckBoxFieldEditor(
+                    ITalendCorePrefConstants.SVN_UPDATE_INFO_AUTO_CHECK,
+                    Messages.getString("PerformancePreferencePage.autoCheckField"), getFieldEditorParent()); //$NON-NLS-1$
+            addField(autoCheckField);
+            final IntegerFieldEditor autoCheckTime = new IntegerFieldEditor(
+                    ITalendCorePrefConstants.SVN_UPDATE_INFO_AUTO_CHECK_TIME_INTERVAL,
+                    Messages.getString("PerformancePreferencePage.autoCheckTime"), //$NON-NLS-1$
+                    getFieldEditorParent());
+            autoCheckTime.setValidRange(1, 30);
+            addField(autoCheckTime);
+            autoCheckField.getButton().addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    if (autoCheckField.getButton().getSelection()) {
+                        autoCheckTime.setEnabled(true, getFieldEditorParent());
+                    } else {
+                        autoCheckTime.setEnabled(false, getFieldEditorParent());
+                    }
+                }
+            });
+        }
+
     }
 
     /*
@@ -136,6 +166,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
 
+    @Override
     public void init(IWorkbench workbench) {
     }
 
