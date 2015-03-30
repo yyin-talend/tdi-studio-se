@@ -310,7 +310,8 @@ public class LoginDialog extends TrayDialog {
                 }
 
                 if (!isExchangeLogon || !isUserPassRight) {
-                    if (count < 10) {
+                    int MAX_COUNT = 14;
+                    if (4 < count && count < MAX_COUNT) {
                         // if (Platform.getOS().equals(Platform.OS_LINUX)) {
                         // TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
                         // tfDialog.open();
@@ -329,6 +330,9 @@ public class LoginDialog extends TrayDialog {
                             }
 
                         });
+                    }
+                    if (count < MAX_COUNT) {
+                        prefStore.setValue(TalendForgeDialog.LOGINCOUNT, count + 1);
                     }
                 }
             }
