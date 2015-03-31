@@ -38,7 +38,6 @@ class PrepareTez{
                 %>
                     String hdfsUserName_<%=cid%> = (<%=dbuser%> != null && !"".equals(<%=dbuser%>)) ? <%=dbuser%> : System.getProperty("user.name");
                     String tezLibPath_<%=cid%> = "/tmp/" + hdfsUserName_<%=cid%> + "/talend_tez_libs/<%=isCustom?"custom":hiveVersion%>";
-                    fs_<%=cid%>.mkdirs(new org.apache.hadoop.fs.Path(tezLibPath_<%=cid%>));
                 <%
                 }else{
                 %>
