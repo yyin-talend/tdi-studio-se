@@ -60,10 +60,14 @@ imports="
 	com.box.boxjavalibv2.dao.BoxFile <%=cid%>_boxFileNew = null;
 	com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_boxFolderTo = null;
 	com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_boxFolderFrom = null;
+	com.box.restclientv2.requestsbase.BoxDefaultRequestObject <%=cid%>_requestObject = new com.box.restclientv2.requestsbase.BoxDefaultRequestObject();
+
+	<%=cid%>_boxFolderTo = <%=cid%>_client.getFoldersManager().getFolder("0", <%=cid%>_requestObject);
 	
-		<%=cid%>_boxFolderTo = searchFolder(<%=cid%>_client, <%=cid%>_destinationFolderPath, <%=cid%>_destinationFolderName);
-		if (<%=cid%>_boxFolderTo == null)
-			throw new Exception("No destination folder found under path " + <%=cid%>_destinationFolderPath);
+	List<String> <%=cid%>_paths = new java.util.ArrayList<String>(java.util.Arrays.asList(<%=cid%>_destinationFolderPath.split("/")));
+	<%=cid%>_boxFolderTo = getBoxFolderRecursively(<%=cid%>_paths, <%=cid%>_boxFolderTo, <%=cid%>_client);
+	if (<%=cid%>_boxFolderTo == null)
+		throw new Exception("No destination folder found under path " + <%=cid%>_destinationFolderPath);
 <%
 	if(moveDirectory || copyDirectory)
 	{
@@ -71,14 +75,19 @@ imports="
 		String <%=cid%>_sourceFolderPath = normalizePath(<%=sourceDirectory%>);
 		String <%=cid%>_sourceFolderName = getFolderFromPath(<%=cid%>_sourceFolderPath);
 		
-			<%=cid%>_boxFolderFrom = searchFolder(<%=cid%>_client, <%=cid%>_sourceFolderPath, <%=cid%>_sourceFolderName);
+		<%=cid%>_boxFolderFrom = <%=cid%>_client.getFoldersManager().getFolder("0", <%=cid%>_requestObject);
+	
+        <%=cid%>_paths = new java.util.ArrayList<String>(java.util.Arrays.asList(<%=cid%>_sourceFolderPath.split("/")));
+        <%=cid%>_boxFolderFrom = getBoxFolderRecursively(<%=cid%>_paths, <%=cid%>_boxFolderFrom, <%=cid%>_client);
+        
+		com.box.boxjavalibv2.dao.BoxCollection <%=cid%>_searchResults = <%=cid%>_boxFolderFrom.getItemCollection();
 			if (<%=cid%>_boxFolderFrom == null)
 				throw new Exception("No source folder found under path " + <%=cid%>_sourceFolderPath);
 			else if (<%=cid%>_boxFolderTo != null && <%=cid%>_boxFolderFrom != null)
 			{
 				<%if (moveDirectory) {%>
-				com.box.boxjavalibv2.requests.requestobjects.BoxFolderRequestObject fRequest = com.box.boxjavalibv2.requests.requestobjects.BoxFolderRequestObject.createFolderRequestObject(<%=cid%>_boxFolderFrom.getName(), <%=cid%>_boxFolderTo.getId());
-        		<%=cid%>_boxFolderFrom = <%=cid%>_client.getFoldersManager().updateFolderInfo(<%=cid%>_boxFolderFrom.getId(), fRequest);
+				com.box.boxjavalibv2.requests.requestobjects.BoxFolderRequestObject <%=cid%>_fRequest = com.box.boxjavalibv2.requests.requestobjects.BoxFolderRequestObject.createFolderRequestObject(<%=cid%>_boxFolderFrom.getName(), <%=cid%>_boxFolderTo.getId());
+        		<%=cid%>_boxFolderFrom = <%=cid%>_client.getFoldersManager().updateFolderInfo(<%=cid%>_boxFolderFrom.getId(), <%=cid%>_fRequest);
         		<%} else if (copyDirectory) {%>
         		com.box.boxjavalibv2.requests.requestobjects.BoxItemCopyRequestObject <%=cid%>_copyObj = com.box.boxjavalibv2.requests.requestobjects.BoxItemCopyRequestObject.copyItemRequestObject(<%=cid%>_boxFolderTo.getId());
         		com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_copiedFolder = <%=cid%>_client.getFoldersManager().copyFolder(<%=cid%>_boxFolderFrom.getId(), <%=cid%>_copyObj);
@@ -98,16 +107,24 @@ imports="
 	else
 	{
 %>
-		com.box.restclientv2.requestsbase.BoxDefaultRequestObject <%=cid%>_requestObject = new com.box.restclientv2.requestsbase.BoxDefaultRequestObject();
-
-			<%=cid%>_boxFile = searchFile(<%=cid%>_client, <%=cid%>_filePath, <%=cid%>_fileName);
-			if (<%=cid%>_boxFile == null)
-				throw new Exception("No file found with path " + <%=cid%>_filePath);
+		com.box.boxjavalibv2.dao.BoxFolder <%=cid%>_folder = <%=cid%>_client.getFoldersManager().getFolder("0", <%=cid%>_requestObject);
+		<%=cid%>_paths = new java.util.ArrayList<String>(java.util.Arrays.asList(<%=cid%>_filePath.substring(0, <%=cid%>_filePath.length() - <%=cid%>_fileName.length()).split("/")));
+		<%=cid%>_folder = getBoxFolderRecursively(<%=cid%>_paths, <%=cid%>_folder, <%=cid%>_client);
+		com.box.boxjavalibv2.dao.BoxCollection <%=cid%>_searchResults = <%=cid%>_folder.getItemCollection();
+ 		for (com.box.boxjavalibv2.dao.BoxTypedObject <%=cid%>_entry : <%=cid%>_searchResults.getEntries())
+ 		{
+ 			if(<%=cid%>_entry.getValue("name").equals(<%=cid%>_fileName) && "file".equals(<%=cid%>_entry.getType())) {
+ 				<%=cid%>_boxFile = <%=cid%>_client.getFilesManager().getFile(<%=cid%>_entry.getId(),null);
+ 				break;
+ 			}
+ 		}
+		if (<%=cid%>_boxFile == null)
+			throw new Exception("No file found with path " + <%=cid%>_filePath);
 		
 		if (<%=cid%>_boxFolderTo != null)
 		{
 				String <%=cid%>_boxFilePath = getBoxItemPath(<%=cid%>_boxFile);
-				// Check for not ot copy in the same directory
+				// Check for not to copy in the same directory
 				if(!getBoxItemPath(<%=cid%>_boxFile).equals(getBoxItemPath(<%=cid%>_boxFolderTo) + <%=cid%>_boxFolderTo.getName()))
 				{
 					com.box.boxjavalibv2.requests.requestobjects.BoxItemCopyRequestObject <%=cid%>_copyObject = com.box.boxjavalibv2.requests.requestobjects.BoxItemCopyRequestObject.copyItemRequestObject(<%=cid%>_boxFolderTo.getId());
