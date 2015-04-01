@@ -20,6 +20,7 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+boolean willValidateDN = "true".equals(ElementParameterParser.getValue(node,"__VALIDATE_DISTINGUISHED_NAME__"));
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -36,7 +37,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		//////////////////////////
 		boolean encodingBase64_<%=cid%> = false;
 <%
-    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	List<? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    		
 %> 
@@ -73,13 +74,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			} 
 		<%
 		}
-		%>
-<%					
 					if(!isPrimitive) {
 %>   				
 	    if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !("").equals(<%=conn.getName() %>.<%=column.getLabel() %>)) {
 <%
-} 
+} // closure for if(!isPrimitive) Line: 76
 %>
     	value_<%=column.getLabel() %>_<%=cid %> =  						
 <%
@@ -105,9 +104,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
 <%
 					}
-					
-%>
-<% 
 	if(i==0) {
 %>		
 		util_<%=cid %>.breakString(sb_<%=cid %>, dn_<%=cid %> + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
@@ -122,30 +118,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	if(!isPrimitive) {
 %>
-	    }
-<%					
-	} 
-%>   
+	    }  <% /* closure for Line: 78 */ %>
 <%
+	} // closure for if(!isPrimitive) Line: 118
 	continue;
- } 
-%>						
-<% if ("delete".equals(changetype)) {
+ } //Line:52 "for (int i = 0; i < sizeColumns; i++)"
+if ("delete".equals(changetype)) {
 	if(firstLoop){
-	%>
-<%
 	if(!isPrimitive) {
 %>
 	    }
 <%					
 	} 
-%> 		
-	<%	
 	}
 	firstLoop = false; 
 	break; 
-} %>
-<% if ("modify".equals(changetype)) {
+}
+if ("modify".equals(changetype)) {
 		String operation = null;
 		boolean isMultiValue = false;   
 		String separator = null;
@@ -185,8 +174,16 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
 			// follow LDIF rules or not
-            isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>));
-			<%
+            <% 
+               if(willValidateDN){
+               		%>
+               		   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(item_<%=cid %>));
+               		<%
+               }else{
+               		%>
+               		   isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>));
+               		<%
+               }
 			// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
 			if(!isBinary && !isBase64){
 				%>
@@ -214,16 +211,37 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                 }else if(column_sub.getLabel().equals(column.getLabel())){
 					if(isBase64){
 %>
-						if(!isPrintable_<%=cid %>){
+				<% 
+				   if(!willValidateDN){
+				        %>
+				           if(!isPrintable_<%=cid %>)
+				        <%
+				   }else{
+				   		%>
+				   		   if(encodingBase64_<%=cid%>)
+				   		<%
+				   }
+				 %>
+						{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
 						}else{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
 	               		}
 <%
 					}else{
-%>
-                    	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
-<%
+					   if(!willValidateDN){
+					        %>
+					        	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+					        <%
+					   }else{
+					   		%>
+					   			if(encodingBase64_<%=cid%>){
+					   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
+					   			}else{
+					   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+					   			}
+					   		<%
+					   }
 				   }
                 }
             }
@@ -233,8 +251,16 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 	}else{
 %>
 		// follow LDIF rules or not
-        isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>));
-<%
+		<% 
+		   if(willValidateDN){
+		   		%>
+		   		   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(value_<%=column.getLabel() %>_<%=cid %>));
+		   		<%
+		   }else{
+		   		%>
+		   		   isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>));
+		   		<%
+		   }
 		// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
 		if(!isBinary && !isBase64){
 %>
@@ -259,16 +285,37 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                 }else if(column_sub.getLabel().equals(column.getLabel())){
 					if(isBase64){
 %>
-						if(!isPrintable_<%=cid %>){
+					<% 
+					   if(!willValidateDN){
+					        %>
+					           if(!isPrintable_<%=cid %>)
+					        <%
+					   }else{
+					   		%>
+					   		   if(encodingBase64_<%=cid%>)
+					   		<%
+					   }
+					 %>
+						{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 						}else{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 	               		}
 <%
 					}else{
-%>
-	                   util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-<%
+						   if(!willValidateDN){
+						        %>
+						        	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						        <%
+						   }else{
+						   		%>
+						   			if(encodingBase64_<%=cid%>){
+						   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						   			}else{
+						   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						   			}
+						   		<%
+						   }
 					}
                 }
             }
@@ -318,8 +365,16 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
 		        //follow LDIF rules or not
-                isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>));     
-				<%
+		        <% 
+		           if(willValidateDN){
+		           		%>
+		           		   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(item_<%=cid %>));
+		           		<%
+		           }else{
+		           		%>
+		           		   isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>));
+		           		<%
+		           }
 				// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
 				if(!isBinary && !isBase64){
 					%>
@@ -347,16 +402,37 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                     }else if(column_sub.getLabel().equals(column.getLabel())){
     					if(isBase64){
 %>
-    						if(!isPrintable_<%=cid %>){
+						<% 
+						   if(!willValidateDN){
+						        %>
+						           if(!isPrintable_<%=cid %>)
+						        <%
+						   }else{
+						   		%>
+						   		   if(encodingBase64_<%=cid%>)
+						   		<%
+						   }
+						 %>
+    						{
     							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
     						}else{
     							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
     	               		}
 <%
 					   }else{
-%>
-	                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
-<%
+							   if(!willValidateDN){
+							        %>
+							        	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+							        <%
+							   }else{
+							   		%>
+							   			if(encodingBase64_<%=cid%>){
+							   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
+							   			}else{
+							   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+							   			}
+							   		<%
+							   }
 					   }
                     }
 			     }
@@ -366,8 +442,16 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 	}else{
 %>
                 // follow LDIF rules or not
-                isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>)); 
-<%
+                <% 
+                   if(willValidateDN){
+                   		%>
+                   		   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(value_<%=column.getLabel() %>_<%=cid %>));
+                   		<%
+                   }else{
+                   		%>
+                   		   isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>));
+                   		<%
+                   }
 				// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
 				if(!isBinary && !isBase64){
 %>
@@ -392,16 +476,37 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                 }else if(column_sub.getLabel().equals(column.getLabel())){
 					if(isBase64){
 %>
-						if(!isPrintable_<%=cid %>){
+					<% 
+					   if(!willValidateDN){
+					        %>
+					           if(!isPrintable_<%=cid %>)
+					        <%
+					   }else{
+					   		%>
+					   		   if(encodingBase64_<%=cid%>)
+					   		<%
+					   }
+					 %>
+						{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 						}else{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 	               		}
 <%
 					}else{
-%>
-	                   util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-<%
+						   if(!willValidateDN){
+						        %>
+						        	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						        <%
+						   }else{
+						   		%>
+						   			if(encodingBase64_<%=cid%>){
+						   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						   			}else{
+						   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						   			}
+						   		<%
+						   }
 					}
                 }
             }
