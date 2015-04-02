@@ -268,7 +268,8 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                 nodeList = new ArrayList<INode>();
                 if (list != null) {
                     for (INode datanode : list) {
-                        if (datanode.getUniqueName() != null
+                        // it's possible to filter the virtual components from this list
+                        if (!datanode.isVirtualGenerateNode() && datanode.getUniqueName() != null
                                 && !datanode.getUniqueName().equals(StatsAndLogsManager.CONNECTION_UID)) {
                             nodeList.add(datanode);
                         }
