@@ -172,6 +172,21 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     @Override
+    public IFolder getTestOutputFolder() {
+        IJavaProject jProject = getJavaProject();
+        if (jProject != null) {
+            try {
+                IFolder folder = jProject.getProject().getFolder(MavenSystemFolders.JAVA_TEST.getOutputPath());
+                createSubFolder(null, folder);
+                return folder;
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public IFolder getSrcSubFolder(IProgressMonitor monitor, String path) {
         return createSubFolder(monitor, getSrcFolder(), path);
     }

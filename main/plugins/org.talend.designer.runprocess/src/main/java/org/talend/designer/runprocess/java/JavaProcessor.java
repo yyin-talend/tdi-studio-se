@@ -101,6 +101,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -218,7 +219,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
-    protected ITalendProcessJavaProject getTalendJavaProject() {
+    @Override
+    public ITalendProcessJavaProject getTalendJavaProject() {
         return this.talendJavaProject;
     }
 
@@ -273,15 +275,29 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             buildChildrenJobs.clear();
         }
 
-        ITalendProcessJavaProject tProcessJvaProject = getTalendJavaProject();
-        if (tProcessJvaProject == null) {
+        ITalendProcessJavaProject tProcessJavaProject = getTalendJavaProject();
+        if (tProcessJavaProject == null) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
         }
         IProgressMonitor monitor = new NullProgressMonitor();
 
-        final IFolder srcFolder = tProcessJvaProject.getSrcFolder();
-        final IFolder resourcesFolder = tProcessJvaProject.getResourcesFolder();
-        final IFolder outputFolder = tProcessJvaProject.getOutputFolder();
+        boolean isTestJob = false;
+        if (ProcessUtils.isTestContainer(process)) {
+            isTestJob = true;
+        }
+
+        IFolder srcFolder = null;
+        IFolder resourcesFolder = null;
+        IFolder outputFolder = null;
+        if (isTestJob) {
+            srcFolder = tProcessJavaProject.getTestSrcFolder();
+            resourcesFolder = tProcessJavaProject.getTestResourcesFolder();
+            outputFolder = tProcessJavaProject.getTestOutputFolder();
+        } else {
+            srcFolder = tProcessJavaProject.getSrcFolder();
+            resourcesFolder = tProcessJavaProject.getResourcesFolder();
+            outputFolder = tProcessJavaProject.getOutputFolder();
+        }
 
         /*
          * assum the job is "TestJob 0.1", project is "Test" .
@@ -291,11 +307,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (property != null) {
             Item item = property.getItem();
             // test/testjob_0_1
-            jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolder(item);
+            jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolder(item, isTestJob);
             // test/testjob_0_1/TestJob.java
-            jobClassFilePath = JavaResourcesHelper.getJobClassFilePath(item, filenameFromLabel);
+            jobClassFilePath = JavaResourcesHelper.getJobClassFilePath(item, filenameFromLabel, isTestJob);
             // test.testjob_0_1.TestJob
-            this.mainClass = JavaResourcesHelper.getJobPackagedClass(item, filenameFromLabel);
+            this.mainClass = JavaResourcesHelper.getJobPackagedClass(item, filenameFromLabel, isTestJob);
         } else { // for shadow process
             // test/shadowfileinputtodelimitedoutput_0_1
             jobClassPackageFolder = JavaResourcesHelper.getProjectFolderName(property) + JavaUtils.PATH_SEPARATOR
@@ -309,31 +325,40 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
 
         // create job packages, src/main/java/test/testjob_0_1
-        tProcessJvaProject.createSubFolder(monitor, srcFolder, jobClassPackageFolder);
+        // or test job packages, src/main/java/test/testjob_0_1/testjunitjob_0_1
+        tProcessJavaProject.createSubFolder(monitor, srcFolder, jobClassPackageFolder);
         // src/main/java/test/testjob_0_1/TestJob.java
+        // or src/main/java/test/testjob_0_1/testjunitjob_0_1/TestjunitJob.java
         this.codePath = srcFolder.getProjectRelativePath().append(jobClassFilePath);
 
         // target/classes/test/testjob_0_1
+        // or target/test-classes/test/testjob_0_1/testjunitjob_0_1
         IFolder jobClassFolder = outputFolder.getFolder(jobClassPackageFolder);
         // TestJob
         String jobName = new Path(jobClassFilePath).removeFileExtension().lastSegment();
         // target/classes/test/testjob_0_1/TestJob
+        // or target/test-classes/test/testjob_0_1/testjunitjob_0_1/TestjunitJob
         this.compiledCodePath = jobClassFolder.getProjectRelativePath().append(jobName);
 
         /*
          * for context.
          */
         // test/testjob_0_1/contexts
+        // or test/testjob_0_1/testjunitjob_0_1/contexts
         IPath jobContextFolderPath = new Path(jobClassPackageFolder).append(JavaUtils.JAVA_CONTEXTS_DIRECTORY);
         // src/main/resources/test/testjob_0_1/contexts
-        tProcessJvaProject.createSubFolder(monitor, resourcesFolder, jobContextFolderPath.toString());
+        // or src/test/resources/test/testjob_0_1/testjunitjob_0_1/contexts
+        tProcessJavaProject.createSubFolder(monitor, resourcesFolder, jobContextFolderPath.toString());
         // for example, Default
         String contextFileName = JavaResourcesHelper.getJobContextFileName(c);
         // test/testjob_0_1/contexts/Default.properties
+        // or test/testjob_0_1/testjunitjob_0_1/contexts/Default.properties
         IPath jobContextPath = jobContextFolderPath.append(contextFileName);
         // src/main/resources/test/testjob_0_1/contexts/Default.properties
+        // or src/test/resources/test/testjob_0_1/testjunitjob_0_1/contexts/Default.properties
         this.contextPath = resourcesFolder.getFile(jobContextPath).getProjectRelativePath();
         // target/classes/test/testjob_0_1/contexts/Default.properties
+        // or target/test-classes/test/testjob_0_1/testjunitjob_0_1/contexts/Default.properties
         this.compiledContextPath = outputFolder.getFile(jobContextPath).getProjectRelativePath();
     }
 
@@ -549,7 +574,10 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             if (!codeFile.exists()) {
                 // see bug 0003592, detele file with different case in windows
                 deleteFileIfExisted(codeFile);
-
+                IFolder parentFolder = (IFolder) codeFile.getParent();
+                if (!parentFolder.exists()) {
+                    parentFolder.create(true, true, null);
+                }
                 codeFile.create(codeStream, true, null);
             } else {
                 codeFile.setContents(codeStream, true, false, null);

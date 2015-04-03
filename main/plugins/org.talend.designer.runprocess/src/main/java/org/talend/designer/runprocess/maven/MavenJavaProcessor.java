@@ -24,21 +24,26 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.MavenConstants;
+import org.talend.designer.maven.pom.MavenPomManager;
 import org.talend.designer.maven.template.CreateJobTemplateMavenPom;
 import org.talend.designer.maven.template.MavenTemplateConstants;
+import org.talend.designer.maven.utils.JobUtils;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.java.JavaProcessor;
+import org.talend.repository.ProjectManager;
 
 /**
  * created by ggu on 2 Feb 2015 Detailled comment
@@ -46,15 +51,20 @@ import org.talend.designer.runprocess.java.JavaProcessor;
  */
 public class MavenJavaProcessor extends JavaProcessor {
 
+    private boolean isTestJob;
+
     public MavenJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process, property, filenameFromLabel);
+        isTestJob = ProcessUtils.isTestContainer(process);
     }
 
     @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
         if (property != null) { // only job, if Shadow Process, will be null.
-            generatePom();
+            // generatePom();
+            updateProjectPom(null);
+            removeGeneratedJobs(null);
         }
     }
 
@@ -107,8 +117,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         initJobClasspath();
 
         try {
-            CreateJobTemplateMavenPom createTemplatePom = new CreateJobTemplateMavenPom(this, jobPomFile,
-                    MavenTemplateConstants.JOB_TEMPLATE_FILE_NAME);
+            CreateJobTemplateMavenPom createTemplatePom = new CreateJobTemplateMavenPom(this, jobPomFile, getTemplateFileName());
             // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
             createTemplatePom.setAddStat(false);
             createTemplatePom.setApplyContextToChild(false);
@@ -124,6 +133,54 @@ public class MavenJavaProcessor extends JavaProcessor {
             ExceptionHandler.process(e);
         }
 
+    }
+
+    protected void updateProjectPom(IProgressMonitor progressMonitor) throws ProcessorException {
+        ITalendProcessJavaProject codeProject = getTalendJavaProject();
+        IFile projectPomFile = codeProject.getProject().getFile(MavenConstants.POM_FILE_NAME);
+        MavenPomManager pomManager = new MavenPomManager(this);
+        pomManager.updateDependencies(projectPomFile, progressMonitor);
+        try {
+            codeProject.getProject().refreshLocal(IResource.DEPTH_ONE, progressMonitor);
+        } catch (CoreException e) {
+            throw new ProcessorException(e);
+        }
+    }
+
+    private void removeGeneratedJobs(IProgressMonitor progressMonitor) throws ProcessorException {
+        ITalendProcessJavaProject talendProcessProject = getTalendJavaProject();
+        IFolder srcFolder = talendProcessProject.getSrcFolder();
+        IFolder testSrcFolder = talendProcessProject.getTestSrcFolder();
+        IFolder sourceFolder = null;
+        if (isTestJob) {
+            sourceFolder = testSrcFolder;
+        } else {
+            sourceFolder = srcFolder;
+        }
+        try {
+            String projectPackage = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
+            List<String> currentJobNames = JobUtils.getRunningJobFolders(this);
+            IFolder sourcesFilesFolder = sourceFolder.getFolder(projectPackage);
+            boolean changed = false;
+            IResource[] childrenRecs = sourcesFilesFolder.members();
+            if (childrenRecs.length > 0) {
+                for (IResource child : childrenRecs) {
+                    if (!currentJobNames.contains(child.getName())) {
+                        child.delete(true, progressMonitor);
+                        changed = true;
+                    }
+                }
+            }
+            if (changed) {
+                sourceFolder.refreshLocal(IResource.DEPTH_INFINITE, progressMonitor);
+            }
+        } catch (CoreException e) {
+            throw new ProcessorException(e);
+        }
+    }
+
+    protected String getTemplateFileName() {
+        return MavenTemplateConstants.JOB_TEMPLATE_FILE_NAME;
     }
 
     @Override
@@ -159,9 +216,9 @@ public class MavenJavaProcessor extends JavaProcessor {
             ExceptionHandler.process(e);
         }
 
-        String[] jobswithChildren = getJobModules();
+        // String[] jobswithChildren = getJobModules();
 
-        talendJavaProject.addChildModules(true, jobswithChildren);
+        // talendJavaProject.addChildModules(true, jobswithChildren);
 
         // if (buildRoutinesOnce) { // use RoutinesMavenInstallLoginTask instead to build once
         /*
@@ -171,7 +228,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         // talendJavaProject.buildModules(MavenConstants.GOAL_COMPILE, jobswithChildren);
         // } else {
         // build project level.
-        talendJavaProject.buildModules(MavenConstants.GOAL_COMPILE, null);
+        talendJavaProject.buildModules(getGoals(), null);
         // }
         // refresh
         try {
@@ -188,11 +245,21 @@ public class MavenJavaProcessor extends JavaProcessor {
             // output folder instead.
             // jobClassFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
             // }
-            talendJavaProject.getOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
-
+            if (isTestJob) {
+                talendJavaProject.getTestOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
+            } else {
+                talendJavaProject.getOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
+            }
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    protected String getGoals() {
+        if (isTestJob) {
+            return MavenConstants.GOAL_TEST_COMPILE;
+        }
+        return MavenConstants.GOAL_COMPILE;
     }
 
     private String[] getJobModules() {

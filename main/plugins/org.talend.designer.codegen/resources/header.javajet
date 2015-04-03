@@ -38,6 +38,7 @@
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
 	params=process.getContextManager().getDefaultContext().getContextParameterList();
+	String className = process.getName();
 %>
 <%
 IBrandingService service=(IBrandingService)GlobalServiceRegister.getDefault().getService(IBrandingService.class);
@@ -46,7 +47,12 @@ if(service instanceof AbstractBrandingService){
 <%=((AbstractBrandingService) service).getJobLicenseHeader(version)%>
 <%
 }
-	String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+    String jobFolderName = "";
+    IProcess baseProcess = ProcessUtils.getTestContainerBaseProcess(process);
+    if (baseProcess != null) {
+        jobFolderName = JavaResourcesHelper.getJobFolderName(baseProcess.getName(), baseProcess.getVersion()) + ".";
+    }
+	jobFolderName = jobFolderName + JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
 	String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName;
 %>
 package <%= packageName %>;
@@ -84,6 +90,7 @@ import java.io.IOException;
 import java.util.Comparator;
 <%
 if(ProcessUtils.isTestContainer(process)) {
+    className = className + "Test";
 %>
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
@@ -110,7 +117,7 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unused")
 
 /**
- * Job: <%=process.getName() %> Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %><br>
+ * Job: <%=className%> Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %><br>
  * Description: <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %> <br>
  * @author <%=ElementParameterParser.getValue(process, "__AUTHOR__") %>
  * @version <%=version %>
@@ -144,10 +151,10 @@ if (talendStepTemplate) {
 	talendJobInterfaces += ", TalendStepTemplateFactory"; // Talend Step Template
 }
 %>
-public class <%=process.getName()%> implements <%=talendJobInterfaces%> {
+public class <%=className%> implements <%=talendJobInterfaces%> {
 <%if(isLog4jEnabled){%>
-	static {System.setProperty("TalendJob.log", "<%=process.getName() %>.log");}
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(<%=process.getName() %>.class);
+	static {System.setProperty("TalendJob.log", "<%=className%>.log");}
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(<%=className%>.class);
 <%}%>
 
 <% if (talendEsbJob) { %>
@@ -448,14 +455,14 @@ private class TalendException extends Exception {
 			} else {
 				e.printStackTrace();
 				e.printStackTrace(errorMessagePS);
-				<%=process.getName() %>.this.exception = e;
+				<%=className%>.this.exception = e;
 			}
 		}
 		if (!(e instanceof TalendException)) {
 		try {
 			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
 				if (m.getName().compareTo(currentComponent + "_error") == 0) {
-					m.invoke(<%=process.getName() %>.this, new Object[] { e , currentComponent, globalMap});
+					m.invoke(<%=className%>.this, new Object[] { e , currentComponent, globalMap});
 					break;
 				}
 			}

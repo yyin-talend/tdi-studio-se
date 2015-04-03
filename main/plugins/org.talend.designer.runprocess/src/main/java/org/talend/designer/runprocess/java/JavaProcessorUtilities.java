@@ -273,24 +273,25 @@ public class JavaProcessorUtilities {
      * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(Set<String>)
      */
     public static void computeLibrariesPath(Set<String> jobModuleList, IProcess process) {
-        try {
-            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY);
-            Project project = repositoryContext.getProject();
-            if (projectSetup == null || !projectSetup.equals(project.getTechnicalLabel())) {
-                // updateClasspath(jobModuleList);
-                projectSetup = project.getTechnicalLabel();
-            }
-            try {
-                sortClasspath(jobModuleList, process);
-            } catch (BusinessException be1) {
-                ExceptionHandler.process(be1);
-            }
-
-            checkAndUpdateLog4jFile();
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
+        // try {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        Project project = repositoryContext.getProject();
+        if (projectSetup == null || !projectSetup.equals(project.getTechnicalLabel())) {
+            // updateClasspath(jobModuleList);
+            projectSetup = project.getTechnicalLabel();
         }
+        // use maven to update the class path.
+        // try {
+        // sortClasspath(jobModuleList, process);
+        // } catch (BusinessException be1) {
+        // ExceptionHandler.process(be1);
+        // }
+
+        checkAndUpdateLog4jFile();
+        // } catch (CoreException e) {
+        // ExceptionHandler.process(e);
+        // }
     }
 
     // // see bug 3914, make the order of the jar files consistent with the
