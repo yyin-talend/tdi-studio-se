@@ -26,6 +26,10 @@
          id="org.eclipse.gef"
          version="0.0.0"/>
 
+   <includes
+         id="org.talend.m2e.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.talend.designer.core"
          download-size="0"
