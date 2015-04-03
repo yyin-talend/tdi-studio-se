@@ -35,7 +35,6 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.designer.core.ui.editor.connections.Connection;
 
 /**
  * This class will test an expression in the element parameters. <br>
@@ -638,8 +637,8 @@ public final class Expression {
                 if (element != null && element instanceof INode) {
                     INode node = (INode) element;
                     if (node.getComponent() != null && "tPigLoad".equals(node.getComponent().getName())) { //$NON-NLS-1$
-                        List<Connection> connectionsInputs = (List<Connection>) node.getIncomingConnections();
-                        for (Connection connection : connectionsInputs) {
+                        List<IConnection> connectionsInputs = (List<IConnection>) node.getIncomingConnections();
+                        for (IConnection connection : connectionsInputs) {
                             if (connection.isActivate()
                                     && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
                                     && variableValue.toUpperCase().equals(connection.getConnectorName())) {

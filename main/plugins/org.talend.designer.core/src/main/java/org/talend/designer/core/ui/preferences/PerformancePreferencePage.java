@@ -144,6 +144,8 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                     Messages.getString("PerformancePreferencePage.autoCheckTime"), //$NON-NLS-1$
                     getFieldEditorParent());
             autoCheckTime.setValidRange(1, 30);
+            autoCheckTime.setEnabled(getPreferenceStore().getBoolean(ITalendCorePrefConstants.SVN_UPDATE_INFO_AUTO_CHECK),
+                    getFieldEditorParent());
             addField(autoCheckTime);
             autoCheckField.getButton().addSelectionListener(new SelectionAdapter() {
 
