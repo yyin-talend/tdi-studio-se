@@ -309,7 +309,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     private void mavenBuildCodeProjectPom(String goals, String module) {
-        cleanBeforeBuilds(module);
+//      cleanBeforeBuilds(module);
 
         IFile childModulePomFile;
         if (TalendMavenContants.CURRENT_PATH.equals(module)) {

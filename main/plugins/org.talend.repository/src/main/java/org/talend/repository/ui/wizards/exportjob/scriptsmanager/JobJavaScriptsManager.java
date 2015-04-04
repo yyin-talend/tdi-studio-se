@@ -1474,7 +1474,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
         }
         if (!foundLog4jJar) {
-            jarList.add("log4j-1.2.15.jar"); //$NON-NLS-1$
+            jarList.add("log4j-1.2.16.jar"); //$NON-NLS-1$
             added = true;
         }
 
