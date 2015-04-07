@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Locator;
@@ -206,6 +207,16 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
             return this;
         }
         return super.findFigureAt(x, y, search);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.handles.SquareHandle#getFillColor()
+     */
+    @Override
+    protected Color getFillColor() {
+        return (isPrimary()) ? ColorUtils.getCacheColor(new RGB(191, 218, 115)) : ColorConstants.white;
     }
 
 }

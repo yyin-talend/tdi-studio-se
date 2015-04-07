@@ -12,19 +12,26 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.nodecontainer;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.Handle;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
+import org.eclipse.swt.graphics.Cursor;
+import org.talend.designer.core.ui.editor.connections.NodeResizableHandle;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeFigure;
 
@@ -41,6 +48,7 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
      * 
      * @return the new feedback figure
      */
+    @Override
     protected IFigure createDragSourceFeedbackFigure() {
         IFigure figure = createFigure((GraphicalEditPart) getHost(), null);
 
@@ -113,6 +121,7 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
      * 
      * @return the feedback layer
      */
+    @Override
     protected IFigure getFeedbackLayer() {
         return getLayer(LayerConstants.SCALED_FEEDBACK_LAYER);
     }
@@ -122,6 +131,7 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
      * 
      * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#getInitialFeedbackBounds()
      */
+    @Override
     protected Rectangle getInitialFeedbackBounds() {
         return getHostFigure().getBounds().getExpanded(32, 32);
     }
@@ -142,5 +152,82 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
         // }
         // }
         return super.getOrphanCommand(req);
+    }
+
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.eclipse.gef.editpolicies.ResizableEditPolicy#createResizeHandle(java.util.List, int)
+    // */
+    // @Override
+    // protected void createResizeHandle(List handles, int direction) {
+    // if ((getResizeDirections() & direction) == direction) {
+    // addHandle((GraphicalEditPart) getHost(), handles, direction, getResizeTracker(direction),
+    // Cursors.getDirectionalCursor(direction, getHostFigure().isMirrored()));
+    // } else {
+    // // display 'resize' handle to allow dragging or indicate selection
+    // // only
+    // createDragHandle(handles, direction);
+    // }
+    // }
+
+    private void addHandle(GraphicalEditPart part, List handles, int direction, DragTracker tracker, Cursor cursor) {
+        handles.add(createHandle(part, direction, tracker, cursor));
+    }
+
+    private Handle createHandle(GraphicalEditPart owner, int direction, DragTracker tracker, Cursor cursor) {
+        NodeResizableHandle handle = new NodeResizableHandle(owner, direction);
+        handle.setDragTracker(tracker);
+        handle.setCursor(cursor);
+        return handle;
+    }
+
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#createDragHandle(java.util.List, int)
+    // */
+    // @Override
+    // protected void createDragHandle(List handles, int direction) {
+    // if (isDragAllowed()) {
+    // // display 'resize' handles to allow dragging (drag tracker)
+    // addHandle((GraphicalEditPart) getHost(), handles, direction, getDragTracker(), SharedCursors.SIZEALL);
+    // } else {
+    // // display 'resize' handles to indicate selection only (selection
+    // // tracker)
+    // addHandle((GraphicalEditPart) getHost(), handles, direction, getSelectTracker(), SharedCursors.ARROW);
+    // }
+    // }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editpolicies.ResizableEditPolicy#createSelectionHandles()
+     */
+    @Override
+    protected List createSelectionHandles() {
+        if (getResizeDirections() == PositionConstants.NONE) {
+            // non resizable, so delegate to super implementation
+            List list = new ArrayList();
+            createMoveHandle(list);
+            createDragHandle(list, PositionConstants.NORTH_EAST);
+            createDragHandle(list, PositionConstants.NORTH_WEST);
+            createDragHandle(list, PositionConstants.SOUTH_EAST);
+            createDragHandle(list, PositionConstants.SOUTH_WEST);
+            return list;
+        }
+
+        // resizable in at least one direction
+        List list = new ArrayList();
+        createMoveHandle(list);
+        createResizeHandle(list, PositionConstants.NORTH);
+        createResizeHandle(list, PositionConstants.EAST);
+        createResizeHandle(list, PositionConstants.SOUTH);
+        createResizeHandle(list, PositionConstants.WEST);
+        createResizeHandle(list, PositionConstants.SOUTH_EAST);
+        createResizeHandle(list, PositionConstants.SOUTH_WEST);
+        createResizeHandle(list, PositionConstants.NORTH_WEST);
+        createResizeHandle(list, PositionConstants.NORTH_EAST);
+        return list;
     }
 }
