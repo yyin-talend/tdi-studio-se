@@ -282,16 +282,15 @@ public class JavaProcessorUtilities {
             projectSetup = project.getTechnicalLabel();
         }
         // use maven to update the class path.
-        // try {
-        // sortClasspath(jobModuleList, process);
-        // } catch (BusinessException be1) {
-        // ExceptionHandler.process(be1);
-        // }
+        try {
+            sortClasspath(jobModuleList, process);
+        } catch (BusinessException be1) {
+            ExceptionHandler.process(be1);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
 
         checkAndUpdateLog4jFile();
-        // } catch (CoreException e) {
-        // ExceptionHandler.process(e);
-        // }
     }
 
     // // see bug 3914, make the order of the jar files consistent with the
@@ -302,13 +301,6 @@ public class JavaProcessorUtilities {
         if (jProject == null) {
             return;
         }
-        IJavaProject javaProject = jProject.getJavaProject();
-        IClasspathEntry[] entries = javaProject.getRawClasspath();
-
-        boolean changesDone = false;
-
-        // Added by Marvin Wang on Nov. 8, 2012. Maybe some modules are in the list with a directory, so cut the
-        // directory only file name remaining.
         Set<String> listModulesReallyNeeded = ModuleNameExtractor.extractFileName(jobModuleList);
         Set<String> listModulesNeededByProcess = new HashSet<String>();
         if (listModulesReallyNeeded != null && listModulesReallyNeeded.size() > 0) {
@@ -346,26 +338,6 @@ public class JavaProcessorUtilities {
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
-            List<IClasspathEntry> entriesToRemove = new ArrayList<IClasspathEntry>();
-            for (IClasspathEntry entry : entries) {
-                if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-                    boolean found = false;
-                    for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                        if (entry.getPath().toPortableString().endsWith(externalLib.getName())) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        // jar not anymore in the lib path, need to update the classpath
-                        entriesToRemove.add(entry);
-                    }
-                }
-            }
-            for (IClasspathEntry entry : entriesToRemove) {
-                entries = (IClasspathEntry[]) ArrayUtils.remove(entries, ArrayUtils.indexOf(entries, entry));
-                changesDone = true;
-            }
 
             if (!jarsNeedRetrieve.isEmpty()) {
                 // get original context value
@@ -400,26 +372,13 @@ public class JavaProcessorUtilities {
                     ((IProcess2) process).checkProcess();
                 }
             }
-            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
-                    IClasspathEntry newEntry = JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null);
-                    if (!ArrayUtils.contains(entries, newEntry)) {
-                        entries = (IClasspathEntry[]) ArrayUtils.add(entries, newEntry);
-                        changesDone = true;
-                    }
-                }
-            }
         }
 
         String missingJars = null;
         // String missingJarsForRoutinesOnly = null;
         Set<String> missingJarsForRoutinesOnly = new HashSet<String>();
         Set<String> missingJarsForProcessOnly = new HashSet<String>();
-        // sort
-        int exchange = 2; // The first,second library is JVM and SRC.
         for (String jar : listModulesReallyNeeded) {
-            int index = indexOfEntry(entries, jar);
-            if (index < 0) {
                 if (ContextParameterUtils.isContainContextParam(jar)) {
                     continue;
                 }
@@ -433,21 +392,6 @@ public class JavaProcessorUtilities {
                 } else {
                     missingJars = missingJars + ", " + jar; //$NON-NLS-1$
                 }
-            } else {
-                if (index != exchange) {
-                    // exchange
-                    IClasspathEntry entry = entries[index];
-                    IClasspathEntry first = entries[exchange];
-                    entries[index] = first;
-                    entries[exchange] = entry;
-                    changesDone = true;
-                }
-                exchange++;
-            }
-        }
-        if (changesDone) {
-            javaProject.setRawClasspath(entries, null);
-            // javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
         }
         if (missingJars != null) {
             handleMissingJarsForProcess(missingJarsForRoutinesOnly, missingJarsForProcessOnly, missingJars);
