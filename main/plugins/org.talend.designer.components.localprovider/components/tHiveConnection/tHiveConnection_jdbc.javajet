@@ -237,7 +237,7 @@ imports="
 	boolean setZNodeParent = "true".equals(ElementParameterParser.getValue(node, "__SET_ZNODE_PARENT__"));
 	String zNodeParent = ElementParameterParser.getValue(node, "__ZNODE_PARENT__");	
 	String hbaseMasterPrincipal = ElementParameterParser.getValue(node, "__HBASE_MASTER_PRINCIPAL__");
-	String hbaseReigonServerPrincipal = ElementParameterParser.getValue(node, "__HBASE_REIGONSERVER_PRINCIPAL__");
+	String hbaseRegionServerPrincipal = ElementParameterParser.getValue(node, "__HBASE_REGIONSERVER_PRINCIPAL__");
 	
 	String defineRegisterJar = ElementParameterParser.getValue(node, "__DEFINE_REGISTER_JAR__");
 	List<Map<String, String>> registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__REGISTER_JAR__");
@@ -417,8 +417,8 @@ imports="
 			<%if(hbaseMasterPrincipal!=null && !"".equals(hbaseMasterPrincipal) && !"\"\"".equals(hbaseMasterPrincipal)){%>
 				statement_<%=cid%>.execute("SET hbase.master.kerberos.principal="+<%=hbaseMasterPrincipal%>);
 			<%}%>
-			<%if(hbaseReigonServerPrincipal!=null && !"".equals(hbaseReigonServerPrincipal) && !"\"\"".equals(hbaseReigonServerPrincipal)){%>
-				statement_<%=cid%>.execute("SET hbase.regionserver.kerberos.principal="+<%=hbaseReigonServerPrincipal%>);
+			<%if(hbaseRegionServerPrincipal!=null && !"".equals(hbaseRegionServerPrincipal) && !"\"\"".equals(hbaseRegionServerPrincipal)){%>
+				statement_<%=cid%>.execute("SET hbase.regionserver.kerberos.principal="+<%=hbaseRegionServerPrincipal%>);
 			<%}%>
 		<%}%>
 
