@@ -46,6 +46,7 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
+import org.talend.designer.runprocess.maven.MavenJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.utils.ZipToFile;
@@ -57,7 +58,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  * created by rdubois on 27 janv. 2015 Detailled comment
  *
  */
-public abstract class BigDataJavaProcessor extends JavaProcessor {
+public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
     protected String unzipFolder;
 
