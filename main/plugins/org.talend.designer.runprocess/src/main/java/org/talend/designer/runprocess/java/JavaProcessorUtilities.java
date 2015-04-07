@@ -20,12 +20,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -332,6 +330,9 @@ public class JavaProcessorUtilities {
 
         addLog4jToJarList(listModulesReallyNeeded);
 
+        String missingJars = null;
+        Set<String> missingJarsForRoutinesOnly = new HashSet<String>();
+        Set<String> missingJarsForProcessOnly = new HashSet<String>();
         File libDir = getJavaProjectLibFolder();
         if ((libDir != null) && (libDir.isDirectory())) {
             Set<String> jarsNeedRetrieve = new HashSet<String>(listModulesReallyNeeded);
@@ -372,13 +373,10 @@ public class JavaProcessorUtilities {
                     ((IProcess2) process).checkProcess();
                 }
             }
-        }
-
-        String missingJars = null;
-        // String missingJarsForRoutinesOnly = null;
-        Set<String> missingJarsForRoutinesOnly = new HashSet<String>();
-        Set<String> missingJarsForProcessOnly = new HashSet<String>();
-        for (String jar : listModulesReallyNeeded) {
+            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+                jarsNeedRetrieve.remove(externalLib.getName());
+            }
+            for (String jar : jarsNeedRetrieve) {
                 if (ContextParameterUtils.isContainContextParam(jar)) {
                     continue;
                 }
@@ -392,6 +390,7 @@ public class JavaProcessorUtilities {
                 } else {
                     missingJars = missingJars + ", " + jar; //$NON-NLS-1$
                 }
+            }
         }
         if (missingJars != null) {
             handleMissingJarsForProcess(missingJarsForRoutinesOnly, missingJarsForProcessOnly, missingJars);

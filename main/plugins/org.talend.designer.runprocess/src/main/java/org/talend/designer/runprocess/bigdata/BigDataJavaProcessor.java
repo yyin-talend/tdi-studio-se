@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Level;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -44,7 +43,6 @@ import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
-import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.maven.MavenJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
@@ -346,9 +344,10 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
     @Override
     public String extractMainClassSegments() {
-        IPath classPath = getCodePath().removeFirstSegments(1);
-        String className = classPath.toString().replace('/', '.');
-        return className;
+        // IPath classPath = getCodePath().removeFirstSegments(1);
+        // String className = classPath.toString().replace('/', '.');
+        // return className;
+        return super.extractMainClassSegments();
     }
 
     @Override

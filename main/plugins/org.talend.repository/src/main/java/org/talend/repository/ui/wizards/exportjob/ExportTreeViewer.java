@@ -37,7 +37,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.advanced.composite.FilteredCheckboxTree;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -279,6 +281,9 @@ public class ExportTreeViewer {
         if (node.isBin()) {
             return false;
         }
+        if (isTestContainer(node.getObjectType())) {
+            return false;
+        }
 
         ERepositoryObjectType contentType = node.getContentType();
         if (contentType != null) {
@@ -302,6 +307,18 @@ public class ExportTreeViewer {
         }
 
         return false;
+    }
+
+    private boolean isTestContainer(ERepositoryObjectType type) {
+        boolean isTestContainer = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+            ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                    .getDefault().getService(ITestContainerProviderService.class);
+            if (testContainerService != null) {
+                isTestContainer = testContainerService.isTestContainerType(type);
+            }
+        }
+        return isTestContainer;
     }
 
     protected void checkSelection() {
