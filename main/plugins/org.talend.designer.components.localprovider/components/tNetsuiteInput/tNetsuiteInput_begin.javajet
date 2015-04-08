@@ -1,0 +1,281 @@
+<%@jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List
+    	java.util.Map
+    	java.util.HashMap
+    	java.lang.Character
+    	java.util.Calendar
+		java.util.Arrays
+	"
+%>
+
+<% 
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();	
+%>
+
+int nb_line_<%=cid%> = 0;
+boolean continue_<%=cid%> = true;
+
+<%
+Map<String, String> typeMap = new HashMap<String, String>();
+typeMap.put("Account", "com.netsuite.webservices.lists.accounting.Account");
+typeMap.put("AccountingPeriod", "com.netsuite.webservices.lists.accounting.AccountingPeriod");
+typeMap.put("AssemblyBuild", "com.netsuite.webservices.transactions.inventory.AssemblyBuild");
+typeMap.put("AssemblyItem", "com.netsuite.webservices.lists.accounting.AssemblyItem");
+typeMap.put("AssemblyUnbuild", "com.netsuite.webservices.transactions.inventory.AssemblyUnbuild");
+typeMap.put("Bin", "com.netsuite.webservices.lists.accounting.Bin");
+typeMap.put("Budget", "com.netsuite.webservices.transactions.financial.Budget");
+typeMap.put("CalendarEvent", "com.netsuite.webservices.activities.scheduling.CalendarEvent");
+typeMap.put("Campaign", "com.netsuite.webservices.lists.marketing.Campaign");
+typeMap.put("CashRefund", "com.netsuite.webservices.transactions.customers.CashRefund");
+typeMap.put("CashSale", "com.netsuite.webservices.transactions.sales.CashSale");
+typeMap.put("Check", "com.netsuite.webservices.transactions.bank.Check");
+typeMap.put("Classification", "com.netsuite.webservices.lists.accounting.Classification");
+typeMap.put("ContactCategory", "com.netsuite.webservices.lists.accounting.ContactCategory");
+typeMap.put("Contact", "com.netsuite.webservices.lists.relationships.Contact");
+typeMap.put("ContactRole", "com.netsuite.webservices.lists.accounting.ContactRole");
+typeMap.put("CreditMemo", "com.netsuite.webservices.transactions.customers.CreditMemo");
+typeMap.put("Customer", "com.netsuite.webservices.lists.relationships.Customer");
+typeMap.put("CustomerCategory", "com.netsuite.webservices.lists.accounting.CustomerCategory");
+typeMap.put("CustomerDeposit", "com.netsuite.webservices.transactions.customers.CustomerDeposit");
+typeMap.put("CustomerPayment", "com.netsuite.webservices.transactions.customers.CustomerPayment");
+typeMap.put("CustomerRefund", "com.netsuite.webservices.transactions.customers.CustomerRefund");
+typeMap.put("CustomerStatus", "com.netsuite.webservices.lists.relationships.CustomerStatus");
+typeMap.put("CustomList", "com.netsuite.webservices.setup.customization.CustomList");
+typeMap.put("CustomRecord", "com.netsuite.webservices.setup.customization.CustomRecord");
+typeMap.put("Department", "com.netsuite.webservices.lists.accounting.Department");
+typeMap.put("DepositApplication", "com.netsuite.webservices.transactions.customers.DepositApplication");
+typeMap.put("DescriptionItem", "com.netsuite.webservices.lists.accounting.DescriptionItem");
+typeMap.put("DiscountItem", "com.netsuite.webservices.lists.accounting.DiscountItem");
+typeMap.put("DownloadItem", "com.netsuite.webservices.lists.accounting.DownloadItem");
+typeMap.put("Employee", "com.netsuite.webservices.lists.employees.Employee");
+typeMap.put("EntityGroup", "com.netsuite.webservices.lists.relationships.EntityGroup");
+typeMap.put("Estimate", "com.netsuite.webservices.transactions.sales.Estimate");
+typeMap.put("ExpenseCategory", "com.netsuite.webservices.lists.accounting.ExpenseCategory");
+typeMap.put("ExpenseReport", "com.netsuite.webservices.transactions.employees.ExpenseReport");
+typeMap.put("File", "com.netsuite.webservices.documents.filecabinet.File");
+typeMap.put("Folder", "com.netsuite.webservices.documents.filecabinet.Folder");
+typeMap.put("GiftCertificate", "com.netsuite.webservices.lists.accounting.GiftCertificate");
+typeMap.put("GiftCertificateItem", "com.netsuite.webservices.lists.accounting.GiftCertificateItem");
+typeMap.put("InventoryAdjustment", "com.netsuite.webservices.transactions.inventory.InventoryAdjustment");
+typeMap.put("InventoryItem", "com.netsuite.webservices.lists.accounting.InventoryItem");
+typeMap.put("Invoice", "com.netsuite.webservices.transactions.sales.Invoice");
+typeMap.put("Issue", "com.netsuite.webservices.lists.support.Issue");
+typeMap.put("ItemFulfillment", "com.netsuite.webservices.transactions.sales.ItemFulfillment");
+typeMap.put("ItemReceipt", "com.netsuite.webservices.transactions.purchases.ItemReceipt");
+typeMap.put("Job", "com.netsuite.webservices.lists.relationships.Job");
+typeMap.put("JobStatus", "com.netsuite.webservices.lists.relationships.JobStatus");
+typeMap.put("JobType", "com.netsuite.webservices.lists.relationships.JobType");
+typeMap.put("JournalEntry", "com.netsuite.webservices.transactions.general.JournalEntry");
+typeMap.put("KitItem", "com.netsuite.webservices.lists.accounting.KitItem");
+typeMap.put("Location", "com.netsuite.webservices.lists.accounting.Location");
+typeMap.put("MarkupItem", "com.netsuite.webservices.lists.accounting.MarkupItem");
+typeMap.put("Message", "com.netsuite.webservices.general.communication.Message");
+typeMap.put("Note", "com.netsuite.webservices.general.communication.Note");
+typeMap.put("NoteType", "com.netsuite.webservices.lists.accounting.NoteType");
+typeMap.put("Opportunity", "com.netsuite.webservices.transactions.sales.Opportunity");
+typeMap.put("Partner", "com.netsuite.webservices.lists.relationships.Partner");
+typeMap.put("PartnerCategory", "com.netsuite.webservices.lists.accounting.PartnerCategory");
+typeMap.put("PaymentItem", "com.netsuite.webservices.lists.accounting.PaymentItem");
+typeMap.put("PaymentMethod", "com.netsuite.webservices.lists.accounting.PaymentMethod");
+typeMap.put("PhoneCall", "com.netsuite.webservices.activities.scheduling.PhoneCall");
+typeMap.put("PriceLevel", "com.netsuite.webservices.lists.accounting.PriceLevel");
+typeMap.put("ProjectTask", "com.netsuite.webservices.activities.scheduling.ProjectTask");
+typeMap.put("PricingGroup", "com.netsuite.webservices.lists.accounting.PricingGroup");
+typeMap.put("PurchaseOrder", "com.netsuite.webservices.transactions.purchases.PurchaseOrder");
+typeMap.put("PromotionCode", "com.netsuite.webservices.lists.marketing.PromotionCode");
+typeMap.put("ReturnAuthorization", "com.netsuite.webservices.transactions.customers.ReturnAuthorization");
+typeMap.put("SalesRole", "com.netsuite.webservices.lists.accounting.SalesRole");
+typeMap.put("SalesOrder", "com.netsuite.webservices.transactions.sales.SalesOrder");
+typeMap.put("SiteCategory", "com.netsuite.webservices.lists.website.SiteCategory");
+typeMap.put("SubtotalItem", "com.netsuite.webservices.lists.accounting.SubtotalItem");
+typeMap.put("Subsidiary", "com.netsuite.webservices.lists.accounting.Subsidiary");
+typeMap.put("SupportCase", "com.netsuite.webservices.lists.support.SupportCase");
+typeMap.put("Solution", "com.netsuite.webservices.lists.support.Solution");
+typeMap.put("Task", "com.netsuite.webservices.activities.scheduling.Task");
+typeMap.put("Term", "com.netsuite.webservices.lists.accounting.Term");
+typeMap.put("TimeBill", "com.netsuite.webservices.transactions.employees.TimeBill");
+typeMap.put("TransferOrder", "com.netsuite.webservices.transactions.inventory.TransferOrder");
+typeMap.put("Topic", "com.netsuite.webservices.lists.support.Topic");
+typeMap.put("UnitsType", "com.netsuite.webservices.lists.accounting.UnitsType");
+typeMap.put("Vendor", "com.netsuite.webservices.lists.relationships.Vendor");
+typeMap.put("VendorPayment", "com.netsuite.webservices.transactions.purchases.VendorPayment");
+typeMap.put("VendorCategory", "com.netsuite.webservices.lists.accounting.VendorCategory");
+typeMap.put("VendorBill", "com.netsuite.webservices.transactions.purchases.VendorBill");
+typeMap.put("WinLossReason", "com.netsuite.webservices.lists.accounting.WinLossReason");
+        
+List<IMetadataTable> metadatas = node.getMetadataList(); // This is the Schema
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+		
+	if (metadata != null) {
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+		
+		// Get the two search criteria tables
+		List<Map<String, String>> bodyField = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__CONDITIONS__");
+		List<Map<String, String>> customField = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__CUSTOM_SEARCH__");
+		
+		if (columnList.size() > 0 && outgoingConns != null && outgoingConns.size() > 0) {
+			
+			// Get the login credential for NetSuite
+			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+			String username = ElementParameterParser.getValue(node, "__USER__");
+			String password = ElementParameterParser.getValue(node, "__PASS__");
+			String role = ElementParameterParser.getValue(node, "__ROLE__");
+			String account = ElementParameterParser.getValue(node, "__ACCOUNT__");
+			
+			// Search configurations
+			String searchEntityKey = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
+			String searchEntity = typeMap.get(searchEntityKey);
+			
+			boolean regularSearch = "true".equals(ElementParameterParser.getValue(node, "__SHOW_CONDITIONS__"));
+%>
+			
+			org.talend.netsuite.NetsuiteManagement_CXF nsMgr_<%=cid%> = new org.talend.netsuite.NetsuiteManagement_CXF(<%=username%>, <%=password%>, <%=role%> + "", <%=account%>, <%=endpoint%>); 
+
+<%
+			IConnection outgoingConn = outgoingConns.get(0);
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%> 
+
+			try {
+			
+				java.util.List<com.netsuite.webservices.platform.core.Record> records_<%=cid %> = null;
+				nsMgr_<%=cid%>.initialize("<%=searchEntity%>", null); 
+
+<%
+						
+				// Construct a search for body fields
+				if(regularSearch) {
+					int index = 0;
+					for (Map<String, String> keyColumn : bodyField) {
+						String operator = keyColumn.get("OPERATOR");
+%> 
+
+						java.util.List<String> searchCriteria_<%=cid %>_<%=index %> = new java.util.ArrayList<String>();
+
+<%
+						if(operator.equals("anyOf") || operator.equals("noneOf")) {
+%>
+
+							searchCriteria_<%=cid %>_<%=index %>.addAll(<%=keyColumn.get("RVALUE")%>);
+<%
+						} else {
+%>
+
+<%
+							if(!operator.equals("emptyS") && !operator.equals("notEmptyS") && !operator.equals("emptyN") && !operator.equals("notEmptyN") && !operator.equals("emptyD") && !operator.equals("notEmptyD")) {
+%>
+								searchCriteria_<%=cid %>_<%=index %>.add(<%=keyColumn.get("RVALUE")%> + "");
+<%
+							} else {
+								operator = operator.replace("S", "").replace("N", "").replace("D", "");
+%>
+								searchCriteria_<%=cid %>_<%=index %>.add("");
+<%
+							}
+%>
+
+<%
+							if(operator.equals("between") || operator.equals("notBetween") || operator.equals("within") || operator.equals("notWithin")) {
+%>
+								searchCriteria_<%=cid %>_<%=index %>.add(<%=keyColumn.get("RVALUE2")%> + "");
+<%
+							}
+%>
+
+<%
+						}
+%>
+						
+						nsMgr_<%=cid%>.search("<%=searchEntity%>", "<%=keyColumn.get("INPUT_COLUMN")%>", "<%=operator%>", searchCriteria_<%=cid %>_<%=index %>); 
+
+<%
+						index++;
+					}
+				}
+						
+				// We execute the search.
+%> 
+
+				records_<%=cid%> = nsMgr_<%=cid%>.submitRequest(true);
+
+				// Get the value of a custom field.
+				Object customFieldValue_<%=cid%> = null;
+				while (continue_<%=cid%>) { // Block closed in END file
+						
+					if(records_<%=cid%> != null){
+    					for (int i_<%=cid%> = 0; i_<%=cid%> < records_<%=cid%>.size(); i_<%=cid%>++) { // Block closed in END file
+    						nb_line_<%=cid%>++;
+    						<%=searchEntity%> record_<%=cid%> = (<%=searchEntity%>) records_<%=cid%>.get(i_<%=cid%>);
+
+<%
+							// Block Start [1]
+    						for (int i = 0; i < columnList.size(); i++) {
+    									
+    							IMetadataColumn column = columnList.get(i);
+    							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+    							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+%> 
+
+<%
+								if (javaType == JavaTypesManager.BOOLEAN) { 
+%> 
+
+									if (record_<%=cid%>.is<%=column.getLabel()%>() != null) { 
+													
+<%
+								} else  {
+%> 
+
+									if (record_<%=cid%>.get<%=column.getLabel()%>() != null) { 
+
+<%
+								}
+%> 
+
+<%
+								if (javaType == JavaTypesManager.DATE) { 
+%> 
+
+									<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get<%=column.getLabel()%>().toGregorianCalendar().getTime(); 
+													
+<%
+								} else if(javaType == JavaTypesManager.BOOLEAN) {
+%> 
+
+									<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.is<%=column.getLabel()%>(); 
+
+<%
+								} else {
+%> 
+
+									<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get<%=column.getLabel()%>();
+
+<%
+								}
+%>
+    							} else {
+    								<%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+    							}
+
+<%
+						}
+			}
+		}
+	}
+}
+%>
