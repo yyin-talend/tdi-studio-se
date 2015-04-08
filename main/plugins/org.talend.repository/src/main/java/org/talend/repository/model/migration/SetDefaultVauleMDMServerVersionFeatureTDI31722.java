@@ -55,7 +55,9 @@ public class SetDefaultVauleMDMServerVersionFeatureTDI31722 extends
 			public void transform(NodeType node) {
 				ElementParameterType serverVersion = ComponentUtilities.getNodeProperty(node, "SERVERVERSION");
 				if(serverVersion==null){
-				    ComponentUtilities.addNodeProperty(node, "SERVERVERSION", "s56");
+				    ComponentUtilities.addNodeProperty(node, "SERVERVERSION", "CLOSED_LIST");
+				    serverVersion = ComponentUtilities.getNodeProperty(node, "SERVERVERSION");
+				    serverVersion.setValue("s56");
 				}
 			}
 		};
