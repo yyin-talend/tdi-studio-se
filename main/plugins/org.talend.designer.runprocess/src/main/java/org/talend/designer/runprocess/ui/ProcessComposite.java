@@ -1093,7 +1093,6 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         if (wrapButton != null && !wrapButton.isDisposed()) {
             wrapButton.setEnabled(runnable);
         }
-
     }
 
     /**

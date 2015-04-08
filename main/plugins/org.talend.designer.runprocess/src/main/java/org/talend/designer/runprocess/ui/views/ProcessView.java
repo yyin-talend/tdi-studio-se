@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -61,6 +62,7 @@ import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProv
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -76,6 +78,7 @@ import org.talend.designer.runprocess.RunProcessContextManager;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.AdvanceSettingComposite;
+import org.talend.designer.runprocess.ui.MemoryRuntimeComposite;
 import org.talend.designer.runprocess.ui.ProcessComposite;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.ProcessManager;
@@ -114,6 +117,8 @@ public class ProcessView extends ViewPart {
     private TraceDebugProcessComposite debugTisProcessComposite;
 
     private AdvanceSettingComposite advanceComposite;
+
+    private MemoryRuntimeComposite testRunComposite;
 
     private PropertyChangeListener contextManagerListener;
 
@@ -393,7 +398,12 @@ public class ProcessView extends ViewPart {
         } else if (category == EComponentCategory.TARGET) {
             targetComposite = new TargetExecComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = targetComposite;
-        } else if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)
+        } else if (category == EComponentCategory.MEMORYRUN) {
+            testRunComposite = new MemoryRuntimeComposite(findProcessView(), parent, processContext, SWT.H_SCROLL | SWT.V_SCROLL
+                    | SWT.NO_FOCUS);
+            dc = testRunComposite;
+        }
+        if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)
                 || EComponentCategory.STORM_JOB_CONFIG.equals(category) || EComponentCategory.SPARK_JOB_CONFIG.equals(category)) {
             if (processContext != null) {
                 dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
@@ -543,9 +553,9 @@ public class ProcessView extends ViewPart {
         this.parent.setFocus();
         // selectTab(EComponentCategory.BASICRUN);
         // processComposite.setFocus();
-
-        // IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
-        // IContextService.class);
+        //
+        // IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
+        // .getAdapter(IContextService.class);
         // contextService.activateContext("talend.runProcess");
     }
 
@@ -778,5 +788,9 @@ public class ProcessView extends ViewPart {
                 return selection;
             }
         });
+    }
+
+    public ISelection getSelection() {
+        return getSite().getSelectionProvider().getSelection();
     }
 }

@@ -436,7 +436,8 @@ public class UpdateNodeParameterCommand extends Command {
                                                     }
                                                 }
                                             }
-                                        } else if ((name.equals("HADOOP_ADVANCED_PROPERTIES") || name.equals("HBASE_PARAMETERS") || name
+                                        } else if ((name.equals("HADOOP_ADVANCED_PROPERTIES")
+                                                || name.equals("ADVANCED_PROPERTIES") || name.equals("HBASE_PARAMETERS") || name
                                                 .equals("SAP_PROPERTIES") && objectValue instanceof List)) {
                                             List<HashMap<String, Object>> oldValue = (List<HashMap<String, Object>>) param
                                                     .getValue();

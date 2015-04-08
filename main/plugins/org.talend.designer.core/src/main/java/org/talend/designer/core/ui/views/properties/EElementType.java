@@ -44,7 +44,8 @@ public enum EElementType {
                 EComponentCategory.BASICRUN,
                 EComponentCategory.DEBUGRUN,
                 EComponentCategory.ADVANCESETTING,
-                EComponentCategory.TARGET),
+                EComponentCategory.TARGET,
+                EComponentCategory.MEMORYRUN),
     SCHEDULE_4_HADOOP_NON_WINDOWS(
                                   EComponentCategory.SCHEDULE_4_HADOOP_EXECUTE_JOB,
                                   EComponentCategory.SCHEDULE_4_HADOOP_MONITORING),
