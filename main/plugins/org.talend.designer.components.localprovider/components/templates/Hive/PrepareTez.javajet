@@ -11,7 +11,7 @@ class PrepareTez{
         String dbuser = ElementParameterParser.getValue(node, "__USER__");
         
         boolean useTez = "tez".equals(ElementParameterParser.getValue(node, "__EXECUTION_ENGINE__"));
-    	boolean supportTez = (isCustom || "HDP_2_1".equals(hiveVersion) || "MAPR401".equals(hiveVersion)) && "EMBEDDED".equals(connectionMode);
+    	boolean supportTez = (isCustom || "HDP_2_2".equals(hiveVersion) || "HDP_2_1".equals(hiveVersion) || "MAPR401".equals(hiveVersion)) && "EMBEDDED".equals(connectionMode);
     	if(supportTez && useTez){
     	%>
     		init_<%=cid%>.execute("SET hive.execution.engine=tez");
