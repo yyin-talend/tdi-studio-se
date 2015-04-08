@@ -7,7 +7,6 @@ Bundle-Activator: org.talend.designer.runtime.visualization.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.talend.libraries.visualization,
  org.eclipse.core.filesystem,
  org.eclipse.ui.views.properties.tabbed,
  org.eclipse.ui.ide,
