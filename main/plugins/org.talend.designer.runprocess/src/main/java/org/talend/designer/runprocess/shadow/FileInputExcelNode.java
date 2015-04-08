@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IElementParameter;
@@ -81,7 +82,8 @@ public class FileInputExcelNode extends FileInputNode {
                     bean.getLastColumn() == null ? null : "'" + bean.getLastColumn() + "'", "true", versionCheck, bean.getGenerationMode() }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
-        IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputExcel");
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputExcel",
+                ComponentCategory.CATEGORY_4_DI.getName());
         this.setElementParameters(component.createElementParameters(this));
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
