@@ -505,10 +505,6 @@ public class ProcessView extends ViewPart {
                             .equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName())) {
                 categories = (EComponentCategory[]) ArrayUtils.add(categories, 1, EComponentCategory.SPARK_JOB_CONFIG);
             }
-            if (!PluginChecker.isTIS()) {
-                categories = (EComponentCategory[]) ArrayUtils.remove(categories,
-                        ArrayUtils.indexOf(categories, EComponentCategory.MEMORYRUN));
-            }
         }
         return categories;
     }
