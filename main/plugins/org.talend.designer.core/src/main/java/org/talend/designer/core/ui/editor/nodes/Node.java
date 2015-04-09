@@ -2751,9 +2751,21 @@ public class Node extends Element implements IGraphicalNode {
                 case COMPONENT_LIST:
                     if (param != null) {
                         String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
-                        INode useNode = getUseExistedConnetion(this);
-                        if (useNode != null && !useNode.isActivate()) {
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        if (isUseExistedConnetion(this)) {
+                            List<INode> list = (List<INode>) this.getProcess().getNodesOfType(param.getFilter());
+                            if (list == null || list.size() == 0 || list.isEmpty()) {
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            } else {
+                                List<INode> nodeList = new ArrayList<INode>();
+                                for (INode datanode : list) {
+                                    if (!datanode.isVirtualGenerateNode()) {
+                                        nodeList.add(datanode);
+                                    }
+                                }
+                                if (nodeList.size() == 0 || nodeList.isEmpty()) {
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                }
+                            }
                         }
                     }
                     break;
@@ -4854,34 +4866,17 @@ public class Node extends Element implements IGraphicalNode {
 
     }
 
-    public INode getUseExistedConnetion(IElement currentElem) {
+    public boolean isUseExistedConnetion(IElement currentElem) {
         IElementParameter param = currentElem.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
         if (param != null) {
             Object value = param.getValue();
-            boolean used = false;
             if (value instanceof Boolean) {
-                used = (Boolean) value;
+                return (Boolean) value;
             } else if (value instanceof String) {
-                used = Boolean.parseBoolean((String) value);
-            }
-            if (used) {
-                IElementParameter elementParameter = currentElem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
-                if (elementParameter != null && elementParameter.getName().equals("CONNECTION")) { //$NON-NLS-1$
-                    String connNodeName = (String) elementParameter.getValue();
-                    if (connNodeName != null && currentElem instanceof INode) {
-                        IProcess process = ((INode) currentElem).getProcess();
-                        if (process != null) {
-                            for (INode node : process.getGraphicalNodes()) {
-                                if (connNodeName.equals(node.getUniqueName())) {
-                                    return node;
-                                }
-                            }
-                        }
-                    }
-                }
+                return Boolean.parseBoolean((String) value);
             }
         }
-        return null;
+        return false;
     }
 
     public void setJunitStart(boolean isJunitStart) {
