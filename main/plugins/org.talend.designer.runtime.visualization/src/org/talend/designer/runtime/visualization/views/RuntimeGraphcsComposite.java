@@ -272,7 +272,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         FormData sectionData = new FormData();
         if (group.getName().equals(MonitorAttributeName.HEAP_MEMORY)) {
             sectionData.left = new FormAttachment(0, 0);
-            sectionData.right = new FormAttachment(50, 0);
+            sectionData.right = new FormAttachment(60, 0);
             sectionData.top = new FormAttachment(0, 0);
             sectionData.bottom = new FormAttachment(50, -5);
         } else if (group.getName().equals(MonitorAttributeName.THREAD_COUNT)) {
@@ -282,7 +282,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
             sectionData.bottom = new FormAttachment(100, 0);
         } else if (group.getName().equals(MonitorAttributeName.CPU_USE)) {
             sectionData.left = new FormAttachment(0, 0);
-            sectionData.right = new FormAttachment(50, 0);
+            sectionData.right = new FormAttachment(60, 0);
             sectionData.top = new FormAttachment(50, 2);
             sectionData.bottom = new FormAttachment(100, 0);
         }
@@ -399,7 +399,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         reportLayout.marginHeight = 0;
         reportComposite.setLayout(reportLayout);
         FormData reportData = new FormData();
-        reportData.left = new FormAttachment(50, 5);
+        reportData.left = new FormAttachment(60, 5);
         reportData.right = new FormAttachment(100, -5);
         reportData.top = new FormAttachment(0, 0);
         reportData.bottom = new FormAttachment(50, -5);
