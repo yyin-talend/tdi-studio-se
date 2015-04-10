@@ -391,6 +391,10 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
      */
     @Override
     public void updateRoutinesPom(final boolean withBuild, boolean inBackgroud) {
+        if (true) {
+            // disable code for now, to review later.
+            return;
+        }
         // should process the pig udf and bean also.
         if (inBackgroud) {
             // work in backgroud or not?
