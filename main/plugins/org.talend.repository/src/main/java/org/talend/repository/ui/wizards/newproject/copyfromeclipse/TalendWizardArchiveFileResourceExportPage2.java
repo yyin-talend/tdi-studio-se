@@ -25,8 +25,11 @@ import org.eclipse.ui.internal.wizards.datatransfer.WizardArchiveFileResourceExp
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.navigator.RepoViewCommonNavigator;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC guanglong.du class global comment. Detailled comment
@@ -54,6 +57,22 @@ public class TalendWizardArchiveFileResourceExportPage2 extends WizardArchiveFil
         // TODO Auto-generated constructor stub
     }
 
+    @Override
+    protected boolean saveDirtyEditors() {
+        boolean result = false;
+        IRepositoryView repView = RepositoryManagerHelper.findRepositoryView();
+        if (repView instanceof RepoViewCommonNavigator) {
+            ((RepoViewCommonNavigator) repView).setShouldCheckRepositoryDirty(false);
+            result = super.saveDirtyEditors();
+            ((RepoViewCommonNavigator) repView).setShouldCheckRepositoryDirty(true);
+        } else {
+            return super.saveDirtyEditors();
+        }
+
+        return result;
+    }
+
+    @Override
     public boolean finish() {
 
         if (!ensureTargetIsValid()) {
@@ -67,6 +86,7 @@ public class TalendWizardArchiveFileResourceExportPage2 extends WizardArchiveFil
         final List<Boolean> results = new ArrayList<Boolean>(1);
         CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().executeRepositoryWorkUnit(new RepositoryWorkUnit("refresh") {
 
+            @Override
             protected void run() throws LoginException, PersistenceException {
                 try {
                     ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -75,6 +95,7 @@ public class TalendWizardArchiveFileResourceExportPage2 extends WizardArchiveFil
                 }
                 Display.getCurrent().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         List resourcesToExport = getWhiteCheckedResources();
                         boolean r = executeExportOperation(new ArchiveFileExportOperation(null, resourcesToExport,
