@@ -57,6 +57,7 @@ public class NodeResizableEditPolicy extends ResizableEditPolicy {
      */
     @Override
     protected void createResizeHandle(List handles, int direction) {
+
         if ((getResizeDirections() & direction) == direction) {
             addHandle((GraphicalEditPart) getHost(), handles, direction, getResizeTracker(direction),
                     Cursors.getDirectionalCursor(direction, getHostFigure().isMirrored()));
@@ -77,54 +78,5 @@ public class NodeResizableEditPolicy extends ResizableEditPolicy {
         handle.setCursor(cursor);
         return handle;
     }
-
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#createDragHandle(java.util.List, int)
-    // */
-    // @Override
-    // protected void createDragHandle(List handles, int direction) {
-    // if (isDragAllowed()) {
-    // // display 'resize' handles to allow dragging (drag tracker)
-    // addHandle((GraphicalEditPart) getHost(), handles, direction, getDragTracker(), SharedCursors.SIZEALL);
-    // } else {
-    // // display 'resize' handles to indicate selection only (selection
-    // // tracker)
-    // addHandle((GraphicalEditPart) getHost(), handles, direction, getSelectTracker(), SharedCursors.ARROW);
-    // }
-    // }
-    //
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.eclipse.gef.editpolicies.ResizableEditPolicy#createSelectionHandles()
-    // */
-    // @Override
-    // protected List createSelectionHandles() {
-    // if (getResizeDirections() == PositionConstants.NONE) {
-    // // non resizable, so delegate to super implementation
-    // List list = new ArrayList();
-    // createMoveHandle(list);
-    // createDragHandle(list, PositionConstants.NORTH_EAST);
-    // createDragHandle(list, PositionConstants.NORTH_WEST);
-    // createDragHandle(list, PositionConstants.SOUTH_EAST);
-    // createDragHandle(list, PositionConstants.SOUTH_WEST);
-    // return list;
-    // }
-    //
-    // // resizable in at least one direction
-    // List list = new ArrayList();
-    // createMoveHandle(list);
-    // createResizeHandle(list, PositionConstants.NORTH);
-    // createResizeHandle(list, PositionConstants.EAST);
-    // createResizeHandle(list, PositionConstants.SOUTH);
-    // createResizeHandle(list, PositionConstants.WEST);
-    // createResizeHandle(list, PositionConstants.SOUTH_EAST);
-    // createResizeHandle(list, PositionConstants.SOUTH_WEST);
-    // createResizeHandle(list, PositionConstants.NORTH_WEST);
-    // createResizeHandle(list, PositionConstants.NORTH_EAST);
-    // return list;
-    // }
 
 }

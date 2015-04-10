@@ -47,7 +47,7 @@ public class NodeResizableHandle extends ResizeHandle {
      */
     @Override
     protected Color getFillColor() {
-        return (isPrimary()) ? ColorUtils.getCacheColor(new RGB(191, 218, 115)) : ColorConstants.white;
+        return (isPrimary()) ? ColorUtils.getCacheColor(new RGB(176, 222, 154)) : ColorConstants.white;
     }
 
     /*
@@ -57,7 +57,7 @@ public class NodeResizableHandle extends ResizeHandle {
      */
     @Override
     protected Color getBorderColor() {
-        return (isPrimary()) ? ColorUtils.getCacheColor(new RGB(191, 218, 115)) : ColorConstants.white;
+        return (isPrimary()) ? ColorConstants.gray : ColorConstants.black;
     }
 
 }
