@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.exception.SystemException;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -63,7 +64,7 @@ public abstract class ShadowNode extends AbstractNode {
 
         this.setElementParameters(new ArrayList<IElementParameter>());
         IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
-        setComponent(compFac.get(componentName));
+        setComponent(compFac.get(componentName, ComponentCategory.CATEGORY_4_DI.getName()));
     }
 
     public ShadowNode(String componentName, int nbColumn) {
@@ -73,7 +74,7 @@ public abstract class ShadowNode extends AbstractNode {
 
         this.setElementParameters(new ArrayList<IElementParameter>());
         IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
-        setComponent(compFac.get(componentName));
+        setComponent(compFac.get(componentName, ComponentCategory.CATEGORY_4_DI.getName()));
 
         this.columnNumber = nbColumn;
     }
@@ -83,6 +84,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#getComponentName()
      */
+    @Override
     public String getComponentName() {
         return componentName;
     }
@@ -112,8 +114,9 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#getIncomingConnections()
      */
+    @Override
     public List<? extends IConnection> getIncomingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx } : new IConnection[0]);
+        return Arrays.asList(inCnx != null ? new IConnection[] { inCnx } : new IConnection[0]);
     }
 
     /*
@@ -121,6 +124,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#getMetaDataList()
      */
+    @Override
     public List<IMetadataTable> getMetadataList() {
         List<IMetadataTable> metadataList = super.getMetadataList();
         if (metadataList != null) {
@@ -156,8 +160,9 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#getOutgoingConnections()
      */
+    @Override
     public List<? extends IConnection> getOutgoingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx } : new IConnection[0]);
+        return Arrays.asList(outCnx != null ? new IConnection[] { outCnx } : new IConnection[0]);
     }
 
     /*
@@ -184,6 +189,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#getUniqueName()
      */
+    @Override
     public String getUniqueName() {
         return getComponentName();
     }
@@ -193,6 +199,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#isActivate()
      */
+    @Override
     public boolean isActivate() {
         return true;
     }
@@ -202,6 +209,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#isSubProcessStart()
      */
+    @Override
     public boolean isSubProcessStart() {
         return false;
     }
@@ -251,6 +259,7 @@ public abstract class ShadowNode extends AbstractNode {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public boolean hasConditionalOutputs() {
         return getComponent().hasConditionalOutputs();
     }
@@ -260,14 +269,17 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#isMultiplyingOutputs()
      */
+    @Override
     public boolean isMultiplyingOutputs() {
         return getComponent().isMultiplyingOutputs();
     }
 
+    @Override
     public boolean isExternalNode() {
         return false;
     }
 
+    @Override
     public boolean isStart() {
         return false;
     }
@@ -277,6 +289,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#getReturns()
      */
+    @Override
     public List<? extends INodeReturn> getReturns() {
         return new ArrayList<INodeReturn>();
     }
@@ -286,6 +299,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @return the process
      */
+    @Override
     public IProcess getProcess() {
         return this.process;
     }
@@ -295,6 +309,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @param process the process to set
      */
+    @Override
     public void setProcess(IProcess process) {
         this.process = process;
     }
@@ -305,14 +320,17 @@ public abstract class ShadowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
+    @Override
     public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
         // Nothing to do as it's shadow node
     }
 
+    @Override
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
         // Nothing to do as it's shadow node
     }
 
+    @Override
     public boolean isReadOnly() {
         return false;
     }

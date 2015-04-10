@@ -11,7 +11,7 @@ imports="
 <%
 		CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 		INode node = (INode)codeGenArgument.getArgument();
-
+    boolean willValidateDN = "true".equals(ElementParameterParser.getValue(node,"__VALIDATE_DISTINGUISHED_NAME__"));
         // component id        
         String cid = node.getUniqueName();
         String wrap = ElementParameterParser.getValue(node, "__WRAP__");
@@ -64,7 +64,13 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                 public String getBase64StringOrNot(boolean encodingBase64,String srcData,String encoding){
                 	String returnValue = "";
                 	try {
-						if(encodingBase64 && !netscape.ldap.util.LDIF.isPrintable(srcData.getBytes(encoding))){
+						if(encodingBase64 <% 
+                  if(!willValidateDN){
+                       %>
+                          && !netscape.ldap.util.LDIF.isPrintable(srcData.getBytes(encoding))
+                       <%
+                }
+             %>){
 							returnValue = org.apache.commons.codec.binary.Base64.encodeBase64String(srcData.getBytes(encoding));
 						}else{
 							returnValue = srcData; 
@@ -73,7 +79,82 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 						e.printStackTrace();
 					}	
 					return returnValue;
-                } 
+                }
+
+            //Feature: TDI-31864
+            public boolean isSafeUTF8String(String distinguishedName){
+                    boolean isSafeString = true;
+                            isSafeString = !distinguishedName.startsWith("#")
+                                        && !distinguishedName.startsWith(" ")
+                                        && !distinguishedName.endsWith(" ");
+                            
+                            if(!isSafeString){
+                                return isSafeString;
+                            }
+                            
+                            String[] unsafeCharactersArr = new String[]{
+                                    ",", "+", "\"", "\\", "<", ">", ";"
+                            };
+                            
+                            for(String str: unsafeCharactersArr){
+                                isSafeString = isSafeString && !distinguishedName.contains(str);
+                                if(!isSafeString){
+                                    break;
+                                }
+                            }
+                            
+                     return isSafeString;
+                }
+                
+                /*
+                 * NUL ==> \0 ==> 0
+                 * LF  ==> \n ==> 10
+                 * CR  ==> \r ==> 13
+                 *         \t ==> 9
+                 * SP  ==>    ==> 32
+                 * colon ==> : ==> 58
+                 * < ==> 60
+                 * reference: https://www.ietf.org/rfc/rfc2849.txt
+                 */
+                
+                public boolean hasUnSafeCharacters(byte[] bytArr){
+                       boolean hasUnsafeCharacters = false;
+                       for(int i=0; i < bytArr.length; i++){
+                           if(i==0){                   
+                               hasUnsafeCharacters = !(
+                                         ((bytArr[0] > 0) && (bytArr[0] <= 127))
+                                      && (bytArr[0] != 0)
+                                      && (bytArr[0] != 10)
+                                      && (bytArr[0] != 13)
+                                      && (bytArr[0] != 32)
+                                      && (bytArr[0] != 58)
+                                      && (bytArr[0] != 60)
+                                     );
+                           }else{
+                               hasUnsafeCharacters = !(
+                                       ((bytArr[0] > 0) && (bytArr[0] <= 127))
+                                     && (bytArr[i] != 0)
+                                     && (bytArr[i] != 10)
+                                     && (bytArr[i] != 13)
+                                     )
+                                     && hasUnsafeCharacters;
+                           }
+                           if(hasUnsafeCharacters){
+                               return hasUnsafeCharacters;
+                           }
+                       }
+                       return hasUnsafeCharacters;
+                }
+                
+                public boolean needEncodeBase64(String distinguishedName){
+                    byte[] bytArr = null;
+                           try{
+                               bytArr = distinguishedName.getBytes("UTF-8");
+                           }catch(java.io.UnsupportedEncodingException e){
+                                throw new RuntimeException(e);
+                           }
+                    return !isSafeUTF8String(distinguishedName) || hasUnSafeCharacters(bytArr);
+                }
             } 
             
 		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();

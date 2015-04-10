@@ -80,6 +80,7 @@ import org.talend.designer.runtime.visualization.internal.core.cpu.ICpuProfiler.
 import org.talend.designer.runtime.visualization.internal.core.cpu.ICpuProfiler.ProfilerType;
 import org.talend.designer.runtime.visualization.internal.core.cpu.MethodNode;
 import org.talend.designer.runtime.visualization.internal.core.cpu.ThreadNode;
+import org.talend.designer.runtime.visualization.internal.ui.properties.timeline.MonitorAttributeName;
 
 /**
  * The MBean server. MBeanServerConnection is hidden for clients, since its method invocation doesn't return until
@@ -846,7 +847,7 @@ public class MBeanServer implements IMBeanServer {
         if (attributeObject instanceof CompositeData) {
             CompositeData compositeData = (CompositeData) attributeObject;
             if (attributeName.contains(".")) { //$NON-NLS-1$
-                if (attributeName.equals("HeapMemoryUsage.maxsize")) {
+                if (attributeName.equals(MonitorAttributeName.HEAP_MEMORY_SIZE)) {
                     Object value = MemoryUsage.from(compositeData).getMax();
                     return getAttributeValue(value, attributeName.substring(attributeName.indexOf(".") + 1));
                 } else {

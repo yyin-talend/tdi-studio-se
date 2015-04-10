@@ -120,7 +120,7 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) 
 	List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
 	java.util.Map<String, String> parametersMap = new java.util.HashMap<String, String>();
 
-	//	LOAD FROM OF (position1) DEL MODIFIED BY (position2) INTO (position3)
+	//	LOAD FROM OF DEL (position1) MODIFIED BY (position2) INTO (position3)
 	java.lang.StringBuilder position1 = new java.lang.StringBuilder();
 	java.lang.StringBuilder position2 = new java.lang.StringBuilder();
 	java.lang.StringBuilder position3 = new java.lang.StringBuilder();
@@ -149,12 +149,13 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) 
 Character field_separator_<%=cid %> = (<%=field_separator%>).charAt(0);
 <%
 	////////////////////////////////////////////
+	//DB2 Load Syntax: https://www-304.ibm.com/support/knowledgecenter/SSEPGG_9.7.0/com.ibm.db2.luw.admin.cmd.doc/doc/r0008305.html?cp=SSEPGG_9.7.0%2F3-6-2-4-78
 	if(("INSERT").equals(action) || ("REPLACE").equals(action)) {
 		%>
 		String action_<%=cid%> = "<%=action%>";
 		java.sql.CallableStatement callStmt_<%=cid%> = null;
 		String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-		String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%> + "\" OF <%=position1.toString()%> DEL MODIFIED BY COLDEL"+ field_separator_<%=cid %> +
+		String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%> + "\" OF DEL <%=position1.toString()%> MODIFIED BY COLDEL"+ field_separator_<%=cid %> +
 						" dateformat=\""+ <%=dateformat%>+ "\" timeformat=\"" + <%=timeformat%>+ "\" timestampformat=\""+<%=timestampformat%> +"\" <%=position2.toString()%> " +
 						 action_<%=cid%> +" INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>";
 		<%
@@ -217,7 +218,7 @@ Character field_separator_<%=cid %> = (<%=field_separator%>).charAt(0);
 			<%}%>
 			java.sql.CallableStatement callStmt_<%=cid%> = null;
 			String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-			String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%>.replace("\\","/") + "\" OF <%=position1.toString()%> DEL MODIFIED BY COLDEL" + field_separator_<%=cid %> +
+			String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%>.replace("\\","/") + "\" OF DEL <%=position1.toString()%> MODIFIED BY COLDEL" + field_separator_<%=cid %> +
 									" dateformat=\""+<%=dateformat%>+"\" timeformat=\"" +<%=timeformat%>+ "\" timestampformat=\"" + <%=timestampformat%>+"\"" +
 									" <%=position2.toString()%> INSERT INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>";
 			<%
@@ -260,9 +261,3 @@ Character field_separator_<%=cid %> = (<%=field_separator%>).charAt(0);
 	/////////////////////////////////////////
 }
 %>
-
-
-
-
-
-

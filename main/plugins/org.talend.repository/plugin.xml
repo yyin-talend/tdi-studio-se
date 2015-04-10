@@ -2357,6 +2357,15 @@
               name="AddSchemaDefaultValue4tFileInputDelimited"
               version="6.0.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.SetDefaultVauleMDMServerVersionFeatureTDI31722"
+              description="add default value for tMDMXXX"
+              id="org.talend.repository.model.migration.SetDefaultVauleMDMServerVersionFeatureTDI31722"
+              name="SetDefaultVauleMDMServerVersionFeatureTDI31722"
+              version="6.0.0">
+        </projecttask>
    </extension>
 
    <extension

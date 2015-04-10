@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.IMultiPageTalendEditor;
@@ -84,11 +85,11 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
     }
 
     private IActiveJvm initCurrentActiveJobJvm() {
-        JvmModel.getInstance();
-        String currentJobName = processContext.getProcess().getName();
-        List<IActiveJvm> activateJvms = JvmModel.getInstance().getHost(IHost.LOCALHOST).getActiveJvms();
+        JvmModel jvmModel = JvmModel.getInstance();
+        String jobClassName = JavaResourcesHelper.getJobClassName(processContext.getProcess());
+        List<IActiveJvm> activateJvms = jvmModel.getHost(IHost.LOCALHOST).getActiveJvms();
         for (IActiveJvm jvm : activateJvms) {
-            if (jvm.getMainClass().startsWith("projectname") && jvm.getMainClass().endsWith(currentJobName)) {
+            if (jvm.getMainClass().equals(jobClassName)) {
                 currentJvm = jvm;
                 break;
             }

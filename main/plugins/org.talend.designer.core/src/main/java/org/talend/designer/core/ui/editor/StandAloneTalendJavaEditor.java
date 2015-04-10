@@ -337,7 +337,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                 }
             };
             repFactory.executeRepositoryWorkUnit(repositoryWorkUnit);
-
+            repositoryWorkUnit.throwPersistenceExceptionIfAny();
             // for bug 11930: Unable to save Routines.* in db project
 
             // repFactory.save(item);
@@ -350,12 +350,12 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     }
 
-    private void refreshJobAndSave(final IProxyRepositoryFactory repFactory) {
-        try {
-            // cause it to update MaxInformationLevel
-            repFactory.save(item);
-        } catch (Exception e) {
-        }
+    private void refreshJobAndSave(final IProxyRepositoryFactory repFactory) throws PersistenceException {
+        // try {
+        // cause it to update MaxInformationLevel
+        repFactory.save(item);
+        // } catch (Exception e) {
+        // }
         // update editor image
         setTitleImage(getTitleImage());
 

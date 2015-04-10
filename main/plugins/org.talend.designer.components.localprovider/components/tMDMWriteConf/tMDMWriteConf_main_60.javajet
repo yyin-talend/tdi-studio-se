@@ -159,7 +159,15 @@ if (metadatas != null && metadatas.size()>0) {
 
     try {
 		<%if(usePartialUpdate){ // partial%>
-			org.talend.mdm.webservice.WSPartialPutItem wsPartialPutItem_<%=cid%> = new org.talend.mdm.webservice.WSPartialPutItem(<%=dataCluster %>,<%=dataModule %>,<%=key.equals("")?null:key%>, <%=overwrite%>, <%=pivot%>,<%= true==isStaging?false:withReport%>, <%=sourceName%>,<%=position.equals("")?null:position%>, input_<%=cid %>);
+<%
+			String stagingString = "";
+    		if(isStaging){
+    			stagingString = dataCluster + " + \"#STAGING\"";
+    		} else {
+    			stagingString = dataCluster;
+    		}
+%>
+			org.talend.mdm.webservice.WSPartialPutItem wsPartialPutItem_<%=cid%> = new org.talend.mdm.webservice.WSPartialPutItem(<%=stagingString %>,<%=dataModule %>,<%=key.equals("")?null:key%>, <%=overwrite%>, <%=pivot%>,<%= true==isStaging?false:withReport%>, <%=sourceName%>,<%=position.equals("")?null:position%>, input_<%=cid %>);
 			wspk_<%=cid %> = tmdmWS_<%=cid %>.partialPutItem(wsPartialPutItem_<%=cid%>);
 			
             <%

@@ -773,7 +773,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 + brandingService.getAcronym() + '_' + RepositoryPlugin.getDefault().getBundle().getVersion().toString() + ")"); //$NON-NLS-1$
 
         Collection<String> importPackages = new HashSet<String>();
-        boolean hasSAM = false;
         StringBuilder exportPackage = new StringBuilder();
         String requireBundle = ""; //$NON-NLS-1$
         String delim = ""; //$NON-NLS-1$
@@ -803,23 +802,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         }
                     }
                 }
-                if (EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) { //$NON-NLS-1$
-                    importPackages.add("org.talend.esb.servicelocator.cxf"); //$NON-NLS-1$
-                }
-                if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) { //$NON-NLS-1$
-                    hasSAM = true;
-                }
-                // https://jira.talendforge.org/browse/TESB-10601
-                if (EmfModelUtils.computeCheckElementValue("USE_BUSINESS_CORRELATION", restRequestComponent)) { //$NON-NLS-1$
-                    importPackages.add("org.talend.esb.policy.correlation.feature"); //$NON-NLS-1$
-                }
-            }
-            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) {
-                // https://jira.talendforge.org/browse/TESB-8066
-                if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
-                    hasSAM = true;
-                    break;
-                }
             }
             for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tESBConsumer")) { //$NON-NLS-1$
                 // https://jira.talendforge.org/browse/TESB-9574
@@ -837,18 +819,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (isRoute()) {
             addRouteOsgiDependencies(analyzer, libResource, processItem);
         } else {
-            if (hasSAM) {
-                importPackages.add("org.talend.esb.sam.agent.feature"); //$NON-NLS-1$
-                if (!requireBundle.isEmpty()) {
-                    requireBundle += ',';
-                }
-                requireBundle += "org.apache.cxf.bundle" + //$NON-NLS-1$
-                        ",org.springframework.beans" + //$NON-NLS-1$
-                        ",org.springframework.context" + //$NON-NLS-1$
-                        ",org.springframework.osgi.core" + //$NON-NLS-1$
-                        ",sam-agent" + //$NON-NLS-1$
-                        ",sam-common"; //$NON-NLS-1$
-            }
             if (!requireBundle.isEmpty()) {
                 analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, requireBundle);
             }
