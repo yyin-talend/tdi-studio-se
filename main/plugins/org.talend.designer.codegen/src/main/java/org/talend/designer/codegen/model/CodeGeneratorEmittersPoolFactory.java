@@ -262,7 +262,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                         Messages.getString("CodeGeneratorEmittersPoolFactory.failCompail") //$NON-NLS-1$
                                 + message.toString());
             }
-            CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
+            if (!CommonsPlugin.isHeadless()) {
+                CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
+            }
             return Status.OK_STATUS;
         }
 
