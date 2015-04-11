@@ -298,6 +298,9 @@ public class LoginDialog extends TrayDialog {
                     IBrandingService.class);
             if (!checkTisVersion && brandingService.isPoweredbyTalend()) {
                 int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
+                if (count < 0) {
+                    count = 1;
+                }
                 ExchangeUser exchangeUser = project.getExchangeUser();
                 boolean isExchangeLogon = exchangeUser.getLogin() != null && !exchangeUser.getLogin().equals("");
                 boolean isUserPassRight = true;
@@ -310,8 +313,7 @@ public class LoginDialog extends TrayDialog {
                 }
 
                 if (!isExchangeLogon || !isUserPassRight) {
-                    int MAX_COUNT = 14;
-                    if (4 < count && count < MAX_COUNT) {
+                    if (count % 4 == 0) {
                         // if (Platform.getOS().equals(Platform.OS_LINUX)) {
                         // TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
                         // tfDialog.open();
@@ -331,9 +333,8 @@ public class LoginDialog extends TrayDialog {
 
                         });
                     }
-                    if (count < MAX_COUNT) {
-                        prefStore.setValue(TalendForgeDialog.LOGINCOUNT, count + 1);
-                    }
+
+                    prefStore.setValue(TalendForgeDialog.LOGINCOUNT, count + 1);
                 }
             }
         }
