@@ -309,7 +309,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     private void mavenBuildCodeProjectPom(String goals, String module) {
-//      cleanBeforeBuilds(module);
+        // cleanBeforeBuilds(module);
 
         IFile childModulePomFile;
         if (TalendMavenContants.CURRENT_PATH.equals(module)) {
@@ -320,13 +320,13 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
         }
         if (childModulePomFile.getLocation().toFile().exists()) { // existed
-//            TalendMavenLauncher mavenLauncher = null;
-//            if (goals == null || goals.trim().length() == 0) { // by default is compile
-//                mavenLauncher = new TalendMavenLauncher(childModulePomFile);
-//            } else {
-//                mavenLauncher = new TalendMavenLauncher(childModulePomFile, goals);
-//            }
-//            mavenLauncher.execute();
+        // TalendMavenLauncher mavenLauncher = null;
+        // if (goals == null || goals.trim().length() == 0) { // by default is compile
+        // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
+        // } else {
+        // mavenLauncher = new TalendMavenLauncher(childModulePomFile, goals);
+        // }
+        // mavenLauncher.execute();
 
             /*
              * FIXME, because the marker issue, we have to build whole project to get the markers.
@@ -338,6 +338,9 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
              * markers.
              */
             if (Problems.buildWholeProject) {
+                // call 2 times for now. Seems if call only once, it will not get all the errors up to date
+                // and call 2 times seems doesn't take much more time.
+                buildWholeCodeProject();
                 buildWholeCodeProject();
             }
         } else {
