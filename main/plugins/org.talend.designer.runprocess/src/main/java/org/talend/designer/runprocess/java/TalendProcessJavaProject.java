@@ -320,13 +320,13 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
         }
         if (childModulePomFile.getLocation().toFile().exists()) { // existed
-        // TalendMavenLauncher mavenLauncher = null;
-        // if (goals == null || goals.trim().length() == 0) { // by default is compile
-        // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
-        // } else {
-        // mavenLauncher = new TalendMavenLauncher(childModulePomFile, goals);
-        // }
-        // mavenLauncher.execute();
+//            TalendMavenLauncher mavenLauncher = null;
+//            if (goals == null || goals.trim().length() == 0) { // by default is compile
+//                mavenLauncher = new TalendMavenLauncher(childModulePomFile);
+//            } else {
+//                mavenLauncher = new TalendMavenLauncher(childModulePomFile, goals);
+//            }
+//            mavenLauncher.execute();
 
             /*
              * FIXME, because the marker issue, we have to build whole project to get the markers.
@@ -416,6 +416,10 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     private IStatus processRoutinesPom(boolean withBuild) {
+        if (true) {
+         // disable code for now, to review later.
+            return Status.OK_STATUS;
+        }
         try {
             // update routines pom, so true here
             this.synchronizer.syncRoutinesPom(true);

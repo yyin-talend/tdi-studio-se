@@ -64,8 +64,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         super.generateCode(statistics, trace, javaProperties);
         if (property != null) { // only job, if Shadow Process, will be null.
             // generatePom();
-            updateProjectPom(null);
-            removeGeneratedJobs(null);
+//            removeGeneratedJobs(null);
         }
     }
 
@@ -208,53 +207,26 @@ public class MavenJavaProcessor extends JavaProcessor {
     public void build() {
         final ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
         try {
-            // before build, remove all old error markers
-            IFile jobSrcFile = talendJavaProject.getProject().getFile(this.getSrcCodePath());
-            if (jobSrcFile.exists()) {
-                jobSrcFile.refreshLocal(IResource.DEPTH_ZERO, null);
-                jobSrcFile.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
-            }
-        } catch (CoreException e) {
+            updateProjectPom(null);
+        } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
 
-        // String[] jobswithChildren = getJobModules();
-
-        // talendJavaProject.addChildModules(true, jobswithChildren);
-
-        // if (buildRoutinesOnce) { // use RoutinesMavenInstallLoginTask instead to build once
-        /*
-         * build each job module with children. If don't build the project level, maybe will be some problem for the
-         * xmlMappins and log4j.xml file when run job.
-         */
-        // talendJavaProject.buildModules(MavenConstants.GOAL_COMPILE, jobswithChildren);
-        // } else {
-        // build project level.
         talendJavaProject.buildModules(getGoals(), null);
-        // }
-        // refresh
-        try {
-            // maybe will be more for the performance
-            // talendJavaProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
-
-            IFolder jobSrcFolder = talendJavaProject.getProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
-            if (jobSrcFolder.exists()) {
-                jobSrcFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-            }
-            // IFolder jobClassFolder =
-            // talendJavaProject.getProject().getFolder(this.getCompiledCodePath().removeLastSegments(1));
-            // if (jobClassFolder.exists()) { //always false, because it's delete before and recreate. refresh whole
-            // output folder instead.
-            // jobClassFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-            // }
-            if (isTestJob) {
-                talendJavaProject.getTestOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
-            } else {
-                talendJavaProject.getOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
-            }
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
-        }
+//        try {
+//
+//            IFolder jobSrcFolder = talendJavaProject.getProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
+//            if (jobSrcFolder.exists()) {
+//                jobSrcFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+//            }
+//            if (isTestJob) {
+//                talendJavaProject.getTestOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
+//            } else {
+//                talendJavaProject.getOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
+//            }
+//        } catch (CoreException e) {
+//            ExceptionHandler.process(e);
+//        }
     }
 
     protected String getGoals() {
