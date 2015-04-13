@@ -83,6 +83,10 @@ java.sql.Connection conn_<%=cid%> = null;
 		boolean securedEmbedded = securityIsEnabled && "EMBEDDED".equalsIgnoreCase(connectionMode);
 		String hivePrincipal = ElementParameterParser.getValue(node, "__HIVE_PRINCIPAL__");
 
+		boolean useSsl = "true".equals(ElementParameterParser.getValue(node, "__USE_SSL__"));
+		String sslTrustStore = ElementParameterParser.getValue(node, "__SSL_TRUST_STORE__");
+		String sslTrustStorePassword = ElementParameterParser.getValue(node, "__SSL_TRUST_STORE_PASSWORD__");
+
 		if(hiveServer!=null && !"".equals(hiveServer.trim()) && (isCustom || ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion) || "Cloudera_CDH4".equals(hiveVersion) || "Cloudera_CDH4_YARN".equals(hiveVersion) || "Cloudera_CDH5".equals(hiveVersion) || "Cloudera_CDH5_1".equals(hiveVersion) || "Cloudera_CDH5_1_MR1".equals(hiveVersion) || "MAPR213".equals(hiveVersion) || "MAPR301".equals(hiveVersion) || "MAPR310".equals(hiveVersion) || "MAPR401".equals(hiveVersion) || "HDP_2_0".equals(hiveVersion) || "HDP_2_1".equals(hiveVersion) || "HDP_2_2".equals(hiveVersion) || "PIVOTAL_HD_2_0".equals(hiveVersion)))) {
 			hiveServer = hiveServer.toLowerCase();
 			if ("hive2".equals(hiveServer)) {
@@ -201,16 +205,30 @@ java.sql.Connection conn_<%=cid%> = null;
 <%
 			}
 		} else {
-			if(securedStandaloneHive2) {
+				if(securedStandaloneHive2) {
+					// Using SSL in Secure Mode
+					if(useSsl){
 %>
-				String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>;
+						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>+";sasl.qop=auth-conf";
 <%
-			} else {
+					}else{
 %>
-				String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>;
 <%
+					}
+				} else {
+					// Using SSL in non Secure Mode
+					if(useSsl){
+%>
+						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>+ ";ssl=true" +";sslTrustStore=" + <%=sslTrustStore%> + ";trustStorePassword=" + <%=sslTrustStorePassword%>;
+<%
+					}else{
+%>
+						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%
+					}
+				}
 			}
-		}
 %>
 		String driverClass_<%=cid%> = "<%=javaDbDriver %>";
 		java.lang.Class.forName(driverClass_<%=cid%>);
