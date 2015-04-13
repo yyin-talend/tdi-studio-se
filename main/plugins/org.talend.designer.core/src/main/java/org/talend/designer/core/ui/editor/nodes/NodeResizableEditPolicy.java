@@ -14,13 +14,16 @@ package org.talend.designer.core.ui.editor.nodes;
 
 import java.util.List;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Handle;
+import org.eclipse.gef.SharedCursors;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
+import org.eclipse.gef.handles.MoveHandle;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.swt.graphics.Cursor;
 import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
@@ -57,7 +60,6 @@ public class NodeResizableEditPolicy extends ResizableEditPolicy {
      */
     @Override
     protected void createResizeHandle(List handles, int direction) {
-
         if ((getResizeDirections() & direction) == direction) {
             addHandle((GraphicalEditPart) getHost(), handles, direction, getResizeTracker(direction),
                     Cursors.getDirectionalCursor(direction, getHostFigure().isMirrored()));
@@ -77,6 +79,30 @@ public class NodeResizableEditPolicy extends ResizableEditPolicy {
         handle.setDragTracker(tracker);
         handle.setCursor(cursor);
         return handle;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#createMoveHandle(java.util.List)
+     */
+    @Override
+    protected void createMoveHandle(List handles) {
+        if (isDragAllowed()) {
+            // display 'move' handle to allow dragging
+            handles.add(moveHandle((GraphicalEditPart) getHost(), getDragTracker(), Cursors.SIZEALL));
+        } else {
+            // display 'move' handle only to indicate selection
+            handles.add(moveHandle((GraphicalEditPart) getHost(), getSelectTracker(), SharedCursors.ARROW));
+        }
+    }
+
+    private Handle moveHandle(GraphicalEditPart owner, DragTracker tracker, Cursor cursor) {
+        MoveHandle moveHandle = new MoveHandle(owner);
+        moveHandle.setForegroundColor(ColorConstants.gray);
+        moveHandle.setDragTracker(tracker);
+        moveHandle.setCursor(cursor);
+        return moveHandle;
     }
 
 }

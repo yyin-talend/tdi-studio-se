@@ -12,25 +12,20 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.nodecontainer;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.gef.Handle;
 import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.SharedCursors;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
-import org.eclipse.gef.handles.MoveHandle;
-import org.eclipse.swt.graphics.Cursor;
-import org.talend.designer.core.ui.editor.connections.NodeResizableHandle;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeFigure;
 
@@ -135,56 +130,17 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
         return getHostFigure().getBounds().getExpanded(32, 32);
     }
 
-    private void addHandle(GraphicalEditPart part, List handles, int direction, DragTracker tracker, Cursor cursor) {
-        handles.add(createHandle(part, direction, tracker, cursor));
-    }
-
-    private Handle createHandle(GraphicalEditPart owner, int direction, DragTracker tracker, Cursor cursor) {
-        NodeResizableHandle handle = new NodeResizableHandle(owner, direction);
-        handle.setDragTracker(tracker);
-        handle.setCursor(cursor);
-        return handle;
-    }
-
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#createDragHandle(java.util.List, int)
+     * @see org.eclipse.gef.editpolicies.ResizableEditPolicy#createSelectionHandles()
      */
     @Override
-    protected void createDragHandle(List handles, int direction) {
-        if (isDragAllowed()) {
-            // display 'resize' handles to allow dragging (drag tracker)
-            addHandle((GraphicalEditPart) getHost(), handles, direction, getDragTracker(), SharedCursors.SIZEALL);
-        } else {
-            // display 'resize' handles to indicate selection only (selection
-            // tracker)
-            addHandle((GraphicalEditPart) getHost(), handles, direction, getSelectTracker(), SharedCursors.ARROW);
+    protected List createSelectionHandles() {
+        if (getResizeDirections() == PositionConstants.NONE) {
+            return new ArrayList();
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#createMoveHandle(java.util.List)
-     */
-    @Override
-    protected void createMoveHandle(List handles) {
-        if (isDragAllowed()) {
-            // display 'move' handle to allow dragging
-            handles.add(moveHandle((GraphicalEditPart) getHost(), getDragTracker(), Cursors.SIZEALL));
-        } else {
-            // display 'move' handle only to indicate selection
-            handles.add(moveHandle((GraphicalEditPart) getHost(), getSelectTracker(), SharedCursors.ARROW));
-        }
-    }
-
-    private Handle moveHandle(GraphicalEditPart owner, DragTracker tracker, Cursor cursor) {
-        MoveHandle moveHandle = new MoveHandle(owner);
-        moveHandle.setForegroundColor(ColorConstants.gray);
-        moveHandle.setDragTracker(tracker);
-        moveHandle.setCursor(cursor);
-        return moveHandle;
+        return super.createSelectionHandles();
     }
 
 }
