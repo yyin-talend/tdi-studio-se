@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.runtime.visualization.views;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +50,7 @@ import org.talend.designer.runtime.visualization.MBean.IMBeanServer;
 import org.talend.designer.runtime.visualization.MBean.IMBeanServerChangeListener;
 import org.talend.designer.runtime.visualization.MBean.IMonitoredMXBeanAttribute;
 import org.talend.designer.runtime.visualization.MBean.IMonitoredMXBeanGroup;
+import org.talend.designer.runtime.visualization.MBean.IMonitoredMXBeanGroup.AxisUnit;
 import org.talend.designer.runtime.visualization.MBean.MBeanServerEvent;
 import org.talend.designer.runtime.visualization.internal.ui.IHelpContextIds;
 import org.talend.designer.runtime.visualization.internal.ui.RefreshJob;
@@ -99,7 +101,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
     @Override
     protected void refresh() {
         refreshConnectionIndicator();
-        refreshReportField();
+        // refreshReportField();
 
         IActiveJvm jvm = getJvm();
         if (jvm == null || !jvm.isConnected() || isRefreshSuspended() || chartsPage.isDisposed()) {
@@ -222,16 +224,16 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         if (chartsPage.isDisposed()) {
             return;
         }
-
         if (connected) {
             try {
-                loadChartSetAction.loadDefaultChartSet();
+                loadOverviewChartSet(activeJvm);
             } catch (JvmCoreException e) {
                 Activator.log(Messages.configureMonitoredAttributesFailedMsg, e);
             }
         }
 
         List<IMonitoredMXBeanGroup> groups = activeJvm.getMBeanServer().getMonitoredAttributeGroups();
+
         if (groups.size() == 0) {
             return;
         }
@@ -257,6 +259,31 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         refresh();
     }
 
+    private void loadOverviewChartSet(IActiveJvm activeJvm) throws JvmCoreException {
+        final int[] blue = new int[] { 0, 0, 255 };
+        final int[] red = new int[] { 255, 0, 0 };
+        final int[] green = new int[] { 0, 255, 0 };
+
+        final int[] pink = new int[] { 255, 128, 255 };
+
+        final int[] yellow = new int[] { 255, 255, 0 };
+        IMBeanServer server = activeJvm.getMBeanServer();
+        server.getMonitoredAttributeGroups().clear();
+
+        IMonitoredMXBeanGroup group = server.addMonitoredAttributeGroup(MonitorAttributeName.HEAP_MEMORY, AxisUnit.MBytes);
+
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_USE, blue);
+
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_SIZE, red);
+
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_NINTY, pink);
+
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_THREE_QUARTER, yellow);
+
+        group = server.addMonitoredAttributeGroup(MonitorAttributeName.CPU_USE, AxisUnit.Percent);
+        group.addAttribute(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, MonitorAttributeName.CPU_TIME, green);
+    }
+
     private void createSection(Composite parent, IMonitoredMXBeanGroup group) {
         if (parent.isDisposed()) {
             return;
@@ -274,7 +301,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
             sectionData.left = new FormAttachment(0, 0);
             sectionData.right = new FormAttachment(60, 0);
             sectionData.top = new FormAttachment(0, 0);
-            sectionData.bottom = new FormAttachment(50, -5);
+            sectionData.bottom = new FormAttachment(60, -5);
         } else if (group.getName().equals(MonitorAttributeName.THREAD_COUNT)) {
             sectionData.left = new FormAttachment(50, 5);
             sectionData.right = new FormAttachment(100, -5);
@@ -283,7 +310,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         } else if (group.getName().equals(MonitorAttributeName.CPU_USE)) {
             sectionData.left = new FormAttachment(0, 0);
             sectionData.right = new FormAttachment(60, 0);
-            sectionData.top = new FormAttachment(50, 2);
+            sectionData.top = new FormAttachment(60, 2);
             sectionData.bottom = new FormAttachment(100, 0);
         }
         section.setLayoutData(sectionData);
@@ -334,6 +361,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
 
     @Override
     protected void createControls(Composite parent) {
+
         chartsPage = new Composite(parent, SWT.NULL);
         // messagePage = createMessagePage(parent);
 

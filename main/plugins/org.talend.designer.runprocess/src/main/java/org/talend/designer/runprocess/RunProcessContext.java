@@ -96,6 +96,8 @@ public class RunProcessContext {
 
     public static final String TRACE_MONITOR = "RunProcessContext.MonitorTrace"; //$NON-NLS-1$
 
+    public static final String MEMORY_MONITOR = "RunProcessContext.MonitorMemory"; //$NON-NLS-1$
+
     private static final String PROR_SWITCH_TIME = "RunProcesscontext.Message.Watch"; //$NON-NLS-1$
 
     public static final String PREVIOUS_ROW = "RunProcessContext.PreviousRow";
@@ -138,6 +140,9 @@ public class RunProcessContext {
 
     /** Is process running. */
     private boolean running;
+
+    /** Is process monitoring */
+    private boolean monitoring;
 
     /** The executing process. */
     private Process ps;
@@ -348,6 +353,27 @@ public class RunProcessContext {
         if (this.running != running) {
             this.running = running;
             firePropertyChange(PROP_RUNNING, Boolean.valueOf(!running), Boolean.valueOf(running));
+        }
+    }
+
+    /**
+     * Getter for monitoring.
+     * 
+     * @return the monitoring
+     */
+    public boolean isMonitoring() {
+        return this.monitoring;
+    }
+
+    /**
+     * Sets the monitoring.
+     * 
+     * @param monitoring the monitoring to set
+     */
+    public void setMonitoring(boolean monitoring) {
+        if (this.monitoring != monitoring) {
+            this.monitoring = monitoring;
+            firePropertyChange(MEMORY_MONITOR, Boolean.valueOf(!monitoring), Boolean.valueOf(monitoring));
         }
     }
 
@@ -683,6 +709,7 @@ public class RunProcessContext {
         }
 
         setRunning(false);
+        setMonitoring(false);
         return exitCode;
     }
 

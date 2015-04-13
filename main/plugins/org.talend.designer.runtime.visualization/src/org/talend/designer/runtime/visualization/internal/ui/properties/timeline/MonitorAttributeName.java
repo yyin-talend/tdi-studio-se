@@ -24,9 +24,16 @@ public class MonitorAttributeName {
 
     public static final String HEAP_MEMORY_SIZE = "HeapMemoryUsage.maxsize";
 
+    public static final String HEAP_MEMORY_NINTY = "HeapMemoryUsage.Threshold-NineOverTen";
+
+    public static final String HEAP_MEMORY_THREE_QUARTER = "HeapMemoryUsage.Threshold-ThreeQuarters";
+
     public static final String THREAD_COUNT = "Thread Count";
 
     public static final String CPU_USE = "CPU Usage";
+
+    public static final String CPU_TIME = "ProcessCpuTime";
+
     // Thread Count CPU Usage
 
 }

@@ -802,7 +802,7 @@ public class MBeanServer implements IMBeanServer {
                 }
 
                 // exceptional handling for process CPU time
-                if ("ProcessCpuTime".equals(attribute.getAttributeName())) { //$NON-NLS-1$
+                if (MonitorAttributeName.CPU_TIME.equals(attribute.getAttributeName())) {
                     if (previousProcessCpuTime == 0) {
                         previousProcessCpuTime = (Long) value;
                         continue;
@@ -841,13 +841,35 @@ public class MBeanServer implements IMBeanServer {
      */
     private Number getAttributeValue(Object attributeObject, String attributeName) {
         if (attributeObject instanceof Number) {
-            return (Number) attributeObject;
+            Number value = (Number) attributeObject;
+            String threeQuarterThreshold = MonitorAttributeName.HEAP_MEMORY_THREE_QUARTER;
+            String nintyOverTenThreshold = MonitorAttributeName.HEAP_MEMORY_NINTY;
+            if (threeQuarterThreshold.substring(threeQuarterThreshold.indexOf(".") + 1).equals(attributeName)) {
+                if (value instanceof Integer) {
+                    value = (Integer) value * 0.75;
+                } else if (value instanceof Long) {
+                    value = (Long) value * 0.75;
+                } else if (value instanceof Double) {
+                    value = (Double) value * 0.75;
+                }
+            } else if (nintyOverTenThreshold.substring(nintyOverTenThreshold.indexOf(".") + 1).equals(attributeName)) {
+                if (value instanceof Integer) {
+                    value = (Integer) value * 0.9;
+                } else if (value instanceof Long) {
+                    value = (Long) value * 0.9;
+                } else if (value instanceof Double) {
+                    value = (Double) value * 0.9;
+                }
+            }
+            return value;
         }
 
         if (attributeObject instanceof CompositeData) {
             CompositeData compositeData = (CompositeData) attributeObject;
             if (attributeName.contains(".")) { //$NON-NLS-1$
-                if (attributeName.equals(MonitorAttributeName.HEAP_MEMORY_SIZE)) {
+                if (attributeName.equals(MonitorAttributeName.HEAP_MEMORY_SIZE)
+                        || attributeName.equals(MonitorAttributeName.HEAP_MEMORY_NINTY)
+                        || attributeName.equals(MonitorAttributeName.HEAP_MEMORY_THREE_QUARTER)) {
                     Object value = MemoryUsage.from(compositeData).getMax();
                     return getAttributeValue(value, attributeName.substring(attributeName.indexOf(".") + 1));
                 } else {

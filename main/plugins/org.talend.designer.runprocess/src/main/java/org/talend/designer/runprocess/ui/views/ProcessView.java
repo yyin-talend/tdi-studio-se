@@ -21,6 +21,10 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -62,7 +66,6 @@ import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProv
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -85,6 +88,7 @@ import org.talend.designer.runprocess.ui.ProcessManager;
 import org.talend.designer.runprocess.ui.TargetExecComposite;
 import org.talend.designer.runprocess.ui.TraceDebugProcessComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
+import org.talend.designer.runtime.visualization.JvmModel;
 
 /**
  * View showing the execution of a process. <br/>
@@ -118,7 +122,7 @@ public class ProcessView extends ViewPart {
 
     private AdvanceSettingComposite advanceComposite;
 
-    private MemoryRuntimeComposite testRunComposite;
+    private MemoryRuntimeComposite memoryRunComposite;
 
     private PropertyChangeListener contextManagerListener;
 
@@ -337,6 +341,16 @@ public class ProcessView extends ViewPart {
         };
         RunProcessPlugin.getDefault().getRunProcessContextManager().addPropertyChangeListener(contextManagerListener);
         runAction = new RunAction();
+
+        final Job updateJvmStatus = new Job("Update Jvm status") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                JvmModel.getInstance();
+                return Status.OK_STATUS;
+            }
+        };
+        updateJvmStatus.schedule();
     }
 
     /**
@@ -399,9 +413,9 @@ public class ProcessView extends ViewPart {
             targetComposite = new TargetExecComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = targetComposite;
         } else if (category == EComponentCategory.MEMORYRUN) {
-            testRunComposite = new MemoryRuntimeComposite(findProcessView(), parent, processContext, SWT.H_SCROLL | SWT.V_SCROLL
-                    | SWT.NO_FOCUS);
-            dc = testRunComposite;
+            memoryRunComposite = new MemoryRuntimeComposite(findProcessView(), parent, processContext, SWT.H_SCROLL
+                    | SWT.V_SCROLL | SWT.NO_FOCUS);
+            dc = memoryRunComposite;
         }
         if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)
                 || EComponentCategory.STORM_JOB_CONFIG.equals(category) || EComponentCategory.SPARK_JOB_CONFIG.equals(category)) {
@@ -601,6 +615,8 @@ public class ProcessView extends ViewPart {
             advanceComposite.setProcessContext(activeContext);
         } else if (dc != null && dc == targetComposite) {
             targetComposite.setProcessContext(activeContext);
+        } else if (dc != null && dc == memoryRunComposite) {
+            memoryRunComposite.setProcessContext(activeContext);
         } else if (dc != null) {
             if (processContext != null && processContext.getProcess() != null) {
                 if (dc instanceof MultipleThreadDynamicComposite) {
@@ -792,5 +808,9 @@ public class ProcessView extends ViewPart {
 
     public ISelection getSelection() {
         return getSite().getSelectionProvider().getSelection();
+    }
+
+    public void setSelection(ISelection sel) {
+        getSite().getSelectionProvider().setSelection(sel);
     }
 }

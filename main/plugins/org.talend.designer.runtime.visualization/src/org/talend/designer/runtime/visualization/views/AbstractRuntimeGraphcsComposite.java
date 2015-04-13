@@ -239,7 +239,7 @@ public abstract class AbstractRuntimeGraphcsComposite extends Composite implemen
      * Updates the page.
      */
     protected void updatePage() {
-        if (jvm == null) {// || messagePage.isDisposed() || messageLabel.isDisposed()
+        if (jvm == null) {
             return;
         }
     }
