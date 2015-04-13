@@ -66,7 +66,7 @@ public class NodeFigure extends Figure {
 
     private boolean dummy;
 
-    public static final Color START_COLOR = new Color(null, new RGB(191, 218, 115));
+    public static final Color START_COLOR = new Color(null, new RGB(153, 218, 39));
 
     private ConnectionFigure targetConnection;
 
