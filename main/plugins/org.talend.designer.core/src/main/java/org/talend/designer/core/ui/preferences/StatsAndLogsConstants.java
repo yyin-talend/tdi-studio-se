@@ -144,7 +144,7 @@ public class StatsAndLogsConstants {
     public static final String[] PSQL_VERSION_CODE = new String[] { "PRIOR_TO_V9", "V9_X" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
     public static final String[] PSQL_VERSION_DRIVER = new String[] {
-            "postgresql-8.3-603.jdbc3.jar", "postgresql-9.2-1003.jdbc3.jar" }; //$NON-NLS-1$ 
+            "postgresql-8.3-603.jdbc3.jar", "postgresql-9.4-1201.jdbc41.jar" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
     public static final String[][] DISPLAY_DBNAMES = new String[][] { PERL_DISPLAY_DBNAMES, JAVA_DISPLAY_DBNAMES };
 
