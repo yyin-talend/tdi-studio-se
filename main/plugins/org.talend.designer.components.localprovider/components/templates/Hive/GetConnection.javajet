@@ -82,7 +82,6 @@ java.sql.Connection conn_<%=cid%> = null;
 
 		boolean useSsl = "true".equals(ElementParameterParser.getValue(node, "__USE_SSL__"));
 		String sslTrustStore = ElementParameterParser.getValue(node, "__SSL_TRUST_STORE__");
-		String sslTrustStorePassword = ElementParameterParser.getValue(node, "__SSL_TRUST_STORE_PASSWORD__");
 
 		if(hiveServer!=null && !"".equals(hiveServer.trim()) && (isCustom || ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion) || "Cloudera_CDH4".equals(hiveVersion) || "Cloudera_CDH4_YARN".equals(hiveVersion) || "Cloudera_CDH5".equals(hiveVersion) || "Cloudera_CDH5_1".equals(hiveVersion) || "Cloudera_CDH5_1_MR1".equals(hiveVersion) || "MAPR213".equals(hiveVersion) || "MAPR301".equals(hiveVersion) || "MAPR310".equals(hiveVersion) || "MAPR401".equals(hiveVersion) || "HDP_2_0".equals(hiveVersion) || "HDP_2_1".equals(hiveVersion) || "HDP_2_2".equals(hiveVersion) || "PIVOTAL_HD_2_0".equals(hiveVersion)))) {
 			hiveServer = hiveServer.toLowerCase();
@@ -216,8 +215,18 @@ java.sql.Connection conn_<%=cid%> = null;
 				} else {
 					// Using SSL in non Secure Mode
 					if(useSsl){
+						String sslStorepasswordFieldName = "__SSL_TRUST_STORE_PASSWORD__";
+						if (ElementParameterParser.canEncrypt(node, sslStorepasswordFieldName)) {
 %>
-						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>+ ";ssl=true" +";sslTrustStore=" + <%=sslTrustStore%> + ";trustStorePassword=" + <%=sslTrustStorePassword%>;
+							String decryptedSslStorePassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, sslStorepasswordFieldName)%>);
+<%
+						}else{
+%>
+							String decryptedSslStorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, sslStorepasswordFieldName)%>; 
+<%
+						}
+%>
+						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>+ ";ssl=true" +";sslTrustStore=" + <%=sslTrustStore%> + ";trustStorePassword=" + decryptedSslStorePassword_<%=cid%>;
 <%
 					}else{
 %>
