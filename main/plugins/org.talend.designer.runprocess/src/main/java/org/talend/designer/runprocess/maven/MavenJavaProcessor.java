@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -64,7 +63,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         super.generateCode(statistics, trace, javaProperties);
         if (property != null) { // only job, if Shadow Process, will be null.
             // generatePom();
-//            removeGeneratedJobs(null);
+            // removeGeneratedJobs(null);
         }
     }
 
@@ -187,20 +186,23 @@ public class MavenJavaProcessor extends JavaProcessor {
     @Override
     protected String getExportJarsStr() {
         // use the maven way for jar
-        final String libPrefixPath = getLibPrefixPath(true);
-        final String classPathSeparator = extractClassPathSeparator();
+        // final String libPrefixPath = getLibPrefixPath(true);
+        // final String classPathSeparator = extractClassPathSeparator();
+        //
+        // String jarName = JavaResourcesHelper.getJobJarName(process.getName(), process.getVersion());
+        // String exportJar = libPrefixPath + getBaseLibPath() + JavaUtils.PATH_SEPARATOR + jarName +
+        // FileExtensions.JAR_FILE_SUFFIX;
+        //
+        // Set<JobInfo> infos = getBuildChildrenJobs();
+        // for (JobInfo jobInfo : infos) {
+        // String childJarName = JavaResourcesHelper.getJobJarName(jobInfo.getJobName(), jobInfo.getJobVersion());
+        // exportJar += classPathSeparator + libPrefixPath + getBaseLibPath() + JavaUtils.PATH_SEPARATOR + childJarName
+        // + FileExtensions.JAR_FILE_SUFFIX;
+        // }
+        // return exportJar;
 
-        String jarName = JavaResourcesHelper.getJobJarName(process.getName(), process.getVersion());
-        String exportJar = libPrefixPath + getBaseLibPath() + JavaUtils.PATH_SEPARATOR + jarName + FileExtensions.JAR_FILE_SUFFIX;
-
-        Set<JobInfo> infos = getBuildChildrenJobs();
-        for (JobInfo jobInfo : infos) {
-            String childJarName = JavaResourcesHelper.getJobJarName(jobInfo.getJobName(), jobInfo.getJobVersion());
-            exportJar += classPathSeparator + libPrefixPath + getBaseLibPath() + JavaUtils.PATH_SEPARATOR + childJarName
-                    + FileExtensions.JAR_FILE_SUFFIX;
-        }
-        return exportJar;
-
+        /* don't add lib path for job jars and use old name of jar, so still use old way */
+        return super.getExportJarsStr();
     }
 
     @Override
@@ -213,20 +215,20 @@ public class MavenJavaProcessor extends JavaProcessor {
         }
 
         talendJavaProject.buildModules(getGoals(), null);
-//        try {
-//
-//            IFolder jobSrcFolder = talendJavaProject.getProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
-//            if (jobSrcFolder.exists()) {
-//                jobSrcFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-//            }
-//            if (isTestJob) {
-//                talendJavaProject.getTestOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
-//            } else {
-//                talendJavaProject.getOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
-//            }
-//        } catch (CoreException e) {
-//            ExceptionHandler.process(e);
-//        }
+        // try {
+        //
+        // IFolder jobSrcFolder = talendJavaProject.getProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
+        // if (jobSrcFolder.exists()) {
+        // jobSrcFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+        // }
+        // if (isTestJob) {
+        // talendJavaProject.getTestOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
+        // } else {
+        // talendJavaProject.getOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
+        // }
+        // } catch (CoreException e) {
+        // ExceptionHandler.process(e);
+        // }
     }
 
     protected String getGoals() {
