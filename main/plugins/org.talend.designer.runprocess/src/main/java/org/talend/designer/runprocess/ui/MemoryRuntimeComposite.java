@@ -27,6 +27,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -91,6 +93,127 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         addListeners();
     }
 
+    /**
+     * DOC ldong Comment method "initGraphicComponents".
+     * 
+     * @param parent
+     */
+    private void initGraphicComponents(Composite parent) {
+        initRuntimeGraphs(parent);
+        connectToJvm();
+    }
+
+    private void initRuntimeGraphs(final Composite parent) {
+        ISelection selection = viewPart.getSite().getSelectionProvider() == null ? null : viewPart.getSelection();
+        setExpandHorizontal(true);
+        setExpandVertical(true);
+        FormData layouData = new FormData();
+        layouData.left = new FormAttachment(0, 0);
+        layouData.right = new FormAttachment(100, 0);
+        layouData.top = new FormAttachment(0, 0);
+        layouData.bottom = new FormAttachment(100, 0);
+        this.setBackground(parent.getBackground());
+        this.setLayout(new FormLayout());
+        setLayoutData(layouData);
+
+        monitorComposite = new Composite(this, SWT.NULL);
+        FormData baseData = new FormData();
+        baseData.left = new FormAttachment(0, 0);
+        baseData.right = new FormAttachment(100, 0);
+        baseData.top = new FormAttachment(0, 0);
+        baseData.bottom = new FormAttachment(100, 0);
+        monitorComposite.setLayout(new FormLayout());
+        monitorComposite.setLayoutData(layouData);
+        setContent(monitorComposite);
+
+        Group topGroup = createTopGroup(monitorComposite);
+        runtimeButton = new Button(topGroup, SWT.PUSH);
+        runtimeButton.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+        runtimeButton.setText("run"); //$NON-NLS-1$
+        FormData runButtonData = new FormData();
+        Point execSize = null;
+        runButtonData.left = new FormAttachment(0, 10);
+
+        execSize = computeSize(runtimeButton.getText());
+        runButtonData.right = new FormAttachment(0, execSize.x + 70);
+        runButtonData.height = 25;
+        runtimeButton.setLayoutData(runButtonData);
+
+        Label periodLabel = new Label(topGroup, SWT.NULL);
+        periodLabel.setText(Messages.getString("ProcessView.moniorPeriod")); //$NON-NLS-1$
+        periodLabel.setBackground(getBackground());
+        FormData periodLabelData = new FormData();
+        periodLabelData.left = new FormAttachment(runtimeButton, 20, SWT.RIGHT);
+        periodLabelData.right = new FormAttachment(runtimeButton, 220, SWT.RIGHT);
+        periodLabelData.top = new FormAttachment(0, 5);
+        periodLabelData.bottom = new FormAttachment(100, 0);
+        periodLabelData.height = 30;
+        periodLabel.setLayoutData(periodLabelData);
+
+        periodCombo = new Combo(topGroup, SWT.READ_ONLY);
+        FormData periodData = new FormData();
+        periodData.left = new FormAttachment(periodLabel, 10, SWT.RIGHT);
+        periodData.right = new FormAttachment(periodLabel, 100, SWT.RIGHT);
+        periodData.height = 25;
+        periodCombo.setLayoutData(periodData);
+        periodCombo.setItems(new String[] { "30 seconds", "60 seconds", "120 seconds" });
+        periodCombo.select(0);
+
+        chartComposite = new RuntimeGraphcsComposite(monitorComposite, selection, SWT.NULL);
+        FormLayout rgcLayout = new FormLayout();
+        FormData charLayData = new FormData();
+        charLayData.left = new FormAttachment(0, 10);
+        charLayData.right = new FormAttachment(100, 0);
+        charLayData.top = new FormAttachment(20, 5);
+        charLayData.bottom = new FormAttachment(100, 0);
+        chartComposite.setLayout(rgcLayout);
+        chartComposite.setLayoutData(charLayData);
+    }
+
+    private void connectToJvm() {
+        if (currentJvm != null && !currentJvm.isConnected() && isEnabled()) {
+            try {
+                currentJvm.connect(1000);
+            } catch (JvmCoreException e) {
+                Activator.log(NLS.bind("Jvm failed", currentJvm.getPid()), e);
+            }
+        }
+    }
+
+    private Group createTopGroup(Composite parent) {
+        Composite topComposite = new Composite(parent, SWT.NULL);
+        FormLayout topLayout = new FormLayout();
+        FormData topData = new FormData();
+        topData.left = new FormAttachment(0, 10);
+        topData.right = new FormAttachment(100, 0);
+        topData.top = new FormAttachment(0, 0);
+        topComposite.setLayout(topLayout);
+        topComposite.setLayoutData(topData);
+
+        Group topGroup = new Group(topComposite, SWT.NULL);
+        topGroup.setText("Monitor Control"); //$NON-NLS-1$
+        FormLayout groupLayout = new FormLayout();
+        groupLayout.marginHeight = 2;
+        groupLayout.marginWidth = 2;
+        groupLayout.spacing = 7;
+        FormData groupData = new FormData();
+        groupData.left = new FormAttachment(0, 0);
+        groupData.right = new FormAttachment(100, 0);
+        groupData.top = new FormAttachment(0, 0);
+        groupData.bottom = new FormAttachment(100, 0);
+        topGroup.setLayout(groupLayout);
+        topGroup.setLayoutData(groupData);
+
+        return topGroup;
+    }
+
+    private Point computeSize(String text) {
+        GC gc = new GC(runtimeButton.getDisplay());
+        final Point p = gc.textExtent(text);
+        gc.dispose();
+        return p;
+    }
+
     private void addListeners() {
         runtimeButton.addSelectionListener(new SelectionAdapter() {
 
@@ -117,6 +240,35 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
             }
         };
 
+    }
+
+    private void initCurrentActiveJobJvm() {
+        JvmModel jvmModel = JvmModel.getInstance();
+        String jobClassName = JavaResourcesHelper.getJobClassName(processContext.getProcess());
+        List<IActiveJvm> activateJvms = jvmModel.getHost(IHost.LOCALHOST).getActiveJvms();
+        for (IActiveJvm jvm : activateJvms) {
+            if (jvm.getMainClass().equals(jobClassName)) {
+                currentJvm = jvm;
+                break;
+            }
+        }
+    }
+
+    private void initMonitoringModel() {
+        final List<IActiveJvm> contructSelections = new ArrayList<IActiveJvm>();
+        contructSelections.add(currentJvm);
+        if (currentJvm != null) {
+            viewPart.getSite()
+                    .setSelectionProvider(new ProcessViewSelectionProvider(new StructuredSelection(contructSelections)));
+        }
+    }
+
+    private void refreshMonitorComposite() {
+        if (monitorComposite != null && !monitorComposite.isDisposed()) {
+            monitorComposite.dispose();
+        }
+        initGraphicComponents(this);
+        monitorComposite.layout();
     }
 
     private void runProcessContextChanged(final PropertyChangeEvent evt) {
@@ -156,146 +308,6 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         if (processContext != null) {
             processContext.addPropertyChangeListener(propertyChangeListener);
         }
-    }
-
-    private void refreshMonitorComposite() {
-        if (monitorComposite != null && !monitorComposite.isDisposed()) {
-            monitorComposite.dispose();
-        }
-        initGraphicComponents(this);
-        monitorComposite.layout();
-    }
-
-    private void initCurrentActiveJobJvm() {
-        JvmModel jvmModel = JvmModel.getInstance();
-        String jobClassName = JavaResourcesHelper.getJobClassName(processContext.getProcess());
-        List<IActiveJvm> activateJvms = jvmModel.getHost(IHost.LOCALHOST).getActiveJvms();
-        for (IActiveJvm jvm : activateJvms) {
-            if (jvm.getMainClass().equals(jobClassName)) {
-                currentJvm = jvm;
-                break;
-            }
-        }
-    }
-
-    private void initMonitoringModel() {
-        final List<IActiveJvm> contructSelections = new ArrayList<IActiveJvm>();
-        contructSelections.add(currentJvm);
-        if (currentJvm != null) {
-            viewPart.getSite()
-                    .setSelectionProvider(new ProcessViewSelectionProvider(new StructuredSelection(contructSelections)));
-        }
-    }
-
-    private void initRuntimeGraphs(final Composite parent) {
-        ISelection selection = viewPart.getSite().getSelectionProvider() == null ? null : viewPart.getSelection();
-        setExpandHorizontal(true);
-        setExpandVertical(true);
-        FormData layouData = new FormData();
-        layouData.left = new FormAttachment(0, 0);
-        layouData.right = new FormAttachment(100, 0);
-        layouData.top = new FormAttachment(0, 0);
-        layouData.bottom = new FormAttachment(100, 0);
-        this.setBackground(parent.getBackground());
-        this.setLayout(new FormLayout());
-        setLayoutData(layouData);
-
-        monitorComposite = new Composite(this, SWT.NULL);
-        FormData baseData = new FormData();
-        baseData.left = new FormAttachment(0, 0);
-        baseData.right = new FormAttachment(100, 0);
-        baseData.top = new FormAttachment(0, 0);
-        baseData.bottom = new FormAttachment(100, 0);
-        monitorComposite.setLayout(new FormLayout());
-        monitorComposite.setLayoutData(layouData);
-        setContent(monitorComposite);
-
-        Group topGroup = createTopGroup(monitorComposite);
-        runtimeButton = new Button(topGroup, SWT.PUSH);
-        runtimeButton.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-        runtimeButton.setText("run"); //$NON-NLS-1$
-        FormData runButtonData = new FormData();
-        runButtonData.left = new FormAttachment(0, 20);
-        runButtonData.right = new FormAttachment(15, 0);
-        runButtonData.top = new FormAttachment(0, 5);
-        runButtonData.bottom = new FormAttachment(100, -3);
-        runButtonData.height = 30;
-        runtimeButton.setLayoutData(runButtonData);
-
-        Label periodLabel = new Label(topGroup, SWT.NULL);
-        periodLabel.setText(Messages.getString("ProcessView.moniorPeriod")); //$NON-NLS-1$
-        periodLabel.setBackground(getBackground());
-        FormData periodLabelData = new FormData();
-        periodLabelData.left = new FormAttachment(18, 0);
-        periodLabelData.right = new FormAttachment(50, 0);
-        periodLabelData.top = new FormAttachment(0, 10);
-        periodLabelData.bottom = new FormAttachment(100, 0);
-        periodLabel.setLayoutData(periodLabelData);
-
-        periodCombo = new Combo(topGroup, SWT.READ_ONLY);
-        FormData periodData = new FormData();
-        periodData.left = new FormAttachment(55, 0);
-        periodData.right = new FormAttachment(70, 0);
-        periodData.top = new FormAttachment(0, 5);
-        periodData.bottom = new FormAttachment(100, 0);
-        periodCombo.setLayoutData(periodData);
-        periodCombo.setItems(new String[] { "30 seconds", "60 seconds", "120 seconds" });
-        periodCombo.select(0);
-
-        chartComposite = new RuntimeGraphcsComposite(monitorComposite, selection, SWT.NULL);
-        FormLayout rgcLayout = new FormLayout();
-        FormData charLayData = new FormData();
-        charLayData.left = new FormAttachment(0, 10);
-        charLayData.right = new FormAttachment(100, 0);
-        charLayData.top = new FormAttachment(20, 5);
-        charLayData.bottom = new FormAttachment(100, 0);
-        chartComposite.setLayout(rgcLayout);
-        chartComposite.setLayoutData(charLayData);
-    }
-
-    private Group createTopGroup(Composite parent) {
-        Composite topComposite = new Composite(parent, SWT.NULL);
-        FormLayout topLayout = new FormLayout();
-        FormData topData = new FormData();
-        topData.left = new FormAttachment(0, 10);
-        topData.right = new FormAttachment(100, 0);
-        topData.top = new FormAttachment(0, 0);
-        topData.bottom = new FormAttachment(18, 0);
-        topComposite.setLayout(topLayout);
-        topComposite.setLayoutData(topData);
-
-        Group topGroup = new Group(topComposite, SWT.NULL);
-        topGroup.setText("Monitor Control"); //$NON-NLS-1$
-        FormLayout groupLayout = new FormLayout();
-        FormData groupData = new FormData();
-        groupData.left = new FormAttachment(0, 0);
-        groupData.right = new FormAttachment(100, 0);
-        groupData.top = new FormAttachment(0, 0);
-        groupData.bottom = new FormAttachment(100, 0);
-        topGroup.setLayout(groupLayout);
-        topGroup.setLayoutData(groupData);
-
-        return topGroup;
-    }
-
-    private void connectToJvm() {
-        if (currentJvm != null && !currentJvm.isConnected() && isEnabled()) {
-            try {
-                currentJvm.connect(1000);
-            } catch (JvmCoreException e) {
-                Activator.log(NLS.bind("Jvm failed", currentJvm.getPid()), e);
-            }
-        }
-    }
-
-    /**
-     * DOC ldong Comment method "initGraphicComponents".
-     * 
-     * @param parent
-     */
-    private void initGraphicComponents(Composite parent) {
-        initRuntimeGraphs(parent);
-        connectToJvm();
     }
 
     /*

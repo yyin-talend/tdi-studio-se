@@ -193,4 +193,9 @@ public final class Messages extends NLS {
 
     /** */
     public static String getMemoryPoolAttributeFailedMsg;
+
+    public static String memoryNormalMsg;
+
+    public static String memoryWarningMsg;
+
 }

@@ -21,6 +21,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
@@ -90,6 +91,8 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
 
     private Composite reportComposite;
 
+    private ScrolledComposite chartScrollCom;
+
     public RuntimeGraphcsComposite(Composite parent, ISelection selection, int style) {
         super(parent, selection, style);
         charts = new ArrayList<TimelineChart>();
@@ -101,7 +104,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
     @Override
     protected void refresh() {
         refreshConnectionIndicator();
-        // refreshReportField();
+        refreshReportField();
 
         IActiveJvm jvm = getJvm();
         if (jvm == null || !jvm.isConnected() || isRefreshSuspended() || chartsPage.isDisposed()) {
@@ -132,7 +135,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
                             useHeapSize = values.get(values.size() - 1);
                             lastDate = dates.get(dates.size() - 1);
                         }
-                    } else {
+                    } else if (attribute.getAttributeName().equals(MonitorAttributeName.HEAP_MEMORY_SIZE)) {
                         List<Number> values = attribute.getValues();
                         List<Date> dates = attribute.getDates();
                         if (values.size() > 1) {
@@ -166,18 +169,22 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
     }
 
     private void setWarningReport(Date lastDate) {
-        StringBuilder finalContent = new StringBuilder();
-        finalContent.append("Warning:the heap memory is nearly max size at ");
-        finalContent.append(lastDate.toString());
-        reportField.setText(finalContent.toString());
-        reportField.setForeground(new Color(Display.getDefault(), 255, 0, 0));
-        reportField.setTopIndex(Integer.MAX_VALUE);
+        if (reportField != null && !reportField.isDisposed()) {
+            StringBuilder finalContent = new StringBuilder();
+            finalContent.append(Messages.memoryWarningMsg);
+            finalContent.append(" "); //$NON-NLS-1$
+            finalContent.append(lastDate.toString());
+            reportField.setText(finalContent.toString());
+            reportField.setForeground(new Color(Display.getDefault(), 255, 0, 0));
+            reportField.setTopIndex(Integer.MAX_VALUE);
+        }
     }
 
     private void setNormalReport(Date lastDate) {
         if (reportField != null && !reportField.isDisposed()) {
             StringBuilder finalContent = new StringBuilder();
-            finalContent.append("Info:Heap memory is normal at ");
+            finalContent.append(Messages.memoryNormalMsg);
+            finalContent.append(" "); //$NON-NLS-1$
             finalContent.append(lastDate.toString());
             reportField.setText(finalContent.toString());
             reportField.setForeground(new Color(Display.getDefault(), 0, 0, 0));
@@ -238,22 +245,48 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
             return;
         }
 
-        // chartsPage.setVisible(false);
         for (TimelineChart chart : charts) {
             chart.dispose();
         }
         charts.clear();
 
-        if (reportComposite != null && !reportComposite.isDisposed()) {
-            reportComposite.dispose();
+        if (chartScrollCom != null && !chartScrollCom.isDisposed()) {
+            chartScrollCom.dispose();
         }
+
+        chartScrollCom = new ScrolledComposite(chartsPage, SWT.V_SCROLL | SWT.H_SCROLL);
+        chartScrollCom.setExpandHorizontal(true);
+        chartScrollCom.setExpandVertical(true);
+        chartScrollCom.setMinHeight(400);
+        FormLayout scrollLayout = new FormLayout();
+        scrollLayout.marginHeight = 0;
+        scrollLayout.marginWidth = 0;
+        chartScrollCom.setLayout(scrollLayout);
+        FormData pageData = new FormData();
+        pageData.top = new FormAttachment(0, 0);
+        pageData.bottom = new FormAttachment(100, 0);
+        pageData.left = new FormAttachment(0, 0);
+        pageData.right = new FormAttachment(100, 0);
+        chartScrollCom.setLayoutData(pageData);
+
+        Composite chartComposite = new Composite(chartScrollCom, SWT.NONE);
+        chartScrollCom.setContent(chartComposite);
+        FormLayout chartLayout = new FormLayout();
+        chartLayout.marginHeight = 0;
+        chartLayout.marginWidth = 0;
+        chartComposite.setLayout(chartLayout);
+        FormData chartComData = new FormData();
+        chartComData.top = new FormAttachment(0, 0);
+        chartComData.bottom = new FormAttachment(100, 0);
+        chartComData.left = new FormAttachment(0, 0);
+        chartComData.right = new FormAttachment(100, 0);
+        chartComposite.setLayoutData(chartComData);
 
         for (IMonitoredMXBeanGroup group : groups) {
-            createSection(chartsPage, group);
+            createSection(chartComposite, group);
         }
 
-        createReportField();
-
+        createReportField(chartComposite);
         chartsPage.layout();
         chartsPage.setVisible(true);
         refresh();
@@ -299,9 +332,9 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         FormData sectionData = new FormData();
         if (group.getName().equals(MonitorAttributeName.HEAP_MEMORY)) {
             sectionData.left = new FormAttachment(0, 0);
-            sectionData.right = new FormAttachment(60, 0);
+            sectionData.right = new FormAttachment(65, 0);
             sectionData.top = new FormAttachment(0, 0);
-            sectionData.bottom = new FormAttachment(60, -5);
+            sectionData.bottom = new FormAttachment(55, -5);
         } else if (group.getName().equals(MonitorAttributeName.THREAD_COUNT)) {
             sectionData.left = new FormAttachment(50, 5);
             sectionData.right = new FormAttachment(100, -5);
@@ -309,8 +342,8 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
             sectionData.bottom = new FormAttachment(100, 0);
         } else if (group.getName().equals(MonitorAttributeName.CPU_USE)) {
             sectionData.left = new FormAttachment(0, 0);
-            sectionData.right = new FormAttachment(60, 0);
-            sectionData.top = new FormAttachment(60, 2);
+            sectionData.right = new FormAttachment(65, 0);
+            sectionData.top = new FormAttachment(55, 0);
             sectionData.bottom = new FormAttachment(100, 0);
         }
         section.setLayoutData(sectionData);
@@ -330,7 +363,6 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         data.top = new FormAttachment(0, 0);
         data.bottom = new FormAttachment(100, 0);
         chart.setLayoutData(data);
-
         section.setClient(flatFormComposite);
         List<Action> actions = new ArrayList<Action>();
         for (IMonitoredMXBeanAttribute attribute : group.getAttributes()) {
@@ -363,8 +395,6 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
     protected void createControls(Composite parent) {
 
         chartsPage = new Composite(parent, SWT.NULL);
-        // messagePage = createMessagePage(parent);
-
         parent.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 
         FormLayout formLayout = new FormLayout();
@@ -420,17 +450,17 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         return messagePage;
     }
 
-    private void createReportField() {
-        reportComposite = createFlatFormComposite(chartsPage, new FormToolkit(Display.getDefault()));
+    private void createReportField(Composite parent) {
+        reportComposite = createFlatFormComposite(parent, new FormToolkit(Display.getDefault()));
         FormLayout reportLayout = new FormLayout();
         reportLayout.marginWidth = 0;
         reportLayout.marginHeight = 0;
         reportComposite.setLayout(reportLayout);
         FormData reportData = new FormData();
-        reportData.left = new FormAttachment(60, 5);
+        reportData.left = new FormAttachment(65, 5);
         reportData.right = new FormAttachment(100, -5);
         reportData.top = new FormAttachment(0, 0);
-        reportData.bottom = new FormAttachment(50, -5);
+        reportData.bottom = new FormAttachment(40, -5);
         reportComposite.setLayoutData(reportData);
 
         Group group = new Group(reportComposite, SWT.NULL);
