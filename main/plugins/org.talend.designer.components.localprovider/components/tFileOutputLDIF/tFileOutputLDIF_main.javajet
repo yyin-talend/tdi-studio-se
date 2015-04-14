@@ -1,7 +1,7 @@
-<%@ jet 
+<%@ jet
 	imports="
 		org.talend.core.model.process.INode
-		org.talend.core.model.process.ElementParameterParser  
+		org.talend.core.model.process.ElementParameterParser
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
@@ -28,9 +28,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = node.getUniqueName();
         String changetype = ElementParameterParser.getValue(node, "__CHANGETYPE__");
-        boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));		
+        boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));
         String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
-        
+
         List<Map<String, String>> multiValueColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MULTIVALUECOLUMNS__");
         List<Map<String, String>> modifyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MODIFYCONFIG__");
 %>
@@ -39,54 +39,54 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
     	List<? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    		
-%> 
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
 		StringBuilder sb_<%=cid %> = new StringBuilder();
 		boolean needSeparator_<%=cid %> = false;
-		boolean canOutput_<%=cid %> = false;				   		
+		boolean canOutput_<%=cid %> = false;
 		boolean isPrintable_<%=cid %> = false;
-<%		
+<%
     			boolean generateOneAlready = false; //only for Modify append the char '-'
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
     			boolean firstLoop = true;
-    			for (int i = 0; i < sizeColumns; i++) {    				
+    			for (int i = 0; i < sizeColumns; i++) {
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 %>
 		encodingBase64_<%=cid%> = false;
 		String value_<%=column.getLabel() %>_<%=cid %> = "";
 		<%//For bug TDI-26863
 		String modify_operation = null;
 		for(Map<String, String> line:modifyColumns){
-			String columnName = line.get("SCHEMA_COLUMN");				
+			String columnName = line.get("SCHEMA_COLUMN");
 			if(column.getLabel().equals(columnName)){
 				modify_operation = line.get("OPERATION");
 				break;
 			}
-		}		
+		}
 		if(i > 1 && "modify".equals(changetype) && !("none".equals(modify_operation))) {
 		%>
 			if(needSeparator_<%=cid %>){
 				sb_<%=cid %>.append("-\n");
 				needSeparator_<%=cid %> = false;
-			} 
+			}
 		<%
 		}
 					if(!isPrimitive) {
-%>   				
+%>
 	    if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !("").equals(<%=conn.getName() %>.<%=column.getLabel() %>)) {
 <%
 } // closure for if(!isPrimitive) Line: 76
 %>
-    	value_<%=column.getLabel() %>_<%=cid %> =  						
+    	value_<%=column.getLabel() %>_<%=cid %> =
 <%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
 %>
 		FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
-<%				
+<%
 					} else if(javaType == JavaTypesManager.STRING) {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %>;
@@ -105,15 +105,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					}
 	if(i==0) {
-%>		
+%>
 		util_<%=cid %>.breakString(sb_<%=cid %>, dn_<%=cid %> + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-<%if(!"none".equals(changetype)){%>		
+<%if(!"none".equals(changetype)){%>
         util_<%=cid %>.breakString(sb_<%=cid %>, changetype_<%=cid %> + "<%=changetype %>", wrap_<%=cid %>);
 <%}%>
 
 <%if("delete".equals(changetype)){%>
-	canOutput_<%=cid %> = true;        
-<%}%> 
+	canOutput_<%=cid %> = true;
+<%}%>
 
 <%
 	if(!isPrimitive) {
@@ -128,22 +128,22 @@ if ("delete".equals(changetype)) {
 	if(!isPrimitive) {
 %>
 	    }
-<%					
-	} 
+<%
 	}
-	firstLoop = false; 
-	break; 
+	}
+	firstLoop = false;
+	break;
 }
 if ("modify".equals(changetype)) {
 		String operation = null;
-		boolean isMultiValue = false;   
+		boolean isMultiValue = false;
 		String separator = null;
 		boolean isBinary = false;
 		boolean isBase64 = false;
 		for(Map<String, String> line:modifyColumns){// search in the configuration table
-				String columnName = line.get("SCHEMA_COLUMN");				
+				String columnName = line.get("SCHEMA_COLUMN");
 				if(column.getLabel().equals(columnName)){
-					operation = line.get("OPERATION");					
+					operation = line.get("OPERATION");
 					isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
 					separator = line.get("SEPARATOR");
 					isBinary = "true".equals(line.get("BINARY"));
@@ -159,22 +159,22 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 					}
 					if(isBinary || isBase64){
 						%>
-						// Convert binary or Base64 value to Base64 encoded string				
+						// Convert binary or Base64 value to Base64 encoded string
 						encodingBase64_<%=cid%> = true;
-						<%	
+						<%
 					}
 					break;
 				}
-		}	
+		}
 %>
 
 <%if(!"none".equals(operation)){%>
 	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=operation %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
-	<%if(isMultiValue){%>		
+	<%if(isMultiValue){%>
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
 			// follow LDIF rules or not
-            <% 
+            <%
                if(willValidateDN){
                		%>
                		   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(item_<%=cid %>));
@@ -211,18 +211,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                 }else if(column_sub.getLabel().equals(column.getLabel())){
 					if(isBase64){
 %>
-				<% 
-				   if(!willValidateDN){
-				        %>
-				           if(!isPrintable_<%=cid %>)
-				        <%
-				   }else{
-				   		%>
-				   		   if(encodingBase64_<%=cid%>)
-				   		<%
-				   }
-				 %>
-						{
+						if(!isPrintable_<%=cid %>){
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
 						}else{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
@@ -235,7 +224,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 					        <%
 					   }else{
 					   		%>
-					   			if(encodingBase64_<%=cid%>){
+					   			if(encodingBase64_<%=cid%> && !isPrintable_<%=cid %>){
 					   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
 					   			}else{
 					   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
@@ -247,11 +236,11 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
             }
 %>
 		}
-<%			
+<%
 	}else{
 %>
 		// follow LDIF rules or not
-		<% 
+		<%
 		   if(willValidateDN){
 		   		%>
 		   		   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(value_<%=column.getLabel() %>_<%=cid %>));
@@ -285,18 +274,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                 }else if(column_sub.getLabel().equals(column.getLabel())){
 					if(isBase64){
 %>
-					<% 
-					   if(!willValidateDN){
-					        %>
-					           if(!isPrintable_<%=cid %>)
-					        <%
-					   }else{
-					   		%>
-					   		   if(encodingBase64_<%=cid%>)
-					   		<%
-					   }
-					 %>
-						{
+                        if(!isPrintable_<%=cid %>){
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 						}else{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
@@ -309,7 +287,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 						        <%
 						   }else{
 						   		%>
-						   			if(encodingBase64_<%=cid%>){
+						   			if(encodingBase64_<%=cid%> && !isPrintable_<%=cid %>){
 						   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 						   			}else{
 						   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
@@ -322,7 +300,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 	}
 %>
 	needSeparator_<%=cid %> = true;
-	canOutput_<%=cid %> = true;   	
+	canOutput_<%=cid %> = true;
 <%}
   if(i==sizeColumns - 1){
 %>
@@ -330,13 +308,13 @@ sb_<%=cid %>.append("-\n");
 <%}
 }// here end the if modify
 %>
-<% if ("add".equals(changetype) || "none".equals(changetype)) {   
+<% if ("add".equals(changetype) || "none".equals(changetype)) {
 		boolean isMultiValue = false;
 		String separator = null;
 		boolean isBinary = false;
 		boolean isBase64 = false;
 		for(Map<String, String> line:multiValueColumns){// search in the configuration table
-				String columnName = line.get("SCHEMA_COLUMN");				
+				String columnName = line.get("SCHEMA_COLUMN");
 				if(column.getLabel().equals(columnName)){
 					isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
 					separator = line.get("SEPARATOR");
@@ -353,9 +331,9 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                     }
 					if(isBinary || isBase64){
 						%>
-						// Convert binary or Base64 value to Base64 encoded string				
+						// Convert binary or Base64 value to Base64 encoded string
 						encodingBase64_<%=cid%> = true;
-						<%	
+						<%
 					}
 					break;
 				}
@@ -365,7 +343,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
 		        //follow LDIF rules or not
-		        <% 
+		        <%
 		           if(willValidateDN){
 		           		%>
 		           		   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(item_<%=cid %>));
@@ -402,18 +380,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                     }else if(column_sub.getLabel().equals(column.getLabel())){
     					if(isBase64){
 %>
-						<% 
-						   if(!willValidateDN){
-						        %>
-						           if(!isPrintable_<%=cid %>)
-						        <%
-						   }else{
-						   		%>
-						   		   if(encodingBase64_<%=cid%>)
-						   		<%
-						   }
-						 %>
-    						{
+                            if(!isPrintable_<%=cid %>){
     							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
     						}else{
     							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
@@ -426,7 +393,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 							        <%
 							   }else{
 							   		%>
-							   			if(encodingBase64_<%=cid%>){
+							   			if(encodingBase64_<%=cid%> && !isPrintable_<%=cid %>){
 							   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
 							   			}else{
 							   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
@@ -442,7 +409,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 	}else{
 %>
                 // follow LDIF rules or not
-                <% 
+                <%
                    if(willValidateDN){
                    		%>
                    		   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(value_<%=column.getLabel() %>_<%=cid %>));
@@ -476,18 +443,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
                 }else if(column_sub.getLabel().equals(column.getLabel())){
 					if(isBase64){
 %>
-					<% 
-					   if(!willValidateDN){
-					        %>
-					           if(!isPrintable_<%=cid %>)
-					        <%
-					   }else{
-					   		%>
-					   		   if(encodingBase64_<%=cid%>)
-					   		<%
-					   }
-					 %>
-						{
+                        if(!isPrintable_<%=cid %>){
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 						}else{
 							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
@@ -500,7 +456,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 						        <%
 						   }else{
 						   		%>
-						   			if(encodingBase64_<%=cid%>){
+						   			if(encodingBase64_<%=cid%> && !isPrintable_<%=cid %>){
 						   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 						   			}else{
 						   				 util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
@@ -528,33 +484,33 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 	if(!isPrimitive) {
 %>
 	    }
-<%					
-	} 
-%>   				
-<% 
+<%
+	}
+%>
+<%
 }//here end the last for, the List "columns"
-%>						
-		sb_<%=cid %>.append('\n');		
-		
-	if(canOutput_<%=cid %>){		
+%>
+		sb_<%=cid %>.append('\n');
+
+	if(canOutput_<%=cid %>){
 		pw_<%=cid %>.write(sb_<%=cid %>.toString());
 		<% if(flushOnRow) { %>
-            if(nb_line_<%=cid %>%<%=flushMod %> == 0) {		
+            if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
     		pw_<%=cid %>.flush();
     		}
 		<%
 			}
-		%> 		
-		
+		%>
+
     	nb_line_<%=cid %>++;
-    }	
+    }
 <%
 		log4jFileUtil.debugWriteData(node);
 	}
 }//here end the first for, the List "conns"
-%>    	
+%>
     	//////////////////////////
 <%
   }
-}  
+}
 %>

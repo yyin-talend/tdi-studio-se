@@ -1,46 +1,46 @@
-<%@ jet 
+<%@ jet
 imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-	" 
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+  "
 %>
 
 <%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 
 <%
-		CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-		INode node = (INode)codeGenArgument.getArgument();
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
     boolean willValidateDN = "true".equals(ElementParameterParser.getValue(node,"__VALIDATE_DISTINGUISHED_NAME__"));
-        // component id        
+        // component id
         String cid = node.getUniqueName();
         String wrap = ElementParameterParser.getValue(node, "__WRAP__");
         String filename = ElementParameterParser.getValue(node, "__FILENAME__");
-        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");       
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
-        
+
         log4jFileUtil.componentStartInfo(node);
 %>
 
-java.io.File file_<%=cid %> = new java.io.File(<%=filename %>); 
+java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
 boolean isFileGenerated_<%=cid %> = true;
 <%
-		if(isAppend){
+    if(isAppend){
 %>
 if(file_<%=cid %>.exists()){
-	isFileGenerated_<%=cid %> = false;
+  isFileGenerated_<%=cid %> = false;
 }
 <%
-		}
+    }
 if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
 //create directory only if not exists
- java.io.File parentFile_<%=cid%> = file_<%=cid %>.getParentFile();  
- 	if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {  
- 	   parentFile_<%=cid%>.mkdirs();
- 	} 
-<%}%>	
-		    class Util_<%=cid %>
+ java.io.File parentFile_<%=cid%> = file_<%=cid %>.getParentFile();
+  if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {
+     parentFile_<%=cid%>.mkdirs();
+  }
+<%}%>
+        class Util_<%=cid %>
             {
                 public void breakString( StringBuilder pw, String value, int max) {
                     int leftToGo = value.length();
@@ -50,9 +50,9 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                         int toWrite = Math.min( maxChars, leftToGo );
                         String s = value.substring( written, written+toWrite);
                         if ( written != 0 ) {
-                        	pw.append( " " + s );
+                          pw.append( " " + s );
                         } else {
-                        	pw.append( s );
+                          pw.append( s );
                             maxChars -= 1;
                         }
                         written += toWrite;
@@ -60,25 +60,29 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                         pw.append( '\n' );
                     }
                 }
-                
+
                 public String getBase64StringOrNot(boolean encodingBase64,String srcData,String encoding){
-                	String returnValue = "";
-                	try {
-						if(encodingBase64 <% 
+                  String returnValue = "";
+                  try {
+            if(encodingBase64 <%
                   if(!willValidateDN){
                        %>
                           && !netscape.ldap.util.LDIF.isPrintable(srcData.getBytes(encoding))
                        <%
-                }
+                }else{
+                      %>
+                         && needEncodeBase64(srcData)
+                      <%
+              }
              %>){
-							returnValue = org.apache.commons.codec.binary.Base64.encodeBase64String(srcData.getBytes(encoding));
-						}else{
-							returnValue = srcData; 
-						}
-					}catch(java.lang.Exception e){
-						e.printStackTrace();
-					}	
-					return returnValue;
+              returnValue = org.apache.commons.codec.binary.Base64.encodeBase64String(srcData.getBytes(encoding));
+            }else{
+              returnValue = srcData;
+            }
+          }catch(java.lang.Exception e){
+            e.printStackTrace();
+          }
+          return returnValue;
                 }
 
             //Feature: TDI-31864
@@ -86,26 +90,27 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                     boolean isSafeString = true;
                             isSafeString = !distinguishedName.startsWith("#")
                                         && !distinguishedName.startsWith(" ")
-                                        && !distinguishedName.endsWith(" ");
-                            
+                                        && !distinguishedName.endsWith(" ")
+                                        && !distinguishedName.endsWith("\t");
+
                             if(!isSafeString){
                                 return isSafeString;
                             }
-                            
+
                             String[] unsafeCharactersArr = new String[]{
                                     ",", "+", "\"", "\\", "<", ">", ";"
                             };
-                            
+
                             for(String str: unsafeCharactersArr){
                                 isSafeString = isSafeString && !distinguishedName.contains(str);
                                 if(!isSafeString){
                                     break;
                                 }
                             }
-                            
+
                      return isSafeString;
                 }
-                
+
                 /*
                  * NUL ==> \0 ==> 0
                  * LF  ==> \n ==> 10
@@ -116,63 +121,62 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                  * < ==> 60
                  * reference: https://www.ietf.org/rfc/rfc2849.txt
                  */
-                
-                public boolean hasUnSafeCharacters(byte[] bytArr){
-                       boolean hasUnsafeCharacters = false;
+
+                public boolean consistOfSafeCharacters(byte[] bytArr){
+                       boolean consistOfSafeCharacters = true;
                        for(int i=0; i < bytArr.length; i++){
-                           if(i==0){                   
-                               hasUnsafeCharacters = !(
+                           if(i==0){
+                               consistOfSafeCharacters =
                                          ((bytArr[0] > 0) && (bytArr[0] <= 127))
-                                      && (bytArr[0] != 0)
                                       && (bytArr[0] != 10)
                                       && (bytArr[0] != 13)
                                       && (bytArr[0] != 32)
                                       && (bytArr[0] != 58)
                                       && (bytArr[0] != 60)
-                                     );
+                                     ;
                            }else{
-                               hasUnsafeCharacters = !(
-                                       ((bytArr[0] > 0) && (bytArr[0] <= 127))
-                                     && (bytArr[i] != 0)
-                                     && (bytArr[i] != 10)
-                                     && (bytArr[i] != 13)
-                                     )
-                                     && hasUnsafeCharacters;
+                               consistOfSafeCharacters =
+                                    consistOfSafeCharacters &&
+                                    (
+                                         ((bytArr[i] > 0) && (bytArr[i] <= 127))
+                                       && (bytArr[i] != 10)
+                                       && (bytArr[i] != 13)
+                                    );
                            }
-                           if(hasUnsafeCharacters){
-                               return hasUnsafeCharacters;
+                           if(!consistOfSafeCharacters){
+                               return consistOfSafeCharacters;
                            }
                        }
-                       return hasUnsafeCharacters;
+                       return consistOfSafeCharacters;
                 }
-                
+
                 public boolean needEncodeBase64(String distinguishedName){
                     byte[] bytArr = null;
                            try{
-                               bytArr = distinguishedName.getBytes("UTF-8");
+                               bytArr = distinguishedName.getBytes(<%= encoding %>);
                            }catch(java.io.UnsupportedEncodingException e){
                                 throw new RuntimeException(e);
                            }
-                    return !isSafeUTF8String(distinguishedName) || hasUnSafeCharacters(bytArr);
+                    return !isSafeUTF8String(distinguishedName) || !consistOfSafeCharacters(bytArr);
                 }
-            } 
-            
-		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
-		
-		int nb_line_<%=cid %> = 0;
-		final String dn_<%=cid %> = "dn: ";
-		final String changetype_<%=cid %> = "changetype: ";
-		final int wrap_<%=cid %> = <%=wrap %>;
+            }
+
+    Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
+
+    int nb_line_<%=cid %> = 0;
+    final String dn_<%=cid %> = "dn: ";
+    final String changetype_<%=cid %> = "changetype: ";
+    final int wrap_<%=cid %> = <%=wrap %>;
 <%if(!isAppend){%>
-       	java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter(file_<%=cid %>, <%= encoding%>);
+        java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter(file_<%=cid %>, <%= encoding%>);
 <%}else{%>
-		java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter
-										(new java.io.BufferedWriter
-										(new java.io.OutputStreamWriter
-										(new java.io.FileOutputStream
-										(file_<%=cid %>,true),<%= encoding%>)),false);
+    java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter
+                    (new java.io.BufferedWriter
+                    (new java.io.OutputStreamWriter
+                    (new java.io.FileOutputStream
+                    (file_<%=cid %>,true),<%= encoding%>)),false);
 <%}%>
 
 if(file_<%=cid %>.length()==0){
-	pw_<%=cid %>.write("version: 1\n");
+  pw_<%=cid %>.write("version: 1\n");
 }
