@@ -60,10 +60,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		int dynamic_index = -1;
 		boolean hasDynamic = false;
 		List<IMetadataColumn> columnList = metadata.getListColumns();
+		String datePattern = "\"dd-MM-yyyy\"";
 		for(int i=0; columnList!=null && i< columnList.size(); i++) {
 	        if(columnList.get(i).getTalendType().equals("id_Dynamic")){
 	            dynamic_index = i+1;
 	            hasDynamic = true;
+	            datePattern= columnList.get(i).getPattern();
 	            break;
 	        }
 		}
@@ -109,7 +111,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							<%
 							}else if(!eventMode){
 							%>
-			    				String content_<%=cid%> = row_<%= cid %>.getCell(i)==null?null:row_<%= cid %>.getCell(i).getStringCellValue();
+			    				String content_<%=cid%> = row_<%= cid %>.getCell(i)==null?null:row_<%= cid %>.getCell(i).getRawValue();
 			    			<%
 			    			}else{
 			    			%>
@@ -312,10 +314,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if(begin_line_<%=cid%> > 0){
 				begin_line_<%=cid%> = begin_line_<%=cid%> - 1;
 			}
+			boolean isFirstRow_<%=cid%>=true;
 		<%
 		}
 		%>
 		<%log4jFileUtil.startRetriveDataInfo();%>
+		
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
 
         	int emptyColumnCount_<%= cid %> = 0;
@@ -338,14 +342,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	}else{
 %>
-            if (rowCount_<%= cid %> <= i_<%= cid %> && i_<%= cid %> - rowCount_<%= cid %> >= begin_line_<%= cid %> && currentRows_<%= cid %> - footer_input_<%= cid %> > i_<%= cid %> - rowCount_<%= cid %>) {
+            if (rowCount_<%= cid %> <= i_<%= cid %> && i_<%= cid %> - rowCount_<%= cid %> >= (<%if(!hasDynamic){%>begin_line_<%= cid %><%}else{%>isFirstRow_<%=cid%>?begin_line_<%= cid %>:(begin_line_<%= cid %>+1)<%}%>)
+            	&& currentRows_<%= cid %> - footer_input_<%= cid %> > i_<%= cid %> - rowCount_<%= cid %>) {
                 row_<%= cid %> = sheet_<%= cid %>.getRow(i_<%= cid %> - rowCount_<%= cid %>);
             }else{
             	continue;
             }
 <%
     }
+    	if(hasDynamic){
 %>
+			isFirstRow_<%=cid%> = false;
+		<%
+		}
+		%>
         	globalMap.put("<%=cid %>_CURRENT_SHEET",sheet_<%=cid %>.getName());
 <%
 //begin
@@ -445,8 +455,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						<%
 						}
 //
-//end%>
-			if(<%=column.getTalendType().equals("id_Dynamic")%> || temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() > 0) {
+//end
+		if(!column.getTalendType().equals("id_Dynamic")){
+%>
+			if( temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() > 0) {
+<%
+		}
+%>
 				curColNum_<%=cid %>=columnIndex_<%=cid%> + start_column_<%= cid %> + 1;
 				curColName_<%=cid %> = "<%=column.getLabel() %>";
 <%
@@ -489,10 +504,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				dynamic_column_count_<%=cid%> = dynamic_<%=cid %>.getColumnCount();
 				for (int i = 0; i < dynamic_column_count_<%=cid%> ; i++) {
 					if ((<%=dynamic_index%>+i) < fieldCount){
+						if(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() < 1){
+							emptyColumnCount_<%= cid %>++;
+						}
 						dynamic_<%=cid %>.addColumnValue(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 					}
 					else{
 						dynamic_<%=cid %>.addColumnValue("");
+						emptyColumnCount_<%= cid %>++;
 					}
 				}
 				<%=firstConnName %>.<%=column.getLabel() %> =dynamic_<%=cid %>;
@@ -506,7 +525,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //
 						}
 //
-//end%>
+//end
+		if(!column.getTalendType().equals("id_Dynamic")){
+%>
 			}else {
 <%
 //start
@@ -534,6 +555,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 //start
 //
+		}
 					}%>
 					nb_line_<%=cid%>++;
 					<%log4jFileUtil.debugRetriveData(node);%>
@@ -542,7 +564,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	if(stopOnEmptyRow){
 %>
-        if(emptyColumnCount_<%= cid %> == <%=size %>){
+        if(emptyColumnCount_<%= cid %> >= <%=size %><%if(hasDynamic){%>+dynamic_column_count_<%=cid%>-1<%}%>){
         	break; //if meet the empty row, there will break the iterate.
         }
 <%
@@ -735,6 +757,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if(begin_line_<%=cid%> > 0){
 				begin_line_<%=cid%> = begin_line_<%=cid%> - 1;
 			}
+			boolean isFirstRow_<%=cid%>=true;
 		<%
 		}
 		%>
@@ -762,15 +785,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	}else{
 %>
-            if (rowCount_<%= cid %> <= i_<%= cid %> && i_<%= cid %> - rowCount_<%= cid %> >= begin_line_<%= cid %> && currentRows_<%= cid %> - footer_input_<%= cid %> > i_<%= cid %> - rowCount_<%= cid %>) {
+            if (rowCount_<%= cid %> <= i_<%= cid %> && i_<%= cid %> - rowCount_<%= cid %> >= (<%if(!hasDynamic){%>begin_line_<%= cid %><%}else{%>isFirstRow_<%=cid%>?begin_line_<%= cid %>:(begin_line_<%= cid %>+1)<%}%>)
+            	&& currentRows_<%= cid %> - footer_input_<%= cid %> > i_<%= cid %> - rowCount_<%= cid %>) {
                 row_<%= cid %> = sheet_<%= cid %>.getRow(i_<%= cid %> - rowCount_<%= cid %>);
             }else{
             	continue;
             }
 <%
     }
-%>
-<%
+    	if(hasDynamic){
+	%>
+			isFirstRow_<%=cid%> = false;
+		<%
+		}
 		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 		String rejectConnName = "";
 		List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
@@ -852,10 +879,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
                             if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
 <%
+                            	if(hasDynamic){
+%>
+	                            	if(i>=<%=dynamic_index-1%> && i<(<%=dynamic_index-1%> + dynamic_<%=cid%>.getColumnCount())){
+	                            		temp_row_<%= cid %>[i] = FormatterUtils.format_Date(cell_<%=cid%>.getDateCellValue(),<%=datePattern%>);
+	                            	}else{
+<%
+		                     	}
 								if(converDatetoString){
 %>
-                    	        	if(datelist_<%=cid%>.get(i)){
-                        	        	temp_row_<%= cid %>[i] = FormatterUtils.format_Date(cell_<%=cid%>.getDateCellValue(),patternlist_<%=cid%>.get(i));
+									int dateColIndex_<%= cid %> = i;
+<%
+									if(hasDynamic){
+%>
+										if(i><%=dynamic_index-1%>){
+											dateColIndex_<%= cid %> = i-dynamic_<%=cid%>.getColumnCount()+1;
+										}
+<%
+									}
+%>
+                    	        	if(datelist_<%=cid%>.get(dateColIndex_<%= cid %>)){
+                        	        	temp_row_<%= cid %>[i] = FormatterUtils.format_Date(cell_<%=cid%>.getDateCellValue(),patternlist_<%=cid%>.get(dateColIndex_<%= cid %>));
                             	   	} else{
                                 		temp_row_<%= cid %>[i] = cell_<%=cid%>.getDateCellValue().toString();
                                 	}
@@ -865,6 +909,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 									temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
 <%
 								}
+                            	if(hasDynamic){
+%>
+                            		}
+<%
+                            	}
 %>
                             } else {
                                 temp_row_<%= cid %>[i] = df_<%=cid %>.format(cell_<%=cid%>.getNumericCellValue());
@@ -881,10 +930,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
                                     if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
 <%
+                            			if(hasDynamic){
+%>
+			                            	if(i>=<%=dynamic_index-1%> && i<(<%=dynamic_index-1%> + dynamic_<%=cid%>.getColumnCount())){
+			                            		temp_row_<%= cid %>[i] = FormatterUtils.format_Date(cell_<%=cid%>.getDateCellValue(),<%=datePattern%>);
+			                            	}else{
+<%
+		                     			}
 										if(converDatetoString){
 %>
-                    	        			if(datelist_<%=cid%>.get(i)){
-                        	        			temp_row_<%= cid %>[i] = FormatterUtils.format_Date(cell_<%=cid%>.getDateCellValue(),patternlist_<%=cid%>.get(i));
+											int dateColIndex_<%= cid %> = i;
+<%
+											if(hasDynamic){
+%>
+												if(i><%=dynamic_index-1%>){
+													dateColIndex_<%= cid %> = i-dynamic_<%=cid%>.getColumnCount()+1;
+												}
+<%
+											}
+%>
+                    	        			if(datelist_<%=cid%>.get(dateColIndex_<%= cid %>)){
+                        	        			temp_row_<%= cid %>[i] = FormatterUtils.format_Date(cell_<%=cid%>.getDateCellValue(),patternlist_<%=cid%>.get(dateColIndex_<%= cid %>));
                             	   			} else{
                                 				temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
                                 			}
@@ -892,6 +958,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 										}else{
 %>
 											temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
+<%
+										}
+                            			if(hasDynamic){
+%>
+                            				}
 <%
 										}
 %>
@@ -939,8 +1010,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							columnIndex_<%=cid%> = <%=i%>;
 						<%
 						}
+		if(!column.getTalendType().equals("id_Dynamic")){
 %>
-			if(<%=column.getTalendType().equals("id_Dynamic")%> || temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() > 0) {
+			if( temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() > 0) {
+<%
+		}
+%>
 				curColNum_<%=cid %>=columnIndex_<%=cid%> + start_column_<%= cid %> + 1;
 				curColName_<%=cid %> = "<%=column.getLabel() %>";
 
@@ -993,10 +1068,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							dynamic_column_count_<%=cid%> = dynamic_<%=cid %>.getColumnCount();
 							for (int i = 0; i < dynamic_column_count_<%=cid%> ; i++) {
 								if ((<%=dynamic_index%>+i) < fieldCount){
+									if(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() < 1){
+										emptyColumnCount_<%= cid %>++;
+									}
 									dynamic_<%=cid %>.addColumnValue(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 								}
 								else{
 									dynamic_<%=cid %>.addColumnValue("");
+									emptyColumnCount_<%= cid %>++;
 								}
 							}
 							<%=firstConnName %>.<%=column.getLabel() %> =dynamic_<%=cid %>;
@@ -1006,6 +1085,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 <%
 						}
+		if(!column.getTalendType().equals("id_Dynamic")){
 %>
 			}else{
 <%
@@ -1023,6 +1103,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 			}
 <%
+		}
 					}
 %>
 					nb_line_<%=cid%>++;
@@ -1032,7 +1113,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	if(stopOnEmptyRow){
 %>
-        if(emptyColumnCount_<%= cid %> == <%=size %>){
+        if(emptyColumnCount_<%= cid %> >= <%=size %><%if(hasDynamic){%>+dynamic_column_count_<%=cid%>-1<%}%>){
         	break; //if meet the empty row, there will break the iterate.
         }
 <%
@@ -1285,8 +1366,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							columnIndex_<%=cid%> = <%=i%>;
 						<%
 						}
+		if(!column.getTalendType().equals("id_Dynamic")){
 %>
-			if(<%=column.getTalendType().equals("id_Dynamic")%> || temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() > 0) {
+			if( temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() > 0) {
+<%
+		}
+%>
 				curColNum_<%=cid %>=columnIndex_<%=cid%> + start_column_<%= cid %> + 1;
 				curColName_<%=cid %> = "<%=column.getLabel() %>";
 
@@ -1327,10 +1412,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							dynamic_column_count_<%=cid%> = dynamic_<%=cid %>.getColumnCount();
 							for (int i = 0; i < dynamic_column_count_<%=cid%> ; i++) {
 								if ((<%=dynamic_index%>+i) < fieldCount){
+									if(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() < 1){
+										emptyColumnCount_<%= cid %>++;
+									}
 									dynamic_<%=cid %>.addColumnValue(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 								}
 								else{
 									dynamic_<%=cid %>.addColumnValue("");
+									emptyColumnCount_<%= cid %>++;
 								}
 							}
 							<%=firstConnName %>.<%=column.getLabel() %> =dynamic_<%=cid %>;
@@ -1340,6 +1429,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 <%
 						}
+		if(!column.getTalendType().equals("id_Dynamic")){
 %>
 			}else{
 <%
@@ -1357,6 +1447,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 			}
 <%
+		}
 					}//TD128
 %>
 
@@ -1367,7 +1458,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	if(stopOnEmptyRow && false){
 %>
-        if(emptyColumnCount_<%= cid %> == <%=size %>){
+        if(emptyColumnCount_<%= cid %> >= <%=size %><%if(hasDynamic){%>+dynamic_column_count_<%=cid%>-1<%}%>){
         	break; //if meet the empty row, there will break the iterate.
         }
 <%
