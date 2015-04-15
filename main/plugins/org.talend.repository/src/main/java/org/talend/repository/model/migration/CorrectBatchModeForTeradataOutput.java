@@ -27,6 +27,7 @@ import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
@@ -62,12 +63,36 @@ public class CorrectBatchModeForTeradataOutput extends AbstractJobMigrationTask 
         
         IComponentConversion correctBatchModeForDBComponents = new IComponentConversion() {
 			public void transform(NodeType node) {
-                boolean useBatch = ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE").getValue()
+				ElementParameterType useExistingConnPara = ComponentUtilities.getNodeProperty(node, "USE_EXISTING_CONNECTION");
+				if(useExistingConnPara == null){
+                    ComponentUtilities.addNodeProperty(node, "USE_EXISTING_CONNECTION", "CHECK");
+                    ComponentUtilities.getNodeProperty(node, "USE_EXISTING_CONNECTION").setValue("false");
+				}
+                
+                boolean useExistConn = ComponentUtilities.getNodeProperty(node, "USE_EXISTING_CONNECTION").getValue()
                         .equalsIgnoreCase("true");
-                if (!useBatch) {
-                	ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE").setValue("true");
-                    ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("0");
+                
+				ElementParameterType useBatchSizePara = ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE");
+				if(useBatchSizePara == null){
+                    ComponentUtilities.addNodeProperty(node, "USE_BATCH_SIZE", "CHECK");
+                    ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE").setValue("false");
+				}
+				
+                ElementParameterType useBatchAndUseConnPara = ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN");
+                if (useBatchAndUseConnPara == null) {
+                    ComponentUtilities.addNodeProperty(node, "USE_BATCH_AND_USE_CONN", "CHECK");
+                    ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN").setValue("false");
                 }
+				
+				if(useExistConn){
+				    ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN").setValue("true");
+				    ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("0");
+				}else{
+                    if (useBatchSizePara != null && useBatchSizePara.getValue().equalsIgnoreCase("false")) {
+                        useBatchSizePara.setValue("true");
+                        ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("0");
+                    }
+				}
                   
 			}
 		};
