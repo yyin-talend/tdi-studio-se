@@ -154,8 +154,8 @@ public class Marker {
                 }
             }
         });
-        hover.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_CYAN));
-        hover.setAlpha(220);
+        hover.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GREEN));
+        hover.setAlpha(200);
 
         return hover;
     }
@@ -231,7 +231,6 @@ public class Marker {
         }
         region = getHoverRegion(textExtent, showOnRight, showBelow);
         hover.setRegion(region);
-
         hover.redraw();
         hover.setVisible(true);
     }

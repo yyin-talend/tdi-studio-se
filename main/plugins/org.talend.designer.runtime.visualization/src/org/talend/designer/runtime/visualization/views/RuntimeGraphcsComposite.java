@@ -56,7 +56,6 @@ import org.talend.designer.runtime.visualization.MBean.MBeanServerEvent;
 import org.talend.designer.runtime.visualization.internal.ui.IHelpContextIds;
 import org.talend.designer.runtime.visualization.internal.ui.RefreshJob;
 import org.talend.designer.runtime.visualization.internal.ui.properties.memory.GarbageAction;
-import org.talend.designer.runtime.visualization.internal.ui.properties.timeline.ConfigChartAction;
 import org.talend.designer.runtime.visualization.internal.ui.properties.timeline.LoadChartAction;
 import org.talend.designer.runtime.visualization.internal.ui.properties.timeline.Messages;
 import org.talend.designer.runtime.visualization.internal.ui.properties.timeline.MonitorAttributeName;
@@ -89,9 +88,17 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
     /** The report text filed. */
     private Text reportField;
 
+    /** The information text filed. */
+    private Text infoField;
+
+    /** The report field. */
     private Composite reportComposite;
 
+    /** The scroll composite. */
     private ScrolledComposite chartScrollCom;
+
+    /** The information composite. */
+    private Composite infoComposite;
 
     public RuntimeGraphcsComposite(Composite parent, ISelection selection, int style) {
         super(parent, selection, style);
@@ -287,6 +294,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         }
 
         createReportField(chartComposite);
+        createInfoField(chartComposite);
         chartsPage.layout();
         chartsPage.setVisible(true);
         refresh();
@@ -296,25 +304,26 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         final int[] blue = new int[] { 0, 0, 255 };
         final int[] red = new int[] { 255, 0, 0 };
         final int[] green = new int[] { 0, 255, 0 };
+        final int[] lightgeen = new int[] { 128, 255, 0 };
 
-        final int[] pink = new int[] { 255, 128, 255 };
+        final int[] darkRead = new int[] { 202, 68, 53 };
 
-        final int[] yellow = new int[] { 255, 255, 0 };
+        final int[] orange = new int[] { 255, 128, 64 };
         IMBeanServer server = activeJvm.getMBeanServer();
         server.getMonitoredAttributeGroups().clear();
 
         IMonitoredMXBeanGroup group = server.addMonitoredAttributeGroup(MonitorAttributeName.HEAP_MEMORY, AxisUnit.MBytes);
 
-        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_USE, blue);
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_USE, green);
 
-        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_SIZE, red);
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_SIZE, darkRead);
 
-        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_NINTY, pink);
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_NINTY, red);
 
-        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_THREE_QUARTER, yellow);
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_THREE_QUARTER, orange);
 
         group = server.addMonitoredAttributeGroup(MonitorAttributeName.CPU_USE, AxisUnit.Percent);
-        group.addAttribute(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, MonitorAttributeName.CPU_TIME, green);
+        group.addAttribute(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, MonitorAttributeName.CPU_TIME, lightgeen);
     }
 
     private void createSection(Composite parent, IMonitoredMXBeanGroup group) {
@@ -323,7 +332,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         }
         FormToolkit tookit = new FormToolkit(Display.getDefault());
 
-        ExpandableComposite section = tookit.createSection(parent, ExpandableComposite.TITLE_BAR);
+        ExpandableComposite section = tookit.createSection(parent, ExpandableComposite.NO_TITLE);
         section.setText(group.getName());
         FormLayout sectionLayout = new FormLayout();
         sectionLayout.marginWidth = 0;
@@ -334,7 +343,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
             sectionData.left = new FormAttachment(0, 0);
             sectionData.right = new FormAttachment(65, 0);
             sectionData.top = new FormAttachment(0, 0);
-            sectionData.bottom = new FormAttachment(55, -5);
+            sectionData.bottom = new FormAttachment(50, -5);
         } else if (group.getName().equals(MonitorAttributeName.THREAD_COUNT)) {
             sectionData.left = new FormAttachment(50, 5);
             sectionData.right = new FormAttachment(100, -5);
@@ -343,7 +352,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         } else if (group.getName().equals(MonitorAttributeName.CPU_USE)) {
             sectionData.left = new FormAttachment(0, 0);
             sectionData.right = new FormAttachment(65, 0);
-            sectionData.top = new FormAttachment(55, 0);
+            sectionData.top = new FormAttachment(50, 0);
             sectionData.bottom = new FormAttachment(100, 0);
         }
         section.setLayoutData(sectionData);
@@ -364,15 +373,6 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         data.bottom = new FormAttachment(100, 0);
         chart.setLayoutData(data);
         section.setClient(flatFormComposite);
-        List<Action> actions = new ArrayList<Action>();
-        for (IMonitoredMXBeanAttribute attribute : group.getAttributes()) {
-            if (attribute.getAttributeName().startsWith("HeapMemoryUsage")) { //$NON-NLS-1$
-                actions.add(garbageCollectorAction);
-                break;
-            }
-        }
-        actions.add(new ConfigChartAction(chart, this));
-        addSectionActions(section, actions);
     }
 
     private Composite createFlatFormComposite(Composite section, FormToolkit tookit) {
@@ -450,6 +450,46 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         return messagePage;
     }
 
+    private void createInfoField(Composite parent) {
+
+        infoComposite = createFlatFormComposite(parent, new FormToolkit(Display.getDefault()));
+        FormLayout reportLayout = new FormLayout();
+        reportLayout.marginWidth = 0;
+        reportLayout.marginHeight = 0;
+        infoComposite.setLayout(reportLayout);
+        FormData reportData = new FormData();
+        reportData.left = new FormAttachment(65, 5);
+        reportData.right = new FormAttachment(100, -5);
+        reportData.top = new FormAttachment(50, 0);
+        reportData.bottom = new FormAttachment(100, -5);
+        infoComposite.setLayoutData(reportData);
+
+        Group group = new Group(infoComposite, SWT.NULL);
+        FormLayout groupLayout = new FormLayout();
+        groupLayout.marginWidth = 0;
+        groupLayout.marginHeight = 0;
+        group.setLayout(groupLayout);
+        FormData groupData = new FormData();
+        groupData.left = new FormAttachment(0, 0);
+        groupData.right = new FormAttachment(100, 0);
+        groupData.top = new FormAttachment(0, 0);
+        groupData.bottom = new FormAttachment(100, 0);
+        group.setLayoutData(groupData);
+        group.setText("Run job Informations");
+
+        infoField = new Text(group, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
+        infoField.setEditable(false);
+        infoField.setBackground(group.getBackground());
+
+        FormData data;
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        infoField.setLayoutData(data);
+    }
+
     private void createReportField(Composite parent) {
         reportComposite = createFlatFormComposite(parent, new FormToolkit(Display.getDefault()));
         FormLayout reportLayout = new FormLayout();
@@ -460,7 +500,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         reportData.left = new FormAttachment(65, 5);
         reportData.right = new FormAttachment(100, -5);
         reportData.top = new FormAttachment(0, 0);
-        reportData.bottom = new FormAttachment(40, -5);
+        reportData.bottom = new FormAttachment(45, -5);
         reportComposite.setLayoutData(reportData);
 
         Group group = new Group(reportComposite, SWT.NULL);
@@ -474,7 +514,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         groupData.top = new FormAttachment(0, 0);
         groupData.bottom = new FormAttachment(100, 0);
         group.setLayoutData(groupData);
-        group.setText("Runtime statics");
+        group.setText("Job Run Logs");
 
         reportField = new Text(group, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
         reportField.setEditable(false);

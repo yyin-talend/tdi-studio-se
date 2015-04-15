@@ -164,7 +164,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         FormData charLayData = new FormData();
         charLayData.left = new FormAttachment(0, 10);
         charLayData.right = new FormAttachment(100, 0);
-        charLayData.top = new FormAttachment(20, 5);
+        charLayData.top = new FormAttachment(topGroup, 60, SWT.BOTTOM);
         charLayData.bottom = new FormAttachment(100, 0);
         chartComposite.setLayout(rgcLayout);
         chartComposite.setLayoutData(charLayData);
@@ -307,6 +307,14 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         this.processContext = processContext;
         if (processContext != null) {
             processContext.addPropertyChangeListener(propertyChangeListener);
+        }
+
+        if (runtimeButton != null && !runtimeButton.isDisposed()) {
+            runtimeButton.setEnabled(processContext != null && processContext.isRunning());
+        }
+
+        if (periodCombo != null && !periodCombo.isDisposed()) {
+            periodCombo.setEnabled(processContext != null && processContext.isRunning());
         }
     }
 

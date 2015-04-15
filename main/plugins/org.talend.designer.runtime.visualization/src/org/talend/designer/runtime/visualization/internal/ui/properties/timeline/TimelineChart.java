@@ -213,7 +213,6 @@ public class TimelineChart extends Chart implements IPropertyChangeListener {
 
         setBackground(parent.getBackground());
         Color black = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-        Color color = new Color(Display.getDefault(), 255, 0, 0);
         getAxisSet().getXAxis(0).getTick().setForeground(black);
         getAxisSet().getXAxis(0).getTitle().setVisible(false);
         getAxisSet().getYAxis(0).getTick().setForeground(black);
@@ -248,6 +247,9 @@ public class TimelineChart extends Chart implements IPropertyChangeListener {
             ISeries series = getSeriesSet().getSeries(seriesId);
             if (series == null) {
                 boolean enableArea = true;
+                if (attribute.getAttributeName().equals(MonitorAttributeName.HEAP_MEMORY_THREE_QUARTER)) {
+                    enableArea = false;
+                }
                 series = addMonitoredSeries(attribute, enableArea);
                 if (series == null) {
                     return;

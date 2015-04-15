@@ -86,9 +86,9 @@ public class JvmAttachHandler implements IJvmAttachHandler, IPropertyChangeListe
 
         long period = Activator.getDefault().getPreferenceStore().getLong(IConstants.UPDATE_PERIOD);
         if (period == 0) {
-            period = 3000;
+            period = 1000;
         }
-        timer.schedule(timerTask, 0, period);
+        timer.scheduleAtFixedRate(timerTask, 0, period);
     }
 
     /**
