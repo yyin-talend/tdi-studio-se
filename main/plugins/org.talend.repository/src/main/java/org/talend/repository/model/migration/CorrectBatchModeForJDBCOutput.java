@@ -31,15 +31,11 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
-/**
- * created by bchen on Mar 26, 2015 Detailled comment
- *
- */
-public class CorrectBatchModeForDBComponents extends AbstractJobMigrationTask {
+public class CorrectBatchModeForJDBCOutput extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.migration.IMigrationTask#getOrder()
      */
     @Override
@@ -49,64 +45,59 @@ public class CorrectBatchModeForDBComponents extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.core.model.migration.AbstractItemMigrationTask#execute(org.talend.core.model.properties.Item)
      */
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
-
+        
         if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
-
-        List<String> filterList = Arrays.asList("tOracleOutput");
-
+        
+        //groupx
+        List<String> filterList = Arrays.asList(
+        		 "tJDBCOutput"
+        		);
+        
         IComponentConversion correctBatchModeForDBComponents = new IComponentConversion() {
-
-            public void transform(NodeType node) {
-                ElementParameterType useExistingConnPara = ComponentUtilities.getNodeProperty(node, "USE_EXISTING_CONNECTION");
-                if (useExistingConnPara == null) {
+			public void transform(NodeType node) {
+				ElementParameterType useExistingConnPara = ComponentUtilities.getNodeProperty(node, "USE_EXISTING_CONNECTION");
+				if(useExistingConnPara == null){
                     ComponentUtilities.addNodeProperty(node, "USE_EXISTING_CONNECTION", "CHECK");
                     ComponentUtilities.getNodeProperty(node, "USE_EXISTING_CONNECTION").setValue("false");
-                }
-
-                //Use Existing Conn == true
+				}
+                
+				ElementParameterType useBatchSizePara = ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE");
+				if(useBatchSizePara == null){
+                    ComponentUtilities.addNodeProperty(node, "USE_BATCH_SIZE", "CHECK");
+                    ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE").setValue("false");
+				}
+				
                 ElementParameterType useBatchAndUseConnPara = ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN");
                 if (useBatchAndUseConnPara == null) {
                     ComponentUtilities.addNodeProperty(node, "USE_BATCH_AND_USE_CONN", "CHECK");
                     ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN").setValue("false");
                 }
-
-                boolean useExistConn = ComponentUtilities.getNodeProperty(node, "USE_EXISTING_CONNECTION").getValue()
-                        .equalsIgnoreCase("true");
-                ElementParameterType elementParaType = ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE");
-
-                if(elementParaType == null){
-                    ComponentUtilities.addNodeProperty(node, "USE_BATCH_SIZE", "CHECK");
-                    ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE").setValue("false");
-                }
-
-                if (!useExistConn) {
-                    if (elementParaType != null && elementParaType.getValue().equalsIgnoreCase("false")) {
-                        elementParaType.setValue("true");
-                        ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("0");
-                    }
-                }
-            }
-        };
-
-        for (String componentName : filterList) {
-            IComponentFilter filter = new NameComponentFilter(componentName);
-            try {
-                ModifyComponentsAction.searchAndModify(item, processType, filter,
-                        Arrays.<IComponentConversion> asList(correctBatchModeForDBComponents));
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-                return ExecutionResult.FAILURE;
-            }
-        }
-
+			}
+		};
+		
+		for(String componentName: filterList){
+			IComponentFilter filter = new NameComponentFilter(componentName);
+			try {
+				ModifyComponentsAction
+						.searchAndModify(
+								item,
+								processType,
+								filter,
+								Arrays.<IComponentConversion> asList(correctBatchModeForDBComponents));
+			} catch (PersistenceException e) {
+				ExceptionHandler.process(e);
+				return ExecutionResult.FAILURE;
+			}
+		}
+		
         return ExecutionResult.SUCCESS_NO_ALERT;
     }
 }
