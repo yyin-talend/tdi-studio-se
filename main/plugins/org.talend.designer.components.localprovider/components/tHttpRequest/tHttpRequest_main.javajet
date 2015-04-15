@@ -1,7 +1,7 @@
-<%@ jet 
+<%@ jet
 imports="
-    org.talend.core.model.process.INode 
-    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.INode
+    org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.EConnectionType
@@ -26,13 +26,13 @@ String inConnName = null, outConnName = null;
 boolean hasOutputSchema = false;
 
 if (outConns != null && outConns.size() > 0){
-  	if (outConns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
-	  	outConnName = outConns.get(0).getName();
-	  	hasOutputSchema = true;
-  	}
-  	if (inConns != null && inConns.size() > 0){
-    	inConnName = inConns.get(0).getName();
-  	}
+    if (outConns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+        outConnName = outConns.get(0).getName();
+        hasOutputSchema = true;
+    }
+    if (inConns != null && inConns.size() > 0){
+        inConnName = inConns.get(0).getName();
+    }
 }
 
 String sURI = ElementParameterParser.getValue(node, "__URI__");
@@ -51,24 +51,24 @@ java.net.URL url_<%=cid%> = new java.net.URL(<%=sURI%>);
 
 <%if (bNeedAuthentication){%>
   java.net.Authenticator.setDefault(new java.net.Authenticator() {
-	  protected java.net.PasswordAuthentication getPasswordAuthentication() {
-	  
+      protected java.net.PasswordAuthentication getPasswordAuthentication() {
+
         <%
         String passwordFieldName = "__PWD__";
         %>
-        
-        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>		  
-       
-	  	return new java.net.PasswordAuthentication(<%=sUser%>, decryptedPassword_<%=cid%>.toCharArray());
+
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+        return new java.net.PasswordAuthentication(<%=sUser%>, decryptedPassword_<%=cid%>.toCharArray());
   }});
 <%}%>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection attempt to '" + <%=sURI%>);
-	<%}%>
+    <%if(isLog4jEnabled){%>
+        log.info("<%=cid%> - Connection attempt to '" + <%=sURI%>);
+    <%}%>
 java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection to '" +  <%=sURI%> + "' has succeeded.");
-	<%}%>
+    <%if(isLog4jEnabled){%>
+        log.info("<%=cid%> - Connection to '" +  <%=sURI%> + "' has succeeded.");
+    <%}%>
 urlConn_<%=cid%>.setRequestMethod("<%=sMethod%>");
 urlConn_<%=cid%>.setDoOutput(true);
 urlConn_<%=cid%>.setDoInput(true);
@@ -82,108 +82,109 @@ int responseCode_<%=cid%> = 0;
 String responseMessage_<%=cid%> = null;
 globalMap.put("<%=cid%>_CONNECTED", false);
 try{
-	urlConn_<%=cid%>.connect();
-	connected_<%=cid%> = true;
-	globalMap.put("<%=cid%>_CONNECTED", true);
-	responseCode_<%=cid%> = urlConn_<%=cid%>.getResponseCode();
-	globalMap.put("<%=cid%>_RESPONSE_CODE", responseCode_<%=cid%>);
-	responseMessage_<%=cid%> = urlConn_<%=cid%>.getResponseMessage();
+    urlConn_<%=cid%>.connect();
+    connected_<%=cid%> = true;
+    globalMap.put("<%=cid%>_CONNECTED", true);
 
-	byte[] buffer_<%=cid%> = new byte[1024];
-	int bos_buffer_<%=cid%> = 0;
-	<%if(hasOutputSchema){%>StringBuilder sb_<%=cid%>=new StringBuilder(); <%}%>
+    byte[] buffer_<%=cid%> = new byte[1024];
+    int bos_buffer_<%=cid%> = 0;
+    <%if(hasOutputSchema){%>StringBuilder sb_<%=cid%>=new StringBuilder(); <%}%>
 <%
 // add parameters from file
-	if ("POST".equals(sMethod)){
-		if (sParamFile != null && !"".equals(sParamFile)){
+    if ("POST".equals(sMethod)){
+        if (sParamFile != null && !"".equals(sParamFile)){
   %>
-			java.io.InputStream bisParam_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(<%=sParamFile%>));
-			java.io.OutputStream bosParam_<%=cid%> = new java.io.BufferedOutputStream(urlConn_<%=cid%>.getOutputStream());
-    
-			while ((bos_buffer_<%=cid%> = bisParam_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
-				bosParam_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>);
-			}
-			bosParam_<%=cid%>.flush();
-			bosParam_<%=cid%>.close();
-			bisParam_<%=cid%>.close();
+            java.io.InputStream bisParam_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(<%=sParamFile%>));
+            java.io.OutputStream bosParam_<%=cid%> = new java.io.BufferedOutputStream(urlConn_<%=cid%>.getOutputStream());
+
+            while ((bos_buffer_<%=cid%> = bisParam_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
+                bosParam_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>);
+            }
+            bosParam_<%=cid%>.flush();
+            bosParam_<%=cid%>.close();
+            bisParam_<%=cid%>.close();
   <%
-  		}
-	}
+        }
+    }
 %>
 
-	if (java.net.HttpURLConnection.HTTP_OK == responseCode_<%=cid%>) {
-		java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
+    responseCode_<%=cid%> = urlConn_<%=cid%>.getResponseCode();
+    globalMap.put("<%=cid%>_RESPONSE_CODE", responseCode_<%=cid%>);
+    responseMessage_<%=cid%> = urlConn_<%=cid%>.getResponseMessage();
+
+    if (java.net.HttpURLConnection.HTTP_OK == responseCode_<%=cid%>) {
+        java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
 <%
   // output response content to file
-		if (bOutToFile && sOutFilePath != null){
+        if (bOutToFile && sOutFilePath != null){
 %>
-<%			if(createDirs){%>
-				java.io.File bosParent_<%=cid%> = new java.io.File(<%=sOutFilePath%>).getParentFile();
-				if (bosParent_<%=cid%> != null && bosParent_<%=cid%>.exists() == false){
-					bosParent_<%=cid%>.mkdirs();
-				}
-<%			}  %>
-			java.io.OutputStream bosContent_<%=cid%> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=sOutFilePath%>));
-<%		}%>
-		while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
-<%			if (bOutToFile && sOutFilePath != null){%>bosContent_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>); <%}%>
-<%			if(hasOutputSchema){%>sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>)); <%}%>
-		}
-<%		if (bOutToFile && sOutFilePath != null){%>		
-			bosContent_<%=cid%>.flush();
-			bosContent_<%=cid%>.close();
-<%		}%>
-		bis_<%=cid%>.close();
-	} else {
-		<%if(!dieOnError){%>
-			<%if(isLog4jEnabled){%>
-				log.error("<%=cid%> - " + responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
-			<%}%>
-			System.err.println(responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
-		<%}else{%>
-			throw new RuntimeException("Request failed:" + responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
-		<%}%>
-	}
+<%          if(createDirs){%>
+                java.io.File bosParent_<%=cid%> = new java.io.File(<%=sOutFilePath%>).getParentFile();
+                if (bosParent_<%=cid%> != null && bosParent_<%=cid%>.exists() == false){
+                    bosParent_<%=cid%>.mkdirs();
+                }
+<%          }  %>
+            java.io.OutputStream bosContent_<%=cid%> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=sOutFilePath%>));
+<%      }%>
+        while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
+<%          if (bOutToFile && sOutFilePath != null){%>bosContent_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>); <%}%>
+<%          if(hasOutputSchema){%>sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>)); <%}%>
+        }
+<%      if (bOutToFile && sOutFilePath != null){%>
+            bosContent_<%=cid%>.flush();
+            bosContent_<%=cid%>.close();
+<%      }%>
+        bis_<%=cid%>.close();
+    } else {
+        <%if(!dieOnError){%>
+            <%if(isLog4jEnabled){%>
+                log.error("<%=cid%> - " + responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
+            <%}%>
+            System.err.println(responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
+        <%}else{%>
+            throw new RuntimeException("Request failed:" + responseCode_<%=cid%> + " " + responseMessage_<%=cid%>);
+        <%}%>
+    }
 
 <%
 // output data
-	if (outConnName != null){
-		List<IMetadataTable> metaTables = node.getMetadataList();
-  
-		if (metaTables != null && metaTables.size() > 0){
-			IMetadataTable metaTable = metaTables.get(0);
-			List<IMetadataColumn> columns = metaTable.getListColumns();
-    	
-			for (IMetadataColumn column : columns){
-				String colName = column.getLabel();
-      
-				if ("ResponseContent".equals(colName)){
+    if (outConnName != null){
+        List<IMetadataTable> metaTables = node.getMetadataList();
+
+        if (metaTables != null && metaTables.size() > 0){
+            IMetadataTable metaTable = metaTables.get(0);
+            List<IMetadataColumn> columns = metaTable.getListColumns();
+
+            for (IMetadataColumn column : columns){
+                String colName = column.getLabel();
+
+                if ("ResponseContent".equals(colName)){
       %>
-					<%=outConnName%>.ResponseContent = sb_<%=cid%>.toString();
+                    <%=outConnName%>.ResponseContent = sb_<%=cid%>.toString();
       <%
-				} else {
+                } else {
       %>
-					<%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
+                    <%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
       <%
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 %>
 <%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Closing the connection to the server.");
+    log.info("<%=cid%> - Closing the connection to the server.");
 <%}%>
-	urlConn_<%=cid%>.disconnect();
+    urlConn_<%=cid%>.disconnect();
 <%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Connection to the server closed.");
+    log.info("<%=cid%> - Connection to the server closed.");
 <%}%>
 }catch(Exception e){
-	<%if(!dieOnError){%>
-		<%if(isLog4jEnabled){%>
-			log.error("<%=cid%> - " + e.getMessage());
-		<%}%>
-		System.err.println(e.getMessage());
-	<%}else{%>
-		throw e;
-	<%}%>
+    <%if(!dieOnError){%>
+        <%if(isLog4jEnabled){%>
+            log.error("<%=cid%> - " + e.getMessage());
+        <%}%>
+        System.err.println(e.getMessage());
+    <%}else{%>
+        throw e;
+    <%}%>
 }
