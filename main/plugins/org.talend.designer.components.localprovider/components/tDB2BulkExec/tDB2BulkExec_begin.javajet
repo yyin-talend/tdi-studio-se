@@ -1,16 +1,16 @@
-<%@ jet 
+<%@ jet
 imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.INode
-		org.talend.core.model.process.ElementParameterParser  
-		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.metadata.MappingTypeRetriever
-        org.talend.core.model.metadata.MetadataTalendType        
+        org.talend.core.model.metadata.MetadataTalendType
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
 		java.util.HashMap
-" 
+"
 skeleton="../templates/db_output_bulk.skeleton"
 %>
 
@@ -30,8 +30,8 @@ String dbschema = ElementParameterParser.getValue(node, "__TABLESCHEMA__");
 String user = ElementParameterParser.getValue(node, "__USER__");
 String pas = ElementParameterParser.getValue(node, "__PASS__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
-String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");	
-String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");		
+String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 
 String dateformat = ElementParameterParser.getValue(node, "__DATE_FORMAT__");
@@ -51,7 +51,7 @@ Manager manager = null;
         %>
         java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
         String schema_<%=cid%> = (String)globalMap.get("<%=schema %>");
-        String dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");  
+        String dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");
         <%
     } else {
     	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
@@ -65,10 +65,10 @@ Manager manager = null;
 <%
 		}
 %>
-	    java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");    
-    	String dbUser_<%=cid %> = <%=user%>;    
+	    java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
+    	String dbUser_<%=cid %> = <%=user%>;
     	String dbPwd_<%=cid %> = <%=pas%>;
-    	String schema_<%=cid%> = <%=dbschema%>;    
+    	String schema_<%=cid%> = <%=dbschema%>;
     	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     	<%
     }
@@ -79,12 +79,12 @@ Manager manager = null;
 		} else {
     		tableName_<%=cid%> = schema_<%=cid%> +  "\".\"" + <%=table%>;
 		}
-		
+
 		String fileName_<%=cid%> = <%=file%>;
-		
+
 <%
 if(columnList != null && columnList.size() > 0) {
-	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);      
+	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
 }
 if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) || "NONE".equals(tableAction)){
 
@@ -98,8 +98,8 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) 
 		java.sql.CallableStatement callStmtLoadPending_<%=cid%> = conn_<%=cid%>.prepareCall(sqlLoadPending_<%=cid%>);
         callStmtLoadPending_<%=cid%>.setString(1, "load from  /dev/null  of del terminate into \"" + tableName_<%=cid%> + "\"");
         try {
-        	callStmtLoadPending_<%=cid%>.execute();   
-        } catch (java.sql.SQLException e) { 
+        	callStmtLoadPending_<%=cid%>.execute();
+        } catch (java.sql.SQLException e) {
         	//when table not in load pending mode will throw exception.
         	//and do nothing.
         }
@@ -114,16 +114,16 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) 
 	//feature0011004 load command options begin
 	List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
     java.util.Map<String, String> parametersMap = new java.util.HashMap<String, String>();
-    
-    //	LOAD FROM OF (position1) DEL MODIFIED BY (position2) INTO (position3)
+
+    //	LOAD FROM OF DEL (position1) MODIFIED BY (position2) INTO (position3)
     java.lang.StringBuilder position1 = new java.lang.StringBuilder();
     java.lang.StringBuilder position2 = new java.lang.StringBuilder();
     java.lang.StringBuilder position3 = new java.lang.StringBuilder();
-    
+
     for(java.util.Map<String, String> option : options) {
         String key = option.get("KEY");
         String value = option.get("VALUE");
-        
+
         String[] keySplit = key.split(",");
         if (keySplit.length > 1) {
 	        if ("1".equals(keySplit[1])) {
@@ -142,20 +142,20 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) 
 	//end feature0011004 load command options begin
 %>
 
-<%    
-	////////////////////////////////////////////    
+<%
+	////////////////////////////////////////////
     if(("INSERT").equals(action) || ("REPLACE").equals(action)) {
-    
+
         %>
         String action_<%=cid%> = "<%=action%>";
         java.sql.CallableStatement callStmt_<%=cid%> = null;
         String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-        String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%> + "\" OF <%=position1.toString()%> DEL MODIFIED BY COLDEL"+ <%=field_separator%> + 
+        String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%> + "\" OF DEL <%=position1.toString()%> MODIFIED BY COLDEL"+ <%=field_separator%> +
         				" dateformat=\""+ <%=dateformat%>+ "\" timeformat=\"" + <%=timeformat%>+ "\" timestampformat=\""+<%=timestampformat%> +"\" <%=position2.toString()%> " +
-        				 action_<%=cid%> +" INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>";     			
+        				 action_<%=cid%> +" INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>";
         callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
         callStmt_<%=cid%>.setString(1, param_<%=cid%>);
-        callStmt_<%=cid%>.execute();        
+        callStmt_<%=cid%>.execute();
         callStmt_<%=cid%>.close();
         <%
     } else if(("UPDATE").equals(action)) {
@@ -169,44 +169,44 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) 
             %>
             int keyCount_<%=cid%> = <%=keyCount%>;
             if(keyCount_<%=cid%> == 0) {
-                throw new RuntimeException("For bulk update, Schema must have a key at least."); 
+                throw new RuntimeException("For bulk update, Schema must have a key at least.");
             }
             String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-            tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId(); 
+            tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
             java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
-            
 
-            
+
+
             stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
             stmtCreateTmp_<%=cid%>.close();
-                        
+
         	java.sql.CallableStatement callStmt_<%=cid%> = null;
         	String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-        	String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%>.replace("\\","/") + "\" OF <%=position1.toString()%> DEL MODIFIED BY COLDEL" + <%=field_separator%> + 
-        							" dateformat=\""+<%=dateformat%>+"\" timeformat=\"" +<%=timeformat%>+ "\" timestampformat=\"" + <%=timestampformat%>+"\"" + 
-        							" <%=position2.toString()%> INSERT INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>"; 	        			
-        	
+        	String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%>.replace("\\","/") + "\" OF DEL <%=position1.toString()%> MODIFIED BY COLDEL" + <%=field_separator%> +
+        							" dateformat=\""+<%=dateformat%>+"\" timeformat=\"" +<%=timeformat%>+ "\" timestampformat=\"" + <%=timestampformat%>+"\"" +
+        							" <%=position2.toString()%> INSERT INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>";
+
         	callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
         	callStmt_<%=cid%>.setString(1, param_<%=cid%>);
-        	callStmt_<%=cid%>.execute();        
-        	callStmt_<%=cid%>.close();            
-                    			
+        	callStmt_<%=cid%>.execute();
+        	callStmt_<%=cid%>.close();
+
             tableName_<%=cid%> = tmpTableName_<%=cid%>;
-            tmpTableName_<%=cid%> = "tmp_<%=cid%>"+ "_" + pid + Thread.currentThread().getId();             
+            tmpTableName_<%=cid%> = "tmp_<%=cid%>"+ "_" + pid + Thread.currentThread().getId();
             java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
-                        
+
             stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
-            stmtUpdateBulk_<%=cid%>.close();           
-            
+            stmtUpdateBulk_<%=cid%>.close();
+
             tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
             java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
             stmtTmpDrop_<%=cid%>.close();
             <%
         }
-    }    
+    }
     /////////////////////////////////////////
-} 		
+}
 %>
 
 
