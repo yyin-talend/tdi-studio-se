@@ -108,11 +108,19 @@ imports="
                                                                       %>
                                                                       .length(<%= imetadataColumn.getLength()%>)
                                                                       <%
+                                                                          }else{
+                                                                      %>
+                                                                      .length(10)
+                                                                      <%
                                                                           }
                                                                           if(imetadataColumn.getPrecision() != null){
                                                                       %>
                                                                       .precision(<%= imetadataColumn.getPrecision()%>)
                                                                       <%
+                                                                          }else{
+                                                                       %>
+                                                                       .precision(2)
+                                                                       <%
                                                                           }
                                                                            if(imetadataColumn.getDefault() != null && !"".equals(imetadataColumn.getDefault())){
                                                                       %>
