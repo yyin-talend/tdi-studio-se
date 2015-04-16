@@ -287,7 +287,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
                     }
                     boolean monitoring = ((Boolean) evt.getNewValue()).booleanValue();
                     if (runtimeButton != null && !runtimeButton.isDisposed()) {
-                        runtimeButton.setEnabled(!monitoring);
+                        runtimeButton.setEnabled(processContext != null && processContext.isRunning());
                     }
                     if (!monitoring && chartComposite != null && chartComposite.isDisposed()) {
                         viewPart.setSelection(null);

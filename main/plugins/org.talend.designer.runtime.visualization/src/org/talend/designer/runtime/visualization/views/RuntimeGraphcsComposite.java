@@ -29,7 +29,6 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
@@ -301,14 +300,14 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
     }
 
     private void loadOverviewChartSet(IActiveJvm activeJvm) throws JvmCoreException {
-        final int[] blue = new int[] { 0, 0, 255 };
+        final int[] blue = new int[] { 0, 255, 255 };
         final int[] red = new int[] { 255, 0, 0 };
         final int[] green = new int[] { 0, 255, 0 };
         final int[] lightgeen = new int[] { 128, 255, 0 };
 
-        final int[] darkRead = new int[] { 202, 68, 53 };
+        final int[] darkRed = new int[] { 255, 0, 128 };
 
-        final int[] orange = new int[] { 255, 128, 64 };
+        final int[] orange = new int[] { 255, 255, 0 };
         IMBeanServer server = activeJvm.getMBeanServer();
         server.getMonitoredAttributeGroups().clear();
 
@@ -316,9 +315,9 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
 
         group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_USE, green);
 
-        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_SIZE, darkRead);
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_SIZE, darkRed);
 
-        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_NINTY, red);
+        group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_NINTY, blue);
 
         group.addAttribute(ManagementFactory.MEMORY_MXBEAN_NAME, MonitorAttributeName.HEAP_MEMORY_THREE_QUARTER, orange);
 
@@ -431,7 +430,10 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
 
     private Composite createMessagePage(Composite parent) {
         messagePage = new Composite(parent, SWT.NONE);
-        messagePage.setLayout(new GridLayout(3, false));
+        FormLayout messageLayout = new FormLayout();
+        messageLayout.marginHeight = 0;
+        messageLayout.marginWidth = 0;
+        messagePage.setLayout(messageLayout);
         messagePage.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 
         FormToolkit toolkit = new FormToolkit(Display.getDefault());

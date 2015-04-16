@@ -247,9 +247,6 @@ public class TimelineChart extends Chart implements IPropertyChangeListener {
             ISeries series = getSeriesSet().getSeries(seriesId);
             if (series == null) {
                 boolean enableArea = true;
-                if (attribute.getAttributeName().equals(MonitorAttributeName.HEAP_MEMORY_THREE_QUARTER)) {
-                    enableArea = false;
-                }
                 series = addMonitoredSeries(attribute, enableArea);
                 if (series == null) {
                     return;
