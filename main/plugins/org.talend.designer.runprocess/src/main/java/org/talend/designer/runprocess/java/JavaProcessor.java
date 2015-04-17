@@ -304,7 +304,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
          */
         String jobClassPackageFolder = null;
         String jobClassFilePath = null;
-        if (property != null) {
+        // only for "standard" job
+        if (property != null && property.getItem() != null && process instanceof IProcess2) {
             Item item = property.getItem();
             // test/testjob_0_1
             jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolder(item, isTestJob);
@@ -312,15 +313,17 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             jobClassFilePath = JavaResourcesHelper.getJobClassFilePath(item, filenameFromLabel, isTestJob);
             // test.testjob_0_1.TestJob
             this.mainClass = JavaResourcesHelper.getJobPackagedClass(item, filenameFromLabel, isTestJob);
-        } else { // for shadow process
-            // test/shadowfileinputtodelimitedoutput_0_1
+        } else { // for shadow process, or preview process
+            // test/shadowfileinputtodelimitedoutput_0_1, test/preview_data
             jobClassPackageFolder = JavaResourcesHelper.getProjectFolderName(property) + JavaUtils.PATH_SEPARATOR
                     + JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
-            // test/shadowfileinputtodelimitedoutput_0_1/ShadowFileInputToDelimitedOutput.java
+            // test/shadowfileinputtodelimitedoutput_0_1/ShadowFileInputToDelimitedOutput.java,
+            // test/preview_data/Preview_Data.java
             jobClassFilePath = jobClassPackageFolder + JavaUtils.PATH_SEPARATOR
                     + (filenameFromLabel ? JavaResourcesHelper.escapeFileName(process.getName()) : process.getId())
                     + JavaUtils.JAVA_EXTENSION;
-            // test.shadowfileinputtodelimitedoutput_0_1.ShadowFileInputToDelimitedOutput
+            // test.shadowfileinputtodelimitedoutput_0_1.ShadowFileInputToDelimitedOutput,
+            // test.preview_data.Preview_Data
             this.mainClass = new Path(jobClassFilePath).removeFileExtension().toString().replace('/', '.');
         }
 
