@@ -953,8 +953,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     + typeFolderPath.toOSString();
             IPath itemFolderPath = itemFilePath.makeRelativeTo(projectFilePath.removeLastSegments(1).append(typeFolderPath))
                     .removeLastSegments(1);
-            if (itemFolderPath != null && !"".equals(itemFolderPath)) { //$NON-NLS-1$
-                relativePath = relativePath + PATH_SEPARATOR + itemFolderPath;
+            String itemFolderPathString = null;
+            if (itemFolderPath != null) {
+                itemFolderPathString = itemFolderPath.toString();
+            }
+            if (itemFolderPathString != null && !"".equals(itemFolderPathString)) { //$NON-NLS-1$
+                relativePath = relativePath + PATH_SEPARATOR + itemFolderPathString;
             }
             resource.addResources(relativePath, emfFileUrls);
         } catch (Exception e) {
