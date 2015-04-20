@@ -182,7 +182,7 @@
 
           <PARAMETER NAME="THOUSANDS_SEPARATOR" FIELD="TEXT" REQUIRED="true" NUM_ROW="31"
             SHOW="false">
-            <DEFAULT>","</DEFAULT>
+            <DEFAULT>""</DEFAULT>
           </PARAMETER>
 
           <PARAMETER NAME="DECIMAL_SEPARATOR" FIELD="TEXT" REQUIRED="true" NUM_ROW="31"
