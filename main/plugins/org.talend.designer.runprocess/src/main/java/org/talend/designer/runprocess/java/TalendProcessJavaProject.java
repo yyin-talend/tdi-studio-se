@@ -39,7 +39,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
-import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.maven.launch.TalendMavenLauncher;
 import org.talend.designer.maven.model.MavenConstants;
 import org.talend.designer.maven.model.MavenSystemFolders;
@@ -320,13 +319,18 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
         }
         if (childModulePomFile.getLocation().toFile().exists()) { // existed
-//            TalendMavenLauncher mavenLauncher = null;
-//            if (goals == null || goals.trim().length() == 0) { // by default is compile
-//                mavenLauncher = new TalendMavenLauncher(childModulePomFile);
-//            } else {
-//                mavenLauncher = new TalendMavenLauncher(childModulePomFile, goals);
-//            }
-//            mavenLauncher.execute();
+            TalendMavenLauncher mavenLauncher = null;
+            if (goals == null || goals.trim().length() == 0 || goals.equals(MavenConstants.GOAL_COMPILE)) { // by
+                                                                                                            // default
+                                                                                                            // is
+                                                                                                            // compile
+            // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
+                buildWholeCodeProject();
+                buildWholeCodeProject();
+            } else {
+                mavenLauncher = new TalendMavenLauncher(childModulePomFile, goals);
+                mavenLauncher.execute();
+            }
 
             /*
              * FIXME, because the marker issue, we have to build whole project to get the markers.
@@ -337,12 +341,12 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
              * Later, will try to use another way to fix this, maybe need change the problem view, because it based on
              * markers.
              */
-            if (Problems.buildWholeProject) {
-                // call 2 times for now. Seems if call only once, it will not get all the errors up to date
-                // and call 2 times seems doesn't take much more time.
-                buildWholeCodeProject();
-                buildWholeCodeProject();
-            }
+            // if (Problems.buildWholeProject) {
+            // call 2 times for now. Seems if call only once, it will not get all the errors up to date
+            // and call 2 times seems doesn't take much more time.
+            // buildWholeCodeProject();
+            // buildWholeCodeProject();
+            // }
         } else {
             throw new RuntimeException("The pom.xml is not existed. Can't build the job: " + module); //$NON-NLS-1$
         }
@@ -417,7 +421,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
     private IStatus processRoutinesPom(boolean withBuild) {
         if (true) {
-         // disable code for now, to review later.
+            // disable code for now, to review later.
             return Status.OK_STATUS;
         }
         try {
