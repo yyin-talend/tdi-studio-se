@@ -16,9 +16,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
@@ -340,12 +346,46 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     }
 
     private void refreshJobAndSave(final IProxyRepositoryFactory repFactory) throws PersistenceException {
-        // try {
-        // cause it to update MaxInformationLevel
-        repFactory.save(item);
-        // } catch (Exception e) {
-        // }
-        // update editor image
+
+        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                try {
+                    repFactory.save(item);
+                } catch (PersistenceException e) {
+                    throw new CoreException(new Status(IStatus.ERROR, DesignerPlugin.ID, "Save Routine failed!", e));
+                }
+
+            };
+        };
+
+        IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                try {
+                    ISchedulingRule schedulingRule = workspace.getRoot();
+                    // the update the project files need to be done in the workspace runnable to avoid all
+                    // notification
+                    // of changes before the end of the modifications.
+                    workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
+                } catch (CoreException e) {
+                    throw new InvocationTargetException(e);
+                }
+
+            }
+        };
+
+        try {
+            PlatformUI.getWorkbench().getProgressService().run(false, false, iRunnableWithProgress);
+        } catch (InvocationTargetException e) {
+            throw new PersistenceException(e);
+        } catch (InterruptedException e) {
+            throw new PersistenceException(e);
+        }
+
         setTitleImage(getTitleImage());
 
     }
