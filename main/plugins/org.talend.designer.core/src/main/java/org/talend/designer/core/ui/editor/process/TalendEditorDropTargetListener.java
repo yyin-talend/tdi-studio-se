@@ -123,7 +123,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
-import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.properties.ValidationRulesConnectionItem;
 import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -997,8 +996,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     return;
                 }
 
-                if (item instanceof SalesforceSchemaConnectionItem && type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
-                    return;
+                {
+                    /**
+                     * Remove this limitation for feature: TDI-32362, I think it should be ok, don't know why adding
+                     * this limitation to forbid to d&d salseforce connection, I keep those code in case this behavior
+                     * will cause some bugs when d&d salseforce connection, then maybe need to review
+                     */
+                    // if (item instanceof SalesforceSchemaConnectionItem && type ==
+                    // ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+                    // return;
+                    // }
                 }
 
                 TempStore store = new TempStore();
