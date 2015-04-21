@@ -1694,19 +1694,24 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     protected void saveAdditionalProperties() {
         Map<Object, Object> additionalMap = getAdditionalProperties();
+
+        if (getProperty() == null) {
+            return;
+        }
+
         for (Object key : additionalMap.keySet()) {
-            this.getProperty().getAdditionalProperties().put(key, additionalMap.get(key));
+            getProperty().getAdditionalProperties().put(key, additionalMap.get(key));
         }
 
         // remove
         Map<Object, Object> removedAddition = new HashMap<Object, Object>();
-        for (Object key : this.property.getAdditionalProperties().keySet()) {
+        for (Object key : getProperty().getAdditionalProperties().keySet()) {
             if (!additionalMap.containsKey(key)) {
-                removedAddition.put(key, this.property.getAdditionalProperties().get(key));
+                removedAddition.put(key, getProperty().getAdditionalProperties().get(key));
             }
         }
         for (Object key : removedAddition.keySet()) {
-            this.getProperty().getAdditionalProperties().remove(key);
+            getProperty().getAdditionalProperties().remove(key);
         }
     }
 
