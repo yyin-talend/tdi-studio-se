@@ -155,6 +155,10 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         String mainPart;
         if (process != null && (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType()))) {
             mainPart = "[" + currentSelection + " mrconfig ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (process != null && (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType()))) {
+            mainPart = "[" + currentSelection + " sparkconfig ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (process != null && (ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType()))) {
+            mainPart = "[" + currentSelection + " sparkstreamingconfig ] start"; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             mainPart = "[" + currentSelection + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
         }
