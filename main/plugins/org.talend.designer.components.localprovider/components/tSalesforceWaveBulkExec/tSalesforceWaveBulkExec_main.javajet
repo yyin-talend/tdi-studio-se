@@ -129,15 +129,25 @@ imports="
                 if(result.isSuccess()){
                     parentId_<%= cid %> = result.getId();
                 }else{
-                    throw new RuntimeException("Saving InsightsExternalData failed."
-                        <%
-                          if(uploadJsonMetadata){
-                              %>
-                                 + "There is something wrong with JSON metadata."
-                              <%
-                          }
-                        %>
-                    );
+                    StringBuilder errMsg = new StringBuilder("Saving InsightsExternalData failed.");
+                    <%
+                      if(uploadJsonMetadata){
+                          %>
+                             errMsg.append("There is something wrong with JSON metadata.");
+                          <%
+                      }
+                     %>
+                    for(com.sforce.soap.partner.Error err: result.getErrors()){
+                            for(String fieldName: err.getFields()){
+                                errMsg.append("\nThe errors come from the filed: ");
+                                errMsg.append(fieldName);
+                                errMsg.append(".");
+                            }
+                                errMsg.append("\n");
+                                errMsg.append(err.getMessage());
+                                errMsg.append(".");
+                    }
+                    throw new RuntimeException(errMsg.toString());
                 }
             }
         }catch(com.sforce.ws.ConnectionException e){
@@ -178,7 +188,18 @@ imports="
                    if(result.isSuccess()){
                        rowId_<%= cid %> = result.getId();
                    }else{
-                       throw new RuntimeException("Digest file failed.");
+                       StringBuilder errMsgBuilder = new StringBuilder("Digest file failed.");
+                       for(com.sforce.soap.partner.Error err: result.getErrors()){
+                               for(String fieldName: err.getFields()){
+                                   errMsgBuilder.append("\nThe errors come from the filed: ");
+                                   errMsgBuilder.append(fieldName);
+                                   errMsgBuilder.append(".");
+                               }
+                                   errMsgBuilder.append("\n");
+                                   errMsgBuilder.append(err.getMessage());
+                                   errMsgBuilder.append(".");
+                       }
+                       throw new RuntimeException(errMsgBuilder.toString());
                    }
                }
             }catch(com.sforce.ws.ConnectionException e){
@@ -216,8 +237,19 @@ imports="
                                if(result.isSuccess()){
                                    rowId_<%= cid %> = result.getId();
                                }else{
-                                   throw new RuntimeException("Digest file failed.");
-                               }
+                                       StringBuilder errMsgBuilder = new StringBuilder("Digest file failed.");
+                                       for(com.sforce.soap.partner.Error err: result.getErrors()){
+                                               for(String fieldName: err.getFields()){
+                                                   errMsgBuilder.append("\nThe errors come from the filed: ");
+                                                   errMsgBuilder.append(fieldName);
+                                                   errMsgBuilder.append(".");
+                                               }
+                                                   errMsgBuilder.append("\n");
+                                                   errMsgBuilder.append(err.getMessage());
+                                                   errMsgBuilder.append(".");
+                                       }
+                                       throw new RuntimeException(errMsgBuilder.toString());
+                                    }
                            }
                         }catch(com.sforce.ws.ConnectionException e){
                             throw e;
@@ -243,7 +275,18 @@ imports="
             if(result.isSuccess()){
                 parentId_<%= cid %> = result.getId();
             }else{
-                throw new RuntimeException("Upload file failed.");
+                StringBuilder errMsgBuilder = new StringBuilder("Upload file failed.");
+                for(com.sforce.soap.partner.Error err: result.getErrors()){
+                        for(String fieldName: err.getFields()){
+                            errMsgBuilder.append("\nThe errors come from the filed: ");
+                            errMsgBuilder.append(fieldName);
+                            errMsgBuilder.append(".");
+                        }
+                            errMsgBuilder.append("\n");
+                            errMsgBuilder.append(err.getMessage());
+                            errMsgBuilder.append(".");
+                }
+                throw new RuntimeException(errMsgBuilder.toString());
             }
           }
         }catch(com.sforce.ws.ConnectionException e){
