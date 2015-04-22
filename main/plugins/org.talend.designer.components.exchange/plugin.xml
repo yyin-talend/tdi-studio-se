@@ -21,7 +21,7 @@
       <editor
             class="org.talend.designer.components.exchange.ui.views.ExchangeView"
             default="false"
-            icon="icons/exchange_view.gif"
+            icon="icons/exchange_view.png"
             id="org.talend.designer.components.exchange.ui.views.ExchangeView"
             name="Exchange">
       </editor>
