@@ -21,7 +21,6 @@ import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.process.IContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.publish.core.models.BundleModel;
@@ -96,11 +95,12 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 
     private void exportJobForOSGI(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         File tmpJob = null;
+        final ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
         try {
             tmpJob = File.createTempFile("job", ".jar", null);
             jobScriptsManager = JobScriptsManagerFactory.createManagerInstance(
-                    JobScriptsManagerFactory.getDefaultExportChoiceMap(), IContext.DEFAULT, JobScriptsManager.LAUNCHER_ALL,
-                    IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, JobExportType.OSGI);
+                    JobScriptsManagerFactory.getDefaultExportChoiceMap(), processItem.getProcess().getDefaultContext(),
+                    JobScriptsManager.LAUNCHER_ALL, IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, JobExportType.OSGI);
             // generate
             jobScriptsManager.setDestinationPath(tmpJob.getAbsolutePath());
             JobExportAction action = new JobExportAction(Collections.singletonList(node), jobVersion, bundleVersion,
@@ -111,7 +111,6 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
                 return;
             }
             monitor.beginTask("Deploy to Artifact Repository....", IProgressMonitor.UNKNOWN);
-            ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
             FeaturesModel featuresModel = getFeatureModel(tmpJob);
 
             // [TESB-12036] add talend-data-mapper feature
