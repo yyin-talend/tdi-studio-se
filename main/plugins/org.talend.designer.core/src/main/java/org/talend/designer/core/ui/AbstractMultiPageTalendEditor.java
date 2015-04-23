@@ -91,7 +91,6 @@ import org.osgi.service.event.EventHandler;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
@@ -115,7 +114,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.UpdateRunJobComponentContextHelper;
-import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -138,7 +136,6 @@ import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.utils.AccessingEmfJob;
-import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -966,40 +963,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         if (!isDirty()) {
             return;
-        }
-        // remove all error status at any change of the job when save it.
-        Property property = getProcess().getProperty();
-        ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
-        if (synchronizer != null) {
-            try {
-                List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(curItem), property, true);
-                property.getInformations().clear();
-                boolean hasErrorStatus = false;
-                for (Information info : informations) {
-                    if (!info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
-                        property.getInformations().add(info);
-                    } else {
-                        hasErrorStatus = true;
-                    }
-                }
-                Problems.computePropertyMaxInformationLevel(property, false);
-                // remove error for all the nodes
-                if (hasErrorStatus) {
-                    for (INode psNode : getProcess().getGraphicalNodes()) {
-                        if (psNode instanceof Node) {
-                            Node node = (Node) psNode;
-                            node.setErrorFlag(false);
-                            node.setCompareFlag(false);
-                            node.setErrorInfo(null);
-                            node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
-                            node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
-                        }
-                    }
-                }
-            } catch (SystemException e) {
-                ExceptionHandler.process(e);
-            }
-            Problems.refreshProblemTreeView();
         }
 
         Map<String, Boolean> jobletMap = new HashMap<String, Boolean>();
