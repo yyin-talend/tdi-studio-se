@@ -177,6 +177,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         } else if (lineStyle.hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
             // "OnComponentOK/OnComponentError/OnSubJobOK/OnSubJobError/If"
             performance = new LiteralConnectionPerformance(this);
+        } else if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(source.getProcess().getComponentsType())) {
+            performance = new SparkBatchConnectionPerformance(this);
         } else {
             // if no parallel execution existed, just delegate to super class.
             performance = new ParallelConnectionPerformance(this);

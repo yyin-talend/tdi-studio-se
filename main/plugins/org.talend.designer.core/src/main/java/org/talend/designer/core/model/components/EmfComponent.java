@@ -3845,6 +3845,16 @@ public class EmfComponent extends AbstractComponent {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.core.model.components.IComponent#isSparkAction()
+     */
+    @Override
+    public boolean isSparkAction() {
+        return compType.getHEADER().isSPARKACTION();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.AbstractComponent#setPaletteType(java.lang.String)
      */
     @Override

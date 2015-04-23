@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.process.AbstractNode;
-import org.talend.core.model.process.BigDataNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ETypeGen;
@@ -114,19 +113,10 @@ public class NodesTree {
     private void buildSparkSubTrees(ETypeGen typeGen) {
         subTrees = new ArrayList<NodesSubTree>();
         for (INode node : nodes) {
-            if (node instanceof BigDataNode) {
-                BigDataNode bigDataNode = (BigDataNode) node;
-                if (((bigDataNode == bigDataNode.getSubProcessStartNode(false))
-                        && (bigDataNode.getDesignSubjobStartNode() == null || bigDataNode == bigDataNode
-                                .getDesignSubjobStartNode()) && (bigDataNode.isActivate()) && !((AbstractNode) node)
-                            .isThereLinkWithHash())) {
-                    subTrees.add(new NodesSubTree(node, nodes, typeGen));
-                }
-            } else {
-                if (((node.isSubProcessStart()) && (node.isActivate()) && !((AbstractNode) node).isRefNode())
-                        || (rootNodes.contains(node))) {
-                    subTrees.add(new NodesSubTree(node, nodes, typeGen));
-                }
+            if (((node == node.getSubProcessStartNode(false))
+                    && (node.getDesignSubjobStartNode() == null || node == node.getDesignSubjobStartNode())
+                    && (node.isActivate()) && !((AbstractNode) node).isThereLinkWithHash())) {
+                subTrees.add(new NodesSubTree(node, nodes, typeGen));
             }
         }
     }

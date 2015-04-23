@@ -96,6 +96,11 @@ public abstract class AbstractComponent implements IComponent {
         return false;
     }
 
+    @Override
+    public boolean isSparkAction() {
+        return false;
+    }
+
     /*
      * (non-Javadoc)
      * 

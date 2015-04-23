@@ -580,6 +580,11 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         return false;
     }
 
+    @Override
+    public boolean isSparkAction() {
+        return false;
+    }
+
     /*
      * (non-Javadoc)
      * 

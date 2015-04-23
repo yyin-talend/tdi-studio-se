@@ -721,4 +721,15 @@ public class JobContextLoadComponent implements IComponent {
     public boolean isAllowedPropagated() {
         return true;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isSparkAction()
+     */
+    @Override
+    public boolean isSparkAction() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }
