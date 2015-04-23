@@ -139,7 +139,7 @@ imports="
                      %>
                     for(com.sforce.soap.partner.Error err: result.getErrors()){
                             for(String fieldName: err.getFields()){
-                                errMsg.append("\nThe errors come from the filed: ");
+                                errMsg.append("\nThe errors come from the field: ");
                                 errMsg.append(fieldName);
                                 errMsg.append(".");
                             }
@@ -160,7 +160,7 @@ imports="
             throw new RuntimeException("Can't load directory,please spectify a CSV file.");
         }
 
-        <% 
+        <%
            if(generateJsonInFile && !specifyJsonMetadata){
                 %>
         //Spilt file to 8 MB
@@ -191,7 +191,7 @@ imports="
                        StringBuilder errMsgBuilder = new StringBuilder("Digest file failed.");
                        for(com.sforce.soap.partner.Error err: result.getErrors()){
                                for(String fieldName: err.getFields()){
-                                   errMsgBuilder.append("\nThe errors come from the filed: ");
+                                   errMsgBuilder.append("\nThe errors come from the field: ");
                                    errMsgBuilder.append(fieldName);
                                    errMsgBuilder.append(".");
                                }
@@ -240,7 +240,7 @@ imports="
                                        StringBuilder errMsgBuilder = new StringBuilder("Digest file failed.");
                                        for(com.sforce.soap.partner.Error err: result.getErrors()){
                                                for(String fieldName: err.getFields()){
-                                                   errMsgBuilder.append("\nThe errors come from the filed: ");
+                                                   errMsgBuilder.append("\nThe errors come from the field: ");
                                                    errMsgBuilder.append(fieldName);
                                                    errMsgBuilder.append(".");
                                                }
@@ -278,7 +278,7 @@ imports="
                 StringBuilder errMsgBuilder = new StringBuilder("Upload file failed.");
                 for(com.sforce.soap.partner.Error err: result.getErrors()){
                         for(String fieldName: err.getFields()){
-                            errMsgBuilder.append("\nThe errors come from the filed: ");
+                            errMsgBuilder.append("\nThe errors come from the field: ");
                             errMsgBuilder.append(fieldName);
                             errMsgBuilder.append(".");
                         }
