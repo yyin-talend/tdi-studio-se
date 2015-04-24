@@ -15,7 +15,9 @@ package org.talend.designer.core.ui.viewer.java;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -60,17 +62,18 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
     @Override
     protected List<ICompletionProposal> sortProposals(List<ICompletionProposal> proposals, IProgressMonitor monitor,
             ContentAssistInvocationContext context) {
-        List<ICompletionProposal> newProposals = super.sortProposals(proposals, monitor, context);
+        proposals = super.sortProposals(proposals, monitor, context);
+        Map<String, ICompletionProposal> completionProposalMap = new HashMap<String, ICompletionProposal>();
 
-        List<ICompletionProposal> toRemove = new ArrayList<ICompletionProposal>();
         boolean globalFieldsDone = false;
-        for (Object o : newProposals) {
+        for (Object o : proposals) {
             ICompletionProposal proposal = (ICompletionProposal) o;
             String longna = proposal.getDisplayString();
             int indexna = longna.indexOf("-"); //$NON-NLS-1$
+            boolean shouldRemove = false;
             if (indexna > 0) {
                 if (longna.substring(indexna + 2, longna.length()).equals(TalendJavaSourceViewer.getClassName())) {
-                    toRemove.add(proposal);
+                    shouldRemove = true;
                 }
             }
             if (proposal instanceof JavaCompletionProposal) {
@@ -79,15 +82,20 @@ public class TalendJavaCompletionProcessor extends JavaCompletionProcessor {
                     globalFieldsDone = true;
                 }
                 if (javaProposal.getJavaElement() == null && globalFieldsDone) {
-                    toRemove.add(proposal);
+                    shouldRemove = true;
                 }
             }
 
             if (proposal.getDisplayString().startsWith(TalendJavaSourceViewer.VIEWER_CLASS_NAME)) {
-                toRemove.add(proposal);
+                shouldRemove = true;
+            }
+            if (!shouldRemove) {
+                completionProposalMap.put(longna, proposal);
             }
         }
-        newProposals.removeAll(toRemove);
+
+        List<ICompletionProposal> newProposals = new ArrayList<ICompletionProposal>(completionProposalMap.values());
+
         Collections.sort(newProposals, new Comparator<ICompletionProposal>() {
 
             @Override
