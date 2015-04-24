@@ -148,7 +148,7 @@ public class CategoryComposite extends Composite {
 
             @Override
             public String getText(Object element) {
-                return ((Function) element).getName();
+                return ((Function) element).getFunctionString();
             }
         });
         functionViewer.setSorter(new ViewerSorter());
@@ -282,7 +282,7 @@ public class CategoryComposite extends Composite {
                         if (docDisplayer instanceof Text) {
                             ((Text) docDisplayer).setText(function.getDescription());
                         } else if (docDisplayer instanceof Browser) {
-                            ((Browser) docDisplayer).setText(function.getDescription());
+                            ((Browser) docDisplayer).setText(convert2HTML(function.getDescription()));
                         }
 
                     } else {
@@ -308,7 +308,7 @@ public class CategoryComposite extends Composite {
                             if (docDisplayer instanceof Text) {
                                 ((Text) docDisplayer).setText(function.getDescription());
                             } else if (docDisplayer instanceof Browser) {
-                                ((Browser) docDisplayer).setText(function.getDescription());
+                                ((Browser) docDisplayer).setText(convert2HTML(function.getDescription()));
                             }
                             VirtualMetadataColumn column = new VirtualMetadataColumn();
                             column.setTalendType(function.getTalendType().getName());
@@ -347,6 +347,17 @@ public class CategoryComposite extends Composite {
             });
 
         }
+    }
+
+    protected String convert2HTML(String str) {
+        String description = str;
+        if (description != null && !description.isEmpty()) {
+            description = description.replace(" ", "&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
+            description = description.replace("\r\n", "<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
+            description = description.replace("\r", "<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
+            description = description.replace("\n", "<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return description;
     }
 
     /**

@@ -105,7 +105,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         super(parentShell);
         this.nodeStyle = parentShell.toString();
 
-        setShellStyle(this.getShellStyle() | SWT.RESIZE);
+        setShellStyle(this.getShellStyle() | SWT.RESIZE | SWT.MAX);
         this.dataBean = dataBean;
         this.component = component;
     }
