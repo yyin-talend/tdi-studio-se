@@ -43,7 +43,7 @@ import org.talend.designer.maven.launch.TalendMavenLauncher;
 import org.talend.designer.maven.model.MavenConstants;
 import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.maven.model.TalendMavenContants;
-import org.talend.designer.maven.template.MavenPomSynchronizer;
+import org.talend.designer.maven.tools.MavenPomSynchronizer;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.utils.io.FilesUtils;
 
@@ -79,12 +79,11 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
         return getJavaProject().getProject();
     }
 
-    @Override
-    public IFolder getSrcFolder() {
+    private IFolder createFolder(String path) {
         IProject p = getProject();
         if (p != null) {
             try {
-                IFolder folder = p.getFolder(MavenSystemFolders.JAVA.getPath());
+                IFolder folder = p.getFolder(path);
                 createSubFolder(null, folder);
                 return folder;
             } catch (CoreException e) {
@@ -92,97 +91,56 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             }
         }
         return null;
+    }
+
+    @Override
+    public IFolder getSrcFolder() {
+        return createFolder(MavenSystemFolders.JAVA.getPath());
     }
 
     @Override
     public IFolder getTestSrcFolder() {
-        IProject p = getProject();
-        if (p != null) {
-            try {
-                IFolder folder = p.getFolder(MavenSystemFolders.JAVA_TEST.getPath());
-                createSubFolder(null, folder);
-                return folder;
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return null;
+        return createFolder(MavenSystemFolders.JAVA_TEST.getPath());
     }
 
     @Override
     public IFolder getResourcesFolder() {
-        IProject p = getProject();
-        if (p != null) {
-            try {
-                IFolder folder = p.getFolder(MavenSystemFolders.RESOURCES.getPath());
-                createSubFolder(null, folder);
-                return folder;
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return null;
+        return createFolder(MavenSystemFolders.RESOURCES.getPath());
     }
 
     @Override
     public IFolder getTestResourcesFolder() {
-        IProject p = getProject();
-        if (p != null) {
-            try {
-                IFolder folder = p.getFolder(MavenSystemFolders.RESOURCES_TEST.getPath());
-                createSubFolder(null, folder);
-                return folder;
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return null;
+        return createFolder(MavenSystemFolders.RESOURCES_TEST.getPath());
     }
 
     @Override
     public IFolder getLibFolder() {
-        IProject p = getProject();
-        if (p != null) {
-            try {
-                IFolder folder = p.getFolder(new Path(JavaUtils.JAVA_LIB_DIRECTORY));
-                createSubFolder(null, folder);
-                return folder;
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return null;
+        return createFolder(JavaUtils.JAVA_LIB_DIRECTORY);
     }
 
     @Override
     public IFolder getOutputFolder() {
-        IJavaProject jProject = getJavaProject();
-        if (jProject != null) {
-            try {
-                IFolder folder = jProject.getProject().getFolder(MavenSystemFolders.JAVA.getOutputPath());
-                // IFolder folder = jProject.getProject().getParent().getFolder(jProject.getOutputLocation());
-                createSubFolder(null, folder);
-                return folder;
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return null;
+        return createFolder(MavenSystemFolders.JAVA.getOutputPath());
     }
 
     @Override
     public IFolder getTestOutputFolder() {
-        IJavaProject jProject = getJavaProject();
-        if (jProject != null) {
-            try {
-                IFolder folder = jProject.getProject().getFolder(MavenSystemFolders.JAVA_TEST.getOutputPath());
-                createSubFolder(null, folder);
-                return folder;
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return null;
+        return createFolder(MavenSystemFolders.JAVA_TEST.getOutputPath());
+    }
+
+    @Override
+    public IFolder getAssembliesFolder() {
+        return createFolder(MavenSystemFolders.ASSEMBLIES.getPath());
+    }
+
+    @Override
+    public IFolder getTemplatesFolder() {
+        return createFolder(MavenSystemFolders.TEMPLATES.getPath());
+    }
+
+    @Override
+    public IFolder getItemsFolder() {
+        return createFolder(MavenSystemFolders.ITEMS.getPath());
     }
 
     @Override
@@ -324,7 +282,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                                                                                                             // default
                                                                                                             // is
                                                                                                             // compile
-            // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
+                // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
                 buildWholeCodeProject();
                 buildWholeCodeProject();
             } else {

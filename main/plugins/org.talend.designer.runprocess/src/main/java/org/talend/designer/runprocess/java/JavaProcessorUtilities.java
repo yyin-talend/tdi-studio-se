@@ -64,7 +64,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.utils.JavaProcessUtil;
-import org.talend.designer.maven.template.MavenPomSynchronizer;
+import org.talend.designer.maven.tools.MavenPomSynchronizer;
 import org.talend.designer.maven.utils.TalendCodeProjectUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.i18n.Messages;

@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -28,6 +27,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
@@ -36,8 +36,8 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.MavenConstants;
 import org.talend.designer.maven.pom.MavenPomManager;
-import org.talend.designer.maven.template.CreateJobTemplateMavenPom;
-import org.talend.designer.maven.template.MavenTemplateConstants;
+import org.talend.designer.maven.pom.PomUtil;
+import org.talend.designer.maven.tools.CreateMavenJobPom;
 import org.talend.designer.maven.utils.JobUtils;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -61,8 +61,9 @@ public class MavenJavaProcessor extends JavaProcessor {
     @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
-        if (property != null) { // only job, if Shadow Process, will be null.
-            // generatePom();
+        // only job, now for Shadow Process/Data Preview.
+        if (property != null && property.getItem() != null && this.getProcess() instanceof IProcess2) {
+            generatePom();
             // removeGeneratedJobs(null);
         }
     }
@@ -91,9 +92,8 @@ public class MavenJavaProcessor extends JavaProcessor {
     public void initJobClasspath() {
         // FIXME, must make sure the exportConfig is true, and the classpath is same as export.
         // ProcessorUtilities.setExportConfig(label, false);
-        String routinesJarPath = getBaseLibPath() + JavaUtils.PATH_SEPARATOR + JavaUtils.ROUTINE_JAR_NAME + '-'
-                + JavaUtils.ROUTINE_JAR_DEFAULT_VERSION + FileExtensions.JAR_FILE_SUFFIX
-                + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR;
+        String routinesJarPath = getBaseLibPath() + JavaUtils.PATH_SEPARATOR + JavaUtils.ROUTINE_JAR_NAME
+                + FileExtensions.JAR_FILE_SUFFIX + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR;
         ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, routinesJarPath, getBaseLibPath());
 
         setClasspaths();
@@ -101,28 +101,54 @@ public class MavenJavaProcessor extends JavaProcessor {
         ProcessorUtilities.resetExportConfig();
     }
 
+    @Override
+    protected String getExportJarsStr() {
+        // use the maven way for jar
+        final String libPrefixPath = getLibPrefixPath(true);
+        final String classPathSeparator = extractClassPathSeparator();
+
+        // Test-0.1
+        String jarName = JavaResourcesHelper.getJobJarName(process.getName(), process.getVersion());
+        String exportJar = libPrefixPath + jarName + FileExtensions.JAR_FILE_SUFFIX;
+
+        Set<JobInfo> infos = getBuildChildrenJobs();
+        for (JobInfo jobInfo : infos) {
+            String childJarName = JavaResourcesHelper.getJobJarName(jobInfo.getJobName(), jobInfo.getJobVersion());
+            exportJar += classPathSeparator + libPrefixPath + childJarName + FileExtensions.JAR_FILE_SUFFIX;
+        }
+        return exportJar;
+    }
+
+    /**
+     * .Java/pom_TestJob.xml
+     */
+    protected IFile getPomFile() {
+        String pomFileName = PomUtil.getPomFileName(this.getProperty().getLabel());
+        return this.getTalendJavaProject().getProject().getFile(pomFileName);
+    }
+
+    /**
+     * .Java/src/main/assemblies/assembly_TestJob.xml
+     */
+    protected IFile getAssemblyFile() {
+        String assemblyFileName = PomUtil.getAssemblyFileName(this.getProperty().getLabel());
+        return this.getTalendJavaProject().getAssembliesFolder().getFile(assemblyFileName);
+    }
+
     protected void generatePom() {
-        final IPath srcCodePath = getSrcCodePath();
-        final IProject codeProject = getCodeProject();
-
-        IPath jobCurPath = srcCodePath.removeLastSegments(1);
-        IFolder jobCurFolder = codeProject.getFolder(jobCurPath);
-        IFile jobPomFile = jobCurFolder.getFile(MavenConstants.POM_FILE_NAME);
-
-        // if (jobPomFile.exists()) {// FIXME keep the old one? if no, remove this code.
-        // return;
-        // }
 
         initJobClasspath();
 
         try {
-            CreateJobTemplateMavenPom createTemplatePom = new CreateJobTemplateMavenPom(this, jobPomFile, getTemplateFileName());
+            CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
             // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
             createTemplatePom.setAddStat(false);
             createTemplatePom.setApplyContextToChild(false);
 
             createTemplatePom.setUnixClasspath(this.unixClasspath);
             createTemplatePom.setWindowsClasspath(this.windowsClasspath);
+
+            createTemplatePom.setAssemblyFile(getAssemblyFile());
 
             createTemplatePom.setOverwrite(true);
 
@@ -135,16 +161,10 @@ public class MavenJavaProcessor extends JavaProcessor {
     }
 
     protected void updateProjectPom(IProgressMonitor progressMonitor) throws ProcessorException {
-        try {
-            JavaProcessorUtilities.checkJavaProjectLib(getNeededLibraries());
-            ITalendProcessJavaProject codeProject = getTalendJavaProject();
-            IFile projectPomFile = codeProject.getProject().getFile(MavenConstants.POM_FILE_NAME);
-            MavenPomManager pomManager = new MavenPomManager(this);
-            pomManager.updateDependencies(projectPomFile, progressMonitor);
-            codeProject.getProject().refreshLocal(IResource.DEPTH_ONE, progressMonitor);
-        } catch (CoreException e) {
-            throw new ProcessorException(e);
-        }
+        JavaProcessorUtilities.checkJavaProjectLib(getNeededLibraries());
+
+        MavenPomManager pomManager = new MavenPomManager(this);
+        pomManager.updateProjectDependencies(progressMonitor, this.getPomFile());
     }
 
     private void removeGeneratedJobs(IProgressMonitor progressMonitor) throws ProcessorException {
@@ -177,32 +197,6 @@ public class MavenJavaProcessor extends JavaProcessor {
         } catch (CoreException e) {
             throw new ProcessorException(e);
         }
-    }
-
-    protected String getTemplateFileName() {
-        return MavenTemplateConstants.JOB_TEMPLATE_FILE_NAME;
-    }
-
-    @Override
-    protected String getExportJarsStr() {
-        // use the maven way for jar
-        // final String libPrefixPath = getLibPrefixPath(true);
-        // final String classPathSeparator = extractClassPathSeparator();
-        //
-        // String jarName = JavaResourcesHelper.getJobJarName(process.getName(), process.getVersion());
-        // String exportJar = libPrefixPath + getBaseLibPath() + JavaUtils.PATH_SEPARATOR + jarName +
-        // FileExtensions.JAR_FILE_SUFFIX;
-        //
-        // Set<JobInfo> infos = getBuildChildrenJobs();
-        // for (JobInfo jobInfo : infos) {
-        // String childJarName = JavaResourcesHelper.getJobJarName(jobInfo.getJobName(), jobInfo.getJobVersion());
-        // exportJar += classPathSeparator + libPrefixPath + getBaseLibPath() + JavaUtils.PATH_SEPARATOR + childJarName
-        // + FileExtensions.JAR_FILE_SUFFIX;
-        // }
-        // return exportJar;
-
-        /* don't add lib path for job jars and use old name of jar, so still use old way */
-        return super.getExportJarsStr();
     }
 
     @Override
