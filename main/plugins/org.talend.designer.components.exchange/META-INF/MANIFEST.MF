@@ -36,3 +36,4 @@ Export-Package: org.talend.designer.components.exchange,
  org.talend.designer.components.exchange.ui,
  org.talend.designer.components.exchange.ui.views
 Eclipse-BundleShape: dir
+Import-Package: org.talend.registration.wizards.register
