@@ -35,7 +35,14 @@ if(!usePartialUpdate){
 		miList_<%=cid %>.clear();
 		miList_<%=cid %> = null;
 		<%if(addTaskID){%>
-        	tmdmWS_<%=cid %>.updateItemArrayMetadata(util_<%=cid%>. makeUpdateMeteItms(taskIDs_<%=cid%>,wspks_<%=cid %>));
+		
+			int i2_<%=cid %> = 0;
+		    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
+		    	wspk2_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
+		    	tmdmWS_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
+		    	i2_<%=cid %>++;
+		    }
+		    
         	taskIDs_<%=cid%>.clear();
         <%}%>
 	}
@@ -46,7 +53,14 @@ if(!usePartialUpdate){
 		miList_<%=cid %>.clear();
 		miList_<%=cid %> = null;
 		<%if(addTaskID){%>
-        	tmdmWS_<%=cid %>.updateItemArrayMetadata(util_<%=cid%>. makeUpdateMeteItms(taskIDs_<%=cid%>,wspks_<%=cid %>));
+		
+        	int i2_<%=cid %> = 0;
+		    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
+		    	wspk2_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
+		    	tmdmWS_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
+		    	i2_<%=cid %>++;
+		    }
+		    
         	taskIDs_<%=cid%>.clear();
         <%}%>
 	}

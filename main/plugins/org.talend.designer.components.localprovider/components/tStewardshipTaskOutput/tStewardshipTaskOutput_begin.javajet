@@ -15,12 +15,9 @@
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();	
     
-    String host = ElementParameterParser.getValue(node, "__HOST__");
-    String port = ElementParameterParser.getValue(node, "__PORT__");
+    String url = ElementParameterParser.getValue(node, "__URL__");
     String username = ElementParameterParser.getValue(node, "__USERNAME__");
     String password = ElementParameterParser.getValue(node, "__PASSWORD__");
-    
-    String version = ElementParameterParser.getValue(node, "__SERVERVERSION__");
     
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	List<Map<String, String>> recordColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__RECORD_COLUMN__");
@@ -37,13 +34,8 @@
 					int nb_line_<%=cid%> = 0;	
 					org.talend.stewardship.TaskGenerator tasks_<%=cid%> = new org.talend.stewardship.TaskGenerator();
 					org.talend.stewardship.Task task_<%=cid%> = null;
-					int port_<%=cid%> =  <%=port%>;
 
-            		<%if("s60".equals(version)) {%>
-            			String url_<%=cid%> = org.talend.datastewardship.server.task.creation.TaskLoadClientTools.getUrl(<%=host%>,String.valueOf(port_<%=cid%>), true);
-            		<%} else {%>
-            			String url_<%=cid%> = org.talend.datastewardship.server.task.creation.TaskLoadClientTools.getUrl(<%=host%>,String.valueOf(port_<%=cid%>), false);
-            		<%}%>
+            		String url_<%=cid%> = <%=url %>;
 
 					<%
 					String passwordFieldName = "__PASSWORD__";

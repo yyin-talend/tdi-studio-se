@@ -43,8 +43,7 @@
 
     <PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
 		REQUIRED="true">
-		<DEFAULT IF="(SERVERVERSION == 's60')">"http://localhost:8080/talendmdm/services/soap"</DEFAULT>
-        <DEFAULT IF="(SERVERVERSION == 's56')">"http://localhost:8180/talend/TalendPort"</DEFAULT>
+		<DEFAULT>"http://localhost:8180/talendmdm/services/soap"</DEFAULT>
 	</PARAMETER>
 
 	<PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"

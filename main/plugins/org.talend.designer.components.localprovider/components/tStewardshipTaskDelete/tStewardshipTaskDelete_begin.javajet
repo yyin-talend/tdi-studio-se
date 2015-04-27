@@ -16,8 +16,7 @@
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();	
 
-	String host = ElementParameterParser.getValue(node, "__HOST__");
-	String port = ElementParameterParser.getValue(node, "__PORT__");
+	String url = ElementParameterParser.getValue(node, "__URL__");
 	String taskType = ElementParameterParser.getValue(node, "__TASKTYPE__");
 	String owner = ElementParameterParser.getValue(node,"__OWNER__");
 	String tag = ElementParameterParser.getValue(node, "__TAG__");
@@ -31,8 +30,6 @@
 	boolean targetRecordOnly = ("true").equals(ElementParameterParser.getValue(node,"__TARGET_RECORD_ONLY__"));
 	boolean isDeleteById = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_BY_ID__"));
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	
-	String version = ElementParameterParser.getValue(node, "__SERVERVERSION__");
 %>
 	int deleted_task_<%=cid%> = 0;	
         java.net.Authenticator.setDefault(new java.net.Authenticator() {
@@ -47,11 +44,7 @@
             	return new java.net.PasswordAuthentication(<%=username%>, decryptedPassword_<%=cid%>.toCharArray());
         }});
 		
-		<%if("s60".equals(version)) {%>
-			java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/talendmdm/services/TDSCWS?wsdl");
-		<%} else {%>
-			java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");
-		<%}%>
+		java.net.URL wsdlUrl_<%=cid%> = new java.net.URL(<%=url %>);
 		
 		<%
 		if(isLog4jEnabled){

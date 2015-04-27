@@ -38,7 +38,7 @@
 
 		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true">
-			<DEFAULT>"http://localhost:8180/datamanager/loadServlet"</DEFAULT>
+			<DEFAULT>"http://localhost:8180/talendmdm/services/bulkload"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"

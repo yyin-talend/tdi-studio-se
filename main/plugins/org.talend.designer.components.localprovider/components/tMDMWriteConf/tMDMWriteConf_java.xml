@@ -81,7 +81,7 @@
 
 		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"http://localhost:8080/talendmdm/services/soap"</DEFAULT>
+			<DEFAULT>"http://localhost:8180/talendmdm/services/soap"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"

@@ -2415,6 +2415,15 @@
               name="DBCODBCMode4AccessMigrationTask"
               version="6.0.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.SetUrltStewardshipXXXTDI32354"
+              description="concat host and port to a url"
+              id="org.talend.repository.model.migration.SetUrltStewardshipXXXTDI32354"
+              name="SetUrltStewardshipXXXTDI32354"
+              version="6.0.0">
+        </projecttask>
    </extension>
 
    <extension

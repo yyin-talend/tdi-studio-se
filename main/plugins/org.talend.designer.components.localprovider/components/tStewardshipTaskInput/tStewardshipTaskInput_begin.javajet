@@ -31,8 +31,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		// if output columns are defined
 		if (nbSchemaColumns > 0 && outgoingConns != null && outgoingConns.size() > 0){
 
-			String host = ElementParameterParser.getValue(node, "__HOST__");
-			String port = ElementParameterParser.getValue(node, "__PORT__");
+			String url = ElementParameterParser.getValue(node, "__URL__");
 			String taskType = ElementParameterParser.getValue(node, "__TASKTYPE__");
 			String owner = ElementParameterParser.getValue(node,"__OWNER__");
 			String tag = ElementParameterParser.getValue(node, "__TAG__");
@@ -45,8 +44,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     		String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			boolean targetRecordOnly = ("true").equals(ElementParameterParser.getValue(node,"__TARGET_RECORD_ONLY__"));
 			final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-			
-			String version = ElementParameterParser.getValue(node, "__SERVERVERSION__");
 			
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -64,11 +61,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     	return new java.net.PasswordAuthentication(<%=username%>, decryptedPassword_<%=cid%>.toCharArray());
                 }});
 				
-				<%if("s60".equals(version)) {%>
-					java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/talendmdm/services/TDSCWS?wsdl");
-				<%} else {%>
-					java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");
-				<%}%>
+				java.net.URL wsdlUrl_<%=cid%> = new java.net.URL(<%=url %>);
 				
 				<%
 				if(isLog4jEnabled){
