@@ -15,6 +15,8 @@ String cid = node.getUniqueName();
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String user = ElementParameterParser.getValue(node, "__USER__");
+boolean use_encoding = "true".equals(ElementParameterParser.getValue(node, "__USE_ENCODING__"));
+String encoding_sftp = ElementParameterParser.getValue(node, "__ENCODING_SFTP__");
 
 String connectMode = ElementParameterParser.getValue(node, "__CONNECT_MODE__");
 boolean useProxy = ("true").equals(ElementParameterParser.getValue(node, "__USE_PROXY__"));
@@ -169,7 +171,11 @@ if (!sftp && !ftps) { // *** ftp *** //
 		log.info("<%=cid%> - Connect to '" + <%=host %> + "' has succeeded.");
 	<%}%>
 	com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
-	c_<%=cid%>.setFilenameEncoding(<%=sEncoding%>);
+	
+	<%if(use_encoding) {%>
+		c_<%=cid%>.setFilenameEncoding(<%=encoding_sftp%>);
+	<%}%>
+	
 	globalMap.put("conn_<%=cid%>", c_<%=cid%>);
 <%
 } else {  // *** ftps *** //
