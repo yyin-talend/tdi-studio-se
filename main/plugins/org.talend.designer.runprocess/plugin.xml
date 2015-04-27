@@ -144,7 +144,7 @@
  <extension
        point="org.talend.core.repository.login.task">
     <loginTask
-          class="org.talend.designer.runprocess.maven.RoutinesMavenInstallLoginTask">
+          class="org.talend.designer.runprocess.maven.CleanMavenFilesLoginTask">
     </loginTask>
  </extension>
 </plugin>

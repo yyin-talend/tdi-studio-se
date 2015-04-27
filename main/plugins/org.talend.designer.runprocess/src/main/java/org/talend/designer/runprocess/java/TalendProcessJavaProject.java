@@ -75,6 +75,11 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     @Override
+    public IFile getProjectPom() {
+        return getProject().getFile(MavenConstants.POM_FILE_NAME);
+    }
+
+    @Override
     public IProject getProject() {
         return getJavaProject().getProject();
     }
@@ -411,6 +416,11 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             return new Status(Status.ERROR, FrameworkUtil.getBundle(getClass()).getSymbolicName(), Status.ERROR, e.getMessage(),
                     e);
         }
+    }
+
+    @Override
+    public void cleanMavenFiles(IProgressMonitor monitor) throws Exception {
+        this.synchronizer.cleanMavenFiles(monitor);
     }
 
 }
