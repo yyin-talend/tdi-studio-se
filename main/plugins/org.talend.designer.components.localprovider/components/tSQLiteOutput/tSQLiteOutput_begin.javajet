@@ -1,52 +1,69 @@
-<%@ jet 
+<%@ jet
 imports="org.talend.designer.codegen.config.CodeGeneratorArgument
 		 org.talend.core.model.process.INode
-		 org.talend.core.model.process.ElementParameterParser  
-		 org.talend.core.model.metadata.IMetadataTable 
+		 org.talend.core.model.process.ElementParameterParser
+		 org.talend.core.model.metadata.IMetadataTable
+         org.talend.core.model.process.IConnection
 		 org.talend.core.model.metadata.MappingTypeRetriever
-         org.talend.core.model.metadata.MetadataTalendType		 
+         org.talend.core.model.metadata.MetadataTalendType
 		 java.util.List
 		 java.util.ArrayList
 		 java.util.Map
 		 java.util.HashMap
-         " 
+         "
 skeleton="../templates/db_output_bulk.skeleton"
 %>
 	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	
+
 	String cid = node.getUniqueName();
-	
+
 	dbLog = new DBLogUtil(node);
-	
+
     List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__ADD_COLS__" );
-    
+
     boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
-    
+
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
-    
+
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 
-    String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");    
-    
+    String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	
+
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
-	
+
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-	
+
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
-	
+
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-		
-	String javaDbDriver   = "org.sqlite.JDBC";  
+
+	String javaDbDriver   = "org.sqlite.JDBC";
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+
+    boolean useBatch = "true".equals(ElementParameterParser.getValue(node, "__USE_BATCH__"));
+    String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
+
+    String rejectConnName = null;
+    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+    if(rejectConns != null && rejectConns.size() > 0) {
+        IConnection rejectConn = rejectConns.get(0);
+        rejectConnName = rejectConn.getName();
+    }
+
+    useBatch = (rejectConnName == null)
+             && (
+                  ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                )
+             && useBatch;
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -61,6 +78,16 @@ int insertedCount_<%=cid%>=0;
 
 String tableName_<%=cid%> = <%=tableName%>;
 boolean whetherReject_<%=cid%> = false;
+
+<%
+    if (useBatch) {
+%>
+       int batchSize_<%=cid%> = <%=batchSize%>;
+       int batchSizeCounter_<%=cid%>=0;
+       int tmp_batchUpdateCount_<%=cid%> = 0;
+<%
+    }
+%>
 
 <%
 getManager(dbmsId, cid, node);
@@ -143,15 +170,15 @@ if(columnList != null && columnList.size() > 0) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
-            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();            
+            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             	<%dbLog.table().dropTry(dbLog.var("tableName"));%>
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-                <%dbLog.table().dropDone(dbLog.var("tableName"));%> 
-                           
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();            
+                <%dbLog.table().dropDone(dbLog.var("tableName"));%>
+
+            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             	<%dbLog.table().createTry(dbLog.var("tableName"));%>
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-            	<%dbLog.table().createDone(dbLog.var("tableName"));%>            	
+            	<%dbLog.table().createDone(dbLog.var("tableName"));%>
             <%
         } else if(("CREATE").equals(tableAction)) {
             %>
@@ -180,8 +207,8 @@ if(columnList != null && columnList.size() > 0) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
                     	<%dbLog.table().createTry(dbLog.var("tableName"));%>
                     stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-                    	<%dbLog.table().createDone(dbLog.var("tableName"));%>            
-                }                
+                    	<%dbLog.table().createDone(dbLog.var("tableName"));%>
+                }
                 <%
             } else {
                 %>
@@ -194,7 +221,7 @@ if(columnList != null && columnList.size() > 0) {
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
                 	<%dbLog.table().createTry(dbLog.var("tableName"));%>
                 stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-                	<%dbLog.table().createDone(dbLog.var("tableName"));%>                
+                	<%dbLog.table().createDone(dbLog.var("tableName"));%>
             <%
             }
         } else if(("CLEAR").equals(tableAction)) {
@@ -205,14 +232,14 @@ if(columnList != null && columnList.size() > 0) {
             	<%dbLog.table().clearDone(dbLog.var("tableName"));%>
             <%
         }
-    }    
+    }
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
-    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
-    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
-    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
+    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
+    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
+    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
-    
+
 	if(("INSERT").equals(dataAction)) {
 	    %>
 	    String insert_<%=cid%> = "INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
@@ -222,7 +249,7 @@ if(columnList != null && columnList.size() > 0) {
 	    %>
 	    String update_<%=cid%> = "UPDATE \"" + <%=tableName%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
-	    <%		
+	    <%
 	} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
 	    %>
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + <%=tableName%> + "\" WHERE <%=updateWhereStmt.toString()%>");
@@ -236,13 +263,13 @@ if(columnList != null && columnList.size() > 0) {
 	    String update_<%=cid%> = "UPDATE \"" + <%=tableName%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 	    String insert_<%=cid%> = "INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
-	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
-	    <%			
+	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+	    <%
 	} else if (("DELETE").equals(dataAction)) {
 	    %>
 	    String delete_<%=cid%> = "DELETE FROM \"" + <%=tableName%> + "\" WHERE <%=deleteWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
-	    <%		
+	    <%
 	}
     if(isEnableDebug) {
         %>

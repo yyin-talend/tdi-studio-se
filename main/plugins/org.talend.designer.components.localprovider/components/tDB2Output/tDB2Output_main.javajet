@@ -1,4 +1,4 @@
-<%@ jet 
+<%@ jet
 imports="
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.INode
@@ -7,8 +7,8 @@ imports="
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.MappingTypeRetriever
-    org.talend.core.model.metadata.MetadataTalendType	
-    org.talend.core.model.process.IConnectionCategory	
+    org.talend.core.model.metadata.MetadataTalendType
+    org.talend.core.model.process.IConnectionCategory
 	java.util.List
 	java.util.ArrayList
 	java.util.Map
@@ -19,80 +19,85 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();	
-	String cid = node.getUniqueName();	
-	
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
 	dbLog = new DBLogUtil(node);
-	
+
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-	String table = ElementParameterParser.getValue(node,"__TABLE__");	
-	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");	
+	String table = ElementParameterParser.getValue(node,"__TABLE__");
+	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 	List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
 	boolean convertToUppercase = ("true").equals(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
     boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
-    
-    List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");	
-	
-    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");	
-    
+
+    List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
+
+    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
-    
+
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
-	
+
 	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
-	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
-	
+
 	//feature:2880
     getManager(dbmsId, cid, node);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
-	
+
 	String incomingConnName = null;
 	List<IMetadataColumn> columnList = getColumnList(node);
-	
+
 	List< ? extends IConnection> conns = node.getIncomingConnections();
 	if(conns!=null && conns.size()>0){
 		IConnection conn = conns.get(0);
 		incomingConnName = conn.getName();
 	}
-		
+
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
         IConnection rejectConn = rejectConns.get(0);
         rejectConnName = rejectConn.getName();
     }
+
+    boolean useBatch = useBatchSize && (rejectConnName == null)
+                 && (
+                      ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                    );
+
     List<IMetadataColumn> rejectColumnList = null;
     IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
     if(metadataTable != null) {
-        rejectColumnList = metadataTable.getListColumns();      
+        rejectColumnList = metadataTable.getListColumns();
     }
-    
+
     List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
     for(IConnection conn : outgoingConns) {
         if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-            %>       
-            <%=conn.getName() %> = null;            
-            <%      
+            %>
+            <%=conn.getName() %> = null;
+            <%
         }
     }
-	
+
 	Manager manager = null;
 	boolean isDynamic = false;
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
-		isDynamic = metadata.isDynamicSchema(); 
+		isDynamic = metadata.isDynamicSchema();
 	}
-	
+
 	List<Column> stmtStructure = null;
     if(columnList != null && columnList.size() > 0) {
         stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
     	isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
-    	
+
         if(convertToUppercase) {
             for(Column column : stmtStructure) {
                 if(column.isReplaced()) {
@@ -105,7 +110,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
         }
     }
-	
+
 	IMetadataColumn talendDynCol = null;
     ////////////////////////////////////////////////////////////
     List<Column> colStruct = new ArrayList();
@@ -114,26 +119,26 @@ skeleton="../templates/db_output_bulk.skeleton"
     		colStruct.add(colStmt);
     	}
     }
-    
+
 	if(isEnableDebug) {
 %>
 		query_<%=cid%> = new StringBuffer("");
 <%
 	}
-	
+
 	if(isDynamic) {
 	%>
 		if(nb_line_<%=cid%>==0) {
 	<%
-	if(columnList != null && columnList.size() > 0) {        
+	if(columnList != null && columnList.size() > 0) {
        manager = null;
     %>
     <%@ include file="../templates/_tableActionForOutput.javajet"%>
-    <%   
+    <%
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
-    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
-    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
-    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
+    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
+    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
+    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
     talendDynCol = getDynamicColumn();
@@ -169,7 +174,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	    %>
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
-	    <%		
+	    <%
 	} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
 		List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 		if(conns_dynamic!=null && conns_dynamic.size()>0){
@@ -219,8 +224,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	    %>
 	    pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
-	    pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
-	    <%			
+	    pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+	    <%
 	} else if (("DELETE").equals(dataAction)) {
 	    %>
 	    String delete_<%=cid%> = "DELETE FROM \"" + tableName_<%=cid%> + "\" WHERE <%=deleteWhereStmt.toString()%>";
@@ -237,9 +242,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	<%
 	} //end isDynamic
-	
+
 	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
-	
+
 	if (isParallelize) { // bug0014422
 		String tAsyncIn_cid = "";
 		if(conns!=null && conns.size() > 0) {
@@ -252,33 +257,31 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
 	    	}
     	}
-    	if (useBatchSize) {
-		    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+    	if (useBatch) {
 %>
 				batchSize_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
 <%
-		    }
     	}
 	} // end bug0014422
-	
+
     if(incomingConnName != null && columnList != null){
     	int schemaOptNum = 100;
 		String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
 		if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
 			schemaOptNum = Integer.parseInt(schemaOptNumStr);
 		}
-		
+
     	boolean optimize65535 = columnList.size() > schemaOptNum;//optimize for 65535 method size issue in java
         %>
         whetherReject_<%=cid%> = false;
-        <%	
+        <%
         if(("INSERT").equals(dataAction)) {
             int counter = 1;
             for(Column column : colStruct) {
                 if(!column.isInsertable()) {
                     continue;
                 }
-                
+
                 if(optimize65535) {
                 	if((counter-1)%schemaOptNum==0){
 %>
@@ -298,7 +301,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                     }
                 }
-                
+
                 counter++;
             }
 			if(isDynamic) {
@@ -319,23 +322,18 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
                 globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
-            }            
+            }
     		%>
-    		<%if (rejectConnName == null && useBatchSize) { // whether use batch
+    		<%if (useBatch) {
     		%>
-    		pstmt_<%=cid %>.addBatch();
-    		nb_line_<%=cid%>++;    		 
-			
+        		pstmt_<%=cid %>.addBatch();
+        		nb_line_<%=cid%>++;
     		  	<%
     		  	dbLog.data().addingToBatch(dbLog.var("nb_line"), dbLog.str(dataAction));
-				if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
    		  		%>
 		  			batchSizeCounter_<%=cid%>++;
-    		  	<%
-    		  	}
-		  	  	%>    		
     		<%
-    		}else {    		
+    		}else {
     		%>
             try {
                 nb_line_<%=cid%>++;
@@ -379,9 +377,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                         System.err.print(e.getMessage());
                 <%
                     }
-                } 
+                }
                 %>
-            }    
+            }
             <%
             } // end whether use batch
             %>
@@ -392,7 +390,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(!column.isUpdatable()) {
                 	continue;
                 }
-                
+
                 if(optimize65535) {
         			if((counterCol-1)%schemaOptNum==0){
 %>
@@ -412,7 +410,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     	<%
                 	}
                 }
-                
+
                 counterCol++;
             }
 			if(isDynamic) {
@@ -429,7 +427,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				<%
 				}
 			}
-    
+
             for(Column column : colStruct) {
                 if(column.isUpdateKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
@@ -457,12 +455,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}
                     	counterCol++;
                        }
-                     //#############                      
-                    %>  
+                     //#############
+                    %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE, " + count_")%>
                     <%
                     if(isEnableDebug) {
-			
+
                         if(isDynamic){
 			    %>
 				   <%=getManager(dbmsId, cid, node).retrieveSQL(talendDynCol.getLabel(),typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
@@ -472,7 +470,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				   <%=getManager(dbmsId, cid, node).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
 			    <%
 			    }
-                    }                    
+                    }
                     counterCol++;
                 }
             }
@@ -480,23 +478,18 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
                 globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
-            }            
+            }
     		%>
-    		<%if (rejectConnName == null && useBatchSize) { // whether use batch
+    		<%if (useBatch) {
     		%>
-    		pstmt_<%=cid %>.addBatch();
-    		nb_line_<%=cid%>++;    		 
-			
+        		pstmt_<%=cid %>.addBatch();
+        		nb_line_<%=cid%>++;
     		  	<%
     		  	dbLog.data().addingToBatch(dbLog.var("nb_line"), dbLog.str(dataAction));
-				if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
     		  	%>
     		  		batchSizeCounter_<%=cid%>++;
-    		  	<%
-    		  	}
-    		  	%>    		
     		<%
-    		}else {    		
+    		}else {
     		%>
             try {
                 nb_line_<%=cid%>++;
@@ -540,7 +533,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         System.err.print(e.getMessage());
                         <%
                     }
-                } 
+                }
                 %>
             }
             <%
@@ -554,14 +547,14 @@ skeleton="../templates/db_output_bulk.skeleton"
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
                     %>
-					<% 
+					<%
                     //#############for feature:2880 and 6980
                     if(whereSupportNull && column.getColumn().isNullable()) { %>
                     	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
-                    <%  
+                    <%
                     	columnIndex++;
                        }
-                     //#############                      
+                     //#############
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
@@ -569,7 +562,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
             }
     		%>
-    
+
     		java.sql.ResultSet rs_<%=cid%> = pstmt_<%=cid %>.executeQuery();
     		int checkCount_<%=cid%> = -1;
     		while(rs_<%=cid%>.next()) {
@@ -582,7 +575,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     if(!column.isUpdatable()) {
                     	continue;
                     }
-                    
+
                     if(optimize65535) {
                 		if((counterCol-1)%schemaOptNum==0){
 %>
@@ -602,7 +595,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                 	}
-                    
+
                     counterCol++;
                 }
 				if(isDynamic) {
@@ -615,7 +608,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 						<%
 						}
 					%>
-					
+
 						int count_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtUpdate_<%=cid%>, <%=counterCol-1%>, "<%=dbmsId%>");
 					<%
 					}
@@ -624,7 +617,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     if(column.isUpdateKey()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 	                    //#############for feature:2880
-					if(whereSupportNull && column.getColumn().isNullable()) { 
+					if(whereSupportNull && column.getColumn().isNullable()) {
 				if(isDynamic){
 				%>
 					<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(talendDynCol.getLabel(),column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
@@ -645,10 +638,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 							<%
 							}
 
-	                    	} 
+	                    	}
 	                    	counterCol++;
 	                       }
-	                     //#############                      
+	                     //#############
 	                    %>
                         <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE, " + count_")%>
                         <%
@@ -662,18 +655,18 @@ skeleton="../templates/db_output_bulk.skeleton"
 							<%=getManager(dbmsId, cid, node).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
 				    	<%
 				    	}
-                        }                        
-                        counterCol++;                   
+                        }
+                        counterCol++;
                     }
                 }
                 if(isEnableDebug) {
                     %>
                     globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                     <%
-                }                
+                }
     			%>
                 try {
-                    updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate(); 
+                    updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
                     nb_line_<%=cid%>++;
         			<%dbLog.data().updating(dbLog.var("nb_line"));%>
                 } catch(java.lang.Exception e) {
@@ -717,7 +710,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             System.err.print(e.getMessage());
                             <%
                         }
-                    } 
+                    }
                     %>
                 }
     		} else {
@@ -727,7 +720,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	if(!columnInsert.isInsertable()) {
            	 			continue;
            	 		}
-           	 		
+
            	 		if(optimize65535) {
                 		if((counterInsert-1)%schemaOptNum==0){
 %>
@@ -747,7 +740,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                 	}
-                	
+
            	 		counterInsert++;
             	}
 				if(isDynamic) {
@@ -768,7 +761,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     %>
                     globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                     <%
-                }                
+                }
     			%>
                 try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
@@ -815,7 +808,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             System.err.print(e.getMessage());
                             <%
                         }
-                    } 
+                    }
                     %>
                 }
     		}
@@ -829,7 +822,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(!columnUpdate.isUpdatable()) {
                 	continue;
                 }
-                
+
                 if(optimize65535) {
             		if((counterColUpdate-1)%schemaOptNum==0){
 %>
@@ -849,7 +842,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                     }
                 }
-                
+
                 counterColUpdate++;
             }
 			if(isDynamic) {
@@ -862,17 +855,17 @@ skeleton="../templates/db_output_bulk.skeleton"
 					<%
 					}
 					%>
-				
+
 					int count_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtUpdate_<%=cid%>, <%=counterColUpdate-1%>, "<%=dbmsId%>");
 				<%
 				}
 			}
-    
+
             for(Column columnUpdate : colStruct) {
                 if(columnUpdate.isUpdateKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
                     //#############for feature:2880 and 6980
-				if(whereSupportNull && columnUpdate.getColumn().isNullable()) { 
+				if(whereSupportNull && columnUpdate.getColumn().isNullable()) {
 					if(isDynamic){
 					%>
     					<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(talendDynCol.getLabel(),columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
@@ -895,9 +888,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}
                     	counterColUpdate++;
                        }
-                     //#############                      
+                     //#############
                     %>
-                    
+
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE, " + count_")%>
                     <%
                     if(isEnableDebug) {
@@ -910,7 +903,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 						<%=getManager(dbmsId, cid, node).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
 					<%
 					}
-                    }                    
+                    }
                     counterColUpdate++;
                 }
             }
@@ -918,9 +911,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
                 globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
-            }            
+            }
     		%>
-    	
+
             try {
                 updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + updateFlag_<%=cid%>;
@@ -936,7 +929,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     if(!column.isInsertable()) {
                     	continue;
                     }
-                    
+
                     if(optimize65535) {
                 		if((counter-1)%schemaOptNum==0){
 %>
@@ -976,7 +969,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     %>
                     globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                     <%
-                }                
+                }
         		%>
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
 					nb_line_<%=cid%>++;
@@ -1026,12 +1019,12 @@ skeleton="../templates/db_output_bulk.skeleton"
                             System.err.print(e.getMessage());
                             <%
                         }
-                    } 
+                    }
                     %>
                 }
-    
+
             <%
-    	
+
     	} else if (("DELETE").equals(dataAction)) {
     	    int keyCounter = 1;
             for(Column column : colStruct) {
@@ -1039,11 +1032,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
                     %>
-					<% 
+					<%
                     //#############for feature:2880 and 6980
                     if(whereSupportNull && column.getColumn().isNullable()) { %>
                     	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
-                    <%  
+                    <%
 	                    if(isEnableDebug) {
 	                        %>
 	                        <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
@@ -1051,16 +1044,16 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                    	}
                     	 keyCounter++;
                        }
-                     //#############                      
+                     //#############
                     %>
-                    
+
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
                     if(isEnableDebug) {
                         %>
                         <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_")%>;
                         <%
-                    }                    
+                    }
                     keyCounter++;
                 }
             }
@@ -1068,22 +1061,18 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
                 globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
-            }            
+            }
     		%>
-    		<%if (rejectConnName == null && useBatchSize) { // whether use batch
+    		<%if (useBatch) {
     		%>
         		pstmt_<%=cid %>.addBatch();
     			nb_line_<%=cid%>++;
     			<%
     			dbLog.data().addingToBatch(dbLog.var("nb_line"), dbLog.str(dataAction));
-    			if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
        		  	%>
         			batchSizeCounter_<%=cid%>++;
-        		<%
-        		}
-        		%>    		
     		<%
-    		}else {    		
+    		}else {
     		%>
             try {
             	deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
@@ -1130,7 +1119,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         System.err.print(e.getMessage());
                         <%
                     }
-                } 
+                }
                 %>
             }
             <%
@@ -1138,15 +1127,15 @@ skeleton="../templates/db_output_bulk.skeleton"
             %>
     	<%
     	}
-    	
-    	
+
+
         if(outgoingConns != null && outgoingConns.size() > 0) {
             %>
             if(!whetherReject_<%=cid%>) {
                 <%
                 for(IConnection outgoingConn : outgoingConns) {
                     if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
-                        if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {                            
+                        if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                             %>
                             <%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
                             <%
@@ -1172,21 +1161,18 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             <%
         }
-        	
+
     	   	//////////batch execute by batch size///////
-    	if (useBatchSize && (rejectConnName==null)) {
-    		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
+    	if (useBatch) {
     		%>
-    			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
-                %>                                                
+    			if ((batchSize_<%=cid%> > 0) && (batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>)) {
                 try {
 						int countSum_<%=cid%> = 0;
 						<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
 						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
 							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
-						}      
-						<%dbLog.batch().executeDone(dbLog.str(dataAction));%>          	
+						}
+						<%dbLog.batch().executeDone(dbLog.str(dataAction));%>
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
             	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
@@ -1199,8 +1185,8 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	%>
             	    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
-            	    	}%>                         	    	
-            	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
+            	    	}%>
+            	    	batchSizeCounter_<%=cid%> = 0;
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
@@ -1214,7 +1200,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}
 					<%if (("INSERT").equals(dataAction)) {
 			    	%>
-			    		insertedCount_<%=cid%> += countSum_<%=cid%>; 
+			    		insertedCount_<%=cid%> += countSum_<%=cid%>;
 			    	<%
 			    	}else if (("UPDATE").equals(dataAction)) {
 			    	%>
@@ -1226,31 +1212,27 @@ skeleton="../templates/db_output_bulk.skeleton"
 			    	<%
 			    	}
 			    	dbLog.logPrintedException("e.getMessage()");
-			    	%> 
+			    	%>
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
                 }
-                <%
-                }%>    			
-    			
-    			
-    			
     			}
-    		<%	
-    		}
-    	
+    		<%
     	}
+
         ////////////commit every////////////
 		if(!useExistingConnection) {
     		if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
     		    %>
-    		    commitCounter_<%=cid%>++;            
+    		    commitCounter_<%=cid%>++;
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
-                
-                <%if ((rejectConnName==null && useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+                <%
+                if(useBatch){
                 %>
+                if ((batchSize_<%=cid%> > 0) && (batchSizeCounter_<%=cid%> > 0)) {
                 try {
+                        batchSizeCounter_<%=cid%> = 0;
                 		int countSum_<%=cid%> = 0;
                 		<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
 						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
@@ -1262,14 +1244,14 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("UPDATE").equals(dataAction)) {
-            	    	%>            	    		
+            	    	%>
             	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("DELETE").equals(dataAction)) {
             	    	%>
             	    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
-            	    	}%>            	    
+            	    	}%>
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
@@ -1286,7 +1268,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("UPDATE").equals(dataAction)) {
-            	    	%>            	    		
+            	    	%>
             	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("DELETE").equals(dataAction)) {
@@ -1299,19 +1281,18 @@ skeleton="../templates/db_output_bulk.skeleton"
                         System.err.println(e.getMessage());
                 	<%
                 	}%>
-                
-                }            	                              
+                }
+                }
                 <%
-                }%>
+                }
+                %>
                 	<%dbLog.commit().commitTry(null, dbLog.var("commitCounter"));%>
-                	conn_<%=cid%>.commit();                
-                	<%dbLog.commit().commitDone(null);%>       
+                	conn_<%=cid%>.commit();
+                	<%dbLog.commit().commitDone(null);%>
                 	commitCounter_<%=cid%>=0;
-                }	
+                }
                 <%
     		}
     	}
-        
-        
     }
-    %>
+%>

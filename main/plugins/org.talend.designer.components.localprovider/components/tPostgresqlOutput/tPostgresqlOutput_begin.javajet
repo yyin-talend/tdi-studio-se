@@ -1,17 +1,17 @@
-<%@ jet 
+<%@ jet
 imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.INode
-		org.talend.core.model.process.ElementParameterParser  
-		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.metadata.MappingTypeRetriever
-        org.talend.core.model.metadata.MetadataTalendType    
+        org.talend.core.model.metadata.MetadataTalendType
 		org.talend.core.model.process.IConnection
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
 		java.util.HashMap
-" 
+"
 skeleton="../templates/db_output_bulk.skeleton"
 %>
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
@@ -19,53 +19,65 @@ skeleton="../templates/db_output_bulk.skeleton"
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
+
 	dbLog = new DBLogUtil(node);
 
     List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__ADD_COLS__" );
-    
+
     boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
-    
+
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
-    
+
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-    
+
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-    
+
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	
+
 	String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
-	
+
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	
+
 	String table = ElementParameterParser.getValue(node,"__TABLE__");
-	
+
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
-	
+
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-	
+
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
-	
+
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	
+
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
-	
+
 	boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
-	
+
 	boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
-	
+
 	boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
-	
+
 	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
-	
+
 	boolean savePoint = ("true").equals(ElementParameterParser.getValue(node,"__SAVE_POINT__"));
-	
+
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+
+    String rejectConnName = null;
+    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+    if(rejectConns != null && rejectConns.size() > 0) {
+        IConnection rejectConn = rejectConns.get(0);
+        rejectConnName = rejectConn.getName();
+    }
+
+  boolean useBatch = useBatchSize && (rejectConnName == null)
+                   && (
+                        ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                      );
 %>
 
 <%
@@ -75,7 +87,7 @@ boolean isDynamic = false;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
-	isDynamic = metadata.isDynamicSchema(); 
+	isDynamic = metadata.isDynamicSchema();
 }
 
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -138,7 +150,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         <%
     }
 }
-%> 
+%>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
 int nb_line_inserted_<%=cid%> = 0;
@@ -165,10 +177,10 @@ if(("true").equals(useExistingConn)) {
 		java.sql.Savepoint  sp_<%=cid %> = null;
 	<%}
 } else {
-	%>	
+	%>
 	<%dbLog.conn().logJDBCDriver(dbLog.str("org.postgresql.Driver"));%>
-    java.lang.Class.forName("org.postgresql.Driver");    
-    String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;    
+    java.lang.Class.forName("org.postgresql.Driver");
+    String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
     String dbUser_<%=cid %> = <%=dbuser%>;
     <%
     String passwordFieldName = "__PASS__";
@@ -177,11 +189,11 @@ if(("true").equals(useExistingConn)) {
     <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 
     String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
-    
+
     <%dbLog.conn().connTry(dbLog.var("url"), dbLog.var("dbUser"));%>
     conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%dbLog.conn().connDone(dbLog.var("url"));%>
-    
+
 	resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
     <%if(savePoint && !useBatchSize && !("true").equals(dieOnError) && (!("").equals(commitEvery) && !("0").equals(commitEvery))){%>
     	java.sql.Savepoint  sp_<%=cid %> = null;
@@ -201,35 +213,33 @@ if(!("true").equals(useExistingConn)) {
 
 <%if(("true").equals(useExistingConn) && savePoint){%>
     if(conn_<%=cid%>.getAutoCommit()){
-    	throw new RuntimeException("Connection autocommit must be off to use savePoint"); 
+    	throw new RuntimeException("Connection autocommit must be off to use savePoint");
     }
 <%}%>
 
 <%
-if (useBatchSize) {
-    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+if (useBatch) {
 %>
    int batchSize_<%=cid%> = <%=batchSize%>;
    int batchSizeCounter_<%=cid%>=0;
-<%   
-   }
+<%
 }
-%> 
+%>
 
 <%
 if(!isDynamic) {
 %>
 int count_<%=cid%>=0;
 <%
-if(columnList != null && columnList.size()>0) {    
+if(columnList != null && columnList.size()>0) {
        Manager manager = null;
     %>
     <%@ include file="../templates/_tableActionForOutput.javajet"%>
-    <%   
+    <%
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
-    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
-    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
-    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
+    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
+    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
+    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
 
@@ -242,27 +252,27 @@ if(columnList != null && columnList.size()>0) {
 	    %>
 	    String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
-	    <%		
+	    <%
 	} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
 	    %>
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + tableName_<%=cid%> + "\" WHERE <%=updateWhereStmt.toString()%>");
 	    String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 	    String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
-	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);	
+	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 	    <%
 	} else if (("UPDATE_OR_INSERT").equals(dataAction)) {
 	    %>
 	    String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 	    String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
-	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
-	    <%			
+	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+	    <%
 	} else if (("DELETE").equals(dataAction)) {
 	    %>
 	    String delete_<%=cid%> = "DELETE FROM \"" + tableName_<%=cid%> + "\" WHERE <%=deleteWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
-	    <%		
+	    <%
 	}
     if(isEnableDebug) {
         %>
@@ -272,14 +282,14 @@ if(columnList != null && columnList.size()>0) {
     }
 }
 } //end isDynamic
-boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__")); 
+boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 boolean createTable = "CREATE".equals(tableAction) || "DROP_CREATE".equals(tableAction) || "CREATE_IF_NOT_EXISTS".equals(tableAction) || "DROP_IF_EXISTS_AND_CREATE".equals(tableAction);
     if((createGeometryColumns || createSpatialIndex) && useSpatialOptions && !isParallelize && createTable) {
     	%>
     	String geometryColumnName_<%=cid %> = null;
     	// Initialize SRID
     	int SRID_<%=cid %> = 0;
-    	int dimension_<%=cid %> = 0; 
+    	int dimension_<%=cid %> = 0;
     	boolean firstGeometry_<%=cid %> = true;
     	<%
     }

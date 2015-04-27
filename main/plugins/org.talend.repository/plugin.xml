@@ -2366,6 +2366,22 @@
         <projecttask
               beforeLogon="false"
               breaks="5.6.1"
+              class="org.talend.repository.model.migration.CorrectBatchSizeForDBComponents"
+              id="org.talend.repository.model.migration.CorrectBatchSizeForDBComponents"
+              name="CorrectBatchSizeForDBComponents"
+              version="5.6.2">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.1"
+              class="org.talend.repository.model.migration.CorrectBatchSizeForDBComponentsMore"
+              id="org.talend.repository.model.migration.CorrectBatchSizeForDBComponentsMore"
+              name="CorrectBatchSizeForDBComponentsMore"
+              version="5.6.2">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.1"
               class="org.talend.repository.model.migration.ChangeParameter4tSAPIDocOutput"
               id="org.talend.repository.model.migration.ChangeParameter4tSAPIDocOutput"
               name="ChangeParameter4tSAPIDocOutput"

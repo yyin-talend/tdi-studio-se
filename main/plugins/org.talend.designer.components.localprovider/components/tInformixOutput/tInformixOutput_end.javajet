@@ -1,31 +1,32 @@
-<%@ jet 
+<%@ jet
 imports="
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.INode
 	org.talend.core.model.process.ElementParameterParser
 	org.talend.core.model.process.IConnection
 	java.util.List
-" 
+"
 %>
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	
+
 	String cid = node.getUniqueName();
 	dbLog = new DBLogUtil(node);
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-	
+
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	
+
 	boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
-	
+
 	boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
-	
+	String useBatchAndUseConn = ElementParameterParser.getValue(node,"__USE_BATCH_AND_USE_CONN__");
+
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-	
+
 	String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
-	
+
 	//------get first reject name
 	String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
@@ -34,41 +35,56 @@ imports="
         rejectConnName = rejectConn.getName();
     }
 
+    boolean useBatch = true;
+    if(useExistingConnection){
+        useBatch = (rejectConnName == null)
+                       && (
+                            ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                          )
+                       && "true".equals(useBatchAndUseConn);
+    }else{
+        useBatch = (rejectConnName == null)
+                       && (
+                            ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                          )
+                       && "true".equals(useBatchSize);
+        }
+
     if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
             pstmtUpdate_<%=cid %>.close();
-            
-        } 
+
+        }
         if(pstmtInsert_<%=cid %> != null){
 
             pstmtInsert_<%=cid %>.close();
-            
+
         }
         if(pstmt_<%=cid %> != null) {
 
             pstmt_<%=cid %>.close();
-            
-        }        
+
+        }
         <%
     } else if(("UPDATE_OR_INSERT").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
             pstmtUpdate_<%=cid %>.close();
-            
-        } 
+
+        }
         if(pstmtInsert_<%=cid %> != null){
 
             pstmtInsert_<%=cid %>.close();
-            
-        }        
+
+        }
         <%
     } else {
     //----------------------batch size
-		if ((rejectConnName == null && ("true").equals(useBatchSize)&& ! useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
-%>                
+		if (useBatch) {
+%>
 			try {
 				// when PreparedStatement execute "executeBatch" if have no any data to update that will throw "java.sql.SQLException: Method can be called only once."
 				if (pstmt_<%=cid %> != null && batchSizeCounter_<%=cid%> > 0) {
@@ -81,7 +97,7 @@ imports="
 	    	    	<%
 	    	    	if (("INSERT").equals(dataAction)) {
 	    	    	%>
-	    	    		insertedCount_<%=cid%> +=countSum_<%=cid%>; 
+	    	    		insertedCount_<%=cid%> +=countSum_<%=cid%>;
 	    	    	<%
 	    	    	}else if (("UPDATE").equals(dataAction)) {
 	    	    	%>
@@ -106,19 +122,19 @@ imports="
             	System.err.println(e.getMessage());
             	<%
             	}
-            	%>                	
-        	}                                  
+            	%>
+        	}
 <%
 		}//--------end batch
-%> 
+%>
         if(pstmt_<%=cid %> != null) {
 
             pstmt_<%=cid %>.close();
-            
+
         }
- 
+
     <%
-    }   
+    }
 if(!useExistingConnection && useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
     %>
 		<%dbLog.commit().commitTry(null, dbLog.var("commitCounter"));%>

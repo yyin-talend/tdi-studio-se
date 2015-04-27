@@ -1,59 +1,76 @@
-<%@ jet 
+<%@ jet
 imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.INode
-		org.talend.core.model.process.ElementParameterParser  
-		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.process.IConnection
         org.talend.core.model.metadata.MappingTypeRetriever
-        org.talend.core.model.metadata.MetadataTalendType        
+        org.talend.core.model.metadata.MetadataTalendType
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
 		java.util.HashMap
-" 
+"
 skeleton="../templates/db_output_bulk.skeleton"
 %>
 	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	
+
 	String cid = node.getUniqueName();
-	
+
 	dbLog = new DBLogUtil(node);
-	
+
     List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__ADD_COLS__" );
-    
+
     boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
-    
+
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
-    
+
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-    
+
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-    
+
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	
+
 	String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
-	
+
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	
+
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	
+
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
-	
+
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-	
+
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
-	
+
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	
+
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+
+    boolean useBatch = "true".equals(ElementParameterParser.getValue(node, "__USE_BATCH__"));
+    String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
+
+    String rejectConnName = null;
+    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+    if(rejectConns != null && rejectConns.size() > 0) {
+        IConnection rejectConn = rejectConns.get(0);
+        rejectConnName = rejectConn.getName();
+    }
+
+    useBatch = (rejectConnName == null)
+             && (
+                  ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                )
+             && useBatch;
 %>
 
 <%
@@ -119,7 +136,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         <%
     }
 }
-%> 
+%>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
 int nb_line_inserted_<%=cid%> = 0;
@@ -133,6 +150,16 @@ int rejectedCount_<%=cid%>=0;
 
 boolean whetherReject_<%=cid%> = false;
 
+<%
+    if (useBatch) {
+%>
+       int batchSize_<%=cid%> = <%=batchSize%>;
+       int batchSizeCounter_<%=cid%>=0;
+       int tmp_batchUpdateCount_<%=cid%> = 0;
+<%
+    }
+%>
+
 java.sql.Connection conn_<%=cid%> = null;
 <%
 if(("true").equals(useExistingConn)) {
@@ -143,10 +170,10 @@ if(("true").equals(useExistingConn)) {
 	<%dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", "conn_"+cid+".getMetaData().getUserName()");%>
 	<%
 } else {
-	%>	
+	%>
 	<%dbLog.conn().logJDBCDriver(dbLog.str("org.postgresql.Driver"));%>
-    java.lang.Class.forName("org.postgresql.Driver");    
-    String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;    
+    java.lang.Class.forName("org.postgresql.Driver");
+    String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
     String dbUser_<%=cid %> = <%=dbuser%>;
     <%
     String passwordFieldName = "__PASS__";
@@ -155,7 +182,7 @@ if(("true").equals(useExistingConn)) {
     <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 
     String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
-    
+
     <%dbLog.conn().connTry(dbLog.var("url"), dbLog.var("dbUser"));%>
     conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%dbLog.conn().connDone(dbLog.var("url"));%>
@@ -175,7 +202,7 @@ if(!("true").equals(useExistingConn)) {
 %>
 
 <%
-if(columnList != null && columnList.size()>0) {    
+if(columnList != null && columnList.size()>0) {
     if(!isParallelize && !("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
@@ -183,9 +210,9 @@ if(columnList != null && columnList.size()>0) {
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             <%dbLog.table().dropTry(dbLog.var("tableName"));%>
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-            <%dbLog.table().dropDone(dbLog.var("tableName"));%> 	
+            <%dbLog.table().dropDone(dbLog.var("tableName"));%>
             stmtDrop_<%=cid%>.close();
-            
+
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             <%dbLog.table().createTry(dbLog.var("tableName"));%>
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
@@ -218,7 +245,7 @@ if(columnList != null && columnList.size()>0) {
             while(rsTable_<%=cid%>.next()) {
                 String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
                 String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
-                if(table_<%=cid%>.equals(<%=tableName%>) 
+                if(table_<%=cid%>.equals(<%=tableName%>)
                 	&& (schema_<%=cid%>.equals(dbschema_<%=cid%>) || ((dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() ==0) && defaultSchema_<%=cid%>.equals(schema_<%=cid%>)))) {
                     whetherExist_<%=cid%> = true;
                     break;
@@ -234,7 +261,7 @@ if(columnList != null && columnList.size()>0) {
                     stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
                     <%dbLog.table().createDone(dbLog.var("tableName"));%>
                     stmtCreate_<%=cid%>.close();
-                }                
+                }
                 <%
             } else {
                 %>
@@ -276,11 +303,11 @@ if(columnList != null && columnList.size()>0) {
             stmtTrunc_<%=cid%>.close();
             <%
         }
-    }    
+    }
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
-    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
-    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
-    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
+    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
+    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
+    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
 
@@ -293,27 +320,27 @@ if(columnList != null && columnList.size()>0) {
 	    %>
 	    String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
-	    <%		
+	    <%
 	} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
 	    %>
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + tableName_<%=cid%> + "\" WHERE <%=updateWhereStmt.toString()%>");
 	    String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 	    String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
-	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);	
+	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 	    <%
 	} else if (("UPDATE_OR_INSERT").equals(dataAction)) {
 	    %>
 	    String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 	    String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
-	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
-	    <%			
+	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+	    <%
 	} else if (("DELETE").equals(dataAction)) {
 	    %>
 	    String delete_<%=cid%> = "DELETE FROM \"" + tableName_<%=cid%> + "\" WHERE <%=deleteWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
-	    <%		
+	    <%
 	}
     if(isEnableDebug) {
         %>

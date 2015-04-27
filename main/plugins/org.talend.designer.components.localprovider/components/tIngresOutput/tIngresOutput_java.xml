@@ -29,7 +29,7 @@
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
-    			NOT_SHOW_IF="(DIE_ON_ERROR == 'true')"/>
+               NOT_SHOW_IF="(DIE_ON_ERROR == 'true') OR (isShow[BATCH_SIZE])"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -48,7 +48,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 
-	<PARAMETER
+  <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
       NUM_ROW="2"
@@ -56,14 +56,14 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
-	  NAME="CONNECTION"
-	  FIELD="COMPONENT_LIST"
-	  REQUIRED="true" FILTER="tIngresConnection"
-	  NUM_ROW="2"
-	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-	>
-	</PARAMETER>
+  <PARAMETER
+    NAME="CONNECTION"
+    FIELD="COMPONENT_LIST"
+    REQUIRED="true" FILTER="tIngresConnection"
+    NUM_ROW="2"
+    SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+  >
+  </PARAMETER>
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -83,7 +83,7 @@
     >
       <DEFAULT>"II7"</DEFAULT>
     </PARAMETER>
-	<PARAMETER
+  <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
       NUM_ROW="2"
@@ -194,7 +194,7 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
+  <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="10"
@@ -206,7 +206,7 @@
   </PARAMETERS>
 
   <ADVANCED_PARAMETERS>
-  	<PARAMETER
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="8"
@@ -234,7 +234,7 @@
     >
       <ITEMS>
         <ITEM NAME="NAME" VALUE='"colname"' />
-		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" RAW="true" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
+    <ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" RAW="true" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
         <ITEM NAME="SQL" VALUE='"now()"' />
         <ITEM NAME="POS" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="BEFORE">
@@ -271,25 +271,43 @@
       </ITEMS>
     </PARAMETER>
 
-  	<PARAMETER
-  	  NAME="ENABLE_DEBUG_MODE"
-  	  FIELD="CHECK"
-	  NUM_ROW="15">
-	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+      NAME="ENABLE_DEBUG_MODE"
+      FIELD="CHECK"
+    NUM_ROW="15">
+    <DEFAULT>false</DEFAULT>
+  </PARAMETER>
 
-	<PARAMETER
-		NAME="SUPPORT_NULL_WHERE"
-		FIELD="CHECK"
-		NUM_ROW="20">
-		  <DEFAULT>false</DEFAULT>
-	</PARAMETER>
+  <PARAMETER
+    NAME="SUPPORT_NULL_WHERE"
+    FIELD="CHECK"
+    NUM_ROW="20">
+      <DEFAULT>false</DEFAULT>
+  </PARAMETER>
+
+    <PARAMETER
+      NAME="USE_BATCH"
+      FIELD="CHECK"
+      NUM_ROW="30"
+      SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE'))"
+      >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="BATCH_SIZE"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      SHOW_IF="USE_BATCH == 'true'"
+      >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
 
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-    	<IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true" />
+      <IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 

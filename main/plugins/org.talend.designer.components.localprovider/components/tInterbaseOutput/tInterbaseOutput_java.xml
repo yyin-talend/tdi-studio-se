@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
@@ -28,8 +28,8 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
-    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" 
-    			NOT_SHOW_IF="(DIE_ON_ERROR == 'true')"/>
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
+    		   NOT_SHOW_IF="(DIE_ON_ERROR == 'true') OR (isShow[BATCH_SIZE])"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -39,7 +39,7 @@
   </CONNECTORS>
 
   <PARAMETERS>
-   
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -48,21 +48,21 @@
       REPOSITORY_VALUE="DATABASE:INTERBASE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-    <PARAMETER 
-      NAME="USE_EXISTING_CONNECTION" 
-      FIELD="CHECK" 
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
       NUM_ROW="2">
 		<DEFAULT>false</DEFAULT>
      </PARAMETER>
-     <PARAMETER 
-	  NAME="CONNECTION" 
-	  FIELD="COMPONENT_LIST" 
-	  REQUIRED="true" FILTER="tInterbaseConnection" 
-	  NUM_ROW="2" 
+     <PARAMETER
+	  NAME="CONNECTION"
+	  FIELD="COMPONENT_LIST"
+	  REQUIRED="true" FILTER="tInterbaseConnection"
+	  NUM_ROW="2"
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	  DYNAMIC_SETTINGS="true">
 	</PARAMETER>
-    
+
 	<PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -73,8 +73,8 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>     
-    
+    </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -105,7 +105,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="PASSWORD"
@@ -116,7 +116,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -155,7 +155,7 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
-        
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -163,7 +163,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -175,8 +175,8 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
-    
+    </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -184,18 +184,18 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="13"
       SHOW="false"
-    >       
+    >
       <DEFAULT>interbase_id</DEFAULT>
-    </PARAMETER>    
-    
+    </PARAMETER>
+
   </PARAMETERS>
-  
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
       NAME="ENCODING"
@@ -226,7 +226,7 @@
     >
       <ITEMS>
         <ITEM NAME="NAME" VALUE='"colname"' />
-		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" RAW="true" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>	
+		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" RAW="true" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
         <ITEM NAME="SQL" VALUE='"now()"' />
         <ITEM NAME="POS" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="BEFORE">
@@ -262,21 +262,39 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
-    
-  	<PARAMETER 
-  	  NAME="ENABLE_DEBUG_MODE" 
+
+  	<PARAMETER
+  	  NAME="ENABLE_DEBUG_MODE"
   	  FIELD="CHECK"
 	  NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>   
-	
-	<PARAMETER 
-		NAME="SUPPORT_NULL_WHERE" 
+	</PARAMETER>
+
+	<PARAMETER
+		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
 		NUM_ROW="20">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	 
+
+    <PARAMETER
+      NAME="USE_BATCH"
+      FIELD="CHECK"
+      NUM_ROW="30"
+      SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE'))"
+      >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="BATCH_SIZE"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      SHOW_IF="USE_BATCH == 'true'"
+      >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+
   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
@@ -284,7 +302,7 @@
        <IMPORT NAME="Driver-Interbase" MODULE="interclient.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
-   
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
