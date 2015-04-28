@@ -299,6 +299,24 @@
         >
         <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
         </PARAMETER>
+
+        <PARAMETER
+          NAME="RETRIEVE_UPLOAD_STATUS"
+          FIELD="CHECK"
+          NUM_ROW="90"
+        >
+        <DEFAULT>false</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="SECONDS_TO_WAIT_FOR_SERVER_ANSWER"
+          FIELD="TEXT"
+          NUM_ROW="100"
+          REQUIRED="true"
+          SHOW_IF="RETRIEVE_UPLOAD_STATUS == 'true'"
+        >
+          <DEFAULT>60</DEFAULT>
+        </PARAMETER>
     </ADVANCED_PARAMETERS>
 
     <CODEGENERATION>

@@ -44,6 +44,9 @@ imports="
     boolean generateJsonInFile = "true".equals(ElementParameterParser.getValue(node,"__GENERATE_JSON_IN_FILE__"));
     boolean doCleanWork = generateJsonInFile && !specifyJsonMetadata;
     String  encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+
+    boolean retrieveUploadStatus = "true".equals(ElementParameterParser.getValue(node,"__RETRIEVE_UPLOAD_STATUS__"));
+    String seconds2getStatus = ElementParameterParser.getValue(node,"__SECONDS_TO_WAIT_FOR_SERVER_ANSWER__");
 %>
         //Step one: Connect to salesforce
         com.sforce.ws.ConnectorConfig connectorConfig_<%= cid %> = new com.sforce.ws.ConnectorConfig();
@@ -307,3 +310,43 @@ imports="
             <%
         }
      %>
+
+        com.sforce.soap.partner.sobject.SObject[] statusObjArr_<%= cid %> = null;
+        <%
+           if(!retrieveUploadStatus){
+                %>
+                   int times2try_<%= cid %> = 1;
+                <%
+           }else{
+                %>
+                   int times2try_<%= cid %> = Integer.valueOf(<%= seconds2getStatus %>).intValue() / 10;
+                <%
+          }
+         %>
+        String finalProcessStatus_<%= cid %> = null;
+        try {
+            for (int i = 0; i < times2try_<%= cid %>; i++ ){
+                 try{
+                      Thread.sleep(10000);
+                  }catch(Exception e){
+                      e.printStackTrace();
+                  }
+               statusObjArr_<%= cid %> = partnerConnection_<%= cid %>.retrieve("Status",
+                                                                   sobject4process_<%= cid %>.getType(),
+                                                                   new String[] { sobject4process_<%= cid %>.getId() });
+                for(com.sforce.soap.partner.sobject.SObject obj: statusObjArr_<%= cid %>){
+                    finalProcessStatus_<%= cid %> = (String)obj.getField("Status");
+                }
+                if("Completed".equalsIgnoreCase(finalProcessStatus_<%= cid %>) || "Failed".equalsIgnoreCase(finalProcessStatus_<%= cid %>)){
+                        break;
+                }
+            }
+        } catch (com.sforce.ws.ConnectionException e) {
+            throw e;
+        }
+
+        if("Failed".equalsIgnoreCase(finalProcessStatus_<%= cid %>)){
+            throw new RuntimeException("Upload CSV file failed.");
+        } else if (!"Completed".equalsIgnoreCase(finalProcessStatus_<%= cid %>)) {
+            System.out.println("The upload status is '" + finalProcessStatus_<%= cid %> + "'.");
+        }
