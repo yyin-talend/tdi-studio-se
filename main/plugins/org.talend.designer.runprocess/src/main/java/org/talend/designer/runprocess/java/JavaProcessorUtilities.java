@@ -68,6 +68,7 @@ import org.talend.designer.maven.tools.MavenPomSynchronizer;
 import org.talend.designer.maven.utils.TalendCodeProjectUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.maven.MavenDeployUtil;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
@@ -367,12 +368,17 @@ public class JavaProcessorUtilities {
                     }
                 }
                 jarsNeedRetrieve.addAll(originalConexts);
-                ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
-                repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
+
+                try {
+                    MavenDeployUtil.deployToLocalMaven(null, jarsNeedRetrieve.toArray(new String[0]));
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
                 if (process instanceof IProcess2) {
                     ((IProcess2) process).checkProcess();
                 }
             }
+
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
