@@ -243,6 +243,8 @@ public final class TalendEditorPaletteFactory {
         boolean needAddNote = true;
         boolean needToAdd = false;
         Map<String, IComponent> recentlyUsedMap = new HashMap<String, IComponent>();
+        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+        String largeIconsSize = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
         componentIter = componentList.iterator();
         while (componentIter.hasNext()) {
             IComponent xmlComponent = componentIter.next();
@@ -257,11 +259,7 @@ public final class TalendEditorPaletteFactory {
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
             if ((oraFamily.equals("Misc") || oraFamily.equals("Miscellaneous")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
-                CreationToolEntry noteCreationToolEntry = new CreationToolEntry(
-                        Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
-                        Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
-                        new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON),
-                        ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
+                CreationToolEntry noteCreationToolEntry = createNoteEntry(largeIconsSize);
                 if (a == 0) {
                     PaletteDrawer drawer = ht.get(family);
                     if (drawer != null) {
@@ -288,10 +286,8 @@ public final class TalendEditorPaletteFactory {
                 longName = xmlComponent.getLongName();
 
                 ImageDescriptor imageSmall = xmlComponent.getIcon16();
-                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
                 ImageDescriptor imageLarge;
-                final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
-                if (string.equals("24")) { //$NON-NLS-1$
+                if (largeIconsSize.equals("24")) { //$NON-NLS-1$
                     imageLarge = xmlComponent.getIcon24();
                 } else {
                     imageLarge = xmlComponent.getIcon32();
@@ -674,11 +670,9 @@ public final class TalendEditorPaletteFactory {
                 }
             }
         }
-
-        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
-                Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
-                new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON),
-                ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
+        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+        String largeIconsSize = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+        CreationToolEntry noteCreationToolEntry = createNoteEntry(largeIconsSize);
         noteCreationToolEntry.setParent(drawer);
         drawer.add(noteCreationToolEntry);
 
@@ -720,10 +714,8 @@ public final class TalendEditorPaletteFactory {
                 longName = xmlComponent.getLongName();
 
                 ImageDescriptor imageSmall = xmlComponent.getIcon16();
-                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
                 ImageDescriptor imageLarge;
-                final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
-                if (string.equals("24")) { //$NON-NLS-1$
+                if (largeIconsSize.equals("24")) { //$NON-NLS-1$
                     imageLarge = xmlComponent.getIcon24();
                 } else {
                     imageLarge = xmlComponent.getIcon32();
@@ -1078,6 +1070,18 @@ public final class TalendEditorPaletteFactory {
         AbstractProcessProvider.loadComponentsFromProviders();
         createComponentsDrawer(compFac, false, histate);
         return palette;
+    }
+
+    protected static CreationToolEntry createNoteEntry(String largeIconsSize) {
+        ImageDescriptor imageLargeIcon = null;
+        if (largeIconsSize.equals("24")) { //$NON-NLS-1$
+            imageLargeIcon = ImageProvider.getImageDesc(ECoreImage.NOTE_MIDDLE_ICON);
+        } else {
+            imageLargeIcon = ImageProvider.getImageDesc(ECoreImage.NOTE_BIG_ICON);
+        }
+        return new CreationToolEntry(Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+                Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
+                new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.NOTE_SMALL_ICON), imageLargeIcon);
     }
 
     /**
