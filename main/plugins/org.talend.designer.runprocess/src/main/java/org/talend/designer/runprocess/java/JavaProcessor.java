@@ -35,7 +35,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.codec.binary.Base64InputStream;
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -171,8 +170,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     protected Property property;
 
     private String exportAsOSGI;
-
-    protected String windowsClasspath, unixClasspath;
 
     protected Set<JobInfo> buildChildrenJobs;
 
@@ -363,42 +360,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // target/classes/test/testjob_0_1/contexts/Default.properties
         // or target/test-classes/test/testjob_0_1/testjunitjob_0_1/contexts/Default.properties
         this.compiledContextPath = outputFolder.getFile(jobContextPath).getProjectRelativePath();
-    }
-
-    public void initJobClasspath() {
-        final String label = getProperty().getLabel(); // just label as exported folder.
-        LastGenerationInfo.getInstance().setLastMainJob(null);
-        // FIXME, must make sure the exportConfig is true, and the classpath is same as export.
-        ProcessorUtilities.setExportConfig(label, false);
-
-        setClasspaths();
-
-        ProcessorUtilities.resetExportConfig();
-    }
-
-    protected void setClasspaths() {
-        String contextName = JavaResourcesHelper.getJobContextName(this.context);
-        this.windowsClasspath = getClasspath(Platform.OS_WIN32, contextName);
-        this.unixClasspath = getClasspath(Platform.OS_LINUX, contextName);
-    }
-
-    /**
-     * 
-     * copied from JobScriptsManager.getCommandByTalendJob
-     */
-    protected String getClasspath(String tp, String contextName) {
-        try {
-            // maybe should just reuse current processor's getCommandLine method.
-            String[] cmds = ProcessorUtilities.getCommandLine(tp, true, process, contextName, false, -1, -1);
-            int cpIndex = ArrayUtils.indexOf(cmds, JavaUtils.JAVA_CP);
-            if (cpIndex > -1) { // found
-                // return the cp values in the next index.
-                return cmds[cpIndex + 1];
-            }
-        } catch (ProcessorException e) {
-            ExceptionHandler.process(e);
-        }
-        return null;
     }
 
     /**

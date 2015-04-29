@@ -92,6 +92,12 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
     private String[] proxyParameters;
 
+    /**
+     * only work for the old build job for wizard, because the lib folder is out of project, but after maven, it's in
+     * the project. If use Maven way to unify ,can be removed this flag totally. false, by default.
+     */
+    private boolean oldBuildJob = false;
+
     // least once
 
     /**
@@ -442,6 +448,14 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
     @Override
     public void setCodeLocation(String codeLocation) {
         this.codeLocation = codeLocation;
+    }
+
+    public boolean isOldBuildJob() {
+        return oldBuildJob;
+    }
+
+    public void setOldBuildJob(boolean oldBuildJob) {
+        this.oldBuildJob = oldBuildJob;
     }
 
     @Override

@@ -13,16 +13,19 @@
 package org.talend.designer.runprocess.maven;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
@@ -50,6 +53,8 @@ import org.talend.repository.ProjectManager;
  *
  */
 public class MavenJavaProcessor extends JavaProcessor {
+
+    protected String windowsClasspath, unixClasspath;
 
     private boolean isTestJob;
 
@@ -85,24 +90,60 @@ public class MavenJavaProcessor extends JavaProcessor {
 
     @Override
     protected String getBaseLibPath() {
+        if (isOldBuildJob()) {
+            return super.getBaseLibPath();
+        }
         return JavaUtils.JAVA_LIB_DIRECTORY;
     }
 
-    @Override
     public void initJobClasspath() {
-        // FIXME, must make sure the exportConfig is true, and the classpath is same as export.
-        // ProcessorUtilities.setExportConfig(label, false);
-        String routinesJarPath = getBaseLibPath() + JavaUtils.PATH_SEPARATOR + JavaUtils.ROUTINE_JAR_NAME
-                + FileExtensions.JAR_FILE_SUFFIX + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR;
-        ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, routinesJarPath, getBaseLibPath());
+        String oldInterpreter = ProcessorUtilities.getInterpreter();
+        String oldCodeLocation = ProcessorUtilities.getCodeLocation();
+        String oldLibraryPath = ProcessorUtilities.getLibraryPath();
+        boolean oldExportConfig = ProcessorUtilities.isExportConfig();
+        Date oldExportTimestamp = ProcessorUtilities.getExportTimestamp();
+        try {
+            // FIXME, must make sure the exportConfig is true, and the classpath is same as export.
+            String routinesJarPath = getBaseLibPath() + JavaUtils.PATH_SEPARATOR + JavaUtils.ROUTINE_JAR_NAME
+                    + FileExtensions.JAR_FILE_SUFFIX + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR;
+            ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, routinesJarPath, getBaseLibPath());
 
-        setClasspaths();
+            String contextName = JavaResourcesHelper.getJobContextName(this.context);
+            this.windowsClasspath = getClasspath(Platform.OS_WIN32, contextName);
+            this.unixClasspath = getClasspath(Platform.OS_LINUX, contextName);
 
-        ProcessorUtilities.resetExportConfig();
+            // ProcessorUtilities.resetExportConfig(); because will set back, so no used
+        } finally {
+            ProcessorUtilities.setExportConfig(oldInterpreter, oldCodeLocation, oldLibraryPath, oldExportConfig,
+                    oldExportTimestamp);
+        }
+    }
+
+    /**
+     * 
+     * copied from JobScriptsManager.getCommandByTalendJob
+     */
+    protected String getClasspath(String tp, String contextName) {
+        try {
+            // maybe should just reuse current processor's getCommandLine method.
+            String[] cmds = ProcessorUtilities.getCommandLine(isOldBuildJob(), tp, true, process, null, contextName, false, -1,
+                    -1);
+            int cpIndex = ArrayUtils.indexOf(cmds, JavaUtils.JAVA_CP);
+            if (cpIndex > -1) { // found
+                // return the cp values in the next index.
+                return cmds[cpIndex + 1];
+            }
+        } catch (ProcessorException e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
     }
 
     @Override
     protected String getExportJarsStr() {
+        if (isOldBuildJob()) {
+            return super.getExportJarsStr();
+        }
         // use the maven way for jar
         final String libPrefixPath = getLibPrefixPath(true);
         final String classPathSeparator = extractClassPathSeparator();

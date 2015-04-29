@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
 import org.talend.core.PluginChecker;
@@ -60,6 +61,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
 import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -377,17 +379,7 @@ public abstract class JobScriptsManager {
     }
 
     /**
-     * DOC zli Comment method "getLauncher".
-     * 
-     * @param needLauncher
-     * @param setParameterValues used for context_param to export
-     * @param process
-     * @param contextName
-     * @param environment
-     * @param statisticPort
-     * @param tracePort
-     * @param codeOptions
-     * @return
+     * @deprecated seems never used, so deprecated first.
      */
     protected List<URL> getLauncher(boolean needLauncher, boolean setParameterValues, ProcessItem process, String contextName,
             String environment, int statisticPort, int tracePort, String... codeOptions) {
@@ -427,17 +419,8 @@ public abstract class JobScriptsManager {
 
     /**
      * @deprecated <br>
-     * Call instead the function with IProcess.<br>
+     * seems never used. Call instead the function with IProcess.<br>
      * This avoids to reload the ProcessItem another time.
-     * 
-     * @param targetPlatform
-     * @param processId
-     * @param context
-     * @param processVersion
-     * @param statisticPort
-     * @param tracePort
-     * @param codeOptions
-     * @return
      */
     @Deprecated
     protected String getCommandByTalendJob(String targetPlatform, String processId, String context, String processVersion,
@@ -452,26 +435,15 @@ public abstract class JobScriptsManager {
         return ProcessorUtilities.generateCmdByTalendJob(cmd);
     }
 
-    /**
-     * @deprecated <br>
-     * Call instead the function with IProcess.<br>
-     * This avoids to reload the ProcessItem another time.
-     * 
-     * @param targetPlatform
-     * @param processItem
-     * @param context
-     * @param statisticPort
-     * @param tracePort
-     * @param codeOptions
-     * @return
-     */
-    @Deprecated
     protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context, boolean needContext,
             int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
         try {
-            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processItem, context, needContext, statisticPort,
-                    tracePort, codeOptions);
+            IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+            IProcess currentProcess = service.getProcessFromProcessItem(processItem);
+
+            cmd = ProcessorUtilities.getCommandLine(true, targetPlatform, true, currentProcess, processItem.getProperty(),
+                    context, needContext, statisticPort, tracePort, codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -482,8 +454,8 @@ public abstract class JobScriptsManager {
             int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
         try {
-            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, process, context, needContext, statisticPort,
-                    tracePort, codeOptions);
+            cmd = ProcessorUtilities.getCommandLine(true, targetPlatform, true, process, null, context, needContext,
+                    statisticPort, tracePort, codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }

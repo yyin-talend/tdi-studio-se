@@ -27,6 +27,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -34,8 +35,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.scheduler.SchedulerPlugin;
@@ -294,14 +297,18 @@ public class TalendJobManager {
             jobName = jobName.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
         }
         context = context.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
-
-        String[] cmd = ProcessorUtilities.getCommandLine(true, mainJobInfoByName.get(jobName).getJobId(), context,
-                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
+        ProcessItem selectedProcessItem = ItemCacheManager.getProcessItem(mainJobInfoByName.get(jobName).getJobId());
 
         StringBuffer sb = new StringBuffer();
-        sb.append(""); //$NON-NLS-1$
-        for (String s : cmd) {
-            sb.append(' ').append(s);
+        if (selectedProcessItem != null) {
+            IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+            IProcess currentProcess = service.getProcessFromProcessItem(selectedProcessItem);
+            String[] cmd = ProcessorUtilities.getCommandLine(true, null, true, currentProcess, selectedProcessItem.getProperty(),
+                    context, true, IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
+            sb.append(""); //$NON-NLS-1$
+            for (String s : cmd) {
+                sb.append(' ').append(s);
+            }
         }
         return sb.toString();
     }
