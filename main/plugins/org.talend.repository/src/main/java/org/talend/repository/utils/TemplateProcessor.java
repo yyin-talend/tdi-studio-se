@@ -13,63 +13,64 @@
 package org.talend.repository.utils;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.app.event.implement.EscapeXmlReference;
 import org.apache.velocity.exception.VelocityException;
+import org.apache.velocity.runtime.RuntimeConstants;
 
 public class TemplateProcessor {
 
     public static boolean processTemplate(String logTag, Map<String, Object> contextParams,
-            Writer outputWriter, Reader templateReader) throws IOException {
+            OutputStream outputStream, InputStream templateStream) throws IOException {
 
-        VelocityEngine engine = new VelocityEngine();
-//        engine.setProperty("resource.loader", "classpath"); //$NON-NLS-1$ //$NON-NLS-2$
-//        engine.setProperty("classpath.resource.loader.class", //$NON-NLS-1$
-//                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"); //$NON-NLS-1$
-        engine.setProperty("eventhandler.referenceinsertion.class", //$NON-NLS-1$
-                "org.apache.velocity.app.event.implement.EscapeXmlReference"); //$NON-NLS-1$
-        engine.init();
+        final Reader templateReader = new InputStreamReader(templateStream);
+        final Writer outputWriter = new OutputStreamWriter(outputStream);
 
-        VelocityContext context = new VelocityContext(contextParams);
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(TemplateProcessor.class.getClassLoader());
 
-      try {
-            boolean result = engine.evaluate(context, outputWriter, logTag, templateReader);
+            VelocityEngine engine = new VelocityEngine();
+//          engine.setProperty("resource.loader", "classpath"); //$NON-NLS-1$ //$NON-NLS-2$
+//          engine.setProperty("classpath.resource.loader.class", //$NON-NLS-1$
+//                  "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"); //$NON-NLS-1$
+            engine.setProperty(RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION,
+                EscapeXmlReference.class.getName());
+            engine.init();
+    
+            VelocityContext context = new VelocityContext(contextParams);
 
-            outputWriter.flush();
+            return engine.evaluate(context, outputWriter, logTag, templateReader);
+        } catch (VelocityException ve) {
+            // couldn't find the template
+            // org.apache.velocity.exception.ResourceNotFoundException;
+            // syntax error: problem parsing the template
+            // org.apache.velocity.exception.ParseErrorException;
+            // something invoked in the template threw an exception
+            // org.apache.velocity.exception.MethodInvocationException;
+            throw new IOException(ve);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
 
-            return result;
-      } catch (VelocityException ve) {
-          // couldn't find the template
-          // org.apache.velocity.exception.ResourceNotFoundException;
-          // syntax error: problem parsing the template
-          // org.apache.velocity.exception.ParseErrorException;
-          // something invoked in the template threw an exception
-          // org.apache.velocity.exception.MethodInvocationException;
-          throw new IOException(ve);
-      }
+            templateReader.close();
+
+            outputWriter.close();
+        }
     }
 
     public static boolean processTemplate(String logTag, Map<String, Object> contextParams,
-            File outputFile, Reader templateReader) throws IOException {
-
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(outputFile);
-            return processTemplate(logTag, contextParams, fileWriter, templateReader);
-        } finally {
-            if (null != fileWriter) {
-                try {
-                    fileWriter.close();
-                } catch (IOException e) {
-                    //LOG.warn(e.getLocalizedMessage(), e);
-                }
-            }
-        }
+        File file, InputStream templateStream) throws IOException {
+        return processTemplate(logTag, contextParams, new FileOutputStream(file), templateStream);
     }
 }

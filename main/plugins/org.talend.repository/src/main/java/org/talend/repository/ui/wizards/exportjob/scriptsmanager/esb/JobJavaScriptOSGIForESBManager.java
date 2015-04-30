@@ -13,11 +13,8 @@
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -31,14 +28,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.Manifest;
 
+import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.FileResource;
+import aQute.bnd.osgi.Jar;
+
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EMap;
-import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.io.FilesUtils;
@@ -80,10 +77,6 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.TemplateProcessor;
-
-import aQute.bnd.osgi.Analyzer;
-import aQute.bnd.osgi.FileResource;
-import aQute.bnd.osgi.Jar;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -606,30 +599,26 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         contextParams.put("endpoint", collectRestEndpointInfo(processItem)); //$NON-NLS-1$
         contextParams.put("job", collectJobInfo(processItem, process)); //$NON-NLS-1$
 
-        TemplateProcessor.processTemplate("REST_JOB_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
-                getTemplateReader(TEMPLATE_BLUEPRINT_JOB_REST));
+        TemplateProcessor.processTemplate("REST_JOB_BLUEPRINT_CONFIG", //$NON-NLS-1$
+            contextParams, targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB_REST));
 
         return targetFile.toURI().toURL();
     }
 
     private static final String TEMPLATE_BLUEPRINT_JOB = "/resources/job-template.xml"; //$NON-NLS-1$
 
-    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process) throws IOException {
-        TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", collectJobInfo(processItem, process), targetFile, //$NON-NLS-1$
-                getTemplateReader(TEMPLATE_BLUEPRINT_JOB));
+    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process)
+        throws IOException {
+        TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", //$NON-NLS-1$
+            collectJobInfo(processItem, process), targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB));
     }
 
     private static final String TEMPLATE_BLUEPRINT_ROUTE = "/resources/route-template.xml"; //$NON-NLS-1$
 
-    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process) throws IOException {
-        TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", collectRouteInfo(processItem, process), targetFile, //$NON-NLS-1$
-                getTemplateReader(TEMPLATE_BLUEPRINT_ROUTE));
-    }
-
-    private static Reader getTemplateReader(String templatePath) throws IOException {
-        Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-        final URL fileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(templatePath), null));
-        return new InputStreamReader(new FileInputStream(new File(fileUrl.getPath())));
+    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process)
+        throws IOException {
+        TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", //$NON-NLS-1$
+            collectRouteInfo(processItem, process), targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_ROUTE));
     }
 
     private static Map<String, Object> collectRouteInfo(ProcessItem processItem, IProcess process) {
