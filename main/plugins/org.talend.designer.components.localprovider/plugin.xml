@@ -4161,6 +4161,9 @@
 	             id="httpclient-4.2.5.jar">
 	         </library>
 	         <library
+	             id="guava-11.0.2.jar">
+	         </library>
+	         <library
 	             id="commons-logging-1.1.3.jar">
 	         </library>
 	         <library
