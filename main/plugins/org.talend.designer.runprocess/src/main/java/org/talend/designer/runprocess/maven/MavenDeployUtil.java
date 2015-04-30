@@ -13,7 +13,9 @@
 package org.talend.designer.runprocess.maven;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,34 +30,61 @@ public class MavenDeployUtil {
     public static void deployToLocalMaven(IProgressMonitor monitor, String[] jarsOrMvnURls) throws Exception {
         if (jarsOrMvnURls != null) {
             // unify
+            Map<String, String> jarsForMvnUrlMap = new HashMap<String, String>();
             Set<String> unifiedMvnUrls = new LinkedHashSet<String>();
             for (String name : jarsOrMvnURls) {
-                if (PomUtil.isMvnUrl(name)) {
-                    unifiedMvnUrls.add(name);
-                } else {
-                    unifiedMvnUrls.add(PomUtil.buildMvnUrlByJarName(name));
+                String mvnUrl = name;
+                if (!PomUtil.isMvnUrl(name)) {
+                    mvnUrl = PomUtil.buildMvnUrlByJarName(name);
+                    jarsForMvnUrlMap.put(name, mvnUrl);
                 }
+                unifiedMvnUrls.add(mvnUrl);
             }
-            Set<String> availableMvnUrls = PomUtil.availableArtifacts(monitor, unifiedMvnUrls.toArray(new String[0]));
 
+            // find the available
+            Set<String> availableMvnUrls = PomUtil.availableArtifacts(monitor, unifiedMvnUrls.toArray(new String[0]));
+            // left the unavailable
             Set<String> unavailableMvnUrls = new LinkedHashSet<String>(unifiedMvnUrls);
             if (availableMvnUrls != null) {
                 unavailableMvnUrls.removeAll(availableMvnUrls);
             }
-            // 1, if have been existed in lib or bundles, install jar to local
-            // TODO
 
-            // 2, still not existed some.
-            if (!unavailableMvnUrls.isEmpty() && !CommonsPlugin.isHeadless()) {
-                // for studio, popup the install modules dialog to install it????
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibraryManagerService.class)) {
-                    ILibraryManagerService libService = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
-                            ILibraryManagerService.class);
+            // check the only jar name way for old system.
+            for (String jarName : jarsForMvnUrlMap.keySet()) {
+                String mvnUrl = jarsForMvnUrlMap.get(jarName);
+                if (mvnUrl != null && !unavailableMvnUrls.contains(mvnUrl)) { // existed.
+                    // remove the existed in local maven repository, left the non-existed jars.
+                    jarsForMvnUrlMap.remove(jarName);
+                }
+            }
+
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibraryManagerService.class)) {
+                ILibraryManagerService libService = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
+                        ILibraryManagerService.class);
+
+                // 1, only check the old jar name way, if mvn url, no need check.
+                // if still have some jars are not installed
+                for (String jarName : jarsForMvnUrlMap.keySet()) {
+                    String jarPath = libService.getJarPath(jarName);
+                    // if jar existed in old "talend.library.path" folder or in bundle, then install it
+                    if (jarPath != null) {
+                        // assume if the jar is in "talend.library.path" folder, user have agree the jar license, so
+                        // install directly.
+                        installJarFile(jarPath);
+                    }
+                }
+
+                // 2, still not existed some.
+                if (!unavailableMvnUrls.isEmpty() && !CommonsPlugin.isHeadless()) {
+                    // for studio, popup the install modules dialog to install
                     File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
                     libService.retrieve(unavailableMvnUrls, libDir.getAbsolutePath());
                 }
             }
-
         }
+    }
+
+    private static void installJarFile(String jarPath) {
+        // one fake method first.
     }
 }
