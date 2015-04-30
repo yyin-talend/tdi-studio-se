@@ -48,15 +48,29 @@
 	}
 	
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	int dynamic_index = 1;
+	boolean hasDynamic = false;
 	if(!version07){//version judgement
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    	IMetadataTable metadata = metadatas.get(0);
 	        if (metadata!=null) {
 	        	List<IMetadataColumn> columns = metadata.getListColumns();
+				for(int i=0; columns!=null && i< columns.size(); i++) {
+					IMetadataColumn column = columns.get(i);
+			        if(column.getTalendType().equals("id_Dynamic")){
+			            dynamic_index = i+1;
+			            hasDynamic = true;
+			            break;
+			        }
+				}
 	        	int sizeColumns = columns.size();
 	        	if(isAllColumnAutoSize){
 	        		for(int i=0;i<columns.size();i++){
+	        			IMetadataColumn column = columns.get(i);
+                		if(column.getTalendType().equals("id_Dynamic")){
+							continue;
+						}
 	        			if(sizeColumns > schemaOptNum) {
 	        				if(i%schemaOptNum==0){
 	%>
@@ -65,12 +79,21 @@
 	        				}
 	        				continue;
 	        			}
+						if(hasDynamic && i+1>dynamic_index){
+						%>
+							columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+						<%
+						}else{
+						%>
+							columnIndex_<%=cid%> = <%=i%>;
+						<%
+						}
 	%>
 	//modif start
 		<%if(firstCellYAbsolute){%>
-			writableSheet_<%=cid %>.setColumnView(<%=i%> + <%=firstCellXStr%>, fitWidth_<%=cid %>[<%=i%>]);
+			writableSheet_<%=cid %>.setColumnView(columnIndex_<%=cid%> + <%=firstCellXStr%>, fitWidth_<%=cid %>[<%=i%>]);
 		<%}else{%>
-			writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]);
+			writableSheet_<%=cid %>.setColumnView(columnIndex_<%=cid%>, fitWidth_<%=cid %>[<%=i%>]);
 		<%}%>
 	//modif end
 	<%
@@ -78,12 +101,16 @@
 	    		}else{
 	    			if(autoSizeList.size() == columns.size()){
 	                	for(int i=0;i<columns.size();i++){
+	                		IMetadataColumn column = columns.get(i);
+	                		if(column.getTalendType().equals("id_Dynamic")){
+								continue;
+							}
 	        				if(sizeColumns > schemaOptNum) {
 	        					if(i%schemaOptNum==0){
 	        						boolean emptyMethod = true;
 	        						for(int j=0;(j<schemaOptNum) && (i+j<sizeColumns);j++) {
                 						Map<String,String> tmp= autoSizeList.get(i+j);
-                						if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+                						if(("true").equals(tmp.get("IS_AUTO_SIZE")) && (!columns.get(i+j).getTalendType().equals("id_Dynamic"))){
                 							emptyMethod = false;
                 							break;
                 						}
@@ -99,8 +126,17 @@
 	        				}
 	                		Map<String,String> tmp= autoSizeList.get(i);
 	                		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){ 
+								if(hasDynamic && i+1>dynamic_index){
+								%>
+									columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+								<%
+								}else{
+								%>
+									columnIndex_<%=cid%> = <%=i%>;
+								<%
+								}
 	%>
-		writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]);
+		writableSheet_<%=cid %>.setColumnView(columnIndex_<%=cid%>, fitWidth_<%=cid %>[<%=i%>]);
 	<%
 	                		}
 	                	}
@@ -135,9 +171,21 @@
 	    	IMetadataTable metadata = metadatas.get(0);
 	        if (metadata!=null) {
 	        	List<IMetadataColumn> columns = metadata.getListColumns();
+	        	for(int i=0; columns!=null && i< columns.size(); i++) {
+					IMetadataColumn column = columns.get(i);
+			        if(column.getTalendType().equals("id_Dynamic")){
+			            dynamic_index = i+1;
+			            hasDynamic = true;
+			            break;
+			        }
+				}
 	        	int sizeColumns = columns.size();
 	        	if(isAllColumnAutoSize){
 	        		for(int i=0;i<columns.size();i++){
+	        			IMetadataColumn column = columns.get(i);
+                		if(column.getTalendType().equals("id_Dynamic")){
+							continue;
+						}
 	        			if(sizeColumns > schemaOptNum) {
 	        				if(i%schemaOptNum==0){
 	%>
@@ -146,19 +194,32 @@
 	        				}
 	        				continue;
 	        			}
+						if(hasDynamic && i+1>dynamic_index){
+						%>
+							columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+						<%
+						}else{
+						%>
+							columnIndex_<%=cid%> = <%=i%>;
+						<%
+						}
 	%>
-					xlsxTool_<%=cid%>.setColAutoSize(<%=i%>);
+					xlsxTool_<%=cid%>.setColAutoSize(columnIndex_<%=cid%>);
 	<%
 	    			}
 	    		}else{
 	    			if(autoSizeList.size() == columns.size()){
 	                	for(int i=0;i<columns.size();i++){
+	                		IMetadataColumn column = columns.get(i);
+	                		if(column.getTalendType().equals("id_Dynamic")){
+								continue;
+							}
 	                		if(sizeColumns > schemaOptNum) {
 	        					if(i%schemaOptNum==0){
 	        						boolean emptyMethod = true;
 	        						for(int j=0;(j<schemaOptNum) && (i+j<sizeColumns);j++) {
                 						Map<String,String> tmp= autoSizeList.get(i+j);
-                						if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+                						if(("true").equals(tmp.get("IS_AUTO_SIZE")) && (!columns.get(i+j).getTalendType().equals("id_Dynamic"))){
                 							emptyMethod = false;
                 							break;
                 						}
@@ -174,8 +235,17 @@
 	        				}
 	                		Map<String,String> tmp= autoSizeList.get(i);
 	                		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){ 
+								if(hasDynamic && i+1>dynamic_index){
+								%>
+									columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+								<%
+								}else{
+								%>
+									columnIndex_<%=cid%> = <%=i%>;
+								<%
+								}
 	%>
-					xlsxTool_<%=cid%>.setColAutoSize(<%=i%>);
+					xlsxTool_<%=cid%>.setColAutoSize(columnIndex_<%=cid%>);
 	<%
 	                		}
 	                	}
