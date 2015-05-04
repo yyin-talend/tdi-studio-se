@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
-import org.talend.designer.maven.pom.PomUtil;
+import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 
 public class MavenDeployUtil {

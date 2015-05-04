@@ -37,10 +37,10 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.MavenConstants;
-import org.talend.designer.maven.pom.MavenPomManager;
-import org.talend.designer.maven.pom.PomUtil;
-import org.talend.designer.maven.tools.CreateMavenJobPom;
+import org.talend.designer.maven.tools.MavenDependenciesManager;
+import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
 import org.talend.designer.maven.utils.JobUtils;
+import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.java.JavaProcessor;
@@ -203,7 +203,7 @@ public class MavenJavaProcessor extends JavaProcessor {
     protected void updateProjectPom(IProgressMonitor progressMonitor) throws ProcessorException {
         JavaProcessorUtilities.checkJavaProjectLib(getNeededLibraries());
 
-        MavenPomManager pomManager = new MavenPomManager(this);
+        MavenDependenciesManager pomManager = new MavenDependenciesManager(this);
         pomManager.updateProjectDependencies(progressMonitor, this.getPomFile());
     }
 
