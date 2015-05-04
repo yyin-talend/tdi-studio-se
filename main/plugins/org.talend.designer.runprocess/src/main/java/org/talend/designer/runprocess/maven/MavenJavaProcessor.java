@@ -30,7 +30,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
@@ -67,7 +66,7 @@ public class MavenJavaProcessor extends JavaProcessor {
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
         // only job, now for Shadow Process/Data Preview.
-        if (property != null && property.getItem() != null && this.getProcess() instanceof IProcess2) {
+        if (isStandardJob()) {
             generatePom();
             // removeGeneratedJobs(null);
         }
@@ -243,10 +242,12 @@ public class MavenJavaProcessor extends JavaProcessor {
     @Override
     public void build() {
         final ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
-        try {
-            updateProjectPom(null);
-        } catch (ProcessorException e) {
-            ExceptionHandler.process(e);
+        if (isStandardJob()) {
+            try {
+                updateProjectPom(null);
+            } catch (ProcessorException e) {
+                ExceptionHandler.process(e);
+            }
         }
 
         talendJavaProject.buildModules(getGoals(), null);

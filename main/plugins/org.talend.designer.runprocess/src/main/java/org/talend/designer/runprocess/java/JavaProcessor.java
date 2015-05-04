@@ -267,6 +267,10 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         initCodePath(context);
     }
 
+    protected boolean isStandardJob() {
+        return property != null && property.getItem() != null && process instanceof IProcess2;
+    }
+
     public void initCodePath(IContext c) throws ProcessorException {
         if (buildChildrenJobs != null) {
             buildChildrenJobs.clear();
@@ -302,7 +306,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String jobClassPackageFolder = null;
         String jobClassFilePath = null;
         // only for "standard" job
-        if (property != null && property.getItem() != null && process instanceof IProcess2) {
+        if (isStandardJob()) {
             Item item = property.getItem();
             // test/testjob_0_1
             jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolder(item, isTestJob);
