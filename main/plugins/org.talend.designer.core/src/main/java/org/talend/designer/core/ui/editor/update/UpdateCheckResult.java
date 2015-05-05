@@ -156,6 +156,7 @@ public class UpdateCheckResult extends UpdateResult {
                 break;
             }
             case RELOAD:
+            case JUNIT_RELOAD:
                 if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
                     PropertyChangeEvent event = (PropertyChangeEvent) getParameter();
                     // reload all compoennts.
@@ -253,6 +254,7 @@ public class UpdateCheckResult extends UpdateResult {
                 break;
             case JOBLET_RENAMED:
             case RELOAD:
+            case JUNIT_RELOAD:
                 if (getUpdateObject() != null && getUpdateObject() instanceof List) {
                     String display = UpdateManagerHelper.getCollectionsDisplay(getUpdateObject(), true);
                     if (display != null) {

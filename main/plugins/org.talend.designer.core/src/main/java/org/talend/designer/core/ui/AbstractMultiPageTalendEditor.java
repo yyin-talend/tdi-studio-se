@@ -136,6 +136,7 @@ import org.talend.core.services.IUIRefresher;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.editor.JobEditorInput;
@@ -1042,6 +1043,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         refreshJobSettingsView();
         changeCollapsedState(false, jobletMap);
+
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+            ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                    .getDefault().getService(ITestContainerProviderService.class);
+            if (testContainerService != null) {
+                testContainerService.updateDetect(getProcess(), false);
+
+            }
+        }
     }
 
     public boolean haveDirtyJoblet() {

@@ -813,4 +813,26 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
     public String getComponentsType() {
         return ComponentCategory.CATEGORY_4_DI.getName();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElement#isForceReadOnly()
+     */
+    @Override
+    public boolean isForceReadOnly() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElement#setForceReadOnly(boolean)
+     */
+    @Override
+    public void setForceReadOnly(boolean readOnly) {
+        // TODO Auto-generated method stub
+
+    }
 }

@@ -80,7 +80,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
     @Override
     protected Command createAddCommand(final EditPart child, final Object constraint) {
         if (child instanceof NodePart) {
-            if (((Node) child.getModel()).isReadOnly()) {
+            if (((Node) child.getModel()).isReadOnly() && !((Node) child.getModel()).isForceReadOnly()) {
                 return null;
             }
             MoveNodeCommand locationCommand = new MoveNodeCommand((Node) child.getModel(), ((Rectangle) constraint).getLocation());

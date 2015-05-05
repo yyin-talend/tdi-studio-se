@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
@@ -1118,6 +1117,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     private void loadElementParameters(Element elemParam, EList listParamType) {
+        loadElementParameters(elemParam, listParamType, false);
+    }
+
+    protected void loadElementParameters(Element elemParam, EList listParamType, boolean isJunitLoad) {
         ElementParameterType pType;
 
         for (int j = 0; j < listParamType.size(); j++) {
@@ -1145,7 +1148,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     } else {
                         param.setContextMode(false);
                     }
-                    if (param.isReadOnly()
+                    if ((param.isReadOnly() && !isJunitLoad)
                             && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
                                     EParameterName.VERSION.getName()))) {
                         continue;
@@ -2107,7 +2110,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         return nc;
     }
 
-    private void loadColumnsBasedOnSchema(Node nc, EList listParamType) {
+    protected void loadColumnsBasedOnSchema(Node nc, EList listParamType) {
         List<IMetadataTable> metadataList = nc.getMetadataList();
         if (listParamType == null || metadataList == null || metadataList.size() == 0) {
             return;
@@ -2234,7 +2237,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         factory.setMetadataType(mType);
     }
 
-    private void loadSchema(Node nc, NodeType nType) {
+    protected void loadSchema(Node nc, NodeType nType) {
         MetadataEmfFactory factory = new MetadataEmfFactory();
         MetadataType mType;
         EList listMetaType;

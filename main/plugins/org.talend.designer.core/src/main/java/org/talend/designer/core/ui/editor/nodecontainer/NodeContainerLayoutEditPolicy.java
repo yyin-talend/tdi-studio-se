@@ -39,6 +39,7 @@ public class NodeContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      * 
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChildEditPolicy(org.eclipse.gef.EditPart)
      */
+    @Override
     protected EditPolicy createChildEditPolicy(final EditPart child) {
         NodeContainerResizableEditPolicy policy = new NodeContainerResizableEditPolicy();
         policy.setResizeDirections(0);
@@ -54,9 +55,10 @@ public class NodeContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createAddCommand(org.eclipse.gef.EditPart,
      * java.lang.Object)
      */
+    @Override
     protected Command createAddCommand(final EditPart child, final Object constraint) {
         // only work for moving node. bug 6615, by cli
-        if (child instanceof NodePart && !((Node) child.getModel()).isReadOnly()) {
+        if (child instanceof NodePart && (!((Node) child.getModel()).isReadOnly() || ((Node) child.getModel()).isForceReadOnly())) {
 
             MoveNodeCommand locationCommand = new MoveNodeCommand((Node) child.getModel(), ((Rectangle) constraint).getLocation());
             return locationCommand;
@@ -71,6 +73,7 @@ public class NodeContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      * org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
      * java.lang.Object)
      */
+    @Override
     protected Command createChangeConstraintCommand(final EditPart child, final Object constraint) {
         // return a command to move the part to the location given by the constraint
 
@@ -85,7 +88,7 @@ public class NodeContainerLayoutEditPolicy extends XYLayoutEditPolicy {
                     ((Rectangle) constraint).getLocation(), nodeSelected);
             return locationCommand;
         } else if (child instanceof NodePart) {
-            if (((Node) child.getModel()).isReadOnly()) {
+            if (((Node) child.getModel()).isReadOnly() && !((Node) child.getModel()).isForceReadOnly()) {
                 return null;
             }
             MoveNodeCommand locationCommand = new MoveNodeCommand((Node) child.getModel(), ((Rectangle) constraint).getLocation());
@@ -103,6 +106,7 @@ public class NodeContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      * 
      * @see org.eclipse.gef.editpolicies.LayoutEditPolicy#getCreateCommand(org.eclipse.gef.requests.CreateRequest)
      */
+    @Override
     protected Command getCreateCommand(final CreateRequest request) {
         return null;
     }
@@ -112,6 +116,7 @@ public class NodeContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      * 
      * @see org.eclipse.gef.editpolicies.LayoutEditPolicy#getDeleteDependantCommand(org.eclipse.gef.Request)
      */
+    @Override
     protected Command getDeleteDependantCommand(final Request request) {
         return null; // no support for deleting a dependant
     }

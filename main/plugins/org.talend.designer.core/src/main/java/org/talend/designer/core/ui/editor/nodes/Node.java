@@ -211,6 +211,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private boolean readOnly = false;
 
+    private boolean forceReadOnly = false;
+
     private static final String COMPARE_STR1 = "tDBInput"; //$NON-NLS-1$
 
     private static final String COMPARE_STR2 = "_MySchema_"; //$NON-NLS-1$
@@ -2372,6 +2374,16 @@ public class Node extends Element implements IGraphicalNode {
     @Override
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    @Override
+    public boolean isForceReadOnly() {
+        return this.forceReadOnly;
+    }
+
+    @Override
+    public void setForceReadOnly(boolean forceReadOnly) {
+        this.forceReadOnly = forceReadOnly;
     }
 
     /*

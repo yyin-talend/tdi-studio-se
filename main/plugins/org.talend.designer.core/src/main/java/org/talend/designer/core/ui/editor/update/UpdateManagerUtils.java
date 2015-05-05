@@ -68,6 +68,7 @@ import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateContextParameterCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateJobletNodeCommand;
+import org.talend.designer.core.ui.editor.update.cmd.UpdateJunitNodeCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateMainParameterCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateNodeParameterCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateNodePathCommand;
@@ -552,6 +553,9 @@ public final class UpdateManagerUtils {
             case RELOAD:
                 command = executeJobletNodesUpdates(result);
                 break;
+            case JUNIT_RELOAD:
+                command = executeJunitNodesUpdates(result);
+                break;
             // case JOBLET_CONTEXT:
             // command = new Command() { // have update in checking.
             // };
@@ -633,6 +637,20 @@ public final class UpdateManagerUtils {
         Object parameter = result.getParameter();
         if (parameter != null) {
             return new UpdateJobletNodeCommand(result);
+        }
+        return null;
+    }
+
+    /*
+     * junit
+     */
+    private static Command executeJunitNodesUpdates(UpdateResult result) {
+        if (result == null) {
+            return null;
+        }
+        Object parameter = result.getParameter();
+        if (parameter != null) {
+            return new UpdateJunitNodeCommand(result);
         }
         return null;
     }

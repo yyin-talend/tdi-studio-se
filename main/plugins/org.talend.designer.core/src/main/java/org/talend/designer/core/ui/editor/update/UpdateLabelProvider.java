@@ -18,9 +18,9 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.runtime.image.OverlayImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
+import org.talend.commons.ui.runtime.image.OverlayImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -88,6 +88,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                         case NODE_VALIDATION_RULE:
                         case JOBLET_SCHEMA:
                         case JOBLET_RENAMED:
+                        case JUNIT_RELOAD:
                         case RELOAD:
                         case MAP_PATH:
                             image = getImageFromNode(category.getNode());

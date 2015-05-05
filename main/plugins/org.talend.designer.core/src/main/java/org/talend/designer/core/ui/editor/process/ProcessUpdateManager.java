@@ -77,6 +77,7 @@ import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkRulesItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -350,10 +351,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         }
                                     }
                                 }
-                            } else {
-                                if (contextItem instanceof JobletProcessItem) {
-                                    builtin = false;
-                                }
+                            } else if (contextItem instanceof JobletProcessItem) {
+                                builtin = false;
+                            } else if (contextItem instanceof ProcessItem) {
+                                builtin = false;
                             }
                         }
                         if (builtin) {
