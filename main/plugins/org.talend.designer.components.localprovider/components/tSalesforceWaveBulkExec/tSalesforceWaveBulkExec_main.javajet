@@ -6,6 +6,7 @@ imports="
         org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.process.IProcess
         org.talend.core.model.process.INode
+        org.talend.core.model.utils.NodeUtil
         java.io.File
         java.io.BufferedWriter
         java.io.FileOutputStream
@@ -22,17 +23,80 @@ imports="
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
 
-    String userName = ElementParameterParser.getValue(node,"__USER__");
+    boolean useExistingConn = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String passwordFieldName = "__PASS__";
+    String userName = null;
+    String endPoint = null;
+
+%>
+    String decryptedPassword_<%=cid%> = null;
+    String endPoint_<%= cid %> = null;
+<%
+    if(useExistingConn){
+%>
+         endPoint_<%= cid %> = "https://login.salesforce.com/services/Soap/u/32.0";
+           <%
+         INode existingConnNode = NodeUtil.getNodeByUniqueName(node.getProcess(), connection);
+         String loginType = ElementParameterParser.getValue(existingConnNode,"__LOGIN_TYPE__");
+       if("OAUTH".equalsIgnoreCase(loginType)){
+            %>
+        ////////////////////////////////////////////////////Compile Error////////////////////////////////////////////////////////////////////////
+        tSalesforceWave does not support "OAUTH" login type, please choose the "Baisc" login type or uncheck the "Use an existing connection"
+        ////////////////////////////////////////////////////Compile Error////////////////////////////////////////////////////////////////////////
+            <%
+       }else{
+            userName = ElementParameterParser.getValue(existingConnNode,"__USER__");
+            endPoint = ElementParameterParser.getValue(existingConnNode,"__ENDPOINT__");
+            %>
+            String regex_<%= cid %> = "(?<=/)(\\d+(\\.\\d+)?){1}(?=$)";
+            final double MINIMUM_END_POINT_VERSION_<%= cid %> = 32.0;
+            <%
+               if(endPoint != null){
+             %>
+                    java.util.regex.Pattern pattern_<%= cid %> = java.util.regex.Pattern.compile(regex_<%= cid %>);
+                    java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%= endPoint %>);
+                    while(matcher_<%= cid %>.find()){
+                        double endPointVersion_<%= cid %> = Double.valueOf(matcher_<%= cid %>.group(1)).doubleValue();
+                        if(Double.compare(endPointVersion_<%= cid %>,MINIMUM_END_POINT_VERSION_<%= cid %>) > 0){
+                           endPoint_<%= cid %> = <%= endPoint %>;
+                        }
+                        break;
+                    }
+            <%
+               }
+            %>
+                <%
+            if(ElementParameterParser.canEncrypt(existingConnNode, passwordFieldName)){
+                 %>
+                    decryptedPassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(existingConnNode, passwordFieldName)%>);
+                 <%
+            }else{
+                 %>
+                    decryptedPassword_<%=cid%> = <%= ElementParameterParser.getValue(existingConnNode, passwordFieldName)%>;
+                 <%
+            }
+       }
+    }else{
+         userName = ElementParameterParser.getValue(node,"__USER__");
+         endPoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
+         %>
+            endPoint_<%= cid %> = <%= endPoint %>;
+         <%
+         passwordFieldName = "__PASSWORD__";
+         if(ElementParameterParser.canEncrypt(node, passwordFieldName)){
+         %>
+            decryptedPassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+         <%
+         }else{
+         %>
+            decryptedPassword_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+         <%
+         }
+    }
 %>
 
-   <%
-    String passwordFieldName = "__PASSWORD__";
-    %>
-   <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-
 <%
-    String endPoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
-
     String datasetName = ElementParameterParser.getValue(node,"__DATASET__");
     String datasetOperation = ElementParameterParser.getValue(node,"__DATASET_OPERATION__");
     String csvDataPath = ElementParameterParser.getValue(node,"__LOAD_DATA_PATH__");
@@ -52,7 +116,7 @@ imports="
         com.sforce.ws.ConnectorConfig connectorConfig_<%= cid %> = new com.sforce.ws.ConnectorConfig();
         connectorConfig_<%= cid %>.setUsername(<%= userName %>);
         connectorConfig_<%= cid %>.setPassword(decryptedPassword_<%=cid%>);
-        connectorConfig_<%= cid %>.setAuthEndpoint(<%= endPoint %>);
+        connectorConfig_<%= cid %>.setAuthEndpoint(endPoint_<%= cid %>);
 
         com.sforce.soap.partner.PartnerConnection partnerConnection_<%= cid %> = null;
         try{

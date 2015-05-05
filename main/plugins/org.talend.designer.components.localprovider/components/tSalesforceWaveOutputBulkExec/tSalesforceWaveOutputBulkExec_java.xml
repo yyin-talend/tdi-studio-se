@@ -72,12 +72,27 @@
 
           <!-- tSalesforceWaveBulkExec parameters begin -->
         <PARAMETER
+          NAME="USE_EXISTING_CONNECTION"
+          FIELD="CHECK"
+          NUM_ROW="800">
+          <DEFAULT>false</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="CONNECTION"
+          FIELD="COMPONENT_LIST"
+          REQUIRED="true" FILTER="tSalesforceConnection"
+          NUM_ROW="800"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'true'"/>
+
+        <PARAMETER
           NAME="USER"
           FIELD="TEXT"
           NUM_ROW="920"
           REQUIRED="true"
           REPOSITORY_VALUE="USER_NAME"
           GROUP="CONNECTION_INFO"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -89,6 +104,7 @@
           REQUIRED="true"
           REPOSITORY_VALUE="PASSWORD"
           GROUP="CONNECTION_INFO"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -100,6 +116,7 @@
           REQUIRED="true"
           REPOSITORY_VALUE="ENDPOINT"
           GROUP="CONNECTION_INFO"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>"https://login.salesforce.com/services/Soap/u/32.0"</DEFAULT>
         </PARAMETER>
@@ -477,6 +494,8 @@
         <TEMPLATE_PARAM SOURCE="self.NB_LINE"   TARGET="in.NB_LINE" />
         <TEMPLATE_PARAM SOURCE="self.FILE_NAME"   TARGET="in.FILE_NAME" />
 
+        <TEMPLATE_PARAM SOURCE="self.USE_EXISTING_CONNECTION"   TARGET="out.USE_EXISTING_CONNECTION" />
+        <TEMPLATE_PARAM SOURCE="self.CONNECTION"   TARGET="out.CONNECTION" />
         <TEMPLATE_PARAM SOURCE="self.USER"   TARGET="out.USER" />
         <TEMPLATE_PARAM SOURCE="self.PASSWORD"   TARGET="out.PASSWORD" />
         <TEMPLATE_PARAM SOURCE="self.ENDPOINT"   TARGET="out.ENDPOINT" />
