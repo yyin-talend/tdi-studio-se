@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.hadoop.version.custom.ECustomVersionType;
 import org.talend.core.hadoop.version.custom.HadoopCustomVersionDefineDialog;
 import org.talend.core.model.process.IElementParameter;
@@ -109,7 +110,23 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
             }
         }
         if (versionType == null) {
-            versionType = ECustomVersionType.MAP_REDUCE;
+            if (elem instanceof org.talend.designer.core.ui.editor.process.Process) {
+                Object frameworkObj = ((org.talend.designer.core.ui.editor.process.Process) elem).getAdditionalProperties().get(
+                        HadoopConstants.FRAMEWORK);
+
+                if (frameworkObj != null) {
+                    String framework = frameworkObj.toString();
+                    if (HadoopConstants.FRAMEWORK_SPARK.equals(framework)) {
+                        versionType = ECustomVersionType.SPARK;
+                    } else if (HadoopConstants.FRAMEWORK_SPARKSTREAMING.equals(framework)) {
+                        versionType = ECustomVersionType.SPARK_STREAMING;
+                    }
+                }
+
+            }
+            if (versionType == null) {
+                versionType = ECustomVersionType.MAP_REDUCE;
+            }
         }
     }
 
@@ -156,6 +173,10 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
                         return new ECustomVersionType[] { versionType };
                     }
                 };
+                IElementParameter sparkParam = elem.getElementParameter(HadoopConstants.SPARK_MODE);
+                if (sparkParam != null) {
+                    customVersionDialog.setSparkMode("" + sparkParam.getValue()); //$NON-NLS-1$
+                }
                 customVersionDialog.setReadonly(readonly);
                 Set<String> oldLibList = customVersionDialog.getLibList(versionType.getGroup());
                 if (customVersionDialog.open() == Window.OK) {
