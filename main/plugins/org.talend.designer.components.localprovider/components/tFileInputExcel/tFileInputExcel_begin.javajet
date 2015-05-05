@@ -111,7 +111,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							<%
 							}else if(!eventMode){
 							%>
-			    				String content_<%=cid%> = row_<%= cid %>.getCell(i)==null?null:row_<%= cid %>.getCell(i).getRawValue();
+			    				String content_<%=cid%> = row_<%= cid %>.getCell(i)==null?null:row_<%= cid %>.getCell(i).toString();
 			    			<%
 			    			}else{
 			    			%>
