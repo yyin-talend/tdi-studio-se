@@ -3,9 +3,12 @@ package org.talend.soap;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.nio.charset.Charset;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -80,7 +83,7 @@ public class SOAPUtil {
     }
 
     public void invokeSOAP(String version, String destination, String soapAction, String soapMessage) throws SOAPException,
-            TransformerException, ParserConfigurationException, FileNotFoundException {
+            TransformerException, ParserConfigurationException, FileNotFoundException, UnsupportedEncodingException {
         MessageFactory messageFactory = null;
         if (version.equals(SOAP12)) {
             messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL);
@@ -94,8 +97,9 @@ public class SOAPUtil {
         // Create objects for the message parts
         SOAPPart soapPart = message.getSOAPPart();
 
-        // System.out.println(soapMessage.toString());
-        ByteArrayInputStream stream = new ByteArrayInputStream(soapMessage.getBytes());
+        String encoding = getEncoding(soapMessage);
+        
+        ByteArrayInputStream stream = new ByteArrayInputStream(soapMessage.getBytes(encoding));
         StreamSource preppedMsgSrc = new StreamSource(stream);
         soapPart.setContent(preppedMsgSrc);
 
@@ -202,7 +206,7 @@ public class SOAPUtil {
 	 * invoke soap and return the response document
 	 */
 	public String extractContentAsDocument(String version, String destination, String soapAction, String soapMessage) throws SOAPException,
-            TransformerException, ParserConfigurationException, FileNotFoundException {
+            TransformerException, ParserConfigurationException, FileNotFoundException, UnsupportedEncodingException {
     	MessageFactory messageFactory = null;
     	if (version.equals(SOAP12)) {
     		messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL);
@@ -213,7 +217,10 @@ public class SOAPUtil {
     	MimeHeaders mimeHeaders = message.getMimeHeaders();
     	mimeHeaders.setHeader("SOAPAction", soapAction);
     	SOAPPart soapPart = message.getSOAPPart();
-    	ByteArrayInputStream stream = new ByteArrayInputStream(soapMessage.getBytes());
+    	
+    	String encoding = getEncoding(soapMessage);
+    	
+    	ByteArrayInputStream stream = new ByteArrayInputStream(soapMessage.getBytes(encoding));
     	StreamSource preppedMsgSrc = new StreamSource(stream);
     	soapPart.setContent(preppedMsgSrc);
     	message.saveChanges();
@@ -224,11 +231,62 @@ public class SOAPUtil {
 			Transformer t = tf.newTransformer();
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			t.transform(reSoapPart.getContent(), new StreamResult(bos));
-			return bos.toString();
+			return bos.toString(encoding);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
     }
+	
+	private String getEncoding(String text) {
+        String result = Charset.defaultCharset().name();
 
+        if(text == null) {
+			return result;
+		}
+        
+        char[] match = {'<','?','x','m','l'};
+        boolean found = false;
+        int i = 0;
+        int j = 0;
+        for(;i<text.length();i++) {
+        	if(j==0 && text.charAt(i) <= ' ') {
+        		continue;
+        	}
+        	
+        	if(j<match.length && text.charAt(i) == match[j++]) {
+        		if(j==match.length) {
+        			found = true;
+        			break;
+        		}
+        	} else {
+        		break;
+        	}
+        }
+        
+        if (found) {
+            int end = text.indexOf("?>");
+            String sub = text.substring(i+1, end);
+            StringTokenizer tokens = new StringTokenizer(sub, " =\"\'");
+
+            while (tokens.hasMoreTokens()) {
+                String token = tokens.nextToken();
+
+                if ("encoding".equals(token)) {
+                    if (tokens.hasMoreTokens()) {
+                        String encoding = tokens.nextToken();
+                        if(Charset.isSupported(encoding)) {
+                        	result = encoding;
+                        	return result;
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+	
 }
