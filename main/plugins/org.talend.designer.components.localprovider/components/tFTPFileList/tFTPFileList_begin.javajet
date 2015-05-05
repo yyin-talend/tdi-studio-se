@@ -154,7 +154,7 @@ if (sftp) {
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
 
 	<%if(use_encoding) {%>
-    	c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
+    	c_<%=cid%>.setFilenameEncoding(<%=encoding_sftp%>);
 	<%}%>
 
   <%
