@@ -2,7 +2,8 @@
 <project name="org.talend.designer.components.libs" default="process" basedir=".">
 	
 	<property name="component.plugin.home" value="../../../org.talend.designer.components.localprovider/components" />
-
+	<property name="jdom.home" value="../../../../../../tcommon-studio-ee/main/plugins/org.talend.libraries.jdom/lib" />
+	
 	<!-- #################################################### -->
 
 	<!-- modification 1: config -->
@@ -12,13 +13,7 @@
 	
 	<!-- modification 2: compile classpath -->
 	<path id="compile.classpath">
-		<pathelement location="${component.plugin.home}/tWebServiceInput/activation.jar" />
-		<pathelement location="${component.plugin.home}/tSOAP/jax-qname.jar" />
-		<pathelement location="${component.plugin.home}/tSOAP/saaj-impl.jar" />
-		<pathelement location="${component.plugin.home}/tSOAP/servlet.jar" />
-		<pathelement location="${component.plugin.home}/tSOAP/saaj-api.jar"/>
-		<pathelement location="${component.plugin.home}/tSOAP/jaxp-api.jar"/>
-		<pathelement location="${component.plugin.home}/tHL7Input/jdom-1.1.jar"/>
+		<pathelement location="${jdom.home}/jdom-1.1.jar"/>
 	</path>
 
 	<!-- #################################################### -->	
