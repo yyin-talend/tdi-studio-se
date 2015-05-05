@@ -11,6 +11,7 @@ imports="
 	org.talend.core.model.utils.NodeUtil
     java.util.List
     java.util.Map
+    java.util.HashMap
 " 
 %>
 <%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
@@ -31,6 +32,7 @@ String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__")
 String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__");
 boolean keepCellFormating = ("true").equals(ElementParameterParser.getValue(node, "__KEEP_CELL_FORMATING__"));
 String font = ElementParameterParser.getValue(node, "__FONT__");
+boolean isSettingFont = font !=null && font.length()!=0;
 boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
 boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
 boolean isAppendFile = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_FILE__" ));
@@ -53,6 +55,7 @@ String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
+Map<String,String> autColSizeMaping=new HashMap<String,String>();
 
 List< ? extends IConnection> conns = node.getIncomingConnections();
 IConnection conn = null;
@@ -66,6 +69,278 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
     	List<IMetadataColumn> columns = metadata.getListColumns();
 		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+		boolean hasDynamic = false;
+		int dynamic_index = 0;
+		String datePattern = "\"dd-MM-yyyy\"";
+		for(int i=0; columns!=null && i< columns.size(); i++) {
+			IMetadataColumn column = columns.get(i);
+	        if(!hasDynamic && column.getTalendType().equals("id_Dynamic")){
+	            dynamic_index = i+1;
+	            hasDynamic = true;
+	            datePattern= column.getPattern();
+	        }
+	        if(isAllColumnAutoSize){
+	        	autColSizeMaping.put(column.getLabel(),"true");
+	        }else{
+	        	autColSizeMaping.put(column.getLabel(),autoSizeList.get(i).get("IS_AUTO_SIZE"));
+	        	
+	        }
+		}
+		if(hasDynamic){
+			%>
+			class ExcelDynamicUtil_<%=cid%>{
+				int dynamicColCount=0;
+				private java.util.List<String> numberTypes = java.util.Arrays.asList(
+					new String[]{"Integer", "Float", "Double", "Long", "Short", "Byte", "BigDecimal"});
+				
+				public boolean isNumberType(String talendType){
+					if(talendType==null){
+						return false;
+					}else{
+						return numberTypes.contains(talendType.replaceAll("id_",""));
+					}
+				}
+			<%
+			if(!version07){
+			%>
+				int[] fitWidth;
+				jxl.write.WritableCellFormat cellFormat;
+				jxl.write.WritableCellFormat dateCellFormat;
+				
+				public ExcelDynamicUtil_<%=cid%>(){
+					initFormat();
+				}
+				public void initFormat(){
+					<%
+					if(isSettingFont){
+					%>
+						jxl.write.WritableFont font = new jxl.write.WritableFont(jxl.write.WritableFont.<%=font%>, 10, jxl.write.WritableFont.NO_BOLD, false);
+		        		cellFormat  = new jxl.write.WritableCellFormat(font); 
+		        		dateCellFormat=new jxl.write.WritableCellFormat(font ,new jxl.write.DateFormat(<%=datePattern %>));
+					<%
+					}else{
+					%>
+						dateCellFormat=new jxl.write.WritableCellFormat(new jxl.write.DateFormat(<%=datePattern %>));
+					<%
+					}
+					%>
+				}
+				
+				public String getJxlWriteType(DynamicMetadata dynamicColumn){
+					String talendType=dynamicColumn.getType();
+					String jxlWriteType="Number";
+    				boolean isNumber = false;
+					if("id_Boolean".equals(talendType)){
+						jxlWriteType="Boolean";
+					}else if("id_Date".equals(talendType)){
+						jxlWriteType="DateTime";
+				    }else if("id_String".equals(talendType)||
+				    		 "id_Character".equals(talendType)||
+				    		 "id_byte[]".equals(talendType)||
+				    		 "id_List".equals(talendType)||
+				    		 "id_Object".equals(talendType)||
+				    		 (<%=advancedSeparator%> && isNumberType(talendType))
+				    		 ){
+				    	jxlWriteType="Label";
+					}else{
+						jxlWriteType="Number";
+					}
+					return jxlWriteType;
+				}
+				<%
+				if(isIncludeHeader){
+				%>
+					public int writeHeaderToExcelFile(jxl.write.WritableSheet writableSheet,int columnIndex,int rowNum,<%=NodeUtil.getPrivateConnClassName(conn)%>Struct row,int [] currentFitWidths)
+						throws jxl.write.biff.RowsExceededException, jxl.write.WriteException{
+						<%
+						if(firstCellYAbsolute){
+						%>
+							if (rowNum == <%=firstCellYStr%>){
+						<%
+						}else{
+						%>
+							if (rowNum == 0){
+						<%
+						}
+						%>
+						jxl.write.WritableCell cell  = null;
+						<%
+						for(int i=0; columns!=null && i< columns.size(); i++) {
+							IMetadataColumn column = columns.get(i);
+					        if(column.getTalendType().equals("id_Dynamic")){
+					        %>
+					        	dynamicColCount = row.<%=column.getLabel()%>.getColumnCount();
+						        for (int i = 0; i < dynamicColCount; i++) {
+									DynamicMetadata dynamicColumn = row.<%=column.getLabel()%>.getColumnMetadata(i);
+									if (dynamicColumn.getName() != null) {
+										cell  = new jxl.write.Label(columnIndex+i+<%=i%>, rowNum, dynamicColumn.getName()<%if (isSettingFont) {%>,cellFormat<%}%>);
+										writableSheet.addCell(cell);
+										writableSheet.setColumnView(columnIndex+i+<%=i%>, dynamicColumn.getName().trim().length());
+									}
+								}
+								
+					        <%
+					        }else{
+					        %>
+					      		
+								cell  = new jxl.write.Label(columnIndex+<%=i%><%if(i+1>dynamic_index){%>+dynamicColCount-1<%}%>, rowNum, "<%=column.getLabel()%>"<%if (isSettingFont) {%>,cellFormat<%}%>);
+								writableSheet.addCell(cell);
+								writableSheet.setColumnView(columnIndex+<%=i%><%if(i+1>dynamic_index){%>+dynamicColCount-1<%}%>, "<%=column.getLabel()%>".length());
+								if("<%=column.getLabel()%>".length() > currentFitWidths[<%=i%>]){
+									currentFitWidths[<%=i%>] = "<%=column.getLabel()%>".length();
+								}
+					        <%
+					        }
+						}
+						%>
+							return 1;
+						}
+						return 0;
+				
+					}
+				<%
+				}
+				%>
+				public void writeValuesToExcelFile(Dynamic column, jxl.write.WritableSheet writableSheet,int columnIndex,int rowNum)
+					throws jxl.write.biff.RowsExceededException, jxl.write.WriteException{
+					dynamicColCount = column.getColumnCount();
+					if(fitWidth == null){
+						fitWidth = new int[dynamicColCount];
+						for(int i=0;i<dynamicColCount;i++){
+						    int fitCellViewSize=writableSheet.getColumnView(i+<%=dynamic_index-1%><%if(firstCellYAbsolute){%>+<%=firstCellXStr%><%}%>).getSize();
+							fitWidth[i]=fitCellViewSize/256;
+							if(fitCellViewSize%256!=0){
+								fitWidth[i]+=1;
+							}
+						}
+					}
+					for (int i = 0; i < dynamicColCount; i++) {
+						if (column.getColumnValue(i) != null) {
+							DynamicMetadata dynamicColumn = column.getColumnMetadata(i);
+							String jxlWriteType = getJxlWriteType(dynamicColumn);
+			                jxl.write.WritableCell cell = null;
+			                if("Boolean".equals(jxlWriteType)){
+			                	cell = new jxl.write.Boolean(columnIndex+i, rowNum, ((Boolean)column.getColumnValue(i))<%if(isSettingFont){%>,cellFormat<%}%>);
+			                }else if("Label".equals(jxlWriteType)){
+			                	if(<%=advancedSeparator%> && isNumberType(dynamicColumn.getType())) { 
+			                		cell = new jxl.write.Label(columnIndex+i, rowNum, FormatterUtils.format_Number(String.valueOf(column.getColumnValue(i)), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%if(isSettingFont){%>,cellFormat<%}%>);
+			                	}else{
+			                		cell = new jxl.write.Label(columnIndex+i, rowNum, column.getColumnValue(i).toString()<%if(isSettingFont){%>,cellFormat<%}%>);
+			                	}
+			                }else if("DateTime".equals(jxlWriteType)){
+			                	cell = new jxl.write.DateTime(columnIndex+i, rowNum, ((java.util.Date)column.getColumnValue(i)), dateCellFormat);
+			                }else{
+			                	cell = new jxl.write.Number(columnIndex+i, rowNum, Double.valueOf(column.getColumnValue(i).toString())<%if(isSettingFont){%>,cellFormat<%}%>);
+			                }
+			                writableSheet.addCell(cell);
+			                
+			                int currentWith = 5;
+			                if("Number".equals(jxlWriteType)){
+								currentWith = String.valueOf(((jxl.write.Number)cell).getValue()).trim().length();
+								currentWith=currentWith>10?10:currentWith;
+							}else if(!"Boolean".equals(jxlWriteType)){
+								currentWith = cell.getContents().trim().length();
+							}
+							fitWidth[i] = fitWidth[i] > currentWith ? fitWidth[i]:currentWith+2;
+			            }
+			        }
+				}
+				public void autoDynamicColumnSize(jxl.write.WritableSheet writableSheet,int columnIndex){
+					for (int i = 0; i < dynamicColCount; i++) {
+						writableSheet.setColumnView(columnIndex+i, fitWidth[i]);
+					}
+				}
+			<%
+			}else{
+			%>
+			
+				<%
+				if(isIncludeHeader){
+				%>
+					public int writeHeaderToExcelFile(<%=NodeUtil.getPrivateConnClassName(conn)%>Struct row, org.talend.ExcelTool xlsxTool,int nbLine){
+						if(nbLine < 1){
+							<%
+							if(!firstCellYAbsolute) {
+							%>
+								if (xlsxTool.getStartRow() == 0){
+							<%
+							}
+							%>
+								xlsxTool.addRow();
+								<%
+								for (int i = 0; i < columns.size(); i++) {
+									IMetadataColumn column = columns.get(i);
+									if(column.getTalendType().equals("id_Dynamic")){
+									%>
+										dynamicColCount = row.<%=column.getLabel()%>.getColumnCount();
+								        for (int i = 0; i < dynamicColCount; i++) {
+											DynamicMetadata dynamicColumn = row.<%=column.getLabel()%>.getColumnMetadata(i);
+											if (dynamicColumn.getName() != null) {
+												xlsxTool.addCellValue(dynamicColumn.getName());
+											}
+										}
+									<%
+									}else{
+									%>
+										xlsxTool.addCellValue("<%=column.getLabel()%>");
+									<%
+									}
+								}
+							if(!firstCellYAbsolute) {
+							%>
+								}
+							<%
+							}
+							%>
+							return 1;
+						}else{
+							return 0;
+						}
+						
+					}
+				<%
+				}
+				%>
+				public void writeValuesToExcelFile(Dynamic column, org.talend.ExcelTool xlsxTool){
+					dynamicColCount = column.getColumnCount();
+					for (int i = 0; i < dynamicColCount; i++) {
+						if (column.getColumnValue(i) != null) {
+							DynamicMetadata dynamicColumn = column.getColumnMetadata(i);
+							String talendType=dynamicColumn.getType();
+			                if("id_Date".equals(talendType)){
+			                	xlsxTool.addCellValue((java.util.Date)column.getColumnValue(i), <%=datePattern%>);
+			                } else if(<%=advancedSeparator%> && isNumberType(talendType)) { 
+								xlsxTool.addCellValue(FormatterUtils.format_Number(String.valueOf(column.getColumnValue(i)), <%= thousandsSeparator %>, <%= decimalSeparator %>));
+			                } else if(isNumberType(talendType)) { 
+			                	xlsxTool.addCellValue(Double.parseDouble(String.valueOf(column.getColumnValue(i))));
+			                }else if("id_Boolean".equals(talendType)){
+			                	xlsxTool.addCellValue((Boolean)(column.getColumnValue(i)));
+			                }else{
+			                	xlsxTool.addCellValue(String.valueOf(column.getColumnValue(i)));
+			                }
+			            }else{
+			            	xlsxTool.addCellNullValue();
+			            }
+			        }
+				}
+				public void autoDynamicColumnSize(org.talend.ExcelTool xlsxTool){
+					for (int i = 0; i < dynamicColCount; i++) {
+						xlsxTool.setColAutoSize(i+<%=dynamic_index-1%>);
+					}
+				}
+			<%
+			}
+			%>
+				public int getDynamicColCount(){
+					return dynamicColCount;
+				}
+			}
+			ExcelDynamicUtil_<%=cid%> excelDynamicUtil_<%=cid%>=new ExcelDynamicUtil_<%=cid%>();
+			<%
+		}
+		%>
+		int columnIndex_<%=cid%> = 0;
+		<%
     	if(!version07){//version judgement
 %>
 		int nb_line_<%=cid%> = 0;
@@ -179,7 +454,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				fitWidth_<%=cid %>[i_<%=cid%>]+=1;
 			}
 		}
-<%if(font !=null && font.length()!=0){%>
+<%if(isSettingFont){%>
 		
 		jxl.write.WritableFont wf_<%=cid%> = new jxl.write.WritableFont(jxl.write.WritableFont.<%=font%>, 10, jxl.write.WritableFont.NO_BOLD, false);
         jxl.write.WritableCellFormat format_<%=cid%>  = new jxl.write.WritableCellFormat(wf_<%=cid%>); 
@@ -189,10 +464,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	for (int i = 0; i < columns.size(); i++) {
     		IMetadataColumn column = columns.get(i);
     		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-    		if (javaType == JavaTypesManager.DATE){
+    		if (javaType == JavaTypesManager.DATE || column.getTalendType().equals("id_Dynamic")){
     			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     			if(pattern != null && pattern.trim().length() != 0){
-    				if(font !=null && font.length()!=0){
+    				if(isSettingFont){
 %>
     					final jxl.write.WritableCellFormat cell_format_<%=column.getLabel() %>_<%= cid%>=new jxl.write.WritableCellFormat(wf_<%=cid%> ,new jxl.write.DateFormat(<%=pattern %>));
 <%
@@ -218,6 +493,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		class FileOutputExcelUtil_<%=cid%>{
 <%
+		if(hasDynamic){
+%>
+			ExcelDynamicUtil_<%=cid%> excelDynamicUtil_<%=cid%>=new ExcelDynamicUtil_<%=cid%>();
+<%
+		}
 		for (int i = 0; i < sizeColumns; i++) {//TD128
 			IMetadataColumn column = columns.get(i);
 			if(i%schemaOptNum==0){//TD256
@@ -231,7 +511,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 			writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + <%=firstCellXStr%>, rowNum_<%=cid %>, "<%=column.getLabel() %>"
 <%
-				if (font !=null && font.length()!=0) {
+				if (isSettingFont) {
 %>
 					,format_<%=cid %>
 <%
@@ -243,7 +523,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 			writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, rowNum_<%=cid%>, "<%=column.getLabel() %>"
 <%
-				if (font !=null && font.length()!=0) {
+				if (isSettingFont) {
 %>
 					,format_<%=cid %>
 <%
@@ -279,7 +559,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					if(autoSizeList.size() == columns.size()){
 						for(int j=0;(j<schemaOptNum) && (i+j<sizeColumns);j++) {
     						Map<String,String> tmp= autoSizeList.get(i+j);
-    						if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+    						if(("true").equals(tmp.get("IS_AUTO_SIZE")) && (!columns.get(i+j).getTalendType().equals("id_Dynamic"))){
     							emptyMethod = false;
     							break;
     						}
@@ -293,17 +573,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 			public void setColumnView_<%=i/schemaOptNum%>(final jxl.write.WritableSheet writableSheet_<%=cid %>,
 				final int[] fitWidth_<%=cid%>) throws java.lang.Exception {
+					int columnIndex_<%=cid%> = 0;
 <%
 				}
 			}
-			
+		if(!column.getTalendType().equals("id_Dynamic")){
 			if(isAllColumnAutoSize){
+				if(hasDynamic && i+1>dynamic_index){
+				%>
+					columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+				<%
+				}else{
+				%>
+					columnIndex_<%=cid%> = <%=i%>;
+				<%
+				}
 %>
     			//modif start
         		<%if(firstCellYAbsolute){%>
-        			writableSheet_<%=cid %>.setColumnView(<%=i%> + <%=firstCellXStr%>, fitWidth_<%=cid %>[<%=i%>]);
+        			writableSheet_<%=cid %>.setColumnView(columnIndex_<%=cid%>  + <%=firstCellXStr%>, fitWidth_<%=cid %>[<%=i%>]);
         		<%}else{%>
-        			writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]);
+        			writableSheet_<%=cid %>.setColumnView(columnIndex_<%=cid%> , fitWidth_<%=cid %>[<%=i%>]);
         		<%}%>
     			//modif end
 <%
@@ -311,13 +601,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
      			if(autoSizeList.size() == columns.size()){
     				Map<String,String> tmp= autoSizeList.get(i);
             		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+						if(hasDynamic && i+1>dynamic_index){
+						%>
+							columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+						<%
+						}else{
+						%>
+							columnIndex_<%=cid%> = <%=i%>;
+						<%
+						}
 %>
-        			writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]);
+        			writableSheet_<%=cid %>.setColumnView(columnIndex_<%=cid%> , fitWidth_<%=cid %>[<%=i%>]);
 <%
             		}
         		}
      		}
-     		
+     	}
      		if(!emptyMethod && ((i+1)%schemaOptNum==0)){
      			emptyMethod = true;
 %>
@@ -339,6 +638,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,
 				final jxl.write.WritableSheet writableSheet_<%=cid %>,final int startRowNum_<%=cid %>,final int nb_line_<%=cid %>,
 				final jxl.write.WritableCellFormat format_<%=cid%>,int[] fitWidth_<%=cid%>) throws java.lang.Exception {
+				int columnIndex_<%=cid%> = 0;
 <%
 			}
 %>
@@ -366,7 +666,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 <%
-if(isIncludeHeader){
+if(!hasDynamic && isIncludeHeader){
 	if(firstCellYAbsolute){
 %>
 		if (startRowNum_<%=cid %> == <%=firstCellYStr%>){
@@ -385,11 +685,11 @@ if(isIncludeHeader){
         	if(i%schemaOptNum==0){
         		if(firstCellYAbsolute) {
 %>
-				fileOutputExcelUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(writableSheet_<%=cid %>,startRowNum_<%=cid %>,<%if (font !=null && font.length()!=0) {%>format_<%=cid %><%} else {%>null<%}%>,fitWidth_<%=cid%>);
+				fileOutputExcelUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(writableSheet_<%=cid %>,startRowNum_<%=cid %>,<%if (isSettingFont) {%>format_<%=cid %><%} else {%>null<%}%>,fitWidth_<%=cid%>);
 <%
         		} else {
 %>
-				fileOutputExcelUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(writableSheet_<%=cid %>,nb_line_<%=cid%>,<%if (font !=null && font.length()!=0) {%>format_<%=cid %><%} else {%>null<%}%>,fitWidth_<%=cid%>);
+				fileOutputExcelUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(writableSheet_<%=cid %>,nb_line_<%=cid%>,<%if (isSettingFont) {%>format_<%=cid %><%} else {%>null<%}%>,fitWidth_<%=cid%>);
 <%
         		}
 
@@ -404,7 +704,7 @@ if(isIncludeHeader){
 %>
 			writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %>, "<%=column.getLabel() %>"
 <%
-				if (font !=null && font.length()!=0) {
+				if (isSettingFont) {
 %>
 					,format_<%=cid %>
 <%
@@ -416,7 +716,7 @@ if(isIncludeHeader){
 %>
 			writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"
 <%
-				if (font !=null && font.length()!=0) {
+				if (isSettingFont) {
 %>
 					,format_<%=cid %>
 <%
@@ -488,6 +788,11 @@ if(isIncludeHeader){
 %>
 			class FileOutputExcelUtil_<%=cid%>{
 <%
+			if(hasDynamic){
+%>
+				ExcelDynamicUtil_<%=cid%> excelDynamicUtil_<%=cid%>=new ExcelDynamicUtil_<%=cid%>();
+<%
+			}
     		for (int i = 0; isIncludeHeader && (i < sizeColumns); i++) {
     			IMetadataColumn column = columns.get(i);
     			if(i%schemaOptNum==0){
@@ -519,7 +824,7 @@ if(isIncludeHeader){
     					if(autoSizeList.size() == columns.size()){
     						for(int j=0;(j<schemaOptNum) && (i+j<sizeColumns);j++) {
         						Map<String,String> tmp= autoSizeList.get(i+j);
-        						if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+        						if(("true").equals(tmp.get("IS_AUTO_SIZE")) && (!columns.get(i+j).getTalendType().equals("id_Dynamic"))){
         							emptyMethod = false;
         							break;
         						}
@@ -532,23 +837,42 @@ if(isIncludeHeader){
     				if(!emptyMethod) {
 %>
 				public void setColAutoSize_<%=i/schemaOptNum%>(final org.talend.ExcelTool xlsxTool_<%=cid%>) throws java.lang.Exception {
+					int columnIndex_<%=cid%> = 0;
 <%    			
 					}
     			}
-    			
+    		if(!column.getTalendType().equals("id_Dynamic")){
     			if(isAllColumnAutoSize){
+					if(hasDynamic && i+1>dynamic_index){
+					%>
+						columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+					<%
+					}else{
+					%>
+						columnIndex_<%=cid%> = <%=i%>;
+					<%
+					}
 %>
-					xlsxTool_<%=cid%>.setColAutoSize(<%=i%>);
+					xlsxTool_<%=cid%>.setColAutoSize(columnIndex_<%=cid%>);
 <%
     			} else if(autoSizeList.size() == columns.size()) {
     				Map<String,String> tmp= autoSizeList.get(i);
             		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+						if(hasDynamic && i+1>dynamic_index){
+						%>
+							columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+						<%
+						}else{
+						%>
+							columnIndex_<%=cid%> = <%=i%>;
+						<%
+						}
 %>
-					xlsxTool_<%=cid%>.setColAutoSize(<%=i%>);
+					xlsxTool_<%=cid%>.setColAutoSize(columnIndex_<%=cid%>);
 <%
             		}
     			}
-    			
+    		}
     			if(!emptyMethod && ((i+1)%schemaOptNum==0)){
     				emptyMethod = true;
 %>
@@ -592,7 +916,7 @@ if(isIncludeHeader){
 <%
 		}//TD1
 		
-		if(isIncludeHeader){
+		if(!hasDynamic && isIncludeHeader){
 			
 			if(!firstCellYAbsolute) {
 		%>

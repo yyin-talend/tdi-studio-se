@@ -9,7 +9,11 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 		org.talend.core.model.process.ElementParameterParser		
-		java.util.List
+		org.talend.core.model.utils.NodeUtil
+	    java.util.List
+	    java.util.Map
+	    java.util.HashMap
+		
 	"
 %>
 <%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
@@ -24,6 +28,7 @@ boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSe
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
 String font = ElementParameterParser.getValue(node, "__FONT__"); 
+boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
 //modif start
 boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
 String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
@@ -40,6 +45,10 @@ if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schema
 	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
 }
 
+boolean isAllColumnAutoSize = ("true").equals(ElementParameterParser.getValue(node, "__IS_ALL_AUTO_SZIE__" ));
+List<Map<String, String>> autoSizeList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__AUTO_SZIE_SETTING__");
+Map<String,String> autColSizeMaping=new HashMap<String,String>();
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -47,11 +56,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List<IMetadataColumn> columns = metadata.getListColumns();
 		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 		
+		boolean hasDynamic = false;
+		int dynamic_index = 0;
+		String datePattern = "\"dd-MM-yyyy\"";
+		for(int i=0; columns!=null && i< columns.size(); i++) {
+			IMetadataColumn column = columns.get(i);
+	        if(!hasDynamic && column.getTalendType().equals("id_Dynamic")){
+	            dynamic_index = i+1;
+	            hasDynamic = true;
+	            datePattern= column.getPattern();
+	        }
+	        if(isAllColumnAutoSize){
+	        	autColSizeMaping.put(column.getLabel(),"true");
+	        }else{
+	        	autColSizeMaping.put(column.getLabel(),autoSizeList.get(i).get("IS_AUTO_SIZE"));
+	        	
+	        }
+		}
 		if(!version07){//version judgement
     	
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    			if(hasDynamic && isIncludeHeader){
+    			%>
+    				nb_line_<%=cid%> = nb_line_<%=cid%> + excelDynamicUtil_<%=cid%>.writeHeaderToExcelFile(writableSheet_<%=cid%>,<%=firstCellYAbsolute?firstCellXStr:"0"%>,
+						<%if(firstCellYAbsolute){%>startRowNum_<%=cid %>+nb_line_<%=cid%><%}else{%>nb_line_<%=cid%><%}%>,<%=conn.getName()%>,fitWidth_<%=cid%>);
+    			<%
+    			}
     			int sizeColumns = columns.size();
     			for (int i = 0; i < sizeColumns; i++) {
     				IMetadataColumn column = columns.get(i);
@@ -80,6 +112,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    			if(hasDynamic && isIncludeHeader){
+    			%>
+    				nb_line_<%=cid%> = nb_line_<%=cid%> + excelDynamicUtil_<%=cid%>.writeHeaderToExcelFile(<%=conn.getName() %>, xlsxTool_<%=cid%>, nb_line_<%=cid%>);
+    			<%
+    			}
     			int sizeColumns = columns.size();
 %>
 				xlsxTool_<%=cid%>.addRow();

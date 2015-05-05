@@ -24,6 +24,7 @@
 				    		 javaType == JavaTypesManager.BYTE_ARRAY||
 				    		 javaType == JavaTypesManager.LIST||
 				    		 javaType == JavaTypesManager.OBJECT||
+				    		 column.getTalendType().equals("id_Dynamic")||
 				    		 (advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable()))
 				    		 ){
 				    	jxlWriteType="Label";
@@ -31,15 +32,25 @@
 						isNumber=true;
 						jxlWriteType="Number";
 					};
+					if(hasDynamic && i+1>dynamic_index){
+					%>
+						columnIndex_<%=cid%> = excelDynamicUtil_<%=cid%>.getDynamicColCount()+<%=i-1%>;
+					<%
+					}else{
+					%>
+						columnIndex_<%=cid%> = <%=i%>;
+					<%
+					}
+					if(!column.getTalendType().equals("id_Dynamic")){
    				%>
 
 					<%if(firstCellYAbsolute){%>
 						<%if(keepCellFormating){%>
-							jxl.write.WritableCell existingCell_<%=i%>_<%=cid%> = writableSheet_<%=cid %>.getWritableCell(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%>) ;
+							jxl.write.WritableCell existingCell_<%=i%>_<%=cid%> = writableSheet_<%=cid %>.getWritableCell(columnIndex_<%=cid%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%>) ;
 						<%}%>
-						jxl.write.WritableCell cell_<%=i%>_<%=cid%> = new jxl.write.<%=jxlWriteType%>(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%> ,
+						jxl.write.WritableCell cell_<%=i%>_<%=cid%> = new jxl.write.<%=jxlWriteType%>(columnIndex_<%=cid%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%> ,
 					<%}else{%>
-						jxl.write.WritableCell cell_<%=i%>_<%=cid%> = new jxl.write.<%=jxlWriteType%>(<%=i%>, startRowNum_<%=cid %> + nb_line_<%=cid%>,
+						jxl.write.WritableCell cell_<%=i%>_<%=cid%> = new jxl.write.<%=jxlWriteType%>(columnIndex_<%=cid%>, startRowNum_<%=cid %> + nb_line_<%=cid%>,
 					<%}%>
 //modif end
 <%
@@ -118,6 +129,16 @@
 							currentWith_<%=i%>_<%=cid%>=<%=staticWidth%>;
 							fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]>currentWith_<%=i%>_<%=cid%>?fitWidth_<%=cid%>[<%=i%>]:currentWith_<%=i%>_<%=cid%>+2;
 <%
+					}
+					}else{
+					%>
+						excelDynamicUtil_<%=cid%>.writeValuesToExcelFile(<%=conn.getName() %>.<%=column.getLabel() %>, writableSheet_<%=cid %>,columnIndex_<%=cid%>+<%=firstCellYAbsolute?firstCellXStr:"0"%>,startRowNum_<%=cid %> + nb_line_<%=cid%>);
+						<%
+						if("true".equalsIgnoreCase(autColSizeMaping.get(column.getLabel()))){
+						%>
+							excelDynamicUtil_<%=cid%>.autoDynamicColumnSize(writableSheet_<%=cid %>,columnIndex_<%=cid%>+<%=firstCellYAbsolute?firstCellXStr:"0"%>);
+						<%
+						}
 					}
 					if(!isPrimitive) {
     				%>
