@@ -15,7 +15,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -48,7 +47,8 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
@@ -61,7 +61,6 @@ import org.talend.designer.core.ui.dialog.BrmsDialog;
 import org.talend.designer.core.ui.dialog.IBrmsExtension;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -319,14 +318,14 @@ public class ModuleListController extends AbstractElementPropertySectionControll
     }
 
     public static void updateModuleList(Node node) {
-        List<ModuleNeeded> moduleNeededList = ModulesNeededProvider.getModulesNeeded();
+        ILibraryManagerService repositoryBundleService = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
+                ILibraryManagerService.class);
+        Set<String> existLibraries = repositoryBundleService.list();
         Set<String> moduleNameList = new TreeSet<String>();
         Set<String> moduleValueList = new TreeSet<String>();
-        for (ModuleNeeded module : moduleNeededList) {
-
-            String moduleName = module.getModuleName();
-            moduleNameList.add(moduleName);
-            moduleValueList.add(TalendTextUtils.addQuotes(moduleName));
+        for (String lib : existLibraries) {
+            moduleNameList.add(lib);
+            moduleValueList.add(TalendTextUtils.addQuotes(lib));
         }
         Comparator<String> comprarator = new IgnoreCaseComparator();
         String[] moduleNameArray = moduleNameList.toArray(new String[0]);
