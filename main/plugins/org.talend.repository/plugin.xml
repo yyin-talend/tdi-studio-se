@@ -2521,6 +2521,9 @@
             class="org.talend.repository.preference.VersionManagementPage"
             id="org.talend.repository.preference.VersionManagementPage"
             title="%projectsetting.VersionManagement">
+         <tester
+               class="org.talend.repository.preference.VersionManagementProjectSettingPageTester">
+         </tester>
       </page>
       <page
             class="org.talend.repository.preference.BlankProjectSettingPage"
@@ -2555,6 +2558,9 @@
             class="org.talend.repository.preference.CustomComponentSettingPage"
             id="org.talend.repository.preference.CustomComponentSettingPage"
             title="%customCompSetting">
+         <tester
+               class="org.talend.repository.preference.CustomComponentProjectSettingPageTester">
+         </tester>
       </page>
       <page
             class="org.talend.repository.preference.Log4jSettingPage"
@@ -2626,3 +2632,5 @@
    </extension>
 
 </plugin>
+
+

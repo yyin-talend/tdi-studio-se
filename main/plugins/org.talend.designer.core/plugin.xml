@@ -781,6 +781,9 @@
              description="%selectitem.useprojectsettings"
              id="jobsettings.treeview"
              title="%useProjectSetting">
+          <tester
+                class="org.talend.designer.core.ui.projectsetting.UsingProjectSettingPageTester">
+          </tester>
        </page>
     </extension>
     <extension
