@@ -175,7 +175,9 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
                 };
                 IElementParameter sparkParam = elem.getElementParameter(HadoopConstants.SPARK_MODE);
                 if (sparkParam != null) {
-                    customVersionDialog.setSparkMode("" + sparkParam.getValue()); //$NON-NLS-1$
+                    String sparkMode = "" + sparkParam.getValue(); //$NON-NLS-1$
+                    customVersionDialog.setSparkMode(sparkMode);
+                    customVersionDialog.setSparkStreamingMode(sparkMode);
                 }
                 customVersionDialog.setReadonly(readonly);
                 Set<String> oldLibList = customVersionDialog.getLibList(versionType.getGroup());
