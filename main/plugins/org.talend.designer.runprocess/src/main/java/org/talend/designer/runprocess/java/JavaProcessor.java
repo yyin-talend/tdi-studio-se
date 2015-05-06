@@ -440,7 +440,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
                 String javaLib = ""; //$NON-NLS-1$
-                String javaContext = getContextPath().toOSString();
+                String javaContext = getContextPath().toPortableString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
                         currentJavaProject, exportAsOSGI);
@@ -663,7 +663,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      */
     @Override
     public String getCodeContext() {
-        return getCodeProject().getLocation().append(getContextPath()).removeLastSegments(1).toOSString();
+        return getCodeProject().getLocation().append(getContextPath()).removeLastSegments(1).toPortableString();
     }
 
     private String escapeFilename(final String filename) {
@@ -851,7 +851,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (codeLocation != null) {
             return codeLocation;
         }
-        return this.getCodeProject().getLocation().toOSString();
+        return this.getCodeProject().getLocation().toPortableString();
     }
 
     /**
@@ -1005,7 +1005,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         } else {
             ITalendProcessJavaProject tProcessJvaProject = this.getTalendJavaProject();
             IFolder classesFolder = tProcessJvaProject.getOutputFolder();
-            outputPath = classesFolder.getLocation().toOSString();
+            outputPath = classesFolder.getLocation().toPortableString();
             outputPath += classPathSeparator + '.'; // add current path
         }
 
@@ -1254,7 +1254,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String javaInterpreter = ""; //$NON-NLS-1$
         String javaLib = ""; //$NON-NLS-1$
         String currentJavaProject = project.getTechnicalLabel();
-        String javaContext = getContextPath().toOSString();
+        String javaContext = getContextPath().toPortableString();
 
         codeGen = service.createCodeGenerator(process, false, false, javaInterpreter, javaLib, javaContext, currentJavaProject);
 
