@@ -62,6 +62,10 @@ public enum EDatabaseComponentName implements IComponentName {
     JAVADB_DERBYCLIENT(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB_DERBYCLIENT, "tJavaDBInput", "tJavaDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     JAVADB_JCCJDBC(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB_JCCJDBC, "tJavaDBInput", "tJavaDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     DBMYSQL(DatabaseConnectionItem.class, EDatabaseTypeName.MYSQL, "tMysqlInput", "tMysqlOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    AMAZON_AURORA(
+                  DatabaseConnectionItem.class,
+                  EDatabaseTypeName.AMAZON_AURORA,
+                  "tAmazonAuroraInput", "tAmazonAuroraOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     DBPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PSQL, "tPostgresqlInput", "tPostgresqlOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     PARACCEL(DatabaseConnectionItem.class, EDatabaseTypeName.PARACCEL, "tParAccelInput", "tParAccelOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     GREENPLUM(DatabaseConnectionItem.class, EDatabaseTypeName.GREENPLUM, "tGreenplumInput", "tGreenplumOutput", true), //$NON-NLS-1$ //$NON-NLS-2$

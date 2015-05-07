@@ -41,14 +41,13 @@
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="1"
-      REPOSITORY_VALUE="DATABASE:MYSQL"
+      REPOSITORY_VALUE="DATABASE:AMAZON_AURORA"
     />
 
   <PARAMETER
     NAME="DB_VERSION"
     FIELD="CLOSED_LIST"
     NUM_ROW="10"
-    REPOSITORY_VALUE="DB_VERSION"
     READONLY="true"
     SHOW="false"
     >
@@ -73,7 +72,7 @@
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>MySQL</DEFAULT>
+      <DEFAULT>Amazon Aurora</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
