@@ -98,14 +98,23 @@
 		}
                 <%}%>
 		}
-		<%if( ("ActiveMQ").equals(serverType) && !isCommitRollback && !isUseExistConnection){%>
- 		 	if (session_<%=cid%> != null  && connection_<%=cid %> != null) {
- 		 		session_<%=cid %>.close();
- 		 	}
-            if (connection_<%=cid %> != null) {
-            	connection_<%=cid %>.close();
-            }
-		<%}%>
+		<%
+		if(("ActiveMQ").equals(serverType)){
+		%>
+			if(consumer_<%=cid %>!=null){
+				consumer_<%=cid %>.close();
+			}
+			<%if(!isCommitRollback && !isUseExistConnection){%>
+	 		 	if (session_<%=cid%> != null  && connection_<%=cid %> != null) {
+	 		 		session_<%=cid %>.close();
+	 		 	}
+	            if (connection_<%=cid %> != null) {
+	            	connection_<%=cid %>.close();
+	            }
+			<%
+			}
+		}
+		%>
 
 		<%if( ("JBoss").equals(serverType) ){%>
  			System.out.println("Closing connection");
