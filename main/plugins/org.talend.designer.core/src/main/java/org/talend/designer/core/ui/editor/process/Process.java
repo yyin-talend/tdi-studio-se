@@ -1113,6 +1113,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             }
         }
+        pType.setShow(param.isShow(paramList));
         listParamType.add(pType);
     }
 
