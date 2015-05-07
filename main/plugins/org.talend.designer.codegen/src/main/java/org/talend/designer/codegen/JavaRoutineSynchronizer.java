@@ -50,6 +50,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
@@ -221,6 +222,13 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         return getProcessFile(projectFolderName, folderName, jobName);
     }
 
+    private IFile getTestContainerFile(ProcessItem item) throws SystemException {
+        String projectFolderName = JavaResourcesHelper.getProjectFolderName(item);
+        String jobName = item.getProperty().getLabel();
+        String folderName = JavaResourcesHelper.getJobFolderName(jobName, item.getProperty().getVersion());
+        return getTestContainerFile(item, projectFolderName, folderName, jobName);
+    }
+
     private IFile getProcessFile(String projectFolderName, String folderName, String jobName) {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
         ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
@@ -229,6 +237,18 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
         IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
         IFile file = srcFolder.getFile(projectFolderName + '/' + folderName + '/' + jobName + JavaUtils.JAVA_EXTENSION);
+        return file;
+    }
+
+    private IFile getTestContainerFile(ProcessItem item, String projectFolderName, String folderName, String jobName) {
+        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+        ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
+        if (talendProcessJavaProject == null) {
+            return null;
+        }
+        IFolder srcFolder = talendProcessJavaProject.getTestSrcFolder();
+        String packageName = JavaResourcesHelper.getJobClassPackageFolder(item, true);
+        IFile file = srcFolder.getFile(packageName + '/' + jobName + "Test" + JavaUtils.JAVA_EXTENSION);
         return file;
     }
 
@@ -290,7 +310,17 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      */
     @Override
     public IFile getFile(Item item) throws SystemException {
-        if (item instanceof RoutineItem) {
+        boolean isTestContainer = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+            ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                    .getDefault().getService(ITestContainerProviderService.class);
+            if (testContainerService != null) {
+                isTestContainer = testContainerService.isTestContainerItem(item);
+            }
+        }
+        if (isTestContainer) {
+            return getTestContainerFile((ProcessItem) item);
+        } else if (item instanceof RoutineItem) {
             return getRoutineFile((RoutineItem) item);
         } else if (item instanceof ProcessItem) {
             return getProcessFile((ProcessItem) item);

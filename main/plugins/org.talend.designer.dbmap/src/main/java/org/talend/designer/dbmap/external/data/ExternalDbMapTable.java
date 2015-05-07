@@ -16,8 +16,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.model.process.node.AbstractExternalMapTable;
 import org.talend.core.model.process.node.IExternalMapEntry;
-import org.talend.core.model.process.node.IExternalMapTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -25,7 +25,7 @@ import org.talend.core.model.process.node.IExternalMapTable;
  * $Id: ExternalMapperTable.java 898 2006-12-07 11:06:17Z amaumont $
  * 
  */
-public class ExternalDbMapTable implements IExternalMapTable, Serializable, Cloneable {
+public class ExternalDbMapTable extends AbstractExternalMapTable implements Serializable, Cloneable {
 
     /**
      * 

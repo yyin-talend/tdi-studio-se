@@ -16,8 +16,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.model.process.node.AbstractExternalMapTable;
 import org.talend.core.model.process.node.IExternalMapEntry;
-import org.talend.core.model.process.node.IExternalMapTable;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
@@ -28,7 +28,7 @@ import org.talend.designer.mapper.utils.DataMapExpressionParser;
  * $Id$
  * 
  */
-public class ExternalMapperTable implements IExternalMapTable, Serializable, Cloneable {
+public class ExternalMapperTable extends AbstractExternalMapTable implements Serializable, Cloneable {
 
     /**
      * 
@@ -237,6 +237,7 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
         this.persistent = persistent;
     }
 
+    @Override
     public String getExpressionFilter() {
         return this.expressionFilter;
     }
@@ -250,6 +251,7 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
      * 
      * @return the activateExpressionFilter
      */
+    @Override
     public boolean isActivateExpressionFilter() {
         return this.activateExpressionFilter;
     }

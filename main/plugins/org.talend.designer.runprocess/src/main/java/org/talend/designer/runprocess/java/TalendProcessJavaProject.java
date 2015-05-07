@@ -288,13 +288,14 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                                                                                                             // is
                                                                                                             // compile
                 // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
-                buildWholeCodeProject();
-                buildWholeCodeProject();
+                // buildWholeCodeProject();
+                // buildWholeCodeProject();
             } else {
                 mavenLauncher = new TalendMavenLauncher(childModulePomFile, goals);
                 mavenLauncher.execute();
             }
-
+            buildWholeCodeProject();
+            buildWholeCodeProject();
             /*
              * FIXME, because the marker issue, we have to build whole project to get the markers.
              * 
