@@ -116,13 +116,14 @@
 
 
 <%
+	IConnection conn = null;
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         IMetadataTable metadata = metadatas.get(0);
         if (metadata!=null) {//2
             String cid = node.getUniqueName();
         	List< ? extends IConnection> conns = node.getIncomingConnections();
-        	IConnection conn = conns.get(0);
+        	conn = conns.get(0);
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
                 
@@ -153,7 +154,7 @@
 
 <%
             					String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-            				
+            					
             					if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
 
@@ -233,7 +234,39 @@
 
 <%
 				}
+				
+				IConnection conn2 = null;
+			    List<IMetadataTable> metadatas2 = node.getMetadataList();
+			    if ((metadatas2 != null) && (metadatas2.size() > 0)) {//1
+			        IMetadataTable metadata2 = metadatas2.get(0);
+			        if (metadata != null) {//2
+			        	List< ? extends IConnection> conns2 = node.getOutgoingConnections("FLOW");
+			        	if(conns2.size() > 0){
+			        		conn2 = conns2.get(0);
+				    		if (conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {//4
+								List<IMetadataColumn> columns2 = metadata2.getListColumns();
+					            int sizeColumns2 = columns2.size();
+					            for (int i = 0; i < sizeColumns2; i++) { //5  			
+					            	IMetadataColumn column2 = columns2.get(i);
+%>
+									<%=conn2.getName()%>.<%=column2.getLabel()%> = <%=conn.getName()%>.<%=column2.getLabel()%>;
+<%		            	
+					            }
+					        }
+			        	}
+				    }
+				}
+				
+				String rejectConnName = null;
+                List< ? extends IConnection> outConns = node.getOutgoingConnections("REJECT");
+                if(outConns.size() > 0){
+                	rejectConnName = outConns.get(0).getName();
+                }
 %>  
+	
+				<%=rejectConnName%> = null;   // reject line
+				
+				nb_line_<%=cid %>++;
 
         	} catch (Exception e_<%=cid %>) {
 
@@ -246,15 +279,47 @@
 <%
 				} else {
 %>
-
-					System.err.print(e_<%=cid %>.getMessage());
+					<%=conn2.getName()%> = null;   // main line
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+<%
+                    List<IMetadataColumn> rejectColumnList = null;
+                    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+                    if(metadataTable != null) {
+                    	rejectColumnList = metadataTable.getListColumns();
+                        for(IMetadataColumn column2 : rejectColumnList) {
+                        	if(conn != null && !"errorCode".equals(column2.getLabel()) && !"errorMessage".equals(column2.getLabel())){
+%>
+                            	<%=rejectConnName%>.<%=column2.getLabel()%> = <%=conn.getName()%>.<%=column2.getLabel()%>;
+                                        
+<%
+                            }
+                        }
+%>
+						
+						if(e_<%=cid %> instanceof org.talend.netsuite.NetsuiteException){
+							org.talend.netsuite.NetsuiteException ne_<%=cid %> = (org.talend.netsuite.NetsuiteException)e_<%=cid %>;
+							<%=rejectConnName%>.errorCode = ne_<%=cid %>.getCode();
+	                    	<%=rejectConnName%>.errorMessage = ne_<%=cid %>.getMessage();
+						} else {
+							<%=rejectConnName%>.errorCode = "";
+	                    	<%=rejectConnName%>.errorMessage = "";
+						}
 
 <%
-				}
+                  }
+%>
+
+<%
+                    if(rejectConnName == null){
+%>
+
+                        System.err.print(e_<%=cid %>.getMessage());
+
+<%
+                    }
+                }
 %>
 			}
-			
-			nb_line_<%=cid %>++; 
 
 <%
     		}//4

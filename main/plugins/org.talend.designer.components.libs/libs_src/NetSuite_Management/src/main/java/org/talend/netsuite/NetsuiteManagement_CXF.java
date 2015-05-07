@@ -536,7 +536,7 @@ public class NetsuiteManagement_CXF {
 		WriteResponse wr = response.getWriteResponse();
 
 		if (!wr.getStatus().isIsSuccess()) {
-			throw new java.rmi.RemoteException(getStatusDetails(wr.getStatus()));
+			throw new NetsuiteException(getErrorCodes(wr.getStatus()), getErrorMessages(wr.getStatus()));
 		}
 
 		java.lang.reflect.Field field = wr.getBaseRef().getClass().getDeclaredField("internalId");
@@ -559,7 +559,7 @@ public class NetsuiteManagement_CXF {
 		String internalId = (String) field.get(record);
 
 		if (!response.getWriteResponse().getStatus().isIsSuccess()) {
-			throw new RemoteException("Exception happened when update (InternalId: " + internalId + "), " + getStatusDetails(response.getWriteResponse().getStatus()));
+			throw new NetsuiteException(getErrorCodes(response.getWriteResponse().getStatus()), getErrorMessages(response.getWriteResponse().getStatus()));
 		}
 	}
 	
@@ -598,7 +598,7 @@ public class NetsuiteManagement_CXF {
 		DeleteResponse response = getPort().delete(deleteRequest);
 
 		if (!response.getWriteResponse().getStatus().isIsSuccess()) {
-			throw new RemoteException("Exception happened when delete (InternalId: " + id+ "), "+ getStatusDetails(response.getWriteResponse().getStatus()));
+			throw new NetsuiteException(getErrorCodes(response.getWriteResponse().getStatus()), getErrorMessages(response.getWriteResponse().getStatus()));
 		}
 	}
 	
@@ -639,6 +639,38 @@ public class NetsuiteManagement_CXF {
 			for (StatusDetail detail : statusDetails) {
 				stringBuffer.append("[Code=" + detail.getCode() + "] " + detail.getMessage() + "\n");
 			}
+		}
+		
+		return stringBuffer.toString();
+	}
+	
+	public String getErrorCodes(Status status) {
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		List<StatusDetail> statusDetails = status.getStatusDetail();
+		
+		if (statusDetails != null) {
+			int i = 0;
+			for(; i < statusDetails.size() - 1; i++){
+				stringBuffer.append(statusDetails.get(i).getCode() + ", ");
+			}
+			stringBuffer.append(statusDetails.get(i).getCode());
+		}
+		
+		return stringBuffer.toString();
+	}
+	
+	public String getErrorMessages(Status status) {
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		List<StatusDetail> statusDetails = status.getStatusDetail();
+		
+		if (statusDetails != null) {
+			int i = 0;
+			for(; i < statusDetails.size() - 1; i++){
+				stringBuffer.append(statusDetails.get(i).getMessage() + ", ");
+			}
+			stringBuffer.append(statusDetails.get(i).getMessage());
 		}
 		
 		return stringBuffer.toString();
