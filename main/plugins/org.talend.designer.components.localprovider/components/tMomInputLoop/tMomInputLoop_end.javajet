@@ -139,28 +139,37 @@
 		}
                 <%}%>
 		}
-		<%if( ("ActiveMQ").equals(serverType) && !isCommitRollback && !isUseExistConnection){%>
-			<%
-			if (isLog4jEnabled) {
-			%>
-				log.info("<%=cid%> - Closing connection...");
+		<%
+		if(("ActiveMQ").equals(serverType)){
+		%>
+			if(consumer_<%=cid %>!=null){
+				consumer_<%=cid %>.close();
+			}
+			<%if(!isCommitRollback && !isUseExistConnection){%>
+				<%
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Closing connection...");
+				<%
+				}
+				%>
+	 		 	if (session_<%=cid%> != null  && connection_<%=cid %> != null) {
+	 		 		session_<%=cid %>.close();
+	 		 	}
+	            if (connection_<%=cid %> != null) {
+	            	connection_<%=cid %>.close();
+	            }
+	            <%	
+				if (isLog4jEnabled) {
+				%>
+					log.info("<%=cid%> - Closed successfully.");
+				<%
+				}
+	            %>
 			<%
 			}
-			%>
- 		 	if (session_<%=cid%> != null  && connection_<%=cid %> != null) {
- 		 		session_<%=cid %>.close();
- 		 	}
-            if (connection_<%=cid %> != null) {
-            	connection_<%=cid %>.close();
-            }
-            <%	
-			if (isLog4jEnabled) {
-			%>
-				log.info("<%=cid%> - Closed successfully.");
-			<%
-			}
-            %>
-		<%}%>
+		}
+		%>
 
 		<%if( ("JBoss").equals(serverType) ){%>
 			<%
