@@ -160,7 +160,7 @@
       FIELD="ENCODING_TYPE"
       NUM_ROW="110"
       REPOSITORY_VALUE="ENCODING"
-      REQUIRED="true" NOT_SHOW_IF="(SFTP == 'true')">
+      REQUIRED="true" NOT_SHOW_IF="(SFTP == 'true') and (USE_ENCODING == 'false')">
        <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
     
@@ -170,15 +170,6 @@
       NUM_ROW="105"
       REQUIRED="true" SHOW_IF="SFTP == 'true'">
        <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="ENCODING_SFTP"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="109"
-      REPOSITORY_VALUE="ENCODING"
-      REQUIRED="true" SHOW_IF="(SFTP == 'true') and (USE_ENCODING == 'true')">
-       <DEFAULT>"UTF-8"</DEFAULT>
     </PARAMETER>
    </PARAMETERS>
 

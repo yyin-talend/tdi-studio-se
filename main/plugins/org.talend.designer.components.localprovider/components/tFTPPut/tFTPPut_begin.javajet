@@ -16,7 +16,6 @@ String port = ElementParameterParser.getValue(node, "__PORT__");
 String user = ElementParameterParser.getValue(node, "__USERNAME__");
 
 boolean use_encoding = "true".equals(ElementParameterParser.getValue(node, "__USE_ENCODING__"));
-String encoding_sftp = ElementParameterParser.getValue(node, "__ENCODING_SFTP__");
 
 String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");  
 String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
@@ -167,7 +166,7 @@ int nb_file_<%=cid%> = 0;
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
 
 	<%if(use_encoding) {%>
-    	c_<%=cid%>.setFilenameEncoding(<%=encoding_sftp%>);
+    	c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
 	<%}%>
 
   <%}%>
