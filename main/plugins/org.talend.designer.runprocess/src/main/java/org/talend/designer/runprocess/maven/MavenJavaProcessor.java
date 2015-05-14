@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.runprocess.maven;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,6 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
@@ -35,6 +38,7 @@ import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.MavenConstants;
 import org.talend.designer.maven.tools.MavenDependenciesManager;
@@ -175,12 +179,31 @@ public class MavenJavaProcessor extends JavaProcessor {
         return this.getTalendJavaProject().getAssembliesFolder().getFile(assemblyFileName);
     }
 
-    protected void generatePom() {
+    /**
+     * if the real item parent folder.
+     */
+    protected File getParentFolder() {
+        Property p = this.getProperty();
+        if (p != null) {
+            Resource eResource = p.eResource();
+            if (eResource != null) {
+                URI uri = eResource.getURI();
+                IFile file = URIHelper.getFile(uri);
+                if (file != null) {
+                    return file.getLocation().toFile().getParentFile();
+                }
+            }
+        }
+        return null;
 
+    }
+
+    protected void generatePom() {
         initJobClasspath();
 
         try {
             CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
+
             // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
             createTemplatePom.setAddStat(false);
             createTemplatePom.setApplyContextToChild(false);
@@ -189,6 +212,7 @@ public class MavenJavaProcessor extends JavaProcessor {
             createTemplatePom.setWindowsClasspath(this.windowsClasspath);
 
             createTemplatePom.setAssemblyFile(getAssemblyFile());
+            createTemplatePom.setTemplateBaseFolder(getParentFolder());
 
             createTemplatePom.setOverwrite(true);
 
