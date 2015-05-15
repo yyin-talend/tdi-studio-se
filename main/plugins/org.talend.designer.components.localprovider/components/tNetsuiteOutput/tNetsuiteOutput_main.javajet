@@ -235,6 +235,8 @@
 				}
 %>  
 
+                nb_line_<%=cid %>++;
+
         	} catch (Exception e_<%=cid %>) {
 
 <%
@@ -253,8 +255,6 @@
 				}
 %>
 			}
-			
-			nb_line_<%=cid %>++; 
 
 <%
     		}//4
