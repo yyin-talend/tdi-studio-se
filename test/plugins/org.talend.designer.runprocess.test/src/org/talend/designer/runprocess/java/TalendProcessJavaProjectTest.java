@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.MavenSystemFolders;
-import org.talend.designer.maven.model.TalendMavenContants;
+import org.talend.designer.maven.model.TalendMavenConstants;
 
 /**
  * created by ggu on 26 Jan 2015 Detailled comment
@@ -78,7 +78,7 @@ public class TalendProcessJavaProjectTest {
         Assert.assertNotNull(project);
         Assert.assertTrue(project.exists());
         Assert.assertTrue(project.isOpen());
-        Assert.assertEquals(TalendMavenContants.PROJECT_NAME, project.getName());
+        Assert.assertEquals(TalendMavenConstants.PROJECT_NAME, project.getName());
     }
 
     /**

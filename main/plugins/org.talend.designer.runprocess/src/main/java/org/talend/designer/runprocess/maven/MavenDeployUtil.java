@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
+import org.talend.core.runtime.maven.MavenUrlHelper;
 import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 
@@ -34,8 +35,8 @@ public class MavenDeployUtil {
             Set<String> unifiedMvnUrls = new LinkedHashSet<String>();
             for (String name : jarsOrMvnURls) {
                 String mvnUrl = name;
-                if (!PomUtil.isMvnUrl(name)) {
-                    mvnUrl = PomUtil.buildMvnUrlByJarName(name);
+                if (!MavenUrlHelper.isMvnUrl(name)) {
+                    mvnUrl = MavenUrlHelper.generateMvnUrlForJarName(name);
                     jarsForMvnUrlMap.put(name, mvnUrl);
                 }
                 unifiedMvnUrls.add(mvnUrl);

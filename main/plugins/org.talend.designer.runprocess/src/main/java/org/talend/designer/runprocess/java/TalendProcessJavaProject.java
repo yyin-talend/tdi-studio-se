@@ -40,9 +40,8 @@ import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.launch.TalendMavenLauncher;
-import org.talend.designer.maven.model.MavenConstants;
 import org.talend.designer.maven.model.MavenSystemFolders;
-import org.talend.designer.maven.model.TalendMavenContants;
+import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.MavenPomSynchronizer;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.utils.io.FilesUtils;
@@ -76,7 +75,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
     @Override
     public IFile getProjectPom() {
-        return getProject().getFile(MavenConstants.POM_FILE_NAME);
+        return getProject().getFile(TalendMavenConstants.POM_FILE_NAME);
     }
 
     @Override
@@ -248,7 +247,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     public void buildModules(String goals, String[] childrenModules) {
         if (childrenModules == null) {
             if (goals != null && goals.trim().length() > 0) {
-                mavenBuildCodeProjectPom(goals, TalendMavenContants.CURRENT_PATH);
+                mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH);
             } else { // JDT build
                 buildWholeCodeProject();
             }
@@ -257,7 +256,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
                 IPath modulePath = new Path(module);
                 // remove pom.xml
-                if (modulePath.lastSegment().equals(MavenConstants.POM_FILE_NAME)) {
+                if (modulePath.lastSegment().equals(TalendMavenConstants.POM_FILE_NAME)) {
                     modulePath = modulePath.removeLastSegments(1);
                 }
 
@@ -274,19 +273,17 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
         // cleanBeforeBuilds(module);
 
         IFile childModulePomFile;
-        if (TalendMavenContants.CURRENT_PATH.equals(module)) {
-            childModulePomFile = this.getProject().getFile(MavenConstants.POM_FILE_NAME);
+        if (TalendMavenConstants.CURRENT_PATH.equals(module)) {
+            childModulePomFile = this.getProject().getFile(TalendMavenConstants.POM_FILE_NAME);
         } else {
             IFolder moduleFolder = this.getProject().getFolder(module);
-            childModulePomFile = moduleFolder.getFile(MavenConstants.POM_FILE_NAME);
+            childModulePomFile = moduleFolder.getFile(TalendMavenConstants.POM_FILE_NAME);
 
         }
         if (childModulePomFile.getLocation().toFile().exists()) { // existed
             TalendMavenLauncher mavenLauncher = null;
-            if (goals == null || goals.trim().length() == 0 || goals.equals(MavenConstants.GOAL_COMPILE)) { // by
-                                                                                                            // default
-                                                                                                            // is
-                                                                                                            // compile
+            // by default is compile
+            if (goals == null || goals.trim().length() == 0 || goals.equals(TalendMavenConstants.GOAL_COMPILE)) {
                 // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
                 // buildWholeCodeProject();
                 // buildWholeCodeProject();
@@ -337,7 +334,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     private void cleanBeforeBuilds(String module) {
         IPath srcPath = this.getSrcFolder().getProjectRelativePath();
         IContainer outputContainer;
-        if (TalendMavenContants.CURRENT_PATH.equals(module)) {
+        if (TalendMavenConstants.CURRENT_PATH.equals(module)) {
             outputContainer = this.getOutputFolder();
         } else {
             IFolder moduleFolder = this.getProject().getFolder(module);
@@ -407,7 +404,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                 IFolder routinesSrcFolder = getSrcFolder().getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY);
                 if (routinesSrcFolder.getLocation().toFile().exists()) {
                     String routineModule = routinesSrcFolder.getProjectRelativePath().toString();
-                    buildModules(MavenConstants.GOAL_INSTALL, new String[] { routineModule });
+                    buildModules(TalendMavenConstants.GOAL_INSTALL, new String[] { routineModule });
                 }
             }
 

@@ -40,7 +40,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
-import org.talend.designer.maven.model.MavenConstants;
+import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.MavenDependenciesManager;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
 import org.talend.designer.maven.utils.JobUtils;
@@ -293,9 +293,9 @@ public class MavenJavaProcessor extends JavaProcessor {
 
     protected String getGoals() {
         if (isTestJob) {
-            return MavenConstants.GOAL_TEST_COMPILE;
+            return TalendMavenConstants.GOAL_TEST_COMPILE;
         }
-        return MavenConstants.GOAL_COMPILE;
+        return TalendMavenConstants.GOAL_COMPILE;
     }
 
     private String[] getJobModules() {
