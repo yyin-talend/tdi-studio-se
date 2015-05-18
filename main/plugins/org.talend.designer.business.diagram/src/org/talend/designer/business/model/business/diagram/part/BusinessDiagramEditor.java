@@ -27,6 +27,7 @@ import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.editor.FileDiagra
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -82,6 +83,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     protected boolean keepPropertyLocked; // used only if the user try to open more than one editor at a time.
 
     private Boolean readOnly;
+
+    public static final String BUSINESS_DIAGRAM_EDITOR_IMAGE_PATH = "/icons/obj16/BusinessDiagramFile_White.png"; //$NON-NLS-1$
 
     /**
      * @generated
@@ -560,4 +563,12 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         return true;
     }
 
+    @Override
+    public Image getTitleImage() {
+        Image image = BusinessDiagramEditorPlugin.getInstance().getBundledImage(BUSINESS_DIAGRAM_EDITOR_IMAGE_PATH);
+        if (image == null) {
+            image = super.getTitleImage();
+        }
+        return image;
+    }
 }
