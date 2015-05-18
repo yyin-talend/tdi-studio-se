@@ -41,7 +41,7 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.TalendMavenConstants;
-import org.talend.designer.maven.tools.MavenDependenciesManager;
+import org.talend.designer.maven.tools.ProjectPomManager;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
 import org.talend.designer.maven.utils.JobUtils;
 import org.talend.designer.maven.utils.PomUtil;
@@ -227,8 +227,21 @@ public class MavenJavaProcessor extends JavaProcessor {
     protected void updateProjectPom(IProgressMonitor progressMonitor) throws ProcessorException {
         JavaProcessorUtilities.checkJavaProjectLib(getNeededLibraries());
 
-        MavenDependenciesManager pomManager = new MavenDependenciesManager(this);
-        pomManager.updateProjectDependencies(progressMonitor, this.getPomFile());
+        ProjectPomManager pomManager = new ProjectPomManager(getTalendJavaProject().getProject());
+
+        List<String> modulesList = new ArrayList<String>();
+        for (JobInfo childJob : getBuildChildrenJobs()) {
+            modulesList.add(PomUtil.getPomFileName(childJob.getJobName()));
+        }
+        modulesList.add(PomUtil.getPomFileName(getProperty().getLabel()));
+
+        pomManager.updateProjectPom(progressMonitor, modulesList, this.getPomFile());
+
+        try {
+            getCodeProject().refreshLocal(IResource.DEPTH_ONE, progressMonitor);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     private void removeGeneratedJobs(IProgressMonitor progressMonitor) throws ProcessorException {

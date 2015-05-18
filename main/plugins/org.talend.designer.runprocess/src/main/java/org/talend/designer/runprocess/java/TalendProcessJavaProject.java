@@ -39,7 +39,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
-import org.talend.designer.maven.launch.TalendMavenLauncher;
+import org.talend.designer.maven.launch.MavenPomCommandLauncher;
 import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.MavenPomSynchronizer;
@@ -281,14 +281,14 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
         }
         if (childModulePomFile.getLocation().toFile().exists()) { // existed
-            TalendMavenLauncher mavenLauncher = null;
+            MavenPomCommandLauncher mavenLauncher = null;
             // by default is compile
             if (goals == null || goals.trim().length() == 0 || goals.equals(TalendMavenConstants.GOAL_COMPILE)) {
                 // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
                 // buildWholeCodeProject();
                 // buildWholeCodeProject();
             } else {
-                mavenLauncher = new TalendMavenLauncher(childModulePomFile, goals);
+                mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, goals);
                 mavenLauncher.execute();
             }
             buildWholeCodeProject();
