@@ -222,6 +222,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     public static final int PARALLEL_STATUS = 8;
 
+    public static final int WINDOW_STATUS = 64;
+
     private Property property;
 
     private boolean initDone = false;

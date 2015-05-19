@@ -3894,6 +3894,7 @@ public class Node extends Element implements IGraphicalNode {
             checkMultiComponents();
             checkStartLinks();
             checkParallelizeStates();
+            checkWindowStates();
 
             // TDI-21298
             checkHasMultiPrejobOrPostJobComponents();
@@ -3997,6 +3998,19 @@ public class Node extends Element implements IGraphicalNode {
             } else {
                 removeStatus(Process.PARALLEL_STATUS);
             }
+        }
+    }
+
+    private void checkWindowStates() {
+        // see feature 5027
+        Boolean isThereATWindow = false;
+        IElementParameter windowDuration = nodeContainer.getNode().getElementParameter(EParameterName.WINDOW_DURATION.getName());
+        if (windowDuration == null) {
+            removeStatus(Process.WINDOW_STATUS);
+            return;
+        } else {
+            removeStatus(Process.WINDOW_STATUS);
+            addStatus(Process.WINDOW_STATUS);
         }
     }
 

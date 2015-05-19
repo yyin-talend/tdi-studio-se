@@ -74,6 +74,8 @@ public class NodeContainer extends Element {
 
     private Point parallelLocation = new Point();
 
+    private Point windowLocation = new Point();
+
     private Point markLocation = new Point();
 
     private Point errorMarkLocation = new Point();
@@ -89,6 +91,8 @@ public class NodeContainer extends Element {
     private Dimension infoSize;
 
     private Dimension parallelSize;
+
+    private Dimension windowSize;
 
     private Dimension errorMarkSize;
 
@@ -126,6 +130,8 @@ public class NodeContainer extends Element {
             infoSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.PARALLEL_EXECUTION);
             parallelSize = new Dimension(image.getImageData().width, image.getImageData().height);
+            image = ImageProvider.getImage(EImage.WINDOW);
+            windowSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.Error_Mark);
             errorMarkSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.LOCK_ICON);
@@ -171,7 +177,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = null;
-        Rectangle breakpointRectangle, warningRectangle, infoRectangle, parallelLocationRectangle, validationRuleRectangle, collapseRectangle;
+        Rectangle breakpointRectangle, warningRectangle, infoRectangle, parallelLocationRectangle, windowLocationRectangle, validationRuleRectangle, collapseRectangle;
 
         int status = node.getStatus();
 
@@ -273,6 +279,26 @@ public class NodeContainer extends Element {
                 statusRectangle.union(parallelLocationRectangle);
             }
         }
+
+        IElementParameter window = node.getElementParameter(EParameterName.WINDOW_DURATION.getName());
+        String windowDuration = null;
+        if (window != null) {
+            windowDuration = (String) window.getValue();
+        }
+
+        if (windowDuration != null) {
+            windowLocation.x = nodeLocation.x
+                    - ((nodeLocation.x + (windowSize.width / 2)) - (nodeLocation.x + (nodeSize.width / 2)));
+            windowLocation.y = nodeLocation.y - windowSize.height;
+            windowLocationRectangle = new Rectangle(windowLocation, windowSize);
+
+            if (statusRectangle == null) {
+                statusRectangle = windowLocationRectangle;
+            } else {
+                statusRectangle.union(windowLocationRectangle);
+            }
+        }
+
         return statusRectangle;
     }
 
@@ -550,6 +576,15 @@ public class NodeContainer extends Element {
      */
     public Point getParallelLocation() {
         return this.parallelLocation;
+    }
+
+    /**
+     * Getter for windowLocation.
+     * 
+     * @return the windowLocation
+     */
+    public Point getWindowLocation() {
+        return this.windowLocation;
     }
 
     /**

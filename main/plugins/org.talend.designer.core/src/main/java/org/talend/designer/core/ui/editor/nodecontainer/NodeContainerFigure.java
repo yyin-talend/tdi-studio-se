@@ -74,6 +74,8 @@ public class NodeContainerFigure extends Figure {
 
     private LabelCenter parallelFigure;
 
+    private LabelCenter windowFigure;
+
     private RoundedRectangle rectFig;
 
     private Image errorMarkImage = ImageProvider.getImage(EImage.Error_Mark);
@@ -142,6 +144,7 @@ public class NodeContainerFigure extends Figure {
         if (PluginChecker.isTeamEdition()) {
             addParallelFigure();
         }
+        addWindowFigure();
 
         htmlStatusHint = new SimpleHtmlFigure();
 
@@ -173,6 +176,36 @@ public class NodeContainerFigure extends Figure {
         parallelFigure.setVisible(visible);
         parallelFigure.setSize(parallelFigure.getPreferredSize());
         this.add(parallelFigure);
+    }
+
+    private void addWindowFigure() {
+        windowFigure = new LabelCenter();
+        windowFigure.setImage(ImageProvider.getImage(EImage.WINDOW));
+        windowFigure.setFont(Display.getDefault().getSystemFont());
+
+        boolean visible = false;
+        IElementParameter windowDuration = nodeContainer.getNode().getElementParameter(EParameterName.WINDOW_DURATION.getName());
+        IElementParameter defineSlideDuration = nodeContainer.getNode().getElementParameter(
+                EParameterName.DEFINE_SLIDE_DURATION.getName());
+        boolean defSlideDuration = false;
+        if (defineSlideDuration != null) {
+            defSlideDuration = (Boolean) defineSlideDuration.getValue();
+        }
+
+        if (windowDuration != null) {
+            visible = true;
+            String slideDuration = ""; //$NON-NLS-1$
+            if (defSlideDuration) {
+                slideDuration = "\nEvery: " //$NON-NLS-1$
+                        + NodeContainerUtils.formatTime((String) nodeContainer.getNode()
+                                .getElementParameter("SLIDE_DURATION").getValue()); //$NON-NLS-1$
+            }
+
+            windowFigure.setText("Length: " + NodeContainerUtils.formatTime((String) windowDuration.getValue()) + slideDuration); //$NON-NLS-1$ 
+            windowFigure.setVisible(visible);
+            windowFigure.setSize(windowFigure.getPreferredSize());
+            this.add(windowFigure);
+        }
     }
 
     public void updateErrorFlag(boolean flag) {
@@ -249,6 +282,8 @@ public class NodeContainerFigure extends Figure {
 
         updateParallelFigure(status);
 
+        updateWindowFigure(status);
+
         updateValidationRuleFigure();
     }
 
@@ -286,6 +321,40 @@ public class NodeContainerFigure extends Figure {
         }
     }
 
+    /**
+     * DOC YeXiaowei Comment method "updateParallelFigure".
+     * 
+     * @param status
+     */
+    private void updateWindowFigure(int status) {
+
+        if (windowFigure == null) {
+            return;
+        }
+
+        boolean visible = false;
+        IElementParameter windowDuration = nodeContainer.getNode().getElementParameter(EParameterName.WINDOW_DURATION.getName());
+        IElementParameter defineSlideDuration = nodeContainer.getNode().getElementParameter(
+                EParameterName.DEFINE_SLIDE_DURATION.getName());
+        boolean defSlideDuration = false;
+        if (defineSlideDuration != null) {
+            defSlideDuration = (Boolean) defineSlideDuration.getValue();
+        }
+
+        if (windowDuration != null) {
+            visible = true;
+            String slideDuration = ""; //$NON-NLS-1$
+            if (defSlideDuration) {
+                slideDuration = "\nEvery: " //$NON-NLS-1$
+                        + NodeContainerUtils.formatTime((String) nodeContainer.getNode()
+                                .getElementParameter("SLIDE_DURATION").getValue()); //$NON-NLS-1$
+            }
+
+            windowFigure.setText("Length: " + NodeContainerUtils.formatTime((String) windowDuration.getValue()) + slideDuration); //$NON-NLS-1$ 
+            windowFigure.setVisible(visible);
+        }
+    }
+
     @Override
     public void paint(Graphics graphics) {
         if (alpha != -1) {
@@ -307,6 +376,9 @@ public class NodeContainerFigure extends Figure {
         }
         if (parallelFigure != null && parallelFigure.isVisible()) {
             parallelFigure.setLocation(nodeContainer.getParallelLocation());
+        }
+        if (windowFigure != null && windowFigure.isVisible()) {
+            windowFigure.setLocation(nodeContainer.getWindowLocation());
         }
         if (rectFig.isVisible()) {
             rectFig.setLocation(nodeContainer.getMarkLocation());

@@ -350,7 +350,7 @@ public enum EParameterName {
 
     // Added for log4j.xml
     LOG4J_ACTIVATE("LOG4J_ACTIVATE"),
-    HMAP_PATH("HMAP_PATH");//$NON-NLS-1$
+    HMAP_PATH("HMAP_PATH"), WINDOW_DURATION("WINDOW_DURATION"), DEFINE_SLIDE_DURATION("DEFINE_SLIDE_DURATION");//$NON-NLS-1$
 
     private String displayName;
 
