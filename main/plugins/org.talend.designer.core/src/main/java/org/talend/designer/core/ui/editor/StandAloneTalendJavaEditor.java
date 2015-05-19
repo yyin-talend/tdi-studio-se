@@ -368,6 +368,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                     refreshJobAndSave(repFactory);
                 }
             };
+            repositoryWorkUnit.setAvoidSvnUpdate(true);
+            repositoryWorkUnit.setAvoidUnloadResources(true);
             repFactory.executeRepositoryWorkUnit(repositoryWorkUnit);
             repositoryWorkUnit.throwPersistenceExceptionIfAny();
             // for bug 11930: Unable to save Routines.* in db project
