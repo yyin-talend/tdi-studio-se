@@ -27,14 +27,6 @@ public interface IExportJobConstants {
 
     public static final String BUILD_SCRIPTS_HOME = "resources/buildScripts"; //$NON-NLS-1$
 
-    public static final String ANT_BUILD_SCRIPT_HOME = BUILD_SCRIPTS_HOME + "/ant"; //$NON-NLS-1$
-
-    public static final String ANT_BUILD_SCRIPT_LIB_DIR = ANT_BUILD_SCRIPT_HOME + "/lib"; //$NON-NLS-1$
-
-    public static final String ANT_BUILD_FILE_NAME = "build.xml"; //$NON-NLS-1$
-
-    public static final String ANT_BUILD_PROPERTIES_FILE_NAME = "build.properties"; //$NON-NLS-1$
-
     public static final String MAVEN_BUILD_FILE_NAME = "pom.xml"; //$NON-NLS-1$
 
     public static final String MAVEN_ASSEMBLY_FILE_NAME = "assembly.xml"; //$NON-NLS-1$

@@ -14,14 +14,9 @@ package org.talend.repository.preference.constants;
 
 /**
  * ggu class global comment. Detailled comment
+ * 
  */
 public interface IExportJobPrefConstants {
-
-    public static final String ANT_SCRIPT_TEMPLATE = "ant_script_template"; //$NON-NLS-1$
-
-    public static final String MAVEN_SCRIPT_AUTONOMOUSJOB_TEMPLATE = "autonomousjob_maven_script_template"; //$NON-NLS-1$
-
-    public static final String MAVEN_SCRIPT_AUTONOMOUSJOB_ASSEMBLY_TEMPLATE = "autonomousjob_assembly_maven_script_template"; //$NON-NLS-1$
 
     public static final String MAVEN_OSGI_SCRIPT_TEMPLATE = "osgi_maven_script_template"; //$NON-NLS-1$
 
