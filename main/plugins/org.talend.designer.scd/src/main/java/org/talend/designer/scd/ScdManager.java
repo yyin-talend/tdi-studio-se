@@ -939,35 +939,35 @@ public class ScdManager {
                             column.setKey(true); // set as key in output schema
                             schema.getListColumns().add(column);
                         }
-                    } else {
-                        if (key.getCreation() == SurrogateCreationType.ROUTINE) {
+                    } else if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
+                        IMetadataColumn surrogateCol = surrogateKeysColumnMap.get(key.getColumn());
+                        // no change , will use the old column
+                        if (surrogateCol != null) {
+                            column = surrogateCol.clone();
+                            schema.getListColumns().add(column);
+                            columnsMap.put(column.getLabel(), column);
+                        } else if (surrogateKeysColumnMap.size() == 1) {
+                            // rename the key
+                            for (String oldKey : surrogateKeysColumnMap.keySet()) {
+                                surrogateCol = surrogateKeysColumnMap.get(oldKey);
+                                if (surrogateCol != null) {
+                                    column = surrogateCol.clone();
+                                    column.setLabel(key.getColumn());
+                                    column.setOriginalDbColumnName(key.getColumn());
+                                    schema.getListColumns().add(column);
+                                    columnsMap.put(column.getLabel(), column);
+                                }
+                            }
+                        } else {
                             column = createMetadataColumn(columnsMap, schema, key.getColumn(), Integer.class, lang);
                             column.setKey(true); // set as key in output schema
+                        }
+                    } else {
+                        column = createMetadataColumn(columnsMap, schema, key.getColumn(), Integer.class, lang);
+                        column.setKey(true); // set as key in output schema
+                        if (key.getCreation() == SurrogateCreationType.ROUTINE) {
                             // routine is treated as string now
                             column.setTalendType(getType(String.class, lang));
-                        } else if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
-                            IMetadataColumn surrogateCol = surrogateKeysColumnMap.get(key.getColumn());
-                            // no change , will use the old column
-                            if (surrogateCol != null) {
-                                column = surrogateCol.clone();
-                                schema.getListColumns().add(column);
-                                columnsMap.put(column.getLabel(), column);
-                            } else if (surrogateKeysColumnMap.size() == 1) {
-                                // rename the key
-                                for (String oldKey : surrogateKeysColumnMap.keySet()) {
-                                    surrogateCol = surrogateKeysColumnMap.get(oldKey);
-                                    if (surrogateCol != null) {
-                                        column = surrogateCol.clone();
-                                        column.setLabel(key.getColumn());
-                                        column.setOriginalDbColumnName(key.getColumn());
-                                        schema.getListColumns().add(column);
-                                        columnsMap.put(column.getLabel(), column);
-                                    }
-                                }
-                            } else {
-                                column = createMetadataColumn(columnsMap, schema, key.getColumn(), Integer.class, lang);
-                                column.setKey(true); // set as key in output schema
-                            }
                         }
                     }
                 }
