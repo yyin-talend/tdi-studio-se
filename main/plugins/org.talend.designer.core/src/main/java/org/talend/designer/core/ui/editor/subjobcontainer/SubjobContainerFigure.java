@@ -42,23 +42,23 @@ import org.talend.designer.core.utils.DesignerColorUtils;
  */
 public class SubjobContainerFigure extends Figure {
 
-    private SubjobContainer subjobContainer;
+    protected SubjobContainer subjobContainer;
 
-    private RoundedRectangle outlineFigure;
+    protected RoundedRectangle outlineFigure;
 
-    private SimpleHtmlFigure titleFigure;
+    protected SimpleHtmlFigure titleFigure;
 
-    private RoundedRectangle rectFig;
+    protected RoundedRectangle rectFig;
 
-    private SubjobCollapseFigure collapseFigure;
+    protected SubjobCollapseFigure collapseFigure;
 
-    private RGB mainColor;
+    protected RGB mainColor;
 
-    private boolean showTitle;
+    protected boolean showTitle;
 
-    private String title;
+    protected String title;
 
-    private RGB subjobTitleColor;
+    protected RGB subjobTitleColor;
 
     /**
      * DOC nrousseau SubjobContainerFigure constructor comment.
@@ -69,6 +69,19 @@ public class SubjobContainerFigure extends Figure {
         setLayoutManager(new FreeformLayout());
         this.subjobContainer = subjobContainerTmp;
 
+        initFigure();
+
+        initSubJobTitleColor();
+
+        updateData();
+
+        initializeSubjobContainer(subjobContainer.getSubjobContainerRectangle());
+    }
+
+    /**
+     * DOC rdubois Comment method "initFigure".
+     */
+    protected void initFigure() {
         outlineFigure = new RoundedRectangle();
         rectFig = new RoundedRectangle();
         titleFigure = new SimpleHtmlFigure();
@@ -99,18 +112,12 @@ public class SubjobContainerFigure extends Figure {
                 }
             }
         });
-
-        initSubJobTitleColor();
-
-        updateData();
-
-        initializeSubjobContainer(subjobContainer.getSubjobContainerRectangle());
     }
 
     /**
      * yzhang Comment method "initSubJobTitleColor".
      */
-    private void initSubJobTitleColor() {
+    protected void initSubJobTitleColor() {
         IElementParameter colorParameter = subjobContainer.getElementParameter(EParameterName.SUBJOB_TITLE_COLOR.getName());
         // Color titleColor = ColorUtils.SUBJOB_TITLE_COLOR;
         if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPrejob") //$NON-NLS-1$
@@ -129,7 +136,7 @@ public class SubjobContainerFigure extends Figure {
         }
     }
 
-    private void reSelection() {
+    protected void reSelection() {
         // select the start node.
         if (subjobContainer.isCollapsed()) {
             IProcess2 process = subjobContainer.getProcess();

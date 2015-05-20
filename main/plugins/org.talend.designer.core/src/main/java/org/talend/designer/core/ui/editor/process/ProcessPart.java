@@ -40,6 +40,9 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerFigure;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerColorUtils;
 import org.talend.designer.core.utils.ResourceDisposeUtil;
@@ -237,6 +240,17 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         String prop = evt.getPropertyName();
         if (Process.NEED_UPDATE_JOB.equals(prop)) {
             refresh();
+        } else if (SubjobContainer.UPDATE_SUBJOB_DATA.equals(prop)) {
+            for (Object part : getChildren()) {
+                if (part != null && part instanceof SubjobContainerPart) {
+                    IFigure fig = ((SubjobContainerPart) part).getFigure();
+                    if (fig != null && fig instanceof SubjobContainerFigure) {
+                        ((SubjobContainerFigure) fig).updateData();
+                        ((SubjobContainerPart) part).refreshVisuals();
+                        refresh();
+                    }
+                }
+            }
         }
     }
 

@@ -50,6 +50,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.ui.dialog.mergeorder.ErrorMessageDialog;
@@ -58,6 +59,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.NodeSnapToGeometry;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.subjobcontainer.sparkstreaming.SparkStreamingSubjobContainerFigure;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.librariesmanager.ui.views.ModulesView;
 
@@ -123,7 +125,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
      */
     @Override
-    protected void refreshVisuals() {
+    public void refreshVisuals() {
         Boolean isDisplaySubjobs = ((SubjobContainer) this.getModel()).isDisplayed();
         if (getParent() == null || !isDisplaySubjobs) {
             return;
@@ -146,7 +148,8 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      */
     @Override
     protected IFigure createFigure() {
-        Boolean isDisplaySubjobs = ((SubjobContainer) this.getModel()).isDisplayed();
+        SubjobContainer container = (SubjobContainer) this.getModel();
+        Boolean isDisplaySubjobs = (container).isDisplayed();
 
         if (!isDisplaySubjobs) {
             Figure figure = new FreeformLayer();
@@ -154,7 +157,14 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
             return figure;
         }
 
-        SubjobContainerFigure subjobContainer = new SubjobContainerFigure((SubjobContainer) this.getModel());
+        IProcess2 process = container.getProcess();
+        Object obj = process.getAdditionalProperties().get("FRAMEWORK");//$NON-NLS-1$
+        SubjobContainerFigure subjobContainer = null;
+        if ("Spark Streaming".equals(obj)) { //$NON-NLS-1$
+            subjobContainer = new SparkStreamingSubjobContainerFigure(container);
+        } else {
+            subjobContainer = new SubjobContainerFigure(container);
+        }
         return subjobContainer;
     }
 

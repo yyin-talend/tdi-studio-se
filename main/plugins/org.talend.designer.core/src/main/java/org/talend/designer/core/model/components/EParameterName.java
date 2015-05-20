@@ -56,12 +56,12 @@ public enum EParameterName {
     QUERYSTORE_TYPE(Messages.getString("EParameterName.queryType")), //$NON-NLS-1$
     REPOSITORY_QUERYSTORE_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
     PROPERTY_TYPE(Messages.getString("EParameterName.propertyType")), //$NON-NLS-1$
-    SK_CREATION(Messages.getString("EParameterName.SK_CREATION")),
+    SK_CREATION(Messages.getString("EParameterName.SK_CREATION")), //$NON-NLS-1$
     REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
     CONDITION(Messages.getString("EParameterName.condition")), //$NON-NLS-1$
-    ROUTETYPE(Messages.getString("EParameterName.routeType")),
-    ENDOFCHOICE(Messages.getString("EParameterName.endofChoice")), // TESB-8043
-    EXCEPTIONLIST(Messages.getString("EParameterName.listExceptions")),
+    ROUTETYPE(Messages.getString("EParameterName.routeType")), //$NON-NLS-1$
+    ENDOFCHOICE(Messages.getString("EParameterName.endofChoice")), // TESB-8043 //$NON-NLS-1$
+    EXCEPTIONLIST(Messages.getString("EParameterName.listExceptions")), //$NON-NLS-1$
     COMPONENT_NAME(Messages.getString("EParameterName.componentName")), //$NON-NLS-1$
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
     ICONSELECTION("Icon(32x32)"), //$NON-NLS-1$
@@ -308,7 +308,7 @@ public enum EParameterName {
     JAVA_LIBRARY_PATH("JAVA_LIBRARY_PATH"), //$NON-NLS-1$
 
     // for tloop
-    FORLOOP("For"),
+    FORLOOP("For"), //$NON-NLS-1$
 
     // for validation rule
     VALIDATION_RULES(Messages.getString("EParameterName.validationRules")), //$NON-NLS-1$
@@ -316,18 +316,18 @@ public enum EParameterName {
     REPOSITORY_VALIDATION_RULE_TYPE("Repository"), //$NON-NLS-1$ Hidden parameter so no translation needed
 
     // tAggregateRow
-    GROUPBYS("GROUPBYS"),
-    OPERATIONS("OPERATIONS"),
+    GROUPBYS("GROUPBYS"), //$NON-NLS-1$
+    OPERATIONS("OPERATIONS"), //$NON-NLS-1$
 
     // Route Resource Type
-    ROUTE_RESOURCE_TYPE("ROUTE_RESOURCE_TYPE"),
-    ROUTE_RESOURCE_TYPE_RES_URI("ROUTE_RESOURCE_TYPE_RES_URI"),
-    ROUTE_RESOURCE_TYPE_ID("ROUTE_RESOURCE_TYPE_ID"),
-    ROUTE_RESOURCE_TYPE_VERSION("Version"),
+    ROUTE_RESOURCE_TYPE("ROUTE_RESOURCE_TYPE"), //$NON-NLS-1$
+    ROUTE_RESOURCE_TYPE_RES_URI("ROUTE_RESOURCE_TYPE_RES_URI"), //$NON-NLS-1$
+    ROUTE_RESOURCE_TYPE_ID("ROUTE_RESOURCE_TYPE_ID"), //$NON-NLS-1$
+    ROUTE_RESOURCE_TYPE_VERSION("Version"), //$NON-NLS-1$
 
     // Route Component Type
-    ROUTE_COMPONENT_TYPE("ROUTE_COMPONENT_TYPE"),
-    ROUTE_COMPONENT_TYPE_ID("ROUTE_COMPONENT_TYPE_ID"),
+    ROUTE_COMPONENT_TYPE("ROUTE_COMPONENT_TYPE"), //$NON-NLS-1$
+    ROUTE_COMPONENT_TYPE_ID("ROUTE_COMPONENT_TYPE_ID"), //$NON-NLS-1$
 
     // Automatic Parlization
     PARTITIONER(Messages.getString("Connection.paral_partitioner")), //$NON-NLS-1$
@@ -345,12 +345,18 @@ public enum EParameterName {
     HADOOP_CUSTOM_JARS("HADOOP_CUSTOM_JARS"), //$NON-NLS-1$
 
     // Added for Hadoop properties
-    USE_HADOOP_PROPERTIES("USE_HADOOP_PROPERTIES"),
-    HADOOP_ADVANCED_PROPERTIES("HADOOP_ADVANCED_PROPERTIES"),
+    USE_HADOOP_PROPERTIES("USE_HADOOP_PROPERTIES"), //$NON-NLS-1$
+    HADOOP_ADVANCED_PROPERTIES("HADOOP_ADVANCED_PROPERTIES"), //$NON-NLS-1$
 
     // Added for log4j.xml
-    LOG4J_ACTIVATE("LOG4J_ACTIVATE"),
-    HMAP_PATH("HMAP_PATH"), WINDOW_DURATION("WINDOW_DURATION"), DEFINE_SLIDE_DURATION("DEFINE_SLIDE_DURATION");//$NON-NLS-1$
+    LOG4J_ACTIVATE("LOG4J_ACTIVATE"), //$NON-NLS-1$
+    HMAP_PATH("HMAP_PATH"), //$NON-NLS-1$
+
+    WINDOW_DURATION("WINDOW_DURATION"), //$NON-NLS-1$
+    DEFINE_SLIDE_DURATION("DEFINE_SLIDE_DURATION"), //$NON-NLS-1$
+    DEFINE_DURATION("DEFINE_DURATION"), //$NON-NLS-1$
+    STREAMING_DURATION("STREAMING_DURATION"), //$NON-NLS-1$
+    STREAMING_BATCH_SIZE("STREAMING_BATCH_SIZE"); //$NON-NLS-1$
 
     private String displayName;
 
