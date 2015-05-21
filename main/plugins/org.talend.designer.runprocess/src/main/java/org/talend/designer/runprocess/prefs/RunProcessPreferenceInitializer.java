@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 
@@ -58,6 +59,10 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
         // for logs
         prefs.setDefault(RunProcessPrefsConstants.COMMON_LOGGING_PROPERTIES_TEMPLATE, getLogTemplate(commonLogFilePath));
         prefs.setDefault(RunProcessPrefsConstants.LOG4J_PROPERTIES_TEMPLATE, getLogTemplate(log4jFilePath));
+
+        //
+        RunProcessPlugin.getDefault().getProjectPreferenceManager().getPreferenceStore()
+                .setDefault(ITalendCorePrefConstants.COMMAND_STR, ITalendCorePrefConstants.DEFAULT_COMMAND_STR);
     }
 
     /**

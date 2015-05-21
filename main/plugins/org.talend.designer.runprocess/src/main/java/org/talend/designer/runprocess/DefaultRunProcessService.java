@@ -47,6 +47,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.runprocess.data.PerformanceData;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
@@ -455,6 +456,11 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public ITalendProcessJavaProject getTalendProcessJavaProject() {
         return JavaProcessorUtilities.getTalendJavaProject();
+    }
+
+    @Override
+    public ProjectPreferenceManager getProjectPreferenceManager() {
+        return RunProcessPlugin.getDefault().getProjectPreferenceManager();
     }
 
 }

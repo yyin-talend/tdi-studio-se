@@ -29,6 +29,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
@@ -331,6 +332,11 @@ public class RunProcessService implements IRunProcessService {
     @Override
     public ITalendProcessJavaProject getTalendProcessJavaProject() {
         return delegateService.getTalendProcessJavaProject();
+    }
+
+    @Override
+    public ProjectPreferenceManager getProjectPreferenceManager() {
+        return delegateService.getProjectPreferenceManager();
     }
 
 }

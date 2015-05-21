@@ -119,12 +119,6 @@
           class="org.talend.designer.runprocess.prefs.RunProcessPreferencePage"
           id="org.talend.designer.runprocess"
           name="%runAndDebug"/>
-    <page
-          category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
-          class="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
-          id="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
-          name="%shellSetting">
-    </page>
  </extension>
  <extension
        point="org.eclipse.jdt.core.compilationParticipant">
@@ -146,5 +140,15 @@
     <loginTask
           class="org.talend.designer.runprocess.maven.CleanMavenFilesLoginTask">
     </loginTask>
+ </extension>
+ <extension
+       point="org.talend.repository.projectsetting_page">
+    <page
+          category="projectsetting.Build"
+          class="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
+          description="Shell Settings"
+          id="projectsetting.ShellSetting"
+          title="%shellSetting">
+    </page>
  </extension>
 </plugin>
