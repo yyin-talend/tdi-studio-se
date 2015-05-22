@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.maven;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,6 +21,7 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -31,13 +31,17 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
@@ -191,9 +195,9 @@ public class MavenJavaProcessor extends JavaProcessor {
     }
 
     /**
-     * if the real item parent folder.
+     * the the item location path
      */
-    protected File getParentFolder() {
+    protected IPath getItemLocationPath() {
         Property p = this.getProperty();
         if (p != null) {
             Resource eResource = p.eResource();
@@ -201,12 +205,36 @@ public class MavenJavaProcessor extends JavaProcessor {
                 URI uri = eResource.getURI();
                 IFile file = URIHelper.getFile(uri);
                 if (file != null) {
-                    return file.getLocation().toFile().getParentFile();
+                    return file.getLocation();
                 }
             }
         }
         return null;
+    }
 
+    /**
+     * 
+     * get the type folder of item.
+     */
+    protected IFolder getObjectTypeFolder() {
+        Property p = this.getProperty();
+        if (p != null) {
+            Project itemProject = ProjectManager.getInstance().getProject(p);
+            if (itemProject != null) {
+                try {
+                    IProject proj = ResourceUtils.getProject(new org.talend.core.model.general.Project(itemProject));
+                    if (proj != null) {
+                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(p.getItem());
+                        if (itemType != null && itemType.isResouce()) {
+                            return proj.getFolder(itemType.getFolder());
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    //
+                }
+            }
+        }
+        return null;
     }
 
     protected void generatePom() {
@@ -223,7 +251,12 @@ public class MavenJavaProcessor extends JavaProcessor {
             createTemplatePom.setWindowsClasspath(this.windowsClasspath);
 
             createTemplatePom.setAssemblyFile(getAssemblyFile());
-            createTemplatePom.setTemplateBaseFolder(getParentFolder());
+
+            IPath itemLocationPath = getItemLocationPath();
+            IFolder objectTypeFolder = getObjectTypeFolder();
+            IPath itemRelativePath = itemLocationPath.removeLastSegments(1).makeRelativeTo(objectTypeFolder.getLocation());
+            createTemplatePom.setObjectTypeFolder(objectTypeFolder);
+            createTemplatePom.setItemRelativePath(itemRelativePath);
 
             createTemplatePom.setOverwrite(true);
 
