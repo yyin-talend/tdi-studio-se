@@ -125,6 +125,7 @@ import org.talend.repository.ui.actions.routines.CreateRoutineAction;
 import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
 import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
 import org.talend.repository.ui.dialog.ContextRepositoryReviewDialog;
+import org.talend.repository.ui.dialog.ProjectSettingDialog;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 import org.talend.repository.ui.login.LoginDialogV2;
 import org.talend.repository.ui.login.LoginHelper;
@@ -824,6 +825,11 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
         }
 
         return null;
+    }
+
+    @Override
+    public void openProjectSettingDialog(final String pageId) {
+        new ProjectSettingDialog().open(pageId);
     }
 
 }
