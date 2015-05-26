@@ -148,6 +148,7 @@
           class="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
           description="Shell Settings"
           id="projectsetting.ShellSetting"
+          order="0"
           title="%shellSetting">
     </page>
  </extension>

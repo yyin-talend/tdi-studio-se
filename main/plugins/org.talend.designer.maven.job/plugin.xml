@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.talend.designer.maven.job.setting.project.initializer.MavenJobScriptsProjectSettingInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.talend.repository.projectsetting_page">
+      <page
+            category="projectsetting.MavenDefault"
+            class="org.talend.designer.maven.job.setting.project.page.standalone.StandaloneJobPomProjectSettingPage"
+            description="Maven Settings"
+            id="projectsetting.StandaloneJob"
+            order="10"
+            title="%ProjectSettingPage_StandaloneJob">
+      </page>
+      <page
+            category="projectsetting.StandaloneJob"
+            class="org.talend.designer.maven.job.setting.project.page.standalone.StandaloneJobAssemblyProjectSettingPage"
+            description="Assembly settings for Standalone Job"
+            id="projectsetting.StandaloneJobAssembly"
+            title="%ProjectSettingPage_Assembly">
+      </page>
+   </extension>
+   <extension
+         point="org.talend.designer.maven.ui.repositoryMavenSetting">
+      <RepositoryMavenSetting
+            class="org.talend.designer.maven.job.setting.repository.standalone.StandaloneJobRepositoryMavenSetting"
+            description="Config the Maven scripts for each folders in Repository view"
+            name="Standalone Job Maven Settings">
+         <SettingTester
+               class="org.talend.designer.maven.job.setting.repository.standalone.StandaloneJobRepositorySettingTester">
+         </SettingTester>
+      </RepositoryMavenSetting>
+      <RepositorySupportType
+            name="Supported Type">
+         <RepositoryType
+               type="PROCESS">
+         </RepositoryType>
+      </RepositorySupportType>
+   </extension>
+
+</plugin>
