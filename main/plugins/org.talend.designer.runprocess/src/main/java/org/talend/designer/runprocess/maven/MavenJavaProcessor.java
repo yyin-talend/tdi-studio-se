@@ -31,6 +31,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.ProcessUtils;
@@ -41,9 +42,11 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.ProjectPomManager;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
+import org.talend.designer.maven.tools.creator.CreateMavenTestPom;
 import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -236,26 +239,48 @@ public class MavenJavaProcessor extends JavaProcessor {
         initJobClasspath();
 
         try {
-            CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
+            boolean isTestContainer = false;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+                ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                        .getDefault().getService(ITestContainerProviderService.class);
+                if (testContainerService != null) {
+                    isTestContainer = testContainerService.isTestContainerItem(this.getProperty().getItem());
+                }
+            }
+            if (!isTestContainer) {
+                CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
 
-            // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
-            createTemplatePom.setAddStat(false);
-            createTemplatePom.setApplyContextToChild(false);
+                // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
+                createTemplatePom.setAddStat(false);
+                createTemplatePom.setApplyContextToChild(false);
 
-            createTemplatePom.setUnixClasspath(this.unixClasspath);
-            createTemplatePom.setWindowsClasspath(this.windowsClasspath);
+                createTemplatePom.setUnixClasspath(this.unixClasspath);
+                createTemplatePom.setWindowsClasspath(this.windowsClasspath);
 
-            createTemplatePom.setAssemblyFile(getAssemblyFile());
+                createTemplatePom.setAssemblyFile(getAssemblyFile());
 
-            IPath itemLocationPath = getItemLocationPath();
-            IFolder objectTypeFolder = getObjectTypeFolder();
-            IPath itemRelativePath = itemLocationPath.removeLastSegments(1).makeRelativeTo(objectTypeFolder.getLocation());
-            createTemplatePom.setObjectTypeFolder(objectTypeFolder);
-            createTemplatePom.setItemRelativePath(itemRelativePath);
+                IPath itemLocationPath = getItemLocationPath();
+                IFolder objectTypeFolder = getObjectTypeFolder();
+                IPath itemRelativePath = itemLocationPath.removeLastSegments(1).makeRelativeTo(objectTypeFolder.getLocation());
+                createTemplatePom.setObjectTypeFolder(objectTypeFolder);
+                createTemplatePom.setItemRelativePath(itemRelativePath);
 
-            createTemplatePom.setOverwrite(true);
+                createTemplatePom.setOverwrite(true);
 
-            createTemplatePom.create(null);
+                createTemplatePom.create(null);
+            } else {
+                CreateMavenTestPom createTestPom = new CreateMavenTestPom(this, getPomFile());
+
+                IPath itemLocationPath = getItemLocationPath();
+                IFolder objectTypeFolder = getObjectTypeFolder();
+                IPath itemRelativePath = itemLocationPath.removeLastSegments(1).makeRelativeTo(objectTypeFolder.getLocation());
+                createTestPom.setObjectTypeFolder(objectTypeFolder);
+                createTestPom.setItemRelativePath(itemRelativePath);
+
+                createTestPom.setOverwrite(true);
+
+                createTestPom.create(null);
+            }
 
         } catch (Exception e) {
             ExceptionHandler.process(e);
