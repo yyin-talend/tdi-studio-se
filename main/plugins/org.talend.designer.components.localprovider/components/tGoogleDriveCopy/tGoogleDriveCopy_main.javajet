@@ -129,9 +129,9 @@ com.google.api.client.http.HttpTransport httpTransport = new com.google.api.clie
 		{
 <%if (isFile) {
 %>
-			throw new Exception("More then one file found with name \"" + <%=fileName%> + "\" ");
+			throw new Exception("More than one file found with name \"" + <%=fileName%> + "\" ");
 <%} else {%>
-			throw new Exception("More then one folder found with name \"" + <%=folderName%> + "\" ");
+			throw new Exception("More than one folder found with name \"" + <%=folderName%> + "\" ");
 <%}%>
 		}
 		else if (<%=cid%>_files.getItems().isEmpty())
@@ -200,7 +200,7 @@ com.google.api.client.http.HttpTransport httpTransport = new com.google.api.clie
 		        %>
 		        if (<%=cid%>_sourceFile.getParents().size() > 1)
 		        {
-		        	throw new Exception("Failed to delete (this folder has more then one parent)");
+		        	throw new Exception("Failed to delete (this folder has more than one parent)");
 		        }
 				String <%=cid%>_sourceFolderId = <%=cid%>_sourceFile.getParents().get(0).getId();
                	<%=cid%>_client.parents().insert(<%=cid%>_fileId, new com.google.api.services.drive.model.ParentReference().setId(<%=cid%>_destFolderId)).execute();

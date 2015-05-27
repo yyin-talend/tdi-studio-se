@@ -109,7 +109,7 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
 		
 		if (<%=cid%>_files.getItems().size() > 1)
 		{
-			throw new Exception("More then one folder found with name \"" + <%=folderName%> + "\" ");
+			throw new Exception("More than one folder found with name \"" + <%=folderName%> + "\" ");
 		}
 		else if (<%=cid%>_files.getItems().isEmpty())
 		{

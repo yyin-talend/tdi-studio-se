@@ -98,7 +98,7 @@ com.google.api.services.drive.Drive <%=cid%>_client;
 		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_listRequest.execute();
 		if (<%=cid%>_files.getItems().size() > 1)
 		{
-			throw new Exception("More then one file found with name \"" + <%=fileName%> + "\" ");
+			throw new Exception("More than one file found with name \"" + <%=fileName%> + "\" ");
 		}
 		else if (<%=cid%>_files.getItems().isEmpty())
 		{
