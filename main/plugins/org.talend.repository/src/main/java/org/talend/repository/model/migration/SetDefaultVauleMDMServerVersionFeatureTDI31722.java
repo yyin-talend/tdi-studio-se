@@ -49,8 +49,7 @@ public class SetDefaultVauleMDMServerVersionFeatureTDI31722 extends
 		}
 		
         String[] componentsName = new String[] {
-                "tMDMInput", "tMDMOutput", "tMDMDelete", "tMDMConnection", "tMDMViewSearch", "tMDMSP",
-                "tStewardshipTaskInput", "tStewardshipTaskOutput", "tStewardshipTaskDelete" };
+                "tMDMInput", "tMDMOutput", "tMDMDelete", "tMDMConnection", "tMDMViewSearch", "tMDMSP" };
         IComponentConversion changeDeletEmptyFileValue = new IComponentConversion() {
 			public void transform(NodeType node) {
 				ElementParameterType serverVersion = ComponentUtilities.getNodeProperty(node, "SERVERVERSION");

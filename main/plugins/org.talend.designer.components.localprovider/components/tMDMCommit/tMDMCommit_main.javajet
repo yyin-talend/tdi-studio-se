@@ -16,27 +16,14 @@ imports="
 
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
-	String version = "";
-
     String mdmTransaction = "mdmTransaction_" + connection;
-    
-    for (INode pNode : node.getProcess().getNodesOfType("tMDMConnection")) {
-		
-		if (pNode.getUniqueName().equals(connection)) {
-			version = ElementParameterParser.getValue(pNode,"__SERVERVERSION__");
-		}	
-	}
 	
 	String conn = "";
 %>
 
-<%if("s60".equals(version)) {%>
 	<%conn = "TMDMService_" + connection;%>
     org.talend.mdm.webservice.TMDMService_PortType conn_<%=cid%> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("<%=conn%>");
-<%} else {%>
-	<%conn = "xtentisWS_" + connection;%>
-    org.talend.mdm.webservice.XtentisPort_PortType conn_<%=cid%> = (org.talend.mdm.webservice.XtentisPort_PortType)globalMap.get("<%=conn%>");
-<%}%>
+    
     if(conn_<%=cid%> != null)
     {
     	com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = (com.talend.mdm.transaction.client.MDMTransaction)globalMap.get("<%=mdmTransaction%>");
