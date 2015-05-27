@@ -42,9 +42,11 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.login.LoginHelper;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -79,7 +81,7 @@ public class ConnectionsListComposite extends Composite {
         // PreferenceManipulator prefManipulator = new
         // PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         // list = prefManipulator.readConnections();
-        list = ConnectionUserPerReader.getInstance().readConnections();
+        list = LoginHelper.getInstance().getStoredConnections();
 
         if (list.isEmpty()) {
             boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
@@ -129,6 +131,9 @@ public class ConnectionsListComposite extends Composite {
 
             @Override
             protected ExtendedToolbarView initToolBar() {
+                if (!PluginChecker.isSVNProviderPluginLoaded()) {
+                    return null;
+                }
                 return new ConnectionsListButtonsToolBar(getMainComposite(), SWT.NONE, getExtendedTableViewer());
             }
 
@@ -138,10 +143,12 @@ public class ConnectionsListComposite extends Composite {
                 nameColumn.setTitle(Messages.getString("ConnectionsListComposite.nameColumnTitle.name")); //$NON-NLS-1$
                 nameColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<ConnectionBean, String>() {
 
+                    @Override
                     public String get(ConnectionBean bean) {
                         return bean.getName();
                     }
 
+                    @Override
                     public void set(ConnectionBean bean, String value) {
                         bean.setName(value);
                     }
@@ -156,10 +163,12 @@ public class ConnectionsListComposite extends Composite {
                 completeColumn.setTitle(Messages.getString("ConnectionsListComposite.comleteColumnTitle.complete")); //$NON-NLS-1$
                 completeColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<ConnectionBean, Boolean>() {
 
+                    @Override
                     public Boolean get(ConnectionBean bean) {
                         return bean.isComplete();
                     }
 
+                    @Override
                     public void set(ConnectionBean bean, Boolean value) {
                         bean.setComplete(value);
                     }
@@ -192,6 +201,7 @@ public class ConnectionsListComposite extends Composite {
 
         table.getTableViewerCreator().getSelectionHelper().addAfterSelectionListener(new ILineSelectionListener() {
 
+            @Override
             public void handle(LineSelectionEvent e) {
                 ISelection sel = e.source.getTableViewer().getSelection();
                 IStructuredSelection sel2 = (IStructuredSelection) sel;
@@ -227,6 +237,7 @@ public class ConnectionsListComposite extends Composite {
      */
     private class StatusImageProvider implements IColumnImageProvider {
 
+        @Override
         public Image getImage(Object bean) {
             ConnectionBean connectionBean = (ConnectionBean) bean;
             if (connectionBean.isComplete()) {

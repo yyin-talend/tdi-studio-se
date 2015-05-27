@@ -39,7 +39,8 @@ public class ConnectionsListButtonsToolBar extends ExtendedToolbarView {
 
     private static final String NEW_CONNECTION_LABEL = Messages.getString("ConnectionsListButtonsToolBar.newConnectionLabel"); //$NON-NLS-1$
 
-    private static final String COPY_CONNECTION_LABEL_PREFIX = Messages.getString("ConnectionsListButtonsToolBar.copyLabelPrefix"); //$NON-NLS-1$
+    private static final String COPY_CONNECTION_LABEL_PREFIX = Messages
+            .getString("ConnectionsListButtonsToolBar.copyLabelPrefix"); //$NON-NLS-1$
 
     public ConnectionsListButtonsToolBar(Composite parent, int style, AbstractExtendedTableViewer extendedTableViewer) {
         super(parent, style, extendedTableViewer);

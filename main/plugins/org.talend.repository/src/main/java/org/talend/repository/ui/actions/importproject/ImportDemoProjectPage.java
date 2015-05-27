@@ -67,6 +67,8 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
 
     private final static String DEFAUTL_DEMO_ICON = "icons/java.png";
 
+    protected String projectName;
+
     /**
      * ImportDemoProjectPage constructor.
      * 
@@ -158,7 +160,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         String relatedImagePath = null;
         Bundle bundle = null;
         if (node != null) {
-            relatedImagePath = node.getIconUrl();//$NON-NLS-1$;
+            relatedImagePath = node.getIconUrl();// ;
             bundle = Platform.getBundle(node.getPluginId());
         }
         try {
@@ -232,7 +234,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
         newProjectDialog.setTitle(Messages.getString("NewImportProjectWizard.windowTitle")); //$NON-NLS-1$
         if (newProjectDialog.open() == Window.OK) {
-            final String projectName = newPrjWiz.getName().trim().replace(' ', '_');
+            projectName = newPrjWiz.getName().trim().replace(' ', '_');
             // final String demoProjName = selectPro.getProjectName();
 
             //
@@ -258,6 +260,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
                         }
                         ImportProjectsUtilities.importDemoProject(getShell(), projectName, selectPro, monitor);
                     } catch (Exception e1) {
+                        projectName = null;
                         throw new InvocationTargetException(e1);
                     }
 
@@ -268,11 +271,16 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
             try {
                 progressDialog.executeProcess();
             } catch (InvocationTargetException e1) {
+                projectName = null;
                 MessageBoxExceptionHandler.process(e1.getTargetException(), getShell());
             } catch (InterruptedException e1) {
-                // Nothing to do
+                projectName = null;
             }
         }
         return true;
+    }
+
+    public String getProjectName() {
+        return this.projectName;
     }
 }

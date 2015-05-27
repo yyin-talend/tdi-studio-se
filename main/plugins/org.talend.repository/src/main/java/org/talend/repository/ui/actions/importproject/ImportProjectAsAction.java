@@ -57,6 +57,8 @@ public final class ImportProjectAsAction extends Action {
 
     private String project;
 
+    protected boolean isImportedSeveralProjects;
+
     private ImportProjectAsAction() {
         super();
         this.setText(ACTION_TITLE);
@@ -71,8 +73,10 @@ public final class ImportProjectAsAction extends Action {
 
         if (dlg.open() == IDialogConstants.OK_ID) {
             project = docWizard.getProjectName();
+            isImportedSeveralProjects = docWizard.isImportedSeveralProjects();
         } else {
             project = null;
+            isImportedSeveralProjects = false;
         }
 
         clearExternalLibraries();
@@ -103,5 +107,9 @@ public final class ImportProjectAsAction extends Action {
 
     public String getProjectName() {
         return project;
+    }
+
+    public boolean isImportedSeveralProjects() {
+        return isImportedSeveralProjects;
     }
 }

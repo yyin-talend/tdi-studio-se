@@ -15,6 +15,7 @@ package org.talend.repository.ui.actions.importproject;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -66,7 +67,11 @@ public final class ImportDemoProjectAction extends Action {
         ImportDemoProjectWizard demoProjectWizard = new ImportDemoProjectWizard(demoProjectList);
 
         WizardDialog dialog = new WizardDialog(shell, demoProjectWizard);
-        dialog.open();
+        if (dialog.open() == IDialogConstants.OK_ID) {
+            this.lastImportedName = demoProjectWizard.getProjectName();
+        } else {
+            this.lastImportedName = null;
+        }
     }
 
     public String getProjectName() {
