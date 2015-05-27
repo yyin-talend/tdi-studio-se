@@ -57,16 +57,19 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingService;
@@ -76,6 +79,7 @@ import org.talend.designer.core.ui.action.SaveAsRoutineAction;
 import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerColorUtils;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
@@ -286,6 +290,27 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     }
 
+    public void resetItem() throws PersistenceException {
+        if (item.getProperty().eResource() == null || item.eResource() == null) {
+            IRepositoryService service = CoreRuntimePlugin.getInstance().getRepositoryService();
+            IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
+            //
+            // Property updated = factory.getUptodateProperty(getItem().getProperty());
+            Property updatedProperty = null;
+            try {
+                factory.initialize();
+                IRepositoryViewObject repositoryViewObject = factory.getLastVersion(new Project(ProjectManager.getInstance()
+                        .getProject(item.getProperty().getItem())), item.getProperty().getId());
+                if (repositoryViewObject != null) {
+                    updatedProperty = repositoryViewObject.getProperty();
+                    item = (FileItem) updatedProperty.getItem();
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+    }
+
     @Override
     public void doSave(final IProgressMonitor monitor) {
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
@@ -312,6 +337,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         super.doSave(monitor);
 
         try {
+            resetItem();
             ByteArray byteArray = item.getContent();
             byteArray.setInnerContentFromFile(((FileEditorInput) getEditorInput()).getFile());
             try {
@@ -330,6 +356,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                     refreshJobAndSave(repFactory);
                 }
             };
+            repositoryWorkUnit.setAvoidSvnUpdate(true);
+            repositoryWorkUnit.setAvoidUnloadResources(true);
             repFactory.executeRepositoryWorkUnit(repositoryWorkUnit);
             repositoryWorkUnit.throwPersistenceExceptionIfAny();
 
