@@ -42,5 +42,14 @@
          </RepositoryType>
       </RepositorySupportType>
    </extension>
+   <extension
+         point="org.talend.designer.maven.mavenSetting">
+      <TemplateManager
+            class="org.talend.designer.maven.job.setting.MavenJobTemplateManager">
+      </TemplateManager>
+      <ProjectSettingManager
+            class="org.talend.designer.maven.job.setting.project.MavenJobProjectSettingManagerProvider">
+      </ProjectSettingManager>
+   </extension>
 
 </plugin>

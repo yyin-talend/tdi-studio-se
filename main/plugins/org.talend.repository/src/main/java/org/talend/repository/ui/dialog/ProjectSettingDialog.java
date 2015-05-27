@@ -135,6 +135,10 @@ public class ProjectSettingDialog {
                 list.add(node);
             }
         }
+
+        // add the speciall node for maven custom
+        IPreferenceNode mavenCostomSetup = manager.find("projectsetting.MavenCustomSetup");
+
         // find parent nodes for category
         Map<String, IPreferenceNode> parentNodesMap = new HashMap<String, IPreferenceNode>();
         for (String category : hasCategoriesNodes.keySet()) {
