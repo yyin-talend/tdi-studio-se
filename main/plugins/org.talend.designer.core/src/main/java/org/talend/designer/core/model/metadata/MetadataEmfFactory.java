@@ -24,19 +24,18 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.core.PluginChecker;
-// import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.AvroMetadataTable;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
 import org.talend.designer.core.model.utils.emf.talendfile.util.TalendFileResourceImpl;
+
+// import org.talend.core.model.metadata.MetadataTable;
 
 /**
  * Class that will take either a metadata or an emf object for the metadata, and that can return after the emf object or
@@ -112,14 +111,6 @@ public class MetadataEmfFactory {
                 listColType.add(colType);
             }
         }
-    }
-
-    public void setAvroMetadataType(final MetadataType metadataType, IProcess2 process) {
-        AvroMetadataTable avroMetadataTable = new AvroMetadataTable(process);
-
-        metadataTable = avroMetadataTable;
-        setMetadataTypeCommon(metadataType);
-
     }
 
     public void setMetadataType(final MetadataType metadataType) {

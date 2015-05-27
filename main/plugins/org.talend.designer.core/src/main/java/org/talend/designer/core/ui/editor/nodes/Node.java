@@ -43,7 +43,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -51,7 +50,6 @@ import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.metadata.AvroMetadataTable;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -425,12 +423,8 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     private MetadataTable getNewMetadataTable() {
-        if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(this.component.getPaletteType())
-                || ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(this.component.getPaletteType())) {
-            return new AvroMetadataTable(process);
-        } else {
-            return new MetadataTable();
-        }
+        // All component types use the same MetadataTable implementation.
+        return new MetadataTable();
     }
 
     private void init(IComponent newComponent) {

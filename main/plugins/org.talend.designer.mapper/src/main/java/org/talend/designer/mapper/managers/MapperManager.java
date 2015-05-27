@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.metadata.AvroMetadataTable;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -306,17 +305,8 @@ public class MapperManager extends AbstractMapperManager {
      * @return An IMetadataTable appropriate for use with the mapper component in its current context.
      */
     private IMetadataTable getNewMetadataTable() {
-        // TODO: this method will eventually be replaced when the construction of metadata tables is rationalized across
-        // all contexts.
-        IProcess process = getAbstractMapComponent().getProcess();
-        IMetadataTable metadataTable;
-        if (process.getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())
-                || process.getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName())) {
-            metadataTable = new AvroMetadataTable(process);
-        } else {
-            metadataTable = new MetadataTable();
-        }
-        return metadataTable;
+        // All component types use the same MetadataTable implementation.
+        return new MetadataTable();
     }
 
     /**
