@@ -1417,8 +1417,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected boolean buildJobWithMaven(JobExportType jobExportType) {
         String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
         try {
-            BuildJobManager.getInstance().buildJob(processItem, getSelectedJobVersion(), context, getExportChoiceMap(),
-                    jobExportType);
+            BuildJobManager.getInstance().buildJob(getDestinationValue(), processItem, getSelectedJobVersion(), context,
+                    getExportChoiceMap(), jobExportType);
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e, getShell());
             return false;

@@ -153,6 +153,11 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     @Override
+    public IFolder getTargetFolder() {
+        return createFolder(MavenSystemFolders.TARGET.getPath());
+    }
+
+    @Override
     public IFolder getSrcSubFolder(IProgressMonitor monitor, String path) {
         return createSubFolder(monitor, getSrcFolder(), path);
     }
@@ -243,16 +248,16 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.runtime.process.ITalendProcessJavaProject#buildModules(String,java.lang.String[])
-     */
     @Override
     public void buildModules(String goals, String[] childrenModules) {
+        buildModules(goals, childrenModules, null);
+    }
+
+    @Override
+    public void buildModules(String goals, String[] childrenModules, String programArgs) {
         if (childrenModules == null) {
             if (goals != null && goals.trim().length() > 0) {
-                mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH);
+                mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH, programArgs);
             } else { // JDT build
                 buildWholeCodeProject();
             }
@@ -267,14 +272,14 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
                 // clean before classes for current job.
                 String newModule = modulePath.toString();
-                mavenBuildCodeProjectPom(goals, newModule);
+                mavenBuildCodeProjectPom(goals, newModule, programArgs);
             }
         } else { // ==0
             // nothing do for empty modules.
         }
     }
 
-    private void mavenBuildCodeProjectPom(String goals, String module) {
+    private void mavenBuildCodeProjectPom(String goals, String module, String programArgs) {
         // cleanBeforeBuilds(module);
 
         IFile childModulePomFile;
@@ -294,6 +299,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                 // buildWholeCodeProject();
             } else {
                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, goals);
+                mavenLauncher.setProgramArguments(programArgs);
                 mavenLauncher.execute();
             }
             buildWholeCodeProject();

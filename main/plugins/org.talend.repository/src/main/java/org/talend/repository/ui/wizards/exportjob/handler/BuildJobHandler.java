@@ -35,6 +35,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.ui.ITestContainerProviderService;
+import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.model.bridge.ReponsitoryContextBridge;
 import org.talend.repository.local.ExportItemUtil;
@@ -47,15 +48,12 @@ import org.talend.utils.io.FilesUtils;
  */
 public class BuildJobHandler extends AbstractBuildJobHandler {
 
-    private final String GOAL_PACKAGE = "package"; //$NON-NLS-1$
-
-    public BuildJobHandler(Map<ExportChoice, Object> exportChoiceMap, String contextName) {
-        super(exportChoiceMap, contextName);
+    public BuildJobHandler(ProcessItem processItem, String version, String contextName, Map<ExportChoice, Object> exportChoiceMap) {
+        super(processItem, version, contextName, exportChoiceMap);
     }
 
     @Override
-    public void generateJobFiles(ProcessItem processItem, String contextName, String version, IProgressMonitor monitor)
-            throws Exception {
+    public void generateJobFiles(IProgressMonitor monitor) throws Exception {
         if (!isOptionChoosed(ExportChoice.needSourceCode)) {
             return;
         }
@@ -69,7 +67,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     }
 
     @Override
-    public void generateTestReports(ProcessItem processItem, IProgressMonitor monitor) throws Exception {
+    public void generateTestReports(IProgressMonitor monitor) throws Exception {
         if (!isOptionChoosed(ExportChoice.includeTestSource)) {
             return;
         }
@@ -97,7 +95,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     }
 
     @Override
-    public void generateItemFiles(ProcessItem processItem, boolean withDependencies, IProgressMonitor monitor) throws Exception {
+    public void generateItemFiles(boolean withDependencies, IProgressMonitor monitor) throws Exception {
         if (!isOptionChoosed(ExportChoice.needJobItem)) {
             return;
         }
@@ -114,10 +112,10 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         }
         File destination = new File(itemsFolder.getLocation().toFile().getAbsolutePath());
         exportItemUtil.exportItems(destination, items, false, new NullProgressMonitor());
-        addDQDependencies(processItem, itemsFolder);
+        addDQDependencies(itemsFolder);
     }
 
-    private void addDQDependencies(ProcessItem processItem, IFolder parentFolder) throws IOException {
+    private void addDQDependencies(IFolder parentFolder) throws IOException {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
             ITDQItemService tdqItemService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(
                     ITDQItemService.class);
@@ -153,8 +151,14 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     }
 
     @Override
-    public void build() throws Exception {
-        talendProcessJavaProject.buildModules(GOAL_PACKAGE, null);
+    public void build(String destinationPath) throws Exception {
+        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_PACKAGE, null, getProgramArgs());
+        IFile jobTargetFile = getJobTargetFile();
+        if (jobTargetFile.exists()) {
+            File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());
+            File jobFileTarget = new File(destinationPath);
+            FilesUtils.copyFile(jobFileSource, jobFileTarget);
+        }
     }
 
 }

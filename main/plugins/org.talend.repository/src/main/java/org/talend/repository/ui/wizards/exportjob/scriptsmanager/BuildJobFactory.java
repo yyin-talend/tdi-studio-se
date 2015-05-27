@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
 import java.util.Map;
 
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.runtime.process.IBuildJobHandler;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.handler.BuildJobHandler;
@@ -35,12 +36,12 @@ public class BuildJobFactory {
      * @param jobExportType
      * @return
      */
-    public static IBuildJobHandler createBuildJobHandler(Map<ExportChoice, Object> exportChoiceMap, String contextName,
-            JobExportType jobExportType) {
+    public static IBuildJobHandler createBuildJobHandler(ProcessItem processItem, String version, String contextName,
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType) {
         IBuildJobHandler handler = null;
         switch (jobExportType) {
         case POJO:
-            handler = new BuildJobHandler(exportChoiceMap, contextName);
+            handler = new BuildJobHandler(processItem, version, contextName, exportChoiceMap);
             break;
         case WSWAR:
         case WSZIP:
@@ -49,7 +50,7 @@ public class BuildJobFactory {
         case OSGI:
             break;
         default:
-            handler = new BuildJobHandler(exportChoiceMap, contextName);
+            handler = new BuildJobHandler(processItem, version, contextName, exportChoiceMap);
         }
 
         return handler;

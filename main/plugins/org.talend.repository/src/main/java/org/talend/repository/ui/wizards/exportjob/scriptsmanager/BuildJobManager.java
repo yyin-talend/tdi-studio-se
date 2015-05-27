@@ -38,13 +38,14 @@ public class BuildJobManager {
         return instance;
     }
 
-    public void buildJob(ProcessItem processItem, String version, String context, Map<ExportChoice, Object> exportChoiceMap,
-            JobExportType jobExportType) throws Exception {
-        IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(exportChoiceMap, context, jobExportType);
-        buildJobHandler.generateItemFiles(processItem, true, new NullProgressMonitor());
-        // buildJobHandler.generateTestReports(processItem, new NullProgressMonitor());
-        buildJobHandler.generateJobFiles(processItem, context, version, new NullProgressMonitor());
-        buildJobHandler.build();
+    public void buildJob(String destinationPath, ProcessItem processItem, String version, String context,
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType) throws Exception {
+        IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(processItem, context, version, exportChoiceMap,
+                jobExportType);
+        buildJobHandler.generateItemFiles(true, new NullProgressMonitor());
+        // buildJobHandler.generateTestReports(new NullProgressMonitor());
+        buildJobHandler.generateJobFiles(new NullProgressMonitor());
+        buildJobHandler.build(destinationPath);
     }
 
 }

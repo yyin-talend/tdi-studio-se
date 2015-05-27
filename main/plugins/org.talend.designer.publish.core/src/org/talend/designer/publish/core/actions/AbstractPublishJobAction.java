@@ -145,7 +145,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
     private void exportJobForPOJO(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         File tmpJob = null;
         try {
-            tmpJob = File.createTempFile("item", ".zip", null); // TODO: modify the file path later...
+            tmpJob = File.createTempFile("item", ".zip", null);
             // jobScriptsManager.setDestinationPath(tmpJob.getAbsolutePath());
             // JobExportAction action = new JobExportAction(Collections.singletonList(node), jobVersion,
             // jobScriptsManager, null,
@@ -157,7 +157,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 
             ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
 
-            BuildJobManager.getInstance().buildJob(processItem, processItem.getProperty().getVersion(),
+            BuildJobManager.getInstance().buildJob(tmpJob.getAbsolutePath(), processItem, processItem.getProperty().getVersion(),
                     processItem.getProcess().getDefaultContext(), exportChoiceMap, exportType);
 
             monitor.beginTask("Deploy to Artifact Repository....", IProgressMonitor.UNKNOWN);
