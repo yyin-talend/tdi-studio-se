@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -807,6 +808,15 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
     public void setForceReadOnly(boolean readOnly) {
         // TODO Auto-generated method stub
 
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#getNeededModules(boolean)
+     */
+    @Override
+    public Set<ModuleNeeded> getNeededModules(boolean withChildrens) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

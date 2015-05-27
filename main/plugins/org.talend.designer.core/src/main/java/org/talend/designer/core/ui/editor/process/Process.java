@@ -75,6 +75,7 @@ import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -4310,6 +4311,14 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             this.additionalProperties = new HashMap<Object, Object>();
         }
         return this.additionalProperties;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#getNeededModules(boolean)
+     */
+    @Override
+    public Set<ModuleNeeded> getNeededModules(boolean withChildrens) {
+        return JavaProcessUtil.getNeededModules(this, withChildrens);
     }
 
 }

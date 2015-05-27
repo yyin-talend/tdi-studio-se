@@ -92,6 +92,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IContext;
@@ -1038,7 +1039,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
         }
         final int lastSep = libPath.length() - 1;
-        if (classPathSeparator.equals(String.valueOf(libPath.charAt(lastSep)))) {
+        if (libPath.length() != 0 && classPathSeparator.equals(String.valueOf(libPath.charAt(lastSep)))) {
             libPath.deleteCharAt(lastSep);
         }
         return libPath.toString();
@@ -1070,6 +1071,16 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
         if (isLog4jEnabled) {
             JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
+        }
+        return neededLibraries;
+    }
+
+    @Override
+    public Set<ModuleNeeded> getNeededModules() {
+        Set<ModuleNeeded> neededLibraries = JavaProcessorUtilities.getNeededModulesForProcess(process);
+        boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
+        if (isLog4jEnabled) {
+            JavaProcessorUtilities.addLog4jToModuleList(neededLibraries);
         }
         return neededLibraries;
     }

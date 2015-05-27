@@ -23,6 +23,7 @@ import org.eclipse.gef.SnapToGrid;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
@@ -835,5 +836,14 @@ public class RowGenProcess extends Element implements IProcess {
     @Override
     public String getComponentsType() {
         return ComponentCategory.CATEGORY_4_DI.getName();
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#getNeededModules(boolean)
+     */
+    @Override
+    public Set<ModuleNeeded> getNeededModules(boolean withChildrens) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -240,6 +240,88 @@ public class JavaProcessorUtilities {
         }
         return neededLibraries;
     }
+    
+    public static Set<ModuleNeeded> getNeededModulesForProcess(IProcess process) {
+        Set<ModuleNeeded> neededLibraries = new HashSet<ModuleNeeded>();
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
+                process.getVersion());
+        neededLibraries.addAll(neededModules);
+
+        if (process == null || !(process instanceof IProcess2)) {
+            if (neededLibraries.isEmpty() && process != null) {
+                neededLibraries = process.getNeededModules(true);
+                if (neededLibraries == null) {
+                    neededLibraries = new HashSet<ModuleNeeded>();
+                    // for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                    // neededLibraries.add(moduleNeeded.getModuleName());
+                    // }
+                }
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getRunningModules()) {
+                    neededLibraries.add(moduleNeeded);
+                }
+            }
+            return neededLibraries;
+        }
+        Property property = ((IProcess2) process).getProperty();
+        if (neededLibraries.isEmpty()) {
+            neededLibraries = process.getNeededModules(true);
+            if (neededLibraries == null) {
+                neededLibraries = new HashSet<ModuleNeeded>();
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                    neededLibraries.add(moduleNeeded);
+                }
+            }
+        } else {
+            if (property != null && property.getItem() instanceof ProcessItem) {
+                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines(
+                        (ProcessItem) property.getItem(), ERepositoryObjectType.ROUTINES);
+                for (ModuleNeeded moduleNeeded : modulesNeededs) {
+                    neededLibraries.add(moduleNeeded);
+                }
+                List<ModuleNeeded> modulesForPigudf = ModulesNeededProvider.getModulesNeededForRoutines(
+                        (ProcessItem) property.getItem(), ERepositoryObjectType.PIG_UDF);
+                for (ModuleNeeded moduleNeeded : modulesForPigudf) {
+                    neededLibraries.add(moduleNeeded);
+                }
+
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getRunningModules()) {
+                    neededLibraries.add(moduleNeeded);
+                }
+            }
+        }
+        if (property != null && GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (camelService.isInstanceofCamel(property.getItem())) {
+                ERepositoryObjectType beansType = camelService.getBeansType();
+                List<IRepositoryViewObject> collectedBeans = new ArrayList<IRepositoryViewObject>();
+                try {
+                    collectedBeans = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().getAll(beansType);
+                    for (IRepositoryViewObject object : collectedBeans) {
+                        Item item = object.getProperty().getItem();
+                        if (item instanceof RoutineItem) {
+                            RoutineItem routine = (RoutineItem) item;
+                            EList<?> imports = routine.getImports();
+                            for (Object o : imports) {
+                                IMPORTType type = (IMPORTType) o;
+                                ModuleNeeded neededModule = new ModuleNeeded("camel bean dependencies", type.getMODULE(), "camel bean dependencies", true);
+                                neededLibraries.add(neededModule);
+                            }
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+
+            // http://jira.talendforge.org/browse/TESB-5887 LiXiaopeng 2012-6-19
+            // Synchronize Route resources
+            camelService.synchronizeRouteResource(property.getItem());
+        }
+        return neededLibraries;
+    }
 
     /**
      * DOC ycbai Comment method "checkJavaProjectLib".
@@ -423,6 +505,23 @@ public class JavaProcessorUtilities {
         }
         if (!foundLog4jJar) {
             jarList.add("log4j-1.2.16.jar"); //$NON-NLS-1$
+            added = true;
+        }
+
+        return added;
+    }
+
+    public static boolean addLog4jToModuleList(Collection<ModuleNeeded> jarList) {
+        boolean added = false;
+        boolean foundLog4jJar = false;
+        for (ModuleNeeded jar : jarList) {
+            if (jar.getModuleName().matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
+                foundLog4jJar = true;
+            }
+        }
+        if (!foundLog4jJar) {
+            ModuleNeeded log4j = new ModuleNeeded("junit", "log4j-1.2.16.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+            jarList.add(log4j); //$NON-NLS-1$
             added = true;
         }
 

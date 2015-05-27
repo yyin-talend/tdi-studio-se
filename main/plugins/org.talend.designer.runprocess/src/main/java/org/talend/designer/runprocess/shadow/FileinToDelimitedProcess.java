@@ -25,6 +25,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -882,5 +883,14 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
     public void setForceReadOnly(boolean readOnly) {
         // TODO Auto-generated method stub
 
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#getNeededModules(boolean)
+     */
+    @Override
+    public Set<ModuleNeeded> getNeededModules(boolean withChildrens) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
