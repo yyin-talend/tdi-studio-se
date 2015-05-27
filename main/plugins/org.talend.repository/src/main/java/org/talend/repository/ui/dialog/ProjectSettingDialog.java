@@ -37,7 +37,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.runtime.preference.IProjectSettingPageTester;
+import org.talend.core.runtime.services.IMavenUIService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProjectSettingNode;
 
@@ -137,7 +139,12 @@ public class ProjectSettingDialog {
         }
 
         // add the speciall node for maven custom
-        IPreferenceNode mavenCostomSetup = manager.find("projectsetting.MavenCustomSetup");
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMavenUIService.class)) {
+            IMavenUIService mavenUIService = (IMavenUIService) GlobalServiceRegister.getDefault().getService(
+                    IMavenUIService.class);
+            IPreferenceNode mavenCostomSetup = manager.find("projectsetting.MavenCustomSetup");
+            mavenUIService.addCustomMavenSettingChildren(mavenCostomSetup);
+        }
 
         // find parent nodes for category
         Map<String, IPreferenceNode> parentNodesMap = new HashMap<String, IPreferenceNode>();

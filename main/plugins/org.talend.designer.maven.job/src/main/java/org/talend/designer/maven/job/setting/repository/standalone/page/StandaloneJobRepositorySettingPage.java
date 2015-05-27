@@ -27,13 +27,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.runtime.projectsetting.IProjectSettingContainer;
 import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.designer.maven.job.MavenJobPlugin;
 import org.talend.designer.maven.job.i18n.Messages;
 import org.talend.designer.maven.job.setting.repository.standalone.StandaloneJobRepositoryMavenSetting;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.template.IProjectSettingPreferenceConstants;
-import org.talend.designer.maven.ui.setting.repository.IRepositoryPreferenceNodeContainer;
 import org.talend.designer.maven.ui.setting.repository.page.FolderMavenSettingPage;
 import org.talend.designer.maven.ui.utils.DesignerMavenUiHelper;
 import org.talend.repository.RepositoryWorkUnit;
@@ -149,8 +149,8 @@ public class StandaloneJobRepositorySettingPage extends FolderMavenSettingPage {
                                     .createAutonomousJobChildNode(nodeFolder, getNode(), getPrefNodeId(), false);
 
                             IPreferencePageContainer container = getContainer();
-                            if (container instanceof IRepositoryPreferenceNodeContainer) {
-                                ((IRepositoryPreferenceNodeContainer) container).addChildrenPreferenceNodes(getPrefNodeId(),
+                            if (container instanceof IProjectSettingContainer) {
+                                ((IProjectSettingContainer) container).addChildrenPreferenceNodes(getPrefNodeId(),
                                         autonomousJobChildrenNodes);
                             }
                         }
@@ -211,9 +211,8 @@ public class StandaloneJobRepositorySettingPage extends FolderMavenSettingPage {
                             childIds.add(assemblyId);
 
                             IPreferencePageContainer container = getContainer();
-                            if (container instanceof IRepositoryPreferenceNodeContainer) {
-                                ((IRepositoryPreferenceNodeContainer) container).removeChildrenPreferenceNodes(getPrefNodeId(),
-                                        childIds);
+                            if (container instanceof IProjectSettingContainer) {
+                                ((IProjectSettingContainer) container).removeChildrenPreferenceNodes(getPrefNodeId(), childIds);
                             }
                         }
                     });
