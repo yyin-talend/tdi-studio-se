@@ -1,0 +1,264 @@
+<%@ jet
+imports="
+    java.util.List
+    java.util.Map
+    java.util.HashMap
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    "
+%>
+<%
+    String entityName = ElementParameterParser.getValue(node, "__ENTITYNAME__").trim();
+    String customEntityName = ElementParameterParser.getValue(node, "__CUSTOM_ENTITY_NAME__");
+    if("CustomEntity".equals(entityName)){
+        entityName = customEntityName.replaceAll("\"","");
+    }
+    entityName = entityName.toLowerCase();
+    String action = ElementParameterParser.getValue(node,"__ACTION__");
+
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if((metadatas != null) && (metadatas.size() > 0)){
+        IMetadataTable metadata = metadatas.get(0);
+        if(metadata != null){
+            List<? extends IConnection> conns = node.getIncomingConnections();
+            for(IConnection conn : conns){
+                if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+                    String connName = conn.getName();
+                    List<IMetadataColumn> columns = metadata.getListColumns();
+                    int columnSize = columns.size();
+%>
+                            <%
+                        if("insert".equals(action) || "update".equals(action)){
+                            %>
+                               nb_line_<%= cid %> ++;
+                               java.util.Map<String, Object> map_<%= cid %> = new java.util.HashMap<String, Object>();
+                            <%
+                            for(int i = 0; i < columnSize; i++){
+                                String index = cid + "_" + i;
+                                IMetadataColumn column = columns.get(i);
+                                String columnName = column.getLabel();
+                                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                                String crmType = column.getType();
+                                String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+                            %>
+                                          <%
+                                       if("BIGINT".equals(crmType)){
+                                           //Map 2 Java Long
+                                           %>
+                                              map_<%= cid %>.put("<%= columnName %>", Long.valueOf(<%=connName%>.<%=columnName%>));
+                                           <%
+                                       }else if("BOOLEAN".equals(crmType)){
+                                            //Map 2 Java Boolean
+                                            %>
+                                            map_<%= cid %>.put("<%= columnName %>", Boolean.valueOf(<%=connName%>.<%=columnName%>));
+                                            <%
+                                       }else if("CALENDARRULES".equals(crmType) || "PARTYLIST".equals(crmType)){
+                                            //Todo: Need to find a better solution.
+                                            %>
+                                            map_<%= cid %>.put("<%= columnName %>", (com.microsoft.schemas.xrm._2011.contracts.EntityCollection)<%=connName%>.<%=columnName%>);
+                                            <%
+                                       }else if("CUSTOMER".equals(crmType) || "LOOKUP".equals(crmType) || "OWNER".equals(crmType)){
+                                            //Map 2 Java Document
+                                            %>
+                                               <%
+                                                   if(javaType == JavaTypesManager.OBJECT){
+                                                              %>
+                                                                 if(<%=connName%>.<%=columnName%> instanceof com.microsoft.schemas.xrm._2011.contracts.EntityReference){
+                                                                      map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
+                                                                 }else if(<%=connName%>.<%=columnName%> instanceof routines.system.Document){
+                                                                      routines.system.Document document_<%= index %> = <%=connName%>.<%=columnName%>;
+                                                                      org.dom4j.Document doc_<%= index %> = document_<%= index %>.getDocument();
+                                                                      com.microsoft.schemas.xrm._2011.contracts.EntityReference
+                                                                                    entityRef_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.EntityReference();
+                                                                      entityRef_<%= index %>.setId(
+                                                                                           new com.microsoft.schemas._2003._10.serialization.Guid()
+                                                                                               .setValue(
+                                                                                                         xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/guid")
+                                                                                                        )
+                                                                                                 );
+                                                                      entityRef_<%= index %>.setLogicalName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/logical_name"));
+                                                                      entityRef_<%= index %>.setName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/name"));
+                                                                      map_<%= cid %>.put("<%= columnName %>", entityRef_<%= index %>);
+                                                                 }else{
+                                                                      map_<%= cid %>.put("<%= columnName %>", null);
+                                                                 }
+                                                              <%
+                                                   }else{
+                                                              %>
+                                                                 routines.system.Document document_<%= index %> = <%=connName%>.<%=columnName%>;
+                                                                 org.dom4j.Document doc_<%= index %> = document_<%= index %>.getDocument();
+                                                                 com.microsoft.schemas.xrm._2011.contracts.EntityReference
+                                                                               entityRef_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.EntityReference();
+                                                                 entityRef_<%= index %>.setId(
+                                                                                      new com.microsoft.schemas._2003._10.serialization.Guid()
+                                                                                          .setValue(
+                                                                                                    xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/guid")
+                                                                                                   )
+                                                                                            );
+                                                                 entityRef_<%= index %>.setLogicalName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/logical_name"));
+                                                                 entityRef_<%= index %>.setName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/name"));
+                                                                 map_<%= cid %>.put("<%= columnName %>", entityRef_<%= index %>);
+                                                              <%
+                                                   }
+                                                %>
+                                            <%
+                                   }else if("DATETIME".equals(crmType)){
+                                             %>
+                                               <%
+                                                  if(javaType == JavaTypesManager.OBJECT){
+                                                             %>
+                                                                if(<%=connName%>.<%=columnName%> instanceof java.util.Date){
+                                                                     map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
+                                                                }else{
+                                                                     map_<%= cid %>.put("<%= columnName %>",ParserUtils.parseTo_Date(<%=connName%>.<%=columnName%>.toString(), <%= patternValue %>));
+                                                                }
+                                                             <%
+                                                  }else if(javaType == JavaTypesManager.DATE){
+                                                             %>
+                                                                     map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
+                                                             <%
+                                                  }else{
+                                                             %>
+                                                                     map_<%= cid %>.put("<%= columnName %>",ParserUtils.parseTo_Date(<%=connName%>.<%=columnName%>.toString(), <%= patternValue %>));
+                                                             <%
+                                                  }
+                                                %>
+                                             <%
+                                  }else if("DECIMAL".equals(crmType)){
+                                             //Map 2 Java BigDecimal
+                                              %>
+                                              <%
+                                                if(javaType == JavaTypesManager.OBJECT){
+                                                             %>
+                                                                if(<%=connName%>.<%=columnName%> instanceof java.math.BigDecimal){
+                                                                   map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
+                                                                }else{
+                                                                   map_<%= cid %>.put("<%= columnName %>",
+                                                                                     ParserUtils.parseTo_BigDecimal(<%=connName%>.<%=columnName%>.toString()));
+                                                                }
+                                                             <%
+                                                }else if(javaType == JavaTypesManager.BIGDECIMAL){
+                                                             %>
+                                                                  map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
+                                                             <%
+                                                }else{
+                                                             %>
+                                                                map_<%= cid %>.put("<%= columnName %>",
+                                                                                  ParserUtils.parseTo_BigDecimal(<%=connName%>.<%=columnName%>.toString()));
+                                                             <%
+                                                }
+                                               %>
+                                              <%
+                                  }else if("DOUBLE".equals(crmType)){
+                                              //Map 2 Java Double
+                                              %>
+                                              map_<%= cid %>.put("<%= columnName %>",
+                                                                Double.valueOf(<%=connName%>.<%=columnName%>));
+                                              <%
+                                  }else if("ENTITYNAME".equals(crmType) || "MEMO".equals(crmType) || "STRING".equals(crmType)){
+                                              //Map 2 Java String
+                                              %>
+                                              map_<%= cid %>.put("<%= columnName %>",
+                                                                <%=connName%>.<%=columnName%>.toString());
+                                              <%
+                                  }else if("INTEGER".equals(crmType)){
+                                              //Map 2 Java Integer
+                                              %>
+                                              map_<%= cid %>.put("<%= columnName %>",
+                                                                Integer.valueOf(<%=connName%>.<%=columnName%>));
+                                              <%
+                                  }else if("MANAGEDPROPERTY".equals(crmType)){
+                                              //Map 2 Java Object
+                                              %>
+                                              map_<%= cid %>.put("<%= columnName %>",
+                                                                new com.microsoft.schemas.xrm._2011.contracts.BooleanManagedProperty());
+                                              <%
+                                  }else if("MONEY".equals(crmType)){
+                                              //Map to Java BigDecimal
+                                              %>
+                                              com.microsoft.schemas.xrm._2011.contracts.Money
+                                                            money_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.Money();
+                                              <%
+                                               if(javaType == JavaTypesManager.OBJECT){
+                                                          %>
+                                                             if(<%=connName%>.<%=columnName%> instanceof java.math.BigDecimal){
+                                                                            money_<%= index %>.setValue(<%=connName%>.<%=columnName%>);
+                                                             }else{
+                                                                            money_<%= index %>.setValue(ParserUtils.parseTo_BigDecimal(
+                                                                                                         <%=connName%>.<%=columnName%>.toString()
+                                                                                                         )
+                                                                                                     );
+                                                             }
+                                                          <%
+                                               }else if(javaType == JavaTypesManager.BIGDECIMAL){
+                                                          %>
+                                                             money_<%= index %>.setValue(<%=connName%>.<%=columnName%>);
+                                                          <%
+                                               }else{
+                                                          %>
+                                                             money_<%= index %>.setValue(ParserUtils.parseTo_BigDecimal(
+                                                                                          <%=connName%>.<%=columnName%>.toString()
+                                                                                          )
+                                                                                      );
+                                                          <%
+                                               }
+                                               %>
+                                             map_<%= cid %>.put("<%= columnName %>", money_<%= index %>);
+                                              <%
+                                  }else if("PICKLIST".equals(crmType) || "STATE".equals(crmType) || "STATUS".equals(crmType) ){
+                                              //Map to Java Integer
+                                              %>
+                                                 com.microsoft.schemas.xrm._2011.contracts.OptionSetValue
+                                                               optionSetValue_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.OptionSetValue();
+                                                 optionSetValue_<%= index %>.setValue(Integer.valueOf(<%=connName%>.<%=columnName%>));
+                                                 map_<%= cid %>.put("<%= columnName %>", optionSetValue_<%= index %>);
+                                              <%
+                                  }else if("UNIQUEIDENTIFIER".equals(crmType)){
+                                              //Map to Java String
+                                              %>
+                                                 com.microsoft.schemas._2003._10.serialization.Guid
+                                                               guid_<%= index %> = new com.microsoft.schemas._2003._10.serialization.Guid();
+                                                 guid_<%= index %>.setValue(<%=connName%>.<%=columnName%>.toString());
+                                                 map_<%= cid %>.put("<%= columnName %>", guid_<%= index %>);
+                                              <%
+                                  }else{
+                                               %>
+                                                  System.err.println("Unsupported Crm Data Type.");
+                                                  map_<%= cid %>.put("<%= columnName %>", null);
+                                               <%
+                                  }
+                        }
+                            %>
+                                  <%
+                                 if("insert".equals(action)){
+                                   %>
+                                      crmEntityHelper_<%= cid %>.createEntity("<%= entityName %>", map_<%= cid %>);
+                                   <%
+                                 }else{
+                                   %>
+                                      crmEntityHelper_<%= cid %>.updateEntity("<%= entityName %>", map_<%= cid %>);
+                                   <%
+                                 }
+                                 %>
+                            <%
+                        }else if("delete".equals(action)){
+                            %>
+                                crmEntityHelper_<%= cid %>.deleteEntity("<%= entityName %>",<%= connName %>.Id);
+                            <%
+                        }else{
+                            %>
+                               System.out.println("Unsupported Operation.");
+                            <%
+                        }
+                }
+            }
+        }
+    }
+%>
