@@ -174,9 +174,9 @@ IMetadataColumn talendDynCol = null;
 		%>
 
 		if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
-			tableName_<%=cid%> = <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+			tableName_<%=cid%> = (<%=table%>)<%=convertToUppercase ? ".toUpperCase()" : ""%>;
 		} else {
-			tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;    
+			tableName_<%=cid%> = dbschema_<%=cid%> + "." + (<%=table%>)<%=convertToUppercase ? ".toUpperCase()" : ""%>;    
 		}
 			<%@ include file="../templates/_hintTableName.javajet" %>
 		<%
