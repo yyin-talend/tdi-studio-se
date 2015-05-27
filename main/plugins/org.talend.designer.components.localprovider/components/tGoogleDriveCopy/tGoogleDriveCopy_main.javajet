@@ -158,7 +158,7 @@ com.google.api.client.http.HttpTransport httpTransport = new com.google.api.clie
 			<%=cid%>_destFolders = <%=cid%>_listRequest.execute();
 			if (<%=cid%>_destFolders.getItems().size() > 1)
 			{
-				throw new Exception("More then one folder found with name \"" + <%=dest_folderName%> + "\" ");
+				throw new Exception("More than one folder found with name \"" + <%=dest_folderName%> + "\" ");
 			}
 			else if (<%=cid%>_destFolders.getItems().isEmpty())
 			{
