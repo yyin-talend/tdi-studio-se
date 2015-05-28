@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.publish.core.models;
 
-import java.io.StringWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,9 +51,14 @@ public class FeaturesModel extends BaseModel {
 	private Map<String, Map<String, String>> contexts = new HashMap<String, Map<String, String>>();
 
 	public FeaturesModel(String groupId, String namePrefix, String version) {
-		super(groupId, namePrefix + NAME_SUFFIX, version, "pom");
+		super(groupId, namePrefix + NAME_SUFFIX, version);
 		name = namePrefix;
 	}
+
+    @Override
+    public String getExtension() {
+        return "xml";
+    }
 
 	public void setConfigName(String configName) {
 		this.configName = configName;
@@ -100,7 +107,7 @@ public class FeaturesModel extends BaseModel {
 		return sb.toString();
 	}
 
-    public String getContent() {
+    public InputStream getContent() {
         try {
             return internalGetContent();
         } catch (Exception e) {
@@ -108,7 +115,7 @@ public class FeaturesModel extends BaseModel {
         }
     }
 
-    private String internalGetContent() throws Exception {
+    private InputStream internalGetContent() throws Exception {
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 
         Element features = document.createElement("features");
@@ -170,12 +177,10 @@ public class FeaturesModel extends BaseModel {
         }
 
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        DOMSource source = new DOMSource(document);
-        StringWriter writer = new StringWriter();
-        StreamResult result = new StreamResult(writer);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.transform(source, result);
-        return writer.toString();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(os));
+        return new ByteArrayInputStream(os.toByteArray());
 	}
 
 //    public static void main(String[] args) {
