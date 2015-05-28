@@ -62,7 +62,7 @@
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="99"
-      SHOW="true"
+      SHOW="false"
       READONLY="true"
     >
       <DEFAULT>vertica_id</DEFAULT>
