@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.resource.ColorRegistry;
-import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -27,6 +26,7 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
@@ -89,6 +89,21 @@ public class LoginDialogV2 extends TrayDialog {
 
     public static final Color VERTICAL_SEPERATOR_LINE_COLOR = new Color(null, 162, 179, 195);
 
+    /**********************************************************************************
+     * DO NOT MODIFY THEM! those size is calc from [testFontLabel.setText("Data_WM");]
+     */
+    private static final String TEST_FONT_STRING = "Data_WM"; //$NON-NLS-1$
+
+    protected static final int STANDARD_BASE_HEIGHT = 15;
+
+    protected static final int STANDARD_BASE_WIDTH = 51;
+
+    /*********************************************************************************/
+
+    protected double realHeightRate;
+
+    protected double realWidthRate;
+
     protected static Font errorFont;
 
     protected static Font fixedFont;
@@ -138,8 +153,9 @@ public class LoginDialogV2 extends TrayDialog {
         }
 
         if (fixedFont == null || fixedFont.isDisposed()) {
-            fixedFont = FontDescriptor.createFrom(getShell().getDisplay().getSystemFont()).setHeight(9)
-                    .createFont(getShell().getDisplay());
+            // fixedFont = FontDescriptor.createFrom(getShell().getDisplay().getSystemFont()).setHeight(9)
+            // .createFont(getShell().getDisplay());
+            fixedFont = getShell().getDisplay().getSystemFont();
             JFaceResources.getFontRegistry().put(FONT_TALEND_FOR_LOGIN_UI, fixedFont.getFontData());
         }
     }
@@ -191,6 +207,8 @@ public class LoginDialogV2 extends TrayDialog {
 
         Composite container = new Composite(parent, SWT.NONE);
 
+        calcFontRate(container);
+
         GridLayout layout = new GridLayout(3, false);
         layout.marginWidth = 0;
         layout.marginHeight = 0;
@@ -207,6 +225,20 @@ public class LoginDialogV2 extends TrayDialog {
         showFirstPage();
 
         return container;
+    }
+
+    /**
+     * To fix the big font problem
+     * 
+     * @param container
+     */
+    protected void calcFontRate(Composite container) {
+        Label testFontLabel = new Label(container, SWT.NONE);
+        testFontLabel.setText(TEST_FONT_STRING);
+        Point testFontSize = testFontLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        realWidthRate = 1.0 * testFontSize.x / STANDARD_BASE_WIDTH;
+        realHeightRate = 1.0 * testFontSize.y / STANDARD_BASE_HEIGHT;
+        testFontLabel.dispose();
     }
 
     protected void showFirstPage() {
@@ -249,7 +281,7 @@ public class LoginDialogV2 extends TrayDialog {
         GridData loginInfoAreaGridData = new GridData(GridData.FILL_BOTH);
         // loginInfoAreaGridData.minimumWidth = 350;
         // loginInfoAreaGridData.minimumHeight = brandingAreaGridData.minimumHeight;
-        loginInfoAreaGridData.widthHint = 350;
+        loginInfoAreaGridData.widthHint = (int) Math.ceil(realWidthRate * 350);
         loginInfoAreaGridData.heightHint = brandingAreaGridData.heightHint;
         loginInfoArea.setLayoutData(loginInfoAreaGridData);
         loginInfoArea.setLayout(new FormLayout());
@@ -278,16 +310,17 @@ public class LoginDialogV2 extends TrayDialog {
         GridData brandingAreaGridData = new GridData(GridData.FILL_BOTH);
         if (imageDescriptor != null) {
             Image imageCanvas = imageDescriptor.createImage();
-            brandingArea.setBackgroundImage(imageCanvas);
-            // brandingAreaGridData.minimumWidth = imageCanvas.getBounds().width;
-            // brandingAreaGridData.minimumHeight = imageCanvas.getBounds().height;
-            brandingAreaGridData.widthHint = imageCanvas.getBounds().width;
-            brandingAreaGridData.heightHint = imageCanvas.getBounds().height;
+            int width = (int) Math.ceil(realWidthRate * imageCanvas.getBounds().width);
+            int height = (int) Math.ceil(realHeightRate * imageCanvas.getBounds().height);
+            ImageData imageData = imageCanvas.getImageData();
+            imageData = imageData.scaledTo(width, height);
+            Image scaledImage = new Image(getShell().getDisplay(), imageData);
+            brandingArea.setBackgroundImage(scaledImage);
+            brandingAreaGridData.widthHint = scaledImage.getBounds().width;
+            brandingAreaGridData.heightHint = scaledImage.getBounds().height;
         } else {
-            // brandingAreaGridData.minimumWidth = 200;
-            // brandingAreaGridData.minimumHeight = 280;
-            brandingAreaGridData.widthHint = 200;
-            brandingAreaGridData.heightHint = 280;
+            brandingAreaGridData.widthHint = (int) Math.ceil(realWidthRate * 200);
+            brandingAreaGridData.heightHint = (int) Math.ceil(realHeightRate * 280);
         }
         brandingArea.setLayoutData(brandingAreaGridData);
 
