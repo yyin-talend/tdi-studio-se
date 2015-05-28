@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
-import org.talend.core.model.general.Project;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 
@@ -137,12 +136,12 @@ public class LoginAgreementPage extends AbstractLoginActionPage {
         AbstractActionPage iNextPage = super.getNextPage();
 
         if (iNextPage == null) {
-            Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
-            if (projects == null || projects.length == 0) {
-                iNextPage = new LoginFirstTimeStartupActionPage(getParent(), loginDialog, SWT.NONE);
-            } else {
-                iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
-            }
+            // Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
+            // if (projects == null || projects.length == 0) {
+            iNextPage = new LoginFirstTimeStartupActionPage(getParent(), loginDialog, SWT.NONE);
+            // } else {
+            // iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
+            // }
             setNextPage(iNextPage);
         }
 

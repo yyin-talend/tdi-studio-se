@@ -250,26 +250,28 @@ public class LoginDialogV2 extends TrayDialog {
 
     protected void showFirstPage() {
         AbstractLoginActionPage loginPage = null;
-        // if (LoginHelper.isTalendLogonFirstTimeStartup()) {
-        if (PluginChecker.isSVNProviderPluginLoaded()) {
-            // for tis
-            List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
-            if (storedConnections == null || storedConnections.isEmpty()
-                    || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)))) {
-                // for local license case
-                // try to find if there are projects in workspace
-                Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
-                if (projects == null || projects.length == 0) {
-                    loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
+        if (LoginHelper.isTalendLogonFirstTimeStartup()) {
+            // try to find if there are projects in workspace
+            Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
+            boolean hasProjects = false;
+            if (projects != null && 0 < projects.length) {
+                hasProjects = true;
+            }
+            if (!hasProjects) {
+                if (PluginChecker.isSVNProviderPluginLoaded()) {
+                    // for tis
+                    List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
+                    if (storedConnections == null || storedConnections.isEmpty()
+                            || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)))) {
+                        // for local license case
+                        loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
+                    }
                 } else {
-                    loginPage = new LoginProjectPage(base, this, SWT.NONE);
+                    // for tos
+                    loginPage = new LoginAgreementPage(base, this, SWT.NONE);
                 }
             }
-        } else {
-            // for tos
-            loginPage = new LoginAgreementPage(base, this, SWT.NONE);
         }
-        // }
         if (loginPage == null) {
             loginPage = new LoginProjectPage(base, this, SWT.NONE);
         }
