@@ -637,27 +637,28 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         new Label(parentComposite, SWT.NONE);
         new Label(parentComposite, SWT.NONE);
 
-        log4jButton = new Button(parentComposite, SWT.CHECK | SWT.LEFT);
-        log4jButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.LOG4jLEVEL")); //$NON-NLS-1$
-        log4jButton.setFont(font);
-        log4jButton.setEnabled(Log4jPrefsSettingManager.getInstance().isLog4jEnable());
-        log4jButton.addSelectionListener(new SelectionAdapter() {
+        if (isEnterprise) {
+            log4jButton = new Button(parentComposite, SWT.CHECK | SWT.LEFT);
+            log4jButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.LOG4jLEVEL")); //$NON-NLS-1$
+            log4jButton.setFont(font);
+            log4jButton.setEnabled(Log4jPrefsSettingManager.getInstance().isLog4jEnable());
+            log4jButton.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                if (log4jButton.getSelection()) {
-                    log4jLevelCombo.setEnabled(true);
-                } else {
-                    log4jLevelCombo.setEnabled(false);
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    if (log4jButton.getSelection()) {
+                        log4jLevelCombo.setEnabled(true);
+                    } else {
+                        log4jLevelCombo.setEnabled(false);
+                    }
                 }
-            }
-        });
-
-        log4jLevelCombo = new Combo(parentComposite, SWT.PUSH);
-        GridData log4jLevelGD = new GridData();
-        log4jLevelGD.horizontalSpan = 2;
-        log4jLevelCombo.setLayoutData(log4jLevelGD);
-        log4jLevelCombo.setEnabled(false);
+            });
+            log4jLevelCombo = new Combo(parentComposite, SWT.PUSH);
+            GridData log4jLevelGD = new GridData();
+            log4jLevelGD.horizontalSpan = 2;
+            log4jLevelCombo.setLayoutData(log4jLevelGD);
+            log4jLevelCombo.setEnabled(false);
+        }
 
         jobItemButton = new Button(parentComposite, SWT.CHECK | SWT.LEFT);
         jobItemButton.setText(Messages.getString("JobScriptsExportWizardPage.jobItems")); //$NON-NLS-1$

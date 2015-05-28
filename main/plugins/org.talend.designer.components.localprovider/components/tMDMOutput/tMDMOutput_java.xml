@@ -111,6 +111,10 @@
                 <ITEM NAME="SERVER_5_6" VALUE="s56" />
             </ITEMS>
         </PARAMETER>
+        
+        <PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="18" SHOW_IF="(SERVERVERSION == 's56') and (USE_EXISTING_CONNECTION == 'false')" GROUP="CONNECTION_GRP">
+            <DEFAULT>suggest to use 6.0 url</DEFAULT>
+        </PARAMETER>
 
 		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true" REPOSITORY_VALUE="MDMURL" SHOW_IF="USE_EXISTING_CONNECTION == 'false'" GROUP="CONNECTION_GRP">
@@ -125,11 +129,6 @@
 		<PARAMETER NAME="PASSWORD" FIELD="PASSWORD" REQUIRED="true"
 			NUM_ROW="30" REPOSITORY_VALUE="PASSWORD" SHOW_IF="USE_EXISTING_CONNECTION == 'false'" GROUP="CONNECTION_GRP">
 			<DEFAULT>"password"</DEFAULT>
-		</PARAMETER>
-
-		<PARAMETER NAME="UNIVERSE" FIELD="TEXT"
-			NUM_ROW="30" REPOSITORY_VALUE="UNIVERSE" SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (SERVERVERSION == 's56')" GROUP="CONNECTION_GRP">
-			<DEFAULT></DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="DATAMODEL" FIELD="TEXT" REQUIRED="true"
@@ -386,8 +385,7 @@
 
 		</TEMPLATES>
 		<IMPORTS>
-			<IMPORT NAME="MDM-WEBSERVICE-TOMCAT" MODULE="mdm_webservice_tomcat.jar" MVN="mvn:org.talend.libraries/mdm_webservice_tomcat/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice_tomcat.jar" REQUIRED_IF="((SERVERVERSION == 's60') and (USE_EXISTING_CONNECTION == 'false'))" />
-            <IMPORT NAME="MDM-Webservice" MODULE="mdm_webservice.jar" MVN="mvn:org.talend.libraries/mdm_webservice/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice.jar" REQUIRED_IF="((SERVERVERSION == 's56') and (USE_EXISTING_CONNECTION == 'false'))" />
+			<IMPORT NAME="MDM-WEBSERVICE-TOMCAT" MODULE="mdm_webservice_tomcat.jar" MVN="mvn:org.talend.libraries/mdm_webservice_tomcat/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice_tomcat.jar" REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
             <IMPORT NAME="SOAP-axis" MODULE="axis.jar" MVN="mvn:org.talend.libraries/axis/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" REQUIRED_IF="IS_VIRTUAL_COMPONENT == 'false'" />
 			<IMPORT NAME="log4j-1.2.15.jar" MODULE="log4j-1.2.15.jar" MVN="mvn:org.talend.libraries/log4j-1.2.15/6.0.0"  UrlPath="platform:/base/plugins/org.apache.log4j_1.2.15.v201012070815.jar" BundleID="" REQUIRED_IF="IS_VIRTUAL_COMPONENT == 'false'" />
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" MVN="mvn:org.talend.libraries/jaxrpc/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar" BundleID="" REQUIRED_IF="IS_VIRTUAL_COMPONENT == 'false'" />

@@ -6,32 +6,49 @@ imports="
 		"
 %>
 <%
-CodeGeneratorArgument codeGenArgument_outer = (CodeGeneratorArgument) argument;
-INode node_outer = (INode)codeGenArgument_outer.getArgument();
-String version = "";
-    
-boolean useExistingConn_outer = ("true").equals(ElementParameterParser.getValue(node_outer,"__USE_EXISTING_CONNECTION__"));
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "TMDMService_" + connection;
+	String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
+	String username = ElementParameterParser.getValue(node, "__USERNAME__");
 
-if (useExistingConn_outer) {
-	for (INode pNode : node_outer.getProcess().getNodesOfType("tMDMConnection")) {
-	    
-		String connectionComponentName = ElementParameterParser.getValue(node_outer,"__CONNECTION__");
+	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+	boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
+	String spName = ElementParameterParser.getValue(node, "__SPNAME__");
+%>       
+	int nb_line_<%=cid %> = 0;
+
+	<%if(!useExistingConn){%>
+		org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
+		tmdmService_<%=cid %>.setTMDMPortEndpointAddress(<%=mdmUrl %>);
+		org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = tmdmService_<%=cid %>.getTMDMPort();    
+		org.talend.mdm.webservice.TMDMServiceSoapBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>;
+	
+		// Authentification
+		stub_<%=cid %>.setUsername(<%=username %>);
 		
-		if (pNode.getUniqueName().equals(connectionComponentName)) {
-			version = ElementParameterParser.getValue(pNode,"__SERVERVERSION__");
-		}	
+        <%
+        String passwordFieldName = "__PASSWORD__";
+        %>
+        
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>	
+		
+		stub_<%=cid %>.setPassword(decryptedPassword_<%=cid%>);
+<%
+	}else{
+%>
+		org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("<%=conn%>");
+<%
 	}
-} else {
-    version = ElementParameterParser.getValue(node_outer, "__SERVERVERSION__");
-}
-
-if("s60".equals(version)) {
 %>
 
-	<%@include file="tMDMSP_begin_60.javajet"%>
-	
-<%} else {%>
+	org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %> + "<%=isStaging?"#STAGING":""%>");
 
-	<%@include file="tMDMSP_begin_56.javajet"%>
-	
-<%}%>
+	org.talend.mdm.webservice.WSExecuteStoredProcedure wsExeProc_<%=cid %> = new org.talend.mdm.webservice.WSExecuteStoredProcedure();
+	wsExeProc_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
+	org.talend.mdm.webservice.WSStoredProcedurePK wsStoredProcPK_<%=cid %> = new org.talend.mdm.webservice.WSStoredProcedurePK();
+	wsStoredProcPK_<%=cid %>.setPk(<%=spName %>);
+	wsExeProc_<%=cid %>.setWsStoredProcedurePK(wsStoredProcPK_<%=cid %>);
