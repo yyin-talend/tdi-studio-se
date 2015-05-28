@@ -28,25 +28,25 @@ public class ZipModel {
         }
         output = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(destination)));
 
-        /*
-         * feature file path:
-         * repository/[itemName]/[itemName]-feature/[itemVersion]/[itemName]-feature-[itemVersion].xml
-         */
-        add(PREFIX + featuresModel.getRepositoryLocation(null), featuresModel.getContent());
+        try {
+            // feature file path:
+            // repository/[itemName]/[itemName]-feature/[itemVersion]/[itemName]-feature-[itemVersion].xml
+            add(PREFIX + featuresModel.getRepositoryLocation(null), featuresModel.getContent());
 
-        /*
-         * Bundle File path:
-         * repository/[itemName]/[itemVersion]/[itemName]-[itemVersion].jar
-         */
-        for (BundleModel bundleModel : featuresModel.getBundles()) {
-            // add bundle jar file
-            File f = bundleModel.getFile();
-            if (null == f) {
-                continue;
+            // Bundle File path:
+            // repository/[itemName]/[itemVersion]/[itemName]-[itemVersion].jar
+            for (BundleModel bundleModel : featuresModel.getBundles()) {
+                // add bundle jar file
+                File f = bundleModel.getFile();
+                if (null == f) {
+                    continue;
+                }
+                add(PREFIX + bundleModel.getRepositoryLocation(null).toString(), f);
             }
-            add(PREFIX + bundleModel.getRepositoryLocation(null).toString(), f);
+        } finally {
+            output.flush();
+            output.close();
         }
-        close();
     }
 
     private void add(String location, File f) throws IOException {
@@ -73,15 +73,4 @@ public class ZipModel {
         }
     }
 
-    private void close() {
-        try {
-            output.flush();
-        } catch (IOException e) {
-        } finally {
-            try {
-                output.close();
-            } catch (IOException e) {
-            }
-        }
-    }
 }
