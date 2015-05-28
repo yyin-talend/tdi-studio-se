@@ -24,15 +24,24 @@
             id="projectsetting.StandaloneJobAssembly"
             title="%ProjectSettingPage_Assembly">
       </page>
+      <page
+            category="projectsetting.MavenDefault"
+            class="org.talend.designer.maven.job.setting.project.page.osgi.OSGiBundlePomProjectSettingPage"
+            description="Maven settings for OSGi Bundle"
+            id="projectsetting.OSGiBundle"
+            order="30"
+            title="%ProjectSettingPage_OSGiBundle">
+      </page>
    </extension>
    <extension
          point="org.talend.designer.maven.ui.repositoryMavenSetting">
       <RepositoryMavenSetting
             class="org.talend.designer.maven.job.setting.repository.standalone.StandaloneJobRepositoryMavenSetting"
             description="Config the Maven scripts for each folders in Repository view"
-            name="Standalone Job Maven Settings">
+            name="Standalone Job Maven Settings"
+            order="10">
          <SettingTester
-               class="org.talend.designer.maven.job.setting.repository.standalone.StandaloneJobRepositorySettingTester">
+               class="org.talend.designer.maven.job.setting.repository.MavenJobRepositorySettingTester">
          </SettingTester>
       </RepositoryMavenSetting>
       <RepositorySupportType
@@ -41,6 +50,15 @@
                type="PROCESS">
          </RepositoryType>
       </RepositorySupportType>
+      <RepositoryMavenSetting
+            class="org.talend.designer.maven.job.setting.repository.osgi.OSGiBundleRepositoryMavenSetting"
+            description="Config the Maven scripts for each folders in Repository view"
+            name="OSGi Bundle Maven Settings"
+            order="20">
+         <SettingTester
+               class="org.talend.designer.maven.job.setting.repository.MavenJobRepositorySettingTester">
+         </SettingTester>
+      </RepositoryMavenSetting>
    </extension>
    <extension
          point="org.talend.designer.maven.mavenSetting">

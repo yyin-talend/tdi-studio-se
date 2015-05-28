@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.designer.maven.job.setting.project.page.standalone;
 
+import org.talend.core.runtime.projectsetting.IProjectSettingPreferenceConstants;
 import org.talend.designer.maven.job.i18n.Messages;
 import org.talend.designer.maven.job.setting.project.page.AbstractMavenJobProjectSettingPage;
-import org.talend.designer.maven.template.IProjectSettingPreferenceConstants;
 
 /**
  * DOC ggu class global comment. Detailled comment

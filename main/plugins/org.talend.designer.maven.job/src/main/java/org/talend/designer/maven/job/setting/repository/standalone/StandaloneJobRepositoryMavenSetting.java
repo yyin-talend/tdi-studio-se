@@ -32,15 +32,8 @@ import org.talend.repository.model.RepositoryNode;
  */
 public class StandaloneJobRepositoryMavenSetting extends RepositoryMavenSetting {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.maven.ui.setting.repository.RepositoryMavenSetting#create(org.talend.designer.maven.ui.setting
-     * .repository.node.RepositoryPreferenceNode, org.talend.repository.model.RepositoryNode)
-     */
     @Override
-    public void create(final RepositoryPreferenceNode parentNode, final RepositoryNode node) {
+    public void createMavenScriptsChildren(final RepositoryPreferenceNode parentNode, final RepositoryNode node) {
         StandaloneJobRepositorySettingNode autonomousJobNode = new StandaloneJobRepositorySettingNode(parentNode.getId(), node);
         parentNode.add(autonomousJobNode);
 
@@ -57,10 +50,13 @@ public class StandaloneJobRepositoryMavenSetting extends RepositoryMavenSetting 
             boolean checkExist) {
         List<IPreferenceNode> childrenNodes = new ArrayList<IPreferenceNode>();
 
-        IFile pomTemplateFile = nodeFolder.getFile(TalendMavenConstants.POM_FILE_NAME);
-        IFile assemblyTemplateFile = nodeFolder.getFile(TalendMavenConstants.ASSEMBLY_FILE_NAME);
         // if have existed the pom and assembly
-        if (!checkExist || DesignerMavenUiHelper.existMavenSetting(nodeFolder)) {
+        if (!checkExist
+                || DesignerMavenUiHelper.existMavenSetting(nodeFolder, TalendMavenConstants.POM_FILE_NAME,
+                        TalendMavenConstants.ASSEMBLY_FILE_NAME)) {
+            IFile pomTemplateFile = nodeFolder.getFile(TalendMavenConstants.POM_FILE_NAME);
+            IFile assemblyTemplateFile = nodeFolder.getFile(TalendMavenConstants.ASSEMBLY_FILE_NAME);
+
             String pomId = DesignerMavenUiHelper.buildRepositoryPreferenceNodeId(parentId, pomTemplateFile);
             String assemblyId = DesignerMavenUiHelper.buildRepositoryPreferenceNodeId(parentId, assemblyTemplateFile);
 
