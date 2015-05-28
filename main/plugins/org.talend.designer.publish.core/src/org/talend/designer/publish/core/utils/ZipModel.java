@@ -21,7 +21,6 @@ public class ZipModel {
     private final ZipOutputStream output;
 
     public ZipModel(FeaturesModel featuresModel, File destination) throws IOException {
-
         // Create the parent file if not exist
         File parentDestFile = destination.getParentFile();
         if (!parentDestFile.exists()) {
@@ -30,14 +29,14 @@ public class ZipModel {
         output = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(destination)));
 
         /*
-         * feature file path: repository/[projectName]/[itemName]/[itemName]-feature
-         * /[itemVersion]/[itemName]-[itemVersion]-feature.xml
+         * feature file path:
+         * repository/[itemName]/[itemName]-feature/[itemVersion]/[itemName]-feature-[itemVersion].xml
          */
         add(PREFIX + featuresModel.getRepositoryLocation(null), featuresModel.getContent());
 
         /*
-         * Bundle File path: repository/[projectName]/[itemName]/[itemName]
-         * /[itemVersion]/[itemName]-[itemVersion].jar
+         * Bundle File path:
+         * repository/[itemName]/[itemVersion]/[itemName]-[itemVersion].jar
          */
         for (BundleModel bundleModel : featuresModel.getBundles()) {
             // add bundle jar file
@@ -47,10 +46,10 @@ public class ZipModel {
             }
             add(PREFIX + bundleModel.getRepositoryLocation(null).toString(), f);
         }
-
+        close();
     }
 
-    public void add(String location, File f) throws IOException {
+    private void add(String location, File f) throws IOException {
         ZipEntry entry = new ZipEntry(location);
         entry.setSize(f.length());
         entry.setTime(f.lastModified());
@@ -58,7 +57,7 @@ public class ZipModel {
         write(new BufferedInputStream(new FileInputStream(f)));
     }
 
-    public void add(String location, InputStream is) throws IOException {
+    private void add(String location, InputStream is) throws IOException {
         ZipEntry entry = new ZipEntry(location);
         entry.setSize(is.available());
         entry.setTime(System.currentTimeMillis());
@@ -74,7 +73,7 @@ public class ZipModel {
         }
     }
 
-    public void close() {
+    private void close() {
         try {
             output.flush();
         } catch (IOException e) {
