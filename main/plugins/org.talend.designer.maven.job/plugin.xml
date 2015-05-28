@@ -12,7 +12,7 @@
       <page
             category="projectsetting.MavenDefault"
             class="org.talend.designer.maven.job.setting.project.page.standalone.StandaloneJobPomProjectSettingPage"
-            description="Maven Settings"
+            description="%ProjectSettingPage_StandaloneJobDesc"
             id="projectsetting.StandaloneJob"
             order="10"
             title="%ProjectSettingPage_StandaloneJob">
@@ -20,14 +20,14 @@
       <page
             category="projectsetting.StandaloneJob"
             class="org.talend.designer.maven.job.setting.project.page.standalone.StandaloneJobAssemblyProjectSettingPage"
-            description="Assembly settings for Standalone Job"
+            description="%ProjectSettingPage_AssemblyDesc"
             id="projectsetting.StandaloneJobAssembly"
             title="%ProjectSettingPage_Assembly">
       </page>
       <page
             category="projectsetting.MavenDefault"
             class="org.talend.designer.maven.job.setting.project.page.osgi.OSGiBundlePomProjectSettingPage"
-            description="Maven settings for OSGi Bundle"
+            description="%ProjectSettingPage_OSGiBundleDesc"
             id="projectsetting.OSGiBundle"
             order="30"
             title="%ProjectSettingPage_OSGiBundle">

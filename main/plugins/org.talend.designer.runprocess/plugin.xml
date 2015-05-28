@@ -146,10 +146,33 @@
     <page
           category="projectsetting.Build"
           class="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
-          description="Shell Settings"
+          description="%ProjectSettingPage_ShellSetting"
           id="projectsetting.ShellSetting"
           order="0"
-          title="%shellSetting">
+          title="%ProjectSettingPage_ShellSetting">
     </page>
+    <page
+          category="projectsetting.ShellSetting"
+          class="org.talend.designer.runprocess.prefs.ShellShSettingPreferencePage"
+          description="%ProjectSettingPage_ShellShSettingDesc"
+          id="projectsetting.ShellShSetting"
+          title="Sh">
+    </page>
+    <page
+          category="projectsetting.ShellSetting"
+          class="org.talend.designer.runprocess.prefs.ShellBatSettingPreferencePage"
+          description="%ProjectSettingPage_ShellBatSettingDesc"
+          id="projectsetting.ShellBatSetting"
+          title="Bat">
+    </page>
+ </extension>
+ <extension
+       point="org.talend.designer.maven.mavenSetting">
+    <ProjectSettingManager
+          class="org.talend.designer.runprocess.maven.RunProcessProjectSettingManagerProvider">
+    </ProjectSettingManager>
+    <TemplateManager
+          class="org.talend.designer.runprocess.maven.RunProcessMavenTemplateManager">
+    </TemplateManager>
  </extension>
 </plugin>

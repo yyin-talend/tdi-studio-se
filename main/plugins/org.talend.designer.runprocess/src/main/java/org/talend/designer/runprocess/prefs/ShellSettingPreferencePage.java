@@ -12,32 +12,13 @@
 // ============================================================================
 package org.talend.designer.runprocess.prefs;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.runtime.projectsetting.AbstractScriptProjectSettingPage;
-import org.talend.designer.runprocess.RunProcessPlugin;
-import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.core.runtime.projectsetting.EmptyProjectSettingPage;
 
 /**
  * ftang class global comment. Detailled comment <br/>
  * 
  * 
  */
-public class ShellSettingPreferencePage extends AbstractScriptProjectSettingPage {
-
-    @Override
-    protected IPreferenceStore doGetPreferenceStore() {
-        return RunProcessPlugin.getDefault().getProjectPreferenceManager().getPreferenceStore();
-    }
-
-    @Override
-    protected String getPreferenceKey() {
-        return ITalendCorePrefConstants.COMMAND_STR;
-    }
-
-    @Override
-    protected String getHeadTitle() {
-        return Messages.getString("ShellSettingPreferencePage.command"); //$NON-NLS-1$
-    }
+public class ShellSettingPreferencePage extends EmptyProjectSettingPage {
 
 }
