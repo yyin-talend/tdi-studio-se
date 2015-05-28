@@ -245,6 +245,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private boolean template = false;
 
+    private boolean isJunitCreate = false;
+
     private boolean generatedByJobscriptBool = false;
 
     private Node jobletNode = null;
@@ -326,6 +328,14 @@ public class Node extends Element implements IGraphicalNode {
 
     public void setTemplate(boolean template) {
         this.template = template;
+    }
+
+    public boolean isJunitCreate() {
+        return this.isJunitCreate;
+    }
+
+    public void setJunitCreate(boolean isJunitCreate) {
+        this.isJunitCreate = isJunitCreate;
     }
 
     @Override
@@ -1308,7 +1318,7 @@ public class Node extends Element implements IGraphicalNode {
                             outputConnection = connection.getSource().getOutgoingConnections(connection.getConnectorName())
                                     .get(0);
                         }
-                        if (template) {
+                        if (template || isJunitCreate) {
                             if (takeSchema == null) {
                                 takeSchema = true;
                             }
@@ -1322,7 +1332,7 @@ public class Node extends Element implements IGraphicalNode {
                             ((Node) connection.getSource()).takeSchemaFrom(this, mainConnector.getName());
                         }
                     } else if (connection.getSourceNodeConnector().isMultiSchema()) {
-                        if (template) {
+                        if (template || isJunitCreate) {
                             if (takeSchema == null) {
                                 takeSchema = true;
                             }
