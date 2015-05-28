@@ -37,7 +37,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.runtime.preference.IProjectSettingPageTester;
+import org.talend.core.runtime.services.IMavenUIService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProjectSettingNode;
 
@@ -51,6 +53,29 @@ public class ProjectSettingDialog {
     private static final String TITLE = Messages.getString("ProjectSettingDialog.Title"); //$NON-NLS-1$
 
     private static final Logger log = Logger.getLogger(ProjectSettingDialog.class);
+
+    private static final Comparator<IPreferenceNode> COMPARATOR = new Comparator<IPreferenceNode>() {
+
+        @Override
+        public int compare(IPreferenceNode o1, IPreferenceNode o2) {
+            int compare = 0;
+            if (o1 instanceof ProjectSettingNode && o2 instanceof ProjectSettingNode) {
+                ProjectSettingNode node1 = (ProjectSettingNode) o1;
+                ProjectSettingNode node2 = (ProjectSettingNode) o2;
+                if (node1.getOrder() != null && node2.getOrder() != null) {
+                    compare = node1.getOrder().compareTo(node2.getOrder());
+                }
+                if (compare == 0) { // same order. compare the label
+                    String labelText1 = node1.getLabelText();
+                    String labelText2 = node2.getLabelText();
+                    if (labelText1 != null && labelText2 != null) {
+                        compare = labelText1.compareTo(labelText2);
+                    }
+                }
+            }
+            return compare;
+        }
+    };
 
     public ProjectSettingDialog() {
 
@@ -103,7 +128,7 @@ public class ProjectSettingDialog {
 
             // has category
             String category = node.getCategory();
-            if (category != null) {
+            if (category != null && category.length() > 0) {
                 List<IPreferenceNode> list = hasCategoriesNodes.get(category);
                 if (list == null) {
                     list = new ArrayList<IPreferenceNode>();
@@ -112,6 +137,15 @@ public class ProjectSettingDialog {
                 list.add(node);
             }
         }
+
+        // add the speciall node for maven custom
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMavenUIService.class)) {
+            IMavenUIService mavenUIService = (IMavenUIService) GlobalServiceRegister.getDefault().getService(
+                    IMavenUIService.class);
+            IPreferenceNode mavenCostomSetup = manager.find("projectsetting.MavenCustomSetup");
+            mavenUIService.addCustomMavenSettingChildren(mavenCostomSetup);
+        }
+
         // find parent nodes for category
         Map<String, IPreferenceNode> parentNodesMap = new HashMap<String, IPreferenceNode>();
         for (String category : hasCategoriesNodes.keySet()) {
@@ -124,7 +158,9 @@ public class ProjectSettingDialog {
         for (String category : hasCategoriesNodes.keySet()) {
             List<IPreferenceNode> list = hasCategoriesNodes.get(category);
             if (list != null) {
+
                 IPreferenceNode parent = parentNodesMap.get(category);
+                Collections.sort(list, COMPARATOR);
                 for (IPreferenceNode node : list) {
                     // if the parent is not valid or not existed. the node won't show also.
                     manager.remove(node); // remove from root node.
@@ -137,28 +173,8 @@ public class ProjectSettingDialog {
 
         // sort the root nodes
         List<IPreferenceNode> rootSubNodesList = new ArrayList<IPreferenceNode>(Arrays.asList(manager.getRootSubNodes()));
-        Collections.sort(rootSubNodesList, new Comparator<IPreferenceNode>() {
 
-            @Override
-            public int compare(IPreferenceNode o1, IPreferenceNode o2) {
-                int compare = 0;
-                if (o1 instanceof ProjectSettingNode && o2 instanceof ProjectSettingNode) {
-                    ProjectSettingNode node1 = (ProjectSettingNode) o1;
-                    ProjectSettingNode node2 = (ProjectSettingNode) o2;
-                    if (node1.getOrder() != null && node2.getOrder() != null) {
-                        compare = node1.getOrder().compareTo(node2.getOrder());
-                        if (compare == 0) { // same order. compare the label
-                            String labelText1 = node1.getLabelText();
-                            String labelText2 = node2.getLabelText();
-                            if (labelText1 != null && labelText2 != null) {
-                                compare = labelText1.compareTo(labelText2);
-                            }
-                        }
-                    }
-                }
-                return compare;
-            }
-        });
+        Collections.sort(rootSubNodesList, COMPARATOR);
         manager.removeAll(); // clean all to re-add for order
 
         // add the sorted list to manager

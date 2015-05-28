@@ -13,15 +13,11 @@
 package org.talend.repository.ui.login;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionEvent;
@@ -47,6 +43,8 @@ import org.talend.repository.i18n.Messages;
 public class LoginAgreementPage extends AbstractLoginActionPage {
 
     protected static final String LICENSE_FILE_PATH = "/resources/license.txt"; //$NON-NLS-1$
+
+    protected static final String LICENSE_FILE_PATH_HTML = "/resources/license.html"; //$NON-NLS-1$
 
     /** CLUF field. */
     private Text clufText;
@@ -83,21 +81,15 @@ public class LoginAgreementPage extends AbstractLoginActionPage {
         acceptButton.setLayoutData(acceptButtonFormLayoutData);
 
         boolean haveHtmlDesc = false;
-        String filePath = null;
-        URL url = RepositoryPlugin.class.getResource(LICENSE_FILE_PATH);
-        try {
-            url = FileLocator.resolve(url);
-        } catch (IOException e) {
-            CommonExceptionHandler.process(e);
-        }
-        filePath = url.getFile();
+        InputStream licenseInputStream = null;
         if (Boolean.parseBoolean(System.getProperty("USE_BROWSER"))) { //$NON-NLS-1$
-            IPath file = new Path(filePath).removeFileExtension();
-            file = file.addFileExtension("html"); //$NON-NLS-1$
-            if (new File(file.toPortableString()).exists()) {
+            licenseInputStream = RepositoryPlugin.class.getResourceAsStream(LICENSE_FILE_PATH_HTML);
+            if (licenseInputStream != null) {
                 haveHtmlDesc = true;
-                filePath = file.toPortableString();
             }
+        }
+        if (licenseInputStream == null) {
+            licenseInputStream = RepositoryPlugin.class.getResourceAsStream(LICENSE_FILE_PATH);
         }
 
         FormData clufLayoutData = new FormData();
@@ -108,7 +100,7 @@ public class LoginAgreementPage extends AbstractLoginActionPage {
 
         if (haveHtmlDesc) {
             clufBrowser = new Browser(container, SWT.BORDER);
-            clufBrowser.setText(getLicense(filePath));
+            clufBrowser.setText(getLicense(licenseInputStream));
             clufBrowser.setLayoutData(clufLayoutData);
         } else {
             clufText = new Text(container, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL | SWT.LEFT | SWT.BORDER);
@@ -116,18 +108,15 @@ public class LoginAgreementPage extends AbstractLoginActionPage {
             Font font = new Font(DisplayUtils.getDisplay(), "courier", 10, SWT.NONE); //$NON-NLS-1$
             clufText.setFont(font);
             clufText.setEditable(false);
-            if (filePath != null) {
-                clufText.setText(getLicense(filePath));
-            }
+            clufText.setText(getLicense(licenseInputStream));
             clufText.setLayoutData(clufLayoutData);
         }
     }
 
-    private String getLicense(String filePath) {
+    private String getLicense(InputStream inputStream) {
         String license = ""; //$NON-NLS-1$
         try {
-            FileReader fileReader = new FileReader(new File(filePath));
-            BufferedReader in = new BufferedReader(fileReader);
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
 
             String licenseLine = ""; //$NON-NLS-1$
             while ((licenseLine = in.readLine()) != null) {
@@ -147,7 +136,12 @@ public class LoginAgreementPage extends AbstractLoginActionPage {
         AbstractActionPage iNextPage = super.getNextPage();
 
         if (iNextPage == null) {
+            // Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
+            // if (projects == null || projects.length == 0) {
             iNextPage = new LoginFirstTimeStartupActionPage(getParent(), loginDialog, SWT.NONE);
+            // } else {
+            // iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
+            // }
             setNextPage(iNextPage);
         }
 

@@ -392,6 +392,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         formData.top = new FormAttachment(createNewProject, 0, SWT.CENTER);
         formData.bottom = new FormAttachment(createNewProject, 0, SWT.CENTER);
         formData.right = new FormAttachment(executeCreateNewProject, -1 * TAB_HORIZONTAL_PADDING_LEVEL_2, SWT.LEFT);
+        formData.left = new FormAttachment(createNewProject, TAB_HORIZONTAL_PADDING_LEVEL_2, SWT.RIGHT);
         newProjectName.setLayoutData(formData);
 
         formData = new FormData();
@@ -709,10 +710,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     createNewProject.setText(Messages.getString("LoginProjectPage.createNewProject.beginCreate")); //$NON-NLS-1$
                     createNewProject.pack();
                     FormData formData = (FormData) newProjectName.getLayoutData();
-                    formData.left = new FormAttachment(createNewProject, createNewProject.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
+                    formData.left = new FormAttachment(createNewProject, createNewProject.getSize().x
                             + TAB_HORIZONTAL_PADDING_LEVEL_2, SWT.LEFT);
                     newProjectName.setVisible(true);
-                    // newProjectName.setText(""); //$NON-NLS-1$
                     newProjectName.forceFocus();
                     executeCreateNewProject.setVisible(true);
                     finishButtonAction = FINISH_ACTION_CREATE_NEW_PROJECT;
@@ -785,6 +785,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         }
                         checkErrors();
                         validateUpdate();
+                    } else {
+                        fillUIProjectListWithBusyCursor();
+                        validateProject();
+                        checkErrors();
                     }
                     // setStatusArea();
                 } catch (PersistenceException e1) {
@@ -1691,12 +1695,14 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     public void importProjects() {
         ImportProjectAsAction.getInstance().run();
 
-        resetProjectOperationSelection();
         fillUIProjectListWithBusyCursor();
 
         String newProject = ImportProjectAsAction.getInstance().getProjectName();
         if (newProject != null) {
+            resetProjectOperationSelection();
             selectProject(newProject);
+        } else if (ImportProjectAsAction.getInstance().isImportedSeveralProjects()) {
+            resetProjectOperationSelection();
         }
         validateProject();
     }
@@ -1705,10 +1711,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // dialog.setMessage("Importing demo project ...");
         ImportDemoProjectAction.getInstance().setShell(getShell());
         ImportDemoProjectAction.getInstance().run();
-        resetProjectOperationSelection();
         fillUIProjectListWithBusyCursor();
         String newProject = ImportDemoProjectAction.getInstance().getProjectName();
         if (newProject != null) {
+            resetProjectOperationSelection();
             selectProject(newProject);
         }
         validateProject();

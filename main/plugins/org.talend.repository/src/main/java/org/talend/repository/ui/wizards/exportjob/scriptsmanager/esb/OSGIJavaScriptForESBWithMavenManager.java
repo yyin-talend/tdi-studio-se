@@ -23,9 +23,9 @@ import org.eclipse.core.runtime.Path;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IOsgiDependenciesService;
-import org.talend.core.services.resource.IExportJobResourcesService;
+import org.talend.core.runtime.projectsetting.IProjectSettingPreferenceConstants;
+import org.talend.core.runtime.services.IMavenUIService;
 import org.talend.repository.constants.IExportJobConstants;
-import org.talend.repository.preference.constants.IExportJobPrefConstants;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
@@ -50,15 +50,14 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
 
     @Override
     protected void addMavenBuildScripts(List<URL> scriptsUrls, Map<String, String> mavenPropertiesMap) {
-        IExportJobResourcesService resourcesService = null;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
-            resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
-                    IExportJobResourcesService.class);
+        IMavenUIService mavenUiService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMavenUIService.class)) {
+            mavenUiService = (IMavenUIService) GlobalServiceRegister.getDefault().getService(IMavenUIService.class);
         }
-        if (resourcesService == null) {
+        if (mavenUiService == null) {
             return;
         }
-        String mavenScript = resourcesService.getScriptFromPreferenceStore(IExportJobPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE);
+        String mavenScript = mavenUiService.getProjectSettingValue(IProjectSettingPreferenceConstants.TEMPLATE_OSGI_BUNDLE_POM);
         if (mavenScript == null) {
             return;
         }

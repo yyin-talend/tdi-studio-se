@@ -60,6 +60,8 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
 
     protected static final String FINISH_BUTTON_ACTION_IMPORT_EXISTING_PROJECT = "IMPORT_EXISTING_PROJECT"; //$NON-NLS-1$
 
+    protected static final String NEW_PROJECT_NAME = "Local_Project"; //$NON-NLS-1$
+
     protected Label title;
 
     protected Button createNewProject;
@@ -120,7 +122,12 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
     @Override
     public void afterCreateControl() {
         alwaysAsk.setSelection(LoginHelper.isAlwaysAskAtStartup());
-        newProjectName.setText("Local_Project"); //$NON-NLS-1$
+        createNewProject.setSelection(true);
+        newProjectName.setText(NEW_PROJECT_NAME);
+        newProjectName.setToolTipText(NEW_PROJECT_NAME);
+
+        selectNewProjectName();
+        validateNewProjectName();
     }
 
     @Override
@@ -228,15 +235,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (createNewProject.getSelection()) {
-                    createNewProject.setText(Messages.getString("LoginFirstTimeStartupActionPage.createNewProject.selected")); //$NON-NLS-1$
-                    createNewProject.pack();
-                    FormData formData = (FormData) newProjectName.getLayoutData();
-                    formData.left = new FormAttachment(createNewProject, createNewProject.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
-                            + TAB_HORIZONTAL_PADDING_LEVEL_1, SWT.LEFT);
-                    newProjectName.setVisible(true);
-                    // newProjectName.setText(""); //$NON-NLS-1$
-                    newProjectName.forceFocus();
-                    newProjectName.setSelection(0, newProjectName.getText().length());
+                    selectNewProjectName();
                     validateNewProjectName();
                     finishButtonAction = FINISH_BUTTON_ACTION_CREATE_NEW_PROJECT;
                 } else {
@@ -347,6 +346,18 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
     @Override
     public AbstractActionPage getNextPage() {
         return new LoginProjectPage(this.getParent(), loginDialog, SWT.NONE);
+    }
+
+    protected void selectNewProjectName() {
+        createNewProject.setText(Messages.getString("LoginFirstTimeStartupActionPage.createNewProject.selected")); //$NON-NLS-1$
+        createNewProject.pack();
+        FormData formData = (FormData) newProjectName.getLayoutData();
+        formData.left = new FormAttachment(createNewProject, createNewProject.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
+                + TAB_HORIZONTAL_PADDING_LEVEL_1, SWT.LEFT);
+        newProjectName.setVisible(true);
+        // newProjectName.setText(""); //$NON-NLS-1$
+        newProjectName.forceFocus();
+        newProjectName.selectAll();
     }
 
     protected void validateNewProjectName() {

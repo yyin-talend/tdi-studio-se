@@ -60,4 +60,14 @@ public class ProjectSettingNode extends PreferenceNode {
         this.order = order;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return this.getId();
+    }
+
 }

@@ -10,14 +10,20 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.preference.constants;
+package org.talend.designer.runprocess.maven;
+
+import org.talend.designer.maven.template.AbstractMavenTemplateManager;
 
 /**
- * ggu class global comment. Detailled comment
- * 
+ * DOC ggu class global comment. Detailled comment
  */
-public interface IExportJobPrefConstants {
+public class RunProcessMavenTemplateManager extends AbstractMavenTemplateManager {
 
-    public static final String MAVEN_OSGI_SCRIPT_TEMPLATE = "osgi_maven_script_template"; //$NON-NLS-1$
+    /**
+     * DOC ggu RunProcessMavenTemplateManager constructor comment.
+     */
+    public RunProcessMavenTemplateManager() {
+        //
+    }
 
 }

@@ -41,9 +41,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.ConnectionBean;
+import org.talend.core.model.general.Project;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
@@ -149,7 +151,7 @@ public class LoginDialogV2 extends TrayDialog {
 
     protected void initFont() {
         if (errorFont == null || errorFont.isDisposed()) {
-            errorFont = new Font(null, FONT_ARIAL, 11, SWT.BOLD);
+            errorFont = new Font(null, FONT_ARIAL, 9, SWT.BOLD);
         }
 
         if (fixedFont == null || fixedFont.isDisposed()) {
@@ -233,6 +235,11 @@ public class LoginDialogV2 extends TrayDialog {
      * @param container
      */
     protected void calcFontRate(Composite container) {
+        if (EnvironmentUtils.isMacOsSytem()) {
+            realWidthRate = 1.0;
+            realHeightRate = 1.0;
+            return;
+        }
         Label testFontLabel = new Label(container, SWT.NONE);
         testFontLabel.setText(TEST_FONT_STRING);
         Point testFontSize = testFontLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -244,17 +251,25 @@ public class LoginDialogV2 extends TrayDialog {
     protected void showFirstPage() {
         AbstractLoginActionPage loginPage = null;
         if (LoginHelper.isTalendLogonFirstTimeStartup()) {
-            if (PluginChecker.isSVNProviderPluginLoaded()) {
-                // for tis
-                List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
-                if (storedConnections == null || storedConnections.isEmpty()
-                        || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)))) {
-                    // for local license case
-                    loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
+            // try to find if there are projects in workspace
+            Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
+            boolean hasProjects = false;
+            if (projects != null && 0 < projects.length) {
+                hasProjects = true;
+            }
+            if (!hasProjects) {
+                if (PluginChecker.isSVNProviderPluginLoaded()) {
+                    // for tis
+                    List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
+                    if (storedConnections == null || storedConnections.isEmpty()
+                            || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)))) {
+                        // for local license case
+                        loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
+                    }
+                } else {
+                    // for tos
+                    loginPage = new LoginAgreementPage(base, this, SWT.NONE);
                 }
-            } else {
-                // for tos
-                loginPage = new LoginAgreementPage(base, this, SWT.NONE);
             }
         }
         if (loginPage == null) {
@@ -281,7 +296,7 @@ public class LoginDialogV2 extends TrayDialog {
         GridData loginInfoAreaGridData = new GridData(GridData.FILL_BOTH);
         // loginInfoAreaGridData.minimumWidth = 350;
         // loginInfoAreaGridData.minimumHeight = brandingAreaGridData.minimumHeight;
-        loginInfoAreaGridData.widthHint = (int) Math.ceil(realWidthRate * 350);
+        loginInfoAreaGridData.widthHint = (int) Math.ceil(realWidthRate * 390);
         loginInfoAreaGridData.heightHint = brandingAreaGridData.heightHint;
         loginInfoArea.setLayoutData(loginInfoAreaGridData);
         loginInfoArea.setLayout(new FormLayout());
@@ -337,7 +352,7 @@ public class LoginDialogV2 extends TrayDialog {
         errorTextLabel = new Label(errorMessageArea, SWT.WRAP);
         formData = new FormData();
         formData.top = new FormAttachment(0, 0);
-        formData.bottom = new FormAttachment(100, 0);
+        // formData.bottom = new FormAttachment(100, 0);
         formData.left = new FormAttachment(0, 0);
         formData.right = new FormAttachment(100, 0);
         errorTextLabel.setLayoutData(formData);
@@ -391,8 +406,8 @@ public class LoginDialogV2 extends TrayDialog {
     protected void adjustErrorMessageAreaSize() {
         errorMessageArea.pack();
         Point errorMessageAreaSize = errorMessageArea.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        final int MAX_HEIGHT = 55;
-        if (MAX_HEIGHT < errorMessageAreaSize.x) {
+        final int MAX_HEIGHT = 44;
+        if (MAX_HEIGHT < errorMessageAreaSize.y) {
             FormData formData = (FormData) errorMessageArea.getLayoutData();
             formData.height = MAX_HEIGHT;
         }
