@@ -29,18 +29,24 @@ public class MavenJobRepositorySettingTester implements IRepositorySettingTester
                 if (contentType.equals(ERepositoryObjectType.PROCESS)) {
                     return true;
                 }
-                if (contentType.equals(ERepositoryObjectType.PROCESS_MR)) {
-                    return true;
-                }
-                if (contentType.equals(ERepositoryObjectType.PROCESS_STORM)) {
-                    return true;
-                }
-                if (contentType.equals(ERepositoryObjectType.PROCESS_SPARK)) {
-                    return true;
-                }
-                if (contentType.equals(ERepositoryObjectType.PROCESS_SPARKSTREAMING)) {
-                    return true;
-                }
+
+                /*
+                 * if want to support Big Data jobs, need impl the extension point
+                 * "org.talend.designer.maven.ui.repositoryMavenSetting" for "RepositorySupportType" also.
+                 */
+
+                // if (contentType.equals(ERepositoryObjectType.PROCESS_MR)) {
+                // return true;
+                // }
+                // if (contentType.equals(ERepositoryObjectType.PROCESS_STORM)) {
+                // return true;
+                // }
+                // if (contentType.equals(ERepositoryObjectType.PROCESS_SPARK)) {
+                // return true;
+                // }
+                // if (contentType.equals(ERepositoryObjectType.PROCESS_SPARKSTREAMING)) {
+                // return true;
+                // }
             }
         }
         return false;
