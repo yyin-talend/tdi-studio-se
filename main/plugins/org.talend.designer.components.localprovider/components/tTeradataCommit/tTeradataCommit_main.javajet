@@ -1,10 +1,10 @@
-<%@ jet 
+<%@ jet
 imports="
-    org.talend.core.model.process.INode 
-    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.utils.NodeUtil
-" 
+"
 %>
 <%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
@@ -19,30 +19,42 @@ imports="
 
     INode tTeradataConnection = NodeUtil.getNodeByUniqueName(node.getProcess(), connection);
     boolean useQueryBanding = "true".equals(ElementParameterParser.getValue(tTeradataConnection, "__QUERY_BAND__"));
+    boolean activateQueryLogging = "true".equals(ElementParameterParser.getValue(tTeradataConnection, "__ACTIVATE_QUERY_LOGGING__"));
+    String usrName = ElementParameterParser.getValue(tTeradataConnection, "__USER__");
 %>
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed())
 {
 <%  if(close){%>
-	try{
+    try{
 <% }%>
-		<%log4jCodeGenerateUtil.commit(node);%>
+        <%log4jCodeGenerateUtil.commit(node);%>
 <%  if(close){%>
-	}finally{
+    }finally{
         <%if(useQueryBanding){%>
             //add query band support for teradata12+
             // end query band for session
-            conn_<%=cid%>.setAutoCommit(true);          
+            conn_<%=cid%>.setAutoCommit(true);
             try{
-                 conn_<%=cid%>.createStatement().execute("SET QUERY_BAND = NONE FOR SESSION");               
-                 conn_<%=cid%>.createStatement().execute("END QUERY LOGGING ON ALL");                 
+                 conn_<%=cid%>.createStatement().execute("SET QUERY_BAND = NONE FOR SESSION");
+                 <%
+                    if(activateQueryLogging){
+                        %>
+                           try{
+                              conn_<%=cid%>.createStatement().execute("END QUERY LOGGING ON " + <%= usrName %>);
+                           }catch(Exception e){
+                                  System.err.println(e.getMessage());
+                           }
+                        <%
+                    }
+                  %>
              }catch(Exception e){
                     <%dbLog.logPrintedException("e.getMessage()");%>
                     System.err.println(e.getMessage());
              }
 
         <%}%>
-		<%log4jCodeGenerateUtil.close(node);%>
+        <%log4jCodeGenerateUtil.close(node);%>
     }
 <% }%>
 }

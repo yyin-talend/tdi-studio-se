@@ -91,13 +91,13 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	<PARAMETER
-		NAME="PROPERTIES"
-		FIELD="TEXT"
-		NUM_ROW="6"
-		REPOSITORY_VALUE="PROPERTIES_STRING">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+        NAME="PROPERTIES"
+        FIELD="TEXT"
+        NUM_ROW="6"
+        REPOSITORY_VALUE="PROPERTIES_STRING">
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -108,28 +108,32 @@
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="USE_SHARED_CONNECTION"
-	  FIELD="CHECK"
+      FIELD="CHECK"
       NUM_ROW="10"
       REQUIRED="true"
     >
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="SHARED_CONNECTION_NAME"
-	  FIELD="TEXT"
+      FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
-	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
+      SHOW_IF="USE_SHARED_CONNECTION == 'true'"
     >
-	<DEFAULT></DEFAULT>
+    <DEFAULT></DEFAULT>
     </PARAMETER>
 
    </PARAMETERS>
 
-	<ADVANCED_PARAMETERS>
+    <ADVANCED_PARAMETERS>
     <PARAMETER FIELD="CHECK" NAME="QUERY_BAND" NUM_ROW="10">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER FIELD="CHECK" NAME="ACTIVATE_QUERY_LOGGING" NUM_ROW="10"
+               SHOW_IF="QUERY_BAND == 'true'">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
     <PARAMETER FIELD="TABLE" NAME="QUERY_BAND_PARAMETERS" NB_LINES="4" NUM_ROW="15" REQUIRED="true" SHOW_IF="QUERY_BAND == 'true'">
@@ -138,15 +142,15 @@
         <ITEM NAME="VALUE"/>
       </ITEMS>
     </PARAMETER>
-		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="20">
-			<DEFAULT>false</DEFAULT>
+        <PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="20">
+            <DEFAULT>false</DEFAULT>
     </PARAMETER>
-	</ADVANCED_PARAMETERS>
+    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" MVN="mvn:org.talend.libraries/terajdbc4/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" MVN="mvn:org.talend.libraries/tdgssconfig/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" MVN="mvn:org.talend.libraries/terajdbc4/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" MVN="mvn:org.talend.libraries/tdgssconfig/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

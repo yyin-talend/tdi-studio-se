@@ -65,7 +65,7 @@
       DYNAMIC_SETTINGS="true"
     />
 
-	<PARAMETER
+    <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
       NUM_ROW="2"
@@ -175,16 +175,16 @@
 
    <ADVANCED_PARAMETERS>
 
-   	<PARAMETER
-		NAME="PROPERTIES"
-		FIELD="TEXT"
-		NUM_ROW="3"
-		REPOSITORY_VALUE="PROPERTIES_STRING"
-		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+        NAME="PROPERTIES"
+        FIELD="TEXT"
+        NUM_ROW="3"
+        REPOSITORY_VALUE="PROPERTIES_STRING"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
 
-  	<PARAMETER
+    <PARAMETER
       NAME="PROPAGATE_RECORD_SET"
       FIELD="CHECK"
       NUM_ROW="5"
@@ -199,7 +199,7 @@
       SHOW_IF="PROPAGATE_RECORD_SET == 'true'"
     />
 
-	<PARAMETER
+    <PARAMETER
       NAME="USE_PREPAREDSTATEMENT"
       FIELD="CHECK"
       NUM_ROW="6"
@@ -207,7 +207,7 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="SET_PREPAREDSTATEMENT_PARAMETERS"
       FIELD="TABLE"
       REQUIRED="false"
@@ -217,31 +217,31 @@
     >
       <ITEMS>
         <ITEM NAME="PARAMETER_INDEX" VALUE="" />
-		<ITEM NAME="PARAMETER_TYPE" VALUE="String" FIELD="CLOSED_LIST">
-			<ITEMS DEFAULT="String">
-        		<ITEM NAME="BigDecimal"  	VALUE="BigDecimal"/>
-        		<ITEM NAME="Blob"  			VALUE="Blob"/>
-        		<ITEM NAME="Boolean"  		VALUE="Boolean"/>
-        		<ITEM NAME="Byte"  			VALUE="Byte"/>
-        		<ITEM NAME="Bytes"  		VALUE="Bytes"/>
-        		<ITEM NAME="Clob"  			VALUE="Clob"/>
-        		<ITEM NAME="Date" 			VALUE="Date"/>
-        		<ITEM NAME="Double"			VALUE="Double"/>
-        		<ITEM NAME="Float" 			VALUE="Float"/>
-        		<ITEM NAME="Int" 			VALUE="Int"/>
-        		<ITEM NAME="Long" 			VALUE="Long"/>
-        		<ITEM NAME="Object" 		VALUE="Object"/>
-        		<ITEM NAME="Short" 			VALUE="Short"/>
-        		<ITEM NAME="String" 		VALUE="String"/>
-        		<ITEM NAME="Time" 			VALUE="Time"/>
-        		<ITEM NAME="Null" 			VALUE="Null"/>
-        	</ITEMS>
-		</ITEM>
+        <ITEM NAME="PARAMETER_TYPE" VALUE="String" FIELD="CLOSED_LIST">
+            <ITEMS DEFAULT="String">
+                <ITEM NAME="BigDecimal"     VALUE="BigDecimal"/>
+                <ITEM NAME="Blob"           VALUE="Blob"/>
+                <ITEM NAME="Boolean"        VALUE="Boolean"/>
+                <ITEM NAME="Byte"           VALUE="Byte"/>
+                <ITEM NAME="Bytes"          VALUE="Bytes"/>
+                <ITEM NAME="Clob"           VALUE="Clob"/>
+                <ITEM NAME="Date"           VALUE="Date"/>
+                <ITEM NAME="Double"         VALUE="Double"/>
+                <ITEM NAME="Float"          VALUE="Float"/>
+                <ITEM NAME="Int"            VALUE="Int"/>
+                <ITEM NAME="Long"           VALUE="Long"/>
+                <ITEM NAME="Object"         VALUE="Object"/>
+                <ITEM NAME="Short"          VALUE="Short"/>
+                <ITEM NAME="String"         VALUE="String"/>
+                <ITEM NAME="Time"           VALUE="Time"/>
+                <ITEM NAME="Null"           VALUE="Null"/>
+            </ITEMS>
+        </ITEM>
         <ITEM NAME="PARAMETER_VALUE" VALUE="" />
       </ITEMS>
     </PARAMETER>
 
-   	<PARAMETER
+    <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
       NUM_ROW="10"
@@ -250,16 +250,20 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-	<PARAMETER
-  		NAME="NOTE"
-  		FIELD="LABEL"
-  		NUM_ROW="10"
-		SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-		>
-		<DEFAULT>Note : this value must &lt; 16383</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+        NAME="NOTE"
+        FIELD="LABEL"
+        NUM_ROW="10"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+        >
+        <DEFAULT>Note : this value must &lt; 16383</DEFAULT>
+    </PARAMETER>
 
   <PARAMETER FIELD="CHECK" NAME="QUERY_BAND" NUM_ROW="20" SHOW_IF="USE_EXISTING_CONNECTION == 'false'" >
+    <DEFAULT>false</DEFAULT>
+  </PARAMETER>
+  <PARAMETER FIELD="CHECK" NAME="ACTIVATE_QUERY_LOGGING" NUM_ROW="20"
+             SHOW_IF="QUERY_BAND == 'true'">
     <DEFAULT>false</DEFAULT>
   </PARAMETER>
   <PARAMETER FIELD="TABLE" NAME="QUERY_BAND_PARAMETERS" NB_LINES="3" NUM_ROW="25" REQUIRED="true" SHOW_IF="(QUERY_BAND == 'true') and (USE_EXISTING_CONNECTION == 'false')">
@@ -272,8 +276,8 @@
 
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" MVN="mvn:org.talend.libraries/terajdbc4/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" MVN="mvn:org.talend.libraries/tdgssconfig/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" MVN="mvn:org.talend.libraries/terajdbc4/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" MVN="mvn:org.talend.libraries/tdgssconfig/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

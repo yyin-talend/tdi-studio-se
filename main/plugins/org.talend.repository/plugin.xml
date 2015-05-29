@@ -2424,6 +2424,15 @@
               name="ChangeMongoDBMinimalVersion"
               version="6.0.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.ActivateQueryLogging"
+              id="org.talend.repository.model.migration.ActivateQueryLogging"
+              description="Activate Query Logging for tTeradata Components"
+              name="ActivateQueryLogging"
+              version="6.0.0">
+        </projecttask>
    </extension>
 
    <extension

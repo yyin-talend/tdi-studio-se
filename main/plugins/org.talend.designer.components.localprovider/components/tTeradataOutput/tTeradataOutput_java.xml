@@ -143,16 +143,16 @@
       </ITEMS>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="CREATE_TABLE_TYPE"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
       NOT_SHOW_IF="(PARALLELIZE =='true') OR ((TABLE_ACTION!='CREATE') AND (TABLE_ACTION!='CREATE_IF_NOT_EXISTS') AND (TABLE_ACTION!='DROP_IF_EXISTS_AND_CREATE') AND (TABLE_ACTION!='DROP_CREATE'))"
     >
-    	<ITEMS DEFAULT="SET">
-			<ITEM NAME="SET" VALUE="SET" />
-			<ITEM NAME="MULTISET" VALUE="MULTISET" />
-		</ITEMS>
+        <ITEMS DEFAULT="SET">
+            <ITEM NAME="SET" VALUE="SET" />
+            <ITEM NAME="MULTISET" VALUE="MULTISET" />
+        </ITEMS>
     </PARAMETER>
 
     <PARAMETER
@@ -190,7 +190,7 @@
       </TABLE>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
       NUM_ROW="15"
@@ -198,7 +198,7 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="10"
@@ -211,14 +211,14 @@
 
   <ADVANCED_PARAMETERS>
 
-	<PARAMETER
-		NAME="PROPERTIES"
-		FIELD="TEXT"
-		NUM_ROW="3"
-		REPOSITORY_VALUE="PROPERTIES_STRING"
-		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+        NAME="PROPERTIES"
+        FIELD="TEXT"
+        NUM_ROW="3"
+        REPOSITORY_VALUE="PROPERTIES_STRING"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="COMMIT_EVERY"
@@ -229,14 +229,14 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-  	<PARAMETER
-  		NAME="NOTE"
-  		FIELD="LABEL"
-  		NUM_ROW="6"
-		SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-		>
-		<DEFAULT>Note : this value must &lt; 16383</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+        NAME="NOTE"
+        FIELD="LABEL"
+        NUM_ROW="6"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+        >
+        <DEFAULT>Note : this value must &lt; 16383</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="ADD_COLS"
@@ -247,7 +247,7 @@
     >
       <ITEMS>
         <ITEM NAME="NAME" VALUE='"colname"' />
-		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" RAW="true" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
+        <ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" RAW="true" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
         <ITEM NAME="SQL" VALUE='"now()"' />
         <ITEM NAME="POS" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="BEFORE">
@@ -261,6 +261,10 @@
     </PARAMETER>
 
   <PARAMETER FIELD="CHECK" NAME="QUERY_BAND" NUM_ROW="10" SHOW_IF="USE_EXISTING_CONNECTION == 'false'" >
+    <DEFAULT>false</DEFAULT>
+  </PARAMETER>
+  <PARAMETER FIELD="CHECK" NAME="ACTIVATE_QUERY_LOGGING" NUM_ROW="10"
+             SHOW_IF="QUERY_BAND == 'true'">
     <DEFAULT>false</DEFAULT>
   </PARAMETER>
   <PARAMETER FIELD="TABLE" NAME="QUERY_BAND_PARAMETERS" NB_LINES="3" NUM_ROW="11"  REQUIRED="true" SHOW_IF="(QUERY_BAND == 'true') and (USE_EXISTING_CONNECTION == 'false')">
@@ -294,21 +298,21 @@
       </ITEMS>
     </PARAMETER>
 
-  	<PARAMETER
-  	  NAME="ENABLE_DEBUG_MODE"
-  	  FIELD="CHECK"
-	  NUM_ROW="15">
-	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+      NAME="ENABLE_DEBUG_MODE"
+      FIELD="CHECK"
+      NUM_ROW="15">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
-  	<PARAMETER
-  	  NAME="USE_BATCH_SIZE"
-  	  FIELD="CHECK"
-	    NUM_ROW="20"
-	    SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_EXISTING_CONNECTION == 'false')"
-	  >
-	  <DEFAULT>true</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+      NAME="USE_BATCH_SIZE"
+      FIELD="CHECK"
+        NUM_ROW="20"
+        SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_EXISTING_CONNECTION == 'false')"
+      >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="USE_BATCH_AND_USE_CONN"
@@ -319,36 +323,36 @@
     <DEFAULT>false</DEFAULT>
   </PARAMETER>
 
-  	<PARAMETER
-  	  NAME="BATCH_SIZE"
-  	  FIELD="TEXT"
-	    NUM_ROW="20"
+    <PARAMETER
+      NAME="BATCH_SIZE"
+      FIELD="TEXT"
+        NUM_ROW="20"
       SHOW_IF="((USE_BATCH_SIZE == 'true') AND (isShow[USE_BATCH_SIZE]))
             OR ((USE_BATCH_AND_USE_CONN == 'true') AND (isShow[USE_BATCH_AND_USE_CONN]))">
-	  <DEFAULT>10000</DEFAULT>
-	</PARAMETER>
-  	<PARAMETER
-  		NAME="NOTE"
-  		FIELD="LABEL"
-  		NUM_ROW="20"
-		SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_BATCH_SIZE == 'true') "
-		>
-		<DEFAULT>Note : this value must &lt; 16383</DEFAULT>
-	</PARAMETER>
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+        NAME="NOTE"
+        FIELD="LABEL"
+        NUM_ROW="20"
+        SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_BATCH_SIZE == 'true') "
+        >
+        <DEFAULT>Note : this value must &lt; 16383</DEFAULT>
+    </PARAMETER>
 
-	<PARAMETER
-		NAME="SUPPORT_NULL_WHERE"
-		FIELD="CHECK"
-		NUM_ROW="30">
-		  <DEFAULT>false</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+        NAME="SUPPORT_NULL_WHERE"
+        FIELD="CHECK"
+        NUM_ROW="30">
+          <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" MVN="mvn:org.talend.libraries/terajdbc4/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" MVN="mvn:org.talend.libraries/tdgssconfig/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" MVN="mvn:org.talend.libraries/terajdbc4/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" MVN="mvn:org.talend.libraries/tdgssconfig/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 
