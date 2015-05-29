@@ -3,6 +3,13 @@
 java.sql.Connection conn_<%=cid%> = null;
 <%
 boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+boolean isEnableDatasource = false;
+if(cid.indexOf("tMSSqlOutput")>-1 || cid.indexOf("tMSSqlSP")>-1 ){
+	isEnableDatasource = true;
+}
+%>
+String dbUser_<%=cid %> = null;
+<%
 if(useExistingConnection) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
@@ -10,9 +17,32 @@ if(useExistingConnection) {
 	%>
 	dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    <%
+	INode connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),connection);
+	boolean specify_alias = "true".equals(ElementParameterParser.getValue(connectionNode, "__SPECIFY_DATASOURCE_ALIAS__"));
+	if(isEnableDatasource && specify_alias){
+		String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
+		%>
+		if (null == conn_<%=cid%>) {
+			java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+			conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		}
+	<%
+	}
+	%>
 	<%dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", "conn_"+cid+".getMetaData().getUserName()");%>
 <%
 } else {
+	boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));   
+	if(isEnableDatasource && specify_alias){
+		String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+		%>
+		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+		if (null != dataSources_<%=cid%>) {
+			conn_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		} else {
+	<%
+	}
     %>
     dbschema_<%=cid%> = <%=dbschema%>;
     String driverClass_<%=cid%> = "net.sourceforge.jtds.jdbc.Driver";
@@ -28,7 +58,7 @@ if(useExistingConnection) {
     	url_<%=cid%> += "//" + <%=dbname%>; 
     }
     url_<%=cid%> += ";appName=" + projectName + ";" + <%=dbproperties%>;
-    String dbUser_<%=cid %> = <%=dbuser%>;
+    dbUser_<%=cid %> = <%=dbuser%>;
 
     <%
     String passwordFieldName = "__PASS__";
@@ -40,6 +70,11 @@ if(useExistingConnection) {
     <%dbLog.conn().connTry(dbLog.var("url"), dbLog.var("dbUser"));%>	
     conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%dbLog.conn().connDone(dbLog.var("url"));%>
-<%
+	<%
+	if(isEnableDatasource && specify_alias){
+	%>
+		}
+	<%
+	}
 }
 %>

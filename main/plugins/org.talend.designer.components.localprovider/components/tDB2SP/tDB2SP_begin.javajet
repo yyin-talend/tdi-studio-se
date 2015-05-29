@@ -3,6 +3,7 @@ imports="
 	org.talend.core.model.process.INode
 	org.talend.core.model.process.ElementParameterParser
 	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.utils.NodeUtil
 	java.util.List
 	java.util.Map
 " 
@@ -23,16 +24,42 @@ String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
 boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 
-%><%
+%>
+java.sql.Connection connection_<%=cid%> = null;
+<%
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 if(("true").equals(useExistingConn)) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
 %>
-java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%
+INode connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),connection);
+boolean specify_alias = "true".equals(ElementParameterParser.getValue(connectionNode, "__SPECIFY_DATASOURCE_ALIAS__"));
+if(specify_alias){
+	String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
+	String autoCommit = "true".equals(ElementParameterParser.getValue(connectionNode, "__AUTO_COMMIT__"))?"true":"false";
+	%>
+	if (null == conn_<%=cid%>) {
+		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+		conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+	}
+<%
+}
+%>
 <%dbLog.conn().useExistConn("connection_"+cid+".getMetaData().getURL()", "connection_"+cid+".getMetaData().getUserName()");%>
 <%
 } else {       
+	boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));   
+	if(specify_alias){
+		String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+		%>
+		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+		if (null != dataSources_<%=cid%>) {
+			connection_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		} else {
+	<%
+	}
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
@@ -52,10 +79,15 @@ String passwordFieldName = "__PASS__";
 
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 <%dbLog.conn().connTry(dbLog.var("url"), dbuser);%>
-java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=dbuser%>, decryptedPassword_<%=cid%>);
+connection_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=dbuser%>, decryptedPassword_<%=cid%>);
 <%dbLog.conn().connDone(dbLog.var("url"));%>
-        	    <%
-			}
+    <%
+	if(specify_alias){
+	%>
+		}
+	<%
+	}
+}
 dbLog.commit().logAutoCommit("connection_"+cid+".getAutoCommit()");
 %>
 

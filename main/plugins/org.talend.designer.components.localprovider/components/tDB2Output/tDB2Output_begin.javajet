@@ -147,6 +147,9 @@ int updatedCount_<%=cid%> = 0;
 int insertedCount_<%=cid%> = 0;
 int rejectedCount_<%=cid%> = 0;
 boolean whetherReject_<%=cid%> = false;
+java.sql.Connection conn_<%=cid%> = null;
+String dbschema_<%=cid%> = null;
+String dbUser_<%=cid %> = null;
 <%
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 if(("true").equals(useExistingConn)) {
@@ -155,12 +158,36 @@ if(("true").equals(useExistingConn)) {
     String tableschema = "tableschema_" + connection;
     String username = "username_" + connection;
     %>
-    String dbschema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");
-    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-    String dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");
+    dbschema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");
+    conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    <%
+	INode connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),connection);
+	boolean specify_alias = "true".equals(ElementParameterParser.getValue(connectionNode, "__SPECIFY_DATASOURCE_ALIAS__"));
+	if(specify_alias){
+		String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
+		String autoCommit = "true".equals(ElementParameterParser.getValue(connectionNode, "__AUTO_COMMIT__"))?"true":"false";
+		%>
+		if (null == conn_<%=cid%>) {
+			java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+			conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		}
+	<%
+	}
+	%>
+    dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");
     <%dbLog.conn().useExistConn("conn_"+cid+".getMetaData().getURL()", "conn_"+cid+".getMetaData().getUserName()");%>
     <%
 } else {
+	boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));
+	if(specify_alias){
+		String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+		%>
+		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+		if (null != dataSources_<%=cid%>) {
+			conn_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		} else {
+	<%
+	}
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
@@ -174,7 +201,7 @@ if(("true").equals(useExistingConn)) {
 %>
     java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
 	<%dbLog.conn().logJDBCDriver(dbLog.str("com.ibm.db2.jcc.DB2Driver"));%>
-    String dbUser_<%=cid %> = <%=dbuser%>;
+    dbUser_<%=cid %> = <%=dbuser%>;
     <%
     String passwordFieldName = "__PASS__";
     %>
@@ -183,10 +210,17 @@ if(("true").equals(useExistingConn)) {
 
     String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 
-    String dbschema_<%=cid%> = <%=tableSchema%>;
+    dbschema_<%=cid%> = <%=tableSchema%>;
     <%dbLog.conn().connTry(dbLog.var("url"), dbLog.var("dbUser"));%>
-    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+    conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%dbLog.conn().connDone(dbLog.var("url"));%>
+    <%
+   	if(specify_alias){
+	%>
+		}
+	<%
+	}
+    %>
     resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
     <%
 }
