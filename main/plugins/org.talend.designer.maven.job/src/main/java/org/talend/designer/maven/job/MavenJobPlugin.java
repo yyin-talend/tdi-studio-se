@@ -31,7 +31,6 @@ public class MavenJobPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        projectPreferenceManager = new ProjectPreferenceManager(PLUGIN_ID);
     }
 
     /*
@@ -54,6 +53,9 @@ public class MavenJobPlugin extends AbstractUIPlugin {
     }
 
     public ProjectPreferenceManager getProjectPreferenceManager() {
+        if (projectPreferenceManager == null) {
+            projectPreferenceManager = new ProjectPreferenceManager(PLUGIN_ID);
+        }
         return projectPreferenceManager;
     }
 

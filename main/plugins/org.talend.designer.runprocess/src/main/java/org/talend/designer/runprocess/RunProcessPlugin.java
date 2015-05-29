@@ -61,7 +61,6 @@ public class RunProcessPlugin extends AbstractUIPlugin {
         if (runProcessContextManager == null) {
             runProcessContextManager = new RunProcessContextManager();
         }
-        projectPreferenceManager = new ProjectPreferenceManager(PLUGIN_ID);
     }
 
     /*
@@ -93,6 +92,9 @@ public class RunProcessPlugin extends AbstractUIPlugin {
     }
 
     public ProjectPreferenceManager getProjectPreferenceManager() {
+        if (projectPreferenceManager == null) {
+            projectPreferenceManager = new ProjectPreferenceManager(PLUGIN_ID);
+        }
         return projectPreferenceManager;
     }
 
