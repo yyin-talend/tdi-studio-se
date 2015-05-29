@@ -39,14 +39,14 @@ public class OSGiBundleRepositoryMavenSetting extends RepositoryMavenSetting {
 
         IFolder nodeFolder = DesignerMavenUiHelper.getNodeFolder(node);
 
-        List<IPreferenceNode> autonomousJobChildrenNodes = createOSGiBundleChildNode(nodeFolder, node, osgiBundleNode.getId(),
+        List<IPreferenceNode> osgiBundleChildrenNodes = createOSGiBundleChildrenNodes(nodeFolder, node, osgiBundleNode.getId(),
                 true);
-        for (IPreferenceNode n : autonomousJobChildrenNodes) {
+        for (IPreferenceNode n : osgiBundleChildrenNodes) {
             osgiBundleNode.add(n);
         }
     }
 
-    public static List<IPreferenceNode> createOSGiBundleChildNode(IFolder nodeFolder, RepositoryNode node, String parentId,
+    public static List<IPreferenceNode> createOSGiBundleChildrenNodes(IFolder nodeFolder, RepositoryNode node, String parentId,
             boolean checkExist) {
         List<IPreferenceNode> childrenNodes = new ArrayList<IPreferenceNode>();
 

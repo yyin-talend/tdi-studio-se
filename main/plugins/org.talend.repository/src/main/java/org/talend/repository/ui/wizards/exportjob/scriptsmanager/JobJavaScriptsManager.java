@@ -91,7 +91,6 @@ import org.talend.core.repository.utils.Log4jUtil;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
-import org.talend.core.services.resource.IExportJobResourcesService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.core.ui.services.IRulesProviderService;
@@ -690,9 +689,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // routines
         addRoutinesResources(processes, libResource);
 
-        // Add libraries which are needed by build scripts.
-        List<URL> buildScriptLibraries = getBuildScriptLibraries();
-        libResource.addResources(buildScriptLibraries);
+        // // Add libraries which are needed by build scripts.
+        // List<URL> buildScriptLibraries = getBuildScriptLibraries();
+        // libResource.addResources(buildScriptLibraries);
 
         // Add log4jFiles to lib folder if log4j is enable
         // addLog4jXmlToRes(libResource);
@@ -710,24 +709,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<URL> userRoutineList = getUserRoutine(processes);
             libResource.addResources(userRoutineList);
         }
-    }
-
-    protected List<URL> getBuildScriptLibraries() {
-        List<URL> list = new ArrayList<URL>();
-        if (isOptionChoosed(ExportChoice.needAntScript)) {
-            IExportJobResourcesService resourcesService = null;
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
-                resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
-                        IExportJobResourcesService.class);
-            }
-            if (resourcesService != null) {
-                list = resourcesService.getAntRequiredLibs();
-            }
-        } else if (isOptionChoosed(ExportChoice.needMavenScript)) {
-            // TODO:
-        }
-
-        return list;
     }
 
     /**

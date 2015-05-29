@@ -15,8 +15,9 @@ package org.talend.designer.maven.job.setting.project.initializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.runtime.projectsetting.IProjectSettingPreferenceConstants;
+import org.talend.core.runtime.projectsetting.IProjectSettingTemplateConstants;
 import org.talend.designer.maven.job.MavenJobPlugin;
-import org.talend.designer.maven.template.MavenTemplateConstants;
+import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.template.MavenTemplateManager;
 import org.talend.designer.maven.ui.setting.project.initializer.AbstractProjectPreferenceInitializer;
 
@@ -39,15 +40,16 @@ public class MavenJobScriptsProjectSettingInitializer extends AbstractProjectPre
 
             // FIXME, later, should move the template from maven to maven.job plugin.
             String pomJobContent = MavenTemplateManager
-                    .getBundleTemplateContent(MavenTemplateConstants.POM_JOB_TEMPLATE_FILE_NAME);
+                    .getBundleTemplateContent(IProjectSettingTemplateConstants.POM_JOB_TEMPLATE_FILE_NAME);
             preferenceStore.setDefault(IProjectSettingPreferenceConstants.TEMPLATE_STANDALONE_JOB_POM, pomJobContent);
 
             String assemblyContent = MavenTemplateManager
-                    .getBundleTemplateContent(MavenTemplateConstants.ASSEMBLY_JOB_TEMPLATE_FILE_NAME);
+                    .getBundleTemplateContent(IProjectSettingTemplateConstants.ASSEMBLY_JOB_TEMPLATE_FILE_NAME);
             preferenceStore.setDefault(IProjectSettingPreferenceConstants.TEMPLATE_STANDALONE_JOB_ASSEMBLY, assemblyContent);
 
             setDefault(preferenceStore, IProjectSettingPreferenceConstants.TEMPLATE_OSGI_BUNDLE_POM,
-                    MavenTemplateConstants.PATH_OSGI_BUNDLE_TEMPLATE + '/' + MavenTemplateConstants.POM_JOB_TEMPLATE_FILE_NAME);
+                    IProjectSettingTemplateConstants.PATH_RESOURCES_TEMPLATES + '/' + TalendMavenConstants.OSGI_BUNDLE_NAME + '/'
+                            + IProjectSettingTemplateConstants.POM_JOB_TEMPLATE_FILE_NAME);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }

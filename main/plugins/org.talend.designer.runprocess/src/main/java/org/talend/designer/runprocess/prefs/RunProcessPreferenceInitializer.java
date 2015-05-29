@@ -22,9 +22,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.runtime.projectsetting.IProjectSettingPreferenceConstants;
+import org.talend.core.runtime.projectsetting.IProjectSettingTemplateConstants;
 import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.designer.maven.template.AbstractMavenTemplateManager;
-import org.talend.designer.maven.template.MavenTemplateConstants;
 import org.talend.designer.maven.template.MavenTemplateManager;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -73,22 +73,25 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
             if (projectPreferenceManager != null) {
                 IPreferenceStore projectSettingStore = projectPreferenceManager.getPreferenceStore();
                 try {
-                    InputStream shStream = templateManager.readBundleStream(MavenTemplateConstants.PATH_RESOURCES_TEMPLATES + '/'
-                            + MavenTemplateConstants.JOB_RUN_SH_TEMPLATE_FILE_NAME);
+                    InputStream shStream = templateManager
+                            .readBundleStream(IProjectSettingTemplateConstants.PATH_RESOURCES_TEMPLATES + '/'
+                                    + IProjectSettingTemplateConstants.JOB_RUN_SH_TEMPLATE_FILE_NAME);
                     String shContent = MavenTemplateManager.getContentFromInputStream(shStream);
                     if (shContent != null) {
                         projectSettingStore.setDefault(IProjectSettingPreferenceConstants.TEMPLATE_SH, shContent);
                     }
 
-                    InputStream batStream = templateManager.readBundleStream(MavenTemplateConstants.PATH_RESOURCES_TEMPLATES
-                            + '/' + MavenTemplateConstants.JOB_RUN_BAT_TEMPLATE_FILE_NAME);
+                    InputStream batStream = templateManager
+                            .readBundleStream(IProjectSettingTemplateConstants.PATH_RESOURCES_TEMPLATES + '/'
+                                    + IProjectSettingTemplateConstants.JOB_RUN_BAT_TEMPLATE_FILE_NAME);
                     String batContent = MavenTemplateManager.getContentFromInputStream(batStream);
                     if (batContent != null) {
                         projectSettingStore.setDefault(IProjectSettingPreferenceConstants.TEMPLATE_BAT, batContent);
                     }
 
-                    InputStream jobInfoStream = templateManager.readBundleStream(MavenTemplateConstants.PATH_RESOURCES_TEMPLATES
-                            + '/' + MavenTemplateConstants.JOB_INFO_TEMPLATE_FILE_NAME);
+                    InputStream jobInfoStream = templateManager
+                            .readBundleStream(IProjectSettingTemplateConstants.PATH_RESOURCES_TEMPLATES + '/'
+                                    + IProjectSettingTemplateConstants.JOB_INFO_TEMPLATE_FILE_NAME);
                     String jobInfoContent = MavenTemplateManager.getContentFromInputStream(jobInfoStream);
                     if (jobInfoContent != null) {
                         projectSettingStore.setDefault(IProjectSettingPreferenceConstants.TEMPLATE_JOB_INFO, jobInfoContent);

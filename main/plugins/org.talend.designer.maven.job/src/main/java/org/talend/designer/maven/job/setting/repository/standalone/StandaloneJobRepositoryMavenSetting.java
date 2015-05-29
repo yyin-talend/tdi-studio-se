@@ -34,19 +34,19 @@ public class StandaloneJobRepositoryMavenSetting extends RepositoryMavenSetting 
 
     @Override
     public void createMavenScriptsChildren(final RepositoryPreferenceNode parentNode, final RepositoryNode node) {
-        StandaloneJobRepositorySettingNode autonomousJobNode = new StandaloneJobRepositorySettingNode(parentNode.getId(), node);
-        parentNode.add(autonomousJobNode);
+        StandaloneJobRepositorySettingNode standaloneJobNode = new StandaloneJobRepositorySettingNode(parentNode.getId(), node);
+        parentNode.add(standaloneJobNode);
 
         IFolder nodeFolder = DesignerMavenUiHelper.getNodeFolder(node);
-        List<IPreferenceNode> autonomousJobChildrenNodes = createAutonomousJobChildNode(nodeFolder, node,
-                autonomousJobNode.getId(), true);
-        for (IPreferenceNode n : autonomousJobChildrenNodes) {
-            autonomousJobNode.add(n);
+        List<IPreferenceNode> standaloneJobChildrenNodes = createStandaloneJobChildrenNodes(nodeFolder, node,
+                standaloneJobNode.getId(), true);
+        for (IPreferenceNode n : standaloneJobChildrenNodes) {
+            standaloneJobNode.add(n);
         }
 
     }
 
-    public static List<IPreferenceNode> createAutonomousJobChildNode(IFolder nodeFolder, RepositoryNode node, String parentId,
+    public static List<IPreferenceNode> createStandaloneJobChildrenNodes(IFolder nodeFolder, RepositoryNode node, String parentId,
             boolean checkExist) {
         List<IPreferenceNode> childrenNodes = new ArrayList<IPreferenceNode>();
 

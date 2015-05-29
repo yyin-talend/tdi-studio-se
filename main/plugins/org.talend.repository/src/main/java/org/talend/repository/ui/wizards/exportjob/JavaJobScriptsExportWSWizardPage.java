@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.process.IContext;
@@ -58,7 +59,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.services.resource.IExportJobResourcesService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -1394,12 +1394,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     private void createOptionsForOSGIESB(Composite optionsComposite, Font font) {
-        IExportJobResourcesService resourcesService = null;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
-            resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
-                    IExportJobResourcesService.class);
-        }
-        if (resourcesService == null) {
+        if (!PluginChecker.isPluginLoaded(PluginChecker.MAVEN_JOB_PLUGIN_ID)) {
             return;
         }
 
