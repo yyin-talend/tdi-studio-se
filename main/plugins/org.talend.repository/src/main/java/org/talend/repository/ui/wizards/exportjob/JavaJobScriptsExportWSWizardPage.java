@@ -1394,7 +1394,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     private void createOptionsForOSGIESB(Composite optionsComposite, Font font) {
-        if (!PluginChecker.isPluginLoaded(PluginChecker.MAVEN_JOB_PLUGIN_ID)) {
+        if (!PluginChecker.isPluginLoaded(PluginChecker.EXPORT_JOB_PLUGIN_ID)) {
             return;
         }
 
