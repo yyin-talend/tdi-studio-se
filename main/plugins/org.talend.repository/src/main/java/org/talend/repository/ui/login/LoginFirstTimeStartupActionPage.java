@@ -104,8 +104,6 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
             storedConnections.add(defaultConnectionBean);
             LoginHelper.getInstance().setStoredConnections(storedConnections);
             LoginHelper.getInstance().saveConnections(storedConnections);
-            getErrorManager().setManageConnectionsWarn(
-                    Messages.getString("LoginFirstTimeStartupActionPage.createDefaultConnection")); //$NON-NLS-1$
         } else {
             defaultConnectionBean = storedConnections.get(0);
         }
@@ -123,6 +121,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
     public void afterCreateControl() {
         alwaysAsk.setSelection(LoginHelper.isAlwaysAskAtStartup());
         createNewProject.setSelection(true);
+        finishButtonAction = FINISH_BUTTON_ACTION_CREATE_NEW_PROJECT;
         newProjectName.setText(NEW_PROJECT_NAME);
         newProjectName.setToolTipText(NEW_PROJECT_NAME);
 
@@ -306,8 +305,6 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
                         LoginHelper.getInstance().setStoredConnections(storedConnections);
                         LoginHelper.getInstance().saveConnections(storedConnections);
                         setRepositoryContextInContext();
-                        iErrorManager.setManageConnectionsWarn(Messages
-                                .getString("LoginFirstTimeStartupActionPage.createDefaultConnection")); //$NON-NLS-1$
                     } else if (storedConnections.size() == 1) {
                         defaultConnectionBean = storedConnections.get(0);
                         if (defaultConnectionBean.isComplete()) {
@@ -518,7 +515,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
 
         public void setCreateNewProjectError(String errMsg) {
             createNewProjectErrorMsg = errMsg;
-            loginDialog.setErrorMessage(errMsg);
+            loginDialog.setErrorMessage(errMsg, null);
         }
 
         public void clearCreateNewProjectError() {
@@ -529,7 +526,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
 
         public void setManageConnectionsWarn(String manageConnectionsWarn) {
             this.manageConnectionsWarn = manageConnectionsWarn;
-            loginDialog.setWarnMessage(manageConnectionsWarn);
+            loginDialog.setWarnMessage(manageConnectionsWarn, null);
         }
 
         public void clearManageConnectionsWarn() {
@@ -540,7 +537,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
 
         public void setManageConnectionsError(String manageConnectionsError) {
             this.manageConnectionsError = manageConnectionsError;
-            loginDialog.setErrorMessage(manageConnectionsError);
+            loginDialog.setErrorMessage(manageConnectionsError, null);
         }
 
         public void clearManageConnectionsError() {
@@ -556,17 +553,17 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
                 return true;
             }
             if (createNewProjectErrorMsg != null && !createNewProjectErrorMsg.isEmpty()) {
-                loginDialog.setErrorMessage(createNewProjectErrorMsg);
+                loginDialog.setErrorMessage(createNewProjectErrorMsg, null);
                 return true;
             }
 
             if (manageConnectionsError != null && !manageConnectionsError.isEmpty()) {
-                loginDialog.setErrorMessage(manageConnectionsError);
+                loginDialog.setErrorMessage(manageConnectionsError, null);
                 return true;
             }
 
             if (manageConnectionsWarn != null && !manageConnectionsWarn.isEmpty()) {
-                loginDialog.setWarnMessage(manageConnectionsWarn);
+                loginDialog.setWarnMessage(manageConnectionsWarn, null);
                 return true;
             }
 

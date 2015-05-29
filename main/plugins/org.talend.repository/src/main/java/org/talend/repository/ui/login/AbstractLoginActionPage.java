@@ -12,10 +12,13 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.util.List;
+
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -257,10 +260,19 @@ public abstract class AbstractLoginActionPage extends AbstractActionPage {
 
         protected String infoMessage;
 
+        protected List<StyleRange> infoStyleRange;
+
+        protected List<StyleRange> warnStyleRange;
+
+        protected List<StyleRange> errStyleRange;
+
         public void clearAllMessages() {
             errMessage = null;
             warnMessage = null;
             infoMessage = null;
+            errStyleRange = null;
+            warnStyleRange = null;
+            infoStyleRange = null;
             loginDialog.clearErrorMessage();
         }
 
@@ -272,38 +284,53 @@ public abstract class AbstractLoginActionPage extends AbstractActionPage {
             return this.errMessage;
         }
 
-        public void setErrMessage(String errMessage) {
+        public void setErrMessage(String errMessage, List<StyleRange> errStyleRange) {
             this.errMessage = errMessage;
-            loginDialog.setErrorMessage(errMessage);
+            this.errStyleRange = errStyleRange;
+            loginDialog.setErrorMessage(errMessage, errStyleRange);
+        }
+
+        public void setErrMessage(String errMessage) {
+            setErrMessage(errMessage, null);
         }
 
         public String getWarnMessage() {
             return this.warnMessage;
         }
 
-        public void setWarnMessage(String warnMessage) {
+        public void setWarnMessage(String warnMessage, List<StyleRange> warnStyleRange) {
             this.warnMessage = warnMessage;
-            loginDialog.setWarnMessage(warnMessage);
+            this.warnStyleRange = warnStyleRange;
+            loginDialog.setErrorMessage(warnMessage, warnStyleRange);
+        }
+
+        public void setWarnMessage(String warnMessage) {
+            setWarnMessage(warnMessage, null);
         }
 
         public String getInfoMessage() {
             return this.infoMessage;
         }
 
-        public void setInfoMessage(String infoMessage) {
+        public void setInfoMessage(String infoMessage, List<StyleRange> infoStyleRange) {
             this.infoMessage = infoMessage;
-            loginDialog.setInfoMessage(infoMessage);
+            this.infoStyleRange = infoStyleRange;
+            loginDialog.setInfoMessage(infoMessage, infoStyleRange);
+        }
+
+        public void setInfoMessage(String infoMessage) {
+            setInfoMessage(infoMessage, null);
         }
 
         public boolean showErrorMessage() {
             if (this.errMessage != null && !this.errMessage.isEmpty()) {
-                loginDialog.setErrorMessage(errMessage);
+                loginDialog.setErrorMessage(errMessage, infoStyleRange);
                 return true;
             } else if (this.warnMessage != null && !this.warnMessage.isEmpty()) {
-                loginDialog.setWarnMessage(warnMessage);
+                loginDialog.setWarnMessage(warnMessage, warnStyleRange);
                 return true;
             } else if (this.infoMessage != null && !this.infoMessage.isEmpty()) {
-                loginDialog.setInfoMessage(infoMessage);
+                loginDialog.setInfoMessage(infoMessage, infoStyleRange);
                 return true;
             }
             return false;

@@ -21,6 +21,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -91,30 +93,15 @@ public class LoginDialogV2 extends TrayDialog {
 
     public static final Color VERTICAL_SEPERATOR_LINE_COLOR = new Color(null, 162, 179, 195);
 
-    /**********************************************************************************
-     * DO NOT MODIFY THEM! those size is calc from [testFontLabel.setText("Data_WM");]
-     */
-    private static final String TEST_FONT_STRING = "Data_WM"; //$NON-NLS-1$
-
-    protected static final int STANDARD_BASE_HEIGHT = 15;
-
-    protected static final int STANDARD_BASE_WIDTH = 51;
-
-    /*********************************************************************************/
-
     protected double realHeightRate;
 
     protected double realWidthRate;
 
     protected static Font errorFont;
 
-    protected static Font fixedFont;
+    protected static Font errorFontBorder;
 
-    // private static final Image LOGIN_CRITICAL_IMAGE = ImageProvider.getImage(ERepositoryImages.LOGIN_CRITICAL_ICON);
-    //
-    // private static final Image LOGIN_WARNING_IMAGE = ImageProvider.getImage(ERepositoryImages.LOGIN_WARNING_ICON);
-    //
-    // private static final Image LOGIN_CORRECT_IMAGE = ImageProvider.getImage(ERepositoryImages.LOGIN_CORRECT_ICON);
+    protected static Font fixedFont;
 
     protected Color backgroundColor;
 
@@ -122,7 +109,7 @@ public class LoginDialogV2 extends TrayDialog {
 
     protected Composite errorMessageArea;
 
-    protected Label errorTextLabel;
+    protected StyledText errorTextLabel;
 
     private ConnectionUserPerReader perReader;
 
@@ -152,6 +139,10 @@ public class LoginDialogV2 extends TrayDialog {
     protected void initFont() {
         if (errorFont == null || errorFont.isDisposed()) {
             errorFont = new Font(null, FONT_ARIAL, 9, SWT.BOLD);
+        }
+
+        if (errorFontBorder == null || errorFontBorder.isDisposed()) {
+            errorFontBorder = new Font(null, FONT_ARIAL, 10, SWT.BOLD);
         }
 
         if (fixedFont == null || fixedFont.isDisposed()) {
@@ -235,17 +226,38 @@ public class LoginDialogV2 extends TrayDialog {
      * @param container
      */
     protected void calcFontRate(Composite container) {
-        if (EnvironmentUtils.isMacOsSytem()) {
-            realWidthRate = 1.0;
-            realHeightRate = 1.0;
-            return;
+
+        /**********************************************************************************
+         * DO NOT MODIFY THEM! those size is calc from [testFontLabel.setText("Data_WM");] in Windows and Mac
+         */
+        final String TEST_FONT_STRING = "Data_WM"; //$NON-NLS-1$
+
+        // for Windows and Linux
+        int STANDARD_BASE_HEIGHT = 15;
+        int STANDARD_BASE_WIDTH = 51;
+
+        // for Mac
+        boolean isMac = EnvironmentUtils.isMacOsSytem();
+        if (isMac) {
+            STANDARD_BASE_HEIGHT = 14;
+            STANDARD_BASE_WIDTH = 56;
         }
+        /*********************************************************************************/
+
         Label testFontLabel = new Label(container, SWT.NONE);
         testFontLabel.setText(TEST_FONT_STRING);
         Point testFontSize = testFontLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         realWidthRate = 1.0 * testFontSize.x / STANDARD_BASE_WIDTH;
         realHeightRate = 1.0 * testFontSize.y / STANDARD_BASE_HEIGHT;
         testFontLabel.dispose();
+
+        if (realWidthRate < 1.0 && realHeightRate < 1.0) {
+            realWidthRate = 1.0;
+            realHeightRate = 1.0;
+        } else if (Math.abs(1.0 - realWidthRate) < 0.05 && Math.abs(1.0 - realHeightRate) < 0.05) {
+            realWidthRate = 1.0;
+            realHeightRate = 1.0;
+        }
     }
 
     protected void showFirstPage() {
@@ -345,49 +357,73 @@ public class LoginDialogV2 extends TrayDialog {
         formData.left = new FormAttachment(0, 5);
         formData.right = new FormAttachment(100, -5);
         errorMessageArea.setLayoutData(formData);
-        FormLayout formLayout = new FormLayout();
-        formLayout.marginHeight = 10;
-        formLayout.marginWidth = 10;
-        errorMessageArea.setLayout(formLayout);
-        errorTextLabel = new Label(errorMessageArea, SWT.WRAP);
-        formData = new FormData();
-        formData.top = new FormAttachment(0, 0);
-        // formData.bottom = new FormAttachment(100, 0);
-        formData.left = new FormAttachment(0, 0);
-        formData.right = new FormAttachment(100, 0);
-        errorTextLabel.setLayoutData(formData);
+        GridLayout layout = new GridLayout(1, false);
+        layout.marginHeight = 10;
+        layout.marginWidth = 10;
+        errorMessageArea.setLayout(layout);
+        errorTextLabel = new StyledText(errorMessageArea, SWT.WRAP);
+        errorTextLabel.setEditable(false);
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        errorTextLabel.setLayoutData(layoutData);
     }
 
-    public void setErrorMessage(String errMsg) {
-        errorTextLabel.setFont(errorFont);
-        errorTextLabel.setForeground(WHITE_COLOR);
+    public void setErrorMessage(String errMsg, List<StyleRange> styleRange) {
+        StyleRange[] styleRanges = null;
+        if (styleRange != null && !styleRange.isEmpty()) {
+            styleRanges = styleRange.toArray(new StyleRange[0]);
+        } else {
+            StyleRange range = new StyleRange();
+            range.font = errorFont;
+            range.foreground = WHITE_COLOR;
+            range.start = 0;
+            range.length = errMsg.length();
+            styleRanges = new StyleRange[] { range };
+        }
         errorTextLabel.setText(errMsg);
+        errorTextLabel.setStyleRanges(styleRanges);
         errorTextLabel.setToolTipText(errMsg);
-        errorTextLabel.pack();
         adjustErrorMessageAreaSize();
         errorMessageArea.setBackground(RED_COLOR);
         brandingArea.layout();
         brandingArea.update();
     }
 
-    public void setInfoMessage(String infoMsg) {
-        errorTextLabel.setFont(errorFont);
-        errorTextLabel.setForeground(WHITE_COLOR);
+    public void setInfoMessage(String infoMsg, List<StyleRange> styleRange) {
+        StyleRange[] styleRanges = null;
+        if (styleRange != null && !styleRange.isEmpty()) {
+            styleRanges = styleRange.toArray(new StyleRange[0]);
+        } else {
+            StyleRange range = new StyleRange();
+            range.font = errorFont;
+            range.foreground = WHITE_COLOR;
+            range.start = 0;
+            range.length = infoMsg.length();
+            styleRanges = new StyleRange[] { range };
+        }
         errorTextLabel.setText(infoMsg);
+        errorTextLabel.setStyleRanges(styleRanges);
         errorTextLabel.setToolTipText(infoMsg);
-        errorTextLabel.pack();
         adjustErrorMessageAreaSize();
         errorMessageArea.setBackground(YELLOW_GREEN_COLOR);
         brandingArea.layout();
         brandingArea.update();
     }
 
-    public void setWarnMessage(String warnMsg) {
-        errorTextLabel.setFont(errorFont);
-        errorTextLabel.setForeground(WHITE_COLOR);
+    public void setWarnMessage(String warnMsg, List<StyleRange> styleRange) {
+        StyleRange[] styleRanges = null;
+        if (styleRange != null && !styleRange.isEmpty()) {
+            styleRanges = styleRange.toArray(new StyleRange[0]);
+        } else {
+            StyleRange range = new StyleRange();
+            range.font = errorFont;
+            range.foreground = WHITE_COLOR;
+            range.start = 0;
+            range.length = warnMsg.length();
+            styleRanges = new StyleRange[] { range };
+        }
         errorTextLabel.setText(warnMsg);
+        errorTextLabel.setStyleRanges(styleRanges);
         errorTextLabel.setToolTipText(warnMsg);
-        errorTextLabel.pack();
         adjustErrorMessageAreaSize();
         errorMessageArea.setBackground(YELLOW_COLOR);
         brandingArea.layout();
@@ -397,7 +433,6 @@ public class LoginDialogV2 extends TrayDialog {
     public void clearErrorMessage() {
         errorTextLabel.setText(""); //$NON-NLS-1$
         errorTextLabel.setToolTipText(""); //$NON-NLS-1$
-        errorTextLabel.pack();
         errorMessageArea.setBackground(null);
         brandingArea.layout();
         brandingArea.update();
@@ -405,12 +440,6 @@ public class LoginDialogV2 extends TrayDialog {
 
     protected void adjustErrorMessageAreaSize() {
         errorMessageArea.pack();
-        Point errorMessageAreaSize = errorMessageArea.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        final int MAX_HEIGHT = 44;
-        if (MAX_HEIGHT < errorMessageAreaSize.y) {
-            FormData formData = (FormData) errorMessageArea.getLayoutData();
-            formData.height = MAX_HEIGHT;
-        }
     }
 
     @Override

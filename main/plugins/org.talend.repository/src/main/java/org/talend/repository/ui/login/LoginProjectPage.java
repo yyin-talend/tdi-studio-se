@@ -97,7 +97,6 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
@@ -218,7 +217,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
          */
 
         String execute = Messages.getString("LoginProjectPage.execute"); //$NON-NLS-1$
-        Image openImage = ImageProvider.getImage(ERepositoryImages.OPEN_PROJECT_ICON);
+        // Image openImage = ImageProvider.getImage(ERepositoryImages.OPEN_PROJECT_ICON);
         // Connection Area
         title = new Label(container, SWT.NONE);
         title.setFont(LoginDialogV2.fixedFont);
@@ -270,7 +269,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         importDemoProject.setText(Messages.getString("LoginProjectPage.importDemoProject")); //$NON-NLS-1$
         executeImportDemoProject = new Button(projectOperationArea, SWT.NONE);
         executeImportDemoProject.setFont(LoginDialogV2.fixedFont);
-        executeImportDemoProject.setImage(openImage);
+        // executeImportDemoProject.setImage(openImage);
         executeImportDemoProject.setText(execute);
         executeImportDemoProject.setBackground(backgroundColor);
         // Import Local Project
@@ -279,7 +278,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         importLocalProject.setText(Messages.getString("LoginProjectPage.importLocalProject")); //$NON-NLS-1$
         executeImportLocalProject = new Button(projectOperationArea, SWT.NONE);
         executeImportLocalProject.setFont(LoginDialogV2.fixedFont);
-        executeImportLocalProject.setImage(openImage);
+        // executeImportLocalProject.setImage(openImage);
         executeImportLocalProject.setText(execute);
         executeImportLocalProject.setBackground(backgroundColor);
         // Create SandBox Project
@@ -288,7 +287,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         createSandBoxProject.setText(Messages.getString("LoginProjectPage.createSandBoxProject.title")); //$NON-NLS-1$
         executeCreateSandBoxProject = new Button(projectOperationArea, SWT.NONE);
         executeCreateSandBoxProject.setFont(LoginDialogV2.fixedFont);
-        executeCreateSandBoxProject.setImage(openImage);
+        // executeCreateSandBoxProject.setImage(openImage);
         executeCreateSandBoxProject.setText(execute);
         executeCreateSandBoxProject.setBackground(backgroundColor);
 
@@ -353,7 +352,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         formData.top = new FormAttachment(createSandBoxProject, 0, SWT.CENTER);
         formData.bottom = new FormAttachment(createSandBoxProject, 0, SWT.CENTER);
         formData.right = new FormAttachment(100, -1 * TAB_HORIZONTAL_PADDING_LEVEL_1);
-        // formData.width = LoginDialogV2.getNewButtonSize(executeCreateSandBoxProject, operationButtonPadding).x;
+        formData.width = LoginDialogV2.getNewButtonSize(executeCreateSandBoxProject, operationButtonPadding).x;
         executeCreateSandBoxProject.setLayoutData(formData);
 
         formData = new FormData();
@@ -364,7 +363,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         formData.top = new FormAttachment(importLocalProject, 0, SWT.CENTER);
         formData.bottom = new FormAttachment(importLocalProject, 0, SWT.CENTER);
         formData.right = new FormAttachment(100, -1 * TAB_HORIZONTAL_PADDING_LEVEL_1);
-        // formData.width = LoginDialogV2.getNewButtonSize(executeImportLocalProject, operationButtonPadding).x;
+        formData.width = LoginDialogV2.getNewButtonSize(executeImportLocalProject, operationButtonPadding).x;
         executeImportLocalProject.setLayoutData(formData);
 
         formData = new FormData();
@@ -375,7 +374,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         formData.top = new FormAttachment(importDemoProject, 0, SWT.CENTER);
         formData.bottom = new FormAttachment(importDemoProject, 0, SWT.CENTER);
         formData.right = new FormAttachment(100, -1 * TAB_HORIZONTAL_PADDING_LEVEL_1);
-        // formData.width = LoginDialogV2.getNewButtonSize(executeImportDemoProject, operationButtonPadding).x;
+        formData.width = LoginDialogV2.getNewButtonSize(executeImportDemoProject, operationButtonPadding).x;
         executeImportDemoProject.setLayoutData(formData);
 
         formData = new FormData();
@@ -1877,7 +1876,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
         public void setCreateNewProjectError(String errMsg) {
             createNewProjectErrorMsg = errMsg;
-            loginDialog.setErrorMessage(errMsg);
+            loginDialog.setErrorMessage(errMsg, null);
         }
 
         public void clearCreateNewProjectError() {
@@ -1893,7 +1892,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 return true;
             }
             if (createNewProjectErrorMsg != null && !createNewProjectErrorMsg.isEmpty()) {
-                loginDialog.setErrorMessage(createNewProjectErrorMsg);
+                loginDialog.setErrorMessage(createNewProjectErrorMsg, null);
                 return true;
             }
             return false;
