@@ -41,6 +41,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -215,8 +216,8 @@ public class DefaultRunProcessService implements IRunProcessService {
     }
 
     @Override
-    public void updateLibraries(Set<String> jobModuleList, IProcess process) {
-        JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), process);
+    public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process) {
+        JavaProcessorUtilities.computeLibrariesPath(new HashSet<ModuleNeeded>(jobModuleList), process);
     }
 
     @Override

@@ -108,6 +108,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.includeTestSource),
                 TalendMavenConstants.PROFILE_INCLUDE_TEST_SOURCES);
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.includeLibs), TalendMavenConstants.PROFILE_INCLUDE_LIBS);
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.needContext), TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
 
         return profileBuffer;
     }

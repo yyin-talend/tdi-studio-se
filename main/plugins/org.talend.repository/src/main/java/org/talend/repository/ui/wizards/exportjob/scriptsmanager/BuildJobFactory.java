@@ -36,7 +36,7 @@ public class BuildJobFactory {
      * @param jobExportType
      * @return
      */
-    public static IBuildJobHandler createBuildJobHandler(ProcessItem processItem, String version, String contextName,
+    public static IBuildJobHandler createBuildJobHandler(ProcessItem processItem, String contextName, String version,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType) {
         IBuildJobHandler handler = null;
         switch (jobExportType) {

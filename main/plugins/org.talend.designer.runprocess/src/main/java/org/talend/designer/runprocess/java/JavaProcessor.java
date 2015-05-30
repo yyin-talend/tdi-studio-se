@@ -1043,9 +1043,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         final String libPrefixPath = getLibPrefixPath(true);
         final File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
 
-        Set<String> neededLibraries = getNeededLibraries();
-        JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);
-
+        Set<ModuleNeeded> neededModules = getNeededModules();
+        JavaProcessorUtilities.checkJavaProjectLib(neededModules);
+        Set<String> neededLibraries = new HashSet<String>();
+for (ModuleNeeded neededModule : neededModules) {
+    neededLibraries.add(neededModule.getModuleName());
+}
         File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
 
         StringBuffer libPath = new StringBuffer();
@@ -1088,17 +1091,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return exportJar;
 
     }
-
-    @Override
-    public Set<String> getNeededLibraries() {
-        Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
-        boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
-        if (isLog4jEnabled) {
-            JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
-        }
-        return neededLibraries;
-    }
-
+    
     @Override
     public Set<ModuleNeeded> getNeededModules() {
         Set<ModuleNeeded> neededLibraries = JavaProcessorUtilities.getNeededModulesForProcess(process);

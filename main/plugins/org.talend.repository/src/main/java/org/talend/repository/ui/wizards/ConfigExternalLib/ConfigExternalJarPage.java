@@ -50,6 +50,7 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
@@ -169,7 +170,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 }
                 CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
                 // TDI-18870
-                CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<String>(), null);
+                CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<ModuleNeeded>(), null);
             }
         });
 

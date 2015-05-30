@@ -96,14 +96,6 @@ public class MavenJavaProcessor extends JavaProcessor {
         return this.buildChildrenJobs;
     }
 
-    @Override
-    protected String getBaseLibPath() {
-        if (isOldBuildJob()) {
-            return super.getBaseLibPath();
-        }
-        return JavaUtils.JAVA_LIB_DIRECTORY;
-    }
-
     public void initJobClasspath() {
         String oldInterpreter = ProcessorUtilities.getInterpreter();
         String oldCodeLocation = ProcessorUtilities.getCodeLocation();
@@ -296,7 +288,7 @@ public class MavenJavaProcessor extends JavaProcessor {
             if (monitor == null) {
                 monitor = new NullProgressMonitor();
             }
-            JavaProcessorUtilities.checkJavaProjectLib(getNeededLibraries());
+            JavaProcessorUtilities.checkJavaProjectLib(getNeededModules());
 
             ProjectPomManager pomManager = new ProjectPomManager(getTalendJavaProject().getProject()) {
 

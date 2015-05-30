@@ -24,6 +24,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -177,7 +178,7 @@ public class RunProcessService implements IRunProcessService {
     }
 
     @Override
-    public void updateLibraries(Set<String> jobModuleList, IProcess process) {
+    public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process) {
         delegateService.updateLibraries(jobModuleList, process);
     }
 

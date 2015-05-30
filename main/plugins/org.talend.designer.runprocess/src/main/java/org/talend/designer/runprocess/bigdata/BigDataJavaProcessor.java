@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
@@ -414,13 +415,15 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
      */
     protected Set<String> extractAllLibs() {
         Set<String> libsRequiredByJob = new HashSet<String>();
-        Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
+        Set<ModuleNeeded> neededModules = JavaProcessorUtilities.getNeededModulesForProcess(process);
         if (!ProcessorUtilities.isExportConfig()) {
-            JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
+            JavaProcessorUtilities.addLog4jToModuleList(neededModules);
         }
-        JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);
+        JavaProcessorUtilities.checkJavaProjectLib(neededModules);
 
-        libsRequiredByJob.addAll(neededLibraries);
+        for (ModuleNeeded neededModule : neededModules) {
+            libsRequiredByJob.add(neededModule.getModuleName());
+        }
 
         libsRequiredByJob.add("systemRoutines.jar"); //$NON-NLS-1$
         libsRequiredByJob.add("userRoutines.jar"); //$NON-NLS-1$

@@ -750,7 +750,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     protected boolean isIncludeLibs() {
-        return !isBinaries() && includeLibsButton != null && includeLibsButton.getSelection();
+        if (isBinaries()) {
+            return true;
+        }
+        return includeLibsButton != null && includeLibsButton.getSelection();
     }
 
     protected boolean isAddJavaSources() {

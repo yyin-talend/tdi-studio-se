@@ -58,6 +58,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
@@ -480,7 +481,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             ExceptionHandler.process(e);
         }
         CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
-        CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<String>(), null);
+        CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<ModuleNeeded>(), null);
     }
 
     private String chanageRoutinesPackage(String routineContent, String name) {
