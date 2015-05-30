@@ -301,7 +301,7 @@ public abstract class AbstractLoginActionPage extends AbstractActionPage {
         public void setWarnMessage(String warnMessage, List<StyleRange> warnStyleRange) {
             this.warnMessage = warnMessage;
             this.warnStyleRange = warnStyleRange;
-            loginDialog.setErrorMessage(warnMessage, warnStyleRange);
+            loginDialog.setWarnMessage(warnMessage, warnStyleRange);
         }
 
         public void setWarnMessage(String warnMessage) {
