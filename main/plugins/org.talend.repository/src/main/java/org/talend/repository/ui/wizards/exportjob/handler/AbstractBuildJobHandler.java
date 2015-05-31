@@ -118,6 +118,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
 
         if (!isOptionChoosed(ExportChoice.executeTests)) {
             otherArgsBuffer.append(TalendMavenConstants.ARG_SKIPTESTS);
+        } else {
+            otherArgsBuffer.append("-fn");
         }
 
         return otherArgsBuffer;
