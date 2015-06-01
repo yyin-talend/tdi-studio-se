@@ -18,22 +18,28 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.preference.IPreferenceNode;
+import org.talend.designer.maven.job.setting.repository.MavenJobRepositoryMavenSetting;
 import org.talend.designer.maven.job.setting.repository.standalone.node.StandaloneJobAssemblyRepositorySettingNode;
 import org.talend.designer.maven.job.setting.repository.standalone.node.StandaloneJobPomRepositorySettingNode;
 import org.talend.designer.maven.job.setting.repository.standalone.node.StandaloneJobRepositorySettingNode;
 import org.talend.designer.maven.model.TalendMavenConstants;
-import org.talend.designer.maven.ui.setting.repository.RepositoryMavenSetting;
-import org.talend.designer.maven.ui.setting.repository.node.RepositoryPreferenceNode;
 import org.talend.designer.maven.ui.utils.DesignerMavenUiHelper;
 import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class StandaloneJobRepositoryMavenSetting extends RepositoryMavenSetting {
+public class StandaloneJobRepositoryMavenSetting extends MavenJobRepositoryMavenSetting {
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.designer.maven.ui.setting.repository.RepositoryMavenSetting#createMavenScriptsChildren(org.eclipse
+     * .jface.preference.IPreferenceNode, org.talend.repository.model.RepositoryNode)
+     */
     @Override
-    public void createMavenScriptsChildren(final RepositoryPreferenceNode parentNode, final RepositoryNode node) {
+    public void createMavenScriptsChildren(IPreferenceNode parentNode, RepositoryNode node) {
         StandaloneJobRepositorySettingNode standaloneJobNode = new StandaloneJobRepositorySettingNode(parentNode.getId(), node);
         parentNode.add(standaloneJobNode);
 
@@ -46,8 +52,8 @@ public class StandaloneJobRepositoryMavenSetting extends RepositoryMavenSetting 
 
     }
 
-    public static List<IPreferenceNode> createStandaloneJobChildrenNodes(IFolder nodeFolder, RepositoryNode node, String parentId,
-            boolean checkExist) {
+    public static List<IPreferenceNode> createStandaloneJobChildrenNodes(IFolder nodeFolder, RepositoryNode node,
+            String parentId, boolean checkExist) {
         List<IPreferenceNode> childrenNodes = new ArrayList<IPreferenceNode>();
 
         // if have existed the pom and assembly
