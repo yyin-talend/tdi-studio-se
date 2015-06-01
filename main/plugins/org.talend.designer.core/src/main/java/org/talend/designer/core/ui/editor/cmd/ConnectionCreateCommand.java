@@ -24,7 +24,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.metadata.AvroMetadataTable;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -280,16 +279,8 @@ public class ConnectionCreateCommand extends Command {
      * @return An IMetadataTable appropriate for use with the component in its current context.
      */
     private IMetadataTable getNewMetadataTable() {
-        // TODO: this method will eventually be replaced when the construction of metadata tables is rationalized across
-        // all contexts.
-        IMetadataTable metadataTable;
-        if (source.getComponent().getType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())
-                || source.getComponent().getType().equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName())) {
-            metadataTable = new AvroMetadataTable(source.getProcess());
-        } else {
-            metadataTable = new MetadataTable();
-        }
-        return metadataTable;
+        // All component types use the same MetadataTable implementation.
+        return new MetadataTable();
     }
 
     @Override
