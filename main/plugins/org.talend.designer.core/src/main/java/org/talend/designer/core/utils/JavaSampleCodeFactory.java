@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.core.i18n.Messages;
@@ -74,13 +75,14 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
     private String generateJavaRowCode(final Node node) {
         boolean isSparkNode = false;
         String sparkMapType = "MAP"; //$NON-NLS-1$
+        ComponentCategory componentCategory = ComponentCategory.getComponentCategoryFromName(node.getComponent().getType());
 
         String primeVlue = "// code sample:\r\n" + "//\r\n" + "// multiply by 2 the row identifier\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "// output_row.id = input_row.id * 2;\r\n" + "//\r\n" + "// lowercase the name\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "// output_row.name = input_row.name.toLowerCase();"; //$NON-NLS-1$
 
-        if ("SPARK".equalsIgnoreCase(node.getComponent().getType()) //$NON-NLS-1$
-                || "SPARKSTREAMING".equalsIgnoreCase(node.getComponent().getType())) { //$NON-NLS-1$
+        if (ComponentCategory.CATEGORY_4_SPARK == componentCategory
+                || ComponentCategory.CATEGORY_4_SPARKSTREAMING == componentCategory) {
             isSparkNode = true;
             sparkMapType = node.getPropertyValue("MAPTYPE").toString(); //$NON-NLS-1$
             primeVlue = "// Please add an input to the component to generate a sample code\r\n"; //$NON-NLS-1$
