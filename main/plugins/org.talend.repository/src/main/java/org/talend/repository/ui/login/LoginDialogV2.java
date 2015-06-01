@@ -85,7 +85,7 @@ public class LoginDialogV2 extends TrayDialog {
 
     public static final Color GREY_COLOR = new Color(null, 215, 215, 215);
 
-    public static final Color YELLOW_GREEN_COLOR = new Color(null, 159, 181, 38);// 143, 163, 35
+    public static final Color YELLOW_GREEN_COLOR = new Color(null, 138, 188, 0);// 143, 163, 35
 
     public static final Color YELLOW_COLOR = new Color(null, 255, 173, 37);// 254, 182, 84
 
