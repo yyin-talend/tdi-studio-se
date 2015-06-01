@@ -39,6 +39,7 @@ import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobExportReArchieveCreator;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.repository.ui.wizards.exportjob.util.ExportJobUtil;
 import org.talend.utils.io.FilesUtils;
 
 /**
@@ -99,6 +100,9 @@ public class BuildJobManager {
             File desFile = new File(destinationPath);
 
             File tempFolder = new File(desFile.getParent() + File.separator + File.createTempFile("building_job", "").getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            if (tempFolder.exists()) {
+                tempFolder.delete();
+            }
             File tempProFolder = new File(tempFolder, projectLabel);
             tempProFolder.mkdirs();
             for (int i = 0; i < processes.size(); i++) {
@@ -177,11 +181,13 @@ public class BuildJobManager {
             }
             JavaJobExportReArchieveCreator creator = null;
             if (addClasspathJar) {
+                ExportJobUtil.deleteTempFiles();
                 creator = new JavaJobExportReArchieveCreator(zipPath, label);
                 FilesUtils.unzip(jobTargetFile.getLocation().toPortableString(), creator.getTmpFolder() + File.separator + label
                         + "_" + version);
                 creator.buildNewJar();
                 ZipToFile.zipFile(creator.getTmpFolder(), destinationPath);
+                creator.deleteTempFiles();
             } else {
                 File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());
                 File jobFileTarget = new File(destinationPath);

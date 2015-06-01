@@ -100,15 +100,22 @@ imports="
 				int threshold = 0;
 				String inQueuename = null;
 				
-				public com.ibm.mq.MQQueue genInQueue(com.ibm.mq.MQQueueManager qMgr,String inQueueName) throws com.ibm.mq.MQException{
+				public com.ibm.mq.MQQueue genInQueue(com.ibm.mq.MQQueueManager qMgr,String inQueueName,boolean isBrowse) throws com.ibm.mq.MQException{
 					this.inQueuename = inQueueName;
 					int openOptions=com.ibm.mq.MQC.MQOO_INPUT_SHARED | com.ibm.mq.MQC.MQOO_FAIL_IF_QUIESCING | com.ibm.mq.MQC.MQOO_INQUIRE;
+					if(isBrowse){
+						openOptions = openOptions | com.ibm.mq.MQC.MQOO_BROWSE;
+					}
 	    			return qMgr.accessQueue(inQueueName,openOptions);
 				}
 				
-				public com.ibm.mq.MQGetMessageOptions genGetMsgOptions (){
+				public com.ibm.mq.MQGetMessageOptions genGetMsgOptions (boolean isBrowse){
 					com.ibm.mq.MQGetMessageOptions gmo=new com.ibm.mq.MQGetMessageOptions();
-					gmo.options=gmo.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
+					if(!isBrowse){
+						gmo.options=gmo.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
+					}else{
+						gmo.options=gmo.options+com.ibm.mq.MQC.MQGMO_BROWSE_FIRST;
+					}
 					gmo.options=gmo.options+com.ibm.mq.MQC.MQGMO_NO_WAIT;
 					gmo.options=gmo.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
 					gmo.waitInterval=com.ibm.mq.MQC.MQWI_UNLIMITED;
@@ -164,18 +171,27 @@ imports="
 					return backoutQueue;
 				}
 				
-				public void backoutMsg(com.ibm.mq.MQQueueManager qMgr,String inQueueName<%if(isLog4jEnabled){%>,org.apache.log4j.Logger log<%}%>) throws com.ibm.mq.MQException{
-
-					com.ibm.mq.MQQueue inQueue = genInQueue(qMgr,inQueueName);
-					com.ibm.mq.MQQueue backoutQueue = genBackOutQueue(qMgr,inQueue<%if(isLog4jEnabled){%>,log<%}%>);
-					com.ibm.mq.MQGetMessageOptions gmo = genGetMsgOptions();
-					com.ibm.mq.MQException.log = null;
-					boolean flag=true;
-					
+				public List<com.ibm.mq.MQMessage> getPoisonMsgs(com.ibm.mq.MQQueueManager qMgr,String inQueueName,com.ibm.mq.MQQueue backoutQueue<%if(isLog4jEnabled){%>,org.apache.log4j.Logger log<%}%>) throws com.ibm.mq.MQException{
+					com.ibm.mq.MQQueue inQueue = genInQueue(qMgr,inQueueName, true);
+					com.ibm.mq.MQGetMessageOptions gmo = genGetMsgOptions(true);
+					int browseCursor = 0;
+					boolean flag = true;
+					java.util.List<com.ibm.mq.MQMessage> backoutMsgs = new java.util.ArrayList<com.ibm.mq.MQMessage>();
+					if (backoutQueue == null || threshold <= 0 || Integer.valueOf(inQueue.getCurrentDepth()).equals(0)) {
+						flag = false;
+					}
 					while(flag){
 						if(Integer.valueOf(inQueue.getCurrentDepth()).equals(1)){
 							flag= false;
 						}
+						if (browseCursor > 0) {
+							gmo.options = com.ibm.mq.MQC.MQGMO_BROWSE_NEXT;
+							gmo.options = gmo.options
+									+ com.ibm.mq.MQC.MQGMO_NO_WAIT;
+							gmo.options = gmo.options
+									+ com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
+						}
+						browseCursor++;
 						com.ibm.mq.MQMessage inMessage = new com.ibm.mq.MQMessage();
 						try{
 							inQueue.get(inMessage,gmo);
@@ -189,7 +205,37 @@ imports="
 				            	throw me;
 				            }   
 		     			}
-						if (backoutQueue!=null && threshold > 0 && inMessage.backoutCount >= threshold) {
+		     			if (inMessage.backoutCount >= threshold) {
+		     				backoutMsgs.add(inMessage);
+		     			}
+					}
+					if(inQueue.isOpen()){
+		     			inQueue.close();
+		     		}
+		     		return backoutMsgs;
+				}
+				
+				public void backoutMsg(com.ibm.mq.MQQueueManager qMgr,String inQueueName<%if(isLog4jEnabled){%>,org.apache.log4j.Logger log<%}%>) throws com.ibm.mq.MQException{
+
+					com.ibm.mq.MQQueue inQueue = genInQueue(qMgr,inQueueName,false);
+					com.ibm.mq.MQQueue backoutQueue = genBackOutQueue(qMgr,inQueue<%if(isLog4jEnabled){%>,log<%}%>);
+					com.ibm.mq.MQGetMessageOptions gmo = genGetMsgOptions(false);
+					com.ibm.mq.MQException.log = null;
+					java.util.List<com.ibm.mq.MQMessage> backoutMsgs = getPoisonMsgs(qMgr,inQueueName,backoutQueue<%if(isLog4jEnabled){%>,log<%}%>);
+					if(inQueue != null && backoutQueue!=null){
+						for(com.ibm.mq.MQMessage inMessage:backoutMsgs){
+							try{
+								inQueue.get(inMessage,gmo);
+							}catch (com.ibm.mq.MQException me) {   
+					            if (me.reasonCode == com.ibm.mq.MQException.MQRC_NO_MSG_AVAILABLE) {
+					            	continue;   
+					            }else{
+					            	if(inQueue!=null){
+										inQueue.close();
+									}
+					            	throw me;
+					            }
+			     			}
 							<%
 							if(isLog4jEnabled){
 							%>	
@@ -198,7 +244,6 @@ imports="
 							}
 							%>
 							backoutQueue.put(inMessage);
-							qMgr.commit();
 							<%
 							if(isLog4jEnabled){
 							%>	
@@ -207,9 +252,6 @@ imports="
 							}
 							%>
 						}
-					
-					}
-					if(backoutQueue!=null){
 						<%
 						if(isLog4jEnabled){
 						%>	
@@ -225,25 +267,25 @@ imports="
 						<%
 						}
 						%>
-					}
-					if(inQueue!=null){
-						<%
-						if(isLog4jEnabled){
-						%>	
-							log.info("<%=cid%> - Closing input queue:"+inQueueName+"...");
-						<%
+						if(inQueue.isOpen()){
+							<%
+							if(isLog4jEnabled){
+							%>	
+								log.info("<%=cid%> - Closing input queue:"+inQueueName+"...");
+							<%
+							}
+							%>
+							inQueue.close();
+							<%
+							if(isLog4jEnabled){
+							%>	
+								log.info("<%=cid%> - Closed successfully.");
+							<%
+							}
+							%>
 						}
-						%>
-						inQueue.close();
-						<%
-						if(isLog4jEnabled){
-						%>	
-							log.info("<%=cid%> - Closed successfully.");
-						<%
-						}
-						%>
+						qMgr.commit();
 					}
-					qMgr.backout();
 				}
 			}
 			BackOutUtil_<%=cid%> backoutUtil_<%=cid%> = new BackOutUtil_<%=cid%>();
