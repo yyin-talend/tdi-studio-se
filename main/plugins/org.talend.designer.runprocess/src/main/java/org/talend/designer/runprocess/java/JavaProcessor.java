@@ -92,6 +92,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IContext;
@@ -343,6 +344,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // target/classes/test/testjob_0_1/TestJob
         // or target/test-classes/test/testjob_0_1/testjunitjob_0_1/TestjunitJob
         this.compiledCodePath = jobClassFolder.getProjectRelativePath().append(jobName);
+
+        if (isTestJob) {
+            IPath dataPath = new Path(jobClassPackageFolder).append(JavaUtils.JAVA_DATAS_DIRECTORY);
+            this.dataFilePath = resourcesFolder.getFile(dataPath).getProjectRelativePath();
+        }
 
         /*
          * for context.
@@ -693,6 +699,16 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.designer.runprocess.IProcessor#getDataSetPath()
+     */
+    @Override
+    public IPath getDataSetPath() {
+        return this.states.getDataSetPath();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
     @Override
@@ -890,6 +906,15 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return this.contextPath;
     }
 
+    /**
+     * Getter for SrcDataSetPath.
+     * 
+     * @return the SrcDataSetPath
+     */
+    public IPath getSrcDataSetPath() {
+        return this.dataFilePath;
+    }
+
     @Override
     public String[] getCommandLine() throws ProcessorException {
         // java -cp libdirectory/*.jar;project_path classname;
@@ -1018,9 +1043,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         final String libPrefixPath = getLibPrefixPath(true);
         final File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
 
-        Set<String> neededLibraries = getNeededLibraries();
-        JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);
-
+        Set<ModuleNeeded> neededModules = getNeededModules();
+        JavaProcessorUtilities.checkJavaProjectLib(neededModules);
+        Set<String> neededLibraries = new HashSet<String>();
+for (ModuleNeeded neededModule : neededModules) {
+    neededLibraries.add(neededModule.getModuleName());
+}
         File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
 
         StringBuffer libPath = new StringBuffer();
@@ -1038,7 +1066,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
         }
         final int lastSep = libPath.length() - 1;
-        if (classPathSeparator.equals(String.valueOf(libPath.charAt(lastSep)))) {
+        if (libPath.length() != 0 && classPathSeparator.equals(String.valueOf(libPath.charAt(lastSep)))) {
             libPath.deleteCharAt(lastSep);
         }
         return libPath.toString();
@@ -1063,13 +1091,13 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return exportJar;
 
     }
-
+    
     @Override
-    public Set<String> getNeededLibraries() {
-        Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
+    public Set<ModuleNeeded> getNeededModules() {
+        Set<ModuleNeeded> neededLibraries = JavaProcessorUtilities.getNeededModulesForProcess(process);
         boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
         if (isLog4jEnabled) {
-            JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
+            JavaProcessorUtilities.addLog4jToModuleList(neededLibraries);
         }
         return neededLibraries;
     }

@@ -240,18 +240,101 @@ public class JavaProcessorUtilities {
         }
         return neededLibraries;
     }
+    
+    public static Set<ModuleNeeded> getNeededModulesForProcess(IProcess process) {
+        Set<ModuleNeeded> neededLibraries = new HashSet<ModuleNeeded>();
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
+                process.getVersion());
+        neededLibraries.addAll(neededModules);
+
+        if (process == null || !(process instanceof IProcess2)) {
+            if (neededLibraries.isEmpty() && process != null) {
+                neededLibraries = process.getNeededModules(true);
+                if (neededLibraries == null) {
+                    neededLibraries = new HashSet<ModuleNeeded>();
+                    // for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                    // neededLibraries.add(moduleNeeded.getModuleName());
+                    // }
+                }
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getRunningModules()) {
+                    neededLibraries.add(moduleNeeded);
+                }
+            }
+            return neededLibraries;
+        }
+        Property property = ((IProcess2) process).getProperty();
+        if (neededLibraries.isEmpty()) {
+            neededLibraries = process.getNeededModules(true);
+            if (neededLibraries == null) {
+                neededLibraries = new HashSet<ModuleNeeded>();
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                    neededLibraries.add(moduleNeeded);
+                }
+            }
+        } else {
+            if (property != null && property.getItem() instanceof ProcessItem) {
+                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines(
+                        (ProcessItem) property.getItem(), ERepositoryObjectType.ROUTINES);
+                for (ModuleNeeded moduleNeeded : modulesNeededs) {
+                    neededLibraries.add(moduleNeeded);
+                }
+                List<ModuleNeeded> modulesForPigudf = ModulesNeededProvider.getModulesNeededForRoutines(
+                        (ProcessItem) property.getItem(), ERepositoryObjectType.PIG_UDF);
+                for (ModuleNeeded moduleNeeded : modulesForPigudf) {
+                    neededLibraries.add(moduleNeeded);
+                }
+
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getRunningModules()) {
+                    neededLibraries.add(moduleNeeded);
+                }
+            }
+        }
+        if (property != null && GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (camelService.isInstanceofCamel(property.getItem())) {
+                ERepositoryObjectType beansType = camelService.getBeansType();
+                List<IRepositoryViewObject> collectedBeans = new ArrayList<IRepositoryViewObject>();
+                try {
+                    collectedBeans = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().getAll(beansType);
+                    for (IRepositoryViewObject object : collectedBeans) {
+                        Item item = object.getProperty().getItem();
+                        if (item instanceof RoutineItem) {
+                            RoutineItem routine = (RoutineItem) item;
+                            EList<?> imports = routine.getImports();
+                            for (Object o : imports) {
+                                IMPORTType type = (IMPORTType) o;
+                                ModuleNeeded neededModule = new ModuleNeeded("camel bean dependencies", type.getMODULE(), "camel bean dependencies", true);
+                                neededLibraries.add(neededModule);
+                            }
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+
+            // http://jira.talendforge.org/browse/TESB-5887 LiXiaopeng 2012-6-19
+            // Synchronize Route resources
+            camelService.synchronizeRouteResource(property.getItem());
+        }
+        return neededLibraries;
+    }
 
     /**
      * DOC ycbai Comment method "checkJavaProjectLib".
      * 
      * @param jarsNeeded
      */
-    public static void checkJavaProjectLib(Collection<String> jarsNeeded) {
+    public static void checkJavaProjectLib(Collection<ModuleNeeded> jarsNeeded) {
         File libDir = getJavaProjectLibFolder();
         if ((libDir != null) && (libDir.isDirectory())) {
-            // Changed by Marvin Wang on Nov. 8, 2012, it should extract the jar name without directory.
-            Set<String> jarsNeededOnlyIncludeName = ModuleNameExtractor.extractFileName(jarsNeeded);
-            Set<String> jarsNeedRetrieve = new HashSet<String>(jarsNeededOnlyIncludeName);
+            Set<String> jarsNeedRetrieve = new HashSet<String>();
+            for (ModuleNeeded moduleNeeded: jarsNeeded) {
+                jarsNeedRetrieve.add(moduleNeeded.getModuleName());
+            }
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
@@ -270,7 +353,7 @@ public class JavaProcessorUtilities {
      * 
      * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(Set<String>)
      */
-    public static void computeLibrariesPath(Set<String> jobModuleList, IProcess process) {
+    public static void computeLibrariesPath(Set<ModuleNeeded> jobModuleList, IProcess process) {
         // try {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
@@ -294,28 +377,19 @@ public class JavaProcessorUtilities {
     // // see bug 3914, make the order of the jar files consistent with the
     // command
     // // line in run mode
-    private static void sortClasspath(Set<String> jobModuleList, IProcess process) throws CoreException, BusinessException {
+    private static void sortClasspath(Set<ModuleNeeded> jobModuleList, IProcess process) throws CoreException, BusinessException {
         ITalendProcessJavaProject jProject = getTalendJavaProject();
         if (jProject == null) {
             return;
         }
-        Set<String> listModulesReallyNeeded = ModuleNameExtractor.extractFileName(jobModuleList);
-        Set<String> listModulesNeededByProcess = new HashSet<String>();
-        if (listModulesReallyNeeded != null && listModulesReallyNeeded.size() > 0) {
-            for (String jobModule : listModulesReallyNeeded) {
-                listModulesNeededByProcess.add(jobModule);
-            }
-        }
+        Set<ModuleNeeded> listModulesReallyNeeded = new HashSet<ModuleNeeded>();
+        listModulesReallyNeeded.addAll(jobModuleList);
 
-        Set<String> optionalJarsOnlyForRoutines = new HashSet<String>();
-
-        if (listModulesReallyNeeded == null) {
-            listModulesReallyNeeded = new HashSet<String>();
-        }
+        Set<ModuleNeeded> optionalJarsOnlyForRoutines = new HashSet<ModuleNeeded>();
 
         // only for wizards or additional jars only to make the java project compile without any error.
         for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getRunningModules()) {
-            optionalJarsOnlyForRoutines.add(moduleNeeded.getModuleName());
+            optionalJarsOnlyForRoutines.add(moduleNeeded);
         }
 
         // list contains all routines linked to job as well as routines not used in the job
@@ -324,18 +398,22 @@ public class JavaProcessorUtilities {
 
         // at this point, the Set for optional jars really only contains optional jars for routines
         // only to be able to compile java project without error.
-        for (String jar : optionalJarsOnlyForRoutines) {
+        for (ModuleNeeded jar : optionalJarsOnlyForRoutines) {
             listModulesReallyNeeded.add(jar);
         }
 
-        addLog4jToJarList(listModulesReallyNeeded);
+        addLog4jToModuleList(listModulesReallyNeeded);
 
         String missingJars = null;
         Set<String> missingJarsForRoutinesOnly = new HashSet<String>();
         Set<String> missingJarsForProcessOnly = new HashSet<String>();
         File libDir = getJavaProjectLibFolder();
+        ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
         if ((libDir != null) && (libDir.isDirectory())) {
-            Set<String> jarsNeedRetrieve = new HashSet<String>(listModulesReallyNeeded);
+            Set<String> jarsNeedRetrieve = new HashSet<String>();
+            for (ModuleNeeded moduleNeeded : listModulesReallyNeeded) {
+                jarsNeedRetrieve.add(moduleNeeded.getModuleName());
+            }
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
@@ -368,7 +446,6 @@ public class JavaProcessorUtilities {
                 }
                 jarsNeedRetrieve.addAll(originalConexts);
 
-                ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
                 repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
                 // Just for test
                 // try {
@@ -384,11 +461,15 @@ public class JavaProcessorUtilities {
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
+            Set<String> jarStringListNeededByProcess = new HashSet<String>();
+            for (ModuleNeeded moduleNeeded : jobModuleList) {
+                jarStringListNeededByProcess.add(moduleNeeded.getModuleName());
+            }
             for (String jar : jarsNeedRetrieve) {
                 if (ContextParameterUtils.isContainContextParam(jar)) {
                     continue;
                 }
-                if (listModulesNeededByProcess.contains(jar)) {
+                if (jobModuleList.contains(jar)) {
                     missingJarsForProcessOnly.add(jar);
                 } else {
                     missingJarsForRoutinesOnly.add(jar);
@@ -403,26 +484,20 @@ public class JavaProcessorUtilities {
         if (missingJars != null) {
             handleMissingJarsForProcess(missingJarsForRoutinesOnly, missingJarsForProcessOnly, missingJars);
         }
+        repositoryBundleService.deployModules(listModulesReallyNeeded, null);
     }
 
-    /**
-     * DOC ycbai Comment method "addLog4jToJarList".
-     * 
-     * Add log4j jar to jarList if it is non-existent.
-     * 
-     * @param jarList
-     * @return
-     */
-    public static boolean addLog4jToJarList(Collection<String> jarList) {
+    public static boolean addLog4jToModuleList(Collection<ModuleNeeded> jarList) {
         boolean added = false;
         boolean foundLog4jJar = false;
-        for (String jar : jarList) {
-            if (jar.matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
+        for (ModuleNeeded jar : jarList) {
+            if (jar.getModuleName().matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
                 foundLog4jJar = true;
             }
         }
         if (!foundLog4jJar) {
-            jarList.add("log4j-1.2.16.jar"); //$NON-NLS-1$
+            ModuleNeeded log4j = new ModuleNeeded("log4j", "log4j-1.2.16.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+            jarList.add(log4j); //$NON-NLS-1$
             added = true;
         }
 

@@ -242,11 +242,42 @@
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+		
+	    <PARAMETER
+		  NAME="NOTE"
+	      FIELD="LABEL"
+	      NUM_ROW="50"
+		  GROUP="DATASOURCE"
+		  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+	    >
+	    	<DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT>
+	    </PARAMETER>
+	    
+		<PARAMETER
+	      NAME="SPECIFY_DATASOURCE_ALIAS"
+		  FIELD="CHECK"
+	      NUM_ROW="52"
+	      REQUIRED="true"
+		  GROUP="DATASOURCE"
+		  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+	    >
+	    </PARAMETER>
+	    
+		<PARAMETER
+	      NAME="DATASOURCE_ALIAS"
+		  FIELD="TEXT"
+	      NUM_ROW="54"
+	      REQUIRED="true"
+		  GROUP="DATASOURCE"
+		  SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_EXISTING_CONNECTION=='false')"
+	    >
+			<DEFAULT>""</DEFAULT>
+	    </PARAMETER>
 
 		<PARAMETER
 			NAME="DIE_ON_ERROR"
 			FIELD="CHECK"
-			NUM_ROW="45"
+			NUM_ROW="90"
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
@@ -254,7 +285,7 @@
 		<PARAMETER
 			NAME="MAPPING"
 			FIELD="MAPPING_TYPE"
-			NUM_ROW="50"
+			NUM_ROW="100"
 			SHOW="false"
 		>
 			<DEFAULT>postgres_id</DEFAULT>

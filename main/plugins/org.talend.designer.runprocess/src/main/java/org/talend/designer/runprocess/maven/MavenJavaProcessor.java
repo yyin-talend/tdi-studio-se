@@ -12,18 +12,14 @@
 // ============================================================================
 package org.talend.designer.runprocess.maven;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -31,20 +27,26 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.ProjectPomManager;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
-import org.talend.designer.maven.utils.JobUtils;
+import org.talend.designer.maven.tools.creator.CreateMavenTestPom;
 import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -92,14 +94,6 @@ public class MavenJavaProcessor extends JavaProcessor {
             }
         }
         return this.buildChildrenJobs;
-    }
-
-    @Override
-    protected String getBaseLibPath() {
-        if (isOldBuildJob()) {
-            return super.getBaseLibPath();
-        }
-        return JavaUtils.JAVA_LIB_DIRECTORY;
     }
 
     public void initJobClasspath() {
@@ -191,9 +185,9 @@ public class MavenJavaProcessor extends JavaProcessor {
     }
 
     /**
-     * if the real item parent folder.
+     * the the item location path, like ".../<project>/process/<path>/XXX_0.1.properties"
      */
-    protected File getParentFolder() {
+    protected IPath getItemLocationPath() {
         Property p = this.getProperty();
         if (p != null) {
             Resource eResource = p.eResource();
@@ -201,33 +195,84 @@ public class MavenJavaProcessor extends JavaProcessor {
                 URI uri = eResource.getURI();
                 IFile file = URIHelper.getFile(uri);
                 if (file != null) {
-                    return file.getLocation().toFile().getParentFile();
+                    return file.getLocation();
                 }
             }
         }
         return null;
+    }
 
+    /**
+     * 
+     * get the type folder of item. like ".P/process"
+     */
+    protected IFolder getObjectTypeFolder() {
+        Property p = this.getProperty();
+        if (p != null) {
+            Project itemProject = ProjectManager.getInstance().getProject(p);
+            if (itemProject != null) {
+                try {
+                    IProject proj = ResourceUtils.getProject(new org.talend.core.model.general.Project(itemProject));
+                    if (proj != null) {
+                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(p.getItem());
+                        if (itemType != null && itemType.isResouce()) {
+                            return proj.getFolder(itemType.getFolder());
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    //
+                }
+            }
+        }
+        return null;
     }
 
     protected void generatePom() {
         initJobClasspath();
 
         try {
-            CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
+            boolean isTestContainer = false;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+                ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                        .getDefault().getService(ITestContainerProviderService.class);
+                if (testContainerService != null) {
+                    isTestContainer = testContainerService.isTestContainerItem(this.getProperty().getItem());
+                }
+            }
+            if (!isTestContainer) {
+                CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
 
-            // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
-            createTemplatePom.setAddStat(false);
-            createTemplatePom.setApplyContextToChild(false);
+                // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
+                createTemplatePom.setAddStat(false);
+                createTemplatePom.setApplyContextToChild(false);
 
-            createTemplatePom.setUnixClasspath(this.unixClasspath);
-            createTemplatePom.setWindowsClasspath(this.windowsClasspath);
+                createTemplatePom.setUnixClasspath(this.unixClasspath);
+                createTemplatePom.setWindowsClasspath(this.windowsClasspath);
 
-            createTemplatePom.setAssemblyFile(getAssemblyFile());
-            createTemplatePom.setTemplateBaseFolder(getParentFolder());
+                createTemplatePom.setAssemblyFile(getAssemblyFile());
 
-            createTemplatePom.setOverwrite(true);
+                IPath itemLocationPath = getItemLocationPath();
+                IFolder objectTypeFolder = getObjectTypeFolder();
+                IPath itemRelativePath = itemLocationPath.removeLastSegments(1).makeRelativeTo(objectTypeFolder.getLocation());
+                createTemplatePom.setObjectTypeFolder(objectTypeFolder);
+                createTemplatePom.setItemRelativePath(itemRelativePath);
 
-            createTemplatePom.create(null);
+                createTemplatePom.setOverwrite(true);
+
+                createTemplatePom.create(null);
+            } else {
+                CreateMavenTestPom createTestPom = new CreateMavenTestPom(this, getPomFile());
+
+                IPath itemLocationPath = getItemLocationPath();
+                IFolder objectTypeFolder = getObjectTypeFolder();
+                IPath itemRelativePath = itemLocationPath.removeLastSegments(1).makeRelativeTo(objectTypeFolder.getLocation());
+                createTestPom.setObjectTypeFolder(objectTypeFolder);
+                createTestPom.setItemRelativePath(itemRelativePath);
+
+                createTestPom.setOverwrite(true);
+
+                createTestPom.create(null);
+            }
 
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -243,7 +288,7 @@ public class MavenJavaProcessor extends JavaProcessor {
             if (monitor == null) {
                 monitor = new NullProgressMonitor();
             }
-            JavaProcessorUtilities.checkJavaProjectLib(getNeededLibraries());
+            JavaProcessorUtilities.checkJavaProjectLib(getNeededModules());
 
             ProjectPomManager pomManager = new ProjectPomManager(getTalendJavaProject().getProject()) {
 
@@ -264,38 +309,6 @@ public class MavenJavaProcessor extends JavaProcessor {
             pomManager.update(monitor, this);
         } catch (Exception e) {
             ExceptionHandler.process(e);
-        }
-    }
-
-    private void removeGeneratedJobs(IProgressMonitor progressMonitor) throws ProcessorException {
-        ITalendProcessJavaProject talendProcessProject = getTalendJavaProject();
-        IFolder srcFolder = talendProcessProject.getSrcFolder();
-        IFolder testSrcFolder = talendProcessProject.getTestSrcFolder();
-        IFolder sourceFolder = null;
-        if (isTestJob) {
-            sourceFolder = testSrcFolder;
-        } else {
-            sourceFolder = srcFolder;
-        }
-        try {
-            String projectPackage = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
-            List<String> currentJobNames = JobUtils.getRunningJobFolders(this);
-            IFolder sourcesFilesFolder = sourceFolder.getFolder(projectPackage);
-            boolean changed = false;
-            IResource[] childrenRecs = sourcesFilesFolder.members();
-            if (childrenRecs.length > 0) {
-                for (IResource child : childrenRecs) {
-                    if (!currentJobNames.contains(child.getName())) {
-                        child.delete(true, progressMonitor);
-                        changed = true;
-                    }
-                }
-            }
-            if (changed) {
-                sourceFolder.refreshLocal(IResource.DEPTH_INFINITE, progressMonitor);
-            }
-        } catch (CoreException e) {
-            throw new ProcessorException(e);
         }
     }
 
@@ -324,45 +337,5 @@ public class MavenJavaProcessor extends JavaProcessor {
             return TalendMavenConstants.GOAL_TEST_COMPILE;
         }
         return TalendMavenConstants.GOAL_COMPILE;
-    }
-
-    private String[] getJobModules() {
-        // find the children jobs for maven build
-        Set<JobInfo> infos = getBuildChildrenJobs();
-        JobInfo[] childrenJobs = infos.toArray(new JobInfo[0]);
-        List<String> jobswithChildren = new ArrayList<String>();
-
-        // add routines always.
-        // if (!buildRoutinesOnce) { //RoutinesMavenInstallLoginTask
-        // jobswithChildren.add(getRoutineModule());
-        // }
-        // src/main/java
-        IPath srcRelativePath = this.getTalendJavaProject().getSrcFolder().getProjectRelativePath();
-        String srcRootPath = srcRelativePath.toString();
-
-        for (JobInfo child : childrenJobs) {
-            ProcessItem processItem = child.getProcessItem();
-            String childJobFolder = null;
-            if (processItem != null) {
-                childJobFolder = JavaResourcesHelper.getJobClassPackageFolder(processItem);
-            } else {
-                String projectFolderName = child.getProjectFolderName();
-                childJobFolder = JavaResourcesHelper.getJobClassPackageFolder(projectFolderName, child.getJobName(),
-                        child.getJobVersion());
-            }
-            jobswithChildren.add(srcRootPath + '/' + childJobFolder);
-        }
-
-        // the main job is last one.
-        jobswithChildren.add(this.getSrcCodePath().removeLastSegments(1).toString());
-
-        return jobswithChildren.toArray(new String[0]);
-    }
-
-    private String getRoutineModule() {
-        // routine module
-        IFolder routinesSrcFolder = this.getTalendJavaProject().getSrcFolder().getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY);
-        String routineModule = routinesSrcFolder.getProjectRelativePath().toString();
-        return routineModule;
     }
 }

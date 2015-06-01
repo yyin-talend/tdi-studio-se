@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.newproject.copyfromeclipse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,6 +36,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.dialogs.WorkingSetConfigurationBlock;
+import org.eclipse.ui.dialogs.WorkingSetGroup;
 import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileManipulations;
 import org.eclipse.ui.internal.wizards.datatransfer.ILeveledImportStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.TarEntry;
@@ -204,6 +210,61 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
          */
         public boolean hasConflicts() {
             return hasConflicts;
+        }
+    }
+
+    @Override
+    public void createControl(Composite parent) {
+        super.createControl(parent);
+
+        try {
+            // hide 'search for nested projects'
+            Field nestedProjectsCheckboxField = WizardProjectsImportPage.class.getDeclaredField("nestedProjectsCheckbox"); //$NON-NLS-1$
+            nestedProjectsCheckboxField.setAccessible(true);
+            Object nestedProjectsCheckboxObj = nestedProjectsCheckboxField.get(this);
+            Button nestedProjectsCheckbox = (Button) nestedProjectsCheckboxObj;
+            Object gridDataObj = nestedProjectsCheckbox.getLayoutData();
+            GridData gridData = null;
+            if (gridDataObj == null) {
+                gridData = new GridData();
+                nestedProjectsCheckbox.setLayoutData(gridData);
+            } else {
+                gridData = (GridData) gridDataObj;
+            }
+            gridData.exclude = true;
+
+            // hide 'Working sets'
+            Field workingSetGroupField = WizardProjectsImportPage.class.getDeclaredField("workingSetGroup"); //$NON-NLS-1$
+            workingSetGroupField.setAccessible(true);
+            Object workingSetGroupObj = workingSetGroupField.get(this);
+            Field workingSetBlockField = WorkingSetGroup.class.getDeclaredField("workingSetBlock"); //$NON-NLS-1$
+            workingSetBlockField.setAccessible(true);
+            Object workingSetBlockObj = workingSetBlockField.get(workingSetGroupObj);
+            Field enableButtonField = WorkingSetConfigurationBlock.class.getDeclaredField("enableButton"); //$NON-NLS-1$
+            enableButtonField.setAccessible(true);
+            Object enableButtonObj = enableButtonField.get(workingSetBlockObj);
+            Button enableButton = (Button) enableButtonObj;
+            Object layoutData = enableButton.getParent().getParent().getLayoutData();
+            if (layoutData == null) {
+                gridData = new GridData();
+                enableButton.getParent().getParent().setLayoutData(gridData);
+            } else {
+                gridData = (GridData) layoutData;
+            }
+            gridData.exclude = true;
+
+        } catch (NoSuchFieldException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 

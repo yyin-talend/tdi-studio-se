@@ -118,7 +118,7 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
         com.google.api.services.drive.model.FileList files = <%=cid%>_request.execute();
         if(!<%=cid%>_folderName.equals("root")) {
 	        if (files.getItems().size() > 1) {
-	        	throw new Exception("More then one folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
+	        	throw new Exception("More than one folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
 	        } else if (files.getItems().isEmpty()) {
 	        	throw new Exception("No folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
 	        } else {
@@ -143,7 +143,7 @@ String proxyPort = helper.getStringParam("__PROXY_PORT__");
    		<%=cid%>_request.setQ("title = '" + <%=cid%>_folderName + "' and mimeType = 'application/vnd.google-apps.folder'");
    		com.google.api.services.drive.model.FileList <%=cid%>_files = <%=cid%>_request.execute();
    		if (<%=cid%>_files.getItems().size() > 1) {
-        	throw new Exception("More then one folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
+        	throw new Exception("More than one folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
         } else if (<%=cid%>_files.getItems().isEmpty()) {
         	throw new Exception("No folder with name " + "\"" + <%=cid%>_folderName + "\" found!");
         } else {

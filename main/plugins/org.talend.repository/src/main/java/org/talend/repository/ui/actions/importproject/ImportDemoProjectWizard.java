@@ -31,11 +31,16 @@ public class ImportDemoProjectWizard extends Wizard implements IImportWizard {
 
     private List<DemoProjectBean> demoProjectList;
 
+    protected String projectName;
+
     @Override
     public boolean performFinish() {
-        return demoProjectPage.prefromFinish();
+        boolean result = demoProjectPage.prefromFinish();
+        projectName = demoProjectPage.getProjectName();
+        return result;
     }
 
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
 
         //        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
@@ -44,6 +49,7 @@ public class ImportDemoProjectWizard extends Wizard implements IImportWizard {
         setNeedsProgressMonitor(true);
     }
 
+    @Override
     public void addPages() {
         super.addPages();
         demoProjectPage = new ImportDemoProjectPage(null);
@@ -68,4 +74,7 @@ public class ImportDemoProjectWizard extends Wizard implements IImportWizard {
         return true;
     }
 
+    public String getProjectName() {
+        return projectName;
+    }
 }

@@ -470,7 +470,7 @@
             key="repository.process"
             label="%NavigatorContent.jobDesigns"
             ordinal="4"
-            products="DI"
+            products="DI|MDM"
             type="PROCESS">
       </repositoryNode>
       <repositoryNode

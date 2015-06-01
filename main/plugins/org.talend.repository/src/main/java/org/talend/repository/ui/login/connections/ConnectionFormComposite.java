@@ -61,7 +61,9 @@ import org.talend.core.repository.services.ILoginConnectionService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
 import org.talend.repository.ui.login.LoginComposite;
+import org.talend.repository.ui.login.LoginDialogV2;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -88,6 +90,8 @@ public class ConnectionFormComposite extends Composite {
     private Text workSpaceText;
 
     private Button workSpaceButton;
+
+    protected Button deleteProjectsButton;
 
     private ConnectionBean connection;
 
@@ -246,6 +250,21 @@ public class ConnectionFormComposite extends Composite {
             }
         }
 
+        Label seperator = new Label(formBody, SWT.NONE);
+        seperator.setVisible(false);
+        GridData seperatorGridData = new GridData();
+        seperatorGridData.horizontalSpan = 3;
+        seperatorGridData.heightHint = 0;
+        seperator.setLayoutData(seperatorGridData);
+        Label placeHolder = new Label(formBody, SWT.NONE);
+        // add delete buttons
+        deleteProjectsButton = new Button(formBody, SWT.NONE);
+        deleteProjectsButton.setText(Messages.getString("ConnectionFormComposite.deleteExistingProject")); //$NON-NLS-1$
+        GridData deleteButtonGridData = new GridData();
+        deleteButtonGridData.widthHint = LoginDialogV2.getNewButtonSize(deleteProjectsButton).x;
+        deleteButtonGridData.horizontalSpan = 2;
+        deleteProjectsButton.setLayoutData(deleteButtonGridData);
+
         addListeners();
         addWorkSpaceListener();
         fillLists();
@@ -331,33 +350,42 @@ public class ConnectionFormComposite extends Composite {
         // 1. Hide all controls:
         for (IRepositoryFactory f : dynamicControls.keySet()) {
             for (LabelText control : dynamicControls.get(f).values()) {
-                control.setVisible(false);
+                // control.setVisible(false);
+                hideControl(control.getLabelControl(), true, false);
+                hideControl(control.getTextControl(), true, false);
             }
 
             for (Button control : dynamicButtons.get(f).values()) {
-                control.setVisible(false);
+                // control.setVisible(false);
+                hideControl(control, true, false);
             }
 
             for (LabelledCombo control : dynamicChoices.get(f).values()) {
-                control.setVisible(false);
+                // control.setVisible(false);
+                hideControl(control.getCombo(), true, false);
             }
         }
 
         // 2. Show active repository controls:
         if (getRepository() != null) {
             for (LabelText control : dynamicControls.get(getRepository()).values()) {
-                control.setVisible(true);
+                // control.setVisible(true);
+                hideControl(control.getLabelControl(), false, false);
+                hideControl(control.getTextControl(), false, false);
             }
 
             for (Button control : dynamicButtons.get(getRepository()).values()) {
-                control.setVisible(true);
+                // control.setVisible(true);
+                hideControl(control, false, false);
             }
 
             for (LabelledCombo control : dynamicChoices.get(getRepository()).values()) {
-                control.setVisible(true);
+                // control.setVisible(true);
+                hideControl(control.getCombo(), false, false);
             }
 
         }
+        nameText.getParent().layout();
     }
 
     private void showHideTexts() {
@@ -369,25 +397,28 @@ public class ConnectionFormComposite extends Composite {
                     passwordText.setEnabled(true);
                     passwordText.setEditable(true);
                     passwordText.setBackground(LoginComposite.WHITE_COLOR);
-                    hideControl(passwordText, false);
-                    hideControl(passwordLabel, false);
+                    hideControl(passwordText, false, false);
+                    hideControl(passwordLabel, false, false);
                 } else {
                     passwordText.setText(""); //$NON-NLS-1$
                     passwordText.setEnabled(false);
                     passwordText.setEditable(false);
                     passwordText.setBackground(LoginComposite.GREY_COLOR);
-                    hideControl(passwordText, true);
-                    hideControl(passwordLabel, true);
+                    hideControl(passwordText, true, false);
+                    hideControl(passwordLabel, true, false);
                 }
+                passwordText.getParent().layout();
             }
         }
     }
 
-    private void hideControl(Control control, boolean hide) {
+    private void hideControl(Control control, boolean hide, boolean autoLayout) {
         control.setVisible(!hide);
         GridData layoutData = (GridData) control.getLayoutData();
         layoutData.exclude = hide;
-        control.getParent().layout();
+        if (autoLayout) {
+            control.getParent().layout();
+        }
     }
 
     public IRepositoryFactory getRepository() {
@@ -439,6 +470,19 @@ public class ConnectionFormComposite extends Composite {
 
     };
 
+    SelectionListener deleteProjectClickListener = new SelectionListener() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            deleteProject();
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // nothing need to do
+        }
+    };
+
     private void addListeners() {
         repositoryCombo.addPostSelectionChangedListener(repositoryListener);
         nameText.addModifyListener(standardTextListener);
@@ -458,6 +502,8 @@ public class ConnectionFormComposite extends Composite {
                 control.getCombo().addModifyListener(standardTextListener);
             }
         }
+
+        deleteProjectsButton.addSelectionListener(deleteProjectClickListener);
     }
 
     private void addWorkSpaceListener() {
@@ -497,6 +543,7 @@ public class ConnectionFormComposite extends Composite {
                 control.getCombo().removeModifyListener(standardTextListener);
             }
         }
+        deleteProjectsButton.removeSelectionListener(deleteProjectClickListener);
     }
 
     private void fillBean(boolean cleanDynamicValue) {
@@ -618,6 +665,11 @@ public class ConnectionFormComposite extends Composite {
         showHideDynamicsControls();
         validateFields();
         showHideTexts();
+    }
+
+    public void deleteProject() {
+        DeleteProjectsAsAction deleteProjectAction = new DeleteProjectsAsAction(true);
+        deleteProjectAction.run();
     }
 
     /**

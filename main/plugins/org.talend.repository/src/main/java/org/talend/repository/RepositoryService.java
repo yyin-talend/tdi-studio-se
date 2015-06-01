@@ -125,8 +125,10 @@ import org.talend.repository.ui.actions.routines.CreateRoutineAction;
 import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
 import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
 import org.talend.repository.ui.dialog.ContextRepositoryReviewDialog;
+import org.talend.repository.ui.dialog.ProjectSettingDialog;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
-import org.talend.repository.ui.login.LoginDialog;
+import org.talend.repository.ui.login.LoginDialogV2;
+import org.talend.repository.ui.login.LoginHelper;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -270,9 +272,9 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
 
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         boolean logged = false;
-        LoginDialog loginDialog = new LoginDialog(shell);
+        LoginDialogV2 loginDialog = new LoginDialogV2(shell);
         // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(true);
-        logged = loginDialog.open() == LoginDialog.OK;
+        logged = loginDialog.open() == LoginDialogV2.OK;
         if (logged) {
 
             // addCommand();
@@ -303,8 +305,14 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
         if (isloginDialogDisabled()) {
             return true;
         }
-        LoginDialog loginDialog = new LoginDialog(shell);
-        boolean logged = loginDialog.open() == LoginDialog.OK;
+        boolean logged = false;
+        if (!LoginHelper.isAlwaysAskAtStartup()) {
+            logged = LoginHelper.getInstance().loginAuto();
+        }
+        if (!logged) {
+            LoginDialogV2 loginDialog = new LoginDialogV2(shell);
+            logged = (loginDialog.open() == LoginDialogV2.OK);
+        }
         return logged;
 
     }
@@ -817,6 +825,11 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
         }
 
         return null;
+    }
+
+    @Override
+    public void openProjectSettingDialog(final String pageId) {
+        new ProjectSettingDialog().open(pageId);
     }
 
 }

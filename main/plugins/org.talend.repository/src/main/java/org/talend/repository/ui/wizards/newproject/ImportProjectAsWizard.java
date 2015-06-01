@@ -51,6 +51,8 @@ public class ImportProjectAsWizard extends Wizard {
 
     private WizardProjectsImportPage manyProjectsPage;
 
+    protected boolean isImportedSeveralProject;
+
     /**
      * Constructs a new NewProjectWizard.
      * 
@@ -99,8 +101,10 @@ public class ImportProjectAsWizard extends Wizard {
     @Override
     public boolean performFinish() {
         if (getContainer().getCurrentPage().equals(manyProjectsPage)) {
+            isImportedSeveralProject = true;
             return manyProjectsPage.createProjects();
         } else {
+            isImportedSeveralProject = false;
             name = mainPage.getName().trim().replace(' ', '_');
             final String technicalName = mainPage.getTechnicalName();
             final String sourcePath = mainPage.getSourcePath();
@@ -145,10 +149,10 @@ public class ImportProjectAsWizard extends Wizard {
                 return false;
             } catch (InterruptedException e) {
                 IProject[] projects = org.eclipse.core.resources.ResourcesPlugin.getWorkspace().getRoot().getProjects();
-                for (int i = 0; i < projects.length; i++) {
-                    if (projects[i].getName().equalsIgnoreCase(name)) {
+                for (IProject project : projects) {
+                    if (project.getName().equalsIgnoreCase(name)) {
                         try {
-                            projects[i].delete(true, true, null);
+                            project.delete(true, true, null);
                         } catch (CoreException ee) {
                             ExceptionHandler.process(ee);
                         }
@@ -176,6 +180,10 @@ public class ImportProjectAsWizard extends Wizard {
         // ExceptionHandler.process(e);
         // }
 
+    }
+
+    public boolean isImportedSeveralProjects() {
+        return isImportedSeveralProject;
     }
 
     public final static String EXTERNAL_LIB_JAVA_PATH = "external_lib_java_path"; //$NON-NLS-1$

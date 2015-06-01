@@ -86,6 +86,7 @@ public class NewImportProjectWizardPage extends WizardPage {
      * 
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
 
@@ -161,11 +162,19 @@ public class NewImportProjectWizardPage extends WizardPage {
         setControl(container);
         addListeners();
         setPageComplete(false);
+        init();
+    }
+
+    protected void init() {
+        nameText.setText("Local_Project"); //$NON-NLS-1$
+        nameText.selectAll();
+        checkFieldsValue();
     }
 
     private void addListeners() {
         nameText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 checkFieldsValue();
             }
@@ -173,6 +182,7 @@ public class NewImportProjectWizardPage extends WizardPage {
 
         descriptionText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 checkFieldsValue();
             }
@@ -208,7 +218,7 @@ public class NewImportProjectWizardPage extends WizardPage {
             if (!nameText.getText().endsWith(" ")) {//$NON-NLS-1$
                 technicalNameText.setText(Project.createTechnicalName(nameText.getText()));
             }
-            if (ProjectUtils.isNotValidProjectName(nameText.getText())) {//$NON-NLS-1$
+            if (ProjectUtils.isNotValidProjectName(nameText.getText())) {
                 nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
                         Messages.getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
             } else {

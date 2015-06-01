@@ -24,11 +24,13 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
@@ -176,7 +178,7 @@ public class RunProcessService implements IRunProcessService {
     }
 
     @Override
-    public void updateLibraries(Set<String> jobModuleList, IProcess process) {
+    public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process) {
         delegateService.updateLibraries(jobModuleList, process);
     }
 
@@ -331,6 +333,11 @@ public class RunProcessService implements IRunProcessService {
     @Override
     public ITalendProcessJavaProject getTalendProcessJavaProject() {
         return delegateService.getTalendProcessJavaProject();
+    }
+
+    @Override
+    public ProjectPreferenceManager getProjectPreferenceManager() {
+        return delegateService.getProjectPreferenceManager();
     }
 
 }

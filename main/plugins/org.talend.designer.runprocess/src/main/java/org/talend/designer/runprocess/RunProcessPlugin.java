@@ -19,6 +19,7 @@ import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
+import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.IRepositoryService;
 
@@ -35,6 +36,8 @@ public class RunProcessPlugin extends AbstractUIPlugin {
 
     /** The running process contexts manager. */
     private RunProcessContextManager runProcessContextManager;
+
+    private ProjectPreferenceManager projectPreferenceManager;
 
     /**
      * Constructs a new Activator.
@@ -86,6 +89,13 @@ public class RunProcessPlugin extends AbstractUIPlugin {
      */
     public RunProcessContextManager getRunProcessContextManager() {
         return this.runProcessContextManager;
+    }
+
+    public ProjectPreferenceManager getProjectPreferenceManager() {
+        if (projectPreferenceManager == null) {
+            projectPreferenceManager = new ProjectPreferenceManager(PLUGIN_ID);
+        }
+        return projectPreferenceManager;
     }
 
     public IRepositoryService getRepositoryService() {

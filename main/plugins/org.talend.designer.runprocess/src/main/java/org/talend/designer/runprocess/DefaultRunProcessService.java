@@ -41,12 +41,14 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.runprocess.data.PerformanceData;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
@@ -214,8 +216,8 @@ public class DefaultRunProcessService implements IRunProcessService {
     }
 
     @Override
-    public void updateLibraries(Set<String> jobModuleList, IProcess process) {
-        JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), process);
+    public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process) {
+        JavaProcessorUtilities.computeLibrariesPath(new HashSet<ModuleNeeded>(jobModuleList), process);
     }
 
     @Override
@@ -367,7 +369,7 @@ public class DefaultRunProcessService implements IRunProcessService {
             // create the .prefs file and save log4j.xml and common-logging.properties's content into it
             if (!Log4jPrefsSettingManager.getInstance().isLog4jPrefsExist()) {
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE,
-                        Boolean.FALSE.toString());
+                        Boolean.TRUE.toString());
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_CONTENT_NODE,
                         getLogTemplate(RESOURCE_LOG_FILE_PATH));
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.COMMON_LOGGING_NODE,
@@ -455,6 +457,11 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public ITalendProcessJavaProject getTalendProcessJavaProject() {
         return JavaProcessorUtilities.getTalendJavaProject();
+    }
+
+    @Override
+    public ProjectPreferenceManager getProjectPreferenceManager() {
+        return RunProcessPlugin.getDefault().getProjectPreferenceManager();
     }
 
 }

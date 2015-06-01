@@ -201,11 +201,28 @@
         for (IContext context : contexts)
         {
         %>
-            @Test
-            public void test<%=context.getName()%>() {
-                final <%=className %> <%=className %>Class = new <%=className %>();
-                <%=className %>Class.runJobInTOS(new String[] { "--context=<%=context.getName()%>" });
-            }
+      @Test
+        public void test<%=context.getName()%>() {
+            final <%=className %> <%=className %>Class = new <%=className %>();
+            java.util.List<String> paraList_<%=context.getName()%> = new java.util.ArrayList<String>();
+            paraList_<%=context.getName()%>.add("--context=<%=context.getName()%>");
+            <%
+        for(IContextParameter contextPara:context.getContextParameterList()){
+            String path =  ProcessUtils.getTestDataValue(process, context, contextPara);
+            if(path!=null&&path.length()>0){
+            %>
+            java.net.URL url_<%=contextPara.getName()%> = getClass().getResource("<%=path%>");
+            String context_<%=contextPara.getName()%>="<%=contextPara.getName()%>=" + url_<%=contextPara.getName()%>.getPath();
+            paraList_<%=context.getName()%>.add("--context_param");
+            paraList_<%=context.getName()%>.add(context_<%=contextPara.getName()%>);
+        <%
+         }
+               
+        }
+        %>  
+        String[] arrays = (String[])paraList_<%=context.getName()%>.toArray(); 
+        <%=className %>Class.runJobInTOS(arrays);
+        }
         <%
         }
     }

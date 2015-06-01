@@ -13,6 +13,7 @@
 package org.talend.repository.ui.dialog;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,15 +25,18 @@ import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.SafeRunnable;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -41,6 +45,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.projectsetting.IProjectSettingContainer;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
@@ -51,7 +56,7 @@ import org.talend.repository.ui.actions.ImportProjectSettings;
 /**
  * wchen class global comment. Detailled comment
  */
-public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
+public class ProjectSettingsPreferenceDialog extends PreferenceDialog implements IProjectSettingContainer {
 
     private static final String TEMP_PRODUCT_SETTING_XML = "TempProductSetting.xml"; //$NON-NLS-1$
 
@@ -291,6 +296,82 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
             }
             curItem.setParent(folderItem);
         }
+    }
+
+    @Override
+    public boolean addChildrenPreferenceNodes(String parentId, List<IPreferenceNode> childrenNodes) {
+        IPreferenceNode findNodeMatching = findNodeMatching(parentId);
+        if (findNodeMatching != null && childrenNodes != null) {
+            IPreferenceNode[] subNodes = findNodeMatching.getSubNodes();
+
+            // remove old one to make sure the add nodes is front.
+            if (subNodes != null) {
+                for (IPreferenceNode n : subNodes) {
+                    findNodeMatching.remove(n);
+                }
+            }
+            // add new nodes.
+            for (IPreferenceNode n : childrenNodes) {
+                findNodeMatching.add(n);
+            }
+            // add back the original nodes.
+            for (IPreferenceNode n : subNodes) {
+                findNodeMatching.add(n);
+            }
+
+            this.getTreeViewer().refresh();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeChildrenPreferenceNodes(String parentId, List<String> childrenIds) {
+        IPreferenceNode findNodeMatching = findNodeMatching(parentId);
+        if (findNodeMatching != null && childrenIds != null) {
+            // remove existed nodes.
+            List<IPreferenceNode> recordRemovedNodes = new ArrayList<IPreferenceNode>();
+            boolean nonExisted = false;
+            for (String childId : childrenIds) {
+                IPreferenceNode removedNode = findNodeMatching.remove(childId);
+                if (removedNode != null) {
+                    recordRemovedNodes.add(removedNode);
+                } else {
+                    nonExisted = true;
+                    break;
+                }
+            }
+            // add back the delete nodes
+            if (nonExisted) {
+                for (IPreferenceNode node : recordRemovedNodes) {
+                    findNodeMatching.add(node);
+                }
+                return false;
+            } else {
+                this.getTreeViewer().refresh();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean openPage(String nodeId, Object data) {
+        if (this instanceof IWorkbenchPreferenceContainer) {
+            ((IWorkbenchPreferenceContainer) this).openPage(nodeId, data);
+        } else { // impl by self
+            final IPreferenceNode node = findNodeMatching(nodeId);
+            if (node != null) {
+                getTreeViewer().setSelection(new StructuredSelection(node));
+                showPage(node);
+            }
+            IPreferencePage page = getCurrentPage();
+            if (page instanceof PreferencePage) {
+                ((PreferencePage) page).applyData(data);
+            }
+            return true;
+        }
+        return false;
     }
 
 }
