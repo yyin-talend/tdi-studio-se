@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,8 +25,6 @@ import javax.xml.ws.BindingProvider;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.jaxb.JAXBDataBinding;
 
-import com.netsuite.webservices.lists.accounting.Location;
-import com.netsuite.webservices.lists.accounting.OtherChargeResaleItem;
 import com.netsuite.webservices.platform.ExceededRequestLimitFault;
 import com.netsuite.webservices.platform.ExceededRequestSizeFault;
 import com.netsuite.webservices.platform.InsufficientPermissionFault;
@@ -38,20 +35,27 @@ import com.netsuite.webservices.platform.NetSuitePortType;
 import com.netsuite.webservices.platform.NetSuiteService;
 import com.netsuite.webservices.platform.UnexpectedErrorFault;
 import com.netsuite.webservices.platform.core.DataCenterUrls;
+import com.netsuite.webservices.platform.core.ListOrRecordRef;
 import com.netsuite.webservices.platform.core.NullField;
 import com.netsuite.webservices.platform.core.Passport;
 import com.netsuite.webservices.platform.core.Record;
 import com.netsuite.webservices.platform.core.RecordRef;
+import com.netsuite.webservices.platform.core.SearchBooleanCustomField;
 import com.netsuite.webservices.platform.core.SearchBooleanField;
 import com.netsuite.webservices.platform.core.SearchCustomField;
 import com.netsuite.webservices.platform.core.SearchCustomFieldList;
+import com.netsuite.webservices.platform.core.SearchDateCustomField;
 import com.netsuite.webservices.platform.core.SearchDateField;
+import com.netsuite.webservices.platform.core.SearchDoubleCustomField;
 import com.netsuite.webservices.platform.core.SearchDoubleField;
 import com.netsuite.webservices.platform.core.SearchEnumMultiSelectField;
+import com.netsuite.webservices.platform.core.SearchLongCustomField;
 import com.netsuite.webservices.platform.core.SearchLongField;
+import com.netsuite.webservices.platform.core.SearchMultiSelectCustomField;
 import com.netsuite.webservices.platform.core.SearchMultiSelectField;
 import com.netsuite.webservices.platform.core.SearchRecord;
 import com.netsuite.webservices.platform.core.SearchResult;
+import com.netsuite.webservices.platform.core.SearchStringCustomField;
 import com.netsuite.webservices.platform.core.SearchStringField;
 import com.netsuite.webservices.platform.core.Status;
 import com.netsuite.webservices.platform.core.StatusDetail;
@@ -76,7 +80,6 @@ import com.netsuite.webservices.platform.messages.SearchPreferences;
 import com.netsuite.webservices.platform.messages.SearchRequest;
 import com.netsuite.webservices.platform.messages.UpdateRequest;
 import com.netsuite.webservices.platform.messages.UpdateResponse;
-import com.netsuite.webservices.platform.messages.UpsertRequest;
 import com.netsuite.webservices.platform.messages.WriteResponse;
 import com.netsuite.webservices.setup.customization.CustomRecord;
 import com.netsuite.webservices.setup.customization.CustomRecordSearch;
@@ -234,15 +237,139 @@ public class NetsuiteManagement_CXF {
 	
 	private SearchResult searchResult;
 
-	public void search(String searchentity, String searchFieldName, String searchOperator, List<String> searchValue) throws DatatypeConfigurationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		if (searchValue.get(0) != null) {
-			if ((searchFieldName != null) 
-					|| (this.searchClass.getSimpleName().equals("TransactionSearch"))
-					|| (this.entityClass.getSimpleName().equals("SerializedInventoryItem"))
-					|| (this.entityClass.getSimpleName().equals("InventoryItem"))) {
-	
-				this.criteriaSetter = findMethod(this.searchBasicClass, "set" + searchFieldName);
-	
+	public void search(String searchentity, String searchFieldName, String searchOperator, List<String> searchValue, String forcedType) throws DatatypeConfigurationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if ((searchValue.get(0) != null) && (searchFieldName != null)) {
+			this.criteriaSetter = findMethod(this.searchBasicClass, "set" + searchFieldName);
+			
+			if (this.criteriaSetter == null) {
+				SearchCustomField customCriteria = null;
+
+				if (forcedType.equals("String")) {
+					SearchStringCustomField searchArgumentType = new SearchStringCustomField();
+					searchArgumentType.setInternalId(searchFieldName);
+					searchArgumentType.setSearchValue(searchValue.get(0));
+					searchArgumentType
+							.setOperator(SearchStringFieldOperator
+									.fromValue(searchOperator));
+					customCriteria = searchArgumentType;
+				} else if (forcedType.equals("Long")) {
+					SearchLongCustomField searchArgumentType = new SearchLongCustomField();
+					searchArgumentType.setInternalId(searchFieldName);
+					searchArgumentType.setSearchValue(Long.valueOf(Long
+							.parseLong(searchValue.get(0))));
+
+					if (searchValue.size() > 1) {
+						searchArgumentType.setSearchValue2(Long
+								.valueOf(Long.parseLong(searchValue.get(1))));
+					}
+
+					searchArgumentType.setOperator(SearchLongFieldOperator
+							.fromValue(searchOperator));
+					customCriteria = searchArgumentType;
+				} else if (forcedType.equals("Date")) {
+					SearchDateCustomField searchArgumentType = new SearchDateCustomField();
+					Calendar calValue = Calendar.getInstance();
+					Calendar calValue2 = Calendar.getInstance();
+
+					String dateFormat = "yyyy-MM-dd";
+					String timeFormat = "HH:mm:ss";
+
+					String format = dateFormat + " " + timeFormat;
+					if (searchValue.get(0).length() == dateFormat.length()) {
+						format = dateFormat;
+					}
+					
+					if (searchValue.get(0).length() == timeFormat.length()) {
+						searchValue.set(0, new SimpleDateFormat(dateFormat).format(calValue.getTime()) + " " + searchValue.get(0));
+						if(searchValue.size() > 1){
+							searchValue.set(1, new SimpleDateFormat(dateFormat).format(calValue.getTime()) + " " + searchValue.get(1));
+						}
+					}
+					
+					DateFormat df = new SimpleDateFormat(format);
+					
+					try {
+						calValue.setTime(df.parse(searchValue.get(0)));
+						if(searchValue.size() > 1){
+							calValue2.setTime(df.parse(searchValue.get(1)));
+						}
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					
+					XMLGregorianCalendar xts = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+					xts.setYear(calValue.get(Calendar.YEAR));
+					xts.setMonth(calValue.get(Calendar.MONTH) +1);
+					xts.setDay(calValue.get(Calendar.DAY_OF_MONTH));
+					xts.setHour(calValue.get(Calendar.HOUR_OF_DAY));
+					xts.setMinute(calValue.get(Calendar.MINUTE));
+					xts.setSecond(calValue.get(Calendar.SECOND));
+					xts.setMillisecond(calValue.get(Calendar.MILLISECOND));
+					xts.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
+					
+					searchArgumentType.setSearchValue(xts);
+					
+					if(searchValue.size() > 1){
+						XMLGregorianCalendar xts2 = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+						xts2.setYear(calValue.get(Calendar.YEAR));
+						xts2.setMonth(calValue.get(Calendar.MONTH) +1);
+						xts2.setDay(calValue.get(Calendar.DAY_OF_MONTH));
+						xts2.setHour(calValue.get(Calendar.HOUR_OF_DAY));
+						xts2.setMinute(calValue.get(Calendar.MINUTE));
+						xts2.setSecond(calValue.get(Calendar.SECOND));
+						xts2.setMillisecond(calValue.get(Calendar.MILLISECOND));
+						xts2.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
+						searchArgumentType.setSearchValue2(xts2);
+					}
+					
+					searchArgumentType.setOperator(SearchDateFieldOperator.fromValue(searchOperator));
+					customCriteria = searchArgumentType;
+				} else if (forcedType.equals("Boolean")) {
+					SearchBooleanCustomField searchArgumentType = new SearchBooleanCustomField();
+					searchArgumentType.setInternalId(searchFieldName);
+					searchArgumentType.setSearchValue(Boolean
+							.valueOf(Boolean.parseBoolean(searchValue.get(0))));
+					customCriteria = searchArgumentType;
+				} else if (forcedType.equals("Double")) {
+					SearchDoubleCustomField searchArgumentType = new SearchDoubleCustomField();
+					searchArgumentType.setInternalId(searchFieldName);
+					searchArgumentType.setSearchValue(Double.valueOf(Double
+							.parseDouble(searchValue.get(0))));
+					searchArgumentType
+							.setOperator(SearchDoubleFieldOperator
+									.fromValue(searchOperator));
+
+					if (searchValue.size() > 1) {
+						searchArgumentType
+								.setSearchValue2(Double.valueOf(Double
+										.parseDouble(searchValue.get(1))));
+					}
+
+					customCriteria = searchArgumentType;
+				} else if (forcedType.equals("List")) {
+					SearchMultiSelectCustomField searchArgumentType = new SearchMultiSelectCustomField();
+
+					int len = searchValue.size();
+
+					List<ListOrRecordRef> lr = searchArgumentType.getSearchValue();
+					for (int i = 0; i < len; i++) {
+						ListOrRecordRef lRecordRef = new ListOrRecordRef();
+						lRecordRef.setName(searchValue.get(i));
+						lr.add(lRecordRef);
+					}
+					
+					searchArgumentType
+							.setOperator(SearchMultiSelectFieldOperator
+									.fromValue(searchOperator));
+					customCriteria = searchArgumentType;
+				} else {
+					throw new IllegalArgumentException("Unsupported search field type: " + forcedType);
+				}
+
+				push(customCriteria);
+
+				this.hasCustomCriteria = true;
+			} else {
 				this.criteriaSetter.invoke(this.searchBasic, new Object[] { getSearchField(this.searchBasicClass, searchValue, searchFieldName, searchOperator) });
 			}
 		}
