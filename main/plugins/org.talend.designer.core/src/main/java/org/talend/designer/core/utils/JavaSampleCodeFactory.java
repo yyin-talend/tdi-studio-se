@@ -66,15 +66,26 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
 
     /**
      * 
-     * DOC YeXiaowei Comment method "generateJavaRowCode".
+     * DOC YeXiaowei Comment method "generateJavaRowCode". Generates Java code for the tJavaRow component in DI and BD.
      * 
      * @param node
      * @return
      */
     private String generateJavaRowCode(final Node node) {
+        boolean isSparkNode = false;
+        String sparkMapType = "MAP"; //$NON-NLS-1$
+
         String primeVlue = "// code sample:\r\n" + "//\r\n" + "// multiply by 2 the row identifier\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "// output_row.id = input_row.id * 2;\r\n" + "//\r\n" + "// lowercase the name\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "// output_row.name = input_row.name.toLowerCase();"; //$NON-NLS-1$
+
+        if ("SPARK".equalsIgnoreCase(node.getComponent().getType()) //$NON-NLS-1$
+                || "SPARKSTREAMING".equalsIgnoreCase(node.getComponent().getType())) { //$NON-NLS-1$
+            isSparkNode = true;
+            sparkMapType = node.getPropertyValue("MAPTYPE").toString(); //$NON-NLS-1$
+            primeVlue = "// Please add an input to the component to generate a sample code\r\n"; //$NON-NLS-1$
+        }
+
         if (node.getMetadataList() == null || node.getMetadataList().get(0) == null) {
             return primeVlue;
         }
@@ -98,9 +109,7 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
         String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 
         StringBuilder builder = new StringBuilder();
-        boolean isSelect = MessageDialog
-                .openQuestion(null, null,
-                        Messages.getString("JavaSampleCodeFactory.askRegenerateCode")); //$NON-NLS-1$
+        boolean isSelect = MessageDialog.openQuestion(null, null, Messages.getString("JavaSampleCodeFactory.askRegenerateCode")); //$NON-NLS-1$
         if (isSelect) {
             // Add simple comment
             builder.append(Messages.getString("JavaSampleCodeFactory.schema")).append(lineSeparator); //$NON-NLS-1$
@@ -110,6 +119,10 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
 
             if (inputRowsLength == 0 || ouputRowsLength == 0) {
                 return null;
+            }
+
+            if (isSparkNode && (sparkMapType.equalsIgnoreCase("FLATMAP"))) { //$NON-NLS-1$
+                builder.append("Output output = new Output();\r\n"); //$NON-NLS-1$
             }
 
             if (inputRowsLength >= ouputRowsLength) {
@@ -125,8 +138,13 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
                         outputLabel = outputColumns.get(i).getLabel();
                     }
 
-                    builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                                    javaEnding);
+                    if (isSparkNode) {
+                        builder.append("output.").append(outputLabel).append(" = ").append("input.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                javaEnding);
+                    } else {
+                        builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                        javaEnding);
+                    }
 
                     builder.append(lineSeparator);
                 }
@@ -142,10 +160,20 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
                         inputLabel = inputColumns.get(i).getLabel();
                     }
 
-                    builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                                    javaEnding);
+                    if (isSparkNode) {
+                        builder.append("output.").append(outputLabel).append(" = ").append("input.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                javaEnding);
+                    } else {
+                        builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                        javaEnding);
+                    }
+
                     builder.append(lineSeparator);
                 }
+            }
+
+            if (isSparkNode && (sparkMapType.equalsIgnoreCase("FLATMAP"))) { //$NON-NLS-1$
+                builder.append("outputList.add(output);\r\n"); //$NON-NLS-1$
             }
 
             return builder.toString();
@@ -154,5 +182,4 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
         }
 
     }
-
 }
