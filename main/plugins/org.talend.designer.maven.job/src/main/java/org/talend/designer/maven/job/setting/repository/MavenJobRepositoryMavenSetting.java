@@ -23,8 +23,6 @@ import org.talend.repository.model.RepositoryNode;
  */
 public abstract class MavenJobRepositoryMavenSetting extends RepositoryMavenSetting {
 
-    private static final String FAKE_NODE_SUFFIX = "_fake"; //$NON-NLS-1$
-
     /*
      * (non-Javadoc)
      * 
@@ -51,30 +49,9 @@ public abstract class MavenJobRepositoryMavenSetting extends RepositoryMavenSett
     protected String buildFolderNodeId(IPreferenceNode parentNode, ILabelProvider labelProvider, RepositoryNode node) {
         String buildNodeId = super.buildFolderNodeId(parentNode, labelProvider, node);
         if (DesignerMavenUiHelper.isFakeProcessRootNode(node)) {// fake process root node
-            buildNodeId += FAKE_NODE_SUFFIX;
+            buildNodeId += "_fake"; //$NON-NLS-1$
         }
         return buildNodeId;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.maven.ui.setting.repository.RepositoryMavenSetting#createFolderNode(java.lang.String,
-     * org.eclipse.jface.viewers.ILabelProvider, org.talend.repository.model.RepositoryNode)
-     */
-    @Override
-    protected IPreferenceNode createFolderNode(String id, ILabelProvider labelProvider, RepositoryNode node) {
-        // if (DesignerMavenUiHelper.isFakeProcessRootNode(node)) {// fake process root node
-        // ImageDescriptor imageDesc = null;
-        // Image image = labelProvider.getImage(node);
-        // if (image != null) {
-        // imageDesc = ImageDescriptor.createFromImageData(image.getImageData());
-        // }
-        // String label = labelProvider.getText(node);
-        // // label= node.getLabel(); //there is on bug for this label, so use provider directly.
-        //            return new RepositoryPreferenceNode(id, label, imageDesc, node); //$NON-NLS-1$
-        // }
-        return super.createFolderNode(id, labelProvider, node);
     }
 
 }
