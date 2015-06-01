@@ -213,12 +213,14 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
     protected void addMavenScriptToExport(List<ExportFileResource> list, ExportFileResource[] processes,
             Map<String, String> mavenPropertiesMap) {
         List<URL> scriptsUrls = new ArrayList<URL>();
-        addMavenBuildScripts(scriptsUrls, mavenPropertiesMap);
+
+        addMavenBuildScripts(processes, scriptsUrls, mavenPropertiesMap);
         ExportFileResource mavenResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         mavenResource.addResources("", scriptsUrls); //$NON-NLS-1$
         list.add(mavenResource);
     }
 
-    protected abstract void addMavenBuildScripts(List<URL> scriptsUrls, Map<String, String> mavenPropertiesMap);
+    protected abstract void addMavenBuildScripts(ExportFileResource[] processes, List<URL> scriptsUrls,
+            Map<String, String> mavenPropertiesMap);
 
 }

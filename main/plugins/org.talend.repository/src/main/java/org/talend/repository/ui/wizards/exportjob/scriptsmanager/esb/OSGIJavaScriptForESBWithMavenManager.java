@@ -19,13 +19,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IOsgiDependenciesService;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.properties.Item;
+import org.talend.core.repository.utils.ItemResourceUtil;
 import org.talend.core.runtime.projectsetting.IProjectSettingPreferenceConstants;
 import org.talend.core.runtime.projectsetting.IProjectSettingTemplateConstants;
-import org.talend.core.runtime.services.IMavenUIService;
+import org.talend.designer.maven.template.MavenTemplateManager;
+import org.talend.designer.maven.utils.PomUtil;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
@@ -49,17 +55,33 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
     }
 
     @Override
-    protected void addMavenBuildScripts(List<URL> scriptsUrls, Map<String, String> mavenPropertiesMap) {
-        IMavenUIService mavenUiService = null;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMavenUIService.class)) {
-            mavenUiService = (IMavenUIService) GlobalServiceRegister.getDefault().getService(IMavenUIService.class);
-        }
-        if (mavenUiService == null) {
+    protected void addMavenBuildScripts(ExportFileResource[] processes, List<URL> scriptsUrls,
+            Map<String, String> mavenPropertiesMap) {
+        if (!PluginChecker.isPluginLoaded(PluginChecker.EXPORT_JOB_PLUGIN_ID)) {
             return;
         }
         try {
-            String mavenScript = mavenUiService
-                    .getProjectSettingValue(IProjectSettingPreferenceConstants.TEMPLATE_OSGI_BUNDLE_POM);
+            //
+            Item item = processes[0].getItem();
+            File templateFile = null;
+            if (item != null) {
+                IPath itemLocationPath = ItemResourceUtil.getItemLocationPath(item.getProperty());
+                IFolder objectTypeFolder = ItemResourceUtil.getObjectTypeFolder(item.getProperty());
+                if (itemLocationPath != null && objectTypeFolder != null) {
+                    IPath itemRelativePath = itemLocationPath.removeLastSegments(1)
+                            .makeRelativeTo(objectTypeFolder.getLocation());
+                    templateFile = PomUtil.getTemplateFile(objectTypeFolder, itemRelativePath,
+                            IProjectSettingTemplateConstants.OSGI_POM_FILE_NAME);
+                }
+
+            }
+            String mavenScript = MavenTemplateManager.getTemplateContent(templateFile,
+                    IProjectSettingPreferenceConstants.TEMPLATE_OSGI_BUNDLE_POM, PluginChecker.EXPORT_JOB_PLUGIN_ID,
+                    IProjectSettingTemplateConstants.PATH_OSGI_BUNDLE + '/'
+                            + IProjectSettingTemplateConstants.POM_JOB_TEMPLATE_FILE_NAME);
+
+            // String mavenScript = mavenUiService
+            // .getProjectSettingValue(IProjectSettingPreferenceConstants.TEMPLATE_OSGI_BUNDLE_POM);
             if (mavenScript == null) {
                 return;
             }
