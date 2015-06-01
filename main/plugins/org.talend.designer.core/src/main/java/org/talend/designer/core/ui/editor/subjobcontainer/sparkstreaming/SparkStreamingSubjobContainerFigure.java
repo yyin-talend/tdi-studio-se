@@ -43,10 +43,20 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
 
     private boolean showTimeout = false;
 
+    private final static int TIMEOUT_FIGURE_WIDTH = 150;
+
+    private final static int TIMEOUT_FIGURE_HEIGHT = 40;
+
+    // This attribute is used to define if a subjob has more than one node (or not). We won't display the stats if there
+    // is only one node.
+    private boolean subjobHasMoreThanOneNode = false;
+
     public SparkStreamingSubjobContainerFigure(SubjobContainer subjobContainerTmp) {
         super(subjobContainerTmp);
 
         updateData();
+
+        this.subjobHasMoreThanOneNode = this.subjobContainer.getNodeContainers().size() > 1;
     }
 
     @Override
@@ -59,23 +69,39 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
 
     @Override
     public void initializeSubjobContainer(Rectangle rectangle) {
+
+        // Resize the rectangle to take the spark streaming information into account in the rectangle dimensions.^M
+        // This part is for the information at the top left corner.^M
+
+        this.subjobHasMoreThanOneNode = subjobContainer.getNodeContainers().size() > 1;
+
+        if (this.subjobHasMoreThanOneNode) {
+            rectangle.resize((rectangle.width() < TIMEOUT_FIGURE_WIDTH) ? TIMEOUT_FIGURE_WIDTH : 0, TIMEOUT_FIGURE_HEIGHT + 10);
+            rectangle.setY(rectangle.y() - TIMEOUT_FIGURE_HEIGHT - 10);
+        }
+
         super.initializeSubjobContainer(rectangle);
         Point location = this.getLocation();
 
         timeoutFigureText.setText(timeoutText);
-        timeoutFigureText.setSize(145, showTimeout ? 30 : 18);
+        timeoutFigureText
+                .setSize(TIMEOUT_FIGURE_WIDTH - 5, showTimeout ? TIMEOUT_FIGURE_HEIGHT - 10 : TIMEOUT_FIGURE_HEIGHT - 22);
         timeoutFigureText.setLocation(new Point(location.x() + 10, location.y() + 25));
-        timeoutFigureRect.setVisible(false);
-        timeoutFigureText.setVisible(true);
+        timeoutFigureText.setVisible(false);
+        if (this.subjobHasMoreThanOneNode) {
+            timeoutFigureText.setVisible(true);
+        }
         timeoutFigureText.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////
         timeoutFigureText.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
 
         timeoutFigureRect.setLocation(new Point(location.x() + 5, location.y() + 20));
         timeoutFigureRect.setVisible(false);
-        timeoutFigureRect.setVisible(true);
+        if (this.subjobHasMoreThanOneNode) {
+            timeoutFigureRect.setVisible(true);
+        }
         timeoutFigureRect.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////
         timeoutFigureRect.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
-        timeoutFigureRect.setSize(150, showTimeout ? 40 : 26);
+        timeoutFigureRect.setSize(TIMEOUT_FIGURE_WIDTH, showTimeout ? TIMEOUT_FIGURE_HEIGHT : TIMEOUT_FIGURE_HEIGHT - 14);
     }
 
     /**

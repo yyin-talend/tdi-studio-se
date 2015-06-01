@@ -107,6 +107,8 @@ public class NodeContainerFigure extends Figure {
         rectFig.setBackgroundColor(null);
         this.add(rectFig, null, 0);
 
+        addWindowFigure();
+
         breakpointFigure = new ImageFigure();
         breakpointFigure.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(BREAKPOINT_IMAGE)));
         breakpointFigure.setVisible(false);
@@ -144,7 +146,6 @@ public class NodeContainerFigure extends Figure {
         if (PluginChecker.isTeamEdition()) {
             addParallelFigure();
         }
-        addWindowFigure();
 
         htmlStatusHint = new SimpleHtmlFigure();
 

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -30,8 +30,8 @@ public class NodeContainerUtils {
         try {
             time_ms = Long.parseLong(time);
         } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-            return time;
+            // nfe.printStackTrace();
+            return ""; //$NON-NLS-1$
         }
 
         if (time_ms < 1000) {
