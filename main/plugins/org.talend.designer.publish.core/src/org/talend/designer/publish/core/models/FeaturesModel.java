@@ -164,12 +164,12 @@ public class FeaturesModel extends BaseModel {
             for (Map.Entry<String, Map<String, String>> context : contexts.entrySet()) {
                 Element config = document.createElement("config");
                 config.setAttribute("name", name +".talendcontext."+ context.getKey());
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder("\n");
                 for (Map.Entry<String, String> property : context.getValue().entrySet()) {
                     sb.append(property.getKey());
                     sb.append('=');
                     sb.append(property.getValue());
-                    sb.append("\n");
+                    sb.append('\n');
                 }
                 config.appendChild(document.createTextNode(sb.toString()));
                 feature.appendChild(config);
@@ -181,17 +181,18 @@ public class FeaturesModel extends BaseModel {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         transformer.transform(new DOMSource(document), new StreamResult(os));
         return new ByteArrayInputStream(os.toByteArray());
-	}
+    }
 
-//    public static void main(String[] args) {
+//    public static void main(String[] args) throws java.io.IOException {
 //        FeaturesModel featureModel = new FeaturesModel("aaa", "CustomService", "1.0.0");
 //        featureModel.addBundle(new BundleModel("talend", "job-control-bundle", "1.0"));
 //        featureModel.addBundle(new BundleModel("talend", "ProviderJob", "1.0"));
 //        featureModel.addBundle(new BundleModel("talend", "ESBProvider2", "1.0"));
 //        featureModel.addFeature(new FeatureModel("custom-feature", "2.0"));
-//        featureModel.setConfigName("aa.bb");
-//        featureModel.setContextList(new String[] { "Default", "Product", "Dev" });
-//        System.out.println(featureModel.getContent());
+//        featureModel.setContexts(java.util.Collections.singletonMap("name", java.util.Collections.singletonMap("key", "開始")));
+//        InputStream is = featureModel.getContent();
+//        byte[] b = new byte[is.available()];
+//        is.read(b);
+//        System.out.println(new String(b));
 //    }
-
 }
