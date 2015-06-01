@@ -2424,6 +2424,15 @@
               name="SetUrltStewardshipXXXTDI32354"
               version="6.0.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.ChangeMongoDBMinimalVersion"
+              id="org.talend.repository.model.migration.ChangeMongoDBMinimalVersion"
+              description="Change mongoDB version to 3.0.X"
+              name="ChangeMongoDBMinimalVersion"
+              version="6.0.0">
+        </projecttask>
    </extension>
 
    <extension
