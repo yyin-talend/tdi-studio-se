@@ -1552,6 +1552,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             selectLastUsedProject();
         } else {
             refreshProjectListAreaEnable(false);
+            branchesViewer.setInput(null);
         }
 
     }
