@@ -369,7 +369,7 @@ public class DefaultRunProcessService implements IRunProcessService {
             // create the .prefs file and save log4j.xml and common-logging.properties's content into it
             if (!Log4jPrefsSettingManager.getInstance().isLog4jPrefsExist()) {
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE,
-                        Boolean.FALSE.toString());
+                        Boolean.TRUE.toString());
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_CONTENT_NODE,
                         getLogTemplate(RESOURCE_LOG_FILE_PATH));
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.COMMON_LOGGING_NODE,
