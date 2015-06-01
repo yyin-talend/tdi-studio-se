@@ -27,8 +27,8 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.CommonExceptionHandler;
@@ -337,11 +338,12 @@ public class LoginDialogV2 extends TrayDialog {
         GridData brandingAreaGridData = new GridData(GridData.FILL_BOTH);
         if (imageDescriptor != null) {
             Image imageCanvas = imageDescriptor.createImage();
-            int width = (int) Math.ceil(realWidthRate * imageCanvas.getBounds().width);
+            // int width = (int) Math.ceil(realWidthRate * imageCanvas.getBounds().width);
+            int width = (int) Math.ceil(realHeightRate * imageCanvas.getBounds().width); // maybe use the same rate for
+                                                                                         // image width and height is
+                                                                                         // better
             int height = (int) Math.ceil(realHeightRate * imageCanvas.getBounds().height);
-            ImageData imageData = imageCanvas.getImageData();
-            imageData = imageData.scaledTo(width, height);
-            Image scaledImage = new Image(getShell().getDisplay(), imageData);
+            Image scaledImage = scaleImage(imageCanvas, width, height);
             brandingArea.setBackgroundImage(scaledImage);
             brandingAreaGridData.widthHint = scaledImage.getBounds().width;
             brandingAreaGridData.heightHint = scaledImage.getBounds().height;
@@ -363,8 +365,20 @@ public class LoginDialogV2 extends TrayDialog {
         errorMessageArea.setLayout(layout);
         errorTextLabel = new StyledText(errorMessageArea, SWT.WRAP);
         errorTextLabel.setEditable(false);
+        errorTextLabel.setCaret(null);
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         errorTextLabel.setLayoutData(layoutData);
+    }
+
+    protected Image scaleImage(Image image, int width, int height) {
+        Image scaled = new Image(Display.getDefault(), width, height);
+        GC gc = new GC(scaled);
+        gc.setAntialias(SWT.ON);
+        gc.setInterpolation(SWT.HIGH);
+        gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height, 0, 0, width, height);
+        gc.dispose();
+        image.dispose();
+        return scaled;
     }
 
     public void setErrorMessage(String errMsg, List<StyleRange> styleRange) {

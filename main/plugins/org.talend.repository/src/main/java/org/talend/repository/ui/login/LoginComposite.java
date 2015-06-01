@@ -133,7 +133,9 @@ import org.talend.utils.json.JSONException;
  * $Id: /talend/tos/trunk/org.talend.repository/src/main/java/org/talend/repository/ui/login/LoginComposite.java 24167
  * 2009-04-28T09:55:53.574018Z wchen $
  * 
+ * @deprecated use LoginProjectPage instead
  */
+@Deprecated
 public class LoginComposite extends Composite {
 
     private static final String DEFAULT_PROJECT_NAME = "ProjectName"; //$NON-NLS-1$
