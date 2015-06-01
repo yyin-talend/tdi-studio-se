@@ -159,12 +159,12 @@ public class FeaturesModel extends BaseModel {
             for (Map.Entry<String, Map<String, String>> context : contexts.entrySet()) {
                 Element config = document.createElement("config");
                 config.setAttribute("name", name +".talendcontext."+ context.getKey());
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder("\n");
                 for (Map.Entry<String, String> property : context.getValue().entrySet()) {
                     sb.append(property.getKey());
                     sb.append('=');
                     sb.append(property.getValue());
-                    sb.append("\n");
+                    sb.append('\n');
                 }
                 config.appendChild(document.createTextNode(sb.toString()));
                 feature.appendChild(config);
@@ -186,9 +186,7 @@ public class FeaturesModel extends BaseModel {
 //        featureModel.addBundle(new BundleModel("talend", "ProviderJob", "1.0"));
 //        featureModel.addBundle(new BundleModel("talend", "ESBProvider2", "1.0"));
 //        featureModel.addFeature(new FeatureModel("custom-feature", "2.0"));
-//        featureModel.setConfigName("aa.bb");
-//        featureModel.setContextList(new String[] { "Default", "Product", "Dev" });
+//        featureModel.setContexts(java.util.Collections.singletonMap("name", java.util.Collections.singletonMap("key", "開始")));
 //        System.out.println(featureModel.getContent());
 //    }
-
 }
