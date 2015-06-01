@@ -28,7 +28,7 @@
    <extension
          point="org.talend.designer.maven.mavenSetting">
       <TemplateManager
-            class="org.talend.designer.maven.job.setting.MavenJobTemplateManager">
+            class="org.talend.designer.maven.job.setting.MavenJobMavenTemplateManager">
       </TemplateManager>
       <ProjectSettingManager
             class="org.talend.designer.maven.job.setting.project.MavenJobProjectSettingManagerProvider">
