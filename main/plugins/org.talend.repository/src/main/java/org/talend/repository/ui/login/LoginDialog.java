@@ -71,7 +71,9 @@ import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
  * 
  * $Id$
  * 
+ * @deprecated use LoginDialogV2 instead
  */
+@Deprecated
 public class LoginDialog extends TrayDialog {
 
     /** The login composite. */

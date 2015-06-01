@@ -80,7 +80,10 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
 /**
  * DOC Administrator class global comment. Detailled comment
+ * 
+ * @deprecated use LoginProjectPage instead
  */
+@Deprecated
 public class TOSLoginComposite extends Composite {
 
     private FormToolkit toolkit;
