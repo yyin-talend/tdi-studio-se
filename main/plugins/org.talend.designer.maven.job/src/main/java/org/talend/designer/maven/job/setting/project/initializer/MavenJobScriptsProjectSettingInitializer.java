@@ -36,11 +36,11 @@ public class MavenJobScriptsProjectSettingInitializer extends AbstractProjectPre
 
         try {
             setDefault(preferenceStore, IProjectSettingPreferenceConstants.TEMPLATE_STANDALONE_JOB_POM,
-                    IProjectSettingTemplateConstants.PATH_RESOURCES_TEMPLATES + '/'
+                    IProjectSettingTemplateConstants.PATH_STANDALONE + '/'
                             + IProjectSettingTemplateConstants.POM_JOB_TEMPLATE_FILE_NAME);
 
             setDefault(preferenceStore, IProjectSettingPreferenceConstants.TEMPLATE_STANDALONE_JOB_ASSEMBLY,
-                    IProjectSettingTemplateConstants.PATH_RESOURCES_TEMPLATES + '/'
+                    IProjectSettingTemplateConstants.PATH_STANDALONE + '/'
                             + IProjectSettingTemplateConstants.ASSEMBLY_JOB_TEMPLATE_FILE_NAME);
 
         } catch (Exception e) {
