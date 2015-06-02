@@ -57,7 +57,7 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
 
     private final static int TIMEOUT_PADDING = 5;
 
-    private final static int STATS_FIGURE_WIDTH = 200;
+    private final static int STATS_FIGURE_WIDTH = 300;
 
     private final static int STATS_FIGURE_HEIGHT = 100;
 
