@@ -2409,15 +2409,6 @@
         <projecttask
               beforeLogon="false"
               breaks="6.0.0"
-              class="org.talend.repository.model.migration.AddJDBCODBCMode4AccessMigrationTask"
-              description="When migrate from previous version to current version, add closed list ODBC_JDBC parameter for Access components"
-              id="org.talend.repository.model.migration.addJDBCODBCMode4AccessMigrationTask"
-              name="DBCODBCMode4AccessMigrationTask"
-              version="6.0.0">
-        </projecttask>
-        <projecttask
-              beforeLogon="false"
-              breaks="6.0.0"
               class="org.talend.repository.model.migration.SetUrltStewardshipXXXTDI32354"
               description="concat host and port to a url"
               id="org.talend.repository.model.migration.SetUrltStewardshipXXXTDI32354"
