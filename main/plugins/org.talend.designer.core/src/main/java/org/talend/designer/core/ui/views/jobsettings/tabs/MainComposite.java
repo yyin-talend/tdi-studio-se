@@ -44,12 +44,13 @@ import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.ui.actions.DeleteActionCache;
 import org.talend.core.repository.utils.ConvertJobsUtil;
 import org.talend.core.repository.utils.ConvertJobsUtil.JobType;
@@ -66,8 +67,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * yzhang class global comment. Detailled comment
  */
 public class MainComposite extends AbstractTabComposite {
-
-    private Property property;
 
     private boolean enableControl;
 
@@ -111,13 +110,21 @@ public class MainComposite extends AbstractTabComposite {
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
-        allowEnableControl = enableControl;
-        property = repositoryObject.getProperty();
-        Item item = property.getItem();
-        if (item != null && item instanceof ProcessItem) {
-            allowEnableControl = true;
-            if (!PluginChecker.isMapReducePluginLoader() && !PluginChecker.isStormPluginLoader()) {
-                allowEnableControl = enableControl;
+        allowEnableControl = false;
+        enableControl = false;
+        String framework = null;
+        if (obj instanceof RepositoryViewObject || obj instanceof IProcess2) {
+            if (obj instanceof RepositoryViewObject) {
+                framework = ((RepositoryViewObject) obj).getFramework();
+            } else {
+                framework = (String) ((IProcess2) obj).getAdditionalProperties().get(ConvertJobsUtil.FRAMEWORK);
+            }
+            if (ERepositoryObjectType.getAllTypesOfProcess().contains(repositoryObject.getRepositoryObjectType())) {
+                allowEnableControl = true;
+                enableControl = true;
+                if (!PluginChecker.isMapReducePluginLoader() && !PluginChecker.isStormPluginLoader()) {
+                    allowEnableControl = false;
+                }
             }
         }
 
@@ -171,7 +178,7 @@ public class MainComposite extends AbstractTabComposite {
         } else {
             authorText.setText(nameContent);
         }
-        authorText.setEnabled(enableControl);
+        authorText.setEnabled(false);
 
         CLabel authorLabel = widgetFactory.createCLabel(composite, Messages.getString("VersionAuthorSection.authorLabel")); //$NON-NLS-1$
         data = new FormData();
@@ -222,7 +229,7 @@ public class MainComposite extends AbstractTabComposite {
             data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
             jobTypeCCombo.setLayoutData(data);
             jobTypeCCombo.setItems(JobType.getJobTypeToDispaly());
-            jobTypeCCombo.setText(ConvertJobsUtil.getJobTypeFromFramework(item));
+            jobTypeCCombo.setText(ConvertJobsUtil.getJobTypeFromFramework(framework));
             jobTypeValue = jobTypeCCombo.getText();
             jobTypeCCombo.setEnabled(allowEnableControl);
 
@@ -240,12 +247,8 @@ public class MainComposite extends AbstractTabComposite {
             data.right = new FormAttachment(100, 0);
             data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
             jobFrameworkCCombo.setLayoutData(data);
-            jobFrameworkCCombo.setItems(ConvertJobsUtil.getFrameworkItemsByJobType(item));
-            Object frameworkObj = ConvertJobsUtil.getFramework(item);
-            if (frameworkObj != null) {
-                String framework = ConvertJobsUtil.getFramework(item).toString();
-                jobFrameworkCCombo.setText(framework != null ? framework : ""); //$NON-NLS-1$
-            }
+            jobFrameworkCCombo.setItems(ConvertJobsUtil.getFrameworkItemsByJobType(repositoryObject.getRepositoryObjectType()));
+            jobFrameworkCCombo.setText(framework != null ? framework : ""); //$NON-NLS-1$
             frameworkValue = jobFrameworkCCombo.getText();
             jobFrameworkCCombo.setEnabled(allowEnableControl);
 
@@ -438,7 +441,7 @@ public class MainComposite extends AbstractTabComposite {
 
                     @Override
                     public void widgetSelected(SelectionEvent e) {
-                        String version = property.getVersion();
+                        String version = repositoryObject.getVersion();
                         if (lastVersionFound != null && VersionUtils.compareTo(lastVersionFound, version) > 0) {
                             version = lastVersionFound;
                         }
@@ -453,7 +456,7 @@ public class MainComposite extends AbstractTabComposite {
 
                     @Override
                     public void widgetSelected(SelectionEvent e) {
-                        String version = property.getVersion();
+                        String version = repositoryObject.getVersion();
                         if (lastVersionFound != null && VersionUtils.compareTo(lastVersionFound, version) > 0) {
                             version = lastVersionFound;
                         }
@@ -477,6 +480,7 @@ public class MainComposite extends AbstractTabComposite {
                                 || descriptionText.isDisposed()) {
                             return;
                         }
+                        Property property = repositoryObject.getProperty();
                         DeleteActionCache.getInstance().closeOpenedEditor(repositoryObject);
                         if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
                             // / property.setLabel(nameText.getText());
