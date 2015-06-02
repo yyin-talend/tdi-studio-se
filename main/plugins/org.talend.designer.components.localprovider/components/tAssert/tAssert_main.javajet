@@ -38,7 +38,12 @@
 <%
 if(ProcessUtils.isTestContainer(node.getProcess())) {
 %>
-assertTrue(<%=expression%>);
+if(!<%=expression %>){
+   junitGlobalMap.put("tests.log",((String)junitGlobalMap.get("tests.log"))+"<%=cid %>:"+ <%=description %>+"\n");
+   junitGlobalMap.put("tests.nbFailure",((Integer)junitGlobalMap.get("tests.nbFailure"))+1);
+}else{
+   assertTrue(<%=expression%>);
+}
 <%
 }
 %>

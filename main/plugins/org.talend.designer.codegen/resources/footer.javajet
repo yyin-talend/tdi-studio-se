@@ -203,6 +203,8 @@
         %>
       @Test
         public void test<%=context.getName()%>() {
+            junitGlobalMap.put("tests.log",new String());
+            junitGlobalMap.put("tests.nbFailure",new Integer(0));
             final <%=className %> <%=className %>Class = new <%=className %>();
             java.util.List<String> paraList_<%=context.getName()%> = new java.util.ArrayList<String>();
             paraList_<%=context.getName()%>.add("--context=<%=context.getName()%>");
@@ -220,8 +222,14 @@
                
         }
         %>  
-        String[] arrays = (String[])paraList_<%=context.getName()%>.toArray(); 
+        String[] arrays = new String[paraList_<%=context.getName()%>.size()];
+        for(int i=0;i<paraList_<%=context.getName()%>.size();i++){
+            arrays[i] = (String)paraList_<%=context.getName()%>.get(i);
+        }
         <%=className %>Class.runJobInTOS(arrays);
+        String errors = (String)junitGlobalMap.get("tests.log");
+        Integer nbFailure = (Integer)junitGlobalMap.get("tests.nbFailure");
+        assertTrue("Failure="+nbFailure+"\n"+errors, errors.isEmpty());
         }
         <%
         }
