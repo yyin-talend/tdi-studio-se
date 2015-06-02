@@ -158,6 +158,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
 import org.talend.designer.core.ui.editor.properties.controllers.ComponentListController;
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.editor.subjobcontainer.sparkstreaming.SparkStreamingSubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
@@ -1892,7 +1893,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         for (Iterator iter = processType.getSubjob().iterator(); iter.hasNext();) {
             SubjobType subjobType = (SubjobType) iter.next();
 
-            SubjobContainer subjobContainer = new SubjobContainer(this);
+            SubjobContainer subjobContainer = null;
+            // If the process is a SparkStreaming process, then we use an extension of SubjobContainer to display
+            // different information
+            if (getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName())) {
+                subjobContainer = new SparkStreamingSubjobContainer(this);
+            } else {
+                subjobContainer = new SubjobContainer(this);
+            }
+
             loadElementParameters(subjobContainer, subjobType.getElementParameter());
             // look for the related node
             Node subjobStartNode = subjobContainer.getSubjobStartNode();
@@ -3628,7 +3637,13 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     // if the subjob already exist in the list take it, or if not exist create a new one.
                     SubjobContainer sjc = mapSubjobStarts.get(node);
                     if (sjc == null) {
-                        sjc = new SubjobContainer(this);
+                        // If the process is a SparkStreaming process, then we use an extension of SubjobContainer to
+                        // display different information.
+                        if (getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName())) {
+                            sjc = new SparkStreamingSubjobContainer(this);
+                        } else {
+                            sjc = new SubjobContainer(this);
+                        }
                         sjc.setSubjobStartNode(node);
                         fillSubjobTitle(node, sjc);
                         mapSubjobStarts.put(node, sjc);
@@ -4313,7 +4328,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         return this.additionalProperties;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#getNeededModules(boolean)
      */
     @Override

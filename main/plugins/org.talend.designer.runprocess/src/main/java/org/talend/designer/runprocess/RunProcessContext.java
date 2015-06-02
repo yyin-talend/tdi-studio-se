@@ -46,6 +46,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
@@ -53,6 +54,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.process.TraceData;
 import org.talend.core.model.properties.Property;
@@ -60,7 +62,9 @@ import org.talend.core.model.runprocess.IEclipseProcessor;
 import org.talend.core.model.runprocess.data.PerformanceData;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.subjobcontainer.sparkstreaming.SparkStreamingSubjobContainer;
 import org.talend.designer.core.utils.ConnectionUtil;
 import org.talend.designer.core.utils.ParallelExecutionUtils;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
@@ -100,19 +104,19 @@ public class RunProcessContext {
 
     private static final String PROR_SWITCH_TIME = "RunProcesscontext.Message.Watch"; //$NON-NLS-1$
 
-    public static final String PREVIOUS_ROW = "RunProcessContext.PreviousRow";
+    public static final String PREVIOUS_ROW = "RunProcessContext.PreviousRow"; //$NON-NLS-1$
 
-    public static final String BREAKPOINT_BAR = "RunProcessContext.breakPoint";
+    public static final String BREAKPOINT_BAR = "RunProcessContext.breakPoint"; //$NON-NLS-1$
 
     private static final String WATCH_PARAM = "--watch"; //$NON-NLS-1$
 
-    private static final String LOG4J_ENABLE = "--applyLog4jToChildren";
+    private static final String LOG4J_ENABLE = "--applyLog4jToChildren"; //$NON-NLS-1$
 
-    private static final String LOG4J_LEVEL_ARG = "--log4jLevel=";
+    private static final String LOG4J_LEVEL_ARG = "--log4jLevel="; //$NON-NLS-1$
 
-    private static final String LOG4J_DEFAULT_LEVEL = "info";
+    private static final String LOG4J_DEFAULT_LEVEL = "info"; //$NON-NLS-1$
 
-    public static final String NEXTBREAKPOINT = "RunProcessContext.NextBreakpoint";
+    public static final String NEXTBREAKPOINT = "RunProcessContext.NextBreakpoint"; //$NON-NLS-1$
 
     private boolean watchAllowed;
 
@@ -963,12 +967,12 @@ public class RunProcessContext {
      * @return
      */
     private boolean isEndData(String line) {
-        String temp = line.substring(line.indexOf("|") + 1);
-        temp = temp.substring(temp.indexOf("|") + 1);
-        temp = temp.substring(temp.indexOf("|") + 1);
-        temp = temp.substring(temp.indexOf("|") + 1);
-        temp = temp.substring(temp.indexOf("|") + 1);
-        if (temp.startsWith("end job")) {
+        String temp = line.substring(line.indexOf("|") + 1); //$NON-NLS-1$
+        temp = temp.substring(temp.indexOf("|") + 1); //$NON-NLS-1$
+        temp = temp.substring(temp.indexOf("|") + 1); //$NON-NLS-1$
+        temp = temp.substring(temp.indexOf("|") + 1); //$NON-NLS-1$
+        temp = temp.substring(temp.indexOf("|") + 1); //$NON-NLS-1$
+        if (temp.startsWith("end job")) { //$NON-NLS-1$
             return true;
         }
 
@@ -1032,9 +1036,10 @@ public class RunProcessContext {
                     while (!stopThread) {
                         String line = reader.readLine();
                         showMapReduceData(line);
+                        showSparkStreamingData(line);
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                             if (line != null) {
-                                if (line.startsWith("0")) {
+                                if (line.startsWith("0")) { //$NON-NLS-1$
                                     if (isEndData(line)) {
                                         lastData = preData;
                                     }
@@ -1042,7 +1047,7 @@ public class RunProcessContext {
                                     // 1 = connection information
                                     continue;
                                 }
-                                String[] infos = line.split("\\|");
+                                String[] infos = line.split("\\|"); //$NON-NLS-1$
                                 if (infos.length < 5 || !infos[1].equals(infos[2]) || !infos[1].equals(infos[3])) {
                                     // we only take actually informations for the main jobs, other informations won't be
                                     // used.
@@ -1051,10 +1056,10 @@ public class RunProcessContext {
 
                                 // "0|GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
                                 if (line.trim().length() > 22) {
-                                    String temp = line.substring(line.indexOf("|") + 1); // remove the 0|
-                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the first GnqOsQ|
-                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the second GnqOsQ|
-                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the third GnqOsQ|
+                                    String temp = line.substring(line.indexOf("|") + 1); // remove the 0| //$NON-NLS-1$
+                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the first GnqOsQ| //$NON-NLS-1$
+                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the second GnqOsQ| //$NON-NLS-1$
+                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the third GnqOsQ| //$NON-NLS-1$
                                     line = temp;
                                 }
                             }
@@ -1283,7 +1288,7 @@ public class RunProcessContext {
                                                 if (nextRowTrace != null) {
                                                     String connectionId = null;
                                                     for (String key : nextRowTrace.keySet()) {
-                                                        if (!key.contains("[MAIN]") && !key.contains(":")) {
+                                                        if (!key.contains("[MAIN]") && !key.contains(":")) { //$NON-NLS-1$ //$NON-NLS-2$
                                                             connectionId = key;
                                                         }
                                                     }
@@ -1330,7 +1335,7 @@ public class RunProcessContext {
                                         if (previousRowTrace != null) {
                                             String connectionId = null;
                                             for (String key : previousRowTrace.keySet()) {
-                                                if (!key.contains("[MAIN]") && !key.contains(":")) {
+                                                if (!key.contains("[MAIN]") && !key.contains(":")) { //$NON-NLS-1$ //$NON-NLS-2$
                                                     connectionId = key;
                                                 }
                                             }
@@ -1379,11 +1384,11 @@ public class RunProcessContext {
                             String id = null;
                             boolean isMapTrace = false;
                             if (idPart != null) {
-                                if (idPart.endsWith("[MAIN]")) {
-                                    id = idPart.substring(0, idPart.indexOf("[MAIN]"));
+                                if (idPart.endsWith("[MAIN]")) { //$NON-NLS-1$
+                                    id = idPart.substring(0, idPart.indexOf("[MAIN]")); //$NON-NLS-1$
                                     isMapTrace = true;
-                                } else if (idPart.contains(":") && idPart.split(":").length == 2) {
-                                    id = idPart.split(":")[0];
+                                } else if (idPart.contains(":") && idPart.split(":").length == 2) { //$NON-NLS-1$ //$NON-NLS-2$
+                                    id = idPart.split(":")[0]; //$NON-NLS-1$
                                     isMapTrace = true;
                                 } else {
                                     id = idPart;
@@ -1643,14 +1648,14 @@ public class RunProcessContext {
 
     private String getLog4jRuntimeLevel() {
         boolean log4jActivate = Log4jPrefsSettingManager.getInstance().isLog4jEnable();
-        String level = "";
+        String level = ""; //$NON-NLS-1$
         if (log4jActivate) {
             level = getLog4jLevel();
             if (!isUseCustomLevel()) {
                 level = null;
             } else {
                 if (level != null) {
-                    level = LOG4J_LEVEL_ARG + (level.equals("") ? LOG4J_DEFAULT_LEVEL : level.toLowerCase());
+                    level = LOG4J_LEVEL_ARG + (level.equals("") ? LOG4J_DEFAULT_LEVEL : level.toLowerCase()); //$NON-NLS-1$
                 }
             }
         } else {
@@ -1725,14 +1730,50 @@ public class RunProcessContext {
         this.isBasicRun = isBasicRun;
     }
 
+    private void showSparkStreamingData(String data) {
+        if (!getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName())) {
+            return;
+        }
+
+        if (!data.contains("|")) { //$NON-NLS-1$
+            return;
+        }
+
+        String[] datas = data.split("\\|"); //$NON-NLS-1$
+        if (datas.length < 9) {
+            return;
+        }
+
+        final Integer batchCompleted = new Integer(datas[4]);
+        final Integer batchStarted = new Integer(datas[5]);
+        final String lastProcessingDelay = NodeContainerUtils.formatTime(datas[6]);
+        final String lastSchedulingDelay = NodeContainerUtils.formatTime(datas[7]);
+        final String lastTotalDelay = NodeContainerUtils.formatTime(datas[8]);
+
+        Display.getDefault().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                List<? extends ISubjobContainer> subjobContainers = process.getSubjobContainers();
+                for (ISubjobContainer subjobContainer : subjobContainers) {
+                    if (subjobContainer instanceof SparkStreamingSubjobContainer) {
+                        ((SparkStreamingSubjobContainer) subjobContainer)
+                                .updateState(
+                                        "UPDATE_SPARKSTREAMING_STATUS", null, batchCompleted, batchStarted, lastProcessingDelay, lastSchedulingDelay, lastTotalDelay); //$NON-NLS-1$
+                    }
+                }
+            }
+        });
+    }
+
     private void showMapReduceData(String data) {
-        if (!getProcess().getComponentsType().equals("MR")) {
+        if (!getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) {
             return;
         }
-        if (!data.contains("|")) {
+        if (!data.contains("|")) { //$NON-NLS-1$
             return;
         }
-        String[] datas = data.split("\\|");
+        String[] datas = data.split("\\|"); //$NON-NLS-1$
         if (datas.length < 4) {
             return;
         }

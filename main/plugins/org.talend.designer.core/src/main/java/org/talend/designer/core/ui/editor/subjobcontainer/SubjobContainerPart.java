@@ -210,6 +210,11 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
             ((SubjobContainer) getModel()).getNodeContainers().addAll(tmpList);
             elems.add(getModel());
             parent.refresh();
+        } else if ("UPDATE_SPARKSTREAMING_STATUS".equals(prop)) {
+            if (getFigure() instanceof SparkStreamingSubjobContainerFigure) {
+                ((SparkStreamingSubjobContainerFigure) getFigure()).updateData();
+                refreshVisuals();
+            }
         } else { // can only be UPDATE_SUBJOB_DATA, need to modify if some others are added
             if (getFigure() instanceof SubjobContainerFigure) {
                 ((SubjobContainerFigure) getFigure()).updateData();
