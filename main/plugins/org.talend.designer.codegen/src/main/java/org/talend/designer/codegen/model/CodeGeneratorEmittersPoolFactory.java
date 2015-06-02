@@ -414,13 +414,23 @@ public final class CodeGeneratorEmittersPoolFactory {
             // Spark, M/R and Storm requires the plugin org.talend.designer.spark to be in the classpath in order to
             // generate the code.
             if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()) || "SPARKSTREAMING".equals(component.getPaletteType()))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                jetBean.addClassPath("BIGDATA_LIBRARIES", "org.talend.designer.bigdata"); //$NON-NLS-1$ //$NON-NLS-2$
                 jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
                 try {
-                    // We use a delegate classloader made of the org.talend.designer.codegen class loader as a parent
-                    // and the org.talend.libraries.spark as a delegate.
-                    jetBean.setClassLoader(new DelegateClassLoader(new CodeGeneratorEmittersPoolFactory().getClass()
-                            .getClassLoader(), Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
-                            .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader())); //$NON-NLS-1$
+                    // The parent class loader is used first to find all of the classes that a javajet code generator
+                    // can use.
+                    ClassLoader baseClassLoader = new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader();
+                    // This secondary class loader is used to find big data utility classes. None of the classes in the
+                    // parent can depend on these classes, but these can depend on the parent.
+                    ClassLoader bigDataUtilsClassLoader = Platform.getBundle("org.talend.designer.bigdata") //$NON-NLS-1$
+                            .loadClass("org.talend.designer.bigdata.common.BigDataDataProcess").getClassLoader(); //$NON-NLS-1$
+                    ClassLoader delegateClassLoader = new DelegateClassLoader(baseClassLoader, bigDataUtilsClassLoader);
+                    // Add another class loader for spark utilities. This can depend on classes already in the delegate,
+                    // but they can't depend on its classes.
+                    ClassLoader sparkUtilsClassLoader = Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
+                            .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader(); //$NON-NLS-1$
+                    delegateClassLoader = new DelegateClassLoader(delegateClassLoader, sparkUtilsClassLoader);
+                    jetBean.setClassLoader(delegateClassLoader);
                 } catch (ClassNotFoundException e) {
                     ExceptionHandler.process(e);
                 }
