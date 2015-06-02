@@ -306,7 +306,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
             return true;
         }
         boolean logged = false;
-        if (!LoginHelper.isAlwaysAskAtStartup()) {
+        if (!LoginHelper.isAlwaysAskAtStartup() && !LoginHelper.isNeedForceShowLogonDialog()) {
             logged = LoginHelper.getInstance().loginAuto();
         }
         if (!logged) {

@@ -80,6 +80,8 @@ public class LoginHelper {
 
     protected static final String PREFERENCE_TALEND_LOGON_STARTUP_TIMES = "PREFERENCE_TALEND_LOGON_STARTUP_TIMES"; //$NON-NLS-1$
 
+    protected static final String PREFERENCE_TALEND_FORCE_SHOW_LOGON_DIALOG = "PREFERENCE_TALEND_FORCE_SHOW_LOGON_DIALOG"; //$NON-NLS-1$
+
     protected static LoginHelper instance;
 
     protected static final String LOCAL = "local"; //$NON-NLS-1$
@@ -602,6 +604,18 @@ public class LoginHelper {
             newStartupTimes = 1;
         }
         PlatformUI.getPreferenceStore().setValue(PREFERENCE_TALEND_LOGON_STARTUP_TIMES, newStartupTimes);
+    }
+
+    public static void forceShowLogonDialogNextTime() {
+        PlatformUI.getPreferenceStore().setValue(PREFERENCE_TALEND_FORCE_SHOW_LOGON_DIALOG, true);
+    }
+
+    public static boolean isNeedForceShowLogonDialog() {
+        boolean needForceShowLogonDialog = PlatformUI.getPreferenceStore().getBoolean(PREFERENCE_TALEND_FORCE_SHOW_LOGON_DIALOG);
+        if (needForceShowLogonDialog) {
+            PlatformUI.getPreferenceStore().setValue(PREFERENCE_TALEND_FORCE_SHOW_LOGON_DIALOG, false);
+        }
+        return needForceShowLogonDialog;
     }
 
     public static boolean isAlwaysAskAtStartup() {
