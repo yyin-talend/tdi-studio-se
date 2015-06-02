@@ -10,11 +10,12 @@
 		<relativePath>./pom.xml</relativePath>
 	</parent>
 	<groupId>@ProjectGroupId@</groupId>
-	<artifactId>routines</artifactId>
-	
+	<artifactId>@RoutinesArtifactId@</artifactId>
+
 	<name>Talend Routines Codes</name>
-	
+
 	<properties>
+		<talend.jar.name>routines</talend.jar.name>
 		<talend.routines.package>routines</talend.routines.package>
 	</properties>
 
@@ -22,6 +23,7 @@
 		<!-- routines' dependencies -->
 	</dependencies>
 	<build>
+		<finalName>${talend.jar.name}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
