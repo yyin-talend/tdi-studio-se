@@ -43,6 +43,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -96,6 +97,8 @@ public class MainComposite extends AbstractTabComposite {
 
     private String lastVersionFound;
 
+    private boolean allowEnableControl;
+
     /**
      * yzhang MainComposite constructor comment.
      * 
@@ -108,11 +111,14 @@ public class MainComposite extends AbstractTabComposite {
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
-        boolean allowEnableControl = enableControl;
+        allowEnableControl = enableControl;
         property = repositoryObject.getProperty();
         Item item = property.getItem();
         if (item != null && item instanceof ProcessItem) {
             allowEnableControl = true;
+            if (!PluginChecker.isMapReducePluginLoader() && !PluginChecker.isStormPluginLoader()) {
+                allowEnableControl = enableControl;
+            }
         }
 
         FormLayout layout = new FormLayout();
@@ -207,76 +213,105 @@ public class MainComposite extends AbstractTabComposite {
             versionLabel.setLayoutData(data);
         }
 
-        // Job Type
-        jobTypeCCombo = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(70, 0);
-        data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
-        jobTypeCCombo.setLayoutData(data);
-        jobTypeCCombo.setItems(JobType.getJobTypeToDispaly());
-        jobTypeCCombo.setText(ConvertJobsUtil.getJobTypeFromFramework(item));
-        jobTypeValue = jobTypeCCombo.getText();
-        jobTypeCCombo.setEnabled(allowEnableControl);
+        if (allowEnableControl) {
+            // Job Type
+            jobTypeCCombo = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
+            data = new FormData();
+            data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
+            data.right = new FormAttachment(70, 0);
+            data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
+            jobTypeCCombo.setLayoutData(data);
+            jobTypeCCombo.setItems(JobType.getJobTypeToDispaly());
+            jobTypeCCombo.setText(ConvertJobsUtil.getJobTypeFromFramework(item));
+            jobTypeValue = jobTypeCCombo.getText();
+            jobTypeCCombo.setEnabled(allowEnableControl);
 
-        CLabel jobTypeLabel = widgetFactory.createCLabel(composite, Messages.getString("JobTypeSection.jobTypeLabel")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(jobTypeCCombo, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(jobTypeCCombo, 0, SWT.CENTER);
-        jobTypeLabel.setLayoutData(data);
+            CLabel jobTypeLabel = widgetFactory.createCLabel(composite, Messages.getString("JobTypeSection.jobTypeLabel")); //$NON-NLS-1$
+            data = new FormData();
+            data.left = new FormAttachment(0, 0);
+            data.right = new FormAttachment(jobTypeCCombo, -ITabbedPropertyConstants.HSPACE);
+            data.top = new FormAttachment(jobTypeCCombo, 0, SWT.CENTER);
+            jobTypeLabel.setLayoutData(data);
 
-        // Job Framework
-        jobFrameworkCCombo = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
-        data = new FormData();
-        data.left = new FormAttachment(jobTypeCCombo, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
-        jobFrameworkCCombo.setLayoutData(data);
-        jobFrameworkCCombo.setItems(ConvertJobsUtil.getFrameworkItemsByJobType(item));
-        Object frameworkObj = ConvertJobsUtil.getFramework(item);
-        if (frameworkObj != null) {
-            String framework = ConvertJobsUtil.getFramework(item).toString();
-            jobFrameworkCCombo.setText(framework != null ? framework : ""); //$NON-NLS-1$
+            // Job Framework
+            jobFrameworkCCombo = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
+            data = new FormData();
+            data.left = new FormAttachment(jobTypeCCombo, AbstractPropertySection.STANDARD_LABEL_WIDTH);
+            data.right = new FormAttachment(100, 0);
+            data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
+            jobFrameworkCCombo.setLayoutData(data);
+            jobFrameworkCCombo.setItems(ConvertJobsUtil.getFrameworkItemsByJobType(item));
+            Object frameworkObj = ConvertJobsUtil.getFramework(item);
+            if (frameworkObj != null) {
+                String framework = ConvertJobsUtil.getFramework(item).toString();
+                jobFrameworkCCombo.setText(framework != null ? framework : ""); //$NON-NLS-1$
+            }
+            frameworkValue = jobFrameworkCCombo.getText();
+            jobFrameworkCCombo.setEnabled(allowEnableControl);
+
+            CLabel jobFrameworkLabel = widgetFactory.createCLabel(composite,
+                    Messages.getString("JobFrameworkSection.jobFrameworkLabel")); //$NON-NLS-1$
+            data = new FormData();
+            data.left = new FormAttachment(jobTypeCCombo, ITabbedPropertyConstants.HSPACE);
+            data.right = new FormAttachment(jobFrameworkCCombo, -ITabbedPropertyConstants.HSPACE);
+            data.top = new FormAttachment(jobFrameworkCCombo, 0, SWT.CENTER);
+            jobFrameworkLabel.setLayoutData(data);
+
+            purposeText = widgetFactory.createText(composite, ""); //$NON-NLS-1$
+            data = new FormData();
+            data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
+            data.right = new FormAttachment(70, 0);
+            data.top = new FormAttachment(jobTypeLabel, ITabbedPropertyConstants.VSPACE);
+            purposeText.setLayoutData(data);
+            String content = repositoryObject.getPurpose();
+            purposeText.setText(content != null ? content : ""); //$NON-NLS-1$
+            purposeText.setEnabled(allowEnableControl);
+
+            CLabel purposeLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
+            data = new FormData();
+            data.left = new FormAttachment(0, 0);
+            data.right = new FormAttachment(purposeText, -ITabbedPropertyConstants.HSPACE);
+            data.top = new FormAttachment(purposeText, 0, SWT.CENTER);
+            purposeLabel.setLayoutData(data);
+
+            statusText = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.BORDER);
+            data = new FormData();
+            data.left = new FormAttachment(purposeText, AbstractPropertySection.STANDARD_LABEL_WIDTH);
+            data.right = new FormAttachment(100, 0);
+            data.top = new FormAttachment(jobTypeLabel, ITabbedPropertyConstants.VSPACE);
+            statusText.setLayoutData(data);
+            String status = repositoryObject.getStatusCode();
+            statusText.setText(status != null ? status : ""); //$NON-NLS-1$
+            statusText.setItems(Status.getStatusToDispaly());
+            statusText.setEnabled(allowEnableControl);
+        } else {
+            purposeText = widgetFactory.createText(composite, ""); //$NON-NLS-1$
+            data = new FormData();
+            data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
+            data.right = new FormAttachment(70, 0);
+            data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
+            purposeText.setLayoutData(data);
+            String content = repositoryObject.getPurpose();
+            purposeText.setText(content != null ? content : ""); //$NON-NLS-1$
+            purposeText.setEnabled(enableControl);
+
+            CLabel purposeLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
+            data = new FormData();
+            data.left = new FormAttachment(0, 0);
+            data.right = new FormAttachment(purposeText, -ITabbedPropertyConstants.HSPACE);
+            data.top = new FormAttachment(purposeText, 0, SWT.CENTER);
+            purposeLabel.setLayoutData(data);
+
+            statusText = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.BORDER);
+            data = new FormData();
+            data.left = new FormAttachment(purposeText, AbstractPropertySection.STANDARD_LABEL_WIDTH);
+            data.right = new FormAttachment(100, 0);
+            data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
+            statusText.setLayoutData(data);
+            String status = repositoryObject.getStatusCode();
+            statusText.setText(status != null ? status : ""); //$NON-NLS-1$
+            statusText.setEnabled(enableControl);
         }
-        frameworkValue = jobFrameworkCCombo.getText();
-        jobFrameworkCCombo.setEnabled(allowEnableControl);
-
-        CLabel jobFrameworkLabel = widgetFactory.createCLabel(composite,
-                Messages.getString("JobFrameworkSection.jobFrameworkLabel")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(jobTypeCCombo, ITabbedPropertyConstants.HSPACE);
-        data.right = new FormAttachment(jobFrameworkCCombo, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(jobFrameworkCCombo, 0, SWT.CENTER);
-        jobFrameworkLabel.setLayoutData(data);
-
-        purposeText = widgetFactory.createText(composite, ""); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(70, 0);
-        data.top = new FormAttachment(jobTypeLabel, ITabbedPropertyConstants.VSPACE);
-        purposeText.setLayoutData(data);
-        String content = repositoryObject.getPurpose();
-        purposeText.setText(content != null ? content : ""); //$NON-NLS-1$
-        purposeText.setEnabled(allowEnableControl);
-
-        CLabel purposeLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(purposeText, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(purposeText, 0, SWT.CENTER);
-        purposeLabel.setLayoutData(data);
-
-        statusText = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.BORDER);
-        data = new FormData();
-        data.left = new FormAttachment(purposeText, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(jobTypeLabel, ITabbedPropertyConstants.VSPACE);
-        statusText.setLayoutData(data);
-        String status = repositoryObject.getStatusCode();
-        statusText.setText(status != null ? status : ""); //$NON-NLS-1$
-        statusText.setItems(Status.getStatusToDispaly());
-        statusText.setEnabled(allowEnableControl);
 
         CLabel statusLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.statusLabel")); //$NON-NLS-1$
         data = new FormData();
@@ -341,168 +376,186 @@ public class MainComposite extends AbstractTabComposite {
         data.top = new FormAttachment(modificationDate, 0, SWT.CENTER);
         modificationLabel.setLayoutData(data);
 
-        btnConfirm = widgetFactory.createButton(composite, "Confirm", SWT.PUSH); //$NON-NLS-1$
-        data = new FormData();
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(modificationDate, 0, SWT.CENTER);
-        btnConfirm.setLayoutData(data);
-        btnConfirm.setEnabled(enableControl);
+        if (allowEnableControl) {
+            btnConfirm = widgetFactory.createButton(composite, "Confirm", SWT.PUSH); //$NON-NLS-1$
+            data = new FormData();
+            data.right = new FormAttachment(100, 0);
+            data.top = new FormAttachment(modificationDate, 0, SWT.CENTER);
+            btnConfirm.setLayoutData(data);
+            btnConfirm.setEnabled(enableControl);
 
-        // addListener
+            // addListener
 
-        nameText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                evaluateTextField();
-            }
-        });
-        jobTypeCCombo.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                ConvertJobsUtil.updateJobFrameworkPart(jobTypeCCombo.getText(), jobFrameworkCCombo);
-                evaluateTextField();
-            }
-        });
-
-        jobFrameworkCCombo.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                evaluateTextField();
-            }
-        });
-
-        purposeText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                evaluateTextField();
-            }
-        });
-
-        statusText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                evaluateTextField();
-            }
-        });
-        descriptionText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                evaluateTextField();
-            }
-        });
-
-        if (allowVerchange) {
-            btnUp.addSelectionListener(new SelectionAdapter() {
+            nameText.addModifyListener(new ModifyListener() {
 
                 @Override
-                public void widgetSelected(SelectionEvent e) {
-                    String version = property.getVersion();
-                    if (lastVersionFound != null && VersionUtils.compareTo(lastVersionFound, version) > 0) {
-                        version = lastVersionFound;
-                    }
-                    version = VersionUtils.upMajor(version);
-                    versionText.setText(version);
-                    lastVersionFound = version;
+                public void modifyText(final ModifyEvent e) {
+                    evaluateTextField();
+                }
+            });
+            jobTypeCCombo.addModifyListener(new ModifyListener() {
+
+                @Override
+                public void modifyText(final ModifyEvent e) {
+                    ConvertJobsUtil.updateJobFrameworkPart(jobTypeCCombo.getText(), jobFrameworkCCombo);
                     evaluateTextField();
                 }
             });
 
-            btnDown.addSelectionListener(new SelectionAdapter() {
+            jobFrameworkCCombo.addModifyListener(new ModifyListener() {
 
                 @Override
-                public void widgetSelected(SelectionEvent e) {
-                    String version = property.getVersion();
-                    if (lastVersionFound != null && VersionUtils.compareTo(lastVersionFound, version) > 0) {
-                        version = lastVersionFound;
-                    }
-                    version = VersionUtils.upMinor(version);
-                    versionText.setText(version);
-                    lastVersionFound = version;
+                public void modifyText(final ModifyEvent e) {
                     evaluateTextField();
                 }
             });
 
-            btnConfirm.addSelectionListener(new SelectionAdapter() {
+            purposeText.addModifyListener(new ModifyListener() {
 
                 @Override
-                public void widgetSelected(SelectionEvent e) {
-                    if (nameText == null || nameText.isDisposed() || versionText == null || versionText.isDisposed()
-                            || purposeText == null || purposeText.isDisposed() || jobTypeCCombo == null
-                            || jobTypeCCombo.isDisposed() || jobFrameworkCCombo == null || jobFrameworkCCombo.isDisposed()
-                            || statusText == null || statusText.isDisposed() || descriptionText == null
-                            || descriptionText.isDisposed()) {
-                        return;
-                    }
-                    DeleteActionCache.getInstance().closeOpenedEditor(repositoryObject);
-                    if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
-                        // / property.setLabel(nameText.getText());
-                    }
-                    if (!versionText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getVersion()))) {
-                        property.setVersion(versionText.getText());
-                    }
-                    if (!jobTypeCCombo.getText().equals(StringUtils.trimToEmpty(jobTypeValue))) {
-                    }
-                    if (!jobFrameworkCCombo.getText().equals(StringUtils.trimToEmpty(frameworkValue))) {
-                        if (property.getAdditionalProperties().containsKey(ConvertJobsUtil.FRAMEWORK)) {
-                            property.getAdditionalProperties().removeKey(ConvertJobsUtil.FRAMEWORK);
+                public void modifyText(final ModifyEvent e) {
+                    evaluateTextField();
+                }
+            });
+
+            statusText.addModifyListener(new ModifyListener() {
+
+                @Override
+                public void modifyText(final ModifyEvent e) {
+                    evaluateTextField();
+                }
+            });
+            descriptionText.addModifyListener(new ModifyListener() {
+
+                @Override
+                public void modifyText(final ModifyEvent e) {
+                    evaluateTextField();
+                }
+            });
+
+            if (allowVerchange) {
+                btnUp.addSelectionListener(new SelectionAdapter() {
+
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        String version = property.getVersion();
+                        if (lastVersionFound != null && VersionUtils.compareTo(lastVersionFound, version) > 0) {
+                            version = lastVersionFound;
                         }
-                        property.getAdditionalProperties().put(ConvertJobsUtil.FRAMEWORK, jobFrameworkCCombo.getText());
+                        version = VersionUtils.upMajor(version);
+                        versionText.setText(version);
+                        lastVersionFound = version;
+                        evaluateTextField();
                     }
-                    if (!purposeText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getPurpose()))) {
-                        property.setPurpose(purposeText.getText());
-                    }
-                    if (!statusText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getStatusCode()))) {
-                        property.setStatusCode(statusText.getText());
-                    }
-                    if (!descriptionText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getDescription()))) {
-                        property.setDescription(descriptionText.getText());
-                    }
-                    // Convert
-                    Item newItem = ConvertJobsUtil.createOperation(nameText.getText(), jobTypeCCombo.getText(),
-                            jobFrameworkCCombo.getText(), repositoryObject);
-                    final IProxyRepositoryFactory proxyRepositoryFactory = CoreRuntimePlugin.getInstance()
-                            .getProxyRepositoryFactory();
+                });
 
-                    IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                btnDown.addSelectionListener(new SelectionAdapter() {
 
-                        @Override
-                        public void run(final IProgressMonitor monitor) throws CoreException {
-                            try {
-                                proxyRepositoryFactory.unlock(repositoryObject);
-                                proxyRepositoryFactory.deleteObjectPhysical(repositoryObject);
-                                proxyRepositoryFactory.saveProject(ProjectManager.getInstance().getCurrentProject());
-                            } catch (PersistenceException e1) {
-                                e1.printStackTrace();
-                            } catch (LoginException e) {
-                                e.printStackTrace();
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        String version = property.getVersion();
+                        if (lastVersionFound != null && VersionUtils.compareTo(lastVersionFound, version) > 0) {
+                            version = lastVersionFound;
+                        }
+                        version = VersionUtils.upMinor(version);
+                        versionText.setText(version);
+                        lastVersionFound = version;
+                        evaluateTextField();
+                    }
+                });
+
+                btnConfirm.addSelectionListener(new SelectionAdapter() {
+
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        final IProxyRepositoryFactory proxyRepositoryFactory = CoreRuntimePlugin.getInstance()
+                                .getProxyRepositoryFactory();
+                        if (nameText == null || nameText.isDisposed() || versionText == null || versionText.isDisposed()
+                                || purposeText == null || purposeText.isDisposed() || jobTypeCCombo == null
+                                || jobTypeCCombo.isDisposed() || jobFrameworkCCombo == null || jobFrameworkCCombo.isDisposed()
+                                || statusText == null || statusText.isDisposed() || descriptionText == null
+                                || descriptionText.isDisposed()) {
+                            return;
+                        }
+                        DeleteActionCache.getInstance().closeOpenedEditor(repositoryObject);
+                        if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
+                            // / property.setLabel(nameText.getText());
+                        }
+                        if (!versionText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getVersion()))) {
+                            property.setVersion(versionText.getText());
+                        }
+                        if (!jobTypeCCombo.getText().equals(StringUtils.trimToEmpty(jobTypeValue))) {
+                        }
+                        if (!jobFrameworkCCombo.getText().equals(StringUtils.trimToEmpty(frameworkValue))) {
+                            if (property.getAdditionalProperties().containsKey(ConvertJobsUtil.FRAMEWORK)) {
+                                property.getAdditionalProperties().removeKey(ConvertJobsUtil.FRAMEWORK);
+                            }
+                            property.getAdditionalProperties().put(ConvertJobsUtil.FRAMEWORK, jobFrameworkCCombo.getText());
+                        }
+                        if (!purposeText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getPurpose()))) {
+                            property.setPurpose(purposeText.getText());
+                        }
+                        if (!statusText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getStatusCode()))) {
+                            property.setStatusCode(statusText.getText());
+                        }
+                        if (!descriptionText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getDescription()))) {
+                            property.setDescription(descriptionText.getText());
+                        }
+                        //
+                        boolean convert = true;
+                        if (jobTypeCCombo.getText().equals(StringUtils.trimToEmpty(jobTypeValue))) {
+                            if (!jobFrameworkCCombo.getText().equals(StringUtils.trimToEmpty(frameworkValue))) {
+                                convert = false;
                             }
                         }
-                    };
-                    // unlockObject();
-                    // alreadyEditedByUser = true; // to avoid 2 calls of unlock
+                        if (convert) {
+                            // Convert
+                            Item newItem = ConvertJobsUtil.createOperation(nameText.getText(), jobTypeCCombo.getText(),
+                                    jobFrameworkCCombo.getText(), repositoryObject);
 
-                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                    try {
-                        ISchedulingRule schedulingRule = workspace.getRoot();
-                        // the update the project files need to be done in the workspace runnable to avoid all
-                        // notification
-                        // of changes before the end of the modifications.
-                        workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
-                    } catch (CoreException e1) {
-                        MessageBoxExceptionHandler.process(e1.getCause());
-                    }
+                            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
-                    if (newItem != null) {
-                        openEditorOperation(newItem);
+                                @Override
+                                public void run(final IProgressMonitor monitor) throws CoreException {
+                                    try {
+                                        proxyRepositoryFactory.unlock(repositoryObject);
+                                        proxyRepositoryFactory.deleteObjectPhysical(repositoryObject);
+                                        proxyRepositoryFactory.saveProject(ProjectManager.getInstance().getCurrentProject());
+                                    } catch (PersistenceException e1) {
+                                        e1.printStackTrace();
+                                    } catch (LoginException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+                            // unlockObject();
+                            // alreadyEditedByUser = true; // to avoid 2 calls of unlock
+
+                            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                            try {
+                                ISchedulingRule schedulingRule = workspace.getRoot();
+                                // the update the project files need to be done in the workspace runnable to avoid all
+                                // notification
+                                // of changes before the end of the modifications.
+                                workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
+                            } catch (CoreException e1) {
+                                MessageBoxExceptionHandler.process(e1.getCause());
+                            }
+                            if (newItem != null) {
+                                openEditorOperation(newItem);
+                            }
+                        } else {
+                            openEditorOperation(property.getItem());
+                            try {
+                                proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(), property.getItem(),
+                                        false);
+                            } catch (PersistenceException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
