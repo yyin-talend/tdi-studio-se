@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.talend.master</groupId>
-	<artifactId>master.Codes</artifactId>
-	<version>6.0.0</version>
+	<groupId>@ProjectGroupId@</groupId>
+	<artifactId>@ProjectArtifactId@</artifactId>
+	<version>@ProjectVersion@</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -11,7 +11,7 @@
 		<!-- jobs modules -->
 	</modules>
 
-	<name>Talend Codes</name>
+	<name>Talend @ProjectName@ Codes</name>
 	<url>http://www.talend.org/</url>
 
 	<properties>

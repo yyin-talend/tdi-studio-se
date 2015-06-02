@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.talend.master</groupId>
-		<artifactId>master.Codes</artifactId>
-		<version>6.0.0</version>
+		<groupId>@ProjectGroupId@</groupId>
+		<artifactId>@ProjectArtifactId@</artifactId>
+		<version>@ProjectVersion@</version>
 		<relativePath>./pom.xml</relativePath>
 	</parent>
 	<groupId>org.talend.test</groupId>
-	<artifactId>Job</artifactId>
+	<artifactId>@JobName@</artifactId>
 	<version>0.1</version>
 
 	<properties>

@@ -33,10 +33,6 @@
 	</files>
 
 	<fileSets>
-		<fileSet><!-- junits reports -->
-			<directory>${project.build.directory}/surefire-reports</directory>
-			<outputDirectory>sunfire-reports</outputDirectory>
-		</fileSet>
 		<fileSet><!-- templates -->
 			<directory>${templates.dir}</directory>
 			<outputDirectory>${talend.job.name}/src/main/templates/
@@ -111,9 +107,9 @@
 				<include>${talend.job.path}/**</include>
 			</includes>
 		</fileSet>
-		<fileSet> <!-- add test reports -->
-			<directory>${reports.dir}</directory>
-			<outputDirectory>${talend.job.name}/tests/</outputDirectory>
+		<fileSet><!-- junits reports -->
+			<directory>${test.reports.dir}</directory>
+			<outputDirectory>sunfire-reports</outputDirectory>
 			<includes>
 				<include>**/*.*</include>
 			</includes>

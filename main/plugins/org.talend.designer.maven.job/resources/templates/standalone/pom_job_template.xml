@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.talend.master</groupId>
-		<artifactId>master.Codes</artifactId>
-		<version>6.0.0</version>
+		<groupId>@ProjectGroupId@</groupId>
+		<artifactId>@ProjectArtifactId@</artifactId>
+		<version>@ProjectVersion@</version>
 		<relativePath>./pom.xml</relativePath>
 	</parent>
-	<groupId>org.talend.job</groupId>
-	<artifactId>Job</artifactId>
+	<groupId>@JobGroupId@</groupId>
+	<artifactId>@JobName@</artifactId>
 	<version>0.1</version>
 
 	<properties>
@@ -34,7 +34,7 @@
 		<!-- for bat/sh -->
 		<talend.job.bat.classpath>@JobBatClasspath@</talend.job.bat.classpath>
 		<talend.job.sh.classpath>@JobShClasspath@</talend.job.sh.classpath>
-		<talend.job.script.addition></talend.job.script.addition> <!-- empty by default -->
+		<talend.job.script.addition>@JobScriptAddition@</talend.job.script.addition>
 	</properties>
 
 	<dependencies>
@@ -219,7 +219,7 @@
 		<profile>
 			<id>include-test-reports</id>
 			<properties>
-				<reports.dir>${basedir}/target/surefire-reports</reports.dir>
+				<test.reports.dir>${project.build.directory}/surefire-reports</test.reports.dir>
 			</properties>
 		</profile>
 	</profiles>
