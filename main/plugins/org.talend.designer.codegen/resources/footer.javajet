@@ -229,7 +229,7 @@
         <%=className %>Class.runJobInTOS(arrays);
         String errors = (String)junitGlobalMap.get("tests.log");
         Integer nbFailure = (Integer)junitGlobalMap.get("tests.nbFailure");
-        assertTrue("Failure="+nbFailure+"\n"+errors, errors.isEmpty());
+        assertTrue("Failure="+nbFailure+java.lang.System.getProperty("line.separator")+errors, errors.isEmpty());
         }
         <%
         }
