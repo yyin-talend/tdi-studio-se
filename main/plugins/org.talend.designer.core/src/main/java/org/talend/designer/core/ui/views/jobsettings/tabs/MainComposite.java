@@ -229,7 +229,8 @@ public class MainComposite extends AbstractTabComposite {
             data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
             jobTypeCCombo.setLayoutData(data);
             jobTypeCCombo.setItems(JobType.getJobTypeToDispaly());
-            jobTypeCCombo.setText(ConvertJobsUtil.getJobTypeFromFramework(framework));
+            String jobType = ConvertJobsUtil.getJobTypeFromFramework(framework);
+            jobTypeCCombo.setText(jobType);
             jobTypeValue = jobTypeCCombo.getText();
             jobTypeCCombo.setEnabled(allowEnableControl);
 
@@ -247,7 +248,7 @@ public class MainComposite extends AbstractTabComposite {
             data.right = new FormAttachment(100, 0);
             data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
             jobFrameworkCCombo.setLayoutData(data);
-            jobFrameworkCCombo.setItems(ConvertJobsUtil.getFrameworkItemsByJobType(repositoryObject.getRepositoryObjectType()));
+            jobFrameworkCCombo.setItems(ConvertJobsUtil.getFrameworkItemsByJobType(jobType));
             jobFrameworkCCombo.setText(framework != null ? framework : ""); //$NON-NLS-1$
             frameworkValue = jobFrameworkCCombo.getText();
             jobFrameworkCCombo.setEnabled(allowEnableControl);
@@ -385,7 +386,7 @@ public class MainComposite extends AbstractTabComposite {
             data.right = new FormAttachment(100, 0);
             data.top = new FormAttachment(modificationDate, 0, SWT.CENTER);
             btnConfirm.setLayoutData(data);
-            btnConfirm.setEnabled(enableControl);
+            btnConfirm.setEnabled(false);
 
             // addListener
 
@@ -481,7 +482,12 @@ public class MainComposite extends AbstractTabComposite {
                             return;
                         }
                         Property property = repositoryObject.getProperty();
-                        DeleteActionCache.getInstance().closeOpenedEditor(repositoryObject);
+                        // check it is a opened or not
+                        boolean isOpenedEditor = ConvertJobsUtil.isOpenedEditor(repositoryObject);
+                        if (isOpenedEditor) {
+                            DeleteActionCache.getInstance().closeOpenedEditor(repositoryObject);
+                        }
+
                         if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
                             // / property.setLabel(nameText.getText());
                         }
@@ -508,9 +514,7 @@ public class MainComposite extends AbstractTabComposite {
                         //
                         boolean convert = true;
                         if (jobTypeCCombo.getText().equals(StringUtils.trimToEmpty(jobTypeValue))) {
-                            if (!jobFrameworkCCombo.getText().equals(StringUtils.trimToEmpty(frameworkValue))) {
-                                convert = false;
-                            }
+                            convert = false;
                         }
                         if (convert) {
                             // Convert
@@ -545,18 +549,24 @@ public class MainComposite extends AbstractTabComposite {
                             } catch (CoreException e1) {
                                 MessageBoxExceptionHandler.process(e1.getCause());
                             }
-                            if (newItem != null) {
+                            if (newItem != null && isOpenedEditor) {
                                 openEditorOperation(newItem);
                             }
                         } else {
-                            openEditorOperation(property.getItem());
+                            if (isOpenedEditor) {
+                                openEditorOperation(property.getItem());
+                            }
                             try {
+                                if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
+                                    property.setLabel(nameText.getText());
+                                }
                                 proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(), property.getItem(),
                                         false);
                             } catch (PersistenceException e1) {
                                 e1.printStackTrace();
                             }
                         }
+                        btnConfirm.setEnabled(false);
                     }
                 });
             }
