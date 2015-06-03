@@ -151,7 +151,7 @@
 			</includes>
 			<binaries>
 				<outputDirectory>${talend.job.name}</outputDirectory>
-				<includeDependencies>true</includeDependencies>
+				<includeDependencies>false</includeDependencies>
 				<unpack>false</unpack>
 				<includes>
 					<!-- add the children jobs binaries -->
