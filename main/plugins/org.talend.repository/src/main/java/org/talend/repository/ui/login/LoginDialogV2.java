@@ -118,6 +118,8 @@ public class LoginDialogV2 extends TrayDialog {
 
     private StackLayout stackLayout;
 
+    protected int logonInfoAreaWidth;
+
     /**
      * Construct a new LoginDialog.
      * 
@@ -236,6 +238,7 @@ public class LoginDialogV2 extends TrayDialog {
         // for Windows and Linux
         int STANDARD_BASE_HEIGHT = 15;
         int STANDARD_BASE_WIDTH = 51;
+        logonInfoAreaWidth = 390;
 
         // for Mac
         boolean isMac = EnvironmentUtils.isMacOsSytem();
@@ -309,7 +312,7 @@ public class LoginDialogV2 extends TrayDialog {
         GridData loginInfoAreaGridData = new GridData(GridData.FILL_BOTH);
         // loginInfoAreaGridData.minimumWidth = 350;
         // loginInfoAreaGridData.minimumHeight = brandingAreaGridData.minimumHeight;
-        loginInfoAreaGridData.widthHint = (int) Math.ceil(realWidthRate * 390);
+        loginInfoAreaGridData.widthHint = (int) Math.ceil(realWidthRate * logonInfoAreaWidth);
         loginInfoAreaGridData.heightHint = brandingAreaGridData.heightHint;
         loginInfoArea.setLayoutData(loginInfoAreaGridData);
         loginInfoArea.setLayout(new FormLayout());

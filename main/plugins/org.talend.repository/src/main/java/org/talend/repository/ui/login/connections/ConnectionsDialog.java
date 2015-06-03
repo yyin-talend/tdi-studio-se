@@ -18,11 +18,15 @@ import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -60,14 +64,32 @@ public class ConnectionsDialog extends TitleAreaDialog {
     public ConnectionsDialog(Shell parentShell) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
+        // RGB rgb = parentShell.getBackground().getRGB();
+        // setTitleAreaColor(rgb);
+        setTitleImage();
+    }
+
+    protected void setTitleImage() {
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         ImageDescriptor imgDesc = brandingService.getLoginHImage();
-        if (imgDesc != null) {
-            setTitleImage(ImageProvider.getImage(imgDesc));
+        if (imgDesc == null) {
+            return;
         }
-        // RGB rgb = parentShell.getBackground().getRGB();
-        // setTitleAreaColor(rgb);
+        Image originalImage = ImageProvider.getImage(imgDesc);
+        if (originalImage == null) {
+            return;
+        }
+        Rectangle originalImageSize = originalImage.getBounds();
+        Image scaled = new Image(Display.getDefault(), originalImageSize.width + 10, originalImageSize.height);
+        GC gc = new GC(scaled);
+        gc.setAntialias(SWT.ON);
+        gc.setInterpolation(SWT.HIGH);
+        gc.drawImage(originalImage, 0, 0, originalImage.getBounds().width, originalImage.getBounds().height, 0, 0,
+                originalImageSize.width, originalImageSize.height);
+        gc.dispose();
+        originalImage.dispose();
+        setTitleImage(scaled);
     }
 
     @Override

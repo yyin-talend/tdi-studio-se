@@ -174,7 +174,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     protected Job backgroundGUIUpdate;
 
-    protected ConnectionBean beforeConnBean;
+    // protected ConnectionBean beforeConnBean;
 
     protected String finishButtonAction;
 
@@ -454,14 +454,22 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     }
 
+    private boolean isNeedSandboxProject;
+
     protected boolean isNeedSandboxProject() {
-        boolean isNeedSandboxProject = LoginHelper.isRemoteConnection(getConnection());
+        isNeedSandboxProject = LoginHelper.isRemoteConnection(getConnection());
         if (isNeedSandboxProject) {
-            try {
-                isNeedSandboxProject = ProxyRepositoryFactory.getInstance().enableSandboxProject();
-            } catch (PersistenceException e) {
-                CommonExceptionHandler.process(e);
-            }
+            BusyIndicator.showWhile(getDisplay(), new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        isNeedSandboxProject = ProxyRepositoryFactory.getInstance().enableSandboxProject();
+                    } catch (PersistenceException e) {
+                        CommonExceptionHandler.process(e);
+                    }
+                }
+            });
         } else {
             return false;
         }
@@ -599,11 +607,11 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     if (connection == null) {
                         return;
                     }
-                    if (beforeConnBean != null && connection.equals(beforeConnBean)) {
-                        return;
-                    }
+                    // if (beforeConnBean != null && connection.equals(beforeConnBean)) {
+                    // return;
+                    // }
                     errorManager.clearAllMessages();
-                    beforeConnBean = connection;
+                    // beforeConnBean = connection;
                     updateServerFields();
 
                     // Validate data
@@ -773,7 +781,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         if (connection == null) {
                             return;
                         }
-                        beforeConnBean = connection;
+                        // beforeConnBean = connection;
 
                         updateServerFields();
 
@@ -784,7 +792,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         }
                         checkErrors();
                         validateUpdate();
-                    } else {
+                    } else if (!LoginHelper.isRemoteConnection(getConnection())) {
                         fillUIProjectListWithBusyCursor();
                         validateProject();
                         checkErrors();

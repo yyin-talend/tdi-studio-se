@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.login.connections;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -30,6 +32,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.swt.tableviewer.behavior.IColumnImageProvider;
@@ -81,7 +84,7 @@ public class ConnectionsListComposite extends Composite {
         // PreferenceManipulator prefManipulator = new
         // PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         // list = prefManipulator.readConnections();
-        list = LoginHelper.getInstance().getStoredConnections();
+        list = getClonedList(LoginHelper.getInstance().getStoredConnections());
 
         if (list.isEmpty()) {
             boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
@@ -190,6 +193,25 @@ public class ConnectionsListComposite extends Composite {
     }
 
     private void addListeners() {
+    }
+
+    protected List<ConnectionBean> getClonedList(List<ConnectionBean> source) {
+        if (source == null) {
+            return null;
+        }
+        List<ConnectionBean> target = new ArrayList<ConnectionBean>(source.size());
+        Iterator<ConnectionBean> iter = source.iterator();
+        while (iter.hasNext()) {
+            ConnectionBean sourceBean = iter.next();
+            try {
+                ConnectionBean targetBean = sourceBean.clone();
+                target.add(targetBean);
+            } catch (CloneNotSupportedException e) {
+                CommonExceptionHandler.process(e);
+            }
+
+        }
+        return target;
     }
 
     public ConnectionFormComposite getConnectionsFormComposite() {

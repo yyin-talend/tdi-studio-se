@@ -15,6 +15,7 @@ package org.talend.repository.ui.actions.importproject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -42,6 +43,7 @@ import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -82,6 +84,8 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
     private List<Project> projects = new ArrayList<Project>();
 
+    protected boolean login = false;
+
     /**
      * DOC qwei SelectDeleteProjectDialog constructor comment.
      * 
@@ -102,6 +106,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     public SelectDeleteProjectDialog(Shell parentShell, boolean login) {
         this(parentShell);
         getProjectItem(login);
+        this.login = login;
     }
 
     private void getProjectItem(boolean login) {
@@ -112,7 +117,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
             if (!projects[i].getResourceAttributes().isReadOnly() && projects[i].isOpen()
                     && !notExportProjects.contains(projects[i].getName())) {
                 if (!login && pro.getLabel().toLowerCase().equals(projects[i].getName().toLowerCase())) {
-
+                    // nothing need to do
                 } else {
                     projectItemList.add(projects[i]);
                 }
@@ -222,6 +227,20 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     }
 
     private List<Project> getProjectItem() {
+        if (login) {
+            List<Project> projectList = new ArrayList<Project>();
+            if (projectItemList != null && !projectItemList.isEmpty()) {
+                Iterator<Object> iter = projectItemList.iterator();
+                while (iter.hasNext()) {
+                    Object project = iter.next();
+                    if (project instanceof Project) {
+                        projectList.add((Project) project);
+                    }
+                }
+            }
+            return projectList;
+        }
+
         if (!projects.isEmpty()) {
             return projects;
         }
@@ -230,9 +249,9 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         try {
             projects = repositoryFactory.readProject();
         } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
+            CommonExceptionHandler.process(e);
         } catch (BusinessException e) {
-            ExceptionHandler.process(e);
+            CommonExceptionHandler.process(e);
         }
         for (Project p : projects) {
             this.projects.add(p);
@@ -316,6 +335,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     private void addTreeListener() {
         treeViewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 Object obj = event.getElement();
                 if (event.getChecked()) {
