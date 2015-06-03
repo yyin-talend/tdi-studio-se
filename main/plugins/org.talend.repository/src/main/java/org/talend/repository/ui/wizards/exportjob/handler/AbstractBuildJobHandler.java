@@ -103,13 +103,19 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         profileBuffer.append(SPACE);
 
         addArg(profileBuffer, true, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
+        // the context is only useful, when binaries
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries) && isOptionChoosed(ExportChoice.needContext),
+                TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
+        // if not binaries, need add maven resources
+        addArg(profileBuffer, false, !isOptionChoosed(ExportChoice.binaries),
+                TalendMavenConstants.PROFILE_INCLUDE_MAVEN_RESOURCES);
+
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.needJobItem), TalendMavenConstants.PROFILE_INCLUDE_ITEMS);
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.needSourceCode),
                 TalendMavenConstants.PROFILE_INCLUDE_JAVA_SOURCES);
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.includeTestSource),
                 TalendMavenConstants.PROFILE_INCLUDE_TEST_SOURCES);
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.includeLibs), TalendMavenConstants.PROFILE_INCLUDE_LIBS);
-        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.needContext), TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
 
         return profileBuffer;
     }
