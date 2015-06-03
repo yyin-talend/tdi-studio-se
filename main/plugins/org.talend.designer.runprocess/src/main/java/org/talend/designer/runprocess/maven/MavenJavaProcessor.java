@@ -40,6 +40,7 @@ import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.ProjectPomManager;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
 import org.talend.designer.maven.tools.creator.CreateMavenTestPom;
+import org.talend.designer.maven.utils.PomIdsHelper;
 import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -142,11 +143,17 @@ public class MavenJavaProcessor extends JavaProcessor {
 
         // Test-0.1
         String jarName = JavaResourcesHelper.getJobJarName(process.getName(), process.getVersion());
+        if (PomIdsHelper.FLAG_VERSION_WITH_CLASSIFIER) { // only jar name without version
+            jarName = JavaResourcesHelper.escapeFileName(process.getName());
+        }
         String exportJar = libPrefixPath + jarName + FileExtensions.JAR_FILE_SUFFIX;
 
         Set<JobInfo> infos = getBuildChildrenJobs();
         for (JobInfo jobInfo : infos) {
             String childJarName = JavaResourcesHelper.getJobJarName(jobInfo.getJobName(), jobInfo.getJobVersion());
+            if (PomIdsHelper.FLAG_VERSION_WITH_CLASSIFIER) { // only jar name without version
+                childJarName = JavaResourcesHelper.escapeFileName(jobInfo.getJobName());
+            }
             exportJar += classPathSeparator + libPrefixPath + childJarName + FileExtensions.JAR_FILE_SUFFIX;
         }
         return exportJar;

@@ -25,6 +25,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.runtime.process.IBuildJobHandler;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.TalendMavenConstants;
+import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
@@ -137,9 +138,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
 
     protected IFile getJobTargetFile() {
         Property jobProperty = processItem.getProperty();
-        String jobLabel = jobProperty.getLabel();
-        String jobVersion = jobProperty.getVersion();
-        String jobZipName = jobLabel + JOB_NAME_SEP + jobVersion + JOB_EXTENSION;
+        String jobZipName = PomUtil.getJobFinalName(jobProperty) + JOB_EXTENSION;
         IFolder targetFolder = talendProcessJavaProject.getTargetFolder();
         IFile jobFile = targetFolder.getFile(jobZipName);
         return jobFile;

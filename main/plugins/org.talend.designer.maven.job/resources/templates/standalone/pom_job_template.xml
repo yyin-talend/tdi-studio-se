@@ -23,11 +23,11 @@
 		<talend.project.id>@ProjectId@</talend.project.id>
 		<talend.project.branch>@ProjectBranch@</talend.project.branch>
 		<talend.job.name>@JobName@</talend.job.name>
-		<talend.job.version>${project.version}</talend.job.version>
+		<talend.job.version>@JobVersion@</talend.job.version>
 		<talend.job.date>@JobDate@</talend.job.date>
 		<talend.job.context>@JobContext@</talend.job.context>
 		<talend.job.id>@JobId@</talend.job.id>
-		<talend.job.class>${talend.job.package}.${talend.job.name}</talend.job.class>
+		<talend.job.class>@JobClass@</talend.job.class>
 		<talend.job.stat>@JobStat@</talend.job.stat>
 		<talend.job.applyContextToChildren>@JobApplyContextToChildren@</talend.job.applyContextToChildren>
 		<talend.product.version>@ProductVersion@</talend.product.version>
@@ -36,6 +36,8 @@
 		<talend.job.bat.classpath>@JobBatClasspath@</talend.job.bat.classpath>
 		<talend.job.sh.classpath>@JobShClasspath@</talend.job.sh.classpath>
 		<talend.job.script.addition>@JobScriptAddition@</talend.job.script.addition>
+		
+		<talend.job.finalName>@JobFinalName@</talend.job.finalName>
 	</properties>
 
 	<dependencies>
@@ -133,7 +135,7 @@
 							</descriptors>
 							<tarLongFileMode>gnu</tarLongFileMode>
 							<appendAssemblyId>false</appendAssemblyId>
-							<finalName>${talend.job.name}_${talend.job.version}</finalName>
+							<finalName>${talend.job.finalName}</finalName>
 						</configuration>
 					</execution>
 				</executions>

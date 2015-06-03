@@ -11,7 +11,7 @@
 		<!-- jobs modules -->
 	</modules>
 
-	<name>Talend @ProjectName@ Codes</name>
+	<name>@ProjectName@ Codes Master</name>
 	<url>http://www.talend.org/</url>
 
 	<properties>

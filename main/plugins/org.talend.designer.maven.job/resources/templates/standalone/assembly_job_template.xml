@@ -157,9 +157,8 @@
 					<!-- add the children jobs binaries -->
 					<include>${jobs.binaries.includes.set}</include>
 				</includes>
-				<!-- use default file mapping settings -->
-				<!-- <outputFileNameMapping>${module.artifactId}_${module.version}.${module.extension} 
-					</outputFileNameMapping> -->
+				<outputFileNameMapping>${module.artifactId}.${module.extension}
+				</outputFileNameMapping>
 			</binaries>
 		</moduleSet>
 		<moduleSet>
