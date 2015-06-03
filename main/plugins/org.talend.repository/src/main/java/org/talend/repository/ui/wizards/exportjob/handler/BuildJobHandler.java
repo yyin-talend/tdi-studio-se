@@ -149,11 +149,15 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     @Override
     public void build(String destinationPath, IProgressMonitor monitor) throws Exception {
-        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_CLEAN +" "+ TalendMavenConstants.GOAL_PACKAGE, null, getProgramArgs(), monitor); //$NON-NLS-1$
+        talendProcessJavaProject.buildModules(
+                TalendMavenConstants.GOAL_CLEAN + " " + TalendMavenConstants.GOAL_PACKAGE, null, getProgramArgs(), monitor); //$NON-NLS-1$
         IFile jobTargetFile = getJobTargetFile();
         if (jobTargetFile.exists()) {
             File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());
             File jobFileTarget = new File(destinationPath);
+            if (jobFileTarget.isDirectory()) {
+                jobFileTarget = new File(destinationPath, jobFileSource.getName());
+            }
             FilesUtils.copyFile(jobFileSource, jobFileTarget);
         }
     }
