@@ -60,9 +60,6 @@ public class NodesSubTree {
 
     List<IConnection> allMainSubTreeConnections = null;
 
-    @Deprecated
-    boolean subTreeContainsParallelIterate = false;
-
     List<INode> mergeBranchStarts;
 
     List<INode> mergeNodes;
@@ -546,18 +543,6 @@ public class NodesSubTree {
      */
     public void setAllMainSubTreeConnections(List<IConnection> allMainSubTreeConnections) {
         this.allMainSubTreeConnections = allMainSubTreeConnections;
-    }
-
-    @Deprecated
-    /*
-     * use org.talend.core.model.process.AbstractNode.getParallelIterator()
-     */
-    public boolean subTreeContainsParallelIterate() {
-        return subTreeContainsParallelIterate;
-    }
-
-    public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
-        this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
     }
 
     /**
