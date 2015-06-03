@@ -557,10 +557,11 @@ public class MainComposite extends AbstractTabComposite {
                                 openEditorOperation(property.getItem());
                             }
                             try {
-                                if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
-                                    property.setLabel(nameText.getText());
-                                    property.setDisplayName(nameText.getText());
-                                }
+                                // if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel())))
+                                // {
+                                // property.setLabel(nameText.getText());
+                                // property.setDisplayName(nameText.getText());
+                                // }
                                 proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(), property.getItem(),
                                         false);
                             } catch (PersistenceException e1) {
