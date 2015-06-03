@@ -60,9 +60,6 @@ public class CodeGeneratorArgument {
 
     private int pauseTime;
 
-    @Deprecated
-    private boolean subTreeContainsParallelIterate;
-
     /**
      * Constructor.
      */
@@ -278,16 +275,4 @@ public class CodeGeneratorArgument {
         this.subTree = subTree;
     }
 
-    @Deprecated
-    /*
-     * use org.talend.core.model.process.AbstractNode.getParallelIterator()
-     */
-    public boolean subTreeContainsParallelIterate() {
-        return subTreeContainsParallelIterate;
-    }
-
-    @Deprecated
-    public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
-        this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
-    }
 }
