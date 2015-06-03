@@ -51,6 +51,10 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
     // is only one node.
     private boolean subjobHasMoreThanOneNode = false;
 
+    // This attribute is used to define if a subjob is activated (or not). We won't display the statistics if a subjob
+    // is deactivated.
+    private boolean subjobStartNodeIsActive = false;
+
     private final static int TIMEOUT_FIGURE_WIDTH = 200;
 
     private final static int TIMEOUT_FIGURE_HEIGHT = 45;
@@ -67,6 +71,9 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
         updateData();
 
         this.subjobHasMoreThanOneNode = this.subjobContainer.getNodeContainers().size() > 1;
+
+        this.subjobStartNodeIsActive = this.subjobContainer.getSubjobStartNode() != null
+                && this.subjobContainer.getSubjobStartNode().isActivate();
     }
 
     @Override
@@ -96,8 +103,10 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
         // This part is for the information at the top left corner.
 
         this.subjobHasMoreThanOneNode = this.subjobContainer.getNodeContainers().size() > 1;
+        this.subjobStartNodeIsActive = this.subjobContainer.getSubjobStartNode() != null
+                && this.subjobContainer.getSubjobStartNode().isActivate();
 
-        if (this.subjobHasMoreThanOneNode) {
+        if (this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
             rectangle.resize((rectangle.width() < TIMEOUT_FIGURE_WIDTH) ? TIMEOUT_FIGURE_WIDTH : 0, TIMEOUT_FIGURE_HEIGHT + 10);
             rectangle.setY(rectangle.y() - TIMEOUT_FIGURE_HEIGHT - 10);
 
@@ -112,7 +121,7 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
                 - TIMEOUT_PADDING * 2 : (TIMEOUT_FIGURE_HEIGHT - TIMEOUT_PADDING) / 2);
         timeoutFigureText.setLocation(new Point(location.x() + TIMEOUT_PADDING * 2, location.y() + 20 + TIMEOUT_PADDING));
         timeoutFigureText.setVisible(false);
-        if (this.subjobHasMoreThanOneNode) {
+        if (this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
             timeoutFigureText.setVisible(true);
         }
         timeoutFigureText.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////
@@ -120,7 +129,7 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
 
         timeoutFigureRect.setLocation(new Point(location.x() + TIMEOUT_PADDING, location.y() + 20));
         timeoutFigureRect.setVisible(false);
-        if (this.subjobHasMoreThanOneNode) {
+        if (this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
             timeoutFigureRect.setVisible(true);
         }
         timeoutFigureRect.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////
@@ -133,7 +142,7 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
         statsFigureText.setLocation(new Point(location.x() + rectangle.width() - STATS_FIGURE_WIDTH, location.y()
                 + rectangle.height() - STATS_FIGURE_HEIGHT));
         statsFigureText.setVisible(false);
-        if (this.subjobHasMoreThanOneNode) {
+        if (this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
             statsFigureText.setVisible(true);
         }
         statsFigureText.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////
@@ -142,7 +151,7 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
         statsFigureRect.setLocation(new Point(location.x() + rectangle.width() - STATS_FIGURE_WIDTH - 5, location.y()
                 + rectangle.height() - STATS_FIGURE_HEIGHT - 5));
         statsFigureRect.setVisible(false);
-        if (this.subjobHasMoreThanOneNode) {
+        if (this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
             statsFigureRect.setVisible(true);
         }
         statsFigureRect.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////
