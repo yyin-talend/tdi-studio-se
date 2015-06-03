@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.views.jobsettings.tabs;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IWorkspace;
@@ -59,6 +60,7 @@ import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.editor.IJobEditorHandler;
 import org.talend.core.ui.editor.JobEditorHandlerManager;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -482,25 +484,21 @@ public class MainComposite extends AbstractTabComposite {
                             return;
                         }
                         Property property = repositoryObject.getProperty();
-                        // check it is a opened or not
-                        boolean isOpenedEditor = ConvertJobsUtil.isOpenedEditor(repositoryObject);
-                        if (isOpenedEditor) {
+                        if (repositoryObject instanceof IProcess2) {
                             DeleteActionCache.getInstance().closeOpenedEditor(repositoryObject);
                         }
-
+                        String newJobName = null;
                         if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
-                            // / property.setLabel(nameText.getText());
+                            newJobName = nameText.getText();
                         }
                         if (!versionText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getVersion()))) {
                             property.setVersion(versionText.getText());
                         }
                         if (!jobTypeCCombo.getText().equals(StringUtils.trimToEmpty(jobTypeValue))) {
                         }
+                        String newJobFramework = null;
                         if (!jobFrameworkCCombo.getText().equals(StringUtils.trimToEmpty(frameworkValue))) {
-                            if (property.getAdditionalProperties().containsKey(ConvertJobsUtil.FRAMEWORK)) {
-                                property.getAdditionalProperties().removeKey(ConvertJobsUtil.FRAMEWORK);
-                            }
-                            property.getAdditionalProperties().put(ConvertJobsUtil.FRAMEWORK, jobFrameworkCCombo.getText());
+                            newJobFramework = jobFrameworkCCombo.getText();
                         }
                         if (!purposeText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getPurpose()))) {
                             property.setPurpose(purposeText.getText());
@@ -549,23 +547,48 @@ public class MainComposite extends AbstractTabComposite {
                             } catch (CoreException e1) {
                                 MessageBoxExceptionHandler.process(e1.getCause());
                             }
-                            if (newItem != null && isOpenedEditor) {
+                            if (newItem != null && repositoryObject instanceof IProcess2) {
                                 openEditorOperation(newItem);
                             }
                         } else {
-                            if (isOpenedEditor) {
-                                openEditorOperation(property.getItem());
+                            // set the new value
+                            if (newJobName != null) {
+                                property.setLabel(newJobName);
+                                property.setDisplayName(newJobName);
                             }
+                            if (newJobFramework != null) {
+                                if (property.getAdditionalProperties().containsKey(ConvertJobsUtil.FRAMEWORK)) {
+                                    property.getAdditionalProperties().removeKey(ConvertJobsUtil.FRAMEWORK);
+                                }
+                                property.getAdditionalProperties().put(ConvertJobsUtil.FRAMEWORK, newJobFramework);
+                            }
+                            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+                                @Override
+                                public void run(final IProgressMonitor monitor) throws CoreException {
+                                    try {
+                                        proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(),
+                                                repositoryObject.getProperty().getItem(), false);
+                                    } catch (PersistenceException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            };
+                            // unlockObject();
+                            // alreadyEditedByUser = true; // to avoid 2 calls of unlock
+
+                            IWorkspace workspace = ResourcesPlugin.getWorkspace();
                             try {
-                                // if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel())))
-                                // {
-                                // property.setLabel(nameText.getText());
-                                // property.setDisplayName(nameText.getText());
-                                // }
-                                proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(), property.getItem(),
-                                        false);
-                            } catch (PersistenceException e1) {
-                                e1.printStackTrace();
+                                ISchedulingRule schedulingRule = workspace.getRoot();
+                                // the update the project files need to be done in the workspace runnable to avoid all
+                                // notification
+                                // of changes before the end of the modifications.
+                                workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
+                            } catch (CoreException e1) {
+                                MessageBoxExceptionHandler.process(e1.getCause());
+                            }
+                            if (repositoryObject instanceof IProcess2) {
+                                openEditorOperation(property.getItem());
                             }
                         }
                         btnConfirm.setEnabled(false);
@@ -576,12 +599,33 @@ public class MainComposite extends AbstractTabComposite {
     }
 
     protected void evaluateTextField() {
+        IProxyRepositoryFactory proxyRepositoryFactory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
         if (nameText == null || nameText.isDisposed() || versionText == null || versionText.isDisposed() || purposeText == null
                 || purposeText.isDisposed()) {
             return;
         }
         if (!nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
-            btnConfirm.setEnabled(true);
+            boolean isValid = true;
+            try {
+                List<IRepositoryViewObject> listExistingObjects = proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS,
+                        true, false);
+                if (!PluginChecker.isStormPluginLoader()) {
+                    listExistingObjects.addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_STORM, true, false));
+                }
+                if (!PluginChecker.isMapReducePluginLoader()) {
+                    listExistingObjects.addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_MR, true, false));
+                }
+                if (!proxyRepositoryFactory.isNameAvailable(repositoryObject.getProperty().getItem(), nameText.getText(),
+                        listExistingObjects) || KeywordsValidator.isKeyword(nameText.getText())) {
+                    btnConfirm.setEnabled(false);
+                    isValid = false;
+                }
+            } catch (PersistenceException e1) {
+                e1.printStackTrace();
+            }
+            if (isValid) {
+                btnConfirm.setEnabled(true);
+            }
         } else if (!versionText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getVersion()))) {
             btnConfirm.setEnabled(true);
         } else if (!jobTypeCCombo.getText().equals(StringUtils.trimToEmpty(jobTypeValue))) {
