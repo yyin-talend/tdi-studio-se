@@ -12,11 +12,11 @@
 	<groupId>@JobGroupId@</groupId>
 	<artifactId>@JobArtifactId@</artifactId>
 	<version>@JobVersion@</version>
-
+	<name>@ProjectName@ @JobName@ (@JobType@)</name>
+	
 	<properties>
 		<talend.job.path>@JobPath@</talend.job.path>
 		<talend.job.package>@JobPackage@</talend.job.package>
-		<talend.jar.name>@JobJarName@</talend.jar.name>
 
 		<!-- for jobInfo.properties -->
 		<talend.project.name>@ProjectName@</talend.project.name>
@@ -43,7 +43,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>${talend.jar.name}-${talend.job.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
