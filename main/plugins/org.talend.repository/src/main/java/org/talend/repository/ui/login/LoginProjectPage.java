@@ -54,6 +54,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -131,6 +132,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected static Logger log = Logger.getLogger(LoginProjectPage.class);
 
     protected Label title;
+
+    protected Composite connectionManageArea;
 
     protected ComboViewer connectionsViewer;
 
@@ -222,9 +225,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         title = new Label(container, SWT.NONE);
         title.setFont(LoginDialogV2.fixedFont);
         title.setText(Messages.getString("LoginProjectPage.title")); //$NON-NLS-1$
-        connectionsViewer = new ComboViewer(container, SWT.READ_ONLY);
+        connectionManageArea = new Composite(container, SWT.NONE);
+        connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
         connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);
-        manageButton = new Button(container, SWT.NONE);
+        manageButton = new Button(connectionManageArea, SWT.NONE);
         manageButton.setFont(LoginDialogV2.fixedFont);
         manageButton.setBackground(backgroundColor);
         manageButton.setText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$
@@ -318,16 +322,32 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
         formData = new FormData();
         formData.top = new FormAttachment(title, TAB_VERTICAL_PADDING_LEVEL_2, SWT.BOTTOM);
+        formData.left = new FormAttachment(0, 0);
         formData.right = new FormAttachment(100, 0);
-        formData.left = new FormAttachment(100, -1 * LoginDialogV2.getNewButtonSize(manageButton).x);
-        manageButton.setLayoutData(formData);
+        connectionManageArea.setLayoutData(formData);
+        GridLayout gridLayout = new GridLayout(2, true);
+        gridLayout.horizontalSpacing = TAB_HORIZONTAL_PADDING_LEVEL_2;
+        gridLayout.verticalSpacing = 0;
+        gridLayout.marginHeight = 0;
+        gridLayout.marginWidth = 0;
+        connectionManageArea.setLayout(gridLayout);
 
-        formData = new FormData();
-        formData.top = new FormAttachment(manageButton, 0, SWT.CENTER);
-        formData.bottom = new FormAttachment(manageButton, 0, SWT.CENTER);
-        formData.left = new FormAttachment(title, 0, SWT.LEFT);
-        formData.right = new FormAttachment(manageButton, -1 * TAB_HORIZONTAL_PADDING_LEVEL_2, SWT.LEFT);
-        connectionsViewer.getControl().setLayoutData(formData);
+        // formData = new FormData();
+        // formData.top = new FormAttachment(title, TAB_VERTICAL_PADDING_LEVEL_2, SWT.BOTTOM);
+        // formData.right = new FormAttachment(100, 0);
+        // formData.left = new FormAttachment(100, -1 * LoginDialogV2.getNewButtonSize(manageButton).x);
+        // manageButton.setLayoutData(formData);
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
+        manageButton.setLayoutData(gridData);
+
+        // formData = new FormData();
+        // formData.top = new FormAttachment(manageButton, 0, SWT.CENTER);
+        // formData.bottom = new FormAttachment(manageButton, 0, SWT.CENTER);
+        // formData.left = new FormAttachment(title, 0, SWT.LEFT);
+        // formData.right = new FormAttachment(manageButton, -1 * TAB_HORIZONTAL_PADDING_LEVEL_2, SWT.LEFT);
+        // connectionsViewer.getControl().setLayoutData(formData);
+        gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
+        connectionsViewer.getControl().setLayoutData(gridData);
         connectionsViewer.setContentProvider(new ArrayContentProvider());
         connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
 
@@ -337,9 +357,11 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         int operationButtonPadding = 6;
 
         formData = new FormData();
-        formData.top = new FormAttachment(manageButton, 0, SWT.BOTTOM);
+        // formData.top = new FormAttachment(manageButton, 0, SWT.BOTTOM);
+        formData.top = new FormAttachment(connectionManageArea, 0, SWT.BOTTOM);
         formData.bottom = new FormAttachment(navigateArea, 0, SWT.TOP);
-        formData.left = new FormAttachment(connectionsViewer.getControl(), 0, SWT.LEFT);
+        // formData.left = new FormAttachment(connectionsViewer.getControl(), 0, SWT.LEFT);
+        formData.left = new FormAttachment(connectionManageArea, 0, SWT.LEFT);
         formData.right = new FormAttachment(100, 0);
         projectOperationArea.setLayout(new FormLayout());
         projectOperationArea.setLayoutData(formData);
