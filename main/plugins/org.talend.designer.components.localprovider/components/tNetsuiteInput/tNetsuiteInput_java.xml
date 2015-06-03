@@ -6237,7 +6237,7 @@
         <IMPORTS>
             <IMPORT NAME="Netsuite_Client" MODULE="Netsuite_Client.jar" MVN="mvn:org.talend.libraries/Netsuite_Client/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.netsuite/lib/Netsuite_Client.jar" REQUIRED="true" />
             <IMPORT NAME="NetSuite_Management" MODULE="NetSuite_Management.jar" MVN="mvn:org.talend.libraries/NetSuite_Management/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.netsuite/lib/NetSuite_Management.jar" REQUIRED="true" />
-            <IMPORT NAME="CXF-CORE" MODULE="cxf-core-3.1.0-modified.jar" MVN="mvn:org.talend.libraries/cxf-core-3.1.0-modified/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.1.0-modified.jar" REQUIRED="true" />
+            <IMPORT NAME="CXF-CORE" MODULE="cxf-core-3.1.0.jar" MVN="mvn:org.talend.libraries/cxf-core-3.1.0/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.1.0.jar" REQUIRED="true" />
             <IMPORT NAME="CXF-RT-DATABINDING-JAXB" MODULE="cxf-rt-databinding-jaxb-3.1.0.jar" MVN="mvn:org.talend.libraries/cxf-rt-databinding-jaxb-3.1.0/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-databinding-jaxb-3.1.0.jar" REQUIRED="true" />
         </IMPORTS>
     </CODEGENERATION>

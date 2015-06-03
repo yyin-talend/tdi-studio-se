@@ -205,7 +205,7 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="CXF-CORE" MODULE="cxf-core-3.1.0-modified.jar" MVN="mvn:org.talend.libraries/cxf-core-3.1.0-modified/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.1.0-modified.jar" REQUIRED="true"/>
+			<IMPORT NAME="CXF-CORE" MODULE="cxf-core-3.1.0.jar" MVN="mvn:org.talend.libraries/cxf-core-3.1.0/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.1.0.jar" REQUIRED="true"/>
 			<IMPORT NAME="CXF-RT-FRONTEND-SIMPLE" MODULE="cxf-rt-frontend-simple-3.1.0.jar" MVN="mvn:org.talend.libraries/cxf-rt-frontend-simple-3.1.0/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-frontend-simple-3.1.0.jar" REQUIRED="true"/>
 			<IMPORT NAME="XMLSCHEMA-CORE" MODULE="xmlschema-core-2.2.1.jar" MVN="mvn:org.talend.libraries/xmlschema-core-2.2.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlschema-core-2.2.1.jar" REQUIRED="true"/>
 			<IMPORT NAME="CXF-TOOLS-COMMON" MODULE="cxf-tools-common-3.1.0.jar" MVN="mvn:org.talend.libraries/cxf-tools-common-3.1.0/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-tools-common-3.1.0.jar" REQUIRED="true"/>
