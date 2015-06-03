@@ -609,10 +609,10 @@ public class MainComposite extends AbstractTabComposite {
             try {
                 List<IRepositoryViewObject> listExistingObjects = proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS,
                         true, false);
-                if (!PluginChecker.isStormPluginLoader()) {
+                if (PluginChecker.isStormPluginLoader()) {
                     listExistingObjects.addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_STORM, true, false));
                 }
-                if (!PluginChecker.isMapReducePluginLoader()) {
+                if (PluginChecker.isMapReducePluginLoader()) {
                     listExistingObjects.addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_MR, true, false));
                 }
                 if (!proxyRepositoryFactory.isNameAvailable(repositoryObject.getProperty().getItem(), nameText.getText(),
