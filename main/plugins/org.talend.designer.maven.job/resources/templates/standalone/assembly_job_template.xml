@@ -18,6 +18,18 @@
 			<destName>jobInfo.properties</destName>
 			<filtered>true</filtered>
 		</file>
+		<file> <!-- sh -->
+			<source>${basedir}/src/main/templates/Job_run_template.sh</source>
+			<outputDirectory>${talend.job.name}</outputDirectory>
+			<destName>${talend.job.name}_run.sh</destName>
+			<filtered>true</filtered>
+		</file>
+		<file> <!-- bat -->
+			<source>${basedir}/src/main/templates/Job_run_template.bat</source>
+			<outputDirectory>${talend.job.name}</outputDirectory>
+			<destName>${talend.job.name}_run.bat</destName>
+			<filtered>true</filtered>
+		</file>
 	</files>
 
 	<fileSets>
@@ -106,15 +118,6 @@
 				<include>**/*.*</include>
 			</includes>
 		</fileSet>
-		<fileSet> <!-- add running scripts files -->
-			<directory>${running.scripts.dir}</directory>
-			<outputDirectory>${talend.job.name}/</outputDirectory>
-			<includes>
-				<include>${talend.job.name}_run.sh</include>
-				<include>${talend.job.name}_run.bat</include>
-			</includes>
-			<filtered>true</filtered>
-		</fileSet>
 		<fileSet><!-- add context resources for running -->
 			<directory>${contexts.running.dir}</directory>
 			<outputDirectory>${talend.job.name}</outputDirectory>
@@ -131,7 +134,8 @@
 				<include>${talend.libraries.includes.set}</include>
 			</includes>
 			<!-- without version for talend libraries -->
-			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}
+			</outputFileNameMapping>
 			<useProjectArtifact>false</useProjectArtifact>
 		</dependencySet>
 		<dependencySet>

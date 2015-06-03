@@ -119,32 +119,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>prepare-scripts</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<!-- must be same as "running.scripts.dir" in profile "include-binaries" -->
-								<property name="scripts.dir"
-									value="${project.build.directory}/RunScripts/${talend.job.name}" />
-								<delete dir="${scripts.dir}" />
-								<mkdir dir="${scripts.dir}" />
-								<copy todir="${scripts.dir}">
-									<fileset dir="${basedir}/src/main/templates/" />
-									<globmapper from="Job_run_template.*" to="${talend.job.name}_run.*" />
-								</copy>
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
@@ -222,9 +196,6 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<!-- this is temp folder for scripts, it must be same the settings of 
-					antrun plugin. -->
-				<running.scripts.dir>${project.build.directory}/RunScripts/${talend.job.name}</running.scripts.dir>
 				<jobs.binaries.includes.set>${project.groupId}:*</jobs.binaries.includes.set>
 				<routines.binaries.includes.set>org.talend.code:routines</routines.binaries.includes.set>
 			</properties>
