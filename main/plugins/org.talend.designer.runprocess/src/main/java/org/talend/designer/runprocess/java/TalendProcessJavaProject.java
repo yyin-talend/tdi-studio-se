@@ -249,15 +249,16 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     @Override
-    public void buildModules(String goals, String[] childrenModules) {
-        buildModules(goals, childrenModules, null);
+    public void buildModules(String goals, String[] childrenModules, IProgressMonitor monitor) throws Exception {
+        buildModules(goals, childrenModules, null, monitor);
     }
 
     @Override
-    public void buildModules(String goals, String[] childrenModules, String programArgs) {
+    public void buildModules(String goals, String[] childrenModules, String programArgs, IProgressMonitor monitor)
+            throws Exception {
         if (childrenModules == null) {
             if (goals != null && goals.trim().length() > 0) {
-                mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH, programArgs);
+                mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH, programArgs, monitor);
             } else { // JDT build
                 buildWholeCodeProject();
             }
@@ -272,14 +273,15 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
                 // clean before classes for current job.
                 String newModule = modulePath.toString();
-                mavenBuildCodeProjectPom(goals, newModule, programArgs);
+                mavenBuildCodeProjectPom(goals, newModule, programArgs, monitor);
             }
         } else { // ==0
             // nothing do for empty modules.
         }
     }
 
-    private void mavenBuildCodeProjectPom(String goals, String module, String programArgs) {
+    private void mavenBuildCodeProjectPom(String goals, String module, String programArgs, IProgressMonitor monitor)
+            throws Exception {
         // cleanBeforeBuilds(module);
 
         IFile childModulePomFile;
@@ -300,7 +302,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             } else {
                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, goals);
                 mavenLauncher.setProgramArguments(programArgs);
-                mavenLauncher.execute();
+                mavenLauncher.execute(monitor);
             }
             buildWholeCodeProject();
             buildWholeCodeProject();
@@ -370,61 +372,57 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
      */
     @Override
     public void updateRoutinesPom(final boolean withBuild, boolean inBackgroud) {
-        if (true) {
             // disable code for now, to review later.
             return;
-        }
-        // should process the pig udf and bean also.
-        if (inBackgroud) {
-            // work in backgroud or not?
-            Job job = new Job("updating routines pom") { //$NON-NLS-1$
-
-                @Override
-                public IStatus run(IProgressMonitor monitor) {
-                    return processRoutinesPom(withBuild);
-                }
-            };
-            job.schedule();
-        } else {
-            processRoutinesPom(withBuild);
-        }
-
+//        // should process the pig udf and bean also.
+//        if (inBackgroud) {
+//            // work in backgroud or not?
+//            Job job = new Job("updating routines pom") { //$NON-NLS-1$
+//
+//                @Override
+//                public IStatus run(IProgressMonitor monitor) {
+//                    return processRoutinesPom(withBuild);
+//                }
+//            };
+//            job.schedule();
+//        } else {
+//            processRoutinesPom(withBuild);
+//        }
     }
 
     private IStatus processRoutinesPom(boolean withBuild) {
-        if (true) {
-            // disable code for now, to review later.
-            return Status.OK_STATUS;
-        }
-        try {
-            // update routines pom, so true here
-            this.synchronizer.syncRoutinesPom(true);
-
-            if (withBuild) {
-                // synch the routines jar first
-                List<String> modules = new ArrayList<String>();
-                Set<ModuleNeeded> runningModules = ModulesNeededProvider.getRunningModules();
-                for (ModuleNeeded m : runningModules) {
-                    modules.add(m.getModuleName());
-                }
-                File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-                ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
-                repositoryBundleService.retrieve(modules, libDir.getAbsolutePath());
-
-                // install routines
-                IFolder routinesSrcFolder = getSrcFolder().getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY);
-                if (routinesSrcFolder.getLocation().toFile().exists()) {
-                    String routineModule = routinesSrcFolder.getProjectRelativePath().toString();
-                    buildModules(TalendMavenConstants.GOAL_INSTALL, new String[] { routineModule });
-                }
-            }
-
-            return Status.OK_STATUS;
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-            return new Status(Status.ERROR, FrameworkUtil.getBundle(getClass()).getSymbolicName(), Status.ERROR, e.getMessage(),
-                    e);
-        }
+        // disable code for now, to review later.
+        return Status.OK_STATUS;
+        // try {
+        // // update routines pom, so true here
+        // this.synchronizer.syncRoutinesPom(true);
+        //
+        // if (withBuild) {
+        // // synch the routines jar first
+        // List<String> modules = new ArrayList<String>();
+        // Set<ModuleNeeded> runningModules = ModulesNeededProvider.getRunningModules();
+        // for (ModuleNeeded m : runningModules) {
+        // modules.add(m.getModuleName());
+        // }
+        // File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
+        // ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+        // repositoryBundleService.retrieve(modules, libDir.getAbsolutePath());
+        //
+        // // install routines
+        // IFolder routinesSrcFolder = getSrcFolder().getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+        // if (routinesSrcFolder.getLocation().toFile().exists()) {
+        // String routineModule = routinesSrcFolder.getProjectRelativePath().toString();
+        // buildModules(TalendMavenConstants.GOAL_INSTALL, new String[] { routineModule }, monitor);
+        // }
+        // }
+        //
+        // return Status.OK_STATUS;
+        // } catch (Exception e) {
+        // ExceptionHandler.process(e);
+        // return new Status(Status.ERROR, FrameworkUtil.getBundle(getClass()).getSymbolicName(), Status.ERROR,
+        // e.getMessage(),
+        // e);
+        // }
     }
 
     @Override

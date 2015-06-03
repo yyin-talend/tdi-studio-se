@@ -257,9 +257,9 @@ public class MavenJavaProcessor extends JavaProcessor {
     }
 
     @Override
-    public void build() {
+    public void build(IProgressMonitor monitor) throws Exception {
         final ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
-        talendJavaProject.buildModules(getGoals(), null);
+        talendJavaProject.buildModules(getGoals(), null, monitor);
         // try {
         //
         // IFolder jobSrcFolder = talendJavaProject.getProject().getFolder(this.getSrcCodePath().removeLastSegments(1));

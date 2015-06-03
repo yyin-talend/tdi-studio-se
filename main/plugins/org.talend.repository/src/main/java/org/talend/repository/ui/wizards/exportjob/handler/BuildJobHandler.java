@@ -54,9 +54,6 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     @Override
     public void generateJobFiles(IProgressMonitor monitor) throws Exception {
-        if (!isOptionChoosed(ExportChoice.needSourceCode)) {
-            return;
-        }
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
         int generationOption = (isOptionChoosed(ExportChoice.includeTestSource) || isOptionChoosed(ExportChoice.executeTests)) ? ProcessorUtilities.GENERATE_ALL_CHILDS
                 | ProcessorUtilities.GENERATE_TESTS
@@ -151,8 +148,8 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     }
 
     @Override
-    public void build(String destinationPath) throws Exception {
-        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_CLEAN +" "+ TalendMavenConstants.GOAL_PACKAGE, null, getProgramArgs()); //$NON-NLS-1$
+    public void build(String destinationPath, IProgressMonitor monitor) throws Exception {
+        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_CLEAN +" "+ TalendMavenConstants.GOAL_PACKAGE, null, getProgramArgs(), monitor); //$NON-NLS-1$
         IFile jobTargetFile = getJobTargetFile();
         if (jobTargetFile.exists()) {
             File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());

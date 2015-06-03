@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
@@ -445,7 +446,12 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void buildJavaProject() {
         ITalendProcessJavaProject talendProcessJavaProject = getTalendProcessJavaProject();
         if (talendProcessJavaProject != null) {
-            talendProcessJavaProject.buildModules(null, null);
+            try {
+                talendProcessJavaProject.buildModules(null, null, new NullProgressMonitor());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 

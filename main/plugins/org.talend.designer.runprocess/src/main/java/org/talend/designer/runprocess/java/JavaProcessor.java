@@ -1697,8 +1697,8 @@ for (ModuleNeeded neededModule : neededModules) {
     }
 
     @Override
-    public void build() {
+    public void build(IProgressMonitor monitor) throws Exception {
         // build whole project by default.
-        getTalendJavaProject().buildModules(null, null);
+        getTalendJavaProject().buildModules(null, null, monitor);
     }
 }

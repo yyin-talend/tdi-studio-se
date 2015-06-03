@@ -45,7 +45,7 @@ public class BuildJobManager {
         buildJobHandler.generateItemFiles(true, new NullProgressMonitor());
         // buildJobHandler.generateTestReports(new NullProgressMonitor());
         buildJobHandler.generateJobFiles(new NullProgressMonitor());
-        buildJobHandler.build(destinationPath);
+        buildJobHandler.build(destinationPath, new NullProgressMonitor());
     }
 
 }
