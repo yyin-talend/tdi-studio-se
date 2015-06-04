@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -96,6 +97,18 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
                         visible = false;
                     }
                 }
+
+                if (nodProperty != null
+                        && GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+                    ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                            .getDefault().getService(ITestContainerProviderService.class);
+                    if ((testContainerService != null) && (nodProperty instanceof ERepositoryObjectType)) {
+                        if (testContainerService.isTestContainerType((ERepositoryObjectType) nodProperty)) {
+                            visible = false;
+                        }
+                    }
+                }
+
                 // for cdc
                 RepositoryNode parent = node.getParent();
                 if (ENodeType.STABLE_SYSTEM_FOLDER.equals(node.getType())) {
