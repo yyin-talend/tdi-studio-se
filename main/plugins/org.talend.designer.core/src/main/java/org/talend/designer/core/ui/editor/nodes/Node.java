@@ -4008,7 +4008,20 @@ public class Node extends Element implements IGraphicalNode {
     private void checkWindowStates() {
         // see feature 5027
         Boolean isThereATWindow = false;
-        IElementParameter windowDuration = nodeContainer.getNode().getElementParameter(EParameterName.WINDOW_DURATION.getName());
+
+        Node node = null;
+        if (nodeContainer != null) {
+            node = nodeContainer.getNode();
+            if (node != null) {
+                isThereATWindow = true;
+            }
+        }
+
+        if (!isThereATWindow) {
+            return;
+        }
+
+        IElementParameter windowDuration = node.getElementParameter(EParameterName.WINDOW_DURATION.getName());
         if (windowDuration == null) {
             removeStatus(Process.WINDOW_STATUS);
             return;
