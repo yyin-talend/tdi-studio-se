@@ -137,9 +137,19 @@
 		<dependencySet>
 			<outputDirectory>lib</outputDirectory>
 			<excludes>
-				<exclude>org.talend.libraries:*</exclude>
-				<exclude>org.talend.job:*</exclude>
+				<exclude>${talend.libraries.excludes.set}</exclude>
+				<exclude>${talend.jobs.excludes.set}</exclude>
 			</excludes>
+			<useProjectArtifact>false</useProjectArtifact>
+		</dependencySet>
+		<dependencySet> <!-- for children jobs -->
+			<outputDirectory>${talend.job.name}</outputDirectory>
+			<includes>
+				<include>${jobs.binaries.includes.set}</include>
+			</includes>
+			<!-- without version for children binaries -->
+			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}
+			</outputFileNameMapping>
 			<useProjectArtifact>false</useProjectArtifact>
 		</dependencySet>
 	</dependencySets>
@@ -154,8 +164,8 @@
 				<includeDependencies>false</includeDependencies>
 				<unpack>false</unpack>
 				<includes>
-					<!-- add the children jobs binaries -->
-					<include>${jobs.binaries.includes.set}</include>
+					<!-- only current main job -->
+					<include>${current.job.binaries.include}</include>
 				</includes>
 				<outputFileNameMapping>${module.artifactId}.${module.extension}
 				</outputFileNameMapping>

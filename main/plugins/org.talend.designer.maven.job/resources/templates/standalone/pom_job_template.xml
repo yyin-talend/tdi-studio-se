@@ -191,6 +191,7 @@
 				<talend.libraries.includes.set>org.talend.libraries:*</talend.libraries.includes.set>
 				<talend.libraries.excludes.set>${talend.libraries.includes.set}</talend.libraries.excludes.set>
 				<talend.jobs.excludes.set>${project.groupId}:*</talend.jobs.excludes.set>
+				<current.job.binaries.include>${project.groupId}:${project.artifactId}:${project.version}</current.job.binaries.include>
 			</properties>
 		</profile>
 		<profile>
