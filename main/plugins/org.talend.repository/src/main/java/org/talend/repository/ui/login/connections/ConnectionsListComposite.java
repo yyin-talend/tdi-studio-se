@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -100,6 +101,7 @@ public class ConnectionsListComposite extends Composite {
         toolkit = new FormToolkit(getDisplay());
         Form form = toolkit.createForm(this);
         Composite formBody = form.getBody();
+        formBody.setBackground(ColorConstants.white);
 
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;

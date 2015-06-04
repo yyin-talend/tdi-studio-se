@@ -20,6 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -67,6 +68,7 @@ public class ConnectionsDialog extends TitleAreaDialog {
         // RGB rgb = parentShell.getBackground().getRGB();
         // setTitleAreaColor(rgb);
         setTitleImage();
+        setTitleAreaColor(new RGB(255, 255, 255));
     }
 
     protected void setTitleImage() {

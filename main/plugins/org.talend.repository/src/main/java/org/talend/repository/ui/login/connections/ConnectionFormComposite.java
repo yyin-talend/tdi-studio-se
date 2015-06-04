@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -122,7 +123,9 @@ public class ConnectionFormComposite extends Composite {
         this.connectionsListComposite = connectionsListComposite;
 
         toolkit = new FormToolkit(this.getDisplay());
+        toolkit.setBackground(ColorConstants.white);
         Composite formBody = toolkit.createComposite(this);
+        formBody.setBackground(ColorConstants.white);
 
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
