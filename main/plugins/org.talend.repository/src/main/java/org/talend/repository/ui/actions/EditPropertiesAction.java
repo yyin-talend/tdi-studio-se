@@ -336,7 +336,7 @@ public class EditPropertiesAction extends AContextualAction {
                 }
 
                 RepositoryEditorInput repositoryInput = (RepositoryEditorInput) input;
-                if (repositoryInput.getItem().equals(node.getObject().getProperty().getItem())) {
+                if (node.getId() != null && node.getId().equals(repositoryInput.getId())) {
 
                     IPath path = repositoryInput.getFile().getLocation();
 
