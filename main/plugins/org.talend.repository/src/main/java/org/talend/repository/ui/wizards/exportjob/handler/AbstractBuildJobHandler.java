@@ -102,7 +102,10 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         profileBuffer.append(TalendMavenConstants.PREFIX_PROFILE);
         profileBuffer.append(SPACE);
 
-        addArg(profileBuffer, true, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
+        // should add the default settings always.
+        addArg(profileBuffer, true, true, TalendMavenConstants.PROFILE_DEFAULT_SETTING);
+
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
         // the context is only useful, when binaries
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries) && isOptionChoosed(ExportChoice.needContext),
                 TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
