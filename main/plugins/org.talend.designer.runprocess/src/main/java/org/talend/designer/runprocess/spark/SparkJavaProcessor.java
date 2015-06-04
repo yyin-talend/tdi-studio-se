@@ -20,6 +20,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.bigdata.BigDataJavaProcessor;
+import org.talend.designer.runprocess.ui.ProcessManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.MapReduceJobJavaScriptsManager;
@@ -52,9 +53,14 @@ public class SparkJavaProcessor extends BigDataJavaProcessor {
      */
     @Override
     protected JobScriptsManager createJobScriptsManager(ProcessItem processItem, Map<ExportChoice, Object> exportChoiceMap) {
+        ProcessManager pm = ProcessManager.getInstance();
+        boolean stats = false;
+        if (pm != null && pm.getStat() != null) {
+            stats = pm.getStat();
+        }
         return new MapReduceJobJavaScriptsManager(exportChoiceMap, processItem.getProcess().getDefaultContext(),
-                JobScriptsManager.ALL_ENVIRONMENTS, RunProcessPlugin.getDefault().getRunProcessContextManager()
-                        .getPortForStatistics(), IProcessor.NO_TRACES);
+                JobScriptsManager.ALL_ENVIRONMENTS, stats ? RunProcessPlugin.getDefault().getRunProcessContextManager()
+                        .getPortForStatistics() : IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
     }
 
     /*
