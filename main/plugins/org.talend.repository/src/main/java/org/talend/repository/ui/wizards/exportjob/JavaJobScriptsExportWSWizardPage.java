@@ -966,6 +966,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
             }
 
+            if (exportTypeCombo != null
+                    && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.JBOSSESB)) {
+
+                settings.put(ESB_EXPORT_TYPE, esbTypeCombo.getText());
+                settings.put(ESB_SERVICE_NAME, esbServiceName.getText());
+                settings.put(ESB_CATEGORY, esbCategory.getText());
+                settings.put(QUERY_MESSAGE_NAME, esbQueueMessageName.getText());
+
+            }
         }
     }
 
@@ -1657,19 +1666,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             return ok;
         }
 
-        if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.JBOSSESB)) {
-            if (getDialogSettings() != null) {
-                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
-                if (section == null) {
-                    section = getDialogSettings().addNewSection(DESTINATION_FILE);
-                }
-                section.put(ESB_EXPORT_TYPE, esbTypeCombo.getText());
-                section.put(ESB_SERVICE_NAME, esbServiceName.getText());
-                section.put(ESB_CATEGORY, esbCategory.getText());
-                section.put(QUERY_MESSAGE_NAME, esbQueueMessageName.getText());
-            }
+        saveWidgetValues();
 
-        }
         return super.finish();
     }
 
