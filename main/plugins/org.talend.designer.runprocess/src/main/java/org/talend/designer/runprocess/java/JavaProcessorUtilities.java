@@ -39,6 +39,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.utils.data.extractor.ModuleNameExtractor;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -145,8 +146,8 @@ public class JavaProcessorUtilities {
                 libNames.add(itLibs.next().getModuleName());
             }
         }
-        libNames.add("systemRoutines.jar");
-        libNames.add("userRoutines.jar");
+        libNames.add(JavaUtils.SYSTEM_ROUTINE_JAR);
+        libNames.add(JavaUtils.USER_ROUTINE_JAR);
         return libNames;
     }
 
@@ -240,7 +241,7 @@ public class JavaProcessorUtilities {
         }
         return neededLibraries;
     }
-    
+
     public static Set<ModuleNeeded> getNeededModulesForProcess(IProcess process) {
         Set<ModuleNeeded> neededLibraries = new HashSet<ModuleNeeded>();
         Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
@@ -306,7 +307,8 @@ public class JavaProcessorUtilities {
                             EList<?> imports = routine.getImports();
                             for (Object o : imports) {
                                 IMPORTType type = (IMPORTType) o;
-                                ModuleNeeded neededModule = new ModuleNeeded("camel bean dependencies", type.getMODULE(), "camel bean dependencies", true);
+                                ModuleNeeded neededModule = new ModuleNeeded("camel bean dependencies", type.getMODULE(),
+                                        "camel bean dependencies", true);
                                 neededLibraries.add(neededModule);
                             }
                         }
@@ -332,7 +334,7 @@ public class JavaProcessorUtilities {
         File libDir = getJavaProjectLibFolder();
         if ((libDir != null) && (libDir.isDirectory())) {
             Set<String> jarsNeedRetrieve = new HashSet<String>();
-            for (ModuleNeeded moduleNeeded: jarsNeeded) {
+            for (ModuleNeeded moduleNeeded : jarsNeeded) {
                 jarsNeedRetrieve.add(moduleNeeded.getModuleName());
             }
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {

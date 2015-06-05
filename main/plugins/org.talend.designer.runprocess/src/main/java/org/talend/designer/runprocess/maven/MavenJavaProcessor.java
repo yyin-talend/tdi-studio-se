@@ -38,6 +38,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.ProjectPomManager;
+import org.talend.designer.maven.tools.creator.CreateMavenBundleTemplatePom;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
 import org.talend.designer.maven.tools.creator.CreateMavenTestPom;
 import org.talend.designer.maven.utils.PomIdsHelper;
@@ -102,8 +103,8 @@ public class MavenJavaProcessor extends JavaProcessor {
             ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, routinesJarPath, getBaseLibPath());
 
             String contextName = JavaResourcesHelper.getJobContextName(this.context);
-            this.windowsClasspath = getClasspath(Platform.OS_WIN32, contextName);
-            this.unixClasspath = getClasspath(Platform.OS_LINUX, contextName);
+            setPlatformValues(Platform.OS_WIN32, contextName);
+            setPlatformValues(Platform.OS_LINUX, contextName);
 
             // ProcessorUtilities.resetExportConfig(); because will set back, so no used
         } finally {
@@ -116,20 +117,33 @@ public class MavenJavaProcessor extends JavaProcessor {
      * 
      * copied from JobScriptsManager.getCommandByTalendJob
      */
-    protected String getClasspath(String tp, String contextName) {
+    protected void setPlatformValues(String tp, String contextName) {
         try {
             // maybe should just reuse current processor's getCommandLine method.
-            String[] cmds = ProcessorUtilities.getCommandLine(isOldBuildJob(), tp, true, process, null, contextName, false, -1,
-                    -1);
-            int cpIndex = ArrayUtils.indexOf(cmds, JavaUtils.JAVA_CP);
-            if (cpIndex > -1) { // found
-                // return the cp values in the next index.
-                return cmds[cpIndex + 1];
-            }
+            // use always use new way.
+            String[] cmds = ProcessorUtilities.getCommandLine(false, tp, true, process, null, contextName, false, -1, -1);
+            setValuesFromCommandline(tp, cmds);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
-        return null;
+    }
+
+    protected void setValuesFromCommandline(String tp, String[] cmds) {
+        if (cmds == null || cmds.length == 0) {
+            return;
+        }
+        String cpStr = null;
+        int cpIndex = ArrayUtils.indexOf(cmds, JavaUtils.JAVA_CP);
+        if (cpIndex > -1) { // found
+            // return the cp values in the next index.
+            cpStr = cmds[cpIndex + 1];
+        }
+
+        if (Platform.OS_WIN32.equals(tp)) {
+            this.windowsClasspath = cpStr;
+        } else {
+            this.unixClasspath = cpStr;
+        }
     }
 
     @Override
@@ -187,48 +201,54 @@ public class MavenJavaProcessor extends JavaProcessor {
         initJobClasspath();
 
         try {
-            boolean isTestContainer = false;
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
-                ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
-                        .getDefault().getService(ITestContainerProviderService.class);
-                if (testContainerService != null) {
-                    isTestContainer = testContainerService.isTestContainerItem(this.getProperty().getItem());
-                }
-            }
-            if (!isTestContainer) {
-                CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
 
-                // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
-                createTemplatePom.setAddStat(false);
-                createTemplatePom.setApplyContextToChild(false);
-
-                createTemplatePom.setUnixClasspath(this.unixClasspath);
-                createTemplatePom.setWindowsClasspath(this.windowsClasspath);
-
-                createTemplatePom.setAssemblyFile(getAssemblyFile());
-
-                IPath itemLocationPath = ItemResourceUtil.getItemLocationPath(this.getProperty());
-                IFolder objectTypeFolder = ItemResourceUtil.getObjectTypeFolder(this.getProperty());
-                if (itemLocationPath != null && objectTypeFolder != null) {
-                    IPath itemRelativePath = itemLocationPath.removeLastSegments(1)
-                            .makeRelativeTo(objectTypeFolder.getLocation());
-                    createTemplatePom.setObjectTypeFolder(objectTypeFolder);
-                    createTemplatePom.setItemRelativePath(itemRelativePath);
-                }
-
+            CreateMavenBundleTemplatePom createTemplatePom = createMavenTemplatePom();
+            if (createTemplatePom != null) {
                 createTemplatePom.setOverwrite(true);
-
                 createTemplatePom.create(null);
-            } else {
-                CreateMavenTestPom createTestPom = new CreateMavenTestPom(this, getPomFile());
-                createTestPom.setOverwrite(true);
-                createTestPom.create(null);
             }
-
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
 
+    }
+
+    protected CreateMavenBundleTemplatePom createMavenTemplatePom() {
+        boolean isTestContainer = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+            ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                    .getDefault().getService(ITestContainerProviderService.class);
+            if (testContainerService != null) {
+                isTestContainer = testContainerService.isTestContainerItem(this.getProperty().getItem());
+            }
+        }
+
+        CreateMavenBundleTemplatePom createMavenPom = null;
+        if (!isTestContainer) {
+            CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
+
+            // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
+            createTemplatePom.setAddStat(false);
+            createTemplatePom.setApplyContextToChild(false);
+
+            createTemplatePom.setUnixClasspath(this.unixClasspath);
+            createTemplatePom.setWindowsClasspath(this.windowsClasspath);
+
+            createTemplatePom.setAssemblyFile(getAssemblyFile());
+
+            IPath itemLocationPath = ItemResourceUtil.getItemLocationPath(this.getProperty());
+            IFolder objectTypeFolder = ItemResourceUtil.getObjectTypeFolder(this.getProperty());
+            if (itemLocationPath != null && objectTypeFolder != null) {
+                IPath itemRelativePath = itemLocationPath.removeLastSegments(1).makeRelativeTo(objectTypeFolder.getLocation());
+                createTemplatePom.setObjectTypeFolder(objectTypeFolder);
+                createTemplatePom.setItemRelativePath(itemRelativePath);
+            }
+
+            createMavenPom = createTemplatePom;
+        } else {
+            createMavenPom = new CreateMavenTestPom(this, getPomFile());
+        }
+        return createMavenPom;
     }
 
     /**
