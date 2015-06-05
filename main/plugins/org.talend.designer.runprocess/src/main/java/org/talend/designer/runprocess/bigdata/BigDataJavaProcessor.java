@@ -56,6 +56,8 @@ import org.talend.designer.runprocess.maven.MavenJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.utils.ZipToFile;
+import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
@@ -176,61 +178,23 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         exportChoiceMap.put(ExportChoice.needJobScript, true);
         exportChoiceMap.put(ExportChoice.needSourceCode, false);
         exportChoiceMap.put(ExportChoice.needContext, true);
-
-        // IProcess2 process = findProcessFromRepository(processItem.getProperty().getId(),
-        // processItem.getProperty().getVersion());
-
-        String processName = processItem.getProperty().getLabel();
-
-        ExportFileResource fileResource = new ExportFileResource(processItem, processName);
-
-        ExportFileResource[] exportFileResources = new ExportFileResource[] { fileResource };
+        exportChoiceMap.put(ExportChoice.binaries, true);
 
         if (progressMonitor.isCanceled()) {
             throw new ProcessorException(new InterruptedException());
         }
-        // JobScriptsManager jobScriptsManager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap,
-        // processItem
-        // .getProcess().getDefaultContext(), JobScriptsManager.ALL_ENVIRONMENTS, IProcessor.NO_STATISTICS,
-        // IProcessor.NO_TRACES, JobExportType.POJO);
-
-        // Now only support the JobExportType.POJO, means "Autonomous job".
-        JobScriptsManager jobScriptsManager = createJobScriptsManager(processItem, exportChoiceMap);
-        String codeOptions = null;
-        List<ExportFileResource> exportResources = jobScriptsManager.getExportResources(exportFileResources, codeOptions);
-
-        if (progressMonitor.isCanceled()) {
-            throw new ProcessorException(new InterruptedException());
-        }
-
         final String archiveFilePath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore()
                 .getString(ITalendCorePrefConstants.FILE_PATH_TEMP))
                 + "/" + getFilePathPrefix() + "_" + process.getName() + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        File exportZipFile = new File(archiveFilePath);
-        if (!exportZipFile.getParentFile().exists()) {
-            exportZipFile.getParentFile().mkdirs();
-        }
-        final ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(exportResources,
-                archiveFilePath);
-        exporterOperation.setCreateLeadupStructure(true);
-        exporterOperation.setUseCompression(true);
-
-        final IProgressMonitor subProgressMonitor = new SubProgressMonitor(progressMonitor, 1);
-
-        if (progressMonitor.isCanceled()) {
-            throw new ProcessorException(new InterruptedException());
-        }
 
         try {
-            exporterOperation.run(subProgressMonitor);
-        } catch (InvocationTargetException e) {
-            throw new ProcessorException(e);
-        } catch (InterruptedException e) {
+            BuildJobManager.getInstance().buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(), processItem.getProcess().getDefaultContext(),
+                    exportChoiceMap, JobExportType.POJO);
+        } catch (Exception e) {
             throw new ProcessorException(e);
         }
 
-        // path can like name/name
-        jobScriptsManager.deleteTempFiles();
+
         ProcessorUtilities.resetExportConfig();
         return archiveFilePath;
     }
