@@ -14,9 +14,12 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.runtime.process.IBuildJobHandler;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 
@@ -39,13 +42,28 @@ public class BuildJobManager {
     }
 
     public void buildJob(String destinationPath, ProcessItem processItem, String version, String context,
-            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType) throws Exception {
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor... monitor) throws Exception {
+        IProgressMonitor pMonitor = new NullProgressMonitor();
+        if (monitor != null && monitor.length != 0) {
+            pMonitor = monitor[0];
+        }
+        int scale = 1000;
+        int total = 3;
+        pMonitor.beginTask(Messages.getString("JobScriptsExportWizardPage.newExportJobScript", jobExportType), scale * total); //$NON-NLS-1$
+
         IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(processItem, context, version, exportChoiceMap,
                 jobExportType);
-        buildJobHandler.generateItemFiles(true, new NullProgressMonitor());
+        pMonitor.setTaskName("generating item files......");
+        buildJobHandler.generateItemFiles(true, new SubProgressMonitor(pMonitor, scale));
+        pMonitor.worked(scale);
         // buildJobHandler.generateTestReports(new NullProgressMonitor());
-        buildJobHandler.generateJobFiles(new NullProgressMonitor());
-        buildJobHandler.build(destinationPath, new NullProgressMonitor());
+        pMonitor.setTaskName("generating job files......");
+        buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale));
+        pMonitor.worked(scale);
+        pMonitor.setTaskName("building......");
+        buildJobHandler.build(destinationPath, new SubProgressMonitor(pMonitor, scale));
+        pMonitor.worked(scale);
+        pMonitor.done();
     }
 
 }

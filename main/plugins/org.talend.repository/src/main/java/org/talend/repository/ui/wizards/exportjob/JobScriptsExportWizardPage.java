@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
@@ -1419,17 +1420,31 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         return true;
     }
 
-    protected boolean buildJobWithMaven(JobExportType jobExportType) {
-        String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
+    protected boolean buildJobWithMaven(final JobExportType jobExportType) {
+        final String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
+        final Boolean[] toReturn = new Boolean[] { true };
+        IRunnableWithProgress runnable = new IRunnableWithProgress() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                try {
+                    BuildJobManager.getInstance().buildJob(getDestinationValue(), processItem, getSelectedJobVersion(), context,
+                            getExportChoiceMap(), jobExportType, monitor);
+                    toReturn[0] = !CorePlugin.getDefault().getRunProcessService().checkExportProcess(selection, true);
+
+                } catch (Exception e) {
+                    throw new InvocationTargetException(e);
+                }
+            }
+        };
         try {
-            BuildJobManager.getInstance().buildJob(getDestinationValue(), processItem, getSelectedJobVersion(), context,
-                    getExportChoiceMap(), jobExportType);
-            CorePlugin.getDefault().getRunProcessService().checkExportProcess(selection, true);
+            getContainer().run(false, true, runnable);
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e, getShell());
             return false;
         }
-        return true;
+
+        return toReturn[0];
     }
 
     /**
