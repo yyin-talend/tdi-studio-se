@@ -260,9 +260,6 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 if (f.getName().startsWith("org.talend.designer.components.tdqprovider")) { //$NON-NLS-1$
                     jarFileMap.put("org.talend.designer.components.tdqprovider", f); //$NON-NLS-1$
                 }
-                if (f.getName().startsWith("org.talend.designer.components.tismpprovider")) { //$NON-NLS-1$
-                    jarFileMap.put("org.talend.designer.components.tismpprovider", f); //$NON-NLS-1$
-                }
                 if (f.getName().startsWith("org.talend.designer.components.tisprovider")) { //$NON-NLS-1$
                     jarFileMap.put("org.talend.designer.components.tisprovider", f); //$NON-NLS-1$
                 }
@@ -286,7 +283,6 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 if (key.toString().endsWith(".nl") //$NON-NLS-1$
                         || key.toString().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
                         || key.toString().startsWith("org.talend.designer.components.tdqprovider") //$NON-NLS-1$
-                        || key.toString().startsWith("org.talend.designer.components.tismpprovider") //$NON-NLS-1$
                         || key.toString().startsWith("org.talend.designer.components.tisprovider") //$NON-NLS-1$
                         || key.toString().startsWith("org.talend.designer.components.tispeprovider") //$NON-NLS-1$
                         || key.toString().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
@@ -361,7 +357,6 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 if (f.getName().endsWith(".nl") //$NON-NLS-1$
                         || f.getName().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
                         || f.getName().startsWith("org.talend.designer.components.tdqprovider") //$NON-NLS-1$
-                        || f.getName().startsWith("org.talend.designer.components.tismpprovider") //$NON-NLS-1$
                         || f.getName().startsWith("org.talend.designer.components.tisprovider") //$NON-NLS-1$
                         || f.getName().startsWith("org.talend.designer.components.tispeprovider") //$NON-NLS-1$
                         || f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
