@@ -120,6 +120,7 @@ import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -977,7 +978,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     protected String getLibPrefixPath(boolean withSep) {
         String prefixPath = "";//$NON-NLS-1$
         if (ProcessorUtilities.isExportConfig() && !Platform.OS_WIN32.equals(getTargetPlatform())) {
-            prefixPath = "$ROOT_PATH";//$NON-NLS-1$
+            prefixPath = ProcessorConstants.CMD_KEY_WORD_ROOTPATH;
             if (withSep) {
                 prefixPath += JavaUtils.PATH_SEPARATOR;
             }
