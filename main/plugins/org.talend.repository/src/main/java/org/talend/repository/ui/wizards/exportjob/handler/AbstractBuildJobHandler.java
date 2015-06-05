@@ -17,6 +17,9 @@ import java.util.Map;
 import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -145,6 +148,13 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
     protected IFile getJobTargetFile() {
         Property jobProperty = processItem.getProperty();
         String jobZipName = PomUtil.getJobFinalName(jobProperty) + JOB_EXTENSION;
+        try {
+            if (talendProcessJavaProject.getProject().isSynchronized(IResource.DEPTH_INFINITE)) {
+                talendProcessJavaProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
+            }
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
         IFolder targetFolder = talendProcessJavaProject.getTargetFolder();
         IFile jobFile = targetFolder.getFile(jobZipName);
         return jobFile;
