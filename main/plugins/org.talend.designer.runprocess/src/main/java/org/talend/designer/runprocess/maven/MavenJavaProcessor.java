@@ -164,6 +164,9 @@ public class MavenJavaProcessor extends JavaProcessor {
 
         Set<JobInfo> infos = getBuildChildrenJobs();
         for (JobInfo jobInfo : infos) {
+            if (jobInfo.isTestContainer()) {
+                continue;
+            }
             String childJarName = JavaResourcesHelper.getJobJarName(jobInfo.getJobName(), jobInfo.getJobVersion());
             if (PomIdsHelper.FLAG_VERSION_WITH_CLASSIFIER) { // only jar name without version
                 childJarName = JavaResourcesHelper.escapeFileName(jobInfo.getJobName());
