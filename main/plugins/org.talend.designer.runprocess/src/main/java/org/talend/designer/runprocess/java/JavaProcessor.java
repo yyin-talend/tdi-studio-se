@@ -1018,6 +1018,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 }
 
                 if (!Platform.OS_WIN32.equals(getTargetPlatform())) {
+                    // add current path
                     outputPath = getLibPrefixPath(false) + classPathSeparator + outputPath;
 
                     String libraryPath = ProcessorUtilities.getLibraryPath();
@@ -1025,6 +1026,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                         String unixRootPath = getLibPrefixPath(true);
                         outputPath = outputPath.replace(libraryPath, unixRootPath + libraryPath);
                     }
+                } else {
+                    // add current path
+                    outputPath = '.' + classPathSeparator + outputPath;
                 }
             }
         } else {
@@ -1046,9 +1050,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         Set<ModuleNeeded> neededModules = getNeededModules();
         JavaProcessorUtilities.checkJavaProjectLib(neededModules);
         Set<String> neededLibraries = new HashSet<String>();
-for (ModuleNeeded neededModule : neededModules) {
-    neededLibraries.add(neededModule.getModuleName());
-}
+        for (ModuleNeeded neededModule : neededModules) {
+            neededLibraries.add(neededModule.getModuleName());
+        }
         File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
 
         StringBuffer libPath = new StringBuffer();
@@ -1091,7 +1095,7 @@ for (ModuleNeeded neededModule : neededModules) {
         return exportJar;
 
     }
-    
+
     @Override
     public Set<ModuleNeeded> getNeededModules() {
         Set<ModuleNeeded> neededLibraries = JavaProcessorUtilities.getNeededModulesForProcess(process);
