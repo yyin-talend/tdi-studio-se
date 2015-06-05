@@ -172,9 +172,18 @@ COMPATIBILITY="ALL"
       NUM_ROW="111"
       REQUIRED="true"
       REPOSITORY_VALUE="ENCODING"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+      NOT_SHOW_IF="(USE_EXISTING_CONNECTION == 'true') or ((SFTP == 'true') and (USE_ENCODING == 'false'))">
        <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="USE_ENCODING"
+      FIELD="CHECK"
+      NUM_ROW="105"
+      REQUIRED="true" SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (SFTP == 'true')">
+       <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
