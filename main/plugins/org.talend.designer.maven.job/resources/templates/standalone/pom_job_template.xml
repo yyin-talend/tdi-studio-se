@@ -13,13 +13,14 @@
 	<artifactId>@JobArtifactId@</artifactId>
 	<version>@JobVersion@</version>
 	<name>@ProjectName@ @JobName@ (@JobType@)</name>
-	
+
 	<properties>
 		<talend.job.path>@JobPath@</talend.job.path>
 		<talend.job.package>@JobPackage@</talend.job.package>
 
 		<!-- for jobInfo.properties -->
 		<talend.project.name>@ProjectName@</talend.project.name>
+		<talend.project.name.lowercase>@ProjectName@</talend.project.name.lowercase>
 		<talend.project.id>@ProjectId@</talend.project.id>
 		<talend.project.branch>@ProjectBranch@</talend.project.branch>
 		<talend.job.name>@JobName@</talend.job.name>
@@ -37,7 +38,7 @@
 		<talend.job.bat.addition>@JobBatAddition@</talend.job.bat.addition>
 		<talend.job.sh.classpath>@JobShClasspath@</talend.job.sh.classpath>
 		<talend.job.sh.addition>@JobShAddition@</talend.job.sh.addition>
-		
+
 		<talend.job.finalName>@JobFinalName@</talend.job.finalName>
 	</properties>
 
@@ -46,6 +47,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${talend.job.finalName}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -158,9 +160,6 @@
 		</profile>
 		<profile>
 			<id>include-java-sources</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<properties>
 				<sourcecodes.dir>${project.build.sourceDirectory}</sourcecodes.dir>
 				<resources.dir>${basedir}/src/main/resources/</resources.dir>
@@ -179,6 +178,9 @@
 		</profile>
 		<profile>
 			<id>include-items</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
 				<items.dir>${basedir}/src/main/items/</items.dir>
 			</properties>
@@ -202,7 +204,7 @@
 			</activation>
 			<properties>
 				<jobs.binaries.includes.set>${project.groupId}:*</jobs.binaries.includes.set>
-				<routines.binaries.includes.set>org.talend.code:*</routines.binaries.includes.set>
+				<routines.binaries.includes.set>org.talend.code.${talend.project.name.lowercase}:*</routines.binaries.includes.set>
 			</properties>
 		</profile>
 		<profile>

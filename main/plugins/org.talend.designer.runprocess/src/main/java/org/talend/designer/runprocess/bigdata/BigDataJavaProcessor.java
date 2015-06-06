@@ -188,12 +188,11 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
                 + "/" + getFilePathPrefix() + "_" + process.getName() + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         try {
-            BuildJobManager.getInstance().buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(), processItem.getProcess().getDefaultContext(),
-                    exportChoiceMap, JobExportType.POJO);
+            BuildJobManager.getInstance().buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(),
+                    processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO);
         } catch (Exception e) {
             throw new ProcessorException(e);
         }
-
 
         ProcessorUtilities.resetExportConfig();
         return archiveFilePath;
@@ -441,18 +440,9 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
      * @return
      */
     protected String makeupJobJarName() {
-        if (isOldBuildJob()) {
-            String version = process.getVersion();
-            String jobJarName = process.getName().toLowerCase() + "_" + version.replace(".", "_") + ".jar"; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
-            return jobJarName;
-        } else {
-            // Test-0.1
-            String jarName = JavaResourcesHelper.getJobJarName(process.getName(), process.getVersion());
-            if (PomIdsHelper.FLAG_VERSION_WITH_CLASSIFIER) { // only jar name without version
-                jarName = JavaResourcesHelper.escapeFileName(process.getName());
-            }
-            return jarName + FileExtensions.JAR_FILE_SUFFIX;
-        }
+        String version = process.getVersion();
+        String jobJarName = process.getName().toLowerCase() + "_" + version.replace(".", "_") + ".jar"; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+        return jobJarName;
     }
 
     protected void setValuesFromCommandline(String tp, String[] cmds) {

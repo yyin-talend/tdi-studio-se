@@ -157,9 +157,6 @@ public class MavenJavaProcessor extends JavaProcessor {
 
         // Test-0.1
         String jarName = JavaResourcesHelper.getJobJarName(process.getName(), process.getVersion());
-        if (PomIdsHelper.FLAG_VERSION_WITH_CLASSIFIER) { // only jar name without version
-            jarName = JavaResourcesHelper.escapeFileName(process.getName());
-        }
         String exportJar = libPrefixPath + jarName + FileExtensions.JAR_FILE_SUFFIX;
 
         Set<JobInfo> infos = getBuildChildrenJobs();
@@ -168,9 +165,6 @@ public class MavenJavaProcessor extends JavaProcessor {
                 continue;
             }
             String childJarName = JavaResourcesHelper.getJobJarName(jobInfo.getJobName(), jobInfo.getJobVersion());
-            if (PomIdsHelper.FLAG_VERSION_WITH_CLASSIFIER) { // only jar name without version
-                childJarName = JavaResourcesHelper.escapeFileName(jobInfo.getJobName());
-            }
             exportJar += classPathSeparator + libPrefixPath + childJarName + FileExtensions.JAR_FILE_SUFFIX;
         }
         return exportJar;

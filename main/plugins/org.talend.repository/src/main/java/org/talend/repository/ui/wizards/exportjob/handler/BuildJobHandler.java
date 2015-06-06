@@ -23,8 +23,12 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
 import org.talend.core.PluginChecker;
@@ -34,11 +38,18 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
+import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.service.ITransformService;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.model.bridge.ReponsitoryContextBridge;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.local.ExportItemUtil;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.utils.io.FilesUtils;
 
@@ -96,8 +107,16 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         if (!isOptionChoosed(ExportChoice.needJobItem)) {
             return;
         }
-        IFolder itemsFolder = talendProcessJavaProject.getItemsFolder();
-        talendProcessJavaProject.cleanFolder(monitor, itemsFolder);
+        IFolder baseFolder = talendProcessJavaProject.getItemsFolder();
+        baseFolder = baseFolder.getFolder(JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem
+                .getProperty().getVersion()));
+        if (baseFolder.exists()) {
+            talendProcessJavaProject.cleanFolder(monitor, baseFolder);
+        } else {
+            baseFolder.create(true, true, null);
+        }
+        IFolder itemsFolder = baseFolder.getFolder("items");
+        itemsFolder.create(true, true, monitor);
         List<Item> items = new ArrayList<Item>();
         items.add(processItem);
         ExportItemUtil exportItemUtil = new ExportItemUtil();
@@ -108,40 +127,104 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             }
         }
         File destination = new File(itemsFolder.getLocation().toFile().getAbsolutePath());
-        exportItemUtil.exportItems(destination, items, false, new NullProgressMonitor());
-        addDQDependencies(itemsFolder);
+        exportItemUtil.setProjectNameAsLowerCase(true);
+        exportItemUtil.exportItems(destination, new ArrayList<Item>(items), false, new NullProgressMonitor());
+        addDQDependencies(itemsFolder, items);
+        addTDMDependencies(baseFolder, items);
     }
 
-    private void addDQDependencies(IFolder parentFolder) throws IOException {
+    /**
+     * DOC nrousseau Comment method "addTDMDependencies".
+     * 
+     * @param items
+     * @param itemsFolder
+     */
+    private void addTDMDependencies(IFolder baseFolder, List<Item> items) {
+        ITransformService tdmService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITransformService.class)) {
+            tdmService = (ITransformService) GlobalServiceRegister.getDefault().getService(ITransformService.class);
+        }
+        try {
+            for (Item item : items) {
+                // add .settings/com.oaklandsw.base.projectProps for tdm
+                if (tdmService != null && !tdmService.isTransformItem(item)) {
+                    String itemProjectFolder = getProject(item).getTechnicalLabel().toLowerCase();
+                    IFolder targetProjectFolder = baseFolder.getFolder(itemProjectFolder);
+                    IFolder targetSettingsFolder = null;
+                    if (!targetProjectFolder.exists()) {
+                        targetProjectFolder.create(true, true, new NullProgressMonitor());
+                        targetSettingsFolder = targetProjectFolder.getFolder(RepositoryConstants.SETTING_DIRECTORY);
+                        if (!targetSettingsFolder.exists()) {
+                            targetSettingsFolder.create(true, true, new NullProgressMonitor());
+                        }
+                    }
+                    IProject sourceProject = getCorrespondingProjectRootFolder(item);
+
+                    if (sourceProject.exists()) {
+                        IFolder settingsFolder = sourceProject.getFolder(RepositoryConstants.SETTING_DIRECTORY);
+                        if (settingsFolder.exists()) {
+                            IFile settingsFile = settingsFolder.getFile(FileConstants.TDM_PROPS);
+                            if (settingsFile.exists()) {
+                                if (targetSettingsFolder != null && targetSettingsFolder.exists()) {
+                                    settingsFile.copy(targetSettingsFolder.getFullPath(), true, null);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            // don't block all the export if got exception here
+            ExceptionHandler.process(e);
+        }
+    }
+
+    protected IProject getCorrespondingProjectRootFolder(Item item) throws CoreException {
+        // for bug 17685
+        org.talend.core.model.properties.Project p = getProject(item);
+        IProject project = null;
+        if (p != null) {
+            project = ResourcesPlugin.getWorkspace().getRoot().getProject(p.getTechnicalLabel().toUpperCase());
+            if (project != null) {
+                return project;
+            }
+        }
+        return null;
+    }
+
+    private void addDQDependencies(IFolder parentFolder, List<Item> items) throws IOException {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
             ITDQItemService tdqItemService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(
                     ITDQItemService.class);
-            if (tdqItemService != null && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { processItem }))) {
-                // add .Talend.definition file
-                String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
-                String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
-                Project pro = getProject(processItem);
-                IFolder itemsProjectFolder = parentFolder.getFolder(pro.getTechnicalLabel());
-                File itemsFolderDir = new File(parentFolder.getLocation().toFile().getAbsolutePath());
-                IProject project = ReponsitoryContextBridge.getRootProject();
-                String defIdxRelativePath = defIdxFolderName + PATH_SEPARATOR + defIdxFileName;
-                IFile defIdxFile = project.getFile(defIdxRelativePath);
-                if (defIdxFile.exists()) {
-                    File defIdxFileSource = new File(project.getLocation().makeAbsolute().append(defIdxFolderName)
-                            .append(defIdxFileName).toFile().toURI());
-                    File defIdxFileTarget = new File(itemsProjectFolder.getFile(defIdxRelativePath).getLocation().toFile()
-                            .getAbsolutePath());
-                    FilesUtils.copyFile(defIdxFileSource, defIdxFileTarget);
-                }
-                // add report header image & template files
-                String reportingBundlePath = PluginChecker.getBundlePath("org.talend.dataquality.reporting"); //$NON-NLS-1$
-                File imageFolder = new File(reportingBundlePath + PATH_SEPARATOR + "images"); //$NON-NLS-1$
-                if (imageFolder.exists()) {
-                    FilesUtils.copyDirectory(imageFolder, itemsFolderDir);
-                }
-                File templateFolder = new File(reportingBundlePath + PATH_SEPARATOR + "reports"); //$NON-NLS-1$ 
-                if (templateFolder.exists() && templateFolder.isDirectory()) {
-                    FilesUtils.copyDirectory(templateFolder, itemsFolderDir);
+            for (Item item : items) {
+                if (tdqItemService != null
+                        && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { item }))) {
+                    // add .Talend.definition file
+                    String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
+                    String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
+                    Project pro = getProject(processItem);
+                    IFolder itemsProjectFolder = parentFolder.getFolder(pro.getTechnicalLabel().toLowerCase());
+                    File itemsFolderDir = new File(parentFolder.getLocation().toFile().getAbsolutePath());
+                    IProject project = ReponsitoryContextBridge.getRootProject();
+                    String defIdxRelativePath = defIdxFolderName + PATH_SEPARATOR + defIdxFileName;
+                    IFile defIdxFile = project.getFile(defIdxRelativePath);
+                    if (defIdxFile.exists()) {
+                        File defIdxFileSource = new File(project.getLocation().makeAbsolute().append(defIdxFolderName)
+                                .append(defIdxFileName).toFile().toURI());
+                        File defIdxFileTarget = new File(itemsProjectFolder.getFile(defIdxRelativePath).getLocation().toFile()
+                                .getAbsolutePath());
+                        FilesUtils.copyFile(defIdxFileSource, defIdxFileTarget);
+                    }
+                    // add report header image & template files
+                    String reportingBundlePath = PluginChecker.getBundlePath("org.talend.dataquality.reporting"); //$NON-NLS-1$
+                    File imageFolder = new File(reportingBundlePath + PATH_SEPARATOR + "images"); //$NON-NLS-1$
+                    if (imageFolder.exists()) {
+                        FilesUtils.copyDirectory(imageFolder, itemsFolderDir);
+                    }
+                    File templateFolder = new File(reportingBundlePath + PATH_SEPARATOR + "reports"); //$NON-NLS-1$ 
+                    if (templateFolder.exists() && templateFolder.isDirectory()) {
+                        FilesUtils.copyDirectory(templateFolder, itemsFolderDir);
+                    }
                 }
             }
         }

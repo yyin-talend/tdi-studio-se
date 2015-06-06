@@ -70,8 +70,8 @@
 			</includes>
 		</fileSet>
 		<fileSet> <!-- add items -->
-			<directory>${items.dir}</directory>
-			<outputDirectory>${talend.job.name}/items/</outputDirectory>
+            <directory>${items.dir}${project.build.finalName}</directory>
+            <outputDirectory>${talend.job.name}</outputDirectory>
 			<includes>
 				<include>**</include>
 			</includes>
@@ -142,16 +142,17 @@
 			</excludes>
 			<useProjectArtifact>false</useProjectArtifact>
 		</dependencySet>
-		<dependencySet> <!-- for children jobs -->
+		 <!-- for children jobs -->
+		<!--
+		<dependencySet>
 			<outputDirectory>${talend.job.name}</outputDirectory>
 			<includes>
 				<include>${jobs.binaries.includes.set}</include>
 			</includes>
-			<!-- without version for children binaries -->
-			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}
-			</outputFileNameMapping>
-			<useProjectArtifact>false</useProjectArtifact>
+			<outputFileNameMapping>${artifact.finalName}.${artifact.extension}</outputFileNameMapping>
+			<useProjectArtifact>true</useProjectArtifact>
 		</dependencySet>
+		-->
 	</dependencySets>
 	<moduleSets>
 		<moduleSet>
@@ -161,14 +162,12 @@
 			</includes>
 			<binaries>
 				<outputDirectory>${talend.job.name}</outputDirectory>
-				<includeDependencies>false</includeDependencies>
+				<includeDependencies>true</includeDependencies>
 				<unpack>false</unpack>
 				<includes>
-					<!-- only current main job -->
-					<include>${current.job.binaries.include}</include>
+					<include>${project.groupId}:*</include>
 				</includes>
-				<outputFileNameMapping>${module.artifactId}.${module.extension}
-				</outputFileNameMapping>
+                <outputFileNameMapping>${module.build.finalName}.${module.extension}</outputFileNameMapping>
 			</binaries>
 		</moduleSet>
 		<moduleSet>

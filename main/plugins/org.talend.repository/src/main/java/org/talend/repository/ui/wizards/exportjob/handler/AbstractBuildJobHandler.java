@@ -25,6 +25,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.IBuildJobHandler;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.TalendMavenConstants;
@@ -150,7 +151,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
 
     protected IFile getJobTargetFile() {
         Property jobProperty = processItem.getProperty();
-        String jobZipName = PomUtil.getJobFinalName(jobProperty) + JOB_EXTENSION;
+        String jobZipName = JavaResourcesHelper.getJobJarName(jobProperty.getLabel(), jobProperty.getVersion()) + JOB_EXTENSION;
         try {
             if (talendProcessJavaProject.getProject().isSynchronized(IResource.DEPTH_INFINITE)) {
                 talendProcessJavaProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
