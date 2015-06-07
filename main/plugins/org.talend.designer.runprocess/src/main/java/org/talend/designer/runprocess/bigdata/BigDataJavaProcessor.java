@@ -100,7 +100,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
             IProcessMessageManager processMessageManager) throws ProcessorException {
         ProcessItem processItem = (ProcessItem) property.getItem();
         // Step 1: Export Map/Reduce job
-        String archive = buildExportZip(processItem, new NullProgressMonitor());
+        String archive = buildExportZip(processItem, monitor);
         // Step 2: Deploy in local(Maybe just unpack)
         unzipFolder = unzipAndDeploy(archive);
         // Step 3: Run Map/Reduce job from given folder.
@@ -189,7 +189,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
         try {
             BuildJobManager.getInstance().buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(),
-                    processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO);
+                    processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO,progressMonitor);
         } catch (Exception e) {
             throw new ProcessorException(e);
         }

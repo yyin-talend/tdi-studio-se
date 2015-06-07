@@ -1329,31 +1329,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             treeViewer.removeCheckStateListener(checkStateListener);
         }
 
-        JobExportType jobExportType = getCurrentExportType1();
-        if (JobExportType.POJO.equals(jobExportType)) {
-            return buildJobWithMaven(jobExportType);
-        }
-
-        List<ContextParameterType> contextEditableResultValuesList = null;
-        if (manager != null) {
-            contextEditableResultValuesList = manager.getContextEditableResultValuesList();
-        }
-        manager = createJobScriptsManager();
-        if (nodes.length == 1) {
-            RepositoryNode node = nodes[0];
-            if (node.getType() == ENodeType.SYSTEM_FOLDER) {
-                manager.setTopFolderName(ProjectManager.getInstance().getCurrentProject().getLabel());
-            } else {
-                manager.setTopFolderName(getDefaultFileNameWithType());
-            }
-        } else {
-            manager.setTopFolderName(getDefaultFileNameWithType());
-        }
-
-        // Save dirty editors if possible but do not stop if not all are saved
-        // delete because it have been occurred before
-        // saveDirtyEditors();
-        // about to invoke the operation so save our state
         saveWidgetValues();
 
         if (!ensureTargetIsValid()) {
@@ -1371,29 +1346,67 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         }
 
-        // for feature:11976, recover back the old default manager value with ContextParameters
-        if (contextEditableResultValuesList == null) {
-            manager.setContextEditableResultValuesList(new ArrayList<ContextParameterType>());
+        JobExportType jobExportType = getCurrentExportType1();
+        if (JobExportType.POJO.equals(jobExportType)) {
+            IRunnableWithProgress worker = new IRunnableWithProgress() {
+
+                @Override
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    buildJobWithMaven(JobExportType.POJO, monitor);
+                }
+            };
+
+            try {
+                getContainer().run(false, true, worker);
+            } catch (InvocationTargetException e) {
+                MessageBoxExceptionHandler.process(e.getCause(), getShell());
+                return false;
+            } catch (InterruptedException e) {
+                return false;
+            }
+
         } else {
-            manager.setContextEditableResultValuesList(contextEditableResultValuesList);
-        }
 
-        if (manager instanceof PetalsJobJavaScriptsManager) {
-            PetalsTemporaryOptionsKeeper.INSTANCE.setSelection(selection);
-        }
-        manager.setMultiNodes(isMultiNodes());
-        // achen modify to fix bug 0006222
+            List<ContextParameterType> contextEditableResultValuesList = null;
+            if (manager != null) {
+                contextEditableResultValuesList = manager.getContextEditableResultValuesList();
+            }
+            manager = createJobScriptsManager();
+            if (nodes.length == 1) {
+                RepositoryNode node = nodes[0];
+                if (node.getType() == ENodeType.SYSTEM_FOLDER) {
+                    manager.setTopFolderName(ProjectManager.getInstance().getCurrentProject().getLabel());
+                } else {
+                    manager.setTopFolderName(getDefaultFileNameWithType());
+                }
+            } else {
+                manager.setTopFolderName(getDefaultFileNameWithType());
+            }
 
-        IRunnableWithProgress worker = new JobExportAction(Arrays.asList(getCheckNodes()), getSelectedJobVersion(), manager,
-                originalRootFolderName, getProcessType());
+            // for feature:11976, recover back the old default manager value with ContextParameters
+            if (contextEditableResultValuesList == null) {
+                manager.setContextEditableResultValuesList(new ArrayList<ContextParameterType>());
+            } else {
+                manager.setContextEditableResultValuesList(contextEditableResultValuesList);
+            }
 
-        try {
-            getContainer().run(false, true, worker);
-        } catch (InvocationTargetException e) {
-            MessageBoxExceptionHandler.process(e.getCause(), getShell());
-            return false;
-        } catch (InterruptedException e) {
-            return false;
+            if (manager instanceof PetalsJobJavaScriptsManager) {
+                PetalsTemporaryOptionsKeeper.INSTANCE.setSelection(selection);
+            }
+            manager.setMultiNodes(isMultiNodes());
+            // achen modify to fix bug 0006222
+
+            IRunnableWithProgress worker = new JobExportAction(Arrays.asList(getCheckNodes()), getSelectedJobVersion(), manager,
+                    originalRootFolderName, getProcessType());
+
+            try {
+                getContainer().run(false, true, worker);
+            } catch (InvocationTargetException e) {
+                MessageBoxExceptionHandler.process(e.getCause(), getShell());
+                return false;
+            } catch (InterruptedException e) {
+                return false;
+            }
         }
 
         // see bug 7181
@@ -1420,31 +1433,23 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         return true;
     }
 
-    protected boolean buildJobWithMaven(final JobExportType jobExportType) {
-        final String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
-        final Boolean[] toReturn = new Boolean[] { true };
-        IRunnableWithProgress runnable = new IRunnableWithProgress() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                try {
-                    BuildJobManager.getInstance().buildJob(getDestinationValue(), processItem, getSelectedJobVersion(), context,
-                            getExportChoiceMap(), jobExportType, monitor);
-                    toReturn[0] = !CorePlugin.getDefault().getRunProcessService().checkExportProcess(selection, true);
-
-                } catch (Exception e) {
-                    throw new InvocationTargetException(e);
-                }
-            }
-        };
+    protected boolean buildJobWithMaven(JobExportType jobExportType, IProgressMonitor monitor) {
+        String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
         try {
-            getContainer().run(false, true, runnable);
+            String destination = getDestinationValue();
+            int separatorIndex = destination.lastIndexOf(File.separator);
+            if (separatorIndex == -1) {
+                String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+                destination = userDir + File.separator + destination;
+            }
+            BuildJobManager.getInstance().buildJob(destination, processItem, getSelectedJobVersion(), context,
+                    getExportChoiceMap(), jobExportType, monitor);
+            CorePlugin.getDefault().getRunProcessService().checkExportProcess(selection, true);
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e, getShell());
             return false;
         }
-
-        return toReturn[0];
+        return true;
     }
 
     /**
