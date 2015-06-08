@@ -74,7 +74,6 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
      */
     public BigDataJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process, property, filenameFromLabel);
-        this.setOldBuildJob(true);// for BD jobs, set to use old way by default.
     }
 
     protected abstract JobScriptsManager createJobScriptsManager(ProcessItem processItem,
@@ -172,6 +171,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         exportChoiceMap.put(ExportChoice.needSourceCode, false);
         exportChoiceMap.put(ExportChoice.needContext, true);
         exportChoiceMap.put(ExportChoice.binaries, true);
+        exportChoiceMap.put(ExportChoice.includeLibs, true);
 
         if (progressMonitor.isCanceled()) {
             throw new ProcessorException(new InterruptedException());
