@@ -326,14 +326,18 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (node instanceof NodeType) {
                 NodeType nodeType = (NodeType) node;
                 String componentName = nodeType.getComponentName();
-                if (("tESBConsumer".equals(componentName) || "tESBProviderRequest".equals(componentName) //$NON-NLS-1$ //$NON-NLS-2$
-                        || "tRESTClient".equals(componentName) || "tRESTRequest".equals(componentName) //$NON-NLS-1$ //$NON-NLS-2$
-                || "cCXFRS".equals(componentName))) { //$NON-NLS-1$
+                if ("tESBConsumer".equals(componentName) //$NON-NLS-1$
+                        || "tRESTClient".equals(componentName) //$NON-NLS-1$
+                        || "tRESTRequest".equals(componentName) //$NON-NLS-1$
+                        || "cCXFRS".equals(componentName)) { //$NON-NLS-1$
                     slEnabled |= EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", nodeType); //$NON-NLS-1$
                     samEnabled |= EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", nodeType); //$NON-NLS-1$
-                    if (samEnabled && slEnabled) {
-                        break;
-                    }
+                } else if ("cCXF".equals(componentName)) { //$NON-NLS-1$
+                    slEnabled |= EmfModelUtils.computeCheckElementValue("ENABLE_SL", nodeType); //$NON-NLS-1$
+                    samEnabled |= EmfModelUtils.computeCheckElementValue("ENABLE_SAM", nodeType); //$NON-NLS-1$
+                }
+                if (samEnabled && slEnabled) {
+                    break;
                 }
             }
         }
