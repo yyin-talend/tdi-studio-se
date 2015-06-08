@@ -25,7 +25,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
@@ -40,14 +39,11 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
-import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.service.ITransformService;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.model.bridge.ReponsitoryContextBridge;
-import org.talend.repository.ProjectManager;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
@@ -65,11 +61,17 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     @Override
     public void generateJobFiles(IProgressMonitor monitor) throws Exception {
+        generateJobFiles(monitor, false, false);
+    }
+
+    @Override
+    public void generateJobFiles(IProgressMonitor monitor, boolean stats, boolean trace) throws Exception {
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
         int generationOption = (isOptionChoosed(ExportChoice.includeTestSource) || isOptionChoosed(ExportChoice.executeTests)) ? ProcessorUtilities.GENERATE_ALL_CHILDS
                 | ProcessorUtilities.GENERATE_TESTS
                 : ProcessorUtilities.GENERATE_ALL_CHILDS;
-        ProcessorUtilities.generateCode(processItem, contextName, version, false, false,
+
+        ProcessorUtilities.generateCode(processItem, contextName, version, stats, false,
                 isOptionChoosed(ExportChoice.applyToChildren), isOptionChoosed(ExportChoice.needContext), generationOption,
                 monitor);
     }
@@ -197,8 +199,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             ITDQItemService tdqItemService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(
                     ITDQItemService.class);
             for (Item item : items) {
-                if (tdqItemService != null
-                        && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { item }))) {
+                if (tdqItemService != null && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { item }))) {
                     // add .Talend.definition file
                     String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
                     String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
@@ -232,7 +233,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     @Override
     public void build(String destinationPath, IProgressMonitor monitor) throws Exception {
-        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_PACKAGE, null, getProgramArgs(), monitor); //$NON-NLS-1$
+        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_PACKAGE, null, getProgramArgs(), monitor);
         IFile jobTargetFile = getJobTargetFile();
         if (jobTargetFile.exists()) {
             File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());

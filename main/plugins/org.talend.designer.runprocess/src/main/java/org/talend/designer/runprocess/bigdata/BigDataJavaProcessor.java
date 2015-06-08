@@ -13,7 +13,6 @@
 package org.talend.designer.runprocess.bigdata;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,10 +25,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
@@ -39,13 +36,10 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.ui.export.ArchiveFileExportOperationFullPath;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.maven.tools.creator.CreateMavenBundleTemplatePom;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
-import org.talend.designer.maven.utils.PomIdsHelper;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
@@ -54,7 +48,6 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.maven.MavenJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
-import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
@@ -188,8 +181,8 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
                 + "/" + getFilePathPrefix() + "_" + process.getName() + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         try {
-            BuildJobManager.getInstance().buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(),
-                    processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO,progressMonitor);
+            buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(), processItem.getProcess()
+                    .getDefaultContext(), exportChoiceMap, JobExportType.POJO, progressMonitor);
         } catch (Exception e) {
             throw new ProcessorException(e);
         }
@@ -216,6 +209,12 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
             }
         }
         return tempFolder;
+    }
+
+    protected void buildJob(String destinationPath, ProcessItem processItem, String version, String ctx,
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
+        BuildJobManager.getInstance().buildJob(destinationPath, processItem, processItem.getProperty().getVersion(),
+                processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO, monitor);
     }
 
     /**
@@ -445,6 +444,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         return jobJarName;
     }
 
+    @Override
     protected void setValuesFromCommandline(String tp, String[] cmds) {
         super.setValuesFromCommandline(tp, cmds);
 
@@ -462,6 +462,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         }
     }
 
+    @Override
     protected CreateMavenBundleTemplatePom createMavenTemplatePom() {
         CreateMavenBundleTemplatePom createMavenTemplatePom = super.createMavenTemplatePom();
         if (createMavenTemplatePom instanceof CreateMavenJobPom) {

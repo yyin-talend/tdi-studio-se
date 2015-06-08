@@ -14,13 +14,15 @@ package org.talend.designer.runprocess.spark;
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.bigdata.BigDataJavaProcessor;
-import org.talend.designer.runprocess.ui.ProcessManager;
+import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.MapReduceJobJavaScriptsManager;
@@ -53,14 +55,18 @@ public class SparkJavaProcessor extends BigDataJavaProcessor {
      */
     @Override
     protected JobScriptsManager createJobScriptsManager(ProcessItem processItem, Map<ExportChoice, Object> exportChoiceMap) {
-        ProcessManager pm = ProcessManager.getInstance();
-        boolean stats = false;
-        if (pm != null && pm.getStat() != null) {
-            stats = pm.getStat();
-        }
+        boolean stats = SparkJavaProcessorUtil.isStatistics();
         return new MapReduceJobJavaScriptsManager(exportChoiceMap, processItem.getProcess().getDefaultContext(),
                 JobScriptsManager.ALL_ENVIRONMENTS, stats ? RunProcessPlugin.getDefault().getRunProcessContextManager()
                         .getPortForStatistics() : IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
+    }
+
+    @Override
+    protected void buildJob(String destinationPath, ProcessItem processItem, String version, String ctx,
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
+        boolean stats = SparkJavaProcessorUtil.isStatistics();
+        BuildJobManager.getInstance().buildJob(destinationPath, processItem, processItem.getProperty().getVersion(),
+                processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO, monitor, stats, false);
     }
 
     /*

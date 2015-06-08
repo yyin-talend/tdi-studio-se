@@ -43,6 +43,12 @@ public class BuildJobManager {
 
     public void buildJob(String destinationPath, ProcessItem processItem, String version, String context,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
+        buildJob(destinationPath, processItem, version, context, exportChoiceMap, jobExportType, monitor, false, false);
+    }
+
+    public void buildJob(String destinationPath, ProcessItem processItem, String version, String context,
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor, boolean stats,
+            boolean traces) throws Exception {
         IProgressMonitor pMonitor = new NullProgressMonitor();
         if (monitor != null) {
             pMonitor = monitor;
@@ -57,7 +63,7 @@ public class BuildJobManager {
         buildJobHandler.generateItemFiles(true, new SubProgressMonitor(pMonitor, scale));
         pMonitor.worked(scale);
         pMonitor.setTaskName("generating job files......");
-        buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale));
+        buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale), stats, traces);
         pMonitor.worked(scale);
         pMonitor.setTaskName("building......");
         buildJobHandler.build(destinationPath, new SubProgressMonitor(pMonitor, scale));
