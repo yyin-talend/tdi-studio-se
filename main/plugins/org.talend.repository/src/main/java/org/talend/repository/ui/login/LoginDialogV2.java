@@ -483,9 +483,9 @@ public class LoginDialogV2 extends TrayDialog {
 
     @Override
     public boolean close() {
-        if (!LicenseManagement.isLicenseValidated()) {
-            System.exit(0);
-        }
+        // if (!LicenseManagement.isLicenseValidated()) {
+        // System.exit(0);
+        // }
         return super.close();
     }
 
