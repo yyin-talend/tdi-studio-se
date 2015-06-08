@@ -133,9 +133,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			// Get the login credential for NetSuite
 			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			String username = ElementParameterParser.getValue(node, "__USER__");
-			String password = ElementParameterParser.getValue(node, "__PASS__");
 			String role = ElementParameterParser.getValue(node, "__ROLE__");
 			String account = ElementParameterParser.getValue(node, "__ACCOUNT__");
+			
+			String passwordFieldName = "__PASS__";
 			
 			// Search configurations
 			String searchEntityKey = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
@@ -143,8 +144,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			
 			boolean regularSearch = "true".equals(ElementParameterParser.getValue(node, "__SHOW_CONDITIONS__"));
 %>
+
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 			
-			org.talend.netsuite.NetsuiteManagement_CXF nsMgr_<%=cid%> = new org.talend.netsuite.NetsuiteManagement_CXF(<%=username%>, <%=password%>, <%=role%> + "", <%=account%>, <%=endpoint%>); 
+			org.talend.netsuite.NetsuiteManagement_CXF nsMgr_<%=cid%> = new org.talend.netsuite.NetsuiteManagement_CXF(<%=username%>, decryptedPassword_<%=cid%>, <%=role%> + "", <%=account%>, <%=endpoint%>); 
 
 <%
 			IConnection outgoingConn = outgoingConns.get(0);
