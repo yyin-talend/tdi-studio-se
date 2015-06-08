@@ -31,8 +31,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.registration.RegistrationPlugin;
+import org.talend.registration.license.LicenseManagement;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 
@@ -153,7 +157,15 @@ public class LoginAgreementPage extends AbstractLoginActionPage {
         acceptButton.addSelectionListener(new SelectionListener() {
 
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(SelectionEvent event) {
+                try {
+                    LicenseManagement.acceptLicense();
+                } catch (BusinessException e) {
+                    ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(),
+                            RegistrationPlugin.PLUGIN_ID, "", e.getMessage()); //$NON-NLS-1$
+                    System.exit(0);
+                }
+
                 AbstractActionPage iNextPage = getNextPage();
                 if (iNextPage == null) {
                     return;

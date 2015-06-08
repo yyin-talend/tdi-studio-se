@@ -50,6 +50,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.registration.license.LicenseManagement;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 
@@ -284,13 +285,18 @@ public class LoginDialogV2 extends TrayDialog {
                     }
                 } else {
                     // for tos
-                    loginPage = new LoginAgreementPage(base, this, SWT.NONE);
+                    if (LicenseManagement.isLicenseValidated()) {
+                        loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
+                    } else {
+                        loginPage = new LoginAgreementPage(base, this, SWT.NONE);
+                    }
                 }
             }
         }
         if (loginPage == null) {
             loginPage = new LoginProjectPage(base, this, SWT.NONE);
         }
+
         try {
             loginPage.preShowPage();
         } catch (Throwable e) {
@@ -473,6 +479,14 @@ public class LoginDialogV2 extends TrayDialog {
         Point btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         btnSize.x += hPadding * 2;
         return btnSize;
+    }
+
+    @Override
+    public boolean close() {
+        if (!LicenseManagement.isLicenseValidated()) {
+            System.exit(0);
+        }
+        return super.close();
     }
 
     /**
