@@ -1368,25 +1368,33 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         boolean samEnabled = false;
         boolean slEnabled = false;
         for (INode node : graphicalNodes) {
-            String nodeName = node.getComponent().getName();
-            if (("tESBConsumer".equals(nodeName) || "tESBProviderRequest".equals(nodeName) //$NON-NLS-1$ //$NON-NLS-2$
-                    || "tRESTClient".equals(nodeName) || "tRESTRequest".equals(nodeName) //$NON-NLS-1$ //$NON-NLS-2$
-            || "cCXFRS".equals(nodeName)) //$NON-NLS-1$
-                    && node.isActivate()) {
-
-                if (!samEnabled) {
-                    Object value = node.getPropertyValue("SERVICE_ACTIVITY_MONITOR"); //$NON-NLS-1$
-                    if (null != value) {
-                        samEnabled = (Boolean) value;
+            if (node.isActivate()) {
+                final String nodeName = node.getComponent().getName();
+                Object slValue = null, samValue = null;
+                if ("tESBConsumer".equals(nodeName) //$NON-NLS-1$
+                    || "tRESTClient".equals(nodeName) //$NON-NLS-1$
+                    || "tRESTRequest".equals(nodeName) //$NON-NLS-1$
+                    || "cCXFRS".equals(nodeName)) { //$NON-NLS-1$
+                    if (!slEnabled) {
+                        slValue = node.getPropertyValue("SERVICE_LOCATOR"); //$NON-NLS-1$
+                    }
+                    if (!samEnabled) {
+                        samValue = node.getPropertyValue("SERVICE_ACTIVITY_MONITOR"); //$NON-NLS-1$
+                    }
+                } else if ("cCXF".equals(nodeName)) { //$NON-NLS-1$
+                    if (!slEnabled) {
+                        slValue = node.getPropertyValue("ENABLE_SL"); //$NON-NLS-1$
+                    }
+                    if (!samEnabled) {
+                        samValue = node.getPropertyValue("ENABLE_SAM"); //$NON-NLS-1$
                     }
                 }
-                if (!slEnabled) {
-                    Object value = node.getPropertyValue("SERVICE_LOCATOR"); //$NON-NLS-1$
-                    if (null != value) {
-                        slEnabled = (Boolean) value;
-                    }
+                if (null != slValue) {
+                    slEnabled = (Boolean) slValue;
                 }
-
+                if (null != samValue) {
+                    samEnabled = (Boolean) samValue;
+                }
                 if (samEnabled && slEnabled) {
                     break;
                 }
@@ -1407,8 +1415,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             if (tProcessJvaProject == null) {
                 return;
             }
-            // PTODO, need be src/main/java or src/main/resources?
-            IFolder esbConfigsTargetFolder = tProcessJvaProject.getSrcFolder();
+            IFolder esbConfigsTargetFolder = tProcessJvaProject.getResourcesFolder();
 
             // add SAM config file to classpath
             if (samEnabled) {
