@@ -120,6 +120,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
     @Override
     public void afterCreateControl() {
         alwaysAsk.setSelection(LoginHelper.isAlwaysAskAtStartup());
+        previousButton.setVisible(false);
         createNewProject.setSelection(true);
         finishButtonAction = FINISH_BUTTON_ACTION_CREATE_NEW_PROJECT;
         newProjectName.setText(NEW_PROJECT_NAME);
@@ -483,7 +484,6 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
             loginHelper.saveLastConnectionBean(defaultConnectionBean);
             loginHelper.getPrefManipulator().setLastProject(project.getLabel());
             LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());
-            LoginHelper.refreshTalendLogonStartupTimes();
             loginDialog.okPressed();
         }
     }

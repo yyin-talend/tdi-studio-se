@@ -947,7 +947,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             boolean isLogInOk = loginHelper.logIn(getConnection(), getProject());
             if (isLogInOk) {
                 LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());
-                LoginHelper.refreshTalendLogonStartupTimes();
                 loginDialog.okPressed();
             } else {
                 fillUIProjectListWithBusyCursor();

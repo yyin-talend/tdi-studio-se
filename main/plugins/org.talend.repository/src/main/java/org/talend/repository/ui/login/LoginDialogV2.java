@@ -267,6 +267,7 @@ public class LoginDialogV2 extends TrayDialog {
 
     protected void showFirstPage() {
         AbstractLoginActionPage loginPage = null;
+        boolean isAcceptAgreement = LicenseManagement.isLicenseValidated();
         if (LoginHelper.isTalendLogonFirstTimeStartup()) {
             // try to find if there are projects in workspace
             Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
@@ -274,7 +275,7 @@ public class LoginDialogV2 extends TrayDialog {
             if (projects != null && 0 < projects.length) {
                 hasProjects = true;
             }
-            if (!hasProjects) {
+            if (isAcceptAgreement && !hasProjects) {
                 if (PluginChecker.isSVNProviderPluginLoaded()) {
                     // for tis
                     List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
@@ -285,14 +286,16 @@ public class LoginDialogV2 extends TrayDialog {
                     }
                 } else {
                     // for tos
-                    if (LicenseManagement.isLicenseValidated()) {
-                        loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
-                    } else {
-                        loginPage = new LoginAgreementPage(base, this, SWT.NONE);
-                    }
+                    loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
                 }
             }
         }
+
+        // must accept agreement
+        if (!isAcceptAgreement) {
+            loginPage = new LoginAgreementPage(base, this, SWT.NONE);
+        }
+
         if (loginPage == null) {
             loginPage = new LoginProjectPage(base, this, SWT.NONE);
         }
@@ -468,6 +471,7 @@ public class LoginDialogV2 extends TrayDialog {
     @Override
     protected void okPressed() {
         // LoginDialog.getInstance().okPressed();
+        LoginHelper.refreshTalendLogonStartupTimes();
         super.okPressed();
     }
 
@@ -483,9 +487,9 @@ public class LoginDialogV2 extends TrayDialog {
 
     @Override
     public boolean close() {
-        // if (!LicenseManagement.isLicenseValidated()) {
-        // System.exit(0);
-        // }
+        if (!LicenseManagement.isLicenseValidated()) {
+            System.exit(0);
+        }
         return super.close();
     }
 
