@@ -500,7 +500,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     @Override
     public void afterCreateControl() {
-        resetProjectOperationSelection();
+        resetProjectOperationSelectionWithBusyCursor();
         alwaysAsk.setSelection(LoginHelper.isAlwaysAskAtStartup());
         previousButton.setVisible(false);
     }
@@ -624,7 +624,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 try {
-                    resetProjectOperationSelection();
+                    resetProjectOperationSelectionWithBusyCursor();
                     final ConnectionBean connection = getConnection();
                     if (connection == null) {
                         return;
@@ -1007,8 +1007,19 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         finishPressed();
     }
 
+    protected void resetProjectOperationSelectionWithBusyCursor() {
+        BusyIndicator.showWhile(getDisplay(), new Runnable() {
+
+            @Override
+            public void run() {
+                resetProjectOperationSelection();
+            }
+        });
+    }
+
     protected void resetProjectOperationSelection() {
         selectExistingProject.setSelection(true);
+        refreshProjectListAreaEnable(selectExistingProject.isEnabled());
         importDemoProject.setSelection(false);
         executeImportDemoProject.setVisible(false);
         importLocalProject.setSelection(false);
@@ -1729,10 +1740,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
         String newProject = ImportProjectAsAction.getInstance().getProjectName();
         if (newProject != null) {
-            resetProjectOperationSelection();
+            resetProjectOperationSelectionWithBusyCursor();
             selectProject(newProject);
         } else if (ImportProjectAsAction.getInstance().isImportedSeveralProjects()) {
-            resetProjectOperationSelection();
+            resetProjectOperationSelectionWithBusyCursor();
         }
         validateProject();
     }
@@ -1744,7 +1755,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         fillUIProjectListWithBusyCursor();
         String newProject = ImportDemoProjectAction.getInstance().getProjectName();
         if (newProject != null) {
-            resetProjectOperationSelection();
+            resetProjectOperationSelectionWithBusyCursor();
             selectProject(newProject);
         }
         validateProject();
@@ -1793,7 +1804,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             Project projectInfor = ProjectHelper.createProject(newProjectName.getText().trim().replace(' ', '_'), "", //$NON-NLS-1$
                     ECodeLanguage.JAVA.getName(), repositoryContext.getUser());
             Project project = repositoryFactory.createProject(projectInfor);
-            resetProjectOperationSelection();
+            resetProjectOperationSelectionWithBusyCursor();
             fillUIProjectListWithBusyCursor();
             selectProject(project.getLabel());
             checkErrors();
