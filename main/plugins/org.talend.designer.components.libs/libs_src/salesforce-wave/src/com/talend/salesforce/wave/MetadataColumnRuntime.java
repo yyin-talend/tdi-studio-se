@@ -99,4 +99,66 @@ public class MetadataColumnRuntime{
           comment   = builder.comment;
           isPrimaryKey = builder.isPrimaryKey;
     }
+
+    public String toString(){
+           StringBuilder strBuilder = new StringBuilder("{");
+           strBuilder.append("\"label\":");
+           strBuilder.append("\"");
+           strBuilder.append(this.getLabel());
+           strBuilder.append("\",");
+
+           strBuilder.append("\"talendType\":");
+           strBuilder.append("\"");
+           strBuilder.append(this.getTalendType());
+           strBuilder.append("\",");
+
+           strBuilder.append("\"pattern\":");
+           strBuilder.append("\"");
+           strBuilder.append(this.getPattern());
+           strBuilder.append("\",");
+
+           strBuilder.append("\"length\":");
+           strBuilder.append(this.getLength());
+           strBuilder.append(",");
+
+           strBuilder.append("\"precision\":");
+           strBuilder.append(this.getPrecision());
+           strBuilder.append(",");
+
+           strBuilder.append("\"defaultValue\":");
+           strBuilder.append("\"");
+           strBuilder.append(this.getDefault());
+           strBuilder.append("\",");
+
+           strBuilder.append("\"comment\":");
+           strBuilder.append("\"");
+           strBuilder.append(this.getComment());
+           strBuilder.append("\",");
+
+           strBuilder.append("\"isPrimaryKey\":");
+           strBuilder.append(this.getPrecision());
+
+           strBuilder.append("}");
+
+           return strBuilder.toString();
+    }
+
+/*
+    public boolean equals(Object obj){
+           if(this == obj){
+              return true;
+           }
+
+           if(obj instanceof MetadataColumnRuntime){
+                MetadataColumnRuntime metadataColumnRuntime = (MetadataColumnRuntime)obj;
+                if(metadataColumnRuntime.toString().equals(this.toString())){
+                    return true;
+                }else{
+                    return false;
+                }
+           }
+
+           return false;
+    }
+*/
 }
