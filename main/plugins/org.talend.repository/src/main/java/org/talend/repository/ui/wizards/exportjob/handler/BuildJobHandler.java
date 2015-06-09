@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.exportjob.handler;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,6 +24,8 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -232,8 +235,31 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     }
 
     @Override
-    public void build(String destinationPath, IProgressMonitor monitor) throws Exception {
-        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_PACKAGE, null, getProgramArgs(), monitor);
+    public void build(final String destinationPath, IProgressMonitor monitor) throws Exception {
+        final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) {
+                try {
+                    buildDelegate(destinationPath, monitor);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        };
+
+        try {
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, monitor);
+        } catch (CoreException e) {
+            throw new InvocationTargetException(e);
+        }
+
+    }
+
+    protected void buildDelegate(final String destinationPath, IProgressMonitor monitor) throws Exception {
+        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_CLEAN + ' ' + TalendMavenConstants.GOAL_PACKAGE, null,
+                getProgramArgs(), monitor);
         IFile jobTargetFile = getJobTargetFile();
         if (jobTargetFile.exists()) {
             File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());
@@ -244,5 +270,4 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             FilesUtils.copyFile(jobFileSource, jobFileTarget);
         }
     }
-
 }
