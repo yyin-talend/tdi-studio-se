@@ -19,7 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
@@ -39,8 +38,6 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
-import org.talend.core.model.general.ConnectionBean;
-import org.talend.core.model.general.Project;
 import org.talend.registration.RegistrationPlugin;
 import org.talend.registration.license.LicenseManagement;
 import org.talend.repository.i18n.Messages;
@@ -164,14 +161,7 @@ public class LoginAgreementPage extends AbstractLoginActionPage {
         AbstractActionPage iNextPage = super.getNextPage();
 
         if (iNextPage == null) {
-            Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
-            if (projects == null || projects.length == 0) {
-                List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
-                if (storedConnections == null || storedConnections.isEmpty()
-                        || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)))) {
-                    iNextPage = new LoginFirstTimeStartupActionPage(getParent(), loginDialog, SWT.NONE);
-                }
-            }
+            iNextPage = loginDialog.getFirstTimeStartupPageIfNeeded();
             if (iNextPage == null) {
                 iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
             }

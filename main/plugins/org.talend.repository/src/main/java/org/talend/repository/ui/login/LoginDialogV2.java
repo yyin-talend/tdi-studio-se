@@ -46,7 +46,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.PluginChecker;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.ui.branding.IBrandingService;
@@ -268,32 +267,11 @@ public class LoginDialogV2 extends TrayDialog {
     protected void showFirstPage() {
         AbstractLoginActionPage loginPage = null;
         boolean isAcceptAgreement = LicenseManagement.isLicenseValidated();
-        if (LoginHelper.isTalendLogonFirstTimeStartup()) {
-            // try to find if there are projects in workspace
-            Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
-            boolean hasProjects = false;
-            if (projects != null && 0 < projects.length) {
-                hasProjects = true;
-            }
-            if (isAcceptAgreement && !hasProjects) {
-                if (PluginChecker.isSVNProviderPluginLoaded()) {
-                    // for tis
-                    List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
-                    if (storedConnections == null || storedConnections.isEmpty()
-                            || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)))) {
-                        // for local license case
-                        loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
-                    }
-                } else {
-                    // for tos
-                    loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
-                }
-            }
-        }
-
-        // must accept agreement
         if (!isAcceptAgreement) {
+            // must accept agreement
             loginPage = new LoginAgreementPage(base, this, SWT.NONE);
+        } else if (LoginHelper.isTalendLogonFirstTimeStartup()) {
+            loginPage = getFirstTimeStartupPageIfNeeded();
         }
 
         if (loginPage == null) {
@@ -306,6 +284,21 @@ public class LoginDialogV2 extends TrayDialog {
             CommonExceptionHandler.process(e);
         }
         loginPage.showPage();
+    }
+
+    protected AbstractLoginActionPage getFirstTimeStartupPageIfNeeded() {
+        AbstractLoginActionPage loginPage = null;
+        // try to find if there are projects in workspace
+        Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
+        if (projects == null || projects.length == 0) {
+            List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
+            if (storedConnections == null || storedConnections.isEmpty()
+                    || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)))) {
+                // for local license case
+                loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
+            }
+        }
+        return loginPage;
     }
 
     protected void createLogonInfoArea(Composite container) {
