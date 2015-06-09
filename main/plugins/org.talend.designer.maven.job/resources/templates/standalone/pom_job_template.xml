@@ -208,6 +208,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>include-log4j</id>
+			<properties>
+				<log4j.running.dir>${basedir}/src/main/resources/</log4j.running.dir>
+			</properties>
+		</profile>
+		<profile>
 			<id>include-contexts</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>

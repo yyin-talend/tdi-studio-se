@@ -70,8 +70,8 @@
 			</includes>
 		</fileSet>
 		<fileSet> <!-- add items -->
-            <directory>${items.dir}${project.build.finalName}</directory>
-            <outputDirectory>${talend.job.name}</outputDirectory>
+			<directory>${items.dir}${project.build.finalName}</directory>
+			<outputDirectory>${talend.job.name}</outputDirectory>
 			<includes>
 				<include>**</include>
 			</includes>
@@ -121,6 +121,13 @@
 				<include>${talend.job.path}/**</include>
 			</includes>
 		</fileSet>
+		<fileSet><!-- add the log4j.xml for running --> 
+			<directory>${log4j.running.dir}</directory>
+			<outputDirectory>${talend.job.name}</outputDirectory>
+			<includes>
+				<include>log4j.xml</include>
+			</includes>
+		</fileSet>
 		<!-- If have children jobs, will add here -->
 	</fileSets>
 	<dependencySets>
@@ -142,17 +149,10 @@
 			</excludes>
 			<useProjectArtifact>false</useProjectArtifact>
 		</dependencySet>
-		 <!-- for children jobs -->
-		<!--
-		<dependencySet>
-			<outputDirectory>${talend.job.name}</outputDirectory>
-			<includes>
-				<include>${jobs.binaries.includes.set}</include>
-			</includes>
-			<outputFileNameMapping>${artifact.finalName}.${artifact.extension}</outputFileNameMapping>
-			<useProjectArtifact>true</useProjectArtifact>
-		</dependencySet>
-		-->
+		<!-- for children jobs -->
+		<!-- <dependencySet> <outputDirectory>${talend.job.name}</outputDirectory> 
+			<includes> <include>${jobs.binaries.includes.set}</include> </includes> <outputFileNameMapping>${artifact.finalName}.${artifact.extension}</outputFileNameMapping> 
+			<useProjectArtifact>true</useProjectArtifact> </dependencySet> -->
 	</dependencySets>
 	<moduleSets>
 		<moduleSet>
@@ -167,7 +167,8 @@
 				<includes>
 					<include>${project.groupId}:*</include>
 				</includes>
-                <outputFileNameMapping>${module.build.finalName}.${module.extension}</outputFileNameMapping>
+				<outputFileNameMapping>${module.build.finalName}.${module.extension}
+				</outputFileNameMapping>
 			</binaries>
 		</moduleSet>
 		<moduleSet>
