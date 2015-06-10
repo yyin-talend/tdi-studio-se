@@ -612,19 +612,21 @@ public class PaletteSettingPage extends ProjectSettingPage {
                 addUsedComponents(componentsUsed, allJoblet, ComponentCategory.CATEGORY_4_DI);
             }
             ERepositoryObjectType routeType = ERepositoryObjectType.valueOf("ROUTES"); //$NON-NLS-1$
-            if (jobletType != null) {
+            if (routeType != null) {
                 List<IRepositoryViewObject> allRoutes = repositoryFactory.getAll(project, routeType, true);
                 addUsedComponents(componentsUsed, allRoutes, ComponentCategory.CATEGORY_4_CAMEL);
             }
             ERepositoryObjectType mrType = ERepositoryObjectType.valueOf("PROCESS_MR"); //$NON-NLS-1$
-            if (jobletType != null) {
+            if (mrType != null) {
                 List<IRepositoryViewObject> allMr = repositoryFactory.getAll(project, mrType, true);
                 addUsedComponents(componentsUsed, allMr, ComponentCategory.CATEGORY_4_MAPREDUCE);
+                addUsedComponents(componentsUsed, allMr, ComponentCategory.CATEGORY_4_SPARK);
             }
             ERepositoryObjectType stormType = ERepositoryObjectType.valueOf("PROCESS_STORM"); //$NON-NLS-1$
-            if (jobletType != null) {
+            if (stormType != null) {
                 List<IRepositoryViewObject> allStorm = repositoryFactory.getAll(project, stormType, true);
                 addUsedComponents(componentsUsed, allStorm, ComponentCategory.CATEGORY_4_STORM);
+                addUsedComponents(componentsUsed, allStorm, ComponentCategory.CATEGORY_4_SPARKSTREAMING);
             }
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);

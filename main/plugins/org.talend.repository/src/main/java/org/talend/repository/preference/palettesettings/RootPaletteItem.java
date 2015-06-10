@@ -30,19 +30,19 @@ public class RootPaletteItem extends AbstractPaletteItem implements IPaletteItem
         ERepositoryObjectType type;
         switch (category) {
         case CATEGORY_4_CAMEL:
-            type = ERepositoryObjectType.valueOf("ROUTES");
+            type = ERepositoryObjectType.valueOf("ROUTES"); //$NON-NLS-1$
             break;
         case CATEGORY_4_MAPREDUCE:
-            type = ERepositoryObjectType.valueOf("PROCESS_MR");
+            type = ERepositoryObjectType.valueOf("PROCESS_MR"); //$NON-NLS-1$
             break;
         case CATEGORY_4_STORM:
-            type = ERepositoryObjectType.valueOf("PROCESS_STORM");
+            type = ERepositoryObjectType.valueOf("PROCESS_STORM"); //$NON-NLS-1$
             break;
         case CATEGORY_4_SPARK:
-            type = ERepositoryObjectType.valueOf("PROCESS_SPARK");
+            type = ERepositoryObjectType.valueOf("PROCESS_MR"); //$NON-NLS-1$
             break;
         case CATEGORY_4_SPARKSTREAMING:
-            type = ERepositoryObjectType.valueOf("PROCESS_SPARKSTREAMING");
+            type = ERepositoryObjectType.valueOf("PROCESS_STORM"); //$NON-NLS-1$
             break;
         case CATEGORY_4_DI:
         default:
@@ -50,7 +50,8 @@ public class RootPaletteItem extends AbstractPaletteItem implements IPaletteItem
             break;
         }
         Assert.isNotNull(type);
-        setLabel(type.getLabel());
+        String desc = category.getDesc();
+        setLabel(type.getLabel() + ("".equals(desc) ? "" : " (" + desc + ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         ImageDescriptor imageDesc = CoreImageProvider.getImageDesc(type);
         setImageDesc(imageDesc);
     }
