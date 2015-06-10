@@ -109,24 +109,28 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         // should add the default settings always.
         addArg(profileBuffer, true, true, TalendMavenConstants.PROFILE_DEFAULT_SETTING);
 
-        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
-        // the running context is only useful, when binaries
-        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries) && isOptionChoosed(ExportChoice.needContext),
-                TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
-        // the log4j is only useful, when binaries
-        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries)
-                && Log4jPrefsSettingManager.getInstance().isLog4jEnable(), TalendMavenConstants.PROFILE_INCLUDE_LOG4J);
-
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.needSourceCode),
+                TalendMavenConstants.PROFILE_INCLUDE_JAVA_SOURCES);
         // if not binaries, need add maven resources
         addArg(profileBuffer, false, !isOptionChoosed(ExportChoice.binaries),
                 TalendMavenConstants.PROFILE_INCLUDE_MAVEN_RESOURCES);
-
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.needJobItem), TalendMavenConstants.PROFILE_INCLUDE_ITEMS);
-        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.needSourceCode),
-                TalendMavenConstants.PROFILE_INCLUDE_JAVA_SOURCES);
+
+        // for binaries
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.includeLibs), TalendMavenConstants.PROFILE_INCLUDE_LIBS);
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
+        // the log4j is only useful, when binaries
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries)
+                && Log4jPrefsSettingManager.getInstance().isLog4jEnable(), TalendMavenConstants.PROFILE_INCLUDE_LOG4J);
+        // the running context is only useful, when binaries
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries) && isOptionChoosed(ExportChoice.needContext),
+                TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
+
+        // for test
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.includeTestSource),
                 TalendMavenConstants.PROFILE_INCLUDE_TEST_SOURCES);
-        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.includeLibs), TalendMavenConstants.PROFILE_INCLUDE_LIBS);
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.executeTests),
+                TalendMavenConstants.PROFILE_INCLUDE_TEST_REPORTS);
 
         return profileBuffer;
     }
