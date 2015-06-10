@@ -13,43 +13,21 @@
 package org.talend.designer.maven.job.setting.repository;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.designer.maven.ui.setting.repository.tester.IRepositorySettingTester;
-import org.talend.repository.model.IRepositoryNode;
+import org.talend.designer.maven.ui.setting.repository.tester.AbstractRepositoryNodeRepositorySettingTester;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class MavenJobRepositorySettingTester implements IRepositorySettingTester {
+public class MavenJobRepositorySettingTester extends AbstractRepositoryNodeRepositorySettingTester {
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.designer.maven.ui.setting.repository.tester.AbstractRepositoryNodeRepositorySettingTester#getType()
+     */
     @Override
-    public boolean valid(Object object) {
-        if (object instanceof IRepositoryNode) {
-            ERepositoryObjectType contentType = ((IRepositoryNode) object).getContentType();
-            if (contentType != null) {
-                if (contentType.equals(ERepositoryObjectType.PROCESS)) {
-                    return true;
-                }
-
-                /*
-                 * if want to support Big Data jobs, need impl the extension point
-                 * "org.talend.designer.maven.ui.repositoryMavenSetting" for "RepositorySupportType" also.
-                 */
-
-                // if (contentType.equals(ERepositoryObjectType.PROCESS_MR)) {
-                // return true;
-                // }
-                // if (contentType.equals(ERepositoryObjectType.PROCESS_STORM)) {
-                // return true;
-                // }
-                // if (contentType.equals(ERepositoryObjectType.PROCESS_SPARK)) {
-                // return true;
-                // }
-                // if (contentType.equals(ERepositoryObjectType.PROCESS_SPARKSTREAMING)) {
-                // return true;
-                // }
-            }
-        }
-        return false;
+    protected ERepositoryObjectType getType() {
+        return ERepositoryObjectType.PROCESS;
     }
-
 }

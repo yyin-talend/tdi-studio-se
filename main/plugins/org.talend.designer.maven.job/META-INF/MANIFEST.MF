@@ -15,4 +15,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.talend.designer.maven.job.setting,
  org.talend.designer.maven.job.setting.project,
- org.talend.designer.maven.job.setting.repository
+ org.talend.designer.maven.job.setting.repository,
+ org.talend.designer.maven.job.setting.repository.standalone
