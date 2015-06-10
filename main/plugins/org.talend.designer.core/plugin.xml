@@ -23,7 +23,7 @@
             extensions="java"
             icon="icons/java.gif"
             id="org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor"
-            name="Java Editor">
+            name="Talend Routines Java Editor">
       </editor> 
       <editor
             class="org.talend.designer.core.ui.editor.TalendDefaultJavaEditor"

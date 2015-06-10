@@ -123,7 +123,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     @Override
     public boolean isEditable() {
         if (!getRepositoryFactory().getStatus(item).isEditable()) {
-            getSourceViewer().getTextWidget().setDragDetect(false);
+            ISourceViewer sourceViewer = getSourceViewer();
+            if (sourceViewer != null) {
+                sourceViewer.getTextWidget().setDragDetect(false);
+            }
             isEditable = false;
         }
         return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable() && isLastVersion(item);
