@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.service.ITransformService;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
@@ -258,8 +260,12 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     }
 
     protected void buildDelegate(final String destinationPath, IProgressMonitor monitor) throws Exception {
-        talendProcessJavaProject.buildModules(TalendMavenConstants.GOAL_CLEAN + ' ' + TalendMavenConstants.GOAL_PACKAGE, null,
-                getProgramArgs(), monitor);
+        final Map<String, Object> argumentsMap = new HashMap<String, Object>();
+        argumentsMap.put(ITalendProcessJavaProject.ARG_GOAL, TalendMavenConstants.GOAL_CLEAN + ' '
+                + TalendMavenConstants.GOAL_PACKAGE);
+        argumentsMap.put(ITalendProcessJavaProject.ARG_PROGRAM_ARGUMENTS, getProgramArgs());
+
+        talendProcessJavaProject.buildModules(monitor, null, argumentsMap);
         IFile jobTargetFile = getJobTargetFile();
         if (jobTargetFile.exists()) {
             File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());
