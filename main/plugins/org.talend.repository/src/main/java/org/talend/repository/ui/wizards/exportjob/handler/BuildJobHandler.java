@@ -15,12 +15,15 @@ package org.talend.repository.ui.wizards.exportjob.handler;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -44,11 +47,13 @@ import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.model.bridge.ReponsitoryContextBridge;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
@@ -152,6 +157,30 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             tdmService = (ITransformService) GlobalServiceRegister.getDefault().getService(ITransformService.class);
         }
         try {
+            // add __tdm dependencies
+            ExportFileResource resouece = new ExportFileResource();
+            BuildExportManager.getInstance().exportDependencies(resouece, processItem);
+            if (!resouece.getAllResources().isEmpty()) {
+                final Iterator<String> relativepath = resouece.getRelativePathList().iterator();
+                while (relativepath.hasNext()) {
+                    String relativePath = relativepath.next();
+                    Set<URL> sources = resouece.getResourcesByRelativePath(relativePath);
+                    for (URL sourceUrl : sources) {
+                        File currentResource = new File(org.talend.commons.utils.io.FilesUtils.getFileRealPath(sourceUrl
+                                .getPath()));
+                        if (currentResource.exists()) {
+                            IFolder targetFolder = baseFolder.getFolder(relativePath);
+                            if (!targetFolder.exists()) {
+                                targetFolder.create(true, true, new NullProgressMonitor());
+                            }
+                            FilesUtils.copyFile(currentResource, new File(targetFolder.getLocation().toPortableString()
+                                    + File.separator + currentResource.getName()));
+                        }
+                    }
+                }
+
+            }
+
             for (Item item : items) {
                 // add .settings/com.oaklandsw.base.projectProps for tdm
                 if (tdmService != null && !tdmService.isTransformItem(item)) {
@@ -180,7 +209,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                     }
                 }
             }
-        } catch (CoreException e) {
+        } catch (Exception e) {
             // don't block all the export if got exception here
             ExceptionHandler.process(e);
         }
@@ -237,13 +266,13 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     }
 
     @Override
-    public void build(final String destinationPath, IProgressMonitor monitor) throws Exception {
+    public void build(IProgressMonitor monitor) throws Exception {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
             @Override
             public void run(IProgressMonitor monitor) {
                 try {
-                    buildDelegate(destinationPath, monitor);
+                    buildDelegate(monitor);
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
@@ -259,21 +288,12 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     }
 
-    protected void buildDelegate(final String destinationPath, IProgressMonitor monitor) throws Exception {
+    protected void buildDelegate(IProgressMonitor monitor) throws Exception {
         final Map<String, Object> argumentsMap = new HashMap<String, Object>();
         argumentsMap.put(ITalendProcessJavaProject.ARG_GOAL, TalendMavenConstants.GOAL_CLEAN + ' '
                 + TalendMavenConstants.GOAL_PACKAGE);
         argumentsMap.put(ITalendProcessJavaProject.ARG_PROGRAM_ARGUMENTS, getProgramArgs());
 
         talendProcessJavaProject.buildModules(monitor, null, argumentsMap);
-        IFile jobTargetFile = getJobTargetFile();
-        if (jobTargetFile.exists()) {
-            File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());
-            File jobFileTarget = new File(destinationPath);
-            if (jobFileTarget.isDirectory()) {
-                jobFileTarget = new File(destinationPath, jobFileSource.getName());
-            }
-            FilesUtils.copyFile(jobFileSource, jobFileTarget);
-        }
     }
 }

@@ -57,6 +57,7 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobExportReArchieveCreator;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
+import org.talend.repository.ui.wizards.exportjob.util.ExportJobUtil;
 
 /**
  * 
@@ -78,14 +79,14 @@ public class JobExportAction implements IRunnableWithProgress {
 
     private boolean isBuildSuccessful;
 
-    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
-            String directoryName, String type) {
+    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, String bundleVersion,
+            JobScriptsManager manager, String directoryName, String type) {
         this(nodes, jobVersion, bundleVersion, manager, directoryName);
         this.type = type;
     }
 
-    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
-            String directoryName) {
+    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, String bundleVersion,
+            JobScriptsManager manager, String directoryName) {
         super();
         this.nodes = nodes;
         this.jobVersion = jobVersion;
@@ -94,12 +95,13 @@ public class JobExportAction implements IRunnableWithProgress {
         this.directoryName = directoryName;
     }
 
-    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName,
-            String type) {
+    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, JobScriptsManager manager,
+            String directoryName, String type) {
         this(nodes, jobVersion, jobVersion, manager, directoryName, type);
     }
 
-    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName) {
+    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, JobScriptsManager manager,
+            String directoryName) {
         this(nodes, jobVersion, jobVersion, manager, directoryName);
     }
 
@@ -146,7 +148,8 @@ public class JobExportAction implements IRunnableWithProgress {
         return value;
     }
 
-    private boolean exportJobScript(List<? extends IRepositoryNode> nodes, String version, String bundleVersion, IProgressMonitor monitor) {
+    private boolean exportJobScript(List<? extends IRepositoryNode> nodes, String version, String bundleVersion,
+            IProgressMonitor monitor) {
         manager.setJobVersion(version);
         manager.setBundleVersion(bundleVersion);
 
@@ -323,7 +326,7 @@ public class JobExportAction implements IRunnableWithProgress {
         String zipFile = getTempDestinationValue();
         String destinationZipFile = manager.getDestinationPath();
 
-        String tmpFolder = JavaJobExportReArchieveCreator.getTmpFolder();
+        String tmpFolder = ExportJobUtil.getTmpFolder();
         try {
             // unzip to tmpFolder
             ZipToFile.unZipFile(zipFile, tmpFolder);
@@ -354,7 +357,7 @@ public class JobExportAction implements IRunnableWithProgress {
         } catch (Exception e) {
             ExceptionHandler.process(e);
         } finally {
-            JavaJobExportReArchieveCreator.deleteTempFiles();
+            ExportJobUtil.deleteTempFiles();
             JavaJobExportReArchieveCreator.deleteTempDestinationFiles();
             new File(zipFile).delete(); // delete the temp zip file
         }

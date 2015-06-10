@@ -12,16 +12,34 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.runtime.process.IBuildJobHandler;
+import org.talend.core.ui.CoreUIPlugin;
+import org.talend.core.ui.services.IDesignerCoreUIService;
+import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.ui.utils.ZipToFile;
+import org.talend.repository.ui.wizards.exportjob.JavaJobExportReArchieveCreator;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.utils.io.FilesUtils;
 
 /**
  * created by ycbai on 2015年5月15日 Detailled comment
@@ -41,12 +59,97 @@ public class BuildJobManager {
         return instance;
     }
 
+    private List<ProcessItem> getProcesses(List<? extends IRepositoryNode> nodes) {
+        List<ProcessItem> value = new ArrayList<ProcessItem>();
+        for (IRepositoryNode node : nodes) {
+            if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
+                value.addAll(getProcesses(node.getChildren()));
+            }
+            if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                IRepositoryViewObject repositoryObject = node.getObject();
+                if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
+                    ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+                    value.add(processItem);
+                }
+            }
+        }
+        return value;
+    }
+
+    public boolean buildJobs(String destinationPath, List<? extends IRepositoryNode> nodes, String version, String context,
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
+        IProgressMonitor pMonitor = new NullProgressMonitor();
+        if (monitor != null) {
+            pMonitor = monitor;
+        }
+        final List<ProcessItem> processes = getProcesses(nodes);
+        if (processes.size() == 1) {
+            ProcessItem item = processes.get(0);
+            buildJob(destinationPath, item, version, context, exportChoiceMap, jobExportType, pMonitor);
+            // TODO check error , need to change the way to check error latter
+            if (CorePlugin.getDefault().getRunProcessService().checkExportProcess(new StructuredSelection(nodes.get(0)), true)) {
+                return false;
+            }
+        } else {
+            int scale = 1000;
+            int steps = 3;
+            pMonitor.beginTask(
+                    Messages.getString("JobScriptsExportWizardPage.newExportJobScript", jobExportType), steps * scale * nodes.size()); //$NON-NLS-1$
+            String projectLabel = ProjectManager.getInstance().getCurrentProject().getLabel();
+            File desFile = new File(destinationPath);
+
+            File tempFolder = new File(desFile.getParent() + File.separator + File.createTempFile("building_job", "").getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            File tempProFolder = new File(tempFolder, projectLabel);
+            tempProFolder.mkdirs();
+            for (int i = 0; i < processes.size(); i++) {
+                ProcessItem processItem = processes.get(i);
+                pMonitor.setTaskName(Messages.getString("BuildJobManager.building", processItem.getProperty().getLabel()));//$NON-NLS-1$
+
+                IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(processItem, context, processItem
+                        .getProperty().getVersion(), exportChoiceMap, jobExportType);
+                buildJobHandler.generateItemFiles(true, new SubProgressMonitor(pMonitor, scale));
+                buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale));
+                buildJobHandler.build(new SubProgressMonitor(pMonitor, scale));
+                IFile jobTargetFile = buildJobHandler.getJobTargetFile();
+                if (jobTargetFile.exists()) {
+                    // TODO check error , need to change the way to check error latter
+                    if (CorePlugin.getDefault().getRunProcessService()
+                            .checkExportProcess(new StructuredSelection(nodes.get(i)), true)) {
+                        return false;
+                    }
+                    // unzip to temp folder
+                    FilesUtils.unzip(jobTargetFile.getLocation().toPortableString(), tempProFolder.getAbsolutePath());
+                    String zipPath = jobTargetFile.getLocation().toPortableString();
+                    boolean addClasspathJar = false;
+                    IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                    if (designerCoreUIService != null) {
+                        addClasspathJar = designerCoreUIService.getPreferenceStore().getBoolean(
+                                IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
+                    }
+                    JavaJobExportReArchieveCreator creator = null;
+                    if (addClasspathJar) {
+                        creator = new JavaJobExportReArchieveCreator(zipPath, processItem.getProperty().getLabel());
+                        creator.setTempFolder(tempFolder.getAbsolutePath());
+                        creator.buildNewJar();
+                    }
+                }
+                pMonitor.worked(scale);
+            }
+
+            FilesUtils.zip(tempFolder.getAbsolutePath(), destinationPath);
+            FilesUtils.deleteFile(tempFolder, true);
+            pMonitor.done();
+        }
+
+        return true;
+    }
+
     public void buildJob(String destinationPath, ProcessItem processItem, String version, String context,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
         buildJob(destinationPath, processItem, version, context, exportChoiceMap, jobExportType, monitor, false, false);
     }
 
-    public void buildJob(String destinationPath, ProcessItem processItem, String version, String context,
+    public void buildJob(String destinationPath, ProcessItem itemToExport, String version, String context,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor, boolean stats,
             boolean traces) throws Exception {
         IProgressMonitor pMonitor = new NullProgressMonitor();
@@ -56,17 +159,44 @@ public class BuildJobManager {
         int scale = 1000;
         int total = 3;
         pMonitor.beginTask(Messages.getString("JobScriptsExportWizardPage.newExportJobScript", jobExportType), scale * total); //$NON-NLS-1$
-
+        ProcessItem processItem = itemToExport;
+        // get correct version
+        if (!RelationshipItemBuilder.LATEST_VERSION.equals(version) && version != null && !"".equals(version)
+                && !version.equals(processItem.getProperty().getVersion())) {
+            processItem = ItemCacheManager.getProcessItem(processItem.getProperty().getId(), version);
+        }
         IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(processItem, context, version, exportChoiceMap,
                 jobExportType);
-        pMonitor.setTaskName("generating item files......");
         buildJobHandler.generateItemFiles(true, new SubProgressMonitor(pMonitor, scale));
-        pMonitor.worked(scale);
-        pMonitor.setTaskName("generating job files......");
         buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale), stats, traces);
-        pMonitor.worked(scale);
-        pMonitor.setTaskName("building......");
-        buildJobHandler.build(destinationPath, new SubProgressMonitor(pMonitor, scale));
+        String label = processItem.getProperty().getLabel();
+        pMonitor.setTaskName(Messages.getString("BuildJobManager.building", label));//$NON-NLS-1$
+        buildJobHandler.build(new SubProgressMonitor(pMonitor, scale));
+        IFile jobTargetFile = buildJobHandler.getJobTargetFile();
+        if (jobTargetFile.exists()) {
+            String zipPath = jobTargetFile.getLocation().toPortableString();
+            boolean addClasspathJar = false;
+            IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+            if (designerCoreUIService != null) {
+                addClasspathJar = designerCoreUIService.getPreferenceStore().getBoolean(
+                        IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
+            }
+            JavaJobExportReArchieveCreator creator = null;
+            if (addClasspathJar) {
+                creator = new JavaJobExportReArchieveCreator(zipPath, label);
+                FilesUtils.unzip(jobTargetFile.getLocation().toPortableString(), creator.getTmpFolder() + File.separator + label
+                        + "_" + version);
+                creator.buildNewJar();
+                ZipToFile.zipFile(creator.getTmpFolder(), destinationPath);
+            } else {
+                File jobFileSource = new File(jobTargetFile.getLocation().toFile().getAbsolutePath());
+                File jobFileTarget = new File(destinationPath);
+                if (jobFileTarget.isDirectory()) {
+                    jobFileTarget = new File(destinationPath, jobFileSource.getName());
+                }
+                FilesUtils.copyFile(jobFileSource, jobFileTarget);
+            }
+        }
         pMonitor.worked(scale);
         pMonitor.done();
     }

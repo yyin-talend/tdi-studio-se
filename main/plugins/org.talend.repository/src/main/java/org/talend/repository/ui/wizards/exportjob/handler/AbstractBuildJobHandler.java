@@ -153,7 +153,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         commandBuffer.append(arg);
     }
 
-    protected IFile getJobTargetFile() {
+    @Override
+    public IFile getJobTargetFile() {
         Property jobProperty = processItem.getProperty();
         String jobZipName = JavaResourcesHelper.getJobJarName(jobProperty.getLabel(), jobProperty.getVersion()) + JOB_EXTENSION;
         try {
