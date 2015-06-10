@@ -213,8 +213,8 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
     protected void buildJob(String destinationPath, ProcessItem processItem, String version, String ctx,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
-        BuildJobManager.getInstance().buildJob(destinationPath, processItem, processItem.getProperty().getVersion(),
-                processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO, monitor);
+        BuildJobManager.getInstance().buildJob(destinationPath, processItem, version, ctx, exportChoiceMap, jobExportType,
+                monitor);
     }
 
     /**

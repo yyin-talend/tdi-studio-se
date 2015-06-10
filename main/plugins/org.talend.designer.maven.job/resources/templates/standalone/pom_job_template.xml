@@ -182,7 +182,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<items.dir>${basedir}/src/main/items/</items.dir>
+				<items.dir>${basedir}/src/main/items/${project.build.finalName}</items.dir>
 			</properties>
 		</profile>
 		<profile>
@@ -225,7 +225,7 @@
 		<profile>
 			<id>include-test-sources</id>
 			<properties>
-				<test.sourcecodes.dir>${project.build.testDirectory}</test.sourcecodes.dir>
+				<test.sourcecodes.dir>${project.build.testSourceDirectory}</test.sourcecodes.dir>
 				<test.resources.dir>${basedir}/src/test/resources/</test.resources.dir>
 			</properties>
 		</profile>

@@ -32,6 +32,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.designer.maven.launch.MavenPomCommandLauncher;
 import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.maven.model.TalendMavenConstants;
@@ -244,14 +245,12 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     public void buildModules(IProgressMonitor monitor, String[] childrenModules, Map<String, Object> argumentsMap)
             throws Exception {
         String goals = null;
-        String programArgs = null;
         if (argumentsMap != null) {
-            goals = (String) argumentsMap.get(ARG_GOAL);
-            programArgs = (String) argumentsMap.get(ARG_PROGRAM_ARGUMENTS);
+            goals = (String) argumentsMap.get(TalendProcessArgumentConstant.ARG_GOAL);
         }
         if (childrenModules == null) {
             if (goals != null && goals.trim().length() > 0) {
-                mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH, programArgs, monitor);
+                mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH, argumentsMap, monitor);
             } else { // JDT build
                 buildWholeCodeProject();
             }
@@ -266,14 +265,14 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
                 // clean before classes for current job.
                 String newModule = modulePath.toString();
-                mavenBuildCodeProjectPom(goals, newModule, programArgs, monitor);
+                mavenBuildCodeProjectPom(goals, newModule, argumentsMap, monitor);
             }
         } else { // ==0
             // nothing do for empty modules.
         }
     }
 
-    private void mavenBuildCodeProjectPom(String goals, String module, String programArgs, IProgressMonitor monitor)
+    private void mavenBuildCodeProjectPom(String goals, String module, Map<String, Object> argumentsMap, IProgressMonitor monitor)
             throws Exception {
         // cleanBeforeBuilds(module);
 
@@ -294,7 +293,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                 // buildWholeCodeProject();
             } else {
                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, goals);
-                mavenLauncher.setProgramArguments(programArgs);
+                mavenLauncher.setArgumentsMap(argumentsMap);
                 mavenLauncher.execute(monitor);
             }
             buildWholeCodeProject();

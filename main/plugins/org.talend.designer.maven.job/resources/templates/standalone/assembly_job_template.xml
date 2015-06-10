@@ -70,7 +70,7 @@
 			</includes>
 		</fileSet>
 		<fileSet> <!-- add items -->
-			<directory>${items.dir}${project.build.finalName}</directory>
+			<directory>${items.dir}</directory>
 			<outputDirectory>${talend.job.name}</outputDirectory>
 			<includes>
 				<include>**</include>
@@ -92,14 +92,14 @@
 				<include>${talend.job.path}/**</include>
 			</includes>
 		</fileSet>
-		<fileSet> <!-- add test source codes -->
+		<fileSet><!-- add test source codes -->
 			<directory>${test.sourcecodes.dir}</directory>
 			<outputDirectory>${talend.job.name}/src/test/java/</outputDirectory>
 			<includes>
 				<include>${talend.job.path}/**</include>
 			</includes>
 		</fileSet>
-		<fileSet> <!-- add test context resources -->
+		<fileSet><!-- add test context resources -->
 			<directory>${test.resources.dir}</directory>
 			<outputDirectory>${talend.job.name}/src/test/resources/
 			</outputDirectory>

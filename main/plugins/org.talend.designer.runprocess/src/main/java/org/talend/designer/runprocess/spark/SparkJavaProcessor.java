@@ -22,7 +22,6 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.bigdata.BigDataJavaProcessor;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.MapReduceJobJavaScriptsManager;
@@ -64,9 +63,9 @@ public class SparkJavaProcessor extends BigDataJavaProcessor {
     @Override
     protected void buildJob(String destinationPath, ProcessItem processItem, String version, String ctx,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
-        boolean stats = SparkJavaProcessorUtil.isStatistics();
-        BuildJobManager.getInstance().buildJob(destinationPath, processItem, processItem.getProperty().getVersion(),
-                processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO, monitor, stats, false);
+        exportChoiceMap.put(ExportChoice.addStatistics, SparkJavaProcessorUtil.isStatistics());
+
+        super.buildJob(destinationPath, processItem, version, ctx, exportChoiceMap, jobExportType, monitor);
     }
 
     /*
