@@ -29,9 +29,9 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.IBuildJobHandler;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.model.TalendMavenConstants;
-import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 
 /**
@@ -110,9 +110,13 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         addArg(profileBuffer, true, true, TalendMavenConstants.PROFILE_DEFAULT_SETTING);
 
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
-        // the context is only useful, when binaries
+        // the running context is only useful, when binaries
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries) && isOptionChoosed(ExportChoice.needContext),
                 TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
+        // the log4j is only useful, when binaries
+        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries)
+                && Log4jPrefsSettingManager.getInstance().isLog4jEnable(), TalendMavenConstants.PROFILE_INCLUDE_LOG4J);
+
         // if not binaries, need add maven resources
         addArg(profileBuffer, false, !isOptionChoosed(ExportChoice.binaries),
                 TalendMavenConstants.PROFILE_INCLUDE_MAVEN_RESOURCES);
@@ -149,7 +153,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         commandBuffer.append(arg);
     }
 
-    protected IFile getJobTargetFile() {
+    @Override
+    public IFile getJobTargetFile() {
         Property jobProperty = processItem.getProperty();
         String jobZipName = JavaResourcesHelper.getJobJarName(jobProperty.getLabel(), jobProperty.getVersion()) + JOB_EXTENSION;
         try {

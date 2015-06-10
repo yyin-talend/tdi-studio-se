@@ -447,7 +447,7 @@ public class DefaultRunProcessService implements IRunProcessService {
         ITalendProcessJavaProject talendProcessJavaProject = getTalendProcessJavaProject();
         if (talendProcessJavaProject != null) {
             try {
-                talendProcessJavaProject.buildModules(null, null, new NullProgressMonitor());
+                talendProcessJavaProject.buildModules(new NullProgressMonitor(), null, null);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

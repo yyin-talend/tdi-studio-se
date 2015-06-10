@@ -243,6 +243,7 @@ imports="
 						}
 						%>
 					}
+					qMgr.backout();
 				}
 			}
 			BackOutUtil_<%=cid%> backoutUtil_<%=cid%> = new BackOutUtil_<%=cid%>();
@@ -283,7 +284,9 @@ imports="
 					isAutoBackout = !("true").equals(ElementParameterParser.getValue(current_node, "__AUTO_BACKOUT__")) && !isBrowse && !isRollback && !isCommit;
 					if(isAutoBackout){
 					%>
-		    			backoutUtil_<%=cid%>.backoutMsg(qMgr_<%=cid%>,<%=queue%><%if (isLog4jEnabled) {%>,log<%}%>);
+						if(ok_Hash.get("<%=current_node.getUniqueName()%>_Loop")!=null && ok_Hash.get("<%=current_node.getUniqueName()%>_Loop")){
+							backoutUtil_<%=cid%>.backoutMsg(qMgr_<%=cid%>,<%=queue%><%if (isLog4jEnabled) {%>,log<%}%>);
+						}
 				    <%
 				    }
 		        }

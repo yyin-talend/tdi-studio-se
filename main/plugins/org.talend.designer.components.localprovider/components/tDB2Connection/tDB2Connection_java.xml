@@ -126,6 +126,7 @@
 	  FIELD="CHECK"
       NUM_ROW="10"
       REQUIRED="true"
+      SHOW_IF="SPECIFY_DATASOURCE_ALIAS=='false'"
     >
     </PARAMETER>
 
@@ -134,7 +135,7 @@
 	  FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
-	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
+	  SHOW_IF="(USE_SHARED_CONNECTION == 'true' AND SPECIFY_DATASOURCE_ALIAS=='false')"
     >
 	<DEFAULT></DEFAULT>
     </PARAMETER>

@@ -13,9 +13,7 @@
 package org.talend.designer.runprocess.java;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -30,20 +28,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaProject;
-import org.osgi.framework.FrameworkUtil;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
-import org.talend.core.CorePlugin;
-import org.talend.core.ILibraryManagerService;
-import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.maven.launch.MavenPomCommandLauncher;
 import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.MavenPomSynchronizer;
-import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.utils.io.FilesUtils;
 
 /**
@@ -249,13 +241,14 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     @Override
-    public void buildModules(String goals, String[] childrenModules, IProgressMonitor monitor) throws Exception {
-        buildModules(goals, childrenModules, null, monitor);
-    }
-
-    @Override
-    public void buildModules(String goals, String[] childrenModules, String programArgs, IProgressMonitor monitor)
+    public void buildModules(IProgressMonitor monitor, String[] childrenModules, Map<String, Object> argumentsMap)
             throws Exception {
+        String goals = null;
+        String programArgs = null;
+        if (argumentsMap != null) {
+            goals = (String) argumentsMap.get(ARG_GOAL);
+            programArgs = (String) argumentsMap.get(ARG_PROGRAM_ARGUMENTS);
+        }
         if (childrenModules == null) {
             if (goals != null && goals.trim().length() > 0) {
                 mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH, programArgs, monitor);
@@ -372,22 +365,22 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
      */
     @Override
     public void updateRoutinesPom(final boolean withBuild, boolean inBackgroud) {
-            // disable code for now, to review later.
-            return;
-//        // should process the pig udf and bean also.
-//        if (inBackgroud) {
-//            // work in backgroud or not?
-//            Job job = new Job("updating routines pom") { //$NON-NLS-1$
-//
-//                @Override
-//                public IStatus run(IProgressMonitor monitor) {
-//                    return processRoutinesPom(withBuild);
-//                }
-//            };
-//            job.schedule();
-//        } else {
-//            processRoutinesPom(withBuild);
-//        }
+        // disable code for now, to review later.
+        return;
+        // // should process the pig udf and bean also.
+        // if (inBackgroud) {
+        // // work in backgroud or not?
+        //            Job job = new Job("updating routines pom") { //$NON-NLS-1$
+        //
+        // @Override
+        // public IStatus run(IProgressMonitor monitor) {
+        // return processRoutinesPom(withBuild);
+        // }
+        // };
+        // job.schedule();
+        // } else {
+        // processRoutinesPom(withBuild);
+        // }
     }
 
     private IStatus processRoutinesPom(boolean withBuild) {

@@ -1372,9 +1372,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 final String nodeName = node.getComponent().getName();
                 Object slValue = null, samValue = null;
                 if ("tESBConsumer".equals(nodeName) //$NON-NLS-1$
-                    || "tRESTClient".equals(nodeName) //$NON-NLS-1$
-                    || "tRESTRequest".equals(nodeName) //$NON-NLS-1$
-                    || "cCXFRS".equals(nodeName)) { //$NON-NLS-1$
+                        || "tRESTClient".equals(nodeName) //$NON-NLS-1$
+                        || "tRESTRequest".equals(nodeName) //$NON-NLS-1$
+                        || "cCXFRS".equals(nodeName)) { //$NON-NLS-1$
                     if (!slEnabled) {
                         slValue = node.getPropertyValue("SERVICE_LOCATOR"); //$NON-NLS-1$
                     }
@@ -1711,6 +1711,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     @Override
     public void build(IProgressMonitor monitor) throws Exception {
         // build whole project by default.
-        getTalendJavaProject().buildModules(null, null, monitor);
+        getTalendJavaProject().buildModules(monitor, null, null);
     }
 }

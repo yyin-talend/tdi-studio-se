@@ -13,7 +13,9 @@
 package org.talend.designer.runprocess.maven;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -41,7 +43,6 @@ import org.talend.designer.maven.tools.ProjectPomManager;
 import org.talend.designer.maven.tools.creator.CreateMavenBundleTemplatePom;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
 import org.talend.designer.maven.tools.creator.CreateMavenTestPom;
-import org.talend.designer.maven.utils.PomIdsHelper;
 import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -283,7 +284,11 @@ public class MavenJavaProcessor extends JavaProcessor {
     @Override
     public void build(IProgressMonitor monitor) throws Exception {
         final ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
-        talendJavaProject.buildModules(getGoals(), null, monitor);
+
+        final Map<String, Object> argumentsMap = new HashMap<String, Object>();
+        argumentsMap.put(ITalendProcessJavaProject.ARG_GOAL, getGoals());
+
+        talendJavaProject.buildModules(monitor, null, argumentsMap);
         // try {
         //
         // IFolder jobSrcFolder = talendJavaProject.getProject().getFolder(this.getSrcCodePath().removeLastSegments(1));

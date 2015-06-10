@@ -73,7 +73,6 @@ import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExpo
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.PasswordEncryptUtil;
-import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.process.IContext;
@@ -1442,14 +1441,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
                 destination = userDir + File.separator + destination;
             }
-            BuildJobManager.getInstance().buildJob(destination, processItem, getSelectedJobVersion(), context,
-                    getExportChoiceMap(), jobExportType, monitor);
-            CorePlugin.getDefault().getRunProcessService().checkExportProcess(selection, true);
+            return BuildJobManager.getInstance().buildJobs(destination, Arrays.asList(getCheckNodes()), getSelectedJobVersion(),
+                    context, getExportChoiceMap(), jobExportType, monitor);
+
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e, getShell());
             return false;
         }
-        return true;
     }
 
     /**

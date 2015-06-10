@@ -12,14 +12,20 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.EList;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.ui.utils.ZipToFile;
 
 /**
  * created by ycbai on 2015年5月20日 Detailled comment
@@ -80,6 +86,37 @@ public class ExportJobUtil {
             }
         }
         return null;
+    }
+
+    public static String getTmpFolder() {
+        String tmp = getTmpFolderPath() + "/newjarFolder"; //$NON-NLS-1$ 
+        tmp = tmp.replace('\\', '/');
+        File f = new File(tmp);
+        if (!f.exists()) {
+            f.mkdir();
+        }
+        return tmp;
+    }
+
+    public static String getTmpFolderPath() {
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        String tmpFolder;
+        try {
+            IProject physProject = ResourceModelUtils.getProject(project);
+            tmpFolder = physProject.getFolder("temp").getLocation().toPortableString(); //$NON-NLS-1$
+        } catch (Exception e) {
+            tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+        }
+        return tmpFolder;
+    }
+
+    public static void deleteTempFiles() {
+        String tmpFold = getTmpFolder();
+        File file = new File(tmpFold);
+        if (!file.exists() && !file.isDirectory()) {
+            return;
+        }
+        ZipToFile.deleteDirectory(file);
     }
 
 }

@@ -25,13 +25,10 @@ import java.util.jar.Attributes;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import org.eclipse.core.resources.IProject;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.core.repository.constants.FileConstants;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.utils.ZipToFile;
+import org.talend.repository.ui.wizards.exportjob.util.ExportJobUtil;
 
 /**
  * This class use to reAchieve the export job script file after the jobscript zip file generated, put all the jar files
@@ -52,6 +49,8 @@ public class JavaJobExportReArchieveCreator {
     private File batFile;
 
     private File shFile;
+
+    private String tempFolder;
 
     private static final String CLASSPATH_JAR = "classpath.jar"; // the output new jar filename //$NON-NLS-1$
 
@@ -357,32 +356,25 @@ public class JavaJobExportReArchieveCreator {
         return sb.toString();
     }
 
-    public static String getTmpFolder() {
-        String tmp = getTmpFolderPath() + "/newjarFolder"; //$NON-NLS-1$ 
-        tmp = tmp.replace('\\', '/');
-        File f = new File(tmp);
-        if (!f.exists()) {
-            f.mkdir();
-        }
-        return tmp;
+    public void setTempFolder(String tempFolder) {
+        this.tempFolder = tempFolder;
     }
 
-    private static String getTmpFolderPath() {
-        Project project = ProjectManager.getInstance().getCurrentProject();
-        String tmpFolder;
-        try {
-            IProject physProject = ResourceModelUtils.getProject(project);
-            tmpFolder = physProject.getFolder("temp").getLocation().toPortableString(); //$NON-NLS-1$
-        } catch (Exception e) {
-            tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+    public String getTmpFolder() {
+        if (tempFolder != null) {
+            File temp = new File(tempFolder);
+            temp.mkdirs();
+            return tempFolder;
+        } else {
+            return ExportJobUtil.getTmpFolder();
         }
-        return tmpFolder;
+
     }
 
     /**
      * Deletes the temporary files.
      */
-    public static void deleteTempFiles() {
+    public void deleteTempFiles() {
         String tmpFold = getTmpFolder();
         File file = new File(tmpFold);
         if (!file.exists() && !file.isDirectory()) {
@@ -397,7 +389,7 @@ public class JavaJobExportReArchieveCreator {
      * @return
      */
     public static String getTmpDestinationFolder() {
-        String tmp = getTmpFolderPath() + "/newExportFolder";//$NON-NLS-1$ 
+        String tmp = ExportJobUtil.getTmpFolderPath() + "/newExportFolder";//$NON-NLS-1$ 
         tmp = tmp.replace('\\', '/');
         File f = new File(tmp);
         if (!f.exists()) {
