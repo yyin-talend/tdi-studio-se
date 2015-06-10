@@ -55,6 +55,10 @@ public abstract class SforceConnection {
     protected SforceServiceStub stub;
 
     protected SessionHeader sh;
+    
+    public SessionHeader getSessionHeader(){
+    	return sh;
+    }
 
     protected CallOptions co;
 

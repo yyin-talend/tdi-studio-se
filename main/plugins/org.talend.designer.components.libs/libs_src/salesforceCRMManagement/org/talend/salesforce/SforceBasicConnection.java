@@ -33,6 +33,12 @@ public class SforceBasicConnection extends SforceConnection {
     private int timeout;
 
     private String clientID;
+    
+    private String serviceEndPoint;
+    
+    public String getServiceEndPoint(){
+    	return this.serviceEndPoint;
+    }
 
     private SforceBasicConnection() throws Exception {
         throw new Exception("should use builder to init"); //$NON-NLS-1$
@@ -68,13 +74,15 @@ public class SforceBasicConnection extends SforceConnection {
         sh = new SessionHeader();
         renewSession();
     }
-
+    
     @Override
     protected void renewSession() throws Exception {
         SforceManagementUtil.setEndpoint(stub, login_endpoint);// login_endpoint for login operation
         LoginResult loginResult = stub.login(userInfo, null, co).getResult();
         sh.setSessionId(loginResult.getSessionId());
-        SforceManagementUtil.setEndpoint(stub, loginResult.getServerUrl());// server url for CRUD operation
+        String serviceEndPoint = loginResult.getServerUrl();
+        this.serviceEndPoint = serviceEndPoint;
+        SforceManagementUtil.setEndpoint(stub, serviceEndPoint);// server url for CRUD operation
     }
 
     public static class Builder {

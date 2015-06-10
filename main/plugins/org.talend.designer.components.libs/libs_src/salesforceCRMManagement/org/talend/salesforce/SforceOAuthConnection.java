@@ -50,6 +50,12 @@ public class SforceOAuthConnection extends SforceConnection {
     private int timeout;
 
     private String clientID;
+    
+    private String serviceEndPoint;
+    
+    public String getServiceEndPoint(){
+    	return this.serviceEndPoint;
+    }
 
     private SforceOAuthConnection() throws Exception {
         throw new Exception("should use builder to init"); //$NON-NLS-1$
@@ -129,6 +135,7 @@ public class SforceOAuthConnection extends SforceConnection {
         Token token = loginWithOAuth();
         String session_id = token.getAccess_token();
         String endpoint = OAuthClient.getSOAPEndpoint(token, apiVersion);
+        this.serviceEndPoint = endpoint;
         SforceManagementUtil.setEndpoint(stub, endpoint);
         sh.setSessionId(session_id);
     }
