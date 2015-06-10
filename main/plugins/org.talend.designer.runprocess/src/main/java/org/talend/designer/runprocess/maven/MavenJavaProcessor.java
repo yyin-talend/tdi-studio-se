@@ -37,6 +37,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.utils.ItemResourceUtil;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.ProjectPomManager;
@@ -225,10 +226,6 @@ public class MavenJavaProcessor extends JavaProcessor {
         if (!isTestContainer) {
             CreateMavenJobPom createTemplatePom = new CreateMavenJobPom(this, getPomFile());
 
-            // TODO when export, need same as JobJavaScriptsManager.getJobInfoFile
-            createTemplatePom.setAddStat(false);
-            createTemplatePom.setApplyContextToChild(false);
-
             createTemplatePom.setUnixClasspath(this.unixClasspath);
             createTemplatePom.setWindowsClasspath(this.windowsClasspath);
 
@@ -246,6 +243,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         } else {
             createMavenPom = new CreateMavenTestPom(this, getPomFile());
         }
+        createMavenPom.setArgumentsMap(getArguments());
         return createMavenPom;
     }
 
@@ -286,7 +284,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         final ITalendProcessJavaProject talendJavaProject = getTalendJavaProject();
 
         final Map<String, Object> argumentsMap = new HashMap<String, Object>();
-        argumentsMap.put(ITalendProcessJavaProject.ARG_GOAL, getGoals());
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, getGoals());
 
         talendJavaProject.buildModules(monitor, null, argumentsMap);
         // try {

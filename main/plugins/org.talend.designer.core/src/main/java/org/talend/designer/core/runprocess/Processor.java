@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
@@ -100,6 +101,8 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * the project. If use Maven way to unify ,can be removed this flag totally. false, by default.
      */
     private boolean oldBuildJob = false;
+
+    private Map<String, Object> argumentsMap;
 
     // least once
 
@@ -754,6 +757,16 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
             this.proxyParameters = proxyParameters;
         }
 
+    }
+
+    @Override
+    public Map<String, Object> getArguments() {
+        return this.argumentsMap;
+    }
+
+    @Override
+    public void setArguments(Map<String, Object> argumentsMap) {
+        this.argumentsMap = argumentsMap;
     }
 
 }

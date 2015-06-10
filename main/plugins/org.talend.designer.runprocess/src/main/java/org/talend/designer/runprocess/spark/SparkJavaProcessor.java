@@ -64,9 +64,10 @@ public class SparkJavaProcessor extends BigDataJavaProcessor {
     @Override
     protected void buildJob(String destinationPath, ProcessItem processItem, String version, String ctx,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
-        boolean stats = SparkJavaProcessorUtil.isStatistics();
+        exportChoiceMap.put(ExportChoice.addStatistics, SparkJavaProcessorUtil.isStatistics());
+
         BuildJobManager.getInstance().buildJob(destinationPath, processItem, processItem.getProperty().getVersion(),
-                processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO, monitor, stats, false);
+                processItem.getProcess().getDefaultContext(), exportChoiceMap, JobExportType.POJO, monitor);
     }
 
     /*

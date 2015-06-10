@@ -46,7 +46,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
-import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
 import org.talend.core.ui.ITestContainerProviderService;
@@ -71,17 +71,12 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     @Override
     public void generateJobFiles(IProgressMonitor monitor) throws Exception {
-        generateJobFiles(monitor, false, false);
-    }
-
-    @Override
-    public void generateJobFiles(IProgressMonitor monitor, boolean stats, boolean trace) throws Exception {
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
         int generationOption = (isOptionChoosed(ExportChoice.includeTestSource) || isOptionChoosed(ExportChoice.executeTests)) ? ProcessorUtilities.GENERATE_ALL_CHILDS
                 | ProcessorUtilities.GENERATE_TESTS
                 : ProcessorUtilities.GENERATE_ALL_CHILDS;
 
-        ProcessorUtilities.generateCode(processItem, contextName, version, stats, false,
+        ProcessorUtilities.generateCode(processItem, contextName, version, isOptionChoosed(ExportChoice.addStatistics), false,
                 isOptionChoosed(ExportChoice.applyToChildren), isOptionChoosed(ExportChoice.needContext), generationOption,
                 monitor);
     }
@@ -290,9 +285,11 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     protected void buildDelegate(IProgressMonitor monitor) throws Exception {
         final Map<String, Object> argumentsMap = new HashMap<String, Object>();
-        argumentsMap.put(ITalendProcessJavaProject.ARG_GOAL, TalendMavenConstants.GOAL_CLEAN + ' '
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, TalendMavenConstants.GOAL_CLEAN + ' '
                 + TalendMavenConstants.GOAL_PACKAGE);
-        argumentsMap.put(ITalendProcessJavaProject.ARG_PROGRAM_ARGUMENTS, getProgramArgs());
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_PROGRAM_ARGUMENTS, getProgramArgs());
+        // argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_STATISTICS,
+        // isOptionChoosed(ExportChoice.addStatistics));
 
         talendProcessJavaProject.buildModules(monitor, null, argumentsMap);
     }

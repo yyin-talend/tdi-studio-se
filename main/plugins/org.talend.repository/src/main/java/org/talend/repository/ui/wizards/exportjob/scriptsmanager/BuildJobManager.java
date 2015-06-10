@@ -144,14 +144,8 @@ public class BuildJobManager {
         return true;
     }
 
-    public void buildJob(String destinationPath, ProcessItem processItem, String version, String context,
-            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
-        buildJob(destinationPath, processItem, version, context, exportChoiceMap, jobExportType, monitor, false, false);
-    }
-
     public void buildJob(String destinationPath, ProcessItem itemToExport, String version, String context,
-            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor, boolean stats,
-            boolean traces) throws Exception {
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
         IProgressMonitor pMonitor = new NullProgressMonitor();
         if (monitor != null) {
             pMonitor = monitor;
@@ -168,7 +162,7 @@ public class BuildJobManager {
         IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(processItem, context, version, exportChoiceMap,
                 jobExportType);
         buildJobHandler.generateItemFiles(true, new SubProgressMonitor(pMonitor, scale));
-        buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale), stats, traces);
+        buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale));
         String label = processItem.getProperty().getLabel();
         pMonitor.setTaskName(Messages.getString("BuildJobManager.building", label));//$NON-NLS-1$
         buildJobHandler.build(new SubProgressMonitor(pMonitor, scale));
