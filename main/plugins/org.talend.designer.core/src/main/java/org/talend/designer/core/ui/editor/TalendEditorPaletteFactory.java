@@ -380,12 +380,13 @@ public final class TalendEditorPaletteFactory {
                 if (map != null) {
                     Collection<Set<IComponent>> componentSets = map.values();
                     Iterator<Set<IComponent>> componentSetIter = componentSets.iterator();
+                    componentSet = new HashSet<IComponent>();
                     while (componentSetIter.hasNext()) {
-                        componentSet = new HashSet<IComponent>(componentSetIter.next());
+                        componentSet.addAll(componentSetIter.next());
                     }
                 }
             }
-            if (componentSet == null && componentNameMap != null) {
+            if ((componentSet == null || componentSet.isEmpty()) && componentNameMap != null) {
                 componentSet = new HashSet<IComponent>();
                 addComponentsByNameFilter(compFac, componentSet);
                 boolean shouldSearchFromHelpAPI = PaletteSettingsPreferencePage.isPaletteSearchFromHelp();
@@ -407,16 +408,13 @@ public final class TalendEditorPaletteFactory {
                         }
                     }
                 }
-                if (componentSet.isEmpty()) {
-                    componentSet = null;
-                }
             }
         } else {
             componentSet = compFac.getComponents();
         }
 
         List<IComponent> relatedComponents = null;
-        if (componentSet == null) {
+        if (componentSet == null || componentSet.isEmpty()) {
             relatedComponents = new LinkedList<IComponent>();
         } else {
             relatedComponents = new LinkedList<IComponent>(componentSet);
