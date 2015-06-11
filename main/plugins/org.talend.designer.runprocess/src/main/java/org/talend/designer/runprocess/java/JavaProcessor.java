@@ -303,7 +303,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
 
         /*
-         * assum the job is "TestJob 0.1", project is "Test" .
+         * assume the job is "TestJob 0.1", project is "Test" .
          */
         String jobClassPackageFolder = null;
         String jobClassFilePath = null;

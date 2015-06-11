@@ -148,6 +148,21 @@ public class MavenJavaProcessor extends JavaProcessor {
         }
     }
 
+    protected String getBasePathClasspath() throws ProcessorException {
+        final boolean exportingJob = ProcessorUtilities.isExportConfig();
+        String basePathClasspath = super.getBasePathClasspath();
+
+        if (!exportingJob && isTestJob) { // for test job, need add the test-classes in classpath.
+            final String classPathSeparator = extractClassPathSeparator();
+
+            ITalendProcessJavaProject tProcessJvaProject = this.getTalendJavaProject();
+            IFolder testClassesFolder = tProcessJvaProject.getTestOutputFolder();
+            String testOutputPath = testClassesFolder.getLocation().toPortableString();
+            basePathClasspath = testOutputPath + classPathSeparator + basePathClasspath;
+        }
+        return basePathClasspath;
+    }
+
     @Override
     protected String getExportJarsStr() {
         if (isOldBuildJob()) {

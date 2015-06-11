@@ -175,4 +175,14 @@
           class="org.talend.designer.runprocess.maven.RunProcessMavenTemplateManager">
     </TemplateManager>
  </extension>
+ <extension
+       point="org.talend.core.migrationTask">
+    <workspacetask
+          breaks="6.0.0"
+          class="org.talend.designer.runprocess.maven.ChangeCodeProjectClasspathMigrationTask"
+          id="org.talend.designer.runprocess.migrationtask.changeClasspath"
+          name="Change Code project classpath"
+          version="6.0.0">
+    </workspacetask>
+ </extension>
 </plugin>
