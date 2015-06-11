@@ -37,13 +37,12 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.emf.EmfHelper;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesPackage;
@@ -86,7 +85,7 @@ public class ExportItemUtil {
         this.project = project;
         workspacePath = new Path(Platform.getInstanceLocation().getURL().getPath());
     }
-       
+
     public void setProjectNameAsLowerCase(boolean projectNameLowerCase) {
         this.projectNameLowerCase = projectNameLowerCase;
     }
@@ -262,11 +261,7 @@ public class ExportItemUtil {
 
             // ycbai added for TDI-21387
             if (allItems.isEmpty()) {
-                IPath proRelativePath = getProjectPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
-                IPath proSourcePath = workspacePath.append(proRelativePath);
-                IPath proTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(proRelativePath);
-                FilesUtils.copyFile(new File(proSourcePath.toPortableString()), new File(proTargetPath.toPortableString()));
-                toExport.put(proTargetPath.toFile(), proRelativePath);
+                addTalendProjectFile(toExport, destinationDirectory);
                 return toExport;
             }
 
@@ -287,23 +282,18 @@ public class ExportItemUtil {
 
                 String label = item.getProperty().getLabel();
                 // project
-                IPath proRelativePath = getProjectPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
-                IPath proSourcePath = workspacePath.append(proRelativePath);
-                IPath proTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(proRelativePath);
-                FilesUtils.copyFile(new File(proSourcePath.toPortableString()), new File(proTargetPath.toPortableString()));
-                toExport.put(proTargetPath.toFile(), proRelativePath);
+                addTalendProjectFile(toExport, destinationDirectory);
 
                 // tdm .settings/com.oaklandsw.base.projectProps
                 String technicalLabel = project.getTechnicalLabel();
                 if (tdmService != null && !projectHasTdm.contains(technicalLabel) && tdmService.isTransformItem(item)) {
                     projectHasTdm.add(technicalLabel);
-                    IPath tdmPropsPath = getProjectPath().append(FileConstants.TDM_PROPS_PATH);
-                    IPath propsSourcePath = workspacePath.append(tdmPropsPath);
+                    IPath propsSourcePath = getProjectLocationPath().append(FileConstants.TDM_PROPS_PATH);
+                    IPath tdmPropsPath = getProjectOutputPath().append(FileConstants.TDM_PROPS_PATH);
                     IPath propsTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(tdmPropsPath);
                     File source = new File(propsSourcePath.toPortableString());
                     if (source.exists()) {
-                        FilesUtils.copyFile(source, new File(propsTargetPath.toPortableString()));
-                        toExport.put(propsTargetPath.toFile(), tdmPropsPath);
+                        copyAndAddResource(toExport, propsSourcePath, propsTargetPath, tdmPropsPath);
                     }
 
                 }
@@ -312,9 +302,10 @@ public class ExportItemUtil {
                     FakePropertyImpl fakeProperty = (FakePropertyImpl) item.getProperty();
                     IPath itemResPath = fakeProperty.getItemPath().makeRelative();
                     IPath itemSourcePath = workspacePath.append(itemResPath);
-                    IPath itemTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(itemResPath);
-                    FilesUtils.copyFile(new File(itemSourcePath.toPortableString()), new File(itemTargetPath.toPortableString()));
-                    toExport.put(itemTargetPath.toFile(), itemResPath);
+                    // replace the project segment
+                    IPath outputRelativeItemPath = getProjectOutputPath().append(itemResPath.removeFirstSegments(1));
+                    IPath itemTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(outputRelativeItemPath);
+                    copyAndAddResource(toExport, itemSourcePath, itemTargetPath, outputRelativeItemPath);
                     continue;
                 }
 
@@ -326,9 +317,10 @@ public class ExportItemUtil {
                     URI uri = curResource.getURI();
                     IPath relativeItemPath = URIHelper.convert(uri).makeRelative();
                     IPath sourcePath = workspacePath.append(relativeItemPath);
-                    IPath targetPath = new Path(destinationDirectory.getAbsolutePath()).append(relativeItemPath);
-                    FilesUtils.copyFile(new File(sourcePath.toPortableString()), new File(targetPath.toPortableString()));
-                    toExport.put(targetPath.toFile(), relativeItemPath);
+                    // replace the project segment
+                    IPath outputRelativeItemPath = getProjectOutputPath().append(relativeItemPath.removeFirstSegments(1));
+                    IPath targetPath = new Path(destinationDirectory.getAbsolutePath()).append(outputRelativeItemPath);
+                    copyAndAddResource(toExport, sourcePath, targetPath, outputRelativeItemPath);
                     if (uri.lastSegment() != null && uri.lastSegment().endsWith(FileConstants.PROPERTIES_FILE_SUFFIX)) {
                         propertyPath = targetPath;
                     }
@@ -338,15 +330,13 @@ public class ExportItemUtil {
                     return toExport;
                 }
 
-                if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-                    if (item instanceof RoutineItem) {
-                        List list = ((RoutineItem) item).getImports();
-                        for (int i = 0; i < list.size(); i++) {
-                            String jarName = ((IMPORTTypeImpl) list.get(i)).getMODULE();
-                            jarNameList.add(jarName.toString());
-                        }
-
+                if (item instanceof RoutineItem) {
+                    List list = ((RoutineItem) item).getImports();
+                    for (int i = 0; i < list.size(); i++) {
+                        String jarName = ((IMPORTTypeImpl) list.get(i)).getMODULE();
+                        jarNameList.add(jarName.toString());
                     }
+
                 }
 
                 boolean needChangeItem = false;
@@ -359,6 +349,8 @@ public class ExportItemUtil {
                     XmiResourceManager xmiMamanger = new XmiResourceManager();
 
                     // loadProject
+                    IPath proRelativePath = getProjectOutputPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
+                    IPath proTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(proRelativePath);
                     Resource loadProject = projectResourcMap.get(proTargetPath);
                     if (loadProject == null) {
                         URI projectUri = URI.createFileURI(proTargetPath.toPortableString());
@@ -383,12 +375,12 @@ public class ExportItemUtil {
             ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
 
             // add the routines of the jars at the end, to add them only once in the export.
+            IPath libPath = getProjectOutputPath().append(JavaUtils.JAVA_LIB_DIRECTORY);
+            String libAbsPath = new Path(destinationDirectory.toString()).append(libPath.toString()).toPortableString();
             for (String jarName : jarNameList) {
-                IPath jarPath = new Path(getNeedProjectPath()).append("lib");//$NON-NLS-1$ 
-                String filePath = new Path(destinationDirectory.toString()).append(jarPath.toString()).toPortableString();
                 if (repositoryBundleService.contains(jarName)) {
-                    repositoryBundleService.retrieve(jarName, filePath, new NullProgressMonitor());
-                    toExport.put(new File(filePath, jarName), jarPath.append(jarName));
+                    repositoryBundleService.retrieve(jarName, libAbsPath, new NullProgressMonitor());
+                    toExport.put(new File(libAbsPath, jarName), libPath.append(jarName));
                 }
             }
 
@@ -404,6 +396,20 @@ public class ExportItemUtil {
         }
 
         return toExport;
+    }
+
+    private void addTalendProjectFile(Map<File, IPath> toExport, File destinationDirectory) throws IOException {
+        IPath proSourcePath = getProjectLocationPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
+        IPath proRelativePath = getProjectOutputPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
+        IPath proTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(proRelativePath);
+
+        copyAndAddResource(toExport, proSourcePath, proTargetPath, proRelativePath);
+    }
+
+    private void copyAndAddResource(Map<File, IPath> toExport, IPath sourcePath, IPath targetPath, IPath relativeItemPath)
+            throws IOException {
+        FilesUtils.copyFile(new File(sourcePath.toPortableString()), new File(targetPath.toPortableString()));
+        toExport.put(targetPath.toFile(), relativeItemPath);
     }
 
     private File createTmpDirectory() throws IOException {
@@ -441,12 +447,16 @@ public class ExportItemUtil {
         }
     }
 
-
-    private IPath getProjectPath() {
+    private IPath getProjectOutputPath() {
         if (projectNameLowerCase) {
             return new Path(project.getTechnicalLabel().toLowerCase());
         }
         return new Path(project.getTechnicalLabel());
+    }
+
+    private IPath getProjectLocationPath() {
+        // it's workspace project, the project name should be technical name always.
+        return workspacePath.append(project.getTechnicalLabel());
     }
 
     private void fixItem(Item item) {
@@ -485,11 +495,6 @@ public class ExportItemUtil {
             return new File(defaultDesPath.toPortableString()).getParentFile();
         }
         return destinationFile.getParentFile();
-    }
-
-    public String getNeedProjectPath() {
-        IPath needPath = getProjectPath();
-        return needPath.toString();
     }
 
     public IFileExporterFullPath getExporter() {
