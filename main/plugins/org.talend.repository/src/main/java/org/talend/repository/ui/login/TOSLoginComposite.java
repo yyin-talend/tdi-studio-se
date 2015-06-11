@@ -696,7 +696,11 @@ public class TOSLoginComposite extends Composite {
                 perReader.saveLastConnectionBean(connection);
                 // update the restart command line to specify the workspace to launch
                 // if relaunch, should delete the "disableLoginDialog" argument in eclipse data for bug TDI-19214
-                EclipseCommandLine.updateOrCreateExitDataPropertyWithCommand("-data", connection.getWorkSpace(), false); //$NON-NLS-1$
+                String workspace = connection.getWorkSpace();
+                if (workspace != null) {
+                    workspace = workspace.replaceAll("\\\\", "\\\\\\\\"); //$NON-NLS-1$//$NON-NLS-2$
+                }
+                EclipseCommandLine.updateOrCreateExitDataPropertyWithCommand("-data", workspace, false); //$NON-NLS-1$
                 // store the workspace in the eclipse history so that it is rememebered on next studio launch
                 ChooseWorkspaceData workspaceData = new ChooseWorkspaceData(""); //$NON-NLS-1$
                 workspaceData.workspaceSelected(connection.getWorkSpace());
