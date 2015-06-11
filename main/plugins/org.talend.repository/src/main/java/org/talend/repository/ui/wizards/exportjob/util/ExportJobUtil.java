@@ -111,7 +111,7 @@ public class ExportJobUtil {
     }
 
     public static void deleteTempFiles() {
-        String tmpFold = getTmpFolder();
+        String tmpFold = getTmpFolderPath() + "/newjarFolder"; //$NON-NLS-1$ 
         File file = new File(tmpFold);
         if (!file.exists() && !file.isDirectory()) {
             return;
