@@ -183,13 +183,59 @@ public class JavaProcessUtil {
             addJunitNeededModules(modulesNeeded);
         }
 
+        String hadoopItemId = null;
         List<? extends INode> nodeList = process.getGeneratingNodes();
         for (INode node : nodeList) {
+            if (hadoopItemId == null) {
+                String propertyId = getPropertyId(node);
+                Item hadoopClusterItem = getHadoopClusterItem(propertyId);
+                if (hadoopClusterItem != null) {
+                    hadoopItemId = propertyId;
+                }
+            }
             Set<ModuleNeeded> nodeNeededModules = getNeededModules(node, searchItems, withChildrens, forMR);
             if (nodeNeededModules != null) {
                 modulesNeeded.addAll(nodeNeededModules);
             }
         }
+
+        if (hadoopItemId == null) { // Incase it is a bigdata process.
+            IElementParameter propertyParam = process.getElementParameter("MR_PROPERTY"); //$NON-NLS-1$
+            if (propertyParam != null) {
+                IElementParameter repositoryParam = propertyParam.getChildParameters().get(
+                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                if (repositoryParam != null) {
+                    hadoopItemId = String.valueOf(repositoryParam.getValue());
+                }
+            }
+        }
+
+        if (hadoopItemId != null) {
+            useCustomConfsJarIfNeeded(modulesNeeded, hadoopItemId);
+        }
+    }
+
+    private static Item getHadoopClusterItem(String id) {
+        IHadoopClusterService hadoopClusterService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
+            hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
+                    IHadoopClusterService.class);
+        }
+        if (hadoopClusterService != null) {
+            return hadoopClusterService.getHadoopClusterItemById(id);
+        }
+        return null;
+    }
+
+    private static String getPropertyId(INode node) {
+        IElementParameter propertyParam = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        if (propertyParam != null) {
+            Object propertyValue = propertyParam.getValue();
+            if (propertyValue != null) {
+                return String.valueOf(propertyValue);
+            }
+        }
+        return null;
     }
 
     public static Set<ModuleNeeded> getNeededModules(final INode node, boolean withChildrens, boolean forMR) {
@@ -285,14 +331,6 @@ public class JavaProcessUtil {
                 getModulesInTable(process, curParam, modulesNeeded);
             }
             findMoreLibraries(process, modulesNeeded, curParam);
-        }
-
-        IElementParameter propertyParam = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-        if (propertyParam != null) {
-            Object propertyValue = propertyParam.getValue();
-            if (propertyValue != null) {
-                useCustomConfsJarIfNeeded(modulesNeeded, String.valueOf(propertyValue));
-            }
         }
     }
 
