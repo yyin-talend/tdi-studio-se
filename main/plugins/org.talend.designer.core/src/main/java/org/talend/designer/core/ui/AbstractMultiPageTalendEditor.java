@@ -143,6 +143,7 @@ import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.core.ui.process.UpdateRunJobComponentContextHelper;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.core.ui.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.core.views.IComponentSettingsView;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
@@ -727,6 +728,19 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     } else if (ep != null && ep.getValue().equals(Boolean.TRUE)) {
                         node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
                         node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+                    }
+                    for (IElementParameter param : node.getElementParameters()) {
+                        if (!param.getChildParameters().isEmpty()) {
+                            if (param.getValue() != null && param.getValue() instanceof String
+                                    && ((String) param.getValue()).contains(":")) {
+                                String splited[] = ((String) param.getValue()).split(":");
+                                String childNameNeeded = splited[0].trim();
+                                String valueChild = TalendQuoteUtils.removeQuotes(splited[1].trim());
+                                if (param.getChildParameters().containsKey(childNameNeeded)) {
+                                    param.getChildParameters().get(childNameNeeded).setValue(valueChild);
+                                }
+                            }
+                        }
                     }
                 }
             } catch (PersistenceException e) {
