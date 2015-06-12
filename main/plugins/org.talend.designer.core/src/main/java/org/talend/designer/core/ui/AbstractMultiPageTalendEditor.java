@@ -139,6 +139,7 @@ import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.utils.AccessingEmfJob;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
