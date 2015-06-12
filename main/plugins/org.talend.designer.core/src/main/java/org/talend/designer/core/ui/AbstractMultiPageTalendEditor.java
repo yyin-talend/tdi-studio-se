@@ -729,6 +729,19 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                         node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
                         node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
                     }
+                    for (IElementParameter param : node.getElementParameters()) {
+                        if (!param.getChildParameters().isEmpty()) {
+                            if (param.getValue() != null && param.getValue() instanceof String
+                                    && ((String) param.getValue()).contains(":")) {
+                                String splited[] = ((String) param.getValue()).split(":");
+                                String childNameNeeded = splited[0].trim();
+                                String valueChild = TalendQuoteUtils.removeQuotes(splited[1].trim());
+                                if (param.getChildParameters().containsKey(childNameNeeded)) {
+                                    param.getChildParameters().get(childNameNeeded).setValue(valueChild);
+                                }
+                            }
+                        }
+                    }
                 }
             } catch (PersistenceException e) {
             }
