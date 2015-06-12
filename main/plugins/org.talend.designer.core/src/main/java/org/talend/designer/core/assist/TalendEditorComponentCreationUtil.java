@@ -185,7 +185,7 @@ public class TalendEditorComponentCreationUtil {
         lineTypeMap = new HashMap<String, IComponent>();
         for (String key : map.keySet()) {
             IComponent component = map.get(key);
-            if (isComponentAllowed(component, type)) {
+            if (isComponentAllowedWithConnectionType(component, type)) {
                 lineTypeMap.put(component.getName(), component);
             }
         }
@@ -193,7 +193,7 @@ public class TalendEditorComponentCreationUtil {
         return lineTypeMap;
     }
 
-    private static boolean isComponentAllowed(IComponent component, EConnectionType lineStyle) {
+    public static boolean isComponentAllowedWithConnectionType(IComponent component, EConnectionType lineStyle) {
         String connectorName = lineStyle.getName();
 
         if (component.getOriginalFamilyName().equals("FileScale")) {

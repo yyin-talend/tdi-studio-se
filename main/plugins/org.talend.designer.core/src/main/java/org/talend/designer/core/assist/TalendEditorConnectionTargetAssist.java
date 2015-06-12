@@ -12,10 +12,16 @@
 // ============================================================================
 package org.talend.designer.core.assist;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Display;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IProcess2;
+import org.talend.designer.core.model.process.ConnectionManager;
 
 /**
  * DOC Talend class global comment. Detailled comment
@@ -24,10 +30,12 @@ public class TalendEditorConnectionTargetAssist extends TalendEditorComponentCre
 
     private String componentName;
 
+    private EConnectionType connectionType;
+
     public TalendEditorConnectionTargetAssist(String categoryName, GraphicalViewer viewer, CommandStack commandStack,
             IProcess2 process) {
         super(categoryName, viewer, commandStack, process);
-        this.components = TalendEditorComponentCreationUtil.getComponentsInType(categoryName, null);
+        connectionType = ConnectionManager.getNewConnectionType();
     }
 
     /**
@@ -88,6 +96,27 @@ public class TalendEditorConnectionTargetAssist extends TalendEditorComponentCre
             overedConnection.setLineWidth(1);
             overedConnection = null;
         }
+    }
+
+    @Override
+    protected List<IComponent> filterComponents(List<IComponent> components) {
+        components = super.filterComponents(components);
+        if (components == null || components.isEmpty()) {
+            return components;
+        }
+
+        Iterator<IComponent> iter = components.iterator();
+        while (iter.hasNext()) {
+            IComponent component = iter.next();
+            if (component == null) {
+                continue;
+            }
+            if (!TalendEditorComponentCreationUtil.isComponentAllowedWithConnectionType(component, connectionType)) {
+                iter.remove();
+            }
+        }
+
+        return components;
     }
 
 }

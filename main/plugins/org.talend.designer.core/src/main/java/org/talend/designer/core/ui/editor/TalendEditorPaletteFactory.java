@@ -61,8 +61,10 @@ import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.component.TalendPaletteGroup;
 import org.talend.core.ui.component.settings.ComponentsSettingsHelper;
@@ -122,12 +124,14 @@ public final class TalendEditorPaletteFactory {
 
     protected static void createComponentsDrawer(final IComponentsFactory compFac, final boolean needHiddenComponent, final int a) {
         List<IComponent> componentList = null;
-        componentList = getRelatedComponents(compFac);
+        // needn't to check visible, since this visble check will be done in method "createComponentsDrawer(...)"
+        componentList = getRelatedComponents(compFac, TalendEditorPaletteFactory.filter, false);
 
         String paletteType = ComponentCategory.CATEGORY_4_DI.getName();
         // Added by Marvin Wang on Jan. 10, 2012
         if (compFac.getComponentsHandler() != null) {
-            componentList = compFac.getComponentsHandler().filterComponents(componentList);
+            // the filter already done in method "getRelatedComponents()"
+            // componentList = compFac.getComponentsHandler().filterComponents(componentList);
             compFac.getComponentsHandler().sortComponents(componentList);
             paletteType = compFac.getComponentsHandler().extractComponentsCategory().getName();
         }
@@ -249,14 +253,13 @@ public final class TalendEditorPaletteFactory {
         componentIter = componentList.iterator();
         while (componentIter.hasNext()) {
             IComponent xmlComponent = componentIter.next();
-
             if (xmlComponent.isTechnical()) {
                 continue;
             }
             family = xmlComponent.getTranslatedFamilyName();
             oraFamily = xmlComponent.getOriginalFamilyName();
             if (filter != null) {
-                String regex = getFilterRegex();
+                String regex = getFilterRegex(filter);
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
             if ((oraFamily.equals("Misc") || oraFamily.equals("Miscellaneous")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
@@ -369,28 +372,51 @@ public final class TalendEditorPaletteFactory {
         }
     }
 
-    protected static List<IComponent> getRelatedComponents(final IComponentsFactory compFac) {
-        Set<IComponent> componentSet = null;
+    public static List<IComponent> getRelatedComponents(final IComponentsFactory compFac, String keyword) {
+        return getRelatedComponents(compFac, keyword, true);
+    }
 
-        if (TalendEditorPaletteFactory.filter != null && 0 < TalendEditorPaletteFactory.filter.trim().length()) {
+    protected static List<IComponent> getRelatedComponents(final IComponentsFactory compFac, String keyword,
+            boolean needCheckVisible) {
+        Set<IComponent> componentSet = null;
+        IComponentsHandler componentsHandler = compFac.getComponentsHandler();
+
+        if (compFac != null && keyword != null && 0 < keyword.trim().length()) {
+            // 1. match the full name component
             Map<String, Map<String, Set<IComponent>>> componentNameMap = compFac.getComponentNameMap();
-            String filterString = TalendEditorPaletteFactory.filter.trim();
+            String filterString = keyword.trim();
             if (componentNameMap != null) {
                 Map<String, Set<IComponent>> map = componentNameMap.get(filterString.toLowerCase());
                 if (map != null) {
                     Collection<Set<IComponent>> componentSets = map.values();
                     Iterator<Set<IComponent>> componentSetIter = componentSets.iterator();
-                    componentSet = new HashSet<IComponent>();
+                    List<IComponent> filteredComponent = new ArrayList<IComponent>();
                     while (componentSetIter.hasNext()) {
-                        componentSet.addAll(componentSetIter.next());
+                        filteredComponent.addAll(componentSetIter.next());
                     }
+
+                    if (componentsHandler != null) {
+                        filteredComponent = componentsHandler.filterComponents(filteredComponent);
+                    }
+
+                    Iterator<IComponent> componentIter = filteredComponent.iterator();
+                    while (componentIter.hasNext()) {
+                        if (!ComponentUtilities.isComponentVisible(componentIter.next())) {
+                            componentIter.remove();
+                        }
+                    }
+                    componentSet = new HashSet<IComponent>(filteredComponent);
                 }
             }
+            // 2. if no matched full name comoponent, then just do usual search
             if ((componentSet == null || componentSet.isEmpty()) && componentNameMap != null) {
                 componentSet = new HashSet<IComponent>();
-                addComponentsByNameFilter(compFac, componentSet);
-                boolean shouldSearchFromHelpAPI = PaletteSettingsPreferencePage.isPaletteSearchFromHelp();
 
+                // 2.1 search from local palette
+                addComponentsByNameFilter(compFac, componentSet, keyword);
+
+                // 2.2 search from help document
+                boolean shouldSearchFromHelpAPI = PaletteSettingsPreferencePage.isPaletteSearchFromHelp();
                 if (shouldSearchFromHelpAPI) {
                     Set<String> componentNames = getRelatedComponentNamesFromHelp(filterString);
                     if (componentNames != null && 0 < componentNames.size()) {
@@ -409,7 +435,7 @@ public final class TalendEditorPaletteFactory {
                     }
                 }
             }
-        } else {
+        } else if (compFac != null) {
             componentSet = compFac.getComponents();
         }
 
@@ -420,18 +446,35 @@ public final class TalendEditorPaletteFactory {
             relatedComponents = new LinkedList<IComponent>(componentSet);
         }
 
+        // filter usefull components
+
+        if (compFac != null && componentsHandler != null && !relatedComponents.isEmpty()) {
+            relatedComponents = componentsHandler.filterComponents(relatedComponents);
+        }
+
+        if (needCheckVisible && relatedComponents != null && !relatedComponents.isEmpty()) {
+            Iterator<IComponent> iter = relatedComponents.iterator();
+            while (iter.hasNext()) {
+                IComponent component = iter.next();
+                if (component == null || !ComponentUtilities.isComponentVisible(component) || component.isTechnical()) {
+                    iter.remove();
+                }
+            }
+        }
+
         return relatedComponents;
     }
 
-    protected static void addComponentsByNameFilter(final IComponentsFactory compFac, Set<IComponent> componentSet) {
+    protected static void addComponentsByNameFilter(final IComponentsFactory compFac, Set<IComponent> componentSet,
+            String nameFilter) {
         if (compFac == null || componentSet == null) {
             return;
         }
 
-        if (filter != null && !filter.trim().isEmpty()) {
+        if (nameFilter != null && !nameFilter.trim().isEmpty()) {
             Set<IComponent> components = compFac.getComponents();
             Iterator<IComponent> iter = components.iterator();
-            String regex = getFilterRegex();
+            String regex = getFilterRegex(nameFilter);
             while (iter.hasNext()) {
                 IComponent xmlComponent = iter.next();
                 if (!xmlComponent.getName().toLowerCase().matches(regex)
@@ -468,6 +511,10 @@ public final class TalendEditorPaletteFactory {
             if (recentlyUsedComponent == null) {
                 continue;
             }
+            if (!ComponentUtilities.isComponentVisible(recentlyUsedComponent)) {
+                continue;
+            }
+
             ++i;
             PaletteDrawer componentsDrawer = ht.get(RECENTLY_USED);
             if (componentsDrawer != null) {
@@ -529,11 +576,13 @@ public final class TalendEditorPaletteFactory {
     protected static void createComponentsDrawer(final IComponentsFactory compFac, final boolean needHiddenComponent,
             final boolean isFavorite, final int a) {
         List<IComponent> componentList = null;
-        componentList = getRelatedComponents(compFac);
+        // needn't to check visible, since this visble check will be done in method "createComponentsDrawer(...)"
+        componentList = getRelatedComponents(compFac, TalendEditorPaletteFactory.filter, false);
 
         // Added by Marvin Wang on Jan. 10, 2012
         if (compFac.getComponentsHandler() != null) {
-            componentList = compFac.getComponentsHandler().filterComponents(componentList);
+            // the filter already done in the method "getRelatedComponents()"
+            // componentList = compFac.getComponentsHandler().filterComponents(componentList);
             componentList = compFac.getComponentsHandler().sortComponents(componentList);
         }
 
@@ -583,7 +632,6 @@ public final class TalendEditorPaletteFactory {
         Iterator<IComponent> componentIter = componentList.iterator();
         while (componentIter.hasNext()) {
             IComponent xmlComponent = componentIter.next();
-
             if (xmlComponent.isTechnical()) {
                 continue;
             }
@@ -690,7 +738,7 @@ public final class TalendEditorPaletteFactory {
                 if (!matcher.matches() && filter.length() != 0) {
                     filter = "None";
                 }
-                String regex = getFilterRegex();
+                String regex = getFilterRegex(filter);
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
 
@@ -939,15 +987,15 @@ public final class TalendEditorPaletteFactory {
      * 
      * @return
      */
-    private static String getFilterRegex() {
-        String regex = "\\b.*" + filter.replaceAll("\\*", ".*") + ".*\\b"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    private static String getFilterRegex(String nameFilter) {
+        String regex = "\\b.*" + nameFilter.replaceAll("\\*", ".*") + ".*\\b"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         regex = regex.replaceAll(" ", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
         regex = regex.replaceAll("\\?", ".?"); //$NON-NLS-1$ //$NON-NLS-2$
 
         try {
             Pattern.compile(regex);
         } catch (Throwable e) {
-            regex = filter;
+            regex = nameFilter;
         }
         return regex;
     }
@@ -1164,7 +1212,7 @@ public final class TalendEditorPaletteFactory {
 
     static Job searchInHelpJob = null;
 
-    protected static Set<String> getRelatedComponentNamesFromHelp(final String filter) {
+    protected static Set<String> getRelatedComponentNamesFromHelp(final String keyword) {
         // This method will cost lots of time to complete when it is called the first time
         final List<SearchHit> querySearchResult = new ArrayList<SearchHit>();
         if (searchInHelpJob != null && searchInHelpJob.getState() != Job.NONE) {
@@ -1181,7 +1229,7 @@ public final class TalendEditorPaletteFactory {
                     // if not work or null, maybe should throw a warn to inform user and help us trace
                     // if (searchIndex != null && localSearchManager != null) {
                     localSearchManager.ensureIndexUpdated(monitor, searchIndex);
-                    ISearchQuery searchQuery = new SearchQuery(filter, false, new ArrayList<String>(), Platform.getNL());
+                    ISearchQuery searchQuery = new SearchQuery(keyword, false, new ArrayList<String>(), Platform.getNL());
                     searchIndex.search(searchQuery, new ISearchHitCollector() {
 
                         @Override

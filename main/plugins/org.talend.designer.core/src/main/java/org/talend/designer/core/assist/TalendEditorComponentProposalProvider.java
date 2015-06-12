@@ -1,23 +1,25 @@
 package org.talend.designer.core.assist;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
+import java.util.Iterator;
+import java.util.List;
 
-import org.eclipse.jface.fieldassist.ContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.designer.core.model.components.DummyComponent;
+import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 
 class TalendEditorComponentProposalProvider implements IContentProposalProvider {
 
-    /*
-     * The proposals provided.
-     */
-    private Set<String> proposals;
+    protected IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
 
-    private Map<String, IComponent> components;
+    protected List<IContentProposal> proposalList;
+
+    protected TalendEditorComponentCreationAssist componentAssistant;
 
     /**
      * Construct a TalendEditorComponentProposalProvider whose content proposals are always the specified set of
@@ -25,10 +27,11 @@ class TalendEditorComponentProposalProvider implements IContentProposalProvider 
      * 
      * @param components the Map of Components to be returned whenever proposals are requested.
      */
-    public TalendEditorComponentProposalProvider(Map<String, IComponent> components) {
+    public TalendEditorComponentProposalProvider(TalendEditorComponentCreationAssist componentAssist,
+            List<IContentProposal> proposalList) {
         super();
-        this.components = components;
-        this.proposals = components.keySet();
+        this.componentAssistant = componentAssist;
+        this.proposalList = proposalList;
     }
 
     /**
@@ -38,29 +41,33 @@ class TalendEditorComponentProposalProvider implements IContentProposalProvider 
      * @param position the current cursor position within the field (ignored)
      * @return the array of Objects that represent valid proposals for the field given its current content.
      */
+    @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        contents = contents.toLowerCase();
-        
-        //judge the regex should be used or not
-        boolean hasStarChar = contents.indexOf('*') == -1 ? false : true;
-        if (hasStarChar) {
-            contents = "(.)*" + contents.replace("*", "(.)*") + "(.)*";
+
+        List<IComponent> relatedComponent = TalendEditorPaletteFactory.getRelatedComponents(componentsFactory, contents);
+        if (componentAssistant != null) {
+            relatedComponent = componentAssistant.filterComponents(relatedComponent);
         }
-        
-        ArrayList<IContentProposal> list = new ArrayList<IContentProposal>();
-        for (String proposal : proposals) {
-            if (proposal == null) {
-                continue;
-            }
-            String tmp = proposal.toLowerCase();
-            if (!hasStarChar) {
-                if (tmp.contains(contents) && components.get(proposal) != null) {
-                    list.add(new ContentProposal(proposal, components.get(proposal).getLongName()));
-                }
-            } else if (Pattern.matches(contents, tmp) && components.get(proposal) != null) {
-                list.add(new ContentProposal(proposal, components.get(proposal).getLongName()));
+        proposalList.clear();
+        if (relatedComponent != null && !relatedComponent.isEmpty()) {
+            Iterator<IComponent> iter = relatedComponent.iterator();
+            while (iter.hasNext()) {
+                IComponent component = iter.next();
+                // proposalList.add(new ComponentContentProposal(component.getName(), component.getLongName(),
+                // component));
+                proposalList.add(new ComponentContentProposal(component));
             }
         }
-        return list.toArray(new IContentProposal[0]);
+
+        /**
+         * Always add Note
+         */
+        DummyComponent noteComponent = new DummyComponent("Note"); //$NON-NLS-1$
+        noteComponent.setIcon16(ImageProvider.getImageDesc(ECoreImage.NOTE_SMALL_ICON));
+        noteComponent.setOriginalFamilyName("Misc"); //$NON-NLS-1$
+        proposalList.add(new ComponentContentProposal(noteComponent));
+
+        return proposalList.toArray(new IContentProposal[0]);
+
     }
 }
