@@ -136,6 +136,7 @@ import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.utils.AccessingEmfJob;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -723,6 +724,19 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     } else if (ep != null && ep.getValue().equals(Boolean.TRUE)) {
                         node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
                         node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+                    }
+                    for (IElementParameter param : node.getElementParameters()) {
+                        if (!param.getChildParameters().isEmpty()) {
+                            if (param.getValue() != null && param.getValue() instanceof String
+                                    && ((String) param.getValue()).contains(":")) {
+                                String splited[] = ((String) param.getValue()).split(":");
+                                String childNameNeeded = splited[0].trim();
+                                String valueChild = TalendQuoteUtils.removeQuotes(splited[1].trim());
+                                if (param.getChildParameters().containsKey(childNameNeeded)) {
+                                    param.getChildParameters().get(childNameNeeded).setValue(valueChild);
+                                }
+                            }
+                        }
                     }
                 }
             } catch (PersistenceException e) {
