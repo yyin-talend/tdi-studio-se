@@ -497,8 +497,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 					tempClob.open(oracle.sql.CLOB.MODE_READWRITE);
 					// Get the output stream to write
 					java.io.Writer tempClobWriter = tempClob.getCharacterOutputStream();
-					if(data instanceof oracle.sql.CLOB) {
-						oracle.sql.CLOB inClob = (oracle.sql.CLOB) data;
+					if(data instanceof java.sql.Clob) {
+						java.sql.Clob inClob = (java.sql.Clob) data;
 				        java.io.Reader inReader = inClob.getCharacterStream();
 				        char[] chs = new char[128];
 				       	int len = 0;
