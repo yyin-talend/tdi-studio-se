@@ -38,6 +38,7 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.utils.ItemResourceUtil;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.TalendProcessArgumentConstant;
+import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.ProjectPomManager;
@@ -85,6 +86,11 @@ public class MavenJavaProcessor extends JavaProcessor {
             if (property != null) {
                 Set<JobInfo> infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
                 for (JobInfo jobInfo : infos) {
+                    if (jobInfo.isTestContainer()
+                            && !ProcessUtils.isOptionChecked(getArguments(), TalendProcessArgumentConstant.ARG_GENERATE_OPTION,
+                                    TalendProcessOptionConstants.GENERATE_TESTS)) {
+                        continue;
+                    }
                     buildChildrenJobs.add(jobInfo);
                 }
             }
