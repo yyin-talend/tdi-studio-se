@@ -65,9 +65,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -95,6 +97,7 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.workspace.ChooseWorkspaceData;
 import org.talend.core.utils.ProjectUtils;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -1535,14 +1538,14 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         if (iBean == null) {
             return false;
         }
+        if (RepositoryPlugin.getDefault().getBundle().getBundleContext().getProperty("osgi.dev") != null) { //$NON-NLS-1$
+            // in development, always tell the workspace is the same as before.
+            return true;
+        }
         String workspace = iBean.getWorkSpace();
-        // if (String.valueOf(workspace.charAt(0)).equals("/")) {
-        // workspace = workspace.substring(1, workspace.length());
-        // }
 
+        
         String defaultPath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath();
-        //        String filePath1 = defaultPath.substring(defaultPath.indexOf("/"), defaultPath.length() - 1); //$NON-NLS-1$
-        //        String filePath2 = defaultPath.substring(defaultPath.indexOf("/") + 1, defaultPath.length() - 1); //$NON-NLS-1$
         if (EnvironmentUtils.isWindowsSystem()) {
             return workspace.equalsIgnoreCase(defaultPath);
         } else {
