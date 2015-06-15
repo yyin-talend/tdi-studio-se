@@ -380,13 +380,16 @@ public final class TalendEditorPaletteFactory {
             boolean needCheckVisible) {
         Set<IComponent> componentSet = null;
         IComponentsHandler componentsHandler = compFac.getComponentsHandler();
+        String lowerCasedKeyword = null;
+        if (keyword != null) {
+            lowerCasedKeyword = keyword.toLowerCase().trim();
+        }
 
-        if (compFac != null && keyword != null && 0 < keyword.trim().length()) {
+        if (compFac != null && lowerCasedKeyword != null && 0 < lowerCasedKeyword.length()) {
             // 1. match the full name component
             Map<String, Map<String, Set<IComponent>>> componentNameMap = compFac.getComponentNameMap();
-            String filterString = keyword.trim();
             if (componentNameMap != null) {
-                Map<String, Set<IComponent>> map = componentNameMap.get(filterString.toLowerCase());
+                Map<String, Set<IComponent>> map = componentNameMap.get(lowerCasedKeyword);
                 if (map != null) {
                     Collection<Set<IComponent>> componentSets = map.values();
                     Iterator<Set<IComponent>> componentSetIter = componentSets.iterator();
@@ -413,12 +416,16 @@ public final class TalendEditorPaletteFactory {
                 componentSet = new HashSet<IComponent>();
 
                 // 2.1 search from local palette
-                addComponentsByNameFilter(compFac, componentSet, keyword);
+                addComponentsByNameFilter(compFac, componentSet, lowerCasedKeyword);
 
                 // 2.2 search from help document
                 boolean shouldSearchFromHelpAPI = PaletteSettingsPreferencePage.isPaletteSearchFromHelp();
                 if (shouldSearchFromHelpAPI) {
-                    Set<String> componentNames = getRelatedComponentNamesFromHelp(filterString);
+                    String helpKeyword = keyword;
+                    if (helpKeyword != null) {
+                        helpKeyword = helpKeyword.trim();
+                    }
+                    Set<String> componentNames = getRelatedComponentNamesFromHelp(helpKeyword);
                     if (componentNames != null && 0 < componentNames.size()) {
                         int limit = PaletteSettingsPreferencePage.getPaletteSearchResultLimitFromHelp();
                         int i = 0;
@@ -1244,6 +1251,9 @@ public final class TalendEditorPaletteFactory {
     static Job searchInHelpJob = null;
 
     protected static Set<String> getRelatedComponentNamesFromHelp(final String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return null;
+        }
         // This method will cost lots of time to complete when it is called the first time
         final List<SearchHit> querySearchResult = new ArrayList<SearchHit>();
         if (searchInHelpJob != null && searchInHelpJob.getState() != Job.NONE) {
