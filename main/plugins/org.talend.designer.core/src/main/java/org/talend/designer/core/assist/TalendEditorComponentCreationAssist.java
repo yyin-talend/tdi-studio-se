@@ -1,6 +1,8 @@
 package org.talend.designer.core.assist;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
@@ -50,8 +52,6 @@ class TalendEditorComponentCreationAssist {
 
     private Control graphicControl;
 
-    private Map<String, IComponent> components;
-
     private ContentProposalAdapter contentProposalAdapter;
 
     /*
@@ -65,12 +65,14 @@ class TalendEditorComponentCreationAssist {
 
     private static ConnectionFigure overedConnection = null;
 
+    protected List<IContentProposal> proposalList;
+
     public TalendEditorComponentCreationAssist(String categoryName, GraphicalViewer viewer, CommandStack commandStack,
             IProcess2 process) {
         this.graphicViewer = viewer;
         this.graphicControl = viewer.getControl();
-        this.components = TalendEditorComponentCreationUtil.getComponentsInCategory(categoryName);
         this.process = process;
+        proposalList = new ArrayList<IContentProposal>();
 
         Object service = DesignerPlugin.getDefault().getWorkbench().getService(IBindingService.class);
         if (service != null && service instanceof IBindingService) {
@@ -150,10 +152,10 @@ class TalendEditorComponentCreationAssist {
          * create the proposal by using available components list
          */
         // TODO the trigger way may need improved, currently, any visible character will trigger it
-        TalendEditorComponentProposalProvider proposalProvider = new TalendEditorComponentProposalProvider(components);
+        TalendEditorComponentProposalProvider proposalProvider = new TalendEditorComponentProposalProvider(this, proposalList);
         contentProposalAdapter = new ContentProposalAdapter(assistText, new TextContentAdapter(), proposalProvider, null, null);
         contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
-        contentProposalAdapter.setLabelProvider(new TalendEditorComponentLabelProvider(components));
+        contentProposalAdapter.setLabelProvider(new TalendEditorComponentLabelProvider());
     }
 
     private void highlightOveredConnection(org.eclipse.swt.graphics.Point cursorRelativePosition) {
@@ -236,10 +238,24 @@ class TalendEditorComponentCreationAssist {
      */
     protected void acceptProposal() {
         String componentName = assistText.getText().trim();
+        Iterator<IContentProposal> iter = proposalList.iterator();
+        IComponent component = null;
+        while (iter.hasNext()) {
+            IContentProposal proposal = iter.next();
+            if (proposal instanceof ComponentContentProposal && componentName.equals(proposal.getLabel())) {
+                component = ((ComponentContentProposal) proposal).getComponent();
+                break;
+            }
+        }
+        acceptProposal(component);
+    }
+
+    protected void acceptProposal(IComponent component) {
+        // String componentName = assistText.getText().trim();
         org.eclipse.swt.graphics.Point componentLocation = assistText.getLocation();
         componentLocation.y += assistText.getLineHeight();
         disposeAssistText();
-        Object createdNode = createComponent(components.get(componentName), componentLocation);
+        Object createdNode = createComponent(component, componentLocation);
         selectComponent(createdNode);
     }
 
@@ -337,6 +353,10 @@ class TalendEditorComponentCreationAssist {
             overedConnection.setLineWidth(1);
             overedConnection = null;
         }
+    }
+
+    protected List<IComponent> filterComponents(List<IComponent> components) {
+        return components;
     }
 
     class TalendAssistantCreationTool extends CreationTool {

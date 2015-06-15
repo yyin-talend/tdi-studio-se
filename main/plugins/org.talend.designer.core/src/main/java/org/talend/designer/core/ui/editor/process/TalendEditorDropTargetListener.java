@@ -72,6 +72,7 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.hadoop.IOozieService;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsService;
 import org.talend.core.model.metadata.IEbcdicConstant;
@@ -1868,6 +1869,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
             }
         }
+
+        neededComponents = (List<IComponent>) ComponentUtilities.filterVisibleComponents(neededComponents);
 
         // Check if the components in the list neededComponents have the same category that is required by Process.
         IComponent component = chooseOneComponent(extractComponents(neededComponents), rcSetting, quickCreateInput,

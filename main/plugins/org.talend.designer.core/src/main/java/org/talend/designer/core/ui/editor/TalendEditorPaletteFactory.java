@@ -38,8 +38,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.components.TalendPaletteGroup;
 import org.talend.core.ui.componentsettings.ComponentsSettingsHelper;
 import org.talend.designer.core.DesignerPlugin;
@@ -94,12 +96,13 @@ public final class TalendEditorPaletteFactory {
         if (a == 0) {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         }
-        List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+        // List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+        List<IComponent> componentList = getRelatedComponents(compFac, filter, false);
 
         String paletteType = ComponentCategory.CATEGORY_4_DI.getName();
         // Added by Marvin Wang on Jan. 10, 2012
         if (compFac.getComponentsHandler() != null) {
-            componentList = compFac.getComponentsHandler().filterComponents(componentList);
+            // componentList = compFac.getComponentsHandler().filterComponents(componentList);
             compFac.getComponentsHandler().sortComponents(componentList);
             paletteType = compFac.getComponentsHandler().extractComponentsCategory().getName();
         }
@@ -168,7 +171,7 @@ public final class TalendEditorPaletteFactory {
             family = xmlComponent.getTranslatedFamilyName();
             oraFamily = xmlComponent.getOriginalFamilyName();
             if (filter != null) {
-                String regex = getFilterRegex();
+                String regex = getFilterRegex(filter);
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
             if ((oraFamily.equals("Misc") || oraFamily.equals("Miscellaneous")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
@@ -199,14 +202,14 @@ public final class TalendEditorPaletteFactory {
                 noteAeeded = true;
             }
 
-            if (filter != null) {
-
-                String regex = getFilterRegex();
-                if (!xmlComponent.getName().toLowerCase().matches(regex)
-                        && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
-                    continue;
-                }
-            }
+            // if (filter != null) {
+            //
+            // String regex = getFilterRegex(filter);
+            // if (!xmlComponent.getName().toLowerCase().matches(regex)
+            // && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
+            // continue;
+            // }
+            // }
 
             if (xmlComponent.isLoaded()) {
                 name = xmlComponent.getName();
@@ -294,11 +297,13 @@ public final class TalendEditorPaletteFactory {
         if (a == 0) {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         }
-        List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+        // List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+        List<IComponent> componentList = getRelatedComponents(compFac, filter, false);
 
         // Added by Marvin Wang on Jan. 10, 2012
         if (compFac.getComponentsHandler() != null) {
-            componentList = compFac.getComponentsHandler().filterComponents(componentList);
+            // filterComponents has been moved to getRelatedComponents
+            // componentList = compFac.getComponentsHandler().filterComponents(componentList);
             componentList = compFac.getComponentsHandler().sortComponents(componentList);
         }
 
@@ -398,21 +403,21 @@ public final class TalendEditorPaletteFactory {
                 if (!matcher.matches() && filter.length() != 0) {
                     filter = "None";
                 }
-                String regex = getFilterRegex();
+                String regex = getFilterRegex(filter);
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
 
-            if (filter != null) {
-                Pattern pattern = Pattern.compile("^[A-Za-z0-9]+$");//$NON-NLS-1$
-                Matcher matcher = pattern.matcher(filter);
-                if (matcher.matches()) {
-                    String regex = getFilterRegex();
-                    if (!xmlComponent.getName().toLowerCase().matches(regex)
-                            && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
-                        continue;
-                    }
-                }
-            }
+            // if (filter != null) {
+            //                Pattern pattern = Pattern.compile("^[A-Za-z0-9]+$");//$NON-NLS-1$
+            // Matcher matcher = pattern.matcher(filter);
+            // if (matcher.matches()) {
+            // String regex = getFilterRegex(filter);
+            // if (!xmlComponent.getName().toLowerCase().matches(regex)
+            // && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
+            // continue;
+            // }
+            // }
+            // }
 
             family = xmlComponent.getTranslatedFamilyName();
             oraFamily = xmlComponent.getOriginalFamilyName();
@@ -502,9 +507,16 @@ public final class TalendEditorPaletteFactory {
      * 
      * @return
      */
-    private static String getFilterRegex() {
-        String regex = "\\b.*" + filter.replaceAll("\\*", ".*") + ".*\\b"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    private static String getFilterRegex(String nameFilter) {
+        String regex = "\\b.*" + nameFilter.replaceAll("\\*", ".*") + ".*\\b"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        regex = regex.replaceAll(" ", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
         regex = regex.replaceAll("\\?", ".?"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        try {
+            Pattern.compile(regex);
+        } catch (Throwable e) {
+            regex = nameFilter;
+        }
         return regex;
     }
 
@@ -733,5 +745,54 @@ public final class TalendEditorPaletteFactory {
         palette = new PaletteRoot();
         palette.add(createToolsGroup());
         return palette;
+    }
+
+    public static List<IComponent> getRelatedComponents(final IComponentsFactory compFac, String keyword) {
+        return getRelatedComponents(compFac, keyword, true);
+    }
+
+    public static List<IComponent> getRelatedComponents(final IComponentsFactory compFac, String keyword, boolean needCheckVisible) {
+        List<IComponent> relatedComponents = new ArrayList<IComponent>();
+        if (compFac == null) {
+            return relatedComponents;
+        }
+        Set<IComponent> componentSet = compFac.getComponents();
+        if (componentSet == null || componentSet.isEmpty()) {
+            return relatedComponents;
+        }
+        relatedComponents.addAll(componentSet);
+
+        IComponentsHandler componentsHandler = compFac.getComponentsHandler();
+        if (componentsHandler != null) {
+            relatedComponents = componentsHandler.filterComponents(relatedComponents);
+        }
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            List<IComponent> searchResult = new ArrayList<IComponent>();
+            String regex = getFilterRegex(keyword);
+            Iterator<IComponent> iter = relatedComponents.iterator();
+            while (iter.hasNext()) {
+                IComponent xmlComponent = iter.next();
+                if (!xmlComponent.getName().toLowerCase().matches(regex)
+                        && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
+                    continue;
+                } else {
+                    searchResult.add(xmlComponent);
+                }
+            }
+            relatedComponents = searchResult;
+        }
+
+        if (needCheckVisible && relatedComponents != null && !relatedComponents.isEmpty()) {
+            Iterator<IComponent> iter = relatedComponents.iterator();
+            while (iter.hasNext()) {
+                IComponent component = iter.next();
+                if (component == null || !ComponentUtilities.isComponentVisible(component) || component.isTechnical()) {
+                    iter.remove();
+                }
+            }
+        }
+
+        return relatedComponents;
     }
 }
