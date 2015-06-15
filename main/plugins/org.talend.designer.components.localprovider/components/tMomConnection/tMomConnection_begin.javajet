@@ -133,6 +133,8 @@ class="MomConnection"
 	
 		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 		String qm=ElementParameterParser.getValue(node, "__QM__");
+		boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
+		String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
 		%>
 		java.util.Hashtable properties<%=cid%>=new java.util.Hashtable();
 		properties<%=cid%>.put("hostname", <%=host%>);
@@ -141,6 +143,11 @@ class="MomConnection"
 		properties<%=cid%>.put("CCSID", new Integer(1208));
 		properties<%=cid%>.put("transport","MQSeries");
 		<%
+		if(needSSLCipher){
+		%>
+			com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
+		<%
+		}
 		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
 		%>
 			properties<%=cid%>.put("userID",<%=dbuser%>);
