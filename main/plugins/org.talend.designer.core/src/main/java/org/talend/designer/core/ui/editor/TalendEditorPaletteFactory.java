@@ -751,7 +751,8 @@ public final class TalendEditorPaletteFactory {
         return getRelatedComponents(compFac, keyword, true);
     }
 
-    public static List<IComponent> getRelatedComponents(final IComponentsFactory compFac, String keyword, boolean needCheckVisible) {
+    public static List<IComponent> getRelatedComponents(final IComponentsFactory compFac, String keyword,
+            boolean needCheckVisible) {
         List<IComponent> relatedComponents = new ArrayList<IComponent>();
         if (compFac == null) {
             return relatedComponents;
@@ -767,9 +768,14 @@ public final class TalendEditorPaletteFactory {
             relatedComponents = componentsHandler.filterComponents(relatedComponents);
         }
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
+        String lowercasedKeyword = null;
+        if (keyword != null) {
+            lowercasedKeyword = keyword.toLowerCase().trim();
+        }
+
+        if (lowercasedKeyword != null && !lowercasedKeyword.trim().isEmpty()) {
             List<IComponent> searchResult = new ArrayList<IComponent>();
-            String regex = getFilterRegex(keyword);
+            String regex = getFilterRegex(lowercasedKeyword);
             Iterator<IComponent> iter = relatedComponents.iterator();
             while (iter.hasNext()) {
                 IComponent xmlComponent = iter.next();
