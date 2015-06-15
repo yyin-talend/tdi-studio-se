@@ -420,8 +420,13 @@ public final class TalendEditorPaletteFactory {
                 if (shouldSearchFromHelpAPI) {
                     Set<String> componentNames = getRelatedComponentNamesFromHelp(filterString);
                     if (componentNames != null && 0 < componentNames.size()) {
+                        int limit = PaletteSettingsPreferencePage.getPaletteSearchResultLimitFromHelp();
+                        int i = 0;
                         Iterator<String> nameIter = componentNames.iterator();
                         while (nameIter.hasNext()) {
+                            if (limit <= i) {
+                                break;
+                            }
                             String componentName = nameIter.next();
                             Map<String, Set<IComponent>> map = componentNameMap.get(componentName.toLowerCase());
                             if (map == null) {
@@ -429,7 +434,17 @@ public final class TalendEditorPaletteFactory {
                             }
                             Set<IComponent> findedComponents = map.get(componentName);
                             if (findedComponents != null && !findedComponents.isEmpty()) {
-                                componentSet.addAll(findedComponents);
+                                for (IComponent iComponent : findedComponents) {
+                                    if (limit <= i) {
+                                        break;
+                                    }
+                                    if (ComponentUtilities.isComponentVisible(iComponent) && !iComponent.isTechnical()
+                                            && filterComponent(iComponent, componentsHandler)) {
+                                        componentSet.add(iComponent);
+                                        i++;
+                                    }
+                                }
+                                // componentSet.addAll(findedComponents);
                             }
                         }
                     }
@@ -463,6 +478,22 @@ public final class TalendEditorPaletteFactory {
         }
 
         return relatedComponents;
+    }
+
+    protected static boolean filterComponent(IComponent component, IComponentsHandler componentsHandler) {
+        boolean canUse = true;
+
+        if (componentsHandler == null || component == null) {
+            return canUse;
+        }
+        List<IComponent> filteredComponents = new ArrayList<IComponent>();
+        filteredComponents.add(component);
+        filteredComponents = componentsHandler.filterComponents(filteredComponents);
+        if (filteredComponents == null || filteredComponents.isEmpty()) {
+            canUse = false;
+        }
+
+        return canUse;
     }
 
     protected static void addComponentsByNameFilter(final IComponentsFactory compFac, Set<IComponent> componentSet,
@@ -1264,20 +1295,21 @@ public final class TalendEditorPaletteFactory {
         }
 
         Set<String> componentNames = new HashSet<String>();
-        int limit = PaletteSettingsPreferencePage.getPaletteSearchResultLimitFromHelp();
-        int i = 1;
+        // the limitation has been moved to it's caller
+        // int limit = PaletteSettingsPreferencePage.getPaletteSearchResultLimitFromHelp();
+        // int i = 1;
         Iterator<SearchHit> iter = querySearchResult.iterator();
         while (iter.hasNext()) {
-            if (limit < i) {
-                break;
-            }
+            // if (limit < i) {
+            // break;
+            // }
             SearchHit result = iter.next();
             String label = result.getLabel();
             if (label == null || label.trim().length() == 0) {
                 continue;
             }
             componentNames.add(label);
-            i++;
+            // i++;
         }
 
         return componentNames;
