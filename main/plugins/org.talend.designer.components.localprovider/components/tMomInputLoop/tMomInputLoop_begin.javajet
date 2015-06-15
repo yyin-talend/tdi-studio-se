@@ -425,6 +425,8 @@ imports="
 			}else{
 				String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 				String qm=ElementParameterParser.getValue(node, "__QM__");
+				boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
+				String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
 				%>
 				java.util.Hashtable properties<%=cid%>=new java.util.Hashtable();
 				properties<%=cid%>.put("hostname", <%=host%>);
@@ -433,6 +435,11 @@ imports="
 				properties<%=cid%>.put("CCSID", new Integer(1208));
 				properties<%=cid%>.put("transport","MQSeries");
 				<%
+				if(needSSLCipher){
+				%>
+					com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
+				<%
+				}
 				if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
 				%>
 					properties<%=cid%>.put("userID",<%=dbuser%>);
@@ -454,18 +461,12 @@ imports="
 			boolean isRollback = ("true").equals(ElementParameterParser.getValue(node, "__ROLLBACK__"));
 			boolean isCommit = ("true").equals(ElementParameterParser.getValue(node, "__COMMIT__"));
 			boolean isBrowse = ("true").equals(ElementParameterParser.getValue(node,"__BROWSE__"));
-			boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
-			String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
+			
 			isCommit = isCommit && !isBrowse;
 			isBrowse = isBrowse && !isRollback && !isCommit;
 			%>
 			com.ibm.mq.MQQueue remoteQ_<%=cid%>=null;
 			<%
-			if(needSSLCipher){
-			%>
-				com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
-			<%
-			}
 			if(("true").equals(useMsgId)){
 			%>
 				String msgId_<%=cid%> = <%=msgId%>;
