@@ -39,6 +39,12 @@
 if(ProcessUtils.isTestContainer(node.getProcess())) {
 %>
 if(!<%=expression %>){
+   if (junitGlobalMap.get("tests.log") == null) {
+        junitGlobalMap.put("tests.log", new String());
+   }
+   if (junitGlobalMap.get("tests.nbFailure") == null) {
+        junitGlobalMap.put("tests.nbFailure", new Integer(0));
+   }
    junitGlobalMap.put("tests.log",((String)junitGlobalMap.get("tests.log"))+"<%=cid %>:"+ <%=description %>+java.lang.System.getProperty("line.separator"));
    junitGlobalMap.put("tests.nbFailure",((Integer)junitGlobalMap.get("tests.nbFailure"))+1);
 }else{
