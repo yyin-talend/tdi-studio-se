@@ -122,15 +122,15 @@
 				REQUIRED_IF="(READBYXPATH == 'false')" />
 			<IMPORT NAME="jsonpath" MODULE="jsonpath.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/jsonpath.jar" REQUIRED_IF="(READBYXPATH == 'false')" />
 			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar"
-				REQUIRED_IF="(READBYXPATH == 'true')" />
+				REQUIRED_IF="(READBYXPATH == 'true')" BundleID="" />
 			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar"
-				REQUIRED_IF="(READBYXPATH == 'true')" />
+				REQUIRED_IF="(READBYXPATH == 'true')" BundleID="" />
 			<IMPORT NAME="json-lib" MODULE="json-lib-2.4-jdk15.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json-lib-2.4-jdk15.jar"
 				REQUIRED_IF="(READBYXPATH == 'true')" />
 			<IMPORT NAME="commons_lang" MODULE="commons-lang-2.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar"
 				REQUIRED_IF="(READBYXPATH == 'true')" />
 			<IMPORT NAME="commons_logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar"
-				REQUIRED_IF="(READBYXPATH == 'true')" />
+				REQUIRED_IF="(READBYXPATH == 'true')" BundleID="" />
 			<IMPORT NAME="ezmorph" MODULE="ezmorph-1.0.6.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/ezmorph-1.0.6.jar" REQUIRED_IF="(READBYXPATH == 'true')" />
 			<IMPORT NAME="xom" MODULE="xom-1.2.7.jar" REQUIRED_IF="(READBYXPATH == 'true')" />
 			<IMPORT NAME="commons_beanutils" MODULE="commons-beanutils-1.8.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.8.3.jar"
