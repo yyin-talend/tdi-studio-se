@@ -38,11 +38,34 @@ skeleton="../templates/db_output_bulk.skeleton"
 
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
 
-	List<IMetadataColumn> columnList = getColumnList(node);
+	String incomingConnName = null;
+    List<IMetadataColumn> columnList = getColumnList(node);
+    
+    List< ? extends IConnection> conns = node.getIncomingConnections();
+    if(conns!=null && conns.size()>0){
+        IConnection conn = conns.get(0);
+        incomingConnName = conn.getName();
+    }
 
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 
+    boolean isDynamic = false;
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+        IMetadataTable metadata = metadatas.get(0);
+		isDynamic = metadata.isDynamicSchema();
+    }
+
     List<Column> stmtStructure =  getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    
+    List<Column> colStruct =  new ArrayList();
+    for(Column colStmt:stmtStructure){
+    	if (!colStmt.isReplaced()&&!colStmt.isAddCol()&&!colStmt.isDynamic()) {
+            colStruct.add(colStmt);
+        }
+    }
+    
+    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
 
     boolean useBatch = "true".equals(ElementParameterParser.getValue(node, "__USE_BATCH__"));
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
@@ -220,24 +243,78 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 	    if(rowCount<%=cid%>!=0){
 
-	        StringBuilder extendInsertValueStmt = new StringBuilder();
-	        for(int i=0 ; i < rowCount<%=cid%> ; i++){
-	             extendInsertValueStmt.append("(<%=insertValueStmt.toString()%>)");
-	             if (i != rowCount<%=cid%> - 1) extendInsertValueStmt.append(",");
+	        StringBuilder extendInsertValue_<%=cid%> = new StringBuilder();
+	        for(int i_<%=cid%>=0 ; i_<%=cid%> < rowCount<%=cid%> ; i_<%=cid%>++){
+<%
+			List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
+			if(isDynamic) {
+            	if(conns_dynamic!=null && conns_dynamic.size()>0){
+            		IConnection conn = conns_dynamic.get(0);
+            		if(!("".equals(insertColName.toString()))) {
+%>
+        			extendInsertValue_<%=cid%>.append("(<%=insertValueStmt.toString()%>,"+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")");
+<%
+					} else {
+%>
+        			extendInsertValue_<%=cid%>.append("("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")");
+<%
+					}
+				}
+			} else {
+%>
+				extendInsertValue_<%=cid%>.append("(<%=insertValueStmt.toString()%>)");
+<%
+			}
+%>
+     			if (i_<%=cid%> != rowCount<%=cid%> - 1) extendInsertValue_<%=cid%>.append(",");
 	        }
 
-
-			insert_<%=cid%> = "INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES "+extendInsertValueStmt.toString();
-			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
-
-	        int row2Count<%=cid%> = 0;
-			int count<%=cid%> = 0;
-
+<%
+			if(isDynamic) {
+            	if(conns_dynamic!=null && conns_dynamic.size()>0){
+                	IConnection conn = conns_dynamic.get(0);
+                	if(!("".equals(insertColName.toString()))) {
+%>
+                	insert_<%=cid%> = "INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValue_<%=cid%>.toString();
+<%
+					} else {
+%>
+                	insert_<%=cid%> = "INSERT INTO \"" + <%=tableName%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValue_<%=cid%>.toString();
+<%
+            		}
+        		}
+        	} else {
+%>
+				insert_<%=cid%> = "INSERT INTO \""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES "+extendInsertValue_<%=cid%>.toString();
+<%
+        	}
+%>
+        	pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+<%
+			int insertableCount = 0;
+			for(Column column : colStruct) {
+				if(column.isInsertable()) {
+					insertableCount++;
+				}
+			}
+%>
+			rowCount<%=cid%> = 0;
 	        for(BufferLine_<%=cid%> bufferL<%=cid%> : exInsertColValueList<%=cid%>){
-				count<%=cid%> = row2Count<%=cid%>*<%=columnList.size()%>+1;
-	<%
-	            for(Column column : stmtStructure) {
-	                if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+				int count<%=cid%> = rowCount<%=cid%> * 
+					(<%=insertableCount%>
+<%
+					if(isDynamic) {
+						Column dynamicColumn = getColumn(getDynamicColumn());
+%>
+						+ bufferL<%=cid%>.<%=dynamicColumn.getName()%>.getColumnCount()
+<%
+					}
+%> 
+					)
+				+ 1;
+<%
+	            for(Column column : colStruct) {
+	                if(column.isInsertable()) {
 	                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 	                    eiOperation.generateSetStmt(typeToGenerate, column, cid);
 	                    %>
@@ -245,9 +322,19 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                    <%
 	                }
 	            }
-    %>
+	            
+	            if(isDynamic) {
+					Column dynamicColumn = getColumn(getDynamicColumn());
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+					if("Dynamic".equals(typeToGenerate)) {
+					%>
+					DynamicUtils.writeColumnsToDatabse(bufferL<%=cid%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, count<%=cid%>-1, "<%=dbmsId%>");
+					<%
+					}
+				}
+%>
 
-	            row2Count<%=cid%>++;
+	            rowCount<%=cid%>++;
 	        }
 	        insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 	    }

@@ -1074,7 +1074,7 @@ public class CLASS {
             if (node != null) {
                 whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
             }
-            if (whereSupportNull && column.getColumn().isNullable()) {
+            if (whereSupportNull && column.getColumn()!=null && column.getColumn().isNullable()) {
                 updateWhereStmt.append("((" + getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName())
                         + " IS NULL AND " + getColumnIsNullCondition() +" " + column.getOperator() + " " + column.getSqlStmt() + ") ");
                 updateWhereStmt.append("OR " + getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName())
@@ -2658,7 +2658,7 @@ public class CLASS {
             if (node != null) {
                 whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
             }
-            if (whereSupportNull && column.getColumn().isNullable()) {
+            if (whereSupportNull && column.getColumn()!=null && column.getColumn().isNullable()) {
                 updateWhereStmt.append("((" + getLProtectedChar(columnName) + columnName + getRProtectedChar(columnName)
                         + " IS NULL AND " + getColumnIsNullCondition() +" " + column.getOperator() + " " + column.getSqlStmt() + ") ");
                 updateWhereStmt.append("OR " + getLProtectedChar(columnName) + columnName + getRProtectedChar(columnName)
