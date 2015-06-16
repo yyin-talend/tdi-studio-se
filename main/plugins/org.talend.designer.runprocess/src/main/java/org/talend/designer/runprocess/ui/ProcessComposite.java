@@ -91,6 +91,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -107,6 +108,7 @@ import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.subjobcontainer.sparkstreaming.SparkStreamingSubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessMessage;
@@ -664,15 +666,15 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     }
 
     public void execRun() {
-		// ToolItem item = (ToolItem) event.widget;
+        // ToolItem item = (ToolItem) event.widget;
         errorMessMap.clear();
         // if (item.getData().equals(ProcessView.DEBUG_ID)) {
         // debug();
         // } else {
         execButtonPressed();
         // }
-	}
-    
+    }
+
     /**
      * DOC bqian Comment method "createLineLimitedControl".
      */
@@ -753,7 +755,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         formData = new FormData();
         formData.left = new FormAttachment(lineLimitText, 15, SWT.RIGHT);
         wrapButton.setLayoutData(formData);
-        wrapButton.setText(Messages.getString("ProcessComposite.wrapbutton"));
+        wrapButton.setText(Messages.getString("ProcessComposite.wrapbutton")); //$NON-NLS-1$
         wrapButton.setSelection(true);
         wrapButton.addSelectionListener(new SelectionAdapter() {
 
@@ -876,6 +878,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                     consoleText.setText(""); //$NON-NLS-1$
                     processContext.clearMessages();
                     refreshNodeContainer();
+                    refreshSubjobContainer();
                 }
             }
         });
@@ -935,6 +938,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
         }
         refreshNodeContainer();
+        refreshSubjobContainer();
     }
 
     public void pause(int id) {
@@ -1184,17 +1188,17 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     private MsgType getLog4jMsgType(MsgType outType, String lineContent) {
         MsgType msgLog4jType = null;
         if (outType.equals(MsgType.STD_OUT)) {
-            if (lineContent.startsWith("[TRACE]")) {
+            if (lineContent.startsWith("[TRACE]")) { //$NON-NLS-1$
                 return MsgType.LOG4J_TRACE;
-            } else if (lineContent.startsWith("[INFO ]")) {
+            } else if (lineContent.startsWith("[INFO ]")) { //$NON-NLS-1$
                 return MsgType.LOG4J_INFO;
-            } else if (lineContent.startsWith("[DEBUG]")) {
+            } else if (lineContent.startsWith("[DEBUG]")) { //$NON-NLS-1$
                 return MsgType.LOG4J_DEBUG;
-            } else if (lineContent.startsWith("[WARN ]")) {
+            } else if (lineContent.startsWith("[WARN ]")) { //$NON-NLS-1$
                 return MsgType.LOG4J_WARN;
-            } else if (lineContent.startsWith("[ERROR]")) {
+            } else if (lineContent.startsWith("[ERROR]")) { //$NON-NLS-1$
                 return MsgType.LOG4J_ERROR;
-            } else if (lineContent.startsWith("[FATAL]")) {
+            } else if (lineContent.startsWith("[FATAL]")) { //$NON-NLS-1$
                 return MsgType.LOG4J_FATAL;
             } else {
                 return outType;
@@ -1208,14 +1212,14 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
         int lengthBeforeAdd = consoleText.length();
 
-        String[] contents = content.split("\n");
+        String[] contents = content.split("\n"); //$NON-NLS-1$
         for (String content2 : contents) {
             if (isPattern(content2) || isPatternFor(content2)) {
                 consoleText.append(""); //$NON-NLS-1$
                 content = ""; //$NON-NLS-1$
             } else {
                 consoleText.append(content2);
-                consoleText.append("\n");
+                consoleText.append("\n"); //$NON-NLS-1$
             }
         }
         boolean newStyle = false;
@@ -1306,7 +1310,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                 consoleText.setFont(font);
             }
         } else {// should never happend
-            log.info("Could not find default font for the console");
+            log.info("Could not find default font for the console"); //$NON-NLS-1$
         }
     }
 
@@ -1335,7 +1339,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         if (rowLimit != SWT.DEFAULT) {
             currentRows++;
             if (currentRows >= rowLimit) {
-                return "";
+                return ""; //$NON-NLS-1$
             } else if (currentRows + rows.length <= rowLimit) {
                 content = message.getContent();
             } else {
@@ -1793,14 +1797,14 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                             boolean haveFind = false;
                             for (int j = currentI + 1; j < linesMess.length - 1; j++) {
                                 tRunJobName = linesMess[j];
-                                if ((tRunJobName.contains(componentName + "Process"))) {
+                                if ((tRunJobName.contains(componentName + "Process"))) { //$NON-NLS-1$
                                     haveFind = true;
                                     break;
                                 }
                             }
-                            if (haveFind && tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1) {
-                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1,
-                                        tRunJobName.lastIndexOf(".java"));
+                            if (haveFind && tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1) { //$NON-NLS-1$ //$NON-NLS-2$
+                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, //$NON-NLS-1$
+                                        tRunJobName.lastIndexOf(".java")); //$NON-NLS-1$
                             } else {
                                 tRunJobName = currenctJobName;
                             }
@@ -1864,7 +1868,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                         if (inode instanceof Node) {
                             Node node = (Node) inode;
                             if (Problems.nodeList.size() > 0) {
-                                String befor = "Error in the component's properties:";
+                                String befor = "Error in the component's properties:"; //$NON-NLS-1$
                                 Iterator<Entry<Node, StringBuffer>> set = Problems.nodeList.entrySet().iterator();
                                 while (set.hasNext()) {
                                     Entry<Node, StringBuffer> en = set.next();
@@ -1904,7 +1908,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     public void refreshProgress(IProcessMessage psMess, Node node, String nodeUniqueName) {
         String mess = ""; //$NON-NLS-1$
         String uniqueName = ""; //$NON-NLS-1$
-        String[] message = psMess.getContent().split("\n");
+        String[] message = psMess.getContent().split("\n"); //$NON-NLS-1$
 
         for (String element : message) {
             if (isPattern(element)) {
@@ -1935,10 +1939,23 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         for (INode node : nodeList) {
             if ((node instanceof Node) && (((Node) node).isMapReduceStart())) {
                 ((JobletContainer) ((Node) node).getNodeContainer()).updateState(
-                        "UPDATE_STATUS", "CLEAR", new Double(0), new Double(0)); //$NON-NLS-1$
+                        "UPDATE_STATUS", "CLEAR", new Double(0), new Double(0)); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
+    }
 
+    /*
+     * This method is used to clean the Spark Streaming statistics.
+     */
+    public void refreshSubjobContainer() {
+        org.talend.core.model.process.IProcess2 process = processContext.getProcess();
+        List<? extends ISubjobContainer> subjobContainers = process.getSubjobContainers();
+        for (ISubjobContainer subjobContainer : subjobContainers) {
+            if (subjobContainer instanceof SparkStreamingSubjobContainer) {
+                ((SparkStreamingSubjobContainer) subjobContainer).updateState(
+                        "UPDATE_SPARKSTREAMING_STATUS", null, 0, 0, "", "", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            }
+        }
     }
 
     private boolean isPattern(String content) {
@@ -2002,7 +2019,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         }
         List<INode> nodeList = (List<INode>) ((Process) process).getGraphicalNodes();
         for (INode node : nodeList) {
-            if (node.getComponent().getName().equals("tRunJob")) {
+            if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
                 if (node instanceof Node) {
                     trunjobList.add((Node) node);
                 }
