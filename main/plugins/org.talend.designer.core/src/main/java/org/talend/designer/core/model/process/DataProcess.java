@@ -60,6 +60,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.IReplaceNodeInProcess;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.Item;
@@ -1590,10 +1591,14 @@ public class DataProcess implements IGeneratingProcess {
         }
         // Build a simple copy of the process (to have new objects, avoid to modify the ones in the designer..)
         List<INode> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
-
-        // Replace all providers like joblet by the content inside the job
-        replaceNodeFromProviders(newGraphicalNodeList);
-
+        if (ProcessUtils.isTestContainer(graphicalNodeList.get(0).getProcess())) {
+            for (IReplaceNodeInProcess replaceProvider : ReplaceNodesInProcessProvider.findReplaceNodesProvider()) {
+                replaceProvider.rebuildGraphicProcessFromNode(newGraphicalNodeList.get(0), newGraphicalNodeList);
+            }
+        } else {
+            // Replace all providers like joblet by the content inside the job
+            replaceNodeFromProviders(newGraphicalNodeList);
+        }
         // job settings extra (feature 2710)
         if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
             List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
