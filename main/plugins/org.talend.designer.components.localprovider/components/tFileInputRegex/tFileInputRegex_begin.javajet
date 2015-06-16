@@ -228,12 +228,12 @@
             	throw(e);
             }else{
 	    		<%
-	    		if(isLog4jEnabled){
+	    		if(!ignoreunmatchederror && isLog4jEnabled){
 	    		%>
 					log.error("<%=cid%> - " +e.getMessage());
 				<%
 				}
-				if(!ignoreUnmatchedError){
+				if(!ignoreUnmatchedError && !isLog4jEnabled){
 				%>
 					System.err.println(e.getMessage());
 				<%
@@ -258,21 +258,23 @@
                 <%=firstConnName %> = null;
                 <%
             } else if(("").equals(rejectConnName)){
-	        	if(isLog4jEnabled){
+	        	if(isLog4jEnabled && !ignoreUnmatchedError){
 	        	%>
         		log.error("<%=cid%> - " +e.getMessage());
 	        	<%
 	        	}
-	        	if(ignoreUnmatchedError){
-                %>
-                	if(isMatch<%=cid %>){
-                		System.err.println(e.getMessage());
-                	}
-                <%
-                }else{
-                %>
-                	System.err.println(e.getMessage());
-                <%
+	        	if(!isLog4jEnabled){
+    	        	if(ignoreUnmatchedError){
+                    %>
+                    	if(isMatch<%=cid %>){
+                    		System.err.println(e.getMessage());
+                    	}
+                    <%
+                    }else{
+                    %>
+                    	System.err.println(e.getMessage());
+                    <%
+                    }
                 }
                 %>
                 <%=firstConnName %> = null;
