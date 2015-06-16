@@ -40,9 +40,9 @@ if(specify_alias){
 	String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
 	String autoCommit = "true".equals(ElementParameterParser.getValue(connectionNode, "__AUTO_COMMIT__"))?"true":"false";
 	%>
-	if (null == conn_<%=cid%>) {
+	if (null == connection_<%=cid%>) {
 		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
-		conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		connection_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
 	}
 <%
 }
