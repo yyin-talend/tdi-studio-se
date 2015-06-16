@@ -102,8 +102,6 @@ import org.talend.repository.ui.wizards.exportjob.action.JobExportAction;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsTemporaryOptionsKeeper;
 import org.talend.repository.ui.wizards.exportjob.util.ExportJobUtil;
 import org.talend.repository.utils.JobVersionUtils;
 
@@ -1251,11 +1249,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected boolean ensureTargetIsValid() {
         String targetPath = null;
-        if (manager instanceof PetalsJobJavaScriptsManager) {
-            targetPath = manager.getDestinationPath();
-        } else {
-            targetPath = getDestinationValue();
-        }
+        targetPath = getDestinationValue();
         if (this.selectedJobVersion != null && this.selectedJobVersion.equals(RelationshipItemBuilder.LATEST_VERSION)) {
 
             if (this.originalRootFolderName == null) {
@@ -1389,9 +1383,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 manager.setContextEditableResultValuesList(contextEditableResultValuesList);
             }
 
-            if (manager instanceof PetalsJobJavaScriptsManager) {
-                PetalsTemporaryOptionsKeeper.INSTANCE.setSelection(selection);
-            }
             manager.setMultiNodes(isMultiNodes());
             // achen modify to fix bug 0006222
 

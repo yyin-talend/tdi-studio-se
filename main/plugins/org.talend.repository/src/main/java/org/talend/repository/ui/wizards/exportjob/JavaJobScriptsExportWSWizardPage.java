@@ -15,7 +15,6 @@ package org.talend.repository.ui.wizards.exportjob;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -45,15 +42,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -61,19 +54,11 @@ import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.ContextExportDialog;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.ContextExportType;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.ContextTypeDefinition;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsExportException;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsTemporaryOptionsKeeper;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.SaUtils;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.TalendUtils;
 import org.talend.repository.ui.wizards.exportjob.util.ExportJobUtil;
 
 /**
@@ -89,8 +74,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         POJO(Messages.getString("JavaJobScriptsExportWSWizardPage.POJO"), false), //$NON-NLS-1$
         WSWAR(Messages.getString("JavaJobScriptsExportWSWizardPage.WSWAR"), false), //$NON-NLS-1$
         WSZIP(Messages.getString("JavaJobScriptsExportWSWizardPage.WSZIP"), false), //$NON-NLS-1$
-        JBOSSESB(Messages.getString("JavaJobScriptsExportWSWizardPage.JBOSSESB"), true), //$NON-NLS-1$
-        PETALSESB(Messages.getString("JavaJobScriptsExportWSWizardPage.PETALSESB"), true), //$NON-NLS-1$
         OSGI(Messages.getString("JavaJobScriptsExportWSWizardPage.OSGI"), false);//$NON-NLS-1$
 
         public final String label;
@@ -190,12 +173,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     public static final String EXTRACT_ZIP_FILE = "JavaJobScriptsExportWizardPage.EXTRACT_ZIP_FILE"; //$NON-NLS-1$
 
     protected JobExportType exportTypeFixed;
-
-    private final Map<String, List<ContextTypeDefinition>> ctxToTypeDefs = new HashMap<String, List<ContextTypeDefinition>>();
-
-    private List<ContextTypeDefinition> currentCtxTypes;
-
-    private String saDestinationFilePath;
 
     public static final String PETALS_EXPORT_DESTINATIONS = "org.ow2.petals.esbexport.destinations"; //$NON-NLS-1$
 
@@ -317,30 +294,19 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         initializeDialogUnits(parent);
         GridLayout layout = new GridLayout();
 
-        if (exportTypeFixed == null || !exportTypeFixed.equals(JobExportType.JBOSSESB)) {
-            SashForm sash = createExportTree(parent);
-            // Added a scrolled composite by Marvin Wang on Feb. 27, 2012 for bug TDI-19198.
-            scrolledComposite = new ScrolledComposite(sash, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-            scrolledComposite.setExpandHorizontal(true);
-            scrolledComposite.setExpandVertical(true);
-            scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-            pageComposite = new Group(scrolledComposite, SWT.NONE);
-            pageComposite.setLayout(layout);
-            pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-            pageComposite.setFont(parent.getFont());
-            setControl(sash);
-            sash.setWeights(new int[] { 0, 1, 23 });
-        } else {
-            scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-            scrolledComposite.setExpandHorizontal(true);
-            scrolledComposite.setExpandVertical(true);
-            scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-            pageComposite = new Group(scrolledComposite, 0);
-            pageComposite.setLayout(layout);
-            pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-            pageComposite.setFont(parent.getFont());
-            setControl(parent);
-        }
+        SashForm sash = createExportTree(parent);
+        // Added a scrolled composite by Marvin Wang on Feb. 27, 2012 for bug TDI-19198.
+        scrolledComposite = new ScrolledComposite(sash, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+        scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        pageComposite = new Group(scrolledComposite, SWT.NONE);
+        pageComposite.setLayout(layout);
+        pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        pageComposite.setFont(parent.getFont());
+        setControl(sash);
+        sash.setWeights(new int[] { 0, 1, 23 });
+
         layout = new GridLayout();
         layout.marginHeight = 0;
         layout.verticalSpacing = 0;
@@ -423,8 +389,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         chkButton = new Button(left, SWT.CHECK);
         chkButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.extractZipFile")); //$NON-NLS-1$
         JobExportType comboType = JobExportType.getTypeFromString(exportTypeCombo.getText());
-        if (comboType.equals(JobExportType.WSWAR) || comboType.equals(JobExportType.PETALSESB)
-                || comboType.equals(JobExportType.OSGI)) {
+        if (comboType.equals(JobExportType.WSWAR) || comboType.equals(JobExportType.OSGI)) {
             chkButton.setVisible(false);
             zipOption = null;
         } else {
@@ -507,8 +472,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         switch (getCurrentExportType1()) {
         case WSWAR:
             return FileConstants.WAR_FILE_SUFFIX;
-        case JBOSSESB:
-            return FileConstants.ESB_FILE_SUFFIX;
         case OSGI:
             return FileConstants.JAR_FILE_SUFFIX;
         default:
@@ -531,9 +494,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         case WSWAR:
             dialog.setFilterExtensions(new String[] { "*" + FileConstants.WAR_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
             break;
-        case JBOSSESB:
-            dialog.setFilterExtensions(new String[] { "*" + FileConstants.ESB_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
-            break;
         case OSGI:
             if (isAddMavenScript()) {
                 dialog.setFilterExtensions(new String[] { "*" + FileConstants.ZIP_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
@@ -541,34 +501,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 dialog.setFilterExtensions(new String[] { "*" + FileConstants.JAR_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
             }
             break;
-        case PETALSESB:
-            dialog.setFilterExtensions(new String[] { "*" + FileConstants.ZIP_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
-            break;
         default:
             dialog.setFilterExtensions(new String[] { "*" + FileConstants.ZIP_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        if (jobExportType.equals(JobExportType.PETALSESB)) {
-            IPath destPath = new Path(saDestinationFilePath);
-            String fileName, directory;
-            if (destPath.toFile().isDirectory()) {
-                fileName = getPetalsDefaultSaName();
-                directory = destPath.toOSString();
-            } else {
-                fileName = destPath.lastSegment();
-                directory = destPath.removeLastSegments(1).toOSString();
-            }
-            dialog.setFileName(fileName);
-            dialog.setFilterPath(directory);
-        } else {
-            dialog.setText(""); //$NON-NLS-1$
-            // this is changed by me shenhaize
-            dialog.setFileName(getDefaultFileName().get(0));
-            String currentSourceString = getDestinationValue();
-            int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
-            if (lastSeparatorIndex != -1) {
-                dialog.setFilterPath(currentSourceString.substring(0, lastSeparatorIndex));
-            }
+        dialog.setText(""); //$NON-NLS-1$
+        // this is changed by me shenhaize
+        dialog.setFileName(getDefaultFileName().get(0));
+        String currentSourceString = getDestinationValue();
+        int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
+        if (lastSeparatorIndex != -1) {
+            dialog.setFilterPath(currentSourceString.substring(0, lastSeparatorIndex));
         }
 
         String selectedFileName = dialog.open();
@@ -607,7 +550,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
         if (selectedFileName != null) {
             setErrorMessage(null);
-            saDestinationFilePath = selectedFileName;
             setDestinationValue(selectedFileName);
 
             if (getDialogSettings() != null) {
@@ -638,7 +580,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 if (!destination.endsWith(getOutputSuffix())) {
                     destination += getOutputSuffix();
                 }
-                saDestinationFilePath = destination;
             }
         }
     }
@@ -665,7 +606,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 IPath path = new Path(userDir).append(saName);
                 setDestinationValue(path.toOSString());
             }
-            saDestinationFilePath = this.getDestinationValue();
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             zipOption = "false"; // Do not extract the ZIP //$NON-NLS-1$
         }
@@ -908,16 +848,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         // update directory names history
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
-            if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
-                String[] directoryNames = settings.getArray(PETALS_EXPORT_DESTINATIONS);
-                if (directoryNames == null) {
-                    directoryNames = new String[0];
-                }
-
-                directoryNames = addToHistory(directoryNames, saDestinationFilePath);
-                settings.put(PETALS_EXPORT_DESTINATIONS, directoryNames);
-                return;
-            }
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             if (directoryNames == null) {
                 directoryNames = new String[0];
@@ -965,16 +895,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(STORE_WSDL_ID, wsdlButton.getSelection());
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
             }
-
-            if (exportTypeCombo != null
-                    && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.JBOSSESB)) {
-
-                settings.put(ESB_EXPORT_TYPE, esbTypeCombo.getText());
-                settings.put(ESB_SERVICE_NAME, esbServiceName.getText());
-                settings.put(ESB_CATEGORY, esbCategory.getText());
-                settings.put(QUERY_MESSAGE_NAME, esbQueueMessageName.getText());
-
-            }
         }
     }
 
@@ -985,28 +905,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             return JavaJobScriptsExportWSWizardPage.super.getExportChoiceMap();
         }
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
-        if (comboType.equals(JobExportType.PETALSESB)) {
-            exportChoiceMap.put(ExportChoice.needSourceCode, sourceButton.getSelection());
-            exportChoiceMap.put(ExportChoice.needDependencies, Boolean.TRUE);
-            exportChoiceMap.put(ExportChoice.needUserRoutine, Boolean.TRUE);
-            return exportChoiceMap;
-        }
         exportChoiceMap.put(ExportChoice.needJobItem, false);
         exportChoiceMap.put(ExportChoice.needSourceCode, false);
-
-        if (comboType.equals(JobExportType.JBOSSESB)) {
-            exportChoiceMap.put(ExportChoice.needMetaInfo, true);
-            exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
-            exportChoiceMap.put(ExportChoice.esbQueueMessageName, esbQueueMessageName.getText());
-            exportChoiceMap.put(ExportChoice.esbServiceName, esbServiceName.getText());
-            exportChoiceMap.put(ExportChoice.esbCategory, esbCategory.getText());
-            exportChoiceMap.put(ExportChoice.esbExportType, esbTypeCombo.getText());
-            exportChoiceMap.put(ExportChoice.needDependencies, jobItemButton.getSelection());
-            exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
-            exportChoiceMap.put(ExportChoice.needSourceCode, jobItemButton.getSelection()); // take source code also
-            // when take item
-            return exportChoiceMap;
-        }
 
         if (comboType.equals(JobExportType.OSGI)) {
             exportChoiceMap.put(ExportChoice.needMetaInfo, true);
@@ -1081,15 +981,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             createOptions(optionsGroup, font);
             restoreWidgetValuesForPOJO();
             break;
-        case JBOSSESB:
-            createOptionsForJbossESB(left, font);
-            restoreWidgetValuesForESB();
-            break;
-        case PETALSESB:
-            createOptionsforPetalsESB(left, font);
-            restoreWidgetValuesForPetalsESB();
-            restoreWidgetValues();
-            break;
         case OSGI:
             createOptionsForOSGIESB(left, font);
             restoreWidgetValuesForOSGI();
@@ -1112,7 +1003,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
             if (directoryNames[0].endsWith(getPetalsDefaultSaName())) {
                 setDestinationValue(directoryNames[0]);
-                saDestinationFilePath = directoryNames[0];
             }
 
             for (String directoryName : directoryNames) {
@@ -1121,197 +1011,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
-    private void createOptionsforPetalsESB(Composite left, Font font) {
-        GridLayout layout;
-        // Buttons
-        singletonButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        singletonButton.setText(Messages.getString("PetalsJobScriptsExportWizardPage.SingletonJob")); //$NON-NLS-1$
-        singletonButton.setFont(font);
-        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 1;
-        singletonButton.setLayoutData(gd);
-        singletonButton.setSelection(PetalsTemporaryOptionsKeeper.INSTANCE.isSingleton());
-        singletonButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                boolean selection = singletonButton.getSelection();
-                PetalsTemporaryOptionsKeeper.INSTANCE.setSingleton(selection);
-            }
-        });
-
-        generateEndpointButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        generateEndpointButton.setText(Messages.getString("PetalsJobScriptsExportWizardPage.GenerateEndpoint")); //$NON-NLS-1$
-        generateEndpointButton.setFont(font);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 1;
-        generateEndpointButton.setLayoutData(gd);
-        generateEndpointButton.setSelection(PetalsTemporaryOptionsKeeper.INSTANCE.isGenerateEndpoint());
-        generateEndpointButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                boolean selection = generateEndpointButton.getSelection();
-                PetalsTemporaryOptionsKeeper.INSTANCE.setGenerateEndpoint(selection);
-            }
-        });
-
-        sourceButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        sourceButton.setLayoutData(gd);
-        sourceButton.setSelection(true);
-        sourceButton.setFont(font);
-
-        validateByWsdlButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        validateByWsdlButton.setText("Validate Petals messages"); //$NON-NLS-1$
-        validateByWsdlButton.setFont(font);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 1;
-        validateByWsdlButton.setLayoutData(gd);
-        validateByWsdlButton.setSelection(PetalsTemporaryOptionsKeeper.INSTANCE.isValidateByWsdl());
-        validateByWsdlButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                boolean selection = validateByWsdlButton.getSelection();
-                PetalsTemporaryOptionsKeeper.INSTANCE.setValidateByWsdl(selection);
-                validateOptionsGroup();
-            }
-        });
-
-        // Default context
-        left = new Composite(optionsGroupComposite, SWT.NONE);
-        left.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        layout = new GridLayout(2, false);
-        layout.marginHeight = 0;
-        layout.marginBottom = 7;
-        layout.horizontalSpacing = 10;
-        left.setLayout(layout);
-
-        new Label(left, SWT.NONE).setText(Messages.getString("PetalsJobScriptsExportWizardPage.JobContext")); //$NON-NLS-1$
-        contextCombo = new Combo(left, SWT.DROP_DOWN | SWT.READ_ONLY);
-        gd = new GridData();
-        gd.widthHint = 180;
-        contextCombo.setLayoutData(gd);
-
-        if (getProcessItem() != null) {
-            List<String> contextNames = ExportJobUtil.getJobContexts(getProcessItem());
-            contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
-        }
-
-        // Exposed contexts
-        left = new Composite(optionsGroupComposite, SWT.NONE);
-        left.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        layout = new GridLayout(2, false);
-        layout.marginHeight = 0;
-        layout.marginBottom = 7;
-        layout.horizontalSpacing = 10;
-        left.setLayout(layout);
-
-        final Link exposedContextsLink = new Link(left, SWT.NONE);
-        exposedContextsLink.setText(Messages.getString("PetalsJobScriptsExportWizardPage.EditTheExposedContexts")); //$NON-NLS-1$
-        exposedContextsLink.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-
-                ContextExportDialog dlg = new ContextExportDialog(getShell(), currentCtxTypes);
-                if (dlg.open() == Window.OK) {
-                    currentCtxTypes = dlg.getContexts();
-                    String contextName = contextCombo.getItem(contextCombo.getSelectionIndex());
-                    ctxToTypeDefs.put(contextName, currentCtxTypes);
-                    contextCombo.notifyListeners(SWT.Selection, new Event());
-                    validateOptionsGroup();
-                }
-            }
-        });
-
-        // Additional listeners
-        contextCombo.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                widgetSelected(e);
-            }
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-
-                int index = contextCombo.getSelectionIndex();
-                if (index < 0) {
-                    return;
-                }
-
-                // Get the context types
-                String value = contextCombo.getItem(index);
-                currentCtxTypes = ctxToTypeDefs.get(value);
-                if (currentCtxTypes == null) {
-                    try {
-                        currentCtxTypes = TalendUtils.getWsdlSchemaForContexts(getProcessItem(), value);
-
-                    } catch (PetalsExportException e1) {
-
-                        currentCtxTypes = new ArrayList<ContextTypeDefinition>(0);
-                        MessageDialog.openError(getShell(), Messages.getString("PetalsJobScriptsExportWizardPage.ContextError"), //$NON-NLS-1$
-                                Messages.getString("PetalsJobScriptsExportWizardPage.3")); //$NON-NLS-1$
-
-                    } finally {
-                        ctxToTypeDefs.put(value, currentCtxTypes);
-                    }
-                }
-
-                PetalsTemporaryOptionsKeeper.INSTANCE.setContexts(currentCtxTypes);
-
-                // Update the link label
-                int exportedCtxCount = 0;
-                for (ContextTypeDefinition ctx : currentCtxTypes) {
-                    if (ctx.getExportType() != ContextExportType.NOT_EXPORTED) {
-                        exportedCtxCount++;
-                    }
-                }
-
-                exposedContextsLink.setText(Messages.getString("PetalsJobScriptsExportWizardPage.EditTheExposedContexts_") + exportedCtxCount + ")</a>"); //$NON-NLS-1$ //$NON-NLS-2$
-                exposedContextsLink.setEnabled(currentCtxTypes.size() != 0);
-            }
-        });
-
-        if (contextCombo.getItemCount() > 0) {
-            contextCombo.select(0);
-            contextCombo.notifyListeners(SWT.Selection, new Event());
-        }
-    }
-
     @Override
     protected boolean validateOptionsGroup() {
-
-        boolean isValid = false;
-        if (super.validateOptionsGroup()) {
-
-            // WSDL-based validation can only be checked if there is no attachment
-            boolean hasAttachment = false;
-            for (int i = 0; !hasAttachment && currentCtxTypes != null && i < currentCtxTypes.size(); i++) {
-                ContextTypeDefinition def = currentCtxTypes.get(i);
-                hasAttachment = def.getExportType() != ContextExportType.NOT_EXPORTED
-                        || def.getExportType() != ContextExportType.PARAMETER;
-            }
-
-            if (hasAttachment && PetalsTemporaryOptionsKeeper.INSTANCE.isValidateByWsdl()) {
-                setErrorMessage(Messages.getString("PetalsJobScriptsExportWizardPage.WsdlBasedValidationNotSupported")); //$NON-NLS-1$
-                isValid = false;
-            } else {
-                setErrorMessage(null);
-                isValid = true;
-            }
-
-            if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
-                if (isMultiNodes()) {
-                    setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
-                    isValid = false;
-                }
-            }
-        }
+        setErrorMessage(null);
+        boolean isValid = super.validateOptionsGroup();
 
         // TESB-13867 Export limitations for ESB 'Jobs'
         // add extra checks.
@@ -1324,82 +1027,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
         setPageComplete(isValid);
         return isValid;
-    }
-
-    private void createOptionsForJbossESB(Composite left, Font font) {
-        contextButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
-        contextButton.setSelection(true);
-        contextButton.setFont(font);
-
-        String jobLabel = ""; //$NON-NLS-1$
-        contextCombo = new Combo(left, SWT.PUSH);
-        if (getProcessItem() != null) {
-            try {
-                setProcessItem((ProcessItem) ProxyRepositoryFactory.getInstance()
-                        .getUptodateProperty(getProcessItem().getProperty()).getItem());
-            } catch (PersistenceException e) {
-                e.printStackTrace();
-            }
-            jobLabel = (getProcessItem()).getProperty().getLabel();
-            List<String> contextNames = ExportJobUtil.getJobContexts(getProcessItem());
-            contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
-            if (contextNames.size() > 0) {
-                contextCombo.select(0);
-            }
-        }
-
-        applyToChildrenButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        applyToChildrenButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ApplyToChildren")); //$NON-NLS-1$
-        applyToChildrenButton.setSelection(true);
-
-        jobItemButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        jobItemButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
-        jobItemButton.setSelection(true);
-        jobItemButton.setFont(font);
-        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 1;
-        jobItemButton.setLayoutData(gd);
-
-        Label esbTypeLabel = new Label(left, SWT.None);
-        esbTypeLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.esbExportTypeLabel")); //$NON-NLS-1$
-
-        esbTypeCombo = new Combo(left, SWT.PUSH);
-        // commented by fwang on Jan 6,2013 for bug TDI-23827
-        // gd = new GridData();
-        // gd.horizontalSpan = 2;
-        // esbTypeCombo.setLayoutData(gd);
-
-        esbTypeCombo.add(ESBTYPE_JBOSS_MQ);
-        esbTypeCombo.add(ESBTYPE_JBOSS_MESSAGING);
-        esbTypeCombo.select(0);
-
-        Label esbServiceNameLabel = new Label(left, SWT.RIGHT);
-        esbServiceNameLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.esbServiceNameLabel")); //$NON-NLS-1$
-
-        esbServiceName = new Text(left, SWT.BORDER);
-        esbServiceName.setText("DefaultServiceName"); //$NON-NLS-1$
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        esbServiceName.setLayoutData(gd);
-
-        Label esbCategoryLabel = new Label(left, SWT.None);
-        esbCategoryLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.esbCategoryLabel")); //$NON-NLS-1$
-
-        esbCategory = new Text(left, SWT.BORDER);
-        esbCategory.setText("DefaultCategory"); //$NON-NLS-1$
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        esbCategory.setLayoutData(gd);
-
-        Label queueLabel = new Label(left, SWT.None);
-        queueLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.queueName")); //$NON-NLS-1$
-
-        esbQueueMessageName = new Text(left, SWT.BORDER);
-        esbQueueMessageName.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.actionRequest", jobLabel)); //$NON-NLS-1$
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        esbQueueMessageName.setLayoutData(gd);
     }
 
     private void createOptionsForOSGIESB(Composite optionsComposite, Font font) {
@@ -1567,39 +1194,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (!super.checkExport()) {
             return false;
         }
-        if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
-            chkButton.setVisible(false);
-            zipOption = null;
-            if (isMultiNodes()) {
-                setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
-            }
-            validateOptionsGroup();
-        }
-        if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
-            if (isMultiNodes()) {
-                setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
-            }
-        }
-        if (getCurrentExportType1().equals(JobExportType.JBOSSESB)) {
-            if (isMultiNodes()) {
-                setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
-            }
-            // check if the needed librairy is installed.
-            String requiredJar = "jbossesb-rosetta.jar"; //$NON-NLS-1$
-
-            List<ModuleNeeded> toCheck = ModulesNeededProvider.getModulesNeeded();
-            for (ModuleNeeded current : toCheck) {
-                if (requiredJar.equals(current.getModuleName())) {
-                    if (current.getStatus() == ELibraryInstallStatus.NOT_INSTALLED) {
-                        StringBuilder buff = new StringBuilder();
-                        buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.exportForJBoss")); //$NON-NLS-1$
-                        buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.checkVersion")); //$NON-NLS-1$
-                        setErrorMessage(buff.toString());
-                        break;
-                    }
-                }
-            }
-        }
         if (getCurrentExportType1().equals(JobExportType.OSGI)) {
             if (isMultiNodes()) {
                 setErrorMessage("This type of export support actually only a single job export.");
@@ -1626,46 +1220,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     @Override
     public boolean finish() {
-        if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.PETALSESB)) {
-            if (!ensureTargetFileIsValid(new File(saDestinationFilePath))) {
-                return true;
-            }
-            File suFile = null;
-            suFile = new File(getDestinationValue());
-            // suFile = new File(new File(directory, suName).getAbsolutePath());
-            suFile.exists();
-            boolean ok = true;
-            try {
-                // Get the job description
-                String desc = (getProcessItem()).getProperty().getDescription();
-
-                // The super class packages the job in the SU file
-                if ((ok = super.finish()) == true) {
-                    if (desc == null) {
-                        desc = ""; //$NON-NLS-1$
-                    } else {
-                        // Replace XML mark-up characters
-                        desc = desc.replaceAll("<", "&lt;"); //$NON-NLS-1$ //$NON-NLS-2$
-                        desc = desc.replaceAll(">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                    suFile.exists();
-
-                    // We now have to package it in the SA
-                    File saFile = SaUtils.createSaForTalend(suFile, saDestinationFilePath, desc);
-                    if (saFile == null || !saFile.exists()) {
-                        ok = false;
-                        MessageDialog.openError(getShell(), Messages.getString("PetalsJobScriptsExportWizardPage.SaExportError"), //$NON-NLS-1$
-                                Messages.getString("PetalsJobScriptsExportWizardPage.SaExportErrorDetails")); //$NON-NLS-1$
-                    }
-                }
-
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
-            }
-
-            return ok;
-        }
-
         saveWidgetValues();
 
         return super.finish();

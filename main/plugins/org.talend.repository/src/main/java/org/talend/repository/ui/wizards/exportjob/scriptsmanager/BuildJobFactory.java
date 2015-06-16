@@ -45,8 +45,6 @@ public class BuildJobFactory {
             break;
         case WSWAR:
         case WSZIP:
-        case JBOSSESB:
-        case PETALSESB:
         case OSGI:
             break;
         default:

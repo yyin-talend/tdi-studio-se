@@ -19,10 +19,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.OSGIJavaScriptForESBWithMavenManager;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -50,10 +48,6 @@ public class JobScriptsManagerFactory {
         case WSZIP:
             return new JobJavaScriptsWSManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort,
                     FileConstants.ZIP_FILE_SUFFIX);
-        case JBOSSESB:
-            return new JobJavaScriptESBManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
-        case PETALSESB:
-            return new PetalsJobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
         case OSGI:
             if (exportChoiceMap.containsKey(ExportChoice.needMavenScript)
                     && exportChoiceMap.get(ExportChoice.needMavenScript) == Boolean.TRUE) {
