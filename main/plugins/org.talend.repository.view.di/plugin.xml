@@ -69,9 +69,9 @@
             appearsBefore="org.talend.repository.viewer.root.contexts"
             contentProvider="org.talend.repository.view.di.viewer.content.JobDesignsContentProvider"
             icon="icons/jobDesigns.png"
-            id="org.talend.repository.viewer.root.jobDesigns"
+            id="org.talend.repository.viewer.root.jobProcess"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="%NavigatorContent.jobDesigns"
+            name="%NavigatorContent.jobProcess"
             priority="high">
          <triggerPoints>
             <or>
@@ -469,7 +469,7 @@
             icon="icons/jobDesigns.png"
             isResouce="true"
             key="repository.process"
-            label="%NavigatorContent.jobDesigns"
+            label="%NavigatorContent.jobProcess"
             ordinal="2"
             products="DI|MDM"
             type="PROCESS">

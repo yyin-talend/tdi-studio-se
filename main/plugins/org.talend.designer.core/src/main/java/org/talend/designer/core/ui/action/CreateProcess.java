@@ -39,6 +39,7 @@ import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.OverlayImageProvider;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProjectRepositoryNode;
@@ -71,12 +72,19 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
 
     private static final String CREATE_LABEL = Messages.getString("CreateProcess.createJob"); //$NON-NLS-1$
 
+    private static final String CREATE_STANDARD_LABEL = Messages.getString("CreateProcess.action.createStandardJob"); //$NON-NLS-1$
+
     private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
 
     public CreateProcess() {
         super();
-        this.setText(CREATE_LABEL);
-        this.setToolTipText(CREATE_LABEL);
+        if (PluginChecker.isStormPluginLoader() || PluginChecker.isMapReducePluginLoader()) {
+            this.setText(CREATE_STANDARD_LABEL);
+            this.setToolTipText(CREATE_STANDARD_LABEL);
+        } else {
+            this.setText(CREATE_LABEL);
+            this.setToolTipText(CREATE_LABEL);
+        }
 
         Image folderImg = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
         this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
@@ -84,8 +92,13 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
 
     public CreateProcess(boolean isToolbar) {
         super();
-        this.setText(CREATE_LABEL);
-        this.setToolTipText(CREATE_LABEL);
+        if (PluginChecker.isStormPluginLoader() || PluginChecker.isMapReducePluginLoader()) {
+            this.setText(CREATE_STANDARD_LABEL);
+            this.setToolTipText(CREATE_STANDARD_LABEL);
+        } else {
+            this.setText(CREATE_LABEL);
+            this.setToolTipText(CREATE_LABEL);
+        }
         setToolbar(isToolbar);
         Image folderImg = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
         this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
