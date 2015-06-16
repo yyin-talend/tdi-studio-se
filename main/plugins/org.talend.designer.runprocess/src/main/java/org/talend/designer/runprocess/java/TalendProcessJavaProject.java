@@ -297,7 +297,6 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                 mavenLauncher.execute(monitor);
             }
             buildWholeCodeProject();
-            buildWholeCodeProject();
             /*
              * FIXME, because the marker issue, we have to build whole project to get the markers.
              * 
@@ -330,7 +329,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                 project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
             }
             // project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
-            project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+            project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
