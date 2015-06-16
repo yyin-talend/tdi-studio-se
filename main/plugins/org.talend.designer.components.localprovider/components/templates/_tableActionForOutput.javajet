@@ -31,10 +31,9 @@ if (!isParallelize) {
 			if(isDynamic) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
-					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 					%>
-					stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>")<%if(convertToUppercase_tableAction){%>.toUpperCase()<%}%>)+")<%=ending%>"));
+					stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conns_dynamic.get(0).getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>")<%if(convertToUppercase_tableAction){%>.toUpperCase()<%}%>)+")<%=ending%>"));
 					<%
 				}
 			} else {
@@ -55,10 +54,9 @@ if (!isParallelize) {
 			if(isDynamic) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
-					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 					%>
-					stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>")<%if(convertToUppercase_tableAction){%>.toUpperCase()<%}%>)+")<%=ending%>"));
+					stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conns_dynamic.get(0).getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>")<%if(convertToUppercase_tableAction){%>.toUpperCase()<%}%>)+")<%=ending%>"));
 				<%
 				}
 			} else {
@@ -222,10 +220,9 @@ if (!isParallelize) {
                         			if(isDynamic) {
                         				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
                         				if(conns_dynamic!=null && conns_dynamic.size()>0){
-                        					IConnection conn = conns_dynamic.get(0);
                         					String query=manager.getCreateTableSQL(stmtStructure);
     										%>
-    										stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>")<%if(convertToUppercase_tableAction){%>.toUpperCase()<%}%>)+")<%=ending%>"));
+    										stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conns_dynamic.get(0).getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>")<%if(convertToUppercase_tableAction){%>.toUpperCase()<%}%>)+")<%=ending%>"));
     									<%
     									}
     								} else {
@@ -253,10 +250,9 @@ if (!isParallelize) {
                     			if(isDynamic) {
                     				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
                     				if(conns_dynamic!=null && conns_dynamic.size()>0){
-                    					IConnection conn = conns_dynamic.get(0);
                     					String query=manager.getCreateTableSQL(stmtStructure);
         								%>
-        								stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>")<%if(convertToUppercase_tableAction){%>.toUpperCase()<%}%>)+")<%=ending%>"));
+        								stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conns_dynamic.get(0).getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>")<%if(convertToUppercase_tableAction){%>.toUpperCase()<%}%>)+")<%=ending%>"));
         							<%
         							}
         						} else {
