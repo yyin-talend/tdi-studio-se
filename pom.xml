@@ -59,7 +59,6 @@
 		<module>i18n/plugins/org.talend.repository.nl</module>
 		<module>i18n/plugins/org.talend.repository.view.di.nl</module>
 		<module>i18n/plugins/org.talend.sbi.engines.client.nl</module>
-		<module>i18n/plugins/org.talend.scheduler.nl</module>
 		<module>i18n/plugins/org.talend.spagic.engines.client.nl</module>
 		<module>i18n/plugins/org.talend.sqlbuilder.nl</module>
 		<module>main/features/org.talend.componentdesigner.feature</module>
@@ -136,7 +135,6 @@
 		<module>main/plugins/org.talend.repository.json</module>
 		<module>main/plugins/org.talend.repository.view.di</module>
 		<module>main/plugins/org.talend.sbi.engines.client</module>
-		<module>main/plugins/org.talend.scheduler</module>
 		<module>main/plugins/org.talend.spagic.engines.client</module>
 		<module>main/plugins/org.talend.sqlbuilder</module>
 		<module>main/plugins/org.talend.sqlbuilder.jars</module>
