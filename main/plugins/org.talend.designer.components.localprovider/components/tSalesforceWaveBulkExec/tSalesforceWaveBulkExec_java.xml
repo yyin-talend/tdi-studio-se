@@ -145,6 +145,61 @@
         </PARAMETER>
 
         <PARAMETER
+          NAME="CHARSET"
+          FIELD="TEXT"
+          NUM_ROW="18"
+          REQUIRED="true"
+          SHOW="true"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"UTF-8"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="FIELDS_DELIMITED_BY"
+          FIELD="TEXT"
+          NUM_ROW="18"
+          REQUIRED="true"
+          SHOW="true"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>";"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="FIELDS_ENCLOSED_BY"
+          FIELD="TEXT"
+          NUM_ROW="23"
+          REQUIRED="true"
+          SHOW="true"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"\""</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="LINES_TERMINATED_BY"
+          FIELD="TEXT"
+          NUM_ROW="23"
+          REQUIRED="true"
+          SHOW="true"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"\n"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="NUMERIC_FORMAT"
+          FIELD="TEXT"
+          NUM_ROW="23"
+          REQUIRED="true"
+          SHOW="false"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"#.##"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
           NAME="UPLODE_JSON_METADATA"
           FIELD="CHECK"
           NUM_ROW="30"
@@ -213,62 +268,6 @@
                     OR (UPLODE_JSON_METADATA == 'false')"
         >
         <DEFAULT>"CRM"</DEFAULT>
-        </PARAMETER>
-
-        <!-- hidden parameters -->
-        <PARAMETER
-          NAME="CHARSET"
-          FIELD="TEXT"
-          NUM_ROW="45"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"UTF-8"</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="FIELDS_DELIMITED_BY"
-          FIELD="TEXT"
-          NUM_ROW="45"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>","</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="FIELDS_ENCLOSED_BY"
-          FIELD="TEXT"
-          NUM_ROW="48"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"\""</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="LINES_TERMINATED_BY"
-          FIELD="TEXT"
-          NUM_ROW="48"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"\n"</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="NUMERIC_FORMAT"
-          FIELD="TEXT"
-          NUM_ROW="48"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"#.##"</DEFAULT>
         </PARAMETER>
 
         <PARAMETER
