@@ -404,7 +404,8 @@ public final class TalendEditorPaletteFactory {
 
                     Iterator<IComponent> componentIter = filteredComponent.iterator();
                     while (componentIter.hasNext()) {
-                        if (!ComponentUtilities.isComponentVisible(componentIter.next())) {
+                        IComponent iComponent = componentIter.next();
+                        if (iComponent == null || !ComponentUtilities.isComponentVisible(iComponent) || iComponent.isTechnical()) {
                             componentIter.remove();
                         }
                     }
