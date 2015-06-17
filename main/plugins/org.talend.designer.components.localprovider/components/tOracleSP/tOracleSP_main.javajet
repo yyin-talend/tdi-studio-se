@@ -64,7 +64,7 @@ class JavaToDbType {
 		} else if (javaType.equalsIgnoreCase("char") || ("Character").equals(javaType)) {
 			return "CHAR";
 		} else if (("byte[]").equals(javaType)) {
-			return "RAW";
+			return "ARRAY";
 		} else if (("java.util.Date").equals(javaType)) {
 			return "DATE";
 		} else if (javaType.equalsIgnoreCase("boolean")) {
