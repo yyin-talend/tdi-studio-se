@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.views.jobsettings.tabs;
 
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IWorkspace;
@@ -22,6 +23,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -62,9 +66,10 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.editor.IJobEditorHandler;
 import org.talend.core.ui.editor.JobEditorHandlerManager;
 import org.talend.core.utils.KeywordsValidator;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 
 /**
  * yzhang class global comment. Detailled comment
@@ -100,6 +105,8 @@ public class MainComposite extends AbstractTabComposite {
     private String lastVersionFound;
 
     private boolean allowEnableControl;
+
+    private ControlDecoration nameTextDecorator;
 
     /**
      * yzhang MainComposite constructor comment.
@@ -160,7 +167,14 @@ public class MainComposite extends AbstractTabComposite {
         nameText.setText(nameContent != null ? nameContent : ""); //$NON-NLS-1$
         nameText.setEnabled(allowEnableControl);
 
-        CLabel nameLabel = widgetFactory.createCLabel(composite, Messages.getString("NameSection.Name")); //$NON-NLS-1$
+        // Adding the decorator for nameText
+        nameTextDecorator = new ControlDecoration(nameText, SWT.TOP | SWT.RIGHT);
+        FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                FieldDecorationRegistry.DEC_ERROR);
+        nameTextDecorator.setImage(fieldDecoration.getImage());
+        nameTextDecorator.hide();
+
+        CLabel nameLabel = widgetFactory.createCLabel(composite, Messages.getString("MainComposite.NameSection.Name")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(nameText, -ITabbedPropertyConstants.HSPACE);
@@ -183,7 +197,8 @@ public class MainComposite extends AbstractTabComposite {
         }
         authorText.setEnabled(false);
 
-        CLabel authorLabel = widgetFactory.createCLabel(composite, Messages.getString("VersionAuthorSection.authorLabel")); //$NON-NLS-1$
+        CLabel authorLabel = widgetFactory.createCLabel(composite,
+                Messages.getString("MainComposite.VersionAuthorSection.authorLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(authorText, -ITabbedPropertyConstants.HSPACE);
@@ -215,7 +230,8 @@ public class MainComposite extends AbstractTabComposite {
             versionText.setText(version != null ? version : ""); //$NON-NLS-1$
             versionText.setEnabled(allowEnableControl);
 
-            CLabel versionLabel = widgetFactory.createCLabel(composite, Messages.getString("VersionAuthorSection.versionLabel")); //$NON-NLS-1$
+            CLabel versionLabel = widgetFactory.createCLabel(composite,
+                    Messages.getString("MainComposite.VersionAuthorSection.versionLabel")); //$NON-NLS-1$
             data = new FormData();
             data.left = new FormAttachment(authorText, ITabbedPropertyConstants.HSPACE * 3);
             data.right = new FormAttachment(versionText, -ITabbedPropertyConstants.HSPACE);
@@ -237,7 +253,8 @@ public class MainComposite extends AbstractTabComposite {
             jobTypeValue = jobTypeCCombo.getText();
             jobTypeCCombo.setEnabled(allowEnableControl);
 
-            CLabel jobTypeLabel = widgetFactory.createCLabel(composite, Messages.getString("JobTypeSection.jobTypeLabel")); //$NON-NLS-1$
+            CLabel jobTypeLabel = widgetFactory.createCLabel(composite,
+                    Messages.getString("MainComposite.JobTypeSection.jobTypeLabel")); //$NON-NLS-1$
             data = new FormData();
             data.left = new FormAttachment(0, 0);
             data.right = new FormAttachment(jobTypeCCombo, -ITabbedPropertyConstants.HSPACE);
@@ -257,7 +274,7 @@ public class MainComposite extends AbstractTabComposite {
             jobFrameworkCCombo.setEnabled(allowEnableControl);
 
             CLabel jobFrameworkLabel = widgetFactory.createCLabel(composite,
-                    Messages.getString("JobFrameworkSection.jobFrameworkLabel")); //$NON-NLS-1$
+                    Messages.getString("MainComposite.JobFrameworkSection.jobFrameworkLabel")); //$NON-NLS-1$
             data = new FormData();
             data.left = new FormAttachment(jobTypeCCombo, ITabbedPropertyConstants.HSPACE);
             data.right = new FormAttachment(jobFrameworkCCombo, -ITabbedPropertyConstants.HSPACE);
@@ -274,7 +291,8 @@ public class MainComposite extends AbstractTabComposite {
             purposeText.setText(content != null ? content : ""); //$NON-NLS-1$
             purposeText.setEnabled(allowEnableControl);
 
-            CLabel purposeLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
+            CLabel purposeLabel = widgetFactory.createCLabel(composite,
+                    Messages.getString("MainComposite.PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
             data = new FormData();
             data.left = new FormAttachment(0, 0);
             data.right = new FormAttachment(purposeText, -ITabbedPropertyConstants.HSPACE);
@@ -302,7 +320,8 @@ public class MainComposite extends AbstractTabComposite {
             purposeText.setText(content != null ? content : ""); //$NON-NLS-1$
             purposeText.setEnabled(enableControl);
 
-            CLabel purposeLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
+            CLabel purposeLabel = widgetFactory.createCLabel(composite,
+                    Messages.getString("MainComposite.PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
             data = new FormData();
             data.left = new FormAttachment(0, 0);
             data.right = new FormAttachment(purposeText, -ITabbedPropertyConstants.HSPACE);
@@ -320,7 +339,8 @@ public class MainComposite extends AbstractTabComposite {
             statusText.setEnabled(enableControl);
         }
 
-        CLabel statusLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.statusLabel")); //$NON-NLS-1$
+        CLabel statusLabel = widgetFactory.createCLabel(composite,
+                Messages.getString("MainComposite.PurposeStatusSection.statusLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(purposeText, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(statusText, -ITabbedPropertyConstants.HSPACE);
@@ -340,7 +360,8 @@ public class MainComposite extends AbstractTabComposite {
         descriptionText.setEnabled(true);
         descriptionText.setEditable(allowEnableControl);
 
-        CLabel descriptionLabel = widgetFactory.createCLabel(composite, Messages.getString("DescriptionSection.Label")); //$NON-NLS-1$
+        CLabel descriptionLabel = widgetFactory.createCLabel(composite,
+                Messages.getString("MainComposite.DescriptionSection.Label")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
@@ -358,7 +379,8 @@ public class MainComposite extends AbstractTabComposite {
         creationDate.setText(cDate != null ? FORMATTER.format(cDate) : ""); //$NON-NLS-1$
         creationDate.setEnabled(enableControl);
 
-        CLabel creationLabel = widgetFactory.createCLabel(composite, Messages.getString("DateSection.creationLabel")); //$NON-NLS-1$
+        CLabel creationLabel = widgetFactory.createCLabel(composite,
+                Messages.getString("MainComposite.DateSection.creationLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(creationDate, -ITabbedPropertyConstants.HSPACE);
@@ -376,7 +398,8 @@ public class MainComposite extends AbstractTabComposite {
         modificationDate.setText(mDate != null ? FORMATTER.format(mDate) : ""); //$NON-NLS-1$
         modificationDate.setEnabled(enableControl);
 
-        CLabel modificationLabel = widgetFactory.createCLabel(composite, Messages.getString("DateSection.ModificationLabel")); //$NON-NLS-1$
+        CLabel modificationLabel = widgetFactory.createCLabel(composite,
+                Messages.getString("MainComposite.DateSection.ModificationLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(creationDate, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(modificationDate, -ITabbedPropertyConstants.HSPACE);
@@ -392,7 +415,6 @@ public class MainComposite extends AbstractTabComposite {
             btnConfirm.setEnabled(false);
 
             // addListener
-
             nameText.addModifyListener(new ModifyListener() {
 
                 @Override
@@ -647,28 +669,53 @@ public class MainComposite extends AbstractTabComposite {
                 || descriptionText.isDisposed() || btnConfirm == null || btnConfirm.isDisposed()) {
             return;
         }
+        nameTextDecorator.hide();
         if (!btnConfirm.isDisposed() && !nameText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getLabel()))) {
             boolean isValid = true;
-            try {
-                List<IRepositoryViewObject> listExistingObjects = proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS,
-                        true, false);
-                if (PluginChecker.isStormPluginLoader()) {
-                    listExistingObjects.addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_STORM, true, false));
+            String errorMessage = null;
+            if (nameText.getText().length() == 0) {
+                errorMessage = Messages.getString("MainComposite.NameEmptyError"); //$NON-NLS-1$
+                isValid = false;
+            } else if (nameText.getText().startsWith(" ")//$NON-NLS-1$
+                    || !Pattern.matches(RepositoryConstants.getPattern(repositoryObject.getRepositoryObjectType()),
+                            nameText.getText()) || nameText.getText().trim().contains(" ")) { //$NON-NLS-1$
+                errorMessage = Messages.getString("MainComposite.NameFormatError"); //$NON-NLS-1$
+                isValid = false;
+            } else if (KeywordsValidator.isKeyword(nameText.getText()) || "java".equalsIgnoreCase(nameText.getText())) {//$NON-NLS-1$
+                errorMessage = Messages.getString("MainComposite.KeywordsError"); //$NON-NLS-1$
+                isValid = false;
+            } else if (nameText.getText().equalsIgnoreCase(ProjectManager.getInstance().getCurrentProject().getLabel())) {
+                errorMessage = Messages.getString("MainComposite.SameAsProjectname");//$NON-NLS-1$
+                isValid = false;
+            } else {
+                try {
+                    List<IRepositoryViewObject> listExistingObjects = proxyRepositoryFactory.getAll(
+                            ERepositoryObjectType.PROCESS, true, false);
+                    if (PluginChecker.isStormPluginLoader()) {
+                        listExistingObjects.addAll(proxyRepositoryFactory
+                                .getAll(ERepositoryObjectType.PROCESS_STORM, true, false));
+                    }
+                    if (PluginChecker.isMapReducePluginLoader()) {
+                        listExistingObjects.addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_MR, true, false));
+                    }
+                    if (repositoryObject.getProperty() != null
+                            && !proxyRepositoryFactory.isNameAvailable(repositoryObject.getProperty().getItem(),
+                                    nameText.getText(), listExistingObjects)) {
+                        errorMessage = Messages.getString("MainComposite.ItemExistsError");//$NON-NLS-1$
+                        isValid = false;
+                    }
+                } catch (PersistenceException e1) {
+                    e1.printStackTrace();
                 }
-                if (PluginChecker.isMapReducePluginLoader()) {
-                    listExistingObjects.addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_MR, true, false));
-                }
-                if (repositoryObject.getProperty() != null
-                        && (!proxyRepositoryFactory.isNameAvailable(repositoryObject.getProperty().getItem(), nameText.getText(),
-                                listExistingObjects) || KeywordsValidator.isKeyword(nameText.getText()))) {
-                    btnConfirm.setEnabled(false);
-                    isValid = false;
-                }
-            } catch (PersistenceException e1) {
-                e1.printStackTrace();
             }
+
             if (isValid) {
                 btnConfirm.setEnabled(true);
+                nameTextDecorator.hide();
+            } else {
+                btnConfirm.setEnabled(false);
+                nameTextDecorator.setDescriptionText(errorMessage);
+                nameTextDecorator.show();
             }
         } else if (!btnConfirm.isDisposed()
                 && !versionText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getVersion()))) {
