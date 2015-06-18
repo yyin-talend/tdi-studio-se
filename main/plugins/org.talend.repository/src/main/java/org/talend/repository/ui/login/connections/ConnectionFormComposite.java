@@ -63,7 +63,6 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
-import org.talend.repository.ui.login.LoginComposite;
 import org.talend.repository.ui.login.LoginDialogV2;
 
 /**
@@ -399,14 +398,14 @@ public class ConnectionFormComposite extends Composite {
                 if (authenticationNeeded) {
                     passwordText.setEnabled(true);
                     passwordText.setEditable(true);
-                    passwordText.setBackground(LoginComposite.WHITE_COLOR);
+                    passwordText.setBackground(LoginDialogV2.WHITE_COLOR);
                     hideControl(passwordText, false, false);
                     hideControl(passwordLabel, false, false);
                 } else {
                     passwordText.setText(""); //$NON-NLS-1$
                     passwordText.setEnabled(false);
                     passwordText.setEditable(false);
-                    passwordText.setBackground(LoginComposite.GREY_COLOR);
+                    passwordText.setBackground(LoginDialogV2.GREY_COLOR);
                     hideControl(passwordText, true, false);
                     hideControl(passwordLabel, true, false);
                 }

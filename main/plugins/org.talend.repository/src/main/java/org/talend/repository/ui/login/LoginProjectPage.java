@@ -182,8 +182,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     protected String finishButtonAction;
 
-    public static boolean isRestart;
-
     protected boolean afterUpdate = false;
 
     protected IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
@@ -952,7 +950,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     public void finishPressed() {
-        if (isRestart) {
+        if (LoginHelper.isRestart) {
             loginDialog.okPressed();
         } else {
             boolean isLogInOk = loginHelper.logIn(getConnection(), getProject());
@@ -988,7 +986,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     tisService.setNeedResartAfterUpdate(afterUpdate);
                 }
                 // need to relauch the studio automaticlly after updating
-                isRestart = true;
+                LoginHelper.isRestart = true;
                 loginHelper.saveLastConnectionBean(getConnection());
                 finishPressed();
             } else {
@@ -1004,7 +1002,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     protected void restartStudio() {
-        isRestart = true;
+        LoginHelper.isRestart = true;
         ConnectionBean iBean = getConnection();
         loginHelper.saveLastConnectionBean(iBean);
         // update the restart command line to specify the workspace to launch
@@ -1895,7 +1893,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             GC gc = new GC(helpComposite);
             String linkLabel = Messages.getString("LoginProjectPage.ArchivaErrorDialog.howToInstallAJar"); //$NON-NLS-1$
             Point linkSize = gc.stringExtent(linkLabel);
-            Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.NORMAL);
+            Font font = new Font(null, LoginDialogV2.FONT_ARIAL, 9, SWT.NORMAL);
             Hyperlink link = new Hyperlink(helpComposite, SWT.NONE);
             link.setText(linkLabel);
             link.setSize(linkSize.x + 15, 30);

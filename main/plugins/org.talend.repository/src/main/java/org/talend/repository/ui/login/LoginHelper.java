@@ -102,6 +102,8 @@ public class LoginHelper {
 
     protected PreferenceManipulator prefManipulator;
 
+    public static boolean isRestart;
+
     public static LoginHelper getInstance() {
         if (instance == null) {
             instance = new LoginHelper();
@@ -377,7 +379,7 @@ public class LoginHelper {
                         ICoreTisService.class);
                 if (service != null) {// if in TIS then update the bundle status according to the project type
                     if (!service.validProject(project, needRestartForLocal)) {
-                        LoginProjectPage.isRestart = true;
+                        isRestart = true;
                         return true;
                     }
                 }// else not in TIS so ignor caus we may not have a licence so we do not know which bundles belong to
