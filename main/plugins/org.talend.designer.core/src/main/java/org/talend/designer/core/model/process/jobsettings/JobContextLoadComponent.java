@@ -252,6 +252,10 @@ public class JobContextLoadComponent implements IComponent {
 
                 source = self + JobSettingsConstants.IMPLICIT_TCONTEXTLOAD_REGEX;
                 multipleComponentManager.addParam(source, FILE_INPUT_REGEX + ".REGEX"); //$NON-NLS-1$ 
+                
+                source = self + "IGNORE_ERROR_MESSAGE"; //$NON-NLS-1$
+                multipleComponentManager.addParam(source, FILE_INPUT_REGEX + ".IGNORE_ERROR_MESSAGE"); //$NON-NLS-1$ 
+                
 
             } else {
                 String source = self + JobSettingsConstants.getExtraParameterName(EParameterName.URL.getName());
@@ -361,6 +365,12 @@ public class JobContextLoadComponent implements IComponent {
         newParam.setName(JobSettingsConstants.IMPLICIT_TCONTEXTLOAD_REGEX);
         newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(""); //$NON-NLS-1$
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName("IGNORE_ERROR_MESSAGE");
+        newParam.setFieldType(EParameterFieldType.CHECK);
+        newParam.setValue("true"); //$NON-NLS-1$
         elemParamList.add(newParam);
 
     }
