@@ -460,6 +460,7 @@
             isResouce="true"
             key="repository.context"
             label="%NavigatorContent.contexts"
+            ordinal="5"
             products="DI"
             type="CONTEXT">
       </repositoryNode>
@@ -469,7 +470,7 @@
             isResouce="true"
             key="repository.process"
             label="%NavigatorContent.jobDesigns"
-            ordinal="4"
+            ordinal="2"
             products="DI|MDM"
             type="PROCESS">
       </repositoryNode>
@@ -480,7 +481,7 @@
             isResouce="true"
             key="repository.metadataSQLPatterns"
             label="%NavigatorContent.sqlTemplates"
-            ordinal="33"
+            ordinal="7"
             products="DI"
             type="SQLPATTERNS">
       </repositoryNode>

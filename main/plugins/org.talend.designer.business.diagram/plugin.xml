@@ -585,7 +585,7 @@
             isResouce="true"
             key="repository.businessProcess"
             label="%repository.businessProcess"
-            ordinal="2"
+            ordinal="1"
             products="DI"
             type="BUSINESS_PROCESS">
       </repositoryNode>
