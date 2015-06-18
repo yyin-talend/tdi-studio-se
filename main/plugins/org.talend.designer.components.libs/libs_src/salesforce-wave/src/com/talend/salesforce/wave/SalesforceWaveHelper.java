@@ -95,7 +95,7 @@ public class SalesforceWaveHelper{
              if(jsonFile != null){
                  java.io.BufferedWriter buffWriter = null;
                  try{
-                    buffWriter = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(jsonFile),"UTF-8"));
+                    buffWriter = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(jsonFile),(String)customedConfig.get("encoding")));
                     buffWriter.write(jsonMetadataStr);
                  }catch(java.io.FileNotFoundException e){
                     e.printStackTrace();

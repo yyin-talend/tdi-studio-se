@@ -40,7 +40,12 @@ imports="
 
     boolean generateJsonInFile = "true".equals(ElementParameterParser.getValue(node,"__GENERATE_JSON_IN_FILE__"));
     boolean doCleanWork = generateJsonInFile && !specifyJsonMetadata;
-    String  encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+
+    String encoding = "UTF-8";
+    String charsetName = ElementParameterParser.getValue(node,"__CHARSET__");
+    if(charsetName != null && !"".equals(charsetName) && !"\"\"".equals(charsetName)){
+           encoding = charsetName;
+    }
 
     boolean retrieveUploadStatus = "true".equals(ElementParameterParser.getValue(node,"__RETRIEVE_UPLOAD_STATUS__"));
     String seconds2getStatus = ElementParameterParser.getValue(node,"__SECONDS_TO_WAIT_FOR_SERVER_ANSWER__");

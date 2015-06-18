@@ -135,21 +135,22 @@
     </PARAMETERS>
 
     <ADVANCED_PARAMETERS>
+<!--
         <PARAMETER
           NAME="ENCODING"
           FIELD="ENCODING_TYPE"
-          NUM_ROW="15"
+          NUM_ROW="10"
           REQUIRED="true"
           NOT_SHOW_IF="UPLODE_JSON_METADATA == 'false'">
           <DEFAULT>"UTF-8"</DEFAULT>
         </PARAMETER>
-
+ -->
         <PARAMETER
           NAME="CHARSET"
           FIELD="TEXT"
           NUM_ROW="18"
           REQUIRED="true"
-          SHOW="true"
+          NOT_SHOW_IF="SPECIFY_JSON_METADATA == 'true'"
           GROUP="HIDDEN_GROUP"
         >
           <DEFAULT>"UTF-8"</DEFAULT>
@@ -160,7 +161,7 @@
           FIELD="TEXT"
           NUM_ROW="18"
           REQUIRED="true"
-          SHOW="true"
+          NOT_SHOW_IF="SPECIFY_JSON_METADATA == 'true'"
           GROUP="HIDDEN_GROUP"
         >
           <DEFAULT>";"</DEFAULT>
@@ -171,7 +172,7 @@
           FIELD="TEXT"
           NUM_ROW="23"
           REQUIRED="true"
-          SHOW="true"
+          NOT_SHOW_IF="SPECIFY_JSON_METADATA == 'true'"
           GROUP="HIDDEN_GROUP"
         >
           <DEFAULT>"\""</DEFAULT>
@@ -182,7 +183,7 @@
           FIELD="TEXT"
           NUM_ROW="23"
           REQUIRED="true"
-          SHOW="true"
+          NOT_SHOW_IF="SPECIFY_JSON_METADATA == 'true'"
           GROUP="HIDDEN_GROUP"
         >
           <DEFAULT>"\n"</DEFAULT>

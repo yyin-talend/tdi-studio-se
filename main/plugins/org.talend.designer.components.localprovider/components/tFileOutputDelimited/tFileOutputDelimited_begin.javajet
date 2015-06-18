@@ -25,7 +25,7 @@ String cid = node.getUniqueName();
 boolean isTSalesforceWaveOutputBulkExec = ((cid == null) ? false : (cid.startsWith("tSalesforceWaveOutputBulkExec")));
 boolean useDoubleQuoteEnclosure = "true".equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))
                                   && ("\"\"\"").equals(ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__"));
-boolean applyNA4Null = isTSalesforceWaveOutputBulkExec && useDoubleQuoteEnclosure;
+boolean applyNA4Null = isTSalesforceWaveOutputBulkExec;
 String str4Nil = "#N/A";
 
 boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));

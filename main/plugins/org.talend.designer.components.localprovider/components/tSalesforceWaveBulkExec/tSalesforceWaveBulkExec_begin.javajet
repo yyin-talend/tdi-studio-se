@@ -40,11 +40,20 @@ imports="
     String linesTerminatedBy = ElementParameterParser.getValue(node,"__LINES_TERMINATED_BY__");
     String numericFormat = ElementParameterParser.getValue(node,"__NUMERIC_FORMAT__");
 
+    if("\"\"\"".equals(fieldsEnclosedBy)){
+        fieldsEnclosedBy = "\"\\\"\"";
+    }
+
     boolean generateJsonInFile = "true".equals(ElementParameterParser.getValue(node,"__GENERATE_JSON_IN_FILE__"));
     String storagePath = ElementParameterParser.getValue(node,"__CUSTOM_FOLDER__");
     String csvPath = ElementParameterParser.getValue(node, "__LOAD_DATA_PATH__");
 
     boolean willGenerateJsonMetadata = !specifyJsonMetadata && uploadJsonMetadata;//In File or Memory
+
+    String encoding = "UTF-8";
+    if(charsetName != null && !"".equals(charsetName) && !"\"\"".equals(charsetName)){
+           encoding = charsetName;
+    }
 %>
 
 <%
@@ -144,7 +153,7 @@ imports="
 
         %>
            java.util.Map<String,Object> customConfig_<%= cid %> = new java.util.HashMap<String,Object>();
-                    <% 
+                    <%
                         if(autoGenerateMetadataDesc){
                             %>
                                customConfig_<%= cid %>.put("numberOfLinesToIgnore",0);
@@ -171,11 +180,11 @@ imports="
                         }
                      %>
                           <%
-                              if("\"\n\"".equals(linesTerminatedBy)){
+                              if("\"\\n\"".equals(linesTerminatedBy)){
                                     linesTerminatedBy = "\"\\\\n\"";
-                              }else if("\"\r\n\"".equals(linesTerminatedBy)){
+                              }else if("\"\\r\\n\"".equals(linesTerminatedBy)){
                                     linesTerminatedBy = "\"\\\\r\\\\n\"";
-                              }else if("\"\r\"".equals(linesTerminatedBy)){
+                              }else if("\"\\r\"".equals(linesTerminatedBy)){
                                     linesTerminatedBy = "\"\\\\r\"";
                               }else{
                                    linesTerminatedBy = "\"\\\\n\"";
@@ -191,7 +200,8 @@ imports="
                               customConfig_<%= cid %>.put("linesTerminatedBy",<%= linesTerminatedBy %>);
                               customConfig_<%= cid %>.put("numericFormat",<%= numericFormat %>);
                               customConfig_<%= cid %>.put("csvPath",<%= csvPath %>);
-                    <% 
+                              customConfig_<%= cid %>.put("encoding",<%= encoding %>);
+                    <%
                        if(generateJsonInFile){
                           %>
                              com.talend.salesforce.wave.SalesforceWaveHelper.generateJsonMetadata(new java.io.File(generateJsonMetadataPath_<%= cid %>),metadataColumnRuntimeList_<%= cid %>,customConfig_<%= cid %>);
