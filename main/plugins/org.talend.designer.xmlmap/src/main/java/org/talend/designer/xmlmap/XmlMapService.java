@@ -398,71 +398,52 @@ public class XmlMapService implements IXmlMapService {
         for (InputXmlTree inputXml : oriInputs) {
             InputXmlTree newInputXml = null;
             if (nodeMaps.get(inputXml) == null) {
-                newInputXml = XmlmapFactory.eINSTANCE.createInputXmlTree();
-                newInputXml.setActivateCondensedTool(inputXml.isActivateCondensedTool());
-                newInputXml.setActivateExpressionFilter(inputXml.isActivateExpressionFilter());
-                newInputXml.setActivateGlobalMap(inputXml.isActivateGlobalMap());
-                newInputXml.setExpressionFilter(inputXml.getExpressionFilter());
-                newInputXml.setInnerJoin(inputXml.isInnerJoin());
-                newInputXml.setLookup(inputXml.isLookup());
-                newInputXml.setLookupMode(inputXml.getLookupMode());
-                newInputXml.setMatchingMode(inputXml.getMatchingMode());
-                newInputXml.setMinimized(inputXml.isMinimized());
-                newInputXml.setMultiLoops(inputXml.isMultiLoops());
-                newInputXml.setName(inputXml.getName());
-                newInputXml.setPersistent(inputXml.isPersistent());
-                if (inputXml.getNodes() != null) {
-                    for (TreeNode treeNode : inputXml.getNodes()) {
-                        EObject obj = nodeMaps.get(treeNode);
-                        if (obj != null) {
-                            newInputXml.getNodes().add((TreeNode) obj);
-                        }
+                newInputXml = (InputXmlTree) cloneTreeNode(inputXml);
+            } else {
+                newInputXml = (InputXmlTree) nodeMaps.get(inputXml);
+            }
+
+            if (inputXml.getNodes() != null) {
+                for (TreeNode treeNode : inputXml.getNodes()) {
+                    EObject obj = nodeMaps.get(treeNode);
+                    if ((obj != null) && !newInputXml.getNodes().contains(obj)) {
+                        newInputXml.getNodes().add((TreeNode) obj);
                     }
                 }
-                if ((inputXml.getFilterIncomingConnections() != null) && !inputXml.getFilterIncomingConnections().isEmpty()) {
-                    newInputXml.getFilterIncomingConnections().addAll(inputXml.getFilterIncomingConnections());
-                }
-                if ((inputXml.getGlobalMapKeysValues() != null) && !inputXml.getGlobalMapKeysValues().isEmpty()) {
-                    newInputXml.getGlobalMapKeysValues().addAll(inputXml.getGlobalMapKeysValues());
-                }
-                newXmlMapData.getInputTrees().add(newInputXml);
-                nodeMaps.put(inputXml, newInputXml);
             }
+            if (!newXmlMapData.getInputTrees().contains(newInputXml)) {
+                newXmlMapData.getInputTrees().add(newInputXml);
+            }
+            nodeMaps.put(inputXml, newInputXml);
         }
 
         for (OutputXmlTree outputXml : oriOutputs) {
             OutputXmlTree newOutputXml = null;
             if (nodeMaps.get(outputXml) == null) {
-                newOutputXml = XmlmapFactory.eINSTANCE.createOutputXmlTree();
-                newOutputXml.setActivateCondensedTool(outputXml.isActivateCondensedTool());
-                newOutputXml.setActivateExpressionFilter(outputXml.isActivateExpressionFilter());
-                newOutputXml.setAllInOne(outputXml.isAllInOne());
-                newOutputXml.setEnableEmptyElement(outputXml.isEnableEmptyElement());
-                newOutputXml.setErrorReject(outputXml.isErrorReject());
-                newOutputXml.setExpressionFilter(outputXml.getExpressionFilter());
-                newOutputXml.setMinimized(outputXml.isMinimized());
-                newOutputXml.setMultiLoops(outputXml.isMultiLoops());
-                newOutputXml.setName(outputXml.getName());
-                newOutputXml.setReject(outputXml.isReject());
-                newOutputXml.setRejectInnerJoin(outputXml.isRejectInnerJoin());
-
-                if (outputXml.getNodes() != null) {
-                    for (OutputTreeNode treeNode : outputXml.getNodes()) {
-                        EObject obj = nodeMaps.get(treeNode);
-                        if (obj != null) {
-                            newOutputXml.getNodes().add((OutputTreeNode) obj);
-                        }
+                newOutputXml = (OutputXmlTree) cloneTreeNode(outputXml);
+            } else {
+                newOutputXml = (OutputXmlTree) nodeMaps.get(outputXml);
+            }
+            if (outputXml.getNodes() != null) {
+                for (OutputTreeNode treeNode : outputXml.getNodes()) {
+                    EObject obj = nodeMaps.get(treeNode);
+                    if ((obj != null) && !newOutputXml.getNodes().contains(obj)) {
+                        newOutputXml.getNodes().add((OutputTreeNode) obj);
                     }
                 }
-                if ((outputXml.getFilterIncomingConnections() != null) && !outputXml.getFilterIncomingConnections().isEmpty()) {
-                    newOutputXml.getFilterIncomingConnections().addAll(outputXml.getFilterIncomingConnections());
-                }
-                if ((outputXml.getInputLoopNodesTables() != null) && !outputXml.getInputLoopNodesTables().isEmpty()) {
-                    newOutputXml.getInputLoopNodesTables().addAll(outputXml.getInputLoopNodesTables());
-                }
-                newXmlMapData.getOutputTrees().add(newOutputXml);
-                nodeMaps.put(outputXml, newOutputXml);
             }
+            // if ((outputXml.getFilterIncomingConnections() != null) &&
+            // !outputXml.getFilterIncomingConnections().isEmpty()) {
+            // newOutputXml.getFilterIncomingConnections().addAll(outputXml.getFilterIncomingConnections());
+            // }
+            // if ((outputXml.getInputLoopNodesTables() != null) && !outputXml.getInputLoopNodesTables().isEmpty())
+            // {
+            // newOutputXml.getInputLoopNodesTables().addAll(outputXml.getInputLoopNodesTables());
+            // }
+            if (!newXmlMapData.getOutputTrees().contains(newOutputXml)) {
+                newXmlMapData.getOutputTrees().add(newOutputXml);
+            }
+            nodeMaps.put(outputXml, newOutputXml);
         }
 
         for (VarTable varXml : oriVars) {
@@ -480,8 +461,9 @@ public class XmlMapService implements IXmlMapService {
                         }
                     }
                 }
-
-                newXmlMapData.getVarTables().add(newVarXml);
+                if (!newXmlMapData.getVarTables().contains(newVarXml)) {
+                    newXmlMapData.getVarTables().add(newVarXml);
+                }
                 nodeMaps.put(varXml, newVarXml);
             }
         }
@@ -490,7 +472,35 @@ public class XmlMapService implements IXmlMapService {
     }
 
     private EObject cloneTreeNode(EObject node) {
-        if (node instanceof VarNode) {
+        if (node instanceof AbstractInOutTree) {
+            AbstractInOutTree source = null;
+            AbstractInOutTree oriSource = null;
+            if (node instanceof InputXmlTree) {
+                oriSource = (InputXmlTree) node;
+                source = XmlmapFactory.eINSTANCE.createInputXmlTree();
+                ((InputXmlTree) source).setActivateGlobalMap(((InputXmlTree) oriSource).isActivateGlobalMap());
+                ((InputXmlTree) source).setInnerJoin(((InputXmlTree) oriSource).isInnerJoin());
+                ((InputXmlTree) source).setLookup(((InputXmlTree) oriSource).isLookup());
+                ((InputXmlTree) source).setLookupMode(((InputXmlTree) oriSource).getLookupMode());
+                ((InputXmlTree) source).setMatchingMode(((InputXmlTree) oriSource).getMatchingMode());
+                ((InputXmlTree) source).setPersistent(((InputXmlTree) oriSource).isPersistent());
+            } else if (node instanceof OutputXmlTree) {
+                oriSource = (OutputXmlTree) node;
+                source = XmlmapFactory.eINSTANCE.createOutputXmlTree();
+                ((OutputXmlTree) source).setAllInOne(((OutputXmlTree) oriSource).isAllInOne());
+                ((OutputXmlTree) source).setEnableEmptyElement(((OutputXmlTree) oriSource).isEnableEmptyElement());
+                ((OutputXmlTree) source).setErrorReject(((OutputXmlTree) oriSource).isErrorReject());
+                ((OutputXmlTree) source).setReject(((OutputXmlTree) oriSource).isReject());
+                ((OutputXmlTree) source).setRejectInnerJoin(((OutputXmlTree) oriSource).isRejectInnerJoin());
+            }
+            source.setActivateCondensedTool(oriSource.isActivateCondensedTool());
+            source.setActivateExpressionFilter(oriSource.isActivateExpressionFilter());
+            source.setExpressionFilter(oriSource.getExpressionFilter());
+            source.setMinimized(oriSource.isMinimized());
+            source.setMultiLoops(oriSource.isMultiLoops());
+            source.setName(oriSource.getName());
+            return source;
+        } else if (node instanceof VarNode) {
             VarNode oriSource = (VarNode) node;
             VarNode source = XmlmapFactory.eINSTANCE.createVarNode();
             source.setExpression(oriSource.getExpression());
