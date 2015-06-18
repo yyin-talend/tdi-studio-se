@@ -356,8 +356,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             } else if (contextItem instanceof ProcessItem) {
                                 builtin = false;
                             }
-                        } else if (source.equals(JobContextManager.dataSource)) {
-                            builtin = false;
                         }
                         if (builtin) {
                             // built in
