@@ -65,11 +65,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -660,9 +658,14 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (selectExistingProject.getSelection()) {
-                    refreshProjectListAreaEnable(true);
-                    finishButtonAction = FINISH_ACTION_OPEN_PROJECT;
-                    changeFinishButtonAction(finishButtonAction);
+                    // refreshProjectListAreaEnable(true);
+                    // finishButtonAction = FINISH_ACTION_OPEN_PROJECT;
+                    // changeFinishButtonAction(finishButtonAction);
+                    try {
+                        checkErrors();
+                    } catch (PersistenceException e1) {
+                        CommonExceptionHandler.process(e1);
+                    }
                 } else {
                     refreshProjectListAreaEnable(false);
                 }
@@ -679,8 +682,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (createSandBoxProject.getSelection()) {
-                    finishButtonAction = FINISH_ACTION_CREATE_SANDBOX;
-                    changeFinishButtonAction(finishButtonAction);
+                    // finishButtonAction = FINISH_ACTION_CREATE_SANDBOX;
+                    // changeFinishButtonAction(finishButtonAction);
+                    refreshUIFinishButtonEnable(false);
                     executeCreateSandBoxProject.setVisible(true);
                     executeCreateSandBoxProject.forceFocus();
                 } else {
@@ -699,8 +703,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (importDemoProject.getSelection()) {
-                    finishButtonAction = FINISH_ACTION_IMPORT_DEMO_PROJECT;
-                    changeFinishButtonAction(finishButtonAction);
+                    // finishButtonAction = FINISH_ACTION_IMPORT_DEMO_PROJECT;
+                    // changeFinishButtonAction(finishButtonAction);
+                    refreshUIFinishButtonEnable(false);
                     executeImportDemoProject.setVisible(true);
                     executeImportDemoProject.forceFocus();
                 } else {
@@ -719,8 +724,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (importLocalProject.getSelection()) {
-                    finishButtonAction = FINISH_ACTION_IMPORT_LOCAL_PROJECT;
-                    changeFinishButtonAction(finishButtonAction);
+                    // finishButtonAction = FINISH_ACTION_IMPORT_LOCAL_PROJECT;
+                    // changeFinishButtonAction(finishButtonAction);
+                    refreshUIFinishButtonEnable(false);
                     executeImportLocalProject.setVisible(true);
                     executeImportLocalProject.forceFocus();
                 } else {
@@ -747,15 +753,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     newProjectName.setVisible(true);
                     newProjectName.forceFocus();
                     executeCreateNewProject.setVisible(true);
-                    finishButtonAction = FINISH_ACTION_CREATE_NEW_PROJECT;
-                    changeFinishButtonAction(finishButtonAction);
+                    // finishButtonAction = FINISH_ACTION_CREATE_NEW_PROJECT;
+                    // changeFinishButtonAction(finishButtonAction);
+                    refreshUIFinishButtonEnable(false);
                     validateNewProjectName();
                 } else {
                     createNewProject.setText(Messages.getString("LoginProjectPage.createNewProject")); //$NON-NLS-1$
                     newProjectName.setVisible(false);
                     executeCreateNewProject.setVisible(false);
-                    getErrorManager().clearCreateNewProjectError();
-                    refreshUIFinishButtonEnable();
+                    // getErrorManager().clearCreateNewProjectError();
+                    // refreshUIFinishButtonEnable();
                 }
             }
 
@@ -804,6 +811,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         fillUIContentsWithBusyCursor();
                         final ConnectionBean connection = getConnection();
                         if (connection == null) {
+                            checkErrors();
                             return;
                         }
                         // beforeConnBean = connection;
@@ -1354,13 +1362,13 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         } else if (FINISH_ACTION_UPDATE_DETAILS.equals(newAction)) {
             finishButton.setText(Messages.getString("LoginProjectPage.details")); //$NON-NLS-1$                          
         } else if (FINISH_ACTION_CREATE_SANDBOX.equals(newAction)) {
-            finishButton.setText(Messages.getString("LoginProjectPage.execute")); //$NON-NLS-1$                                      
+            //            finishButton.setText(Messages.getString("LoginProjectPage.execute")); //$NON-NLS-1$                                      
         } else if (FINISH_ACTION_IMPORT_DEMO_PROJECT.equals(newAction)) {
-            finishButton.setText(Messages.getString("LoginProjectPage.execute")); //$NON-NLS-1$                                      
+            //            finishButton.setText(Messages.getString("LoginProjectPage.execute")); //$NON-NLS-1$                                      
         } else if (FINISH_ACTION_IMPORT_LOCAL_PROJECT.equals(newAction)) {
-            finishButton.setText(Messages.getString("LoginProjectPage.execute")); //$NON-NLS-1$                                      
+            //            finishButton.setText(Messages.getString("LoginProjectPage.execute")); //$NON-NLS-1$                                      
         } else if (FINISH_ACTION_CREATE_NEW_PROJECT.equals(newAction)) {
-            finishButton.setText(Messages.getString("LoginProjectPage.create")); //$NON-NLS-1$                                      
+            //            finishButton.setText(Messages.getString("LoginProjectPage.create")); //$NON-NLS-1$                                      
         } else {
             finishButton.setText(Messages.getString("LoginProjectPage.restart")); //$NON-NLS-1$
             finishButtonAction = FINISH_ACTION_RESTART;
@@ -1478,12 +1486,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             newProjectName.setToolTipText(projectNameErrorMessage);
             newProjectName.setBackground(LoginDialogV2.RED_COLOR);
             executeCreateNewProject.setEnabled(false);
-            refreshUIFinishButtonEnable(false);
+            // refreshUIFinishButtonEnable(false);
         } else {
             newProjectName.setToolTipText(strNewProjectName);
             newProjectName.setBackground(null);
             executeCreateNewProject.setEnabled(true);
-            refreshUIFinishButtonEnable(true);
+            // refreshUIFinishButtonEnable(true);
             executeCreateNewProject.getShell().setDefaultButton(executeCreateNewProject);
 
         }
@@ -1544,7 +1552,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         }
         String workspace = iBean.getWorkSpace();
 
-        
         String defaultPath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath();
         if (EnvironmentUtils.isWindowsSystem()) {
             return workspace.equalsIgnoreCase(defaultPath);
@@ -1571,7 +1578,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected void refreshUIFinishButtonEnable() {
         final Object input = projectViewer.getInput();
         boolean enabled = input != null && ((input instanceof Project[]) && ((Project[]) input).length > 0);
-        refreshUIFinishButtonEnable(!getErrorManager().hasError() && enabled);
+        refreshUIFinishButtonEnable(!getErrorManager().hasError() && enabled && selectExistingProject.getSelection());
     }
 
     protected void refreshUIFinishButtonEnable(boolean isEnable) {
