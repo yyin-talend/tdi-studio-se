@@ -285,7 +285,7 @@ public class LoginHelper {
             }
             if (!branches.contains(lastUsedBranch)) {
                 MessageDialog.openError(getUsableShell(),
-                        Messages.getString("LoginHelper.branchChanged"), Messages.getString("LoginHelper.branchChanged")); //$NON-NLS-1$ //$NON-NLS-2$
+                        Messages.getString("LoginHelper.errorTitle"), Messages.getString("LoginHelper.branchChanged")); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
         } else {
