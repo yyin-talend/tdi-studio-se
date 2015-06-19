@@ -499,7 +499,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     @Override
     public void afterCreateControl() {
-        resetProjectOperationSelectionWithBusyCursor();
+        resetProjectOperationSelectionWithBusyCursor(false);
         alwaysAsk.setSelection(LoginHelper.isAlwaysAskAtStartup());
         previousButton.setVisible(false);
     }
@@ -623,9 +623,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 try {
-                    resetProjectOperationSelectionWithBusyCursor();
+                    resetProjectOperationSelectionWithBusyCursor(false);
                     final ConnectionBean connection = getConnection();
                     if (connection == null) {
+                        checkErrors();
                         return;
                     }
                     // if (beforeConnBean != null && connection.equals(beforeConnBean)) {
@@ -759,7 +760,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     createNewProject.setText(Messages.getString("LoginProjectPage.createNewProject")); //$NON-NLS-1$
                     newProjectName.setVisible(false);
                     executeCreateNewProject.setVisible(false);
-                    // getErrorManager().clearCreateNewProjectError();
+                    getErrorManager().clearCreateNewProjectError();
                     // refreshUIFinishButtonEnable();
                 }
             }
@@ -1020,16 +1021,20 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     protected void resetProjectOperationSelectionWithBusyCursor() {
+        resetProjectOperationSelection(true);
+    }
+
+    protected void resetProjectOperationSelectionWithBusyCursor(final boolean needCheckError) {
         BusyIndicator.showWhile(getDisplay(), new Runnable() {
 
             @Override
             public void run() {
-                resetProjectOperationSelection();
+                resetProjectOperationSelection(needCheckError);
             }
         });
     }
 
-    protected void resetProjectOperationSelection() {
+    protected void resetProjectOperationSelection(final boolean needCheckError) {
         selectExistingProject.setSelection(true);
         refreshProjectListAreaEnable(selectExistingProject.isEnabled());
         importDemoProject.setSelection(false);
@@ -1042,9 +1047,17 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         createNewProject.setText(Messages.getString("LoginProjectPage.createNewProject")); //$NON-NLS-1$
         newProjectName.setVisible(false);
         executeCreateNewProject.setVisible(false);
-        changeFinishButtonAction();
-        refreshUIFinishButtonEnable();
-        finishButton.getShell().setDefaultButton(finishButton);
+        if (needCheckError) {
+            try {
+                checkErrors();
+            } catch (PersistenceException e) {
+                CommonExceptionHandler.process(e);
+            }
+        } else {
+            changeFinishButtonAction();
+            refreshUIFinishButtonEnable();
+            finishButton.getShell().setDefaultButton(finishButton);
+        }
     }
 
     // protected void initConnection() {
@@ -1266,7 +1279,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
      */
     public void checkErrors() throws PersistenceException {
         try {
-            errorManager.clearAllMessages();
+            // errorManager.clearAllMessages();
             if (getConnection() != null) {
                 final boolean localConn = getConnection().getRepositoryId() == null
                         || getConnection().getRepositoryId().equals(RepositoryConstants.REPOSITORY_LOCAL_ID);
@@ -1284,7 +1297,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     // }
                     // }
                     // errorManager.setInfoMessage(Messages.getString("LoginComposite.TisWorkspace_welcome", productName)); //$NON-NLS-1$
-
+                    errorManager.clearAllMessages();
                 } else {
                     if (LoginHelper.isRemoteConnection(getConnection())) {
                         errorManager.setErrMessage(Messages.getString("LoginProjectPage.project_need.remote")); //$NON-NLS-1$
@@ -1459,7 +1472,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         }
 
         LoginProjectPageErrorManager loginProjectPageErrorManager = getErrorManager();
-        loginProjectPageErrorManager.clearCreateNewProjectError();
+        // loginProjectPageErrorManager.clearCreateNewProjectError();
         String projectNameErrorMessage = null;
         String strNewProjectName = newProjectName.getText();
         // Field Name
@@ -1486,6 +1499,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             executeCreateNewProject.setEnabled(false);
             // refreshUIFinishButtonEnable(false);
         } else {
+            String createNewProjectError = loginProjectPageErrorManager.getCreateNewProjectError();
+            if (createNewProjectError != null && !createNewProjectError.isEmpty()) {
+                loginProjectPageErrorManager.clearCreateNewProjectError();
+            }
             newProjectName.setToolTipText(strNewProjectName);
             newProjectName.setBackground(null);
             executeCreateNewProject.setEnabled(true);
@@ -1815,7 +1832,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             Project projectInfor = ProjectHelper.createProject(newProjectName.getText().trim().replace(' ', '_'), "", //$NON-NLS-1$
                     ECodeLanguage.JAVA.getName(), repositoryContext.getUser());
             Project project = repositoryFactory.createProject(projectInfor);
-            resetProjectOperationSelectionWithBusyCursor();
+            resetProjectOperationSelectionWithBusyCursor(false);
             fillUIProjectListWithBusyCursor();
             selectProject(project.getLabel());
             checkErrors();
@@ -1932,10 +1949,15 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             loginDialog.setErrorMessage(errMsg, null);
         }
 
+        public String getCreateNewProjectError() {
+            return createNewProjectErrorMsg;
+        }
+
         public void clearCreateNewProjectError() {
             createNewProjectErrorMsg = null;
-            loginDialog.clearErrorMessage();
-            showErrorMessage();
+            if (!showErrorMessage()) {
+                loginDialog.clearErrorMessage();
+            }
         }
 
         @Override
