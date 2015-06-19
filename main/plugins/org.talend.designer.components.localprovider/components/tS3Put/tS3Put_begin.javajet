@@ -16,6 +16,9 @@ imports="
     String key = ElementParameterParser.getValue(node,"__KEY__");
     String file = ElementParameterParser.getValue(node,"__FILE__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+	
+	boolean enableServerSideEncryption = "true".equals(ElementParameterParser.getValue(node, "__ENABLE-SERVER-SIDE-ENCRYPTION__"));
+	
 	%>
 	<%@ include file="../tS3Connection/S3Client.javajet" %>
 	try{
@@ -26,7 +29,19 @@ imports="
 		<%
 		}
 		%>
-		conn_<%=cid%>.putObject(<%=bucket%>, <%=key%>, new java.io.File(<%=file%>));
+		com.amazonaws.services.s3.model.PutObjectRequest putRequest_<%=cid%> = new com.amazonaws.services.s3.model.PutObjectRequest(<%=bucket%>, <%=key%>, new java.io.File(<%=file%>));
+		
+		<%
+		if(enableServerSideEncryption){
+		%>
+			com.amazonaws.services.s3.model.ObjectMetadata objectMetadata_<%=cid%> = new com.amazonaws.services.s3.model.ObjectMetadata();
+			objectMetadata_<%=cid%>.setSSEAlgorithm(com.amazonaws.services.s3.model.ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION);
+			putRequest_<%=cid%>.setMetadata(objectMetadata_<%=cid%>);
+		<%
+		}
+		%>
+		
+		conn_<%=cid%>.putObject(putRequest_<%=cid%>);
 		<%
 		if(isLog4jEnabled){
 		%>	

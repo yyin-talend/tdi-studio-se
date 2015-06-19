@@ -114,6 +114,16 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+        NAME="ENABLE-SERVER-SIDE-ENCRYPTION"
+        FIELD="CHECK"
+        NUM_ROW="85"
+        REQUIRED="false"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
         NAME="DIE_ON_ERROR"
         FIELD="CHECK"
