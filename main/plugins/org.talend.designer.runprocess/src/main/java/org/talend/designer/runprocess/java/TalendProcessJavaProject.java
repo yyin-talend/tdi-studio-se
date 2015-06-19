@@ -288,30 +288,15 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             MavenPomCommandLauncher mavenLauncher = null;
             // by default is compile
             if (goals == null || goals.trim().length() == 0 || goals.equals(TalendMavenConstants.GOAL_COMPILE)) {
-                // mavenLauncher = new TalendMavenLauncher(childModulePomFile);
-                // buildWholeCodeProject();
-                // buildWholeCodeProject();
+                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, TalendMavenConstants.GOAL_REFRESH);
+                 mavenLauncher.setArgumentsMap(argumentsMap);
+                 mavenLauncher.execute(monitor);
             } else {
                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, goals);
                 mavenLauncher.setArgumentsMap(argumentsMap);
                 mavenLauncher.execute(monitor);
             }
             buildWholeCodeProject();
-            /*
-             * FIXME, because the marker issue, we have to build whole project to get the markers.
-             * 
-             * Even thought can use the API Problems.computeCompilationUnit to get the code problems. but can't get the
-             * markers still and the status is not good still.
-             * 
-             * Later, will try to use another way to fix this, maybe need change the problem view, because it based on
-             * markers.
-             */
-            // if (Problems.buildWholeProject) {
-            // call 2 times for now. Seems if call only once, it will not get all the errors up to date
-            // and call 2 times seems doesn't take much more time.
-            // buildWholeCodeProject();
-            // buildWholeCodeProject();
-            // }
         } else {
             throw new RuntimeException("The pom.xml is not existed. Can't build the job: " + module); //$NON-NLS-1$
         }
@@ -328,7 +313,6 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             if (!project.isSynchronized(IResource.DEPTH_INFINITE)) {
                 project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
             }
-            // project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
             project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
