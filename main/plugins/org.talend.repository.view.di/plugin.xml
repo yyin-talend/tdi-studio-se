@@ -69,7 +69,7 @@
             appearsBefore="org.talend.repository.viewer.root.contexts"
             contentProvider="org.talend.repository.view.di.viewer.content.JobDesignsContentProvider"
             icon="icons/jobDesigns.png"
-            id="org.talend.repository.viewer.root.jobProcess"
+            id="org.talend.repository.viewer.root.jobDesigns"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="%NavigatorContent.jobProcess"
             priority="high">
