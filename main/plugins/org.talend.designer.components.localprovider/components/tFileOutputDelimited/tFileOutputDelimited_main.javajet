@@ -23,7 +23,7 @@ String cid = node.getUniqueName();
 boolean isTSalesforceWaveOutputBulkExec = ((cid == null) ? false : (cid.startsWith("tSalesforceWaveOutputBulkExec")));
 boolean useDoubleQuoteEnclosure = "true".equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))
                                   && ("\"\"\"").equals(ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__"));
-boolean applyNA4Null = isTSalesforceWaveOutputBulkExec && useDoubleQuoteEnclosure;
+boolean applyNA4Null = isTSalesforceWaveOutputBulkExec;
 String str4Nil = "#N/A";
 
 boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
@@ -552,17 +552,20 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                                 dynamic_column_index=i;
                             %>
                             if (<%=conn.getName()%>.<%=column.getLabel()%> != null) {
-                                routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=dynamic_column_index%>);
+                                routines.system.DynamicUtils.writeValuesToStringArrayEnhance(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=dynamic_column_index%>,
+                                <%
+                                   if(applyNA4Null){
+                                        %>
+                                           "<%= str4Nil %>"
+                                        <%
+                                   }else{
+                                        %>
+                                           null
+                                        <%
+                                   }
+                                 %>
+                                );
                             }
-                <%
-                    if(applyNA4Null){
-                        %>
-                           else{
-                                routines.system.DynamicUtils.writeValuesToStringArrayEnhance(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=dynamic_column_index%>,"<%= str4Nil %>");
-                           }
-                        <%
-                    }
-                 %>
                             <%
                             }else{
                                 if(i>dynamic_column_index && dynamic_column_index !=-1){
@@ -727,7 +730,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                                 %>
                             }
                             currentRow_<%=cid%>++;
-
                             <%
                         }else{
                             %>

@@ -239,17 +239,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
                             %>
                                 if (<%=conn.getName()%>.<%=column.getLabel()%> != null) {
                                     dynamic_column_count_<%=cid%> = <%=conn.getName()%>.<%=column.getLabel()%>.getColumnCount();
-                                    routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=i%>);
+                                    routines.system.DynamicUtils.writeValuesToStringArrayEnhance(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%= i %>,
+                                    <%
+                                       if(applyNA4Null){
+                                            %>
+                                               "<%= str4Nil %>"
+                                            <%
+                                       }else{
+                                            %>
+                                               null
+                                            <%
+                                       }
+                                     %>
+                                    );
                                 }
-                    <%
-                        if(applyNA4Null){
-                            %>
-                               else{
-                                    routines.system.DynamicUtils.writeValuesToStringArrayEnhance(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%= i %>,"<%= str4Nil %>");
-                               }
-                            <%
-                        }
-                     %>
                             <%
                             }else{
                                 if(hasDynamic){
