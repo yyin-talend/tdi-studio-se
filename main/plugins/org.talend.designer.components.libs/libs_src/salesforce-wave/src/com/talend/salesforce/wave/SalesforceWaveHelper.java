@@ -15,7 +15,7 @@ public class SalesforceWaveHelper{
         boolean containsDynamicColumn = SalesforceWaveHelper.containsDynamicColumn(imatadataColumnList);
         List<MetadataColumnRuntime> normalMetadataColumnList = imatadataColumnList;
         if(containsDynamicColumn){
-            String[] columnsFromHeader = SalesforceWaveHelper.extractHeaderFromCSVFile(new File((String)customedConfig.get("csvPath")));
+            String[] columnsFromHeader = SalesforceWaveHelper.extractHeaderFromCSVFile(new File((String)customedConfig.get("csvPath")),customedConfig);
             normalMetadataColumnList = SalesforceWaveHelper.buildMetadataColumnRuntime(columnsFromHeader, imatadataColumnList);
         }
 
@@ -159,11 +159,11 @@ public class SalesforceWaveHelper{
         }
 
         //assume there is a header in the csv file
-        public static String[] extractHeaderFromCSVFile(File csvFile){
+        public static String[] extractHeaderFromCSVFile(File csvFile, java.util.Map<String,Object> customedConfig){
                BufferedReader buffReader = null;
                String header = null;
                try{
-                   buffReader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile),"UTF-8"));
+                   buffReader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile),(String)customedConfig.get("encoding")));
                    boolean flag = true;
                    while(flag){
                         header = buffReader.readLine();
@@ -187,7 +187,7 @@ public class SalesforceWaveHelper{
                   }
                }
 
-               String[] headerArr = header.split(",");
+               String[] headerArr = header.split((String)customedConfig.get("fieldsDelimitedBy"));
                int lgth = headerArr.length;
                String[] removedDoubleQuote = new String[lgth];
                for(int i = 0; i < lgth; i++){
