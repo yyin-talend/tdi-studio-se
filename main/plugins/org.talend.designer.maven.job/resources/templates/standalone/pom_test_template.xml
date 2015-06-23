@@ -13,7 +13,7 @@
 	<artifactId>@JobName@</artifactId>
 	<version>@JobVersion@</version>
 	<name>@ProjectName@ @JobName@ (@JobType@)</name>
-	
+
 	<properties>
 		<talend.project.name>@ProjectName@</talend.project.name>
 		<talend.job.path>@JobPath@</talend.job.path>
@@ -48,6 +48,15 @@
 						<!-- exclude every standard java code -->
 						<exclude>**</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>${talend.job.path}/**.java</include>
+					</includes>
 				</configuration>
 			</plugin>
 		</plugins>
