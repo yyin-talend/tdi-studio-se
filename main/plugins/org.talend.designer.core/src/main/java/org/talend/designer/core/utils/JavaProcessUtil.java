@@ -282,8 +282,9 @@ public class JavaProcessUtil {
     }
 
     private static void addJunitNeededModules(List<ModuleNeeded> modulesNeeded) {
-        ModuleNeeded junitModule = new ModuleNeeded("junit", "junit-4.12.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
-        junitModule.setMavenUri("mvn:junit/junit/4.12");
+        ModuleNeeded junitModule = new ModuleNeeded("junit", "junit.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        junitModule.setModuleLocaion("platform:/plugin/org.junit/junit.jar");
+        junitModule.setMavenUri("mvn:org.talend.libraries/junit/6.0.0");
         modulesNeeded.add(junitModule);
     }
 
