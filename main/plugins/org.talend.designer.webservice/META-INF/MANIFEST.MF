@@ -23,7 +23,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/talend-ws-1.0.jar,
  lib/XmlSchema-1.4.5.jar,
- lib/jaxrpc.jar,
  lib/xerces-1.2.3.jar,
  lib/xercesImpl.jar
 Bundle-Vendor: .Talend SA.
