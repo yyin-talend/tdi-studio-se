@@ -1003,6 +1003,76 @@
             id="libprotodefs-mapr-4.1.X-lastest"       
             name="libprotodefs-4.1.0-mapr.jar">
         </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hcatalog"
+            id="hive-hcatalog-core-mapr-4.1.X-lastest"       
+            name="hive-hcatalog-core-0.13.0-mapr-1501.jar"
+            uripath="platform:/plugin/org.talend.libraries.hcatalog/lib/hive-hcatalog-core-0.13.0-mapr-1501.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hcatalog"
+            id="hive-hcatalog-pig-adapter-mapr-4.1.X-lastest"       
+            name="hive-hcatalog-pig-adapter-0.13.0-mapr-1501.jar"
+            uripath="platform:/plugin/org.talend.libraries.hcatalog/lib/hive-hcatalog-pig-adapter-0.13.0-mapr-1501.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hcatalog"
+            id="hive-hcatalog-server-extensions-mapr-4.1.X-lastest"       
+            name="hive-hcatalog-server-extensions-0.13.0-mapr-1501.jar"
+            uripath="platform:/plugin/org.talend.libraries.hcatalog/lib/hive-hcatalog-server-extensions-0.13.0-mapr-1501.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.0"
+            id="hbase-common-mapr-4.1.X-lastest"       
+            name="hbase-hadoop-compat-0.98.9-mapr-1503.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hbase-hadoop-compat-0.98.9-mapr-1503.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.0"
+            id="hbase-hadoop-compat-mapr-4.1.X-lastest"       
+            name="hbase-common-0.98.9-mapr-1503.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hbase-common-0.98.9-mapr-1503.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.0"
+            id="hbase-protocol-mapr-4.1.X-lastest"       
+            name="hbase-protocol-0.98.9-mapr-1503.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hbase-protocol-0.98.9-mapr-1503.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.0"
+            id="hbase-server-mapr-4.1.X-lastest"       
+            name="hbase-server-0.98.9-mapr-1503.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hbase-server-0.98.9-mapr-1503.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.0"
+            id="hbase-client-mapr-4.1.X-lastest"       
+            name="hbase-client-0.98.9-mapr-1503.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hbase-client-0.98.9-mapr-1503.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.0"
+            id="hive-common-mapr-4.1.X-lastest"       
+            name="hive-common-0.14.0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hive-common-0.14.0.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.1"
+            id="hive-serde-mapr-4.1.X-lastest"       
+            name="hive-serde-0.14.0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hive-serde-0.14.0.jar">
+        </libraryNeeded>
     	
     	<!-- common libraries -->
 	   	<libraryNeeded
@@ -4107,6 +4177,36 @@
 	             id="libfb303-0.9.0.jar">
 	         </library>
 	    </libraryNeededGroup>
+
+        <libraryNeededGroup
+                description="The lastest pig hcat storage libraries of MAPR41X"
+                id="PIG-HCAT-LIB-MAPR41X_LASTEST"
+                name="PIG-HCAT-LIB-MAPR41X_LASTEST">
+             <library
+                id="hive-hcatalog-core-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hive-hcatalog-pig-adapter-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hive-hcatalog-server-extensions-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hive-metastore-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hive-exec-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="jdo-api-3.0.1.jar">
+             </library>
+             <library
+                 id="libthrift-0.9.0.jar">
+             </library>
+             <library
+                 id="libfb303-0.9.0.jar">
+             </library>
+        </libraryNeededGroup>
 	    
 	    <!-- group of pig hbase storage libraries -->
 	    <libraryNeededGroup
@@ -4213,6 +4313,54 @@
 	             id="zookeeper-mapr-4.0.X-lastest">
 	         </library>
 	    </libraryNeededGroup>
+
+        <libraryNeededGroup
+                description="The lastest pig hbase storage libraries of MAPR41X"
+                id="PIG-HBASE-LIB-MAPR41X_LASTEST"
+                name="PIG-HBASE-LIB-MAPR41X_LASTEST">
+             <library
+                 id="zookeeper-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="htrace-core-2.04.jar">
+             </library>
+             <library
+                 id="high-scale-lib-1.1.1.jar">
+             </library>
+             <library
+                id="hbase-common-mapr-4.1.X-lastest">
+             </library>
+             <library
+                id="hbase-hadoop-compat-mapr-4.1.X-lastest">
+             </library>
+             <library
+                id="hbase-protocol-mapr-4.1.X-lastest">
+             </library>
+             <library
+                id="hbase-client-mapr-4.1.X-lastest">
+             </library>
+             <library
+                id="hbase-server-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="protobuf-java-2.5.0.jar">
+             </library>
+             <library
+                id="netty-3.6.2.Final.jar">
+            </library>
+            <library
+                 id="guava-13.0.1.jar">
+             </library>
+            <library
+                 id="automaton-1.11-8.jar">
+             </library>
+             <library
+                 id="antlr-runtime-3.4.jar">
+             </library>
+             <library
+                 id="joda-time-2.3.jar">
+             </library>
+        </libraryNeededGroup>
 	    
 	    <!-- group of pig rc file storage libraries -->
 	    <libraryNeededGroup
@@ -4274,6 +4422,21 @@
 	             id="hive-exec-mapr-4.0.X-lastest">
 	         </library>
 	    </libraryNeededGroup>
+
+        <libraryNeededGroup
+                description="The lastest pig rc file storage libraries of MAPR41X"
+                id="PIG-RCFILE-LIB-MAPR41X_LASTEST"
+                name="PIG-RCFILE-LIB-MAPR41X_LASTEST">
+             <library
+                id="hive-common-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hive-serde-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hive-exec-mapr-4.1.X-lastest">
+             </library>
+        </libraryNeededGroup>
 	    
 	    <!-- group of pig avro storage libraries -->
 	    <libraryNeededGroup
@@ -4336,6 +4499,20 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
+        <libraryNeededGroup
+                description="The lastest pig avro storage libraries of MAPR41X"
+                id="PIG-AVRO-LIB-MAPR41X_LASTEST"
+                name="PIG-AVRO-LIB-MAPR41X_LASTEST">
+             <library
+                id="piggybank-cdh5.1.jar">
+             </library>
+             <library
+                 id="commons-io-2.4.jar">
+             </library>
+             <library
+                 id="avro-1.7.4.jar">
+             </library>
+        </libraryNeededGroup>
 	    
 	    <!-- group of hive common libraries -->
 	    <libraryNeededGroup
