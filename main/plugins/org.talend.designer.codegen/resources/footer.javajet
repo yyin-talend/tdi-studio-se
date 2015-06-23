@@ -212,7 +212,7 @@
         {
         %>
       @Test
-        public void test<%=context.getName()%>() {
+        public void test<%=context.getName()%>() throws java.lang.Exception{
             junitGlobalMap.put("tests.log",new String());
             junitGlobalMap.put("tests.nbFailure",new Integer(0));
             final <%=className %> <%=className %>Class = new <%=className %>();
@@ -237,9 +237,14 @@
             arrays[i] = (String)paraList_<%=context.getName()%>.get(i);
         }
         <%=className %>Class.runJobInTOS(arrays);
+       
         String errors = (String)junitGlobalMap.get("tests.log");
         Integer nbFailure = (Integer)junitGlobalMap.get("tests.nbFailure");
         assertTrue("Failure="+nbFailure+java.lang.System.getProperty("line.separator")+errors, errors.isEmpty());
+        
+         if(<%=className %>Class.exception!=null){
+            throw <%=className %>Class.exception;
+        }
         }
         <%
         }
