@@ -599,7 +599,7 @@ public class RuntimeGraphcsComposite extends AbstractRuntimeGraphcsComposite {
         groupData.top = new FormAttachment(0, 0);
         groupData.bottom = new FormAttachment(100, 0);
         group.setLayoutData(groupData);
-        group.setText("Run Job Informations");
+        group.setText("Job execution information");
 
         reportField = new StyledText(group,SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
 //        reportField.setEditable(false);
