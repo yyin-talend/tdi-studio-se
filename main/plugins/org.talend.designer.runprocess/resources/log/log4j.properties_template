@@ -27,7 +27,7 @@
 	
     <!-- Root Logger -->  
 	<root>
-		<priority value ="info"/>
+		<priority value ="warn"/>
 		<appender-ref ref="CONSOLE"/>
 		<!-- <appender-ref ref="LOGSTASH"/> -->
 	</root>
