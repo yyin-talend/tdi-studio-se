@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
@@ -58,6 +57,7 @@ import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -102,14 +102,6 @@ public abstract class JobScriptsManager {
     protected static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
 
     protected static final String JOB_ITEMS_FOLDER_NAME = "items"; //$NON-NLS-1$
-
-    public static final String JOB_CONTEXT_FOLDER = JavaUtils.JAVA_CONTEXTS_DIRECTORY;
-
-    public static final String CTX_PARAMETER_ARG = "--context_param"; //$NON-NLS-1$
-
-    public static final String LOG4J_ENABLE = "--applyLog4jToChildren";
-
-    public static final String LOG4J_LEVEL_ARG = "--log4jLevel=";
 
     public static final String CMDFORWIN = "%*"; //$NON-NLS-1$
 
@@ -202,34 +194,22 @@ public abstract class JobScriptsManager {
         needTalendLibraries,
         needJobItem,
         needJobScript,
-        needSourceCode, // only
-                        // usefull
-                        // for
-                        // Java,
-                        // as
-                        // source
-                        // code
-                        // is
-                        // job
-                        // script
-                        // in
-                        // Perl.
-                        // Activated
-                        // when
-                        // needJobItem
-                        // is
-        // selected
+        needSourceCode,
         includeLibs,
         includeTestSource,
         executeTests,
         binaries,
         needContext,
+        contextName,
         applyToChildren,
         applyLog4jToChildren,
+        needLog4jLevel,
+        log4jLevel,
         addStatistics, // for feature 11031
         doNotCompileCode,
         needDependencies,
-        setParameterValues,
+        needParameterValues,
+        parameterValuesList,
         needAntScript,
         needMavenScript,
         jobType,
@@ -369,14 +349,14 @@ public abstract class JobScriptsManager {
             // name = TalendTextUtils.removeQuotes(name);
             // value = TalendTextUtils.removeQuotes(value);
             if (value == null) {
-                contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+                contextParameterValues += " " + TalendProcessArgumentConstant.CMD_ARG_CONTEXT_PARAMETER + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
             } else if (value != null && !"".equals(value)) {//$NON-NLS-1$
                 if (value.contains(" ") && !value.startsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
                     // Changed by Marvin Wang on Nov.13, 2012 for bug TDI-23253 to add double quotation marks for value.
-                    contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "="//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+                    contextParameterValues += " " + TalendProcessArgumentConstant.CMD_ARG_CONTEXT_PARAMETER + " " + name + "="//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
                             + TalendQuoteUtils.addQuotes(value);
                 } else {
-                    contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "="//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+                    contextParameterValues += " " + TalendProcessArgumentConstant.CMD_ARG_CONTEXT_PARAMETER + " " + name + "="//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
                             + value;
                 }
             }
