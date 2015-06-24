@@ -4482,47 +4482,15 @@
                 description="The lastest pig hbase storage libraries of MAPR41X"
                 id="PIG-HBASE-LIB-MAPR41X_LASTEST"
                 name="PIG-HBASE-LIB-MAPR41X_LASTEST">
+                <!-- We use the 4.0.X here because of  Missing class in 4.1.X hbase-->
              <library
-                 id="zookeeper-mapr-4.1.X-lastest">
+                 id="zookeeper-mapr-4.0.X-lastest">
              </library>
              <library
-                 id="htrace-core-2.04.jar">
+                id="hbase-mapr-4.0.X-lastest">
              </library>
              <library
-                 id="high-scale-lib-1.1.1.jar">
-             </library>
-             <library
-                id="hbase-common-mapr-4.1.X-lastest">
-             </library>
-             <library
-                id="hbase-hadoop-compat-mapr-4.1.X-lastest">
-             </library>
-             <library
-                id="hbase-protocol-mapr-4.1.X-lastest">
-             </library>
-             <library
-                id="hbase-client-mapr-4.1.X-lastest">
-             </library>
-             <library
-                id="hbase-server-mapr-4.1.X-lastest">
-             </library>
-             <library
-                 id="protobuf-java-2.5.0.jar">
-             </library>
-             <library
-                id="netty-3.6.2.Final.jar">
-            </library>
-            <library
-                 id="guava-13.0.1.jar">
-             </library>
-            <library
-                 id="automaton-1.11-8.jar">
-             </library>
-             <library
-                 id="antlr-runtime-3.4.jar">
-             </library>
-             <library
-                 id="joda-time-2.3.jar">
+                id="mapr-hbase-4.0.X-lastest">
              </library>
         </libraryNeededGroup>
 	    
