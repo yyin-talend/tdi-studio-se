@@ -39,6 +39,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.runprocess.IEclipseProcessor;
+import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
@@ -59,7 +60,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
     private static Logger log = Logger.getLogger(Processor.class);
 
-    public static final String CTX_ARG = "--context="; //$NON-NLS-1$
+    public static final String CTX_ARG = TalendProcessArgumentConstant.CMD_ARG_CONTEXT_NAME; //$NON-NLS-1$
 
     private static final String STAT_PORT_ARG = "--stat_port="; //$NON-NLS-1$
 

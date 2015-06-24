@@ -763,6 +763,42 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
     }
 
+    protected boolean isNeedLog4jLevel() {
+        if (!Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+            return false;
+        }
+        if (log4jButton != null && !log4jButton.isDisposed()) {
+            return log4jButton.getSelection();
+        }
+        return false;
+    }
+
+    protected String getLog4jLevel() {
+        if (isNeedLog4jLevel() && log4jLevelCombo != null && !log4jLevelCombo.isDisposed()) {
+            return log4jLevelCombo.getText();
+        }
+        return null;
+    }
+
+    protected boolean isNeedConext() {
+        if (contextButton != null && !contextButton.isDisposed()) {
+            return contextButton.getSelection();
+        }
+        return false;
+    }
+
+    protected String getContextName() {
+        if (isNeedConext()) {
+            if (contextCombo != null && !contextCombo.isDisposed()) {
+                return contextCombo.getText();
+            } else {
+                return IContext.DEFAULT;
+            }
+        }
+        return null;
+
+    }
+
     private void collectNodes(Map<String, Item> items, Object[] objects) {
         for (Object object : objects) {
             RepositoryNode repositoryNode = (RepositoryNode) object;
@@ -1491,14 +1527,24 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         exportChoiceMap.put(ExportChoice.needSystemRoutine, Boolean.TRUE);
         exportChoiceMap.put(ExportChoice.needUserRoutine, Boolean.TRUE);
         exportChoiceMap.put(ExportChoice.needTalendLibraries, Boolean.TRUE);
-        exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
+        if (jobItemButton != null) {
+            exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
+        }
         exportChoiceMap.put(ExportChoice.needSourceCode, isAddJavaSources());
         exportChoiceMap.put(ExportChoice.needDependencies, Boolean.TRUE);
         exportChoiceMap.put(ExportChoice.needJobScript, Boolean.TRUE);
-        exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
-        exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needContext, isNeedConext());
+        exportChoiceMap.put(ExportChoice.contextName, getContextName());
+        if (applyToChildrenButton != null) {
+            exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
+        }
         // exportChoice.put(ExportChoice.needDependencies, exportDependencies.getSelection());
-        exportChoiceMap.put(ExportChoice.setParameterValues, setParametersValueButton2.getSelection());
+        if (setParametersValueButton2 != null) {
+            exportChoiceMap.put(ExportChoice.needParameterValues, setParametersValueButton2.getSelection());
+            if (setParametersValueButton2.getSelection()) {
+                exportChoiceMap.put(ExportChoice.parameterValuesList, manager.getContextEditableResultValuesList());
+            }
+        }
         // exportChoice.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());
         if (addAntBSButton != null) {
             exportChoiceMap.put(ExportChoice.needAntScript, addAntBSButton.getSelection());
@@ -1510,6 +1556,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         exportChoiceMap.put(ExportChoice.executeTests, isExecuteTests());
         exportChoiceMap.put(ExportChoice.includeTestSource, isAddTestSources());
         exportChoiceMap.put(ExportChoice.includeLibs, isIncludeLibs());
+
+        exportChoiceMap.put(ExportChoice.needLog4jLevel, isNeedLog4jLevel());
+        exportChoiceMap.put(ExportChoice.log4jLevel, getLog4jLevel());
 
         return exportChoiceMap;
     }

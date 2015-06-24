@@ -72,13 +72,47 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     @Override
     public void generateJobFiles(IProgressMonitor monitor) throws Exception {
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
+
+        final Map<String, Object> argumentsMap = new HashMap<String, Object>();
+
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_APPLY_CONTEXT_TO_CHILDREN,
+                isOptionChoosed(ExportChoice.applyToChildren));
+        //
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_STATISTICS, isOptionChoosed(ExportChoice.addStatistics));
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_TRAC, false); // disable trac
+
+        // context
+        boolean needContext = isOptionChoosed(ExportChoice.needContext);
+        if (needContext) {
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_CONTEXT, needContext);
+            Object context = this.exportChoice.get(ExportChoice.contextName);
+            if (context == null) {
+                context = this.contextName;
+            }
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_CONTEXT_NAME, context);
+        }
+        boolean needParamValues = isOptionChoosed(ExportChoice.needParameterValues);
+        if (needParamValues) {
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_CONTEXT_PARAMS,
+                    this.exportChoice.get(ExportChoice.parameterValuesList));
+        }
+        // log4j
+        boolean needLog4jLevel = isOptionChoosed(ExportChoice.needLog4jLevel);
+        if (needLog4jLevel) {
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_LOG4J_LEVEL, needLog4jLevel);
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_LOG4J_LEVEL, this.exportChoice.get(ExportChoice.log4jLevel));
+        }
+        // generation option
         int generationOption = (isOptionChoosed(ExportChoice.includeTestSource) || isOptionChoosed(ExportChoice.executeTests)) ? ProcessorUtilities.GENERATE_ALL_CHILDS
                 | ProcessorUtilities.GENERATE_TESTS
                 : ProcessorUtilities.GENERATE_ALL_CHILDS;
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_GENERATE_OPTION, generationOption);
 
-        ProcessorUtilities.generateCode(processItem, contextName, version, isOptionChoosed(ExportChoice.addStatistics), false,
-                isOptionChoosed(ExportChoice.applyToChildren), isOptionChoosed(ExportChoice.needContext), generationOption,
-                monitor);
+        // ProcessorUtilities.generateCode(processItem, contextName, version,
+        // isOptionChoosed(ExportChoice.addStatistics), false,
+        // isOptionChoosed(ExportChoice.applyToChildren), isOptionChoosed(ExportChoice.needContext), generationOption,
+        // monitor);
+        ProcessorUtilities.generateCode(processItem, contextName, version, argumentsMap, monitor);
     }
 
     @Override

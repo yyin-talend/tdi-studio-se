@@ -165,6 +165,7 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
         List<URL> noUseJustForSimplifyChange = new ArrayList<URL>();
         exportChoice.put(ExportChoice.needSourceCode, Boolean.TRUE);
         exportChoice.put(ExportChoice.needContext, Boolean.TRUE);
+        exportChoice.put(ExportChoice.contextName, contextName);
         exportChoice.put(ExportChoice.needMavenScript, Boolean.FALSE);
         processes[0].removeAllMap();
         posExportResource(processes, exportChoice, contextName, launcher, statisticPort, tracePort, 0, (IProcess) null,

@@ -124,15 +124,9 @@ public class BuildJobManager {
                     // unzip to temp folder
                     FilesUtils.unzip(jobTargetFile.getLocation().toPortableString(), tempProFolder.getAbsolutePath());
                     String zipPath = jobTargetFile.getLocation().toPortableString();
-                    boolean addClasspathJar = false;
-                    IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
-                    if (designerCoreUIService != null) {
-                        addClasspathJar = designerCoreUIService.getPreferenceStore().getBoolean(
-                                IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
-                    }
-                    JavaJobExportReArchieveCreator creator = null;
-                    if (addClasspathJar) {
-                        creator = new JavaJobExportReArchieveCreator(zipPath, processItem.getProperty().getLabel());
+                    if (needClasspathJar(exportChoiceMap)) {
+                        JavaJobExportReArchieveCreator creator = new JavaJobExportReArchieveCreator(zipPath, processItem
+                                .getProperty().getLabel());
                         creator.setTempFolder(tempFolder.getAbsolutePath());
                         creator.buildNewJar();
                     }
@@ -173,16 +167,10 @@ public class BuildJobManager {
         IFile jobTargetFile = buildJobHandler.getJobTargetFile();
         if (jobTargetFile.exists()) {
             String zipPath = jobTargetFile.getLocation().toPortableString();
-            boolean addClasspathJar = false;
-            IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
-            if (designerCoreUIService != null) {
-                addClasspathJar = designerCoreUIService.getPreferenceStore().getBoolean(
-                        IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
-            }
-            JavaJobExportReArchieveCreator creator = null;
-            if (addClasspathJar) {
+
+            if (needClasspathJar(exportChoiceMap)) {
                 ExportJobUtil.deleteTempFiles();
-                creator = new JavaJobExportReArchieveCreator(zipPath, label);
+                JavaJobExportReArchieveCreator creator = new JavaJobExportReArchieveCreator(zipPath, label);
                 FilesUtils.unzip(jobTargetFile.getLocation().toPortableString(), creator.getTmpFolder() + File.separator + label
                         + "_" + version);
                 creator.buildNewJar();
@@ -199,6 +187,20 @@ public class BuildJobManager {
         }
         pMonitor.worked(scale);
         pMonitor.done();
+    }
+
+    private boolean needClasspathJar(Map<ExportChoice, Object> exportChoiceMap) {
+        boolean addClasspathJar = false;
+        // only binaries need classpath jar.
+        Object isBinaries = exportChoiceMap.get(ExportChoice.binaries);
+        if (isBinaries == null || !(isBinaries instanceof Boolean) || !(Boolean) isBinaries) {
+            return false;
+        }
+        IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+        if (designerCoreUIService != null) {
+            addClasspathJar = designerCoreUIService.getPreferenceStore().getBoolean(IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
+        }
+        return addClasspathJar;
     }
 
 }

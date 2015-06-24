@@ -91,6 +91,7 @@ import org.talend.core.repository.utils.Log4jUtil;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.core.ui.services.IRulesProviderService;
@@ -280,7 +281,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String contextName, String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess,
             ProcessItem processItem, String selectedJobVersion, List<URL> resources, String... codeOptions) {
         resources.addAll(getLauncher(isOptionChoosed(ExportChoice.needLauncher),
-                isOptionChoosed(ExportChoice.setParameterValues), isOptionChoosed(ExportChoice.needContext), jobProcess,
+                isOptionChoosed(ExportChoice.needParameterValues), isOptionChoosed(ExportChoice.needContext), jobProcess,
                 processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
         addSourceCode(process, processItem, isOptionChoosed(ExportChoice.needSourceCode), process[i], selectedJobVersion);
@@ -612,7 +613,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
                         jobProcess, processItem, selectedJobVersion, resources, codeOptions);
             } else {
-                String log4jOption = getLog4jLevel() != null ? LOG4J_LEVEL_ARG + getLog4jLevel().toLowerCase() : null;
+                String log4jOption = getLog4jLevel() != null ? TalendProcessArgumentConstant.CMD_ARG_LOG4J_LEVEL
+                        + getLog4jLevel().toLowerCase() : null;
                 String[] newCodeOptions = codeOptions;
                 if (!ArrayUtils.contains(codeOptions, log4jOption)) {
                     newCodeOptions = (String[]) ArrayUtils.add(codeOptions, log4jOption);

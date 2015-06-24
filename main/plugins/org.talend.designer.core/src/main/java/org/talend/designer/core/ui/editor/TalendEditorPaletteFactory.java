@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -409,12 +409,12 @@ public final class TalendEditorPaletteFactory {
                             componentIter.remove();
                         }
                     }
-                    componentSet = new HashSet<IComponent>(filteredComponent);
+                    componentSet = new LinkedHashSet<IComponent>(filteredComponent);
                 }
             }
             // 2. if no matched full name comoponent, then just do usual search
             if ((componentSet == null || componentSet.isEmpty()) && componentNameMap != null) {
-                componentSet = new HashSet<IComponent>();
+                componentSet = new LinkedHashSet<IComponent>();
 
                 // 2.1 search from local palette
                 addComponentsByNameFilter(compFac, componentSet, lowerCasedKeyword);
@@ -942,7 +942,7 @@ public final class TalendEditorPaletteFactory {
     public static void storeRecentlyUsedList(List<RecentlyUsedComponent> recentlyUsedList) {
         StringBuffer recentlyUsedBuffer = new StringBuffer();
         boolean needAddSeperator = false;
-        Set<RecentlyUsedComponent> allRecentlyUsedList = new HashSet<TalendEditorPaletteFactory.RecentlyUsedComponent>();
+        Set<RecentlyUsedComponent> allRecentlyUsedList = new LinkedHashSet<TalendEditorPaletteFactory.RecentlyUsedComponent>();
         // **MUST** add recently used list first
         allRecentlyUsedList.addAll(recentlyUsedList);
 
@@ -1305,7 +1305,7 @@ public final class TalendEditorPaletteFactory {
             CommonExceptionHandler.process(e, Priority.WARN);
         }
 
-        Set<String> componentNames = new HashSet<String>();
+        Set<String> componentNames = new LinkedHashSet<String>();
         // the limitation has been moved to it's caller
         // int limit = PaletteSettingsPreferencePage.getPaletteSearchResultLimitFromHelp();
         // int i = 1;
