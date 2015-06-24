@@ -50,16 +50,16 @@ public class RefreshJob extends Job {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<List<ComponentExtension>> task = executor.submit(new Callable<List<ComponentExtension>>() {
 
+            @Override
             public List<ComponentExtension> call() throws Exception {
                 List<ComponentExtension> extensions = new ArrayList<ComponentExtension>();
                 extensions = ComponentSearcher.getAvailableComponentExtensions(ExchangeUtils.TYPEEXTENSION,
-                        ExchangePlugin.getStudioVersion(), ExchangeUtils.getCurrentLanguage(), "");
-                if (extensions != null && !extensions.isEmpty()) {
-                    return extensions;
-                } else {
-                    return ComponentSearcher.getAvailableComponentExtensions(ExchangeUtils.TYPEEXTENSION, "4.2.0",
-                            ExchangeUtils.getCurrentLanguage(), "");
+                        ExchangePlugin.getStudioVersion(), ExchangeUtils.getCurrentLanguage(), "");//$NON-NLS-1$
+                if (extensions == null || extensions.isEmpty() || extensions.size() == 0) {
+                    extensions = ComponentSearcher.getAvailableComponentExtensions(ExchangeUtils.TYPEEXTENSION, "5.6.1",//$NON-NLS-1$
+                            ExchangeUtils.getCurrentLanguage(), "");//$NON-NLS-1$
                 }
+                return extensions;
             }
 
         });

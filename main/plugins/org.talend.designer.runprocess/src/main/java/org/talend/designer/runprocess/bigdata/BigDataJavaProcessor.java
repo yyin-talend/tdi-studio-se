@@ -169,7 +169,6 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         exportChoiceMap.put(ExportChoice.needJobItem, false);
         exportChoiceMap.put(ExportChoice.needJobScript, true);
         exportChoiceMap.put(ExportChoice.needSourceCode, false);
-        exportChoiceMap.put(ExportChoice.needContext, true);
         exportChoiceMap.put(ExportChoice.binaries, true);
         exportChoiceMap.put(ExportChoice.includeLibs, true);
 
@@ -181,8 +180,12 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
                 + "/" + getFilePathPrefix() + "_" + process.getName() + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         try {
-            buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(), processItem.getProcess()
-                    .getDefaultContext(), exportChoiceMap, JobExportType.POJO, progressMonitor);
+            exportChoiceMap.put(ExportChoice.needContext, true);
+            String contextName = processItem.getProcess().getDefaultContext();
+            exportChoiceMap.put(ExportChoice.contextName, contextName);
+
+            buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(), contextName, exportChoiceMap,
+                    JobExportType.POJO, progressMonitor);
         } catch (Exception e) {
             throw new ProcessorException(e);
         }

@@ -123,6 +123,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     }
     boolean xmlTypeExist = false;
     boolean clobTypeExist = false;
+    boolean blobTypeExist = false;
     for(Column column : stmtStructure) {
         //when use Additional column column.getColumn() == null
         if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getType()) && !column.isDynamic()) {
@@ -131,8 +132,12 @@ skeleton="../templates/db_output_bulk.skeleton"
         }
         if (column.getColumn()!= null) {
             String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-            if ("CLOB".equals(column.getColumn().getType()) && typeToGenerate.equals("Object") && !column.isDynamic()) {
-                clobTypeExist = true;
+            if (typeToGenerate.equals("Object") && !column.isDynamic()) {
+            	if("CLOB".equals(column.getColumn().getType())) {
+                	clobTypeExist = true;
+                } else if("BLOB".equals(column.getColumn().getType())) {
+                	blobTypeExist = true;
+                }
             }
         }
     }
@@ -531,7 +536,93 @@ skeleton="../templates/db_output_bulk.skeleton"
         ClobTypeUtil_<%=cid%> clobTypeUtil_<%=cid%>=new ClobTypeUtil_<%=cid%>();
     <%
     }
+    
+    if(blobTypeExist) {
+    %>
 
+        class BlobTypeUtil_<%=cid%> {
+            public Object getBLOB(Object data, java.sql.Connection conn) throws java.sql.SQLException {
+                if(!(data instanceof java.sql.Blob) || (data instanceof oracle.sql.BLOB)) {
+                	return data;
+                }
+                    
+                oracle.sql.BLOB blob = null;
+                java.io.InputStream in = null;
+                java.io.OutputStream out = null;
+                try{
+                	//in
+                	java.sql.Blob blobData = (java.sql.Blob) data;
+                	in = blobData.getBinaryStream();
+                	
+                	//out
+                	blob = oracle.sql.BLOB.createTemporary(conn, true, oracle.sql.BLOB.DURATION_SESSION);
+                    blob.open(oracle.sql.BLOB.MODE_READWRITE);
+                    //blob = conn.createBlob(); oracle jdbc don't support it
+                	out = blob.setBinaryStream(1);
+                	
+                    byte[] cache = new byte[8192];
+                    int len = 0;
+                    while ((len = in.read(cache)) != -1) {
+                        out.write(cache, 0, len);
+                    }
+                    
+                    return blob;
+                } catch(java.sql.SQLException sqlexp){
+                <%dbLog.logPrintedException("sqlexp.getMessage()");%>
+                	if(blob!=null) {
+                		try {
+                    		blob.freeTemporary();
+                    	} catch(java.sql.SQLException e_<%=cid%>) {
+                    		//keep quiet
+                    	}
+                    }
+                    sqlexp.printStackTrace();
+                } catch(java.lang.Exception exp){
+                <%dbLog.logPrintedException("exp.getMessage()");%>
+                   	if(blob!=null) {
+                		try {
+                    		blob.freeTemporary();
+                    	} catch(java.sql.SQLException e_<%=cid%>) {
+                    		//keep quiet
+                    	}
+                    }
+                    exp.printStackTrace();
+                } finally {
+                	if(out!=null) {
+                		try {
+                			out.flush();
+                    		out.close();
+                    	} catch(java.io.IOException e_<%=cid%>) {
+                    		//keep quiet
+                    	}
+                    }
+            	 	
+            	 	if(in!=null) {
+                		try {
+                    		in.close();
+                    	} catch(java.io.IOException e_<%=cid%>) {
+                    		//keep quiet
+                    	}
+                    }
+                    
+                    if(blob!=null) {
+                		try {
+                    		blob.close();
+                    	} catch(java.sql.SQLException e_<%=cid%>) {
+                    		//keep quiet
+                    	}
+                    }
+                }
+                
+                return null;
+               
+            }
+            
+        }
+        BlobTypeUtil_<%=cid%> blobTypeUtil_<%=cid%>=new BlobTypeUtil_<%=cid%>();
+    <%
+    }
+    
     if(isDynamic) {
     %>
         java.sql.PreparedStatement pstmt_<%=cid %> =null;

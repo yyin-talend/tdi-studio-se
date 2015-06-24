@@ -2442,6 +2442,15 @@
               name="MigrateEncoding4tSalesforceWave"
               version="6.0.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.ChangeDefaultValue4JSONComponents"
+              id="org.talend.repository.model.migration.ChangeDefaultValue4JSONComponents"
+              description="Change default value for json components"
+              name="ChangeDefaultValue4JSONComponents"
+              version="6.0.0">
+        </projecttask>
    </extension>
 
    <extension

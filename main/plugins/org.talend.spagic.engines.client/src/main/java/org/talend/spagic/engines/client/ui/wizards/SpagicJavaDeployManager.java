@@ -66,7 +66,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             }
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(isOptionChoosed(ExportChoice.needLauncher),
-                    isOptionChoosed(ExportChoice.setParameterValues), isOptionChoosed(ExportChoice.needContext), jobProcess,
+                    isOptionChoosed(ExportChoice.needParameterValues), isOptionChoosed(ExportChoice.needContext), jobProcess,
                     processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             addJobItem(process, processItem, isOptionChoosed(ExportChoice.needJobItem), proces);

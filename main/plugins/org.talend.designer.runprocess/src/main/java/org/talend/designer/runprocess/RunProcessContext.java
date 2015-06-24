@@ -60,6 +60,7 @@ import org.talend.core.model.process.TraceData;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.runprocess.IEclipseProcessor;
 import org.talend.core.model.runprocess.data.PerformanceData;
+import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerUtils;
@@ -109,10 +110,6 @@ public class RunProcessContext {
     public static final String BREAKPOINT_BAR = "RunProcessContext.breakPoint"; //$NON-NLS-1$
 
     private static final String WATCH_PARAM = "--watch"; //$NON-NLS-1$
-
-    private static final String LOG4J_ENABLE = "--applyLog4jToChildren"; //$NON-NLS-1$
-
-    private static final String LOG4J_LEVEL_ARG = "--log4jLevel="; //$NON-NLS-1$
 
     private static final String LOG4J_DEFAULT_LEVEL = "info"; //$NON-NLS-1$
 
@@ -1655,7 +1652,8 @@ public class RunProcessContext {
                 level = null;
             } else {
                 if (level != null) {
-                    level = LOG4J_LEVEL_ARG + (level.equals("") ? LOG4J_DEFAULT_LEVEL : level.toLowerCase()); //$NON-NLS-1$
+                    level = TalendProcessArgumentConstant.CMD_ARG_LOG4J_LEVEL
+                            + (level.equals("") ? LOG4J_DEFAULT_LEVEL : level.toLowerCase()); //$NON-NLS-1$
                 }
             }
         } else {
