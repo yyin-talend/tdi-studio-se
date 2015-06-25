@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
 import org.talend.core.PluginChecker;
@@ -112,7 +113,9 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         // isOptionChoosed(ExportChoice.addStatistics), false,
         // isOptionChoosed(ExportChoice.applyToChildren), isOptionChoosed(ExportChoice.needContext), generationOption,
         // monitor);
+        ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, null, null);
         ProcessorUtilities.generateCode(processItem, contextName, version, argumentsMap, monitor);
+        ProcessorUtilities.resetExportConfig();
     }
 
     @Override
