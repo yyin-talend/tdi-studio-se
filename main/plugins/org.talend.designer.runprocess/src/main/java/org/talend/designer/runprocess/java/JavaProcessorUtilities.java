@@ -483,10 +483,10 @@ public class JavaProcessorUtilities {
                 }
             }
         }
+        repositoryBundleService.deployModules(listModulesReallyNeeded, null);
         if (missingJars != null) {
             handleMissingJarsForProcess(missingJarsForRoutinesOnly, missingJarsForProcessOnly, missingJars);
         }
-        repositoryBundleService.deployModules(listModulesReallyNeeded, null);
     }
 
     public static boolean addLog4jToModuleList(Collection<ModuleNeeded> jarList) {
