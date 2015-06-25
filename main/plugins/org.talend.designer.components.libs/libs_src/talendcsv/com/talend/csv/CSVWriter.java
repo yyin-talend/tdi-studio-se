@@ -27,27 +27,27 @@ import java.util.List;
  */
 public class CSVWriter implements Closeable {
 
-	public static final int INITIAL_STRING_SIZE = 128;
+    public static final int INITIAL_STRING_SIZE = 128;
 
-	private Writer rawWriter;
+    private Writer rawWriter;
 
-	private PrintWriter pw;
+    private PrintWriter pw;
 
-	private char separator = ',';
+    private char separator = ',';
 
-	private char quotechar = '"';
+    private char quotechar = '"';
     
-	private char escapechar = '"';
+    private char escapechar = '"';
 
-	private String lineEnd;
-	
-	public enum QuoteStatus {
-    	FORCE,
-    	AUTO,
-    	NO
+    private String lineEnd;
+    
+    public enum QuoteStatus {
+        FORCE,
+        AUTO,
+        NO
     }
-	
-	private QuoteStatus quotestatus = QuoteStatus.AUTO;
+    
+    private QuoteStatus quotestatus = QuoteStatus.AUTO;
 
     /**
      * Constructs CSVWriter using a comma for the separator.
@@ -55,8 +55,8 @@ public class CSVWriter implements Closeable {
      * @param writer the writer to an underlying CSV source.
      */
     public CSVWriter(Writer writer) {
-    	this.rawWriter = writer;
-    	this.pw = new PrintWriter(writer);
+        this.rawWriter = writer;
+        this.pw = new PrintWriter(writer);
     }
 
     /**
@@ -83,7 +83,7 @@ public class CSVWriter implements Closeable {
     public CSVWriter setEscapeChar(char escapechar) {
         this.escapechar = escapechar;
         if(this.escapechar == '\0') {
-        	throw new RuntimeException("unvalid escape char");
+            throw new RuntimeException("unvalid escape char");
         }
         return this;
     }
@@ -91,14 +91,14 @@ public class CSVWriter implements Closeable {
     public CSVWriter setQuoteChar(char quotechar) {
         this.quotechar = quotechar;
         if(this.quotechar == '\0') {
-        	throw new RuntimeException("unvalid quote char");
+            throw new RuntimeException("unvalid quote char");
         }
         return this;
     }
     
     public CSVWriter setQuoteStatus(QuoteStatus quotestatus) {
-    	this.quotestatus = quotestatus;
-    	return this;
+        this.quotestatus = quotestatus;
+        return this;
     }
     
     /**
@@ -121,84 +121,152 @@ public class CSVWriter implements Closeable {
 
             String nextElement = nextLine[i];
             if (nextElement == null) {
-            	nextElement = "";
+                nextElement = "";
             }
             
             boolean quote = false;
             
             if(this.quotestatus == QuoteStatus.AUTO) {
-            	quote = needQuote(nextElement,i);
+                quote = needQuote(nextElement,i);
             } else if(this.quotestatus == QuoteStatus.FORCE) {
-            	quote = true;
+                quote = true;
             }
-            
+
             if(quote) {
-            	sb.append(quotechar);
+                sb.append(quotechar);
             }
-            
+
             StringBuilder escapeResult = escape(nextElement,quote);
             if(escapeResult!=null) {
-            	sb.append(escapeResult);
+                sb.append(escapeResult);
             } else {
-            	sb.append(nextElement);
+                sb.append(nextElement);
             }
-            
+
             if(quote) {
-            	sb.append(quotechar);
+                sb.append(quotechar);
             }
         }
 
         if(lineEnd!=null) {
-        	sb.append(lineEnd);
-        	pw.write(sb.toString());
+            sb.append(lineEnd);
+            pw.write(sb.toString());
         } else {
-        	pw.println(sb.toString());
+            pw.println(sb.toString());
+        }
+
+    }
+
+    /**
+     * Writes the next line to the file.
+     *
+     * @param nextLine a string array with each comma-separated element as a separate entry.
+     */
+    public void writeNextEnhance(String[] nextLine,String str4Nil) {
+
+        if (nextLine == null) {
+            return;
+        }
+
+        if(str4Nil == null){
+            writeNext(nextLine);
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder(INITIAL_STRING_SIZE);
+        for (int i = 0; i < nextLine.length; i++) {
+            boolean isNil = false;
+            if (i != 0) {
+                sb.append(separator);
+            }
+
+            String nextElement = nextLine[i];
+            if (nextElement == null) {
+                nextElement = str4Nil;
+                isNil = true;
+            }
+
+            boolean quote = false;
+
+            if(this.quotestatus == QuoteStatus.AUTO) {
+                quote = needQuote(nextElement,i);
+            } else if(this.quotestatus == QuoteStatus.FORCE) {
+                quote = true;
+            }
+
+            if(quote && !isNil){
+               quote = true;
+            }else{
+               quote = false;
+            }
+            
+            if(quote) {
+                sb.append(quotechar);
+            }
+            
+            StringBuilder escapeResult = escape(nextElement,quote);
+            if(escapeResult!=null) {
+                sb.append(escapeResult);
+            } else {
+                sb.append(nextElement);
+            }
+            
+            if(quote) {
+                sb.append(quotechar);
+            }
+        }
+
+        if(lineEnd!=null) {
+            sb.append(lineEnd);
+            pw.write(sb.toString());
+        } else {
+            pw.println(sb.toString());
         }
 
     }
     
-	private boolean needQuote(String field, int fieldIndex) {
-		boolean need =  field.indexOf(quotechar) > -1
-				|| field.indexOf(separator) > -1
-				|| (lineEnd == null && (field.indexOf('\n') > -1 || field.indexOf('\r') > -1))
-				|| (lineEnd != null && field.indexOf(lineEnd) > -1)
-				|| (fieldIndex == 0 && field.length() == 0);
-		
-		if(!need && field.length() > 0) {
-			char first = field.charAt(0);
+    private boolean needQuote(String field, int fieldIndex) {
+        boolean need =  field.indexOf(quotechar) > -1
+                || field.indexOf(separator) > -1
+                || (lineEnd == null && (field.indexOf('\n') > -1 || field.indexOf('\r') > -1))
+                || (lineEnd != null && field.indexOf(lineEnd) > -1)
+                || (fieldIndex == 0 && field.length() == 0);
+        
+        if(!need && field.length() > 0) {
+            char first = field.charAt(0);
 
-			if (first == ' ' || first == '\t') {
-				need = true;
-			}
+            if (first == ' ' || first == '\t') {
+                need = true;
+            }
 
-			if (!need && field.length() > 1) {
-				char last = field.charAt(field.length() - 1);
+            if (!need && field.length() > 1) {
+                char last = field.charAt(field.length() - 1);
 
-				if (last == ' ' || last == '\t') {
-					need = true;
-				}
-			}
-		}
-				
-		return need;
-	}
-	
-	private StringBuilder escape(String field, boolean quote) {
-		if (quote) {
-			return processLine(field);
-		} else if (escapechar!=quotechar) {
-			return processLine2(field);
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * escape when text quote
-	 * @param nextElement
-	 * @return
-	 */
-	protected StringBuilder processLine(String nextElement) {
+                if (last == ' ' || last == '\t') {
+                    need = true;
+                }
+            }
+        }
+                
+        return need;
+    }
+    
+    private StringBuilder escape(String field, boolean quote) {
+        if (quote) {
+            return processLine(field);
+        } else if (escapechar!=quotechar) {
+            return processLine2(field);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * escape when text quote
+     * @param nextElement
+     * @return
+     */
+    protected StringBuilder processLine(String nextElement) {
         StringBuilder sb = new StringBuilder(INITIAL_STRING_SIZE);
         for (int j = 0; j < nextElement.length(); j++) {
             char nextChar = nextElement.charAt(j);
@@ -213,13 +281,13 @@ public class CSVWriter implements Closeable {
 
         return sb;
     }
-	
-	/**
-	 * escape when no text quote
-	 * @param nextElement
-	 * @return
-	 */
-	protected StringBuilder processLine2(String nextElement) {
+    
+    /**
+     * escape when no text quote
+     * @param nextElement
+     * @return
+     */
+    protected StringBuilder processLine2(String nextElement) {
         StringBuilder sb = new StringBuilder(INITIAL_STRING_SIZE);
         for (int j = 0; j < nextElement.length(); j++) {
             char nextChar = nextElement.charAt(j);
@@ -228,10 +296,10 @@ public class CSVWriter implements Closeable {
             } else if (nextChar == separator) {
                 sb.append(escapechar).append(nextChar);
             } else if(lineEnd==null && (nextChar=='\r' || nextChar=='\n')){
-            	sb.append(escapechar).append(nextChar);
+                sb.append(escapechar).append(nextChar);
             } else if(lineEnd!=null && lineEnd.indexOf(nextChar) > -1) {
-            	sb.append(escapechar).append(nextChar);
-            	//TODO how to escape char sequence that contain more than one char without text quote?
+                sb.append(escapechar).append(nextChar);
+                //TODO how to escape char sequence that contain more than one char without text quote?
             } else {
                 sb.append(nextChar);
             }
