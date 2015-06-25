@@ -23,26 +23,31 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.swt.composites.MessagesComposite;
 import org.talend.commons.ui.swt.composites.MessagesWithActionComposite;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.ModulesInstallerUtil;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class MissingSettingsMultiThreadDynamicComposite extends TopMessagesMultiThreadDynamicComposite {
+public class MissingSettingsMultiThreadDynamicComposite extends TopMessagesMultiThreadDynamicComposite implements
+        ILibrariesService.IChangedLibrariesListener {
 
     private List<ModuleNeeded> missModulesNeeded = new ArrayList<ModuleNeeded>();
 
     public MissingSettingsMultiThreadDynamicComposite(Composite parentComposite, int styles, EComponentCategory section,
             Element element, boolean isCompactView) {
         super(parentComposite, styles, section, element, isCompactView);
-
+        ModulesNeededProvider.addChangedLibrariesListener(this);
     }
 
     @Override
@@ -111,4 +116,26 @@ public class MissingSettingsMultiThreadDynamicComposite extends TopMessagesMulti
 
         super.afterCreateMessagesComposite(messComposite);
     }
+
+    @Override
+    public void afterChangingLibraries() {
+        final Element ele = this.getElement();
+        if (ele instanceof Node) {
+            final Node node = (Node) ele;
+            // after install, need update the error marks for node
+            IProcess process = node.getProcess();
+            if (process instanceof IProcess2) {
+                // check whole process to make sure other related nodes can be updated also.
+                ((IProcess2) process).checkProcess();
+            }
+        }
+    }
+
+    @Override
+    public synchronized void dispose() {
+        super.dispose();
+        ModulesNeededProvider.removeChangedLibrariesListener(this);
+
+    }
+
 }
