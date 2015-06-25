@@ -66,7 +66,7 @@ public class ContentConstants {
      * dynamic content ids
      */
     // list extensions content provider id
-    public static final String INSERT_DATA = "INSERT_DATA";
+    public static final String INSERT_EXTENSION_DATA = "INSERT_EXTENSION_DATA";
 
     public static final String DOWNLOADEXTENSION_DATA = "DOWNLOADEXTENSION_DATA";
 

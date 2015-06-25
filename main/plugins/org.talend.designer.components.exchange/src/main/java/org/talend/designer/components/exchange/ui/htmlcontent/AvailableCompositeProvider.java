@@ -93,7 +93,7 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
     public void createContent(String id, Element parent) {
 
         Document dom = parent.getOwnerDocument();
-        if (ContentConstants.INSERT_DATA.equals(id)) {
+        if (ContentConstants.INSERT_EXTENSION_DATA.equals(id)) {
             Element tr = dom.createElement("tr");
 
             Element td = dom.createElement("td");

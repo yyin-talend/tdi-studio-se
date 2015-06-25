@@ -69,12 +69,13 @@ public class RefreshComponenentsAction extends Action {
 
                         Display.getDefault().syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 updateUI(job, event);
                                 String toDisplay = pageToDispaly == null ? ContentConstants.UL_LIST_AVAILABLE_EXTENSIONS
                                         : pageToDispaly;
                                 ExchangeManager.getInstance().generateXHTMLPage(toDisplay,
-                                        new String[] { ContentConstants.INSERT_DATA });
+                                        new String[] { ContentConstants.INSERT_EXTENSION_DATA });
                             }
                         });
                     }
@@ -98,6 +99,7 @@ public class RefreshComponenentsAction extends Action {
 
                         Display.getDefault().syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 updateInstalledUI(showInstalledJob, event);
                                 ExchangeManager.getInstance().generateXHTMLPage(pageToDispaly,
@@ -125,6 +127,7 @@ public class RefreshComponenentsAction extends Action {
 
                         Display.getDefault().syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 updateContributedUI(showContributedJob, event);
                                 ExchangeManager.getInstance().generateXHTMLPage(pageToDispaly,
@@ -153,6 +156,7 @@ public class RefreshComponenentsAction extends Action {
     private void getVersionRevisionsAndCategorys() {
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 ExchangeManager.getInstance().updateVersionRevisionsAndCategorys(
                         ExchangeWebService.searchVersionRevisionJSONArray(ExchangeUtils.TYPEEXTENSION),

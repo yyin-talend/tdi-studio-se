@@ -31,7 +31,7 @@ public class FilterExtensionAction implements IIntroAction {
             String text = params.getProperty(TEXT);
             ExchangeManager.getInstance().setAvialableFilter(text == null ? "" : text);
             ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_AVAILABLE_EXTENSIONS,
-                    new String[] { ContentConstants.INSERT_DATA });
+                    new String[] { ContentConstants.INSERT_EXTENSION_DATA });
         }
     }
 
