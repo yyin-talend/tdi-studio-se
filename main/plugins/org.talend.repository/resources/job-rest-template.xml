@@ -80,12 +80,12 @@
 		<jaxrs:properties>
 #if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
 #[[
-			<entry key="ws-security.signature.username" value="$service{ws-security.signature.username}" />
-			<entry key="ws-security.signature.properties" value="$service{ws-security.signature.properties}" />
-			<entry key="ws-security.callback-handler">
+			<entry key="security.signature.username" value="$service{security.signature.username}" />
+			<entry key="security.signature.properties" value="$service{security.signature.properties}" />
+			<entry key="security.callback-handler">
 				<bean class="org.apache.cxf.interceptor.security.NamePasswordCallbackHandler">
-					<argument type="java.lang.String" value="$service{ws-security.signature.username}" />
-					<argument type="java.lang.String" value="$service{ws-security.signature.password}" />
+					<argument type="java.lang.String" value="$service{security.signature.username}" />
+					<argument type="java.lang.String" value="$service{security.signature.password}" />
 					<argument type="java.lang.String" value="setPassword" />
 				</bean>
 			</entry>
