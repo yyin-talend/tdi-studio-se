@@ -66,11 +66,25 @@
           </PARAMETER>
 
           <PARAMETER NAME="FIELDSEPARATOR" FIELD="TEXT" NUM_ROW="30" SHOW="false">
-            <DEFAULT>","</DEFAULT>
+            <DEFAULT>";"</DEFAULT>
           </PARAMETER>
           <!-- tFileOutputDelimited parameters end -->
 
           <!-- tSalesforceWaveBulkExec parameters begin -->
+        <PARAMETER
+          NAME="USE_EXISTING_CONNECTION"
+          FIELD="CHECK"
+          NUM_ROW="800">
+          <DEFAULT>false</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="CONNECTION"
+          FIELD="COMPONENT_LIST"
+          REQUIRED="true" FILTER="tSalesforceConnection"
+          NUM_ROW="800"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'true'"/>
+
         <PARAMETER
           NAME="USER"
           FIELD="TEXT"
@@ -78,6 +92,7 @@
           REQUIRED="true"
           REPOSITORY_VALUE="USER_NAME"
           GROUP="CONNECTION_INFO"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -89,6 +104,7 @@
           REQUIRED="true"
           REPOSITORY_VALUE="PASSWORD"
           GROUP="CONNECTION_INFO"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -100,6 +116,7 @@
           REQUIRED="true"
           REPOSITORY_VALUE="ENDPOINT"
           GROUP="CONNECTION_INFO"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>"https://login.salesforce.com/services/Soap/u/32.0"</DEFAULT>
         </PARAMETER>
@@ -167,13 +184,71 @@
     </PARAMETERS>
 
     <ADVANCED_PARAMETERS>
+<!--
           <PARAMETER
             NAME="ENCODING"
             FIELD="ENCODING_TYPE"
-            NUM_ROW="15"
-            REQUIRED="true">
+            NUM_ROW="10"
+            REQUIRED="true"
+            >
             <DEFAULT>"UTF-8"</DEFAULT>
           </PARAMETER>
+ -->
+          <PARAMETER
+            NAME="CHARSET"
+            FIELD="TEXT"
+            NUM_ROW="20"
+            REQUIRED="true"
+            SHOW="true"
+            GROUP="HIDDEN_GROUP"
+          >
+            <DEFAULT>"UTF-8"</DEFAULT>
+          </PARAMETER>
+
+          <PARAMETER
+            NAME="FIELDS_DELIMITED_BY"
+            FIELD="TEXT"
+            NUM_ROW="20"
+            REQUIRED="true"
+            SHOW="true"
+            GROUP="HIDDEN_GROUP"
+          >
+            <DEFAULT>";"</DEFAULT>
+          </PARAMETER>
+
+          <PARAMETER
+            NAME="FIELDS_ENCLOSED_BY"
+            FIELD="TEXT"
+            NUM_ROW="25"
+            REQUIRED="true"
+            SHOW="true"
+            GROUP="HIDDEN_GROUP"
+          >
+            <DEFAULT>"\""</DEFAULT>
+          </PARAMETER>
+
+          <PARAMETER
+            NAME="LINES_TERMINATED_BY"
+            FIELD="TEXT"
+            NUM_ROW="25"
+            REQUIRED="true"
+            SHOW="true"
+            GROUP="HIDDEN_GROUP"
+          >
+            <DEFAULT>"\n"</DEFAULT>
+          </PARAMETER>
+
+          <PARAMETER
+            NAME="NUMERIC_FORMAT"
+            FIELD="TEXT"
+            NUM_ROW="25"
+            REQUIRED="true"
+            SHOW="false"
+            GROUP="HIDDEN_GROUP"
+          >
+            <DEFAULT>"#.##"</DEFAULT>
+          </PARAMETER>
+
       <!-- tFileOutputDelimited parameters begin -->
           <PARAMETER NAME="ADVANCED_SEPARATOR" FIELD="CHECK" REQUIRED="true" NUM_ROW="31"
            SHOW="false">
@@ -315,62 +390,6 @@
         <DEFAULT>"CRM"</DEFAULT>
         </PARAMETER>
 
-        <!-- hidden parameters -->
-        <PARAMETER
-          NAME="CHARSET"
-          FIELD="TEXT"
-          NUM_ROW="143"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"UTF-8"</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="FIELDS_DELIMITED_BY"
-          FIELD="TEXT"
-          NUM_ROW="143"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>","</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="FIELDS_ENCLOSED_BY"
-          FIELD="TEXT"
-          NUM_ROW="147"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"\""</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="LINES_TERMINATED_BY"
-          FIELD="TEXT"
-          NUM_ROW="147"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"\n"</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="NUMERIC_FORMAT"
-          FIELD="TEXT"
-          NUM_ROW="147"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"#.##"</DEFAULT>
-        </PARAMETER>
-
         <PARAMETER
           NAME="SPECIFY_JSON_METADATA"
           FIELD="CHECK"
@@ -449,11 +468,11 @@
         <TEMPLATE_PARAM SOURCE="self.FILENAME"   TARGET="in.FILENAME" />
         <TEMPLATE_PARAM SOURCE="self.ROWSEPARATOR"   TARGET="in.ROWSEPARATOR" />
         <TEMPLATE_PARAM SOURCE="self.OS_LINE_SEPARATOR_AS_ROW_SEPARATOR"   TARGET="in.OS_LINE_SEPARATOR_AS_ROW_SEPARATOR" />
-        <TEMPLATE_PARAM SOURCE="self.CSVROWSEPARATOR"   TARGET="in.CSVROWSEPARATOR" />
+        <TEMPLATE_PARAM SOURCE="self.LINES_TERMINATED_BY"   TARGET="in.CSVROWSEPARATOR" />
         <TEMPLATE_PARAM SOURCE="self.LF"   TARGET="in.LF" />
         <TEMPLATE_PARAM SOURCE="self.CR"   TARGET="in.CR" />
         <TEMPLATE_PARAM SOURCE="self.CRLF"   TARGET="in.CRLF" />
-        <TEMPLATE_PARAM SOURCE="self.FIELDSEPARATOR"   TARGET="in.FIELDSEPARATOR" />
+        <TEMPLATE_PARAM SOURCE="self.FIELDS_DELIMITED_BY"   TARGET="in.FIELDSEPARATOR" />
         <TEMPLATE_PARAM SOURCE="self.APPEND"   TARGET="in.APPEND" />
         <TEMPLATE_PARAM SOURCE="self.INCLUDEHEADER"   TARGET="in.INCLUDEHEADER" />
         <TEMPLATE_PARAM SOURCE="self.COMPRESS"   TARGET="in.COMPRESS" />
@@ -463,20 +482,22 @@
         <TEMPLATE_PARAM SOURCE="self.DECIMAL_SEPARATOR"   TARGET="in.DECIMAL_SEPARATOR" />
         <TEMPLATE_PARAM SOURCE="self.CSV_OPTION"   TARGET="in.CSV_OPTION" />
         <TEMPLATE_PARAM SOURCE="self.ESCAPE_CHAR"   TARGET="in.ESCAPE_CHAR" />
-        <TEMPLATE_PARAM SOURCE="self.TEXT_ENCLOSURE"   TARGET="in.TEXT_ENCLOSURE" />
+        <TEMPLATE_PARAM SOURCE="self.FIELDS_ENCLOSED_BY"   TARGET="in.TEXT_ENCLOSURE" />
         <TEMPLATE_PARAM SOURCE="self.CREATE"   TARGET="in.CREATE" />
         <TEMPLATE_PARAM SOURCE="self.SPLIT"   TARGET="in.SPLIT" />
         <TEMPLATE_PARAM SOURCE="self.SPLIT_EVERY"   TARGET="in.SPLIT_EVERY" />
         <TEMPLATE_PARAM SOURCE="self.FLUSHONROW"   TARGET="in.FLUSHONROW" />
         <TEMPLATE_PARAM SOURCE="self.FLUSHONROW_NUM"   TARGET="in.FLUSHONROW_NUM" />
         <TEMPLATE_PARAM SOURCE="self.ROW_MODE"   TARGET="in.ROW_MODE" />
-        <TEMPLATE_PARAM SOURCE="self.ENCODING"   TARGET="in.ENCODING" />
+        <TEMPLATE_PARAM SOURCE="self.CHARSET"   TARGET="in.ENCODING" />
         <TEMPLATE_PARAM SOURCE="self.DELETE_EMPTYFILE"   TARGET="in.DELETE_EMPTYFILE" />
         <TEMPLATE_PARAM SOURCE="self.SCHEMA_OPT_NUM"   TARGET="in.SCHEMA_OPT_NUM" />
         <TEMPLATE_PARAM SOURCE="self.Talend_CSV"   TARGET="in.Talend_CSV" />
         <TEMPLATE_PARAM SOURCE="self.NB_LINE"   TARGET="in.NB_LINE" />
         <TEMPLATE_PARAM SOURCE="self.FILE_NAME"   TARGET="in.FILE_NAME" />
 
+        <TEMPLATE_PARAM SOURCE="self.USE_EXISTING_CONNECTION"   TARGET="out.USE_EXISTING_CONNECTION" />
+        <TEMPLATE_PARAM SOURCE="self.CONNECTION"   TARGET="out.CONNECTION" />
         <TEMPLATE_PARAM SOURCE="self.USER"   TARGET="out.USER" />
         <TEMPLATE_PARAM SOURCE="self.PASSWORD"   TARGET="out.PASSWORD" />
         <TEMPLATE_PARAM SOURCE="self.ENDPOINT"   TARGET="out.ENDPOINT" />
@@ -495,7 +516,6 @@
         <TEMPLATE_PARAM SOURCE="self.UNIQUE_API_NAME"   TARGET="out.UNIQUE_API_NAME" />
         <TEMPLATE_PARAM SOURCE="self.FULLY_QUALIFIED_NAME"   TARGET="out.FULLY_QUALIFIED_NAME" />
         <TEMPLATE_PARAM SOURCE="self.DATA_LABEL"   TARGET="out.DATA_LABEL" />
-        <TEMPLATE_PARAM SOURCE="self.ENCODING"   TARGET="out.ENCODING" />
         <TEMPLATE_PARAM SOURCE="self.UPLODE_JSON_METADATA"   TARGET="out.UPLODE_JSON_METADATA" />
         <TEMPLATE_PARAM SOURCE="self.CHARSET"   TARGET="out.CHARSET" />
         <TEMPLATE_PARAM SOURCE="self.FIELDS_DELIMITED_BY"   TARGET="out.FIELDS_DELIMITED_BY" />
@@ -505,7 +525,6 @@
         <TEMPLATE_PARAM SOURCE="self.AUTO_GENERATE_JSON_METADATA_DESCRIPTION"   TARGET="out.AUTO_GENERATE_JSON_METADATA_DESCRIPTION" />
         <TEMPLATE_PARAM SOURCE="self.GENERATE_JSON_IN_FILE"   TARGET="out.GENERATE_JSON_IN_FILE" />
         <TEMPLATE_PARAM SOURCE="self.CUSTOM_FOLDER"   TARGET="out.CUSTOM_FOLDER" />
-        <TEMPLATE_PARAM SOURCE="self.ENCODING"   TARGET="out.ENCODING" />
         <TEMPLATE_PARAM SOURCE="self.RETRIEVE_UPLOAD_STATUS"   TARGET="out.RETRIEVE_UPLOAD_STATUS" />
         <TEMPLATE_PARAM SOURCE="self.SECONDS_TO_WAIT_FOR_SERVER_ANSWER"   TARGET="out.SECONDS_TO_WAIT_FOR_SERVER_ANSWER" />
         <TEMPLATE_PARAM SOURCE="self.GENERATED_CSV_PATH"   TARGET="out.LOAD_DATA_PATH" />

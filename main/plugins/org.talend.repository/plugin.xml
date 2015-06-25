@@ -2372,6 +2372,15 @@
                 name="AddSchemaDefaultValue4tFileInputDelimited"
                 version="5.6.2">
           </projecttask>
+          <projecttask
+                beforeLogon="false"
+                breaks="5.6.2"
+                class="org.talend.repository.model.migration.MigrateEncoding4tSalesforceWave"
+                id="org.talend.repository.model.migration.MigrateEncoding4tSalesforceWave"
+                description="Migrate the encoding for tSalesforceWave"
+                name="MigrateEncoding4tSalesforceWave"
+                version="5.6.3">
+          </projecttask>
    </extension>
 
    <extension

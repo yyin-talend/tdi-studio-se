@@ -6,6 +6,7 @@ imports="
         org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.process.IProcess
         org.talend.core.model.process.INode
+        org.talend.core.model.utils.NodeUtil
         java.io.File
         java.io.BufferedWriter
         java.io.FileOutputStream
@@ -22,15 +23,11 @@ imports="
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
 
+    boolean useExistingConn = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+
     String userName = ElementParameterParser.getValue(node,"__USER__");
-%>
-
-   <%
     String passwordFieldName = "__PASSWORD__";
-    %>
-   <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-
-<%
     String endPoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
 
     String datasetName = ElementParameterParser.getValue(node,"__DATASET__");
@@ -43,16 +40,53 @@ imports="
 
     boolean generateJsonInFile = "true".equals(ElementParameterParser.getValue(node,"__GENERATE_JSON_IN_FILE__"));
     boolean doCleanWork = generateJsonInFile && !specifyJsonMetadata;
-    String  encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+
+    String encoding = "UTF-8";
+    String charsetName = ElementParameterParser.getValue(node,"__CHARSET__");
+    if(charsetName != null && !"".equals(charsetName) && !"\"\"".equals(charsetName)){
+           encoding = charsetName;
+    }
 
     boolean retrieveUploadStatus = "true".equals(ElementParameterParser.getValue(node,"__RETRIEVE_UPLOAD_STATUS__"));
     String seconds2getStatus = ElementParameterParser.getValue(node,"__SECONDS_TO_WAIT_FOR_SERVER_ANSWER__");
 %>
         //Step one: Connect to salesforce
         com.sforce.ws.ConnectorConfig connectorConfig_<%= cid %> = new com.sforce.ws.ConnectorConfig();
+        <%
+          if(useExistingConn){
+               INode existingConnNode = NodeUtil.getNodeByUniqueName(node.getProcess(), connection);
+               String loginType = ElementParameterParser.getValue(existingConnNode,"__LOGIN_TYPE__");
+               if("OAUTH".equalsIgnoreCase(loginType)){
+               %>
+                    org.talend.salesforce.SforceOAuthConnection
+                               sfOAuthConn_<%= cid %> = (org.talend.salesforce.SforceOAuthConnection)globalMap.get("conn_" + "<%= connection %>");
+                    connectorConfig_<%= cid %>.setManualLogin(true);
+                    connectorConfig_<%= cid %>.setSessionId(sfOAuthConn_<%= cid %>.getSessionHeader().getSessionId());
+                    connectorConfig_<%= cid %>.setServiceEndpoint(sfOAuthConn_<%= cid %>.getServiceEndPoint());
+               <%
+               }else if("BASIC".equalsIgnoreCase(loginType)){
+               %>
+                   org.talend.salesforce.SforceBasicConnection
+                              sfBasicConn_<%= cid %> = (org.talend.salesforce.SforceBasicConnection)globalMap.get("conn_" + "<%= connection %>");
+                   connectorConfig_<%= cid %>.setManualLogin(true);
+                   connectorConfig_<%= cid %>.setSessionId(sfBasicConn_<%= cid %>.getSessionHeader().getSessionId());
+                   connectorConfig_<%= cid %>.setServiceEndpoint(sfBasicConn_<%= cid %>.getServiceEndPoint());
+               <%
+               }else{
+               %>
+                  System.err.println("Unsupported login type.");
+               <%
+               }
+          }else{
+               %>
+                  <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
         connectorConfig_<%= cid %>.setUsername(<%= userName %>);
         connectorConfig_<%= cid %>.setPassword(decryptedPassword_<%=cid%>);
         connectorConfig_<%= cid %>.setAuthEndpoint(<%= endPoint %>);
+               <%
+          }
+         %>
 
         com.sforce.soap.partner.PartnerConnection partnerConnection_<%= cid %> = null;
         try{

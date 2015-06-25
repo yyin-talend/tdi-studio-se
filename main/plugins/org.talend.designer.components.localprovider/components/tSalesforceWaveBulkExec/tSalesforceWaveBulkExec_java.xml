@@ -40,12 +40,27 @@
           REPOSITORY_VALUE="SALESFORCE" />
 
         <PARAMETER
+          NAME="USE_EXISTING_CONNECTION"
+          FIELD="CHECK"
+          NUM_ROW="15">
+          <DEFAULT>false</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="CONNECTION"
+          FIELD="COMPONENT_LIST"
+          REQUIRED="true" FILTER="tSalesforceConnection"
+          NUM_ROW="15"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'true'"/>
+
+        <PARAMETER
           NAME="USER"
           FIELD="TEXT"
           NUM_ROW="20"
           REQUIRED="true"
           GROUP="CONNECTION_INFO"
           REPOSITORY_VALUE="USER_NAME"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -57,6 +72,7 @@
           REQUIRED="true"
           GROUP="CONNECTION_INFO"
           REPOSITORY_VALUE="PASSWORD"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -68,6 +84,7 @@
           REQUIRED="true"
           GROUP="CONNECTION_INFO"
           REPOSITORY_VALUE="ENDPOINT"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
           <DEFAULT>"https://login.salesforce.com/services/Soap/u/32.0"</DEFAULT>
         </PARAMETER>
@@ -118,13 +135,69 @@
     </PARAMETERS>
 
     <ADVANCED_PARAMETERS>
+<!--
         <PARAMETER
           NAME="ENCODING"
           FIELD="ENCODING_TYPE"
-          NUM_ROW="15"
+          NUM_ROW="10"
           REQUIRED="true"
           NOT_SHOW_IF="UPLODE_JSON_METADATA == 'false'">
           <DEFAULT>"UTF-8"</DEFAULT>
+        </PARAMETER>
+ -->
+        <PARAMETER
+          NAME="CHARSET"
+          FIELD="TEXT"
+          NUM_ROW="18"
+          REQUIRED="true"
+          NOT_SHOW_IF="SPECIFY_JSON_METADATA == 'true'"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"UTF-8"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="FIELDS_DELIMITED_BY"
+          FIELD="TEXT"
+          NUM_ROW="18"
+          REQUIRED="true"
+          NOT_SHOW_IF="SPECIFY_JSON_METADATA == 'true'"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>";"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="FIELDS_ENCLOSED_BY"
+          FIELD="TEXT"
+          NUM_ROW="23"
+          REQUIRED="true"
+          NOT_SHOW_IF="SPECIFY_JSON_METADATA == 'true'"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"\""</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="LINES_TERMINATED_BY"
+          FIELD="TEXT"
+          NUM_ROW="23"
+          REQUIRED="true"
+          NOT_SHOW_IF="SPECIFY_JSON_METADATA == 'true'"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"\n"</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+          NAME="NUMERIC_FORMAT"
+          FIELD="TEXT"
+          NUM_ROW="23"
+          REQUIRED="true"
+          SHOW="false"
+          GROUP="HIDDEN_GROUP"
+        >
+          <DEFAULT>"#.##"</DEFAULT>
         </PARAMETER>
 
         <PARAMETER
@@ -198,62 +271,6 @@
         <DEFAULT>"CRM"</DEFAULT>
         </PARAMETER>
 
-        <!-- hidden parameters -->
-        <PARAMETER
-          NAME="CHARSET"
-          FIELD="TEXT"
-          NUM_ROW="45"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"UTF-8"</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="FIELDS_DELIMITED_BY"
-          FIELD="TEXT"
-          NUM_ROW="45"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>","</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="FIELDS_ENCLOSED_BY"
-          FIELD="TEXT"
-          NUM_ROW="48"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"\""</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="LINES_TERMINATED_BY"
-          FIELD="TEXT"
-          NUM_ROW="48"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"\n"</DEFAULT>
-        </PARAMETER>
-
-        <PARAMETER
-          NAME="NUMERIC_FORMAT"
-          FIELD="TEXT"
-          NUM_ROW="48"
-          REQUIRED="true"
-          SHOW="false"
-          GROUP="HIDDEN_GROUP"
-        >
-          <DEFAULT>"#.##"</DEFAULT>
-        </PARAMETER>
-
         <PARAMETER
           NAME="SPECIFY_JSON_METADATA"
           FIELD="CHECK"
@@ -321,10 +338,10 @@
 
     <CODEGENERATION>
       <IMPORTS>
-        <IMPORT NAME="force-wsc-33.0.0.jar" MODULE="force-wsc-33.0.0.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/force-wsc-33.0.0.jar" REQUIRED="true" />
-        <IMPORT NAME="partner-33.jar" MODULE="partner-33.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/partner-33.jar" REQUIRED="true" />
-        <IMPORT NAME="commons-io-2.4.jar" MODULE="commons-io-2.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-io-2.4.jar" REQUIRED="true" />
-        <IMPORT NAME="talend-salesforce-0.1.jar" MODULE="talend-salesforce-0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/talend-salesforce-0.1.jar" REQUIRED="true" />
+        <IMPORT NAME="force-wsc-33.0.0.jar" MODULE="force-wsc-33.0.0.jar" MVN="mvn:org.talend.libraries/force-wsc-33.0.0/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/force-wsc-33.0.0.jar" REQUIRED="true" />
+        <IMPORT NAME="partner-33.jar" MODULE="partner-33.jar" MVN="mvn:org.talend.libraries/partner-33/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/partner-33.jar" REQUIRED="true" />
+        <IMPORT NAME="commons-io-2.4.jar" MODULE="commons-io-2.4.jar" MVN="mvn:org.talend.libraries/commons-io-2.4/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-io-2.4.jar" REQUIRED="true" />
+        <IMPORT NAME="talend-salesforce-0.1.jar" MODULE="talend-salesforce-0.1.jar" MVN="mvn:org.talend.libraries/talend-salesforce-0.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/talend-salesforce-0.1.jar" REQUIRED="true" />
       </IMPORTS>
     </CODEGENERATION>
     <RETURNS/>
