@@ -5562,6 +5562,18 @@
              <library
                  id="zookeeper-mapr-4.1.X-lastest">
              </library>
+             <library
+                 id="htrace-core-2.04.jar">
+             </library>
+             <library
+                 id="netty-3.6.6.Final.jar">
+             </library>
+             <library
+                id="mapr-hbase-4.1.X-lastest">
+             </library>
+             <library
+                 id="high-scale-lib-1.1.1.jar">
+             </library>
         </libraryNeededGroup>
 
 	    <libraryNeededGroup
@@ -5703,6 +5715,9 @@
             </library>
             <library 
                 id="tez-yarn-timeline-history-0.5.3-mapr-1504.jar">
+            </library>
+            <library
+                id="protobuf-java-2.5.0.jar">
             </library>
         </libraryNeededGroup>
         <libraryNeededGroup
