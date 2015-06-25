@@ -57,7 +57,7 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
                 // || selectedEditPart.contains(getHost().getParent())
                 // || selectedEditPart.contains(getHost().getParent().getParent())
                 ) {
-                    showFeedback(true);
+                    showFeedback(true, null);
                 }
 
             }
@@ -82,10 +82,10 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
         } else {
             this.setHideHandle(false);
         }
-        showFeedback(false);
+        showFeedback(false, connector);
     }
 
-    private void showFeedback(boolean isMove) {
+    private void showFeedback(boolean isMove, INodeConnector connector) {
         if (this.layer == null) {
             this.layer = getLayer(TALEND_FEEDBACK_LAYER);
         }
@@ -113,6 +113,7 @@ public class SelectionFeedbackEditPolicy extends SelectionEditPolicy implements 
                     handle.setLocator(locator);
                 }
             }
+            handle.setMainNodeConnector(connector);
             layer.add(handle);
             if (!isMove) {
                 handle.getLocator().relocate(handle);

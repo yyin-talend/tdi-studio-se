@@ -32,8 +32,10 @@ import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.ui.utils.image.ColorUtils;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.ui.action.TalendCreateConnectionTool;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 
 /**
@@ -51,6 +53,10 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
         setLayoutManager(new StackLayout());
     }
 
+    public void setMainNodeConnector(INodeConnector nodeConnector) {
+        this.mainConnector = nodeConnector;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -61,8 +67,7 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
         if (this.mainConnector == null) {
             this.mainConnector = new NodeConnectorTool(nodePart).getConnector();
         }
-        final INodeConnector connector = this.mainConnector;
-        if (connector == null) {
+        if (this.mainConnector == null) {
             return null;
         }
 
@@ -79,7 +84,19 @@ public class TalendConnectionHandle extends SquareHandle implements PropertyChan
 
             @Override
             public Object getObjectType() {
-                return connector.getName();
+                // should get the connector at realtime
+                mainConnector = new NodeConnectorTool(nodePart).getConnector();
+                if (mainConnector == null) {
+                    // if no connector is available, maybe can return "on componnet ok" connector to avoid NPE
+                    Node node = (Node) nodePart.getModel();
+                    mainConnector = node.getConnectorFromType(EConnectionType.ON_COMPONENT_OK);
+                    // specify the connection name
+                    listArgs.set(1, mainConnector.getLinkName());
+                } else {
+                    // no need to specify the connection name
+                    listArgs.set(1, null);
+                }
+                return mainConnector.getName();
             }
         }, nodePart);
 
