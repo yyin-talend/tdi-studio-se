@@ -28,12 +28,15 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.GlobalServiceRegister;
@@ -66,8 +69,20 @@ import org.talend.utils.io.FilesUtils;
  */
 public class BuildJobHandler extends AbstractBuildJobHandler {
 
+    private boolean projectNameLowerCase;
+
     public BuildJobHandler(ProcessItem processItem, String version, String contextName, Map<ExportChoice, Object> exportChoiceMap) {
         super(processItem, version, contextName, exportChoiceMap);
+
+        setProjectNameLowerCase(true);
+    }
+
+    public boolean isProjectNameLowerCase() {
+        return projectNameLowerCase;
+    }
+
+    public void setProjectNameLowerCase(boolean projectNameLowerCase) {
+        this.projectNameLowerCase = projectNameLowerCase;
     }
 
     @Override
@@ -159,7 +174,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         } else {
             baseFolder.create(true, true, null);
         }
-        IFolder itemsFolder = baseFolder.getFolder("items");
+        IFolder itemsFolder = baseFolder.getFolder("items");//$NON-NLS-1$
         itemsFolder.create(true, true, monitor);
         List<Item> items = new ArrayList<Item>();
         items.add(processItem);
@@ -171,10 +186,10 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             }
         }
         File destination = new File(itemsFolder.getLocation().toFile().getAbsolutePath());
-        exportItemUtil.setProjectNameAsLowerCase(true);
+        exportItemUtil.setProjectNameAsLowerCase(isProjectNameLowerCase());
         exportItemUtil.exportItems(destination, new ArrayList<Item>(items), false, new NullProgressMonitor());
         addDQDependencies(itemsFolder, items);
-        addTDMDependencies(baseFolder, items);
+        addTDMDependencies(itemsFolder, items);
     }
 
     /**
@@ -183,7 +198,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
      * @param items
      * @param itemsFolder
      */
-    private void addTDMDependencies(IFolder baseFolder, List<Item> items) {
+    private void addTDMDependencies(IFolder itemsFolder, List<Item> items) {
         ITransformService tdmService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITransformService.class)) {
             tdmService = (ITransformService) GlobalServiceRegister.getDefault().getService(ITransformService.class);
@@ -201,7 +216,8 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                         File currentResource = new File(org.talend.commons.utils.io.FilesUtils.getFileRealPath(sourceUrl
                                 .getPath()));
                         if (currentResource.exists()) {
-                            IFolder targetFolder = baseFolder.getFolder(relativePath);
+                            // the __tdm will be out of items folder, same level for items
+                            IFolder targetFolder = ((IFolder) itemsFolder.getParent()).getFolder(relativePath);
                             if (!targetFolder.exists()) {
                                 targetFolder.create(true, true, new NullProgressMonitor());
                             }
@@ -213,32 +229,33 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
             }
 
+            itemsFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+            // add .settings/com.oaklandsw.base.projectProps for tdm, it should be added via ExportItemUtil, here just
+            // make sure to export again.
             for (Item item : items) {
-                // add .settings/com.oaklandsw.base.projectProps for tdm
-                if (tdmService != null && !tdmService.isTransformItem(item)) {
-                    String itemProjectFolder = getProject(item).getTechnicalLabel().toLowerCase();
-                    IFolder targetProjectFolder = baseFolder.getFolder(itemProjectFolder);
-                    IFolder targetSettingsFolder = null;
-                    if (!targetProjectFolder.exists()) {
-                        targetProjectFolder.create(true, true, new NullProgressMonitor());
-                        targetSettingsFolder = targetProjectFolder.getFolder(RepositoryConstants.SETTING_DIRECTORY);
-                        if (!targetSettingsFolder.exists()) {
-                            targetSettingsFolder.create(true, true, new NullProgressMonitor());
-                        }
+                if (tdmService != null && tdmService.isTransformItem(item)) {
+                    String itemProjectFolder = getProject(item).getTechnicalLabel();
+                    if (isProjectNameLowerCase()) {// should be same as ExportItemUtil.getProjectOutputPath
+                        itemProjectFolder = itemProjectFolder.toLowerCase();
                     }
+                    IPath targetSettingPath = new Path(itemProjectFolder).append(RepositoryConstants.SETTING_DIRECTORY);
+                    IFolder targetSettingsFolder = talendProcessJavaProject.createSubFolder(null, itemsFolder,
+                            targetSettingPath.toString());
+
                     IProject sourceProject = getCorrespondingProjectRootFolder(item);
 
                     if (sourceProject.exists()) {
-                        IFolder settingsFolder = sourceProject.getFolder(RepositoryConstants.SETTING_DIRECTORY);
-                        if (settingsFolder.exists()) {
-                            IFile settingsFile = settingsFolder.getFile(FileConstants.TDM_PROPS);
-                            if (settingsFile.exists()) {
-                                if (targetSettingsFolder != null && targetSettingsFolder.exists()) {
-                                    settingsFile.copy(targetSettingsFolder.getFullPath(), true, null);
-                                }
-                            }
+                        IFile targetTdmPropsFile = targetSettingsFolder.getFile(FileConstants.TDM_PROPS);
+                        IFile sourceTdmPropsFile = sourceProject.getFolder(RepositoryConstants.SETTING_DIRECTORY).getFile(
+                                FileConstants.TDM_PROPS);
+
+                        // if have existed, no need copy again.
+                        if (sourceTdmPropsFile.exists() && !targetTdmPropsFile.exists()) {
+                            sourceTdmPropsFile.copy(targetTdmPropsFile.getFullPath(), true, null);
                         }
                     }
+                    break; // only deal with one time.
                 }
             }
         } catch (Exception e) {
