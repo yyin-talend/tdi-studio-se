@@ -2824,6 +2824,90 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
+	    <libraryNeededGroup
+                description="The lastest Map Reduce libraries of MAPR41X"
+                id="MAPREDUCE-LIB-MAPR41X_LASTEST"
+                name="MAPREDUCE-LIB-MAPR41X_LASTEST">
+             <library
+                id="hadoop-common-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="maprfs-4.1.X-lastest">
+             </library>
+             <library
+                 id="hadoop-auth-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hadoop-hdfs-mapr-4.1.X-lastest">
+             </library>
+             <library
+                id="hadoop-mapreduce-client-common-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hadoop-mapreduce-client-core-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hadoop-mapreduce-client-jobclient-mapr-4.1.X-lastest">
+             </library>
+             <library
+                id="hadoop-yarn-api-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hadoop-yarn-client-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hadoop-yarn-common-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="json-20080701.jar">
+             </library>
+             <library
+                 id="zookeeper-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="avro-1.7.6.jar">
+             </library>
+             <library
+                 id="commons-configuration-1.6.jar">
+             </library>
+             <library
+                 id="commons-lang-2.6.jar">
+             </library>
+             <library
+                 id="commons-logging-1.1.3.jar">
+             </library>
+             <library
+                 id="commons-cli-1.2.jar">
+             </library>
+             <library
+                 id="commons-codec-1.4.jar">
+             </library>
+             <library
+                 id="commons-collections-3.2.1.jar">
+             </library>
+             <library
+                 id="guava-13.0.1.jar">
+             </library>
+             <library
+                 id="protobuf-java-2.5.0.jar">
+             </library>
+             <library
+                 id="slf4j-api-1.7.5.jar">
+             </library>
+             <library
+                 id="slf4j-log4j12-1.7.5.jar">
+             </library>
+             <library
+                 id="jackson-mapper-asl-1.9.13.jar">
+             </library>
+             <library
+                 id="jackson-core-asl-1.9.13.jar">
+             </library>
+             <library
+                 id="log4j-1.2.17.jar">
+             </library>
+        </libraryNeededGroup>
+	    
 	    <!-- group of talend mapreduce&hbase libraries -->
 	    <libraryNeededGroup
 	            description="The lastest talend mapreduce hbase storage libraries of CDH 5.4"
@@ -2911,6 +2995,24 @@
 	             id="zookeeper-mapr-4.0.X-lastest">
 	         </library>
 	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+                description="The lastest talend mapreduce hbase storage libraries of MAPR41X"
+                id="MAPREDUCE-HBASE-LIB-MAPR41X_LASTEST"
+                name="MAPREDUCE-HBASE-LIB-MAPR41X_LASTEST">
+             <library
+                id="hbase-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="zookeeper-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="htrace-core-2.04.jar">
+             </library>
+             <library
+                id="mapr-hbase-4.1.X-lastest">
+             </library>
+        </libraryNeededGroup>
 	    
 	    <!-- group of hbase libraries -->
 	    <libraryNeededGroup
