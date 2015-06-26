@@ -39,12 +39,13 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.designer.runprocess.maven.MavenJavaProcessor;
 import org.talend.repository.ui.utils.ZipToFile;
 
 /**
  * Created by wchen on Mar 5, 2013.
  */
-public class ExportModelJavaProcessor extends JavaProcessor {
+public class ExportModelJavaProcessor extends MavenJavaProcessor {
 
     private String unzipFolder;
 
