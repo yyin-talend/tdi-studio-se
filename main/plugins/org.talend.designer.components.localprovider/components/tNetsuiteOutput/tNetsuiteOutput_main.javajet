@@ -309,34 +309,40 @@
 
 <%
 				} else {
+					if(conn2 != null) {
 %>
-					<%=conn2.getName()%> = null;   // main line
-                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+						<%=conn2.getName()%> = null;   // main line
+						
+					<%}%>
+					
+					<%if(rejectConnName != null) {%>
+                    	<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
-                    List<IMetadataColumn> rejectColumnList = null;
-                    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
-                    if(metadataTable != null) {
-                    	rejectColumnList = metadataTable.getListColumns();
-                        for(IMetadataColumn column2 : rejectColumnList) {
-                        	if(conn != null && !"errorCode".equals(column2.getLabel()) && !"errorMessage".equals(column2.getLabel())){
+	                    List<IMetadataColumn> rejectColumnList = null;
+	                    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+	                    if(metadataTable != null) {
+	                    	rejectColumnList = metadataTable.getListColumns();
+	                        for(IMetadataColumn column2 : rejectColumnList) {
+	                        	if(conn != null && !"errorCode".equals(column2.getLabel()) && !"errorMessage".equals(column2.getLabel())){
 %>
-                            	<%=rejectConnName%>.<%=column2.getLabel()%> = <%=conn.getName()%>.<%=column2.getLabel()%>;
+                            		<%=rejectConnName%>.<%=column2.getLabel()%> = <%=conn.getName()%>.<%=column2.getLabel()%>;
                                         
 <%
-                            }
-                        }
+	                            }
+	                        }
 %>
 						
-						if(e_<%=cid %> instanceof org.talend.netsuite.NetsuiteException){
-							org.talend.netsuite.NetsuiteException ne_<%=cid %> = (org.talend.netsuite.NetsuiteException)e_<%=cid %>;
-							<%=rejectConnName%>.errorCode = ne_<%=cid %>.getCode();
-	                    	<%=rejectConnName%>.errorMessage = ne_<%=cid %>.getMessage();
-						} else {
-							<%=rejectConnName%>.errorCode = "";
-	                    	<%=rejectConnName%>.errorMessage = "";
-						}
+							if(e_<%=cid %> instanceof org.talend.netsuite.NetsuiteException){
+								org.talend.netsuite.NetsuiteException ne_<%=cid %> = (org.talend.netsuite.NetsuiteException)e_<%=cid %>;
+								<%=rejectConnName%>.errorCode = ne_<%=cid %>.getCode();
+		                    	<%=rejectConnName%>.errorMessage = ne_<%=cid %>.getMessage();
+							} else {
+								<%=rejectConnName%>.errorCode = "";
+		                    	<%=rejectConnName%>.errorMessage = "";
+							}
 
 <%
+                 	 }
                   }
 %>
 

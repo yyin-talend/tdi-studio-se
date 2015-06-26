@@ -247,7 +247,11 @@ public class NetsuiteManagement_CXF {
 				if (forcedType.equals("String")) {
 					SearchStringCustomField searchArgumentType = new SearchStringCustomField();
 					searchArgumentType.setInternalId(searchFieldName);
-					searchArgumentType.setSearchValue(searchValue.get(0));
+					
+					if(searchValue != null && searchValue.size() != 0){
+						searchArgumentType.setSearchValue(searchValue.get(0));
+					}
+
 					searchArgumentType
 							.setOperator(SearchStringFieldOperator
 									.fromValue(searchOperator));
@@ -255,12 +259,15 @@ public class NetsuiteManagement_CXF {
 				} else if (forcedType.equals("Long")) {
 					SearchLongCustomField searchArgumentType = new SearchLongCustomField();
 					searchArgumentType.setInternalId(searchFieldName);
-					searchArgumentType.setSearchValue(Long.valueOf(Long
-							.parseLong(searchValue.get(0))));
+					
+					if(searchValue != null && searchValue.size() != 0){
+						searchArgumentType.setSearchValue(Long.valueOf(Long
+								.parseLong(searchValue.get(0))));
 
-					if (searchValue.size() > 1) {
-						searchArgumentType.setSearchValue2(Long
-								.valueOf(Long.parseLong(searchValue.get(1))));
+						if (searchValue.size() > 1) {
+							searchArgumentType.setSearchValue2(Long
+									.valueOf(Long.parseLong(searchValue.get(1))));
+						}
 					}
 
 					searchArgumentType.setOperator(SearchLongFieldOperator
@@ -268,58 +275,61 @@ public class NetsuiteManagement_CXF {
 					customCriteria = searchArgumentType;
 				} else if (forcedType.equals("Date")) {
 					SearchDateCustomField searchArgumentType = new SearchDateCustomField();
-					Calendar calValue = Calendar.getInstance();
-					Calendar calValue2 = Calendar.getInstance();
+					
+					if(searchValue != null && searchValue.size() != 0){
+						Calendar calValue = Calendar.getInstance();
+						Calendar calValue2 = Calendar.getInstance();
 
-					String dateFormat = "yyyy-MM-dd";
-					String timeFormat = "HH:mm:ss";
+						String dateFormat = "yyyy-MM-dd";
+						String timeFormat = "HH:mm:ss";
 
-					String format = dateFormat + " " + timeFormat;
-					if (searchValue.get(0).length() == dateFormat.length()) {
-						format = dateFormat;
-					}
-					
-					if (searchValue.get(0).length() == timeFormat.length()) {
-						searchValue.set(0, new SimpleDateFormat(dateFormat).format(calValue.getTime()) + " " + searchValue.get(0));
-						if(searchValue.size() > 1){
-							searchValue.set(1, new SimpleDateFormat(dateFormat).format(calValue.getTime()) + " " + searchValue.get(1));
+						String format = dateFormat + " " + timeFormat;
+						if (searchValue.get(0).length() == dateFormat.length()) {
+							format = dateFormat;
 						}
-					}
-					
-					DateFormat df = new SimpleDateFormat(format);
-					
-					try {
-						calValue.setTime(df.parse(searchValue.get(0)));
-						if(searchValue.size() > 1){
-							calValue2.setTime(df.parse(searchValue.get(1)));
+						
+						if (searchValue.get(0).length() == timeFormat.length()) {
+							searchValue.set(0, new SimpleDateFormat(dateFormat).format(calValue.getTime()) + " " + searchValue.get(0));
+							if(searchValue.size() > 1){
+								searchValue.set(1, new SimpleDateFormat(dateFormat).format(calValue.getTime()) + " " + searchValue.get(1));
+							}
 						}
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-					
-					XMLGregorianCalendar xts = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-					xts.setYear(calValue.get(Calendar.YEAR));
-					xts.setMonth(calValue.get(Calendar.MONTH) +1);
-					xts.setDay(calValue.get(Calendar.DAY_OF_MONTH));
-					xts.setHour(calValue.get(Calendar.HOUR_OF_DAY));
-					xts.setMinute(calValue.get(Calendar.MINUTE));
-					xts.setSecond(calValue.get(Calendar.SECOND));
-					xts.setMillisecond(calValue.get(Calendar.MILLISECOND));
-					xts.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
-					
-					searchArgumentType.setSearchValue(xts);
-					
-					if(searchValue.size() > 1){
-						XMLGregorianCalendar xts2 = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-						xts2.setYear(calValue.get(Calendar.YEAR));
-						xts2.setMonth(calValue.get(Calendar.MONTH) +1);
-						xts2.setDay(calValue.get(Calendar.DAY_OF_MONTH));
-						xts2.setHour(calValue.get(Calendar.HOUR_OF_DAY));
-						xts2.setMinute(calValue.get(Calendar.MINUTE));
-						xts2.setSecond(calValue.get(Calendar.SECOND));
-						xts2.setMillisecond(calValue.get(Calendar.MILLISECOND));
-						xts2.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
-						searchArgumentType.setSearchValue2(xts2);
+						
+						DateFormat df = new SimpleDateFormat(format);
+						
+						try {
+							calValue.setTime(df.parse(searchValue.get(0)));
+							if(searchValue.size() > 1){
+								calValue2.setTime(df.parse(searchValue.get(1)));
+							}
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+						
+						XMLGregorianCalendar xts = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+						xts.setYear(calValue.get(Calendar.YEAR));
+						xts.setMonth(calValue.get(Calendar.MONTH) +1);
+						xts.setDay(calValue.get(Calendar.DAY_OF_MONTH));
+						xts.setHour(calValue.get(Calendar.HOUR_OF_DAY));
+						xts.setMinute(calValue.get(Calendar.MINUTE));
+						xts.setSecond(calValue.get(Calendar.SECOND));
+						xts.setMillisecond(calValue.get(Calendar.MILLISECOND));
+						xts.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
+						
+						searchArgumentType.setSearchValue(xts);
+						
+						if(searchValue.size() > 1){
+							XMLGregorianCalendar xts2 = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+							xts2.setYear(calValue.get(Calendar.YEAR));
+							xts2.setMonth(calValue.get(Calendar.MONTH) +1);
+							xts2.setDay(calValue.get(Calendar.DAY_OF_MONTH));
+							xts2.setHour(calValue.get(Calendar.HOUR_OF_DAY));
+							xts2.setMinute(calValue.get(Calendar.MINUTE));
+							xts2.setSecond(calValue.get(Calendar.SECOND));
+							xts2.setMillisecond(calValue.get(Calendar.MILLISECOND));
+							xts2.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
+							searchArgumentType.setSearchValue2(xts2);
+						}
 					}
 					
 					searchArgumentType.setOperator(SearchDateFieldOperator.fromValue(searchOperator));
@@ -333,17 +343,22 @@ public class NetsuiteManagement_CXF {
 				} else if (forcedType.equals("Double")) {
 					SearchDoubleCustomField searchArgumentType = new SearchDoubleCustomField();
 					searchArgumentType.setInternalId(searchFieldName);
-					searchArgumentType.setSearchValue(Double.valueOf(Double
-							.parseDouble(searchValue.get(0))));
-					searchArgumentType
-							.setOperator(SearchDoubleFieldOperator
-									.fromValue(searchOperator));
+					
+					if(searchValue != null && searchValue.size() != 0){
+						searchArgumentType.setSearchValue(Double.valueOf(Double
+								.parseDouble(searchValue.get(0))));
+						
 
-					if (searchValue.size() > 1) {
-						searchArgumentType
-								.setSearchValue2(Double.valueOf(Double
-										.parseDouble(searchValue.get(1))));
+						if (searchValue.size() > 1) {
+							searchArgumentType
+									.setSearchValue2(Double.valueOf(Double
+											.parseDouble(searchValue.get(1))));
+						}
 					}
+					
+					searchArgumentType
+					.setOperator(SearchDoubleFieldOperator
+							.fromValue(searchOperator));
 
 					customCriteria = searchArgumentType;
 				} else if (forcedType.equals("List")) {
@@ -383,17 +398,24 @@ public class NetsuiteManagement_CXF {
 		if (searchType.equals("SearchStringField")) {
 			
 			SearchStringField searchArgumentType = new SearchStringField();
-			searchArgumentType.setSearchValue(searchValue.get(0));
+			
+			if(searchValue != null && searchValue.size() != 0){
+				searchArgumentType.setSearchValue(searchValue.get(0));
+			}
+			
 			searchArgumentType.setOperator(SearchStringFieldOperator.fromValue(searchOperator));
 			criteria = searchArgumentType;
 			
 		} else if (searchType.equals("SearchLongField")) {
 			
 			SearchLongField searchArgumentType = new SearchLongField();
-			searchArgumentType.setSearchValue(Long.valueOf(Long.parseLong(searchValue.get(0))));
-
-			if (searchValue.size() > 1) {
-				searchArgumentType.setSearchValue2(Long.valueOf(Long.parseLong(searchValue.get(1))));
+			
+			if(searchValue != null && searchValue.size() != 0){
+				searchArgumentType.setSearchValue(Long.valueOf(Long.parseLong(searchValue.get(0))));
+				
+				if (searchValue.size() > 1) {
+					searchArgumentType.setSearchValue2(Long.valueOf(Long.parseLong(searchValue.get(1))));
+				}
 			}
 
 			searchArgumentType.setOperator(SearchLongFieldOperator.fromValue(searchOperator));
@@ -402,75 +424,70 @@ public class NetsuiteManagement_CXF {
 		} else if (searchType.equals("SearchDateField")) {
 			
 			SearchDateField searchArgumentType = new SearchDateField();
-			Calendar calValue = Calendar.getInstance();
+			
+			if(searchValue != null && searchValue.size() != 0){
+				Calendar calValue = Calendar.getInstance();
 
-			String dateFormat = "yyyy-MM-dd";
-			String timeFormat = "HH:mm:ss";
+				String dateFormat = "yyyy-MM-dd";
+				String timeFormat = "HH:mm:ss";
 
-			String format = dateFormat + " " + timeFormat;
-			
-			if (searchValue.get(0).length() == dateFormat.length()) {
-				format = dateFormat;
-			}
-			
-			if (searchValue.get(0).length() == timeFormat.length()) {
-				searchValue.set(0, new SimpleDateFormat(dateFormat).format(calValue.getTime()) + " " + searchValue.get(0));
-			}
+				String format = dateFormat + " " + timeFormat;
+				
+				if (searchValue.get(0).length() == dateFormat.length()) {
+					format = dateFormat;
+				}
+				
+				if (searchValue.get(0).length() == timeFormat.length()) {
+					searchValue.set(0, new SimpleDateFormat(dateFormat).format(calValue.getTime()) + " " + searchValue.get(0));
+				}
 
-			DateFormat df = new SimpleDateFormat(format);
-			
-			try {
-				calValue.setTime(df.parse(searchValue.get(0)));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			
-			XMLGregorianCalendar xts = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-			xts.setYear(calValue.get(Calendar.YEAR));
-			xts.setMonth(calValue.get(Calendar.MONTH) +1);
-			xts.setDay(calValue.get(Calendar.DAY_OF_MONTH));
-			xts.setHour(calValue.get(Calendar.HOUR_OF_DAY));
-			xts.setMinute(calValue.get(Calendar.MINUTE));
-			xts.setSecond(calValue.get(Calendar.SECOND));
-			xts.setMillisecond(calValue.get(Calendar.MILLISECOND));
-			xts.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
-			
-			searchArgumentType.setSearchValue(xts);
-
-			if (searchValue.size() > 1) {
+				DateFormat df = new SimpleDateFormat(format);
+				
 				try {
-					calValue.setTime(df.parse(searchValue.get(1)));
+					calValue.setTime(df.parse(searchValue.get(0)));
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 				
-				XMLGregorianCalendar xts2 = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-				xts2.setYear(calValue.get(Calendar.YEAR));
-				xts2.setMonth(calValue.get(Calendar.MONTH) +1);
-				xts2.setDay(calValue.get(Calendar.DAY_OF_MONTH));
-				xts2.setHour(calValue.get(Calendar.HOUR_OF_DAY));
-				xts2.setMinute(calValue.get(Calendar.MINUTE));
-				xts2.setSecond(calValue.get(Calendar.SECOND));
-				xts2.setMillisecond(calValue.get(Calendar.MILLISECOND));
-				xts2.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
-			
-				searchArgumentType.setSearchValue2(xts2);
+				XMLGregorianCalendar xts = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+				xts.setYear(calValue.get(Calendar.YEAR));
+				xts.setMonth(calValue.get(Calendar.MONTH) +1);
+				xts.setDay(calValue.get(Calendar.DAY_OF_MONTH));
+				xts.setHour(calValue.get(Calendar.HOUR_OF_DAY));
+				xts.setMinute(calValue.get(Calendar.MINUTE));
+				xts.setSecond(calValue.get(Calendar.SECOND));
+				xts.setMillisecond(calValue.get(Calendar.MILLISECOND));
+				xts.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
+				
+				searchArgumentType.setSearchValue(xts);
+				
+				if (searchValue.size() > 1) {
+					try {
+						calValue.setTime(df.parse(searchValue.get(1)));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					
+					XMLGregorianCalendar xts2 = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+					xts2.setYear(calValue.get(Calendar.YEAR));
+					xts2.setMonth(calValue.get(Calendar.MONTH) +1);
+					xts2.setDay(calValue.get(Calendar.DAY_OF_MONTH));
+					xts2.setHour(calValue.get(Calendar.HOUR_OF_DAY));
+					xts2.setMinute(calValue.get(Calendar.MINUTE));
+					xts2.setSecond(calValue.get(Calendar.SECOND));
+					xts2.setMillisecond(calValue.get(Calendar.MILLISECOND));
+					xts2.setTimezone(calValue.get(Calendar.ZONE_OFFSET) / 60000 );
+				
+					searchArgumentType.setSearchValue2(xts2);
+				}
 			}
-			
+
 			searchArgumentType.setOperator(SearchDateFieldOperator.fromValue(searchOperator));
 			
 			criteria = searchArgumentType;
 			
 		} else if (searchType.equals("SearchBooleanField")) {
 			SearchBooleanField searchArgumentType = new SearchBooleanField();
-
-			if (searchValue.get(0).toLowerCase().equals("t")) {
-				searchValue.set(0, "true");
-			}
-			
-			if (searchValue.get(0).toLowerCase().equals("f")) {
-				searchValue.set(0, "false");
-			}
 			
 			searchArgumentType.setSearchValue(Boolean.valueOf(searchValue.get(0)));
 			criteria = searchArgumentType;
@@ -479,10 +496,12 @@ public class NetsuiteManagement_CXF {
 			
 			SearchDoubleField searchArgumentType = new SearchDoubleField();
 
-			searchArgumentType.setSearchValue(Double.valueOf(Double.parseDouble(searchValue.get(0))));
-			
-			if (searchValue.size() > 1) {
-				searchArgumentType.setSearchValue2(Double.valueOf(Double.parseDouble(searchValue.get(1))));
+			if(searchValue != null && searchValue.size() != 0){
+				searchArgumentType.setSearchValue(Double.valueOf(Double.parseDouble(searchValue.get(0))));
+				
+				if (searchValue.size() > 1) {
+					searchArgumentType.setSearchValue2(Double.valueOf(Double.parseDouble(searchValue.get(1))));
+				}
 			}
 
 			searchArgumentType.setOperator(SearchDoubleFieldOperator.fromValue(searchOperator));

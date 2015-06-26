@@ -2451,6 +2451,15 @@
               name="ChangeDefaultValue4JSONComponents"
               version="6.0.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.MapNetsuiteOperatorValueTDI32245"
+              description="map old value to new"
+              id="org.talend.repository.model.migration.MapNetsuiteOperatorValueTDI32245"
+              name="MapNetsuiteOperatorValueTDI32245"
+              version="6.0.0">
+        </projecttask>
    </extension>
 
    <extension

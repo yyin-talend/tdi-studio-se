@@ -228,10 +228,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 %>
 								searchCriteria_<%=cid %>_<%=index %>.add(<%=keyColumn.get("RVALUE")%> + "");
 <%
-							} else {
-%>
-								searchCriteria_<%=cid %>_<%=index %>.add("");
-<%
 							}
 %>
 
