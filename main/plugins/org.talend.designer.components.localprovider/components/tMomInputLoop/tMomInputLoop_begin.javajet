@@ -681,6 +681,12 @@ imports="
 				System.out.println("Waiting...");	
 				while(flag<%=cid%>){
 			<%
+			if(isAutoBackout){
+			%>
+				globalMap.put("currentMessageIsConsumed_<%=cid%>",false);//if current message has been commited,no need to backout it to the backout queue.
+			<%
+			}
+			
 			if(("false").equals(kListen)){
 			%>
 				if(Integer.valueOf(remoteQ_<%=cid%>.getCurrentDepth()).equals(1))
@@ -758,29 +764,7 @@ imports="
 				qMgr_<%=cid%>.commit();
 			<%
 			}
-			if(isAutoBackout){
-			%>
-				if (backoutQueue_<%=cid%>!=null && threshold_<%=cid%> > 0 && inMessage<%=cid%>.backoutCount >= threshold_<%=cid%>-1) {
-					<%
-					if(isLog4jEnabled){
-					%>	
-						log.info("<%=cid%> - Moving backout message to backout queue...");
-					<%
-					}
-					%>
-					backoutQueue_<%=cid%>.put(inMessage<%=cid%>);
-					qMgr_<%=cid%>.commit();
-					<%
-					if(isLog4jEnabled){
-					%>	
-						log.info("<%=cid%> - Moved successfully.");
-					<%
-					}
-					%>
-				}
-			<%
-			}
-				
+			
 		}
 		%>
 
