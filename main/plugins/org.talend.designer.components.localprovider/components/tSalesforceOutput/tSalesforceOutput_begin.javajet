@@ -3,6 +3,8 @@ imports="
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser
     	org.talend.designer.codegen.config.CodeGeneratorArgument
+    	org.talend.core.model.metadata.IMetadataTable 
+		java.util.List
 		"
 %>
 	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
@@ -36,6 +38,9 @@ imports="
 	String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
 	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 	boolean useOAuth = "OAUTH".equals(loginType);
+	
+	String upsertkey = ElementParameterParser.getValue(node, "__UPSERT_KEY_COLUMN__");
+	boolean ignoreNullValue = ("true").equals(ElementParameterParser.getValue(node, "__IGNORE_NULL__"));
 	%>       
     int nb_line_<%=cid %> = 0;
     int nb_success_<%=cid%> = 0;
@@ -120,3 +125,86 @@ imports="
     <%if("upsert".equals(action)){%>
 		org.apache.axiom.om.OMFactory fac_<%=cid%> = org.apache.axiom.om.OMAbstractFactory.getOMFactory();       
     <%}%>
+	<%
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
+	    IMetadataTable metadata = metadatas.get(0);
+	    boolean hasDynamic = metadata.isDynamicSchema();
+	    if(hasDynamic){
+	   	%>
+	   		class SFDynamicUtils_<%=cid%>{
+	   			org.apache.axiom.om.OMFactory omeFactory = org.apache.axiom.om.OMAbstractFactory.getOMFactory();     
+	   			public void extractDynamicColumn(routines.system.Dynamic dynamic,java.util.List<org.apache.axiom.om.OMElement> list, java.util.List<String> nullList) throws Exception{
+	   				for(int i=0;i<dynamic.getColumnCount();i++){
+	   					routines.system.DynamicMetadata dynamicMetadata = dynamic.getColumnMetadata(i);
+	   					String talendType = dynamicMetadata.getType();
+	   					String fieldName = dynamicMetadata.getName();
+	   					Object fieldValue = dynamic.getColumnValue(fieldName);
+	   					<%
+	   					if("upsert".equals(action)) {
+						%>
+							if(dynamicMetadata.getRefFieldName()!=null && dynamicMetadata.getRefModuleName()!=null){
+								org.apache.axiom.om.OMElement reference = omeFactory.createOMElement(dynamicMetadata.getRefFieldName(), null);
+								reference.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement("type",dynamicMetadata.getRefModuleName()));
+								if ("id_Date".equals(talendType)) {
+									if(fieldValue != null){
+										reference.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(fieldName,FormatterUtils.format_Date((java.util.Date)(fieldValue), dynamicMetadata.getFormat()) ));
+	    								list.add(reference);
+									}
+									continue;
+								} else if(fieldValue != null && !"".equals(String.valueOf(fieldValue))) { 
+									reference.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(fieldName,String.valueOf(fieldValue) ));
+									list.add(reference);
+									continue;
+								}
+							}
+							<%
+							if("Id".equals(upsertkey)){
+							%>
+								if("Id".equals(fieldName)){
+									continue;
+								}
+							<%
+							}
+							%>
+							if ("id_Date".equals(talendType)) {
+								if(fieldValue != null){
+									list.add(org.talend.salesforce.SforceManagementUtil.newOMElement(fieldName,FormatterUtils.format_Date((java.util.Date)(fieldValue), dynamicMetadata.getFormat()) ));
+								}
+							} else if(fieldValue != null && !"".equals(String.valueOf(fieldValue))) { 
+								list.add(org.talend.salesforce.SforceManagementUtil.newOMElement(fieldName,String.valueOf(fieldValue) ));
+							}
+						<%
+	    				}else{
+	    				%>
+	    					if("Id".equals(fieldName)){
+								continue;
+							}
+							if ("id_Date".equals(talendType)) {
+								if(fieldValue != null){
+									list.add(org.talend.salesforce.SforceManagementUtil.newOMElement(fieldName,FormatterUtils.format_Date((java.util.Date)(fieldValue), dynamicMetadata.getFormat()) ));
+								}
+							} else if(fieldValue != null && !"".equals(String.valueOf(fieldValue))) { 
+								list.add(org.talend.salesforce.SforceManagementUtil.newOMElement(fieldName,String.valueOf(fieldValue) ));
+							}
+	    					<%
+							if(!ignoreNullValue){
+							%>
+								if(fieldValue == null || "".equals(String.valueOf(fieldValue))){
+									nullList.add(fieldName);
+								}
+							<%
+							}
+							%>
+	    				<%
+	    				}
+	   					%>
+	   				}
+	   			}
+	   			
+	   		}
+	   		SFDynamicUtils_<%=cid%> sfDynamicUtils_<%=cid%> =new SFDynamicUtils_<%=cid%>();
+		<%
+		}
+	}
+	%>

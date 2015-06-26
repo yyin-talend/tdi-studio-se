@@ -26,6 +26,7 @@ if ((metadatas!=null) && (metadatas.size()>0)){
     if (metadata != null){
 	    String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	    boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
+	    boolean hasDynamic = metadata.isDynamicSchema();
 		%>
 		int nb_line_<%=cid%> = 0;
 		java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
@@ -36,8 +37,14 @@ if ((metadatas!=null) && (metadatas.size()>0)){
 		        new java.io.FileOutputStream(file_<%=cid%>, <%=isAppend%>), "UTF-8")));
 		resourceMap.put("csvWriter_<%=cid%>", csvWriter_<%=cid%>); 
 		<%
+		if(hasDynamic){
+		%>
+			boolean isGenDynamicHeader_<%=cid%> = true;
+			int columnCount_<%=cid%> = <%=metadata.getListColumns().size()%>;
+		<%
+		}
 		List<? extends IConnection> conns = node.getIncomingConnections();
-    	if(conns != null){
+    	if(!hasDynamic && conns != null){
     		if (conns.size() > 0){
     		    IConnection conn = conns.get(0);
         		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){

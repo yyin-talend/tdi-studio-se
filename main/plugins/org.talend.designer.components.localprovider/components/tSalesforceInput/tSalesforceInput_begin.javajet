@@ -25,6 +25,7 @@ imports="
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+   	boolean bIsManualQuery = ("true").equals(ElementParameterParser.getValue(node, "__MANUAL_QUERY__"));
 
    	String limit = ElementParameterParser.getValue(node,"__LIMIT__");
    	
@@ -76,7 +77,31 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			
 			String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 			boolean useOAuth = "OAUTH".equals(loginType);
-			if("soap".equals(api)){%>
+			
+			boolean hasDynamic = false;
+			StringBuilder unDynamicCols = new StringBuilder();
+			String dynamicColName = "";
+			for(int i=0; columnList!=null && i< columnList.size(); i++) {
+		        if(columnList.get(i).getTalendType().equals("id_Dynamic")){
+		            hasDynamic = true;
+		            dynamicColName = columnList.get(i).getLabel();
+		        }else{
+		        	unDynamicCols.append(columnList.get(i).getLabel());
+		        	unDynamicCols.append(",");
+		        }
+			}
+			if(unDynamicCols.lastIndexOf(",")>-1){
+				unDynamicCols.deleteCharAt(unDynamicCols.lastIndexOf(","));
+			}
+			if("soap".equals(api)){
+				if(hasDynamic){
+				%>
+					boolean isFirstCheckDyn_<%=cid %> = true;
+					routines.system.Dynamic dynamic_<%=cid%> = new routines.system.Dynamic();
+					java.util.List<String> unDynamicCols_<%=cid%>=java.util.Arrays.asList("<%=unDynamicCols%>".split(","));
+				<%
+				}
+			%>
 				org.talend.salesforce.SforceConnection sforceConn_<%=cid%> = null;
 				<%if(useExistingConn){%>
 					if(globalMap.get("conn_<%=connection%>") == null){
@@ -168,6 +193,88 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 				%>
 				org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl(sforceConn_<%=cid%>);
+				
+				<%
+				if(hasDynamic){
+				%>
+					java.util.List<String> dynamicColsName_<%=cid%> = new java.util.ArrayList<String>();
+					class SFDynamicUtil_<%=cid%>{
+						public void genDynamicColumn(org.talend.salesforce.SforceManagement sfMgr, routines.system.Dynamic dynamic, java.util.List<String> dynamicColsName, java.util.List<String> unDynamicCols <%if(bIsManualQuery){%>,org.talend.salesforce.TopQueryResult topqr<%}%>){
+							<%
+							if(bIsManualQuery){
+							%>
+							java.util.List columnNameList = topqr.getReturnColumns();
+							java.util.List columnLocalNameList = topqr.getReturnLocalColumns();
+							<%
+					        }
+					        %>
+							try {
+					            com.salesforce.soap.partner.DescribeSObjectResult objInfo = sfMgr.describeSObject(<%=sObject%>);
+					            com.salesforce.soap.partner.Field[] fields = objInfo.getFields();
+					            for (com.salesforce.soap.partner.Field field:fields) {
+					            	<%
+									if(bIsManualQuery){
+									%>
+					            	if(!columnNameList.contains(field.getName()) && !columnLocalNameList.contains(field.getName())){
+					            		continue;
+					            	}
+					            	<%
+					            	}
+					            	%>
+									if(!unDynamicCols.contains(field.getName())){
+										String sfType = field.getType().toString();
+										String talendType = "String"; 
+								        if (sfType.equals("boolean")) { 
+								            talendType = "Boolean"; 
+								        } else if (sfType.equals("int")) { 
+								            talendType = "Integer"; 
+								        } else if (sfType.equals("date") || sfType.equals("datetime")) {  
+								            talendType = "Date"; 
+								        } else if (sfType.equals("double") || sfType.equals("currency")) {  
+								            talendType = "Double"; 
+								        } else {
+								            talendType = "String"; 
+								        }
+								    	routines.system.DynamicMetadata dynamicMetadata = new routines.system.DynamicMetadata();
+								    	dynamicColsName.add(field.getName());
+								    	dynamicMetadata.setName(field.getName());
+								    	dynamicMetadata.setDbName(dynamicMetadata.getName());
+								    	dynamicMetadata.setType("id_" + talendType);
+								    	 if (sfType.equals("date")) { 
+								            dynamicMetadata.setFormat("yyyy-MM-dd"); 
+								        } else if (sfType.equals("datetime")) { 
+								            dynamicMetadata.setFormat("yyyy-MM-dd'T'HH:mm:ss.'000Z'"); 
+								        } else {
+								            dynamicMetadata.setFormat(null);
+								        }
+								        if ("String".equals(talendType)) { 
+								            dynamicMetadata.setLength(field.getLength());
+								            dynamicMetadata.setPrecision(field.getPrecision());
+								        } else {
+								            dynamicMetadata.setLength(field.getPrecision());
+								            dynamicMetadata.setPrecision(field.getScale());
+								        }
+								    	dynamicMetadata.setDbType("VARCHAR");
+								    	dynamicMetadata.setNullable(field.getNillable());
+								    	dynamicMetadata.setKey(false);
+								    	if(field.getReferenceTo()!=null && field.getReferenceTo().length > 0){
+								    		dynamicMetadata.setRefFieldName(field.getRelationshipName());
+								    		dynamicMetadata.setRefModuleName(field.getReferenceTo()[0]);
+								    	}
+								    	dynamicMetadata.setSourceType(routines.system.DynamicMetadata.sourceTypes.salesforce);
+								    	//dynamicMetadata.setColumnPosition(i);
+								    	dynamic.metadatas.add(dynamicMetadata);
+								    }
+							    }
+					        } catch (Exception e) {
+					            e.printStackTrace();
+					        }
+						}
+					}
+					SFDynamicUtil_<%=cid%> sfDynamicUtil_<%=cid%> =new SFDynamicUtil_<%=cid%>();   
+				<%
+				}
+				%>
 			<%
 			}else{
 			%>
@@ -255,7 +362,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			<%
 			}
 						
-			boolean bIsManualQuery = ("true").equals(ElementParameterParser.getValue(node, "__MANUAL_QUERY__"));
 			String sql = "";
 			String condition = null;
 			
@@ -263,29 +369,38 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 				sql = ElementParameterParser.getValue(node, "__QUERY__");
 				sql = sql.replaceAll("\n", " ").replaceAll("\r", " ");
-
+				%>
+				StringBuilder sql_<%=cid%> = new StringBuilder(<%=sql%>);
+				<%
 			} else{
 				
 				condition = ElementParameterParser.getValue(node, "__CONDITION__").trim();
-
-				StringBuilder sb = new StringBuilder("\"select ");
-
-				for (IMetadataColumn column: columnList){
-					sb.append(column.getLabel());
-					sb.append(",");
+				if(hasDynamic){
+				%>
+					sfDynamicUtil_<%=cid%>.genDynamicColumn(sfMgr_<%=cid%>, dynamic_<%=cid%>, dynamicColsName_<%=cid%>,unDynamicCols_<%=cid%>);
+				<%
 				}
-				sb.deleteCharAt(sb.lastIndexOf(","));
-				sb.append(" from ");
-				sb.append("\"+");
-				sb.append(sObject);
-				
-				sql = sb.toString();
+				%> 
+				StringBuilder sql_<%=cid%> = new StringBuilder("select ");
+				sql_<%=cid%>.append("<%=unDynamicCols%>");
+				<%
+				if(hasDynamic){
+				%>
+					if(dynamicColsName_<%=cid%>.size()>0){
+						sql_<%=cid%>.append("<%=unDynamicCols.length()>0?",":""%>"+routines.system.StringUtils.list(dynamicColsName_<%=cid%>.toArray(new String[0]),","));
+					}
+				<%
+				}
+				%>
+				sql_<%=cid%>.append(" from ");
+				sql_<%=cid%>.append(<%=sObject%>);
+				<%
 			}
 
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 			%>				
-				StringBuilder sql_<%=cid%> = new StringBuilder(<%=sql%>);
+				
 				<%
 				if(!("".equals(condition))) {
 				%>
@@ -321,6 +436,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	    			topqr_<%=cid %>.processTopQueryResult(qr_<%=cid %>);				
 					
 					boolean bContinue_<%=cid %> = true;
+					<%
+					if(hasDynamic && bIsManualQuery){
+					%>
+						sfDynamicUtil_<%=cid%>.genDynamicColumn(sfMgr_<%=cid%>, dynamic_<%=cid%>, dynamicColsName_<%=cid%>, unDynamicCols_<%=cid%> ,topqr_<%=cid %>); 
+					<%
+					}
+					%>
 					
 					while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
 						
@@ -329,6 +451,33 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					    for (int i_<%=cid %> = 0; i_<%=cid %> < allTopRecords_<%=cid %>.size(); i_<%=cid %>++) {					
 							
 							org.talend.salesforce.TopRecord topRecord_<%=cid%> = allTopRecords_<%=cid%>.get(i_<%=cid%>);
+							<%
+						    if(hasDynamic){
+						    %>
+						    	dynamic_<%=cid %>.clearColumnValues();
+						    	for(int j_<%=cid%> = 0; j_<%=cid%> < dynamic_<%=cid %>.getColumnCount(); j_<%=cid%>++){
+									Object valueObj_<%=cid%> = topRecord_<%=cid%>.getValue(dynamicColsName_<%=cid%>.get(j_<%=cid%>));
+									routines.system.DynamicMetadata dynamicMetadata_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(j_<%=cid%>);
+									if(valueObj_<%=cid%> !=null){
+										if("id_Date".equals(dynamicMetadata_<%=cid%>.getType())){
+											dynamic_<%=cid %>.addColumnValue(ParserUtils.parseTo_Date(String.valueOf(valueObj_<%=cid%>), dynamicMetadata_<%=cid%>.getFormat()));
+										}else if("id_Double".equals(dynamicMetadata_<%=cid%>.getType())){
+											dynamic_<%=cid %>.addColumnValue(ParserUtils.parseTo_Double(String.valueOf(valueObj_<%=cid%>)));
+										}else if("id_Integer".equals(dynamicMetadata_<%=cid%>.getType())){
+											dynamic_<%=cid %>.addColumnValue(ParserUtils.parseTo_Integer(String.valueOf(valueObj_<%=cid%>)));
+										}else if("id_Boolean".equals(dynamicMetadata_<%=cid%>.getType())){
+											dynamic_<%=cid %>.addColumnValue(ParserUtils.parseTo_Boolean(String.valueOf(valueObj_<%=cid%>)));
+										}else{
+											dynamic_<%=cid %>.addColumnValue(valueObj_<%=cid%>);
+										}
+									}else{
+										dynamic_<%=cid %>.addColumnValue(null);
+									}
+								}
+								<%=outgoingConn.getName() %>.<%=dynamicColName%> = dynamic_<%=cid %>;
+						    <%
+						    }
+						    %>
 
 							nb_line_<%=cid%>++;
 							Object valueObj_<%=cid%> = null;
@@ -348,6 +497,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							for( int i = 0; i < columnList.size(); i++) {
 							
 								IMetadataColumn column = columnList.get(i);
+								
+								if(column.getTalendType().equals("id_Dynamic")){
+									continue;
+								}
 								
 								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 								

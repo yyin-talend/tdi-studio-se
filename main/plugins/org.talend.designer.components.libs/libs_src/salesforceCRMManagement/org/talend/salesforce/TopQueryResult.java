@@ -26,6 +26,11 @@ public class TopQueryResult {
     private List<TopRecord> allTopRecords = new ArrayList<TopRecord>();
 
     // return the final result, it normalize the "Multi-Rows" as one column.
+    
+    private List returnColumns = new ArrayList();
+
+	private List returnLocalColumns = new ArrayList();
+    
     public List<TopRecord> getAllTopRecords() {
         return allTopRecords;
     }
@@ -43,12 +48,31 @@ public class TopQueryResult {
             TopRecord topRecord = new TopRecord(record.getType());
 
             topRecord.processSObject(record, record.getType());
-
+            addNewColumns(this.returnColumns,topRecord.getColumnNameList());
+            addNewColumns(this.returnLocalColumns,topRecord.getColumnLocalNameList());
             // buffer all the TopRecord in a List
             allTopRecords.add(topRecord);
         }
 
     }
+    
+    private void addNewColumns(List returnColumns,List recordColumns){
+    	
+    	for(Object columnName:recordColumns){
+    		if(!returnColumns.contains(columnName)){
+    			returnColumns.add(columnName);
+    		}
+    	}
+    	
+    }
+    
+    public List getReturnColumns() {
+		return returnColumns;
+	}
+
+	public List getReturnLocalColumns() {
+		return returnLocalColumns;
+	}
 
     // print for debug
     public void printResult() {

@@ -96,6 +96,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {//2
     	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	boolean hasDynamic = metadata.isDynamicSchema();
+    	boolean isExistIdColumn = false;
+    	String dynamicColName = hasDynamic?metadata.getDynamicColumn().getLabel():"";
+    	if(!"Id".equals(dynamicColName) && metadata.getColumn("Id")!=null && ("update".equals(action) || "delete".equals(action))){
+    		isExistIdColumn = true;
+    	}
     	for (IConnection conn : conns) {//3
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
@@ -123,6 +129,13 @@ Object[] resultMessageObj_<%=cid%> = null;
     				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				
+    				if(column.getTalendType().equals("id_Dynamic")){
+    				%>
+    					sfDynamicUtils_<%=cid%>.extractDynamicColumn(<%=conn.getName() %>.<%=column.getLabel() %>, list_<%=cid %>,  nullList_<%=cid %>);
+    				<%
+    					continue;
+    				}
     				
     				boolean generateFinished = false;
     				if("upsert".equals(action) && (relationshipMappings.size() > 0)) {//TD512
@@ -218,8 +231,8 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.insert(<%=modulename %>, 
 <%
 	} else if ("update".equals(action)) {//#######
 %>
-
-resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.update(<%=modulename %>, <%=conn.getName() %>.Id, (org.apache.axiom.om.OMElement[])list_<%=cid %>.toArray(new org.apache.axiom.om.OMElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.update(<%=modulename %>, <%if(!hasDynamic || isExistIdColumn){%><%=conn.getName() %>.Id<%}else{%>String.valueOf(<%=conn.getName() %>.<%=dynamicColName %>.getColumnValue("Id"))<%}%>, 
+	(org.apache.axiom.om.OMElement[])list_<%=cid %>.toArray(new org.apache.axiom.om.OMElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
 
 <%
     } else if ("upsert".equals(action)) {//#######
@@ -235,7 +248,7 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.upsert(<%=modulename %>, 
 	} else if ("delete".equals(action)) {//*************	
 %>
 
-resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%=conn.getName() %>.Id);    			
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%if(!hasDynamic || isExistIdColumn){%><%=conn.getName() %>.Id<%}else{%>String.valueOf(<%=conn.getName() %>.<%=dynamicColName %>.getColumnValue("Id"))<%}%>);    			
 
 <%
   }//************

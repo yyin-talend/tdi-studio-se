@@ -35,6 +35,7 @@ public class TopRecord {
     // there will
     // miss some columnName
     List columnNameList = new ArrayList();
+    List columnLocalNameList = new ArrayList();
 
     Map valueMap = new HashMap();
 
@@ -99,6 +100,9 @@ public class TopRecord {
             if (!columnNameList.contains(newPrefixName)) {
                 columnNameList.add(newPrefixName);
             }
+            if(!columnLocalNameList.contains(ome.getLocalName())){
+            	columnLocalNameList.add(ome.getLocalName());
+            }
             Object value = valueMap.get(newPrefixName);
             if (value != null) {
                 valueMap.put(newPrefixName, value + TopConfig.VALUE_DELIMITER + ome.getText());
@@ -129,6 +133,10 @@ public class TopRecord {
 
     public List getColumnNameList() {
         return columnNameList;
+    }
+    
+    public List getColumnLocalNameList() {
+        return columnLocalNameList;
     }
 
     public Map getValueMap() {
