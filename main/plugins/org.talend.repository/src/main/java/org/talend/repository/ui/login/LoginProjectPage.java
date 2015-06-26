@@ -658,7 +658,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             public void widgetSelected(SelectionEvent e) {
                 if (selectExistingProject.getSelection()) {
                     // refreshProjectListAreaEnable(true);
-                    // finishButtonAction = FINISH_ACTION_OPEN_PROJECT;
+                    finishButtonAction = FINISH_ACTION_OPEN_PROJECT;
                     // changeFinishButtonAction(finishButtonAction);
                     try {
                         checkErrors();
@@ -681,7 +681,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (createSandBoxProject.getSelection()) {
-                    // finishButtonAction = FINISH_ACTION_CREATE_SANDBOX;
+                    finishButtonAction = FINISH_ACTION_CREATE_SANDBOX;
                     // changeFinishButtonAction(finishButtonAction);
                     refreshUIFinishButtonEnable(false);
                     executeCreateSandBoxProject.setVisible(true);
@@ -702,7 +702,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (importDemoProject.getSelection()) {
-                    // finishButtonAction = FINISH_ACTION_IMPORT_DEMO_PROJECT;
+                    finishButtonAction = FINISH_ACTION_IMPORT_DEMO_PROJECT;
                     // changeFinishButtonAction(finishButtonAction);
                     refreshUIFinishButtonEnable(false);
                     executeImportDemoProject.setVisible(true);
@@ -723,7 +723,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (importLocalProject.getSelection()) {
-                    // finishButtonAction = FINISH_ACTION_IMPORT_LOCAL_PROJECT;
+                    finishButtonAction = FINISH_ACTION_IMPORT_LOCAL_PROJECT;
                     // changeFinishButtonAction(finishButtonAction);
                     refreshUIFinishButtonEnable(false);
                     executeImportLocalProject.setVisible(true);
@@ -752,7 +752,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     newProjectName.setVisible(true);
                     newProjectName.forceFocus();
                     executeCreateNewProject.setVisible(true);
-                    // finishButtonAction = FINISH_ACTION_CREATE_NEW_PROJECT;
+                    finishButtonAction = FINISH_ACTION_CREATE_NEW_PROJECT;
                     // changeFinishButtonAction(finishButtonAction);
                     refreshUIFinishButtonEnable(false);
                     validateNewProjectName();
@@ -1036,6 +1036,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     protected void resetProjectOperationSelection(final boolean needCheckError) {
         selectExistingProject.setSelection(true);
+        finishButtonAction = FINISH_ACTION_OPEN_PROJECT;
         refreshProjectListAreaEnable(selectExistingProject.isEnabled());
         importDemoProject.setSelection(false);
         executeImportDemoProject.setVisible(false);
@@ -1055,7 +1056,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
         } else {
             changeFinishButtonAction();
-            refreshUIFinishButtonEnable();
             finishButton.getShell().setDefaultButton(finishButton);
         }
     }
@@ -1083,6 +1083,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         executeCreateSandBoxProject.setEnabled(isEnable);
         createNewProject.setEnabled(isEnable);
         executeCreateNewProject.setEnabled(isEnable);
+        alwaysAsk.setEnabled(isEnable);
     }
 
     protected void refreshProjectListAreaEnable() {
@@ -1258,7 +1259,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             // refreshProjectListAreaEnable(false);
             refreshProjectOperationAreaEnable(false);
 
-            finishButton.setEnabled(true);
             changeFinishButtonAction(FINISH_ACTION_RESTART);
 
         } else {
@@ -1267,7 +1267,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
             changeFinishButtonAction();
 
-            refreshUIFinishButtonEnable();
             finishButton.getShell().setDefaultButton(finishButton);
         }
         // refreshBranchAreaVisible(!localConn);
@@ -1384,6 +1383,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             finishButton.setText(Messages.getString("LoginProjectPage.restart")); //$NON-NLS-1$
             finishButtonAction = FINISH_ACTION_RESTART;
         }
+        refreshUIFinishButtonEnable();
         updateButtonLayoutSize(finishButton);
         navigateArea.layout();
     }
@@ -1591,9 +1591,23 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     protected void refreshUIFinishButtonEnable() {
-        final Object input = projectViewer.getInput();
-        boolean enabled = input != null && ((input instanceof Project[]) && ((Project[]) input).length > 0);
-        refreshUIFinishButtonEnable(!getErrorManager().hasError() && enabled && selectExistingProject.getSelection());
+        boolean enabled = true;
+        if (FINISH_ACTION_OPEN_PROJECT.equals(finishButtonAction)) {
+            Object input = projectViewer.getInput();
+            enabled = input != null && ((input instanceof Project[]) && ((Project[]) input).length > 0);
+            if (getErrorManager().hasError()) {
+                enabled = false;
+            }
+        } else if (FINISH_ACTION_UPDATE.equals(finishButtonAction)) {
+            enabled = true;
+        } else if (FINISH_ACTION_UPDATE_DETAILS.equals(finishButtonAction)) {
+            enabled = true;
+        } else if (FINISH_ACTION_RESTART.equals(finishButtonAction)) {
+            enabled = true;
+        } else {
+            enabled = false;
+        }
+        refreshUIFinishButtonEnable(enabled);
     }
 
     protected void refreshUIFinishButtonEnable(boolean isEnable) {
