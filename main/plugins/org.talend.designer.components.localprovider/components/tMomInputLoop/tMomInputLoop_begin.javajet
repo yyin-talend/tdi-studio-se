@@ -478,7 +478,7 @@ imports="
 					if(isLog4jEnabled){
 					%>	
 						log.info("<%=cid%> - Listening to receive messages...");
-						log.info("<%=cid%> - Consume max message number:  " + maxMsg_<%=cid %>);
+						log.info("<%=cid%> - Consume max message number:  " + <%=maxiumMessages %>);
 					<%
 					}
 					%>
