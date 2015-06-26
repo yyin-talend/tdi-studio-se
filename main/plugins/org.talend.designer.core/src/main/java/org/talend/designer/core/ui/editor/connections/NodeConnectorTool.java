@@ -68,6 +68,11 @@ public class NodeConnectorTool {
         if (mainConnector == null) {
             return false;
         }
+
+        if (!mainConnector.isShow()) {
+            return false;
+        }
+
         if (mainConnector.getMaxLinkOutput() != -1) {
             if (mainConnector.getCurLinkNbOutput() >= mainConnector.getMaxLinkOutput()) {
                 return false;
