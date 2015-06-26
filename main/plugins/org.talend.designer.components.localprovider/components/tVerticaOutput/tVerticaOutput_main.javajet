@@ -77,6 +77,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 
     final String rejectConnName = tempRejectConnName;
 
+    boolean useBatch = (rejectConnName == null)
+                       && (
+                            ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction) || "COPY".equals(dataAction)
+                          )
+                       && batchMode;
+
     List<IMetadataColumn> rejectColumnList = null;
     IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
     if(metadataTable != null) {
@@ -84,7 +90,6 @@ skeleton="../templates/db_output_bulk.skeleton"
     }
 
     boolean manualCommit = !("0").equals(commitEvery);
-    boolean addBatch = rejectConnName==null && (batchMode||(!useExistingConnection && manualCommit));
     List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
     for(IConnection conn : outgoingConns) {
         if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -500,7 +505,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
         }
 
-        if (batchMode) {
+        if (useBatch) {
 %>
                 batchSize_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
 <%
@@ -550,18 +555,14 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
 %>
 <%
-            if(addBatch) {
+            if(useBatch) {
 %>
             pstmt_<%=cid %>.addBatch();
             nb_line_<%=cid%>++;
 <%
                 dbLog.data().addingToBatch(dbLog.var("nb_line"), dbLog.str(dataAction));
-                if (batchMode) {
 %>
                 batchSizeCounter_<%=cid%>++;
-<%
-                }
-%>
 <%
             }else {
 %>
@@ -693,17 +694,15 @@ skeleton="../templates/db_output_bulk.skeleton"
             %>
 
             <%
-            if(addBatch) {
+            if(useBatch) {
             %>
             pstmt_<%=cid %>.addBatch();
             nb_line_<%=cid%>++;
             <%
                 dbLog.data().addingToBatch(dbLog.var("nb_line"), dbLog.str(dataAction));
-                if (batchMode) {
             %>
             batchSizeCounter_<%=cid%>++;
             <%
-                }
             }else {
             %>
             try {
@@ -1196,17 +1195,14 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             %>
             <%
-            if(addBatch) {
+            if(useBatch) {
             %>
             pstmt_<%=cid %>.addBatch();
             nb_line_<%=cid%>++;
             <%
             dbLog.data().addingToBatch(dbLog.var("nb_line"), dbLog.str(dataAction));
-            if (batchMode) {
             %>
             batchSizeCounter_<%=cid%>++;
-            <%
-            }%>
             <%
             }else {
             %>
@@ -1280,12 +1276,10 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
         }
 
-                //////////batch execute by batch size///////
-        if (batchMode) {
+
+        if (useBatch) {
             %>
                 if ((batchSize_<%=cid%> > 0) && (batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>)) {
-                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ||("COPY".equals(dataAction)) ) {
-                %>
                 try {
                         <%
                         if (!"COPY".equals(dataAction)) {
@@ -1357,10 +1351,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     }%>
                 }
-                <%
-                }
-                %>
-                }
+            }
             <%
         }
         ////////////commit every////////////
@@ -1375,7 +1366,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 try {
                     <%
                     if (!"COPY".equals(dataAction)) {
-                        if (batchMode) {//manual commit and batch mode
+                        if (useBatch) {//manual commit and batch mode
                     %>
                             boolean isCountResult_<%=cid%> = false;
                             if(batchSizeCounter_<%=cid%> > 0){
@@ -1386,14 +1377,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 batchSizeCounter_<%=cid%> = 0;
                             }
                     <%
-                        }else{//manual commit
-                    %>
-                            <%dbLog.batch().executeTry(dbLog.str(dataAction));%>
-                            pstmt_<%=cid %>.executeBatch();
-                            <%dbLog.batch().executeDone(dbLog.str(dataAction));%>
-                    <%
                         }
-                        if (batchMode){
+                        if (useBatch){
                     %>
                         if(isCountResult_<%=cid%>){
                     <%
@@ -1411,7 +1396,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
                     <%
                         }
-                        if (batchMode){
+                        if (useBatch){
                     %>
                         }
                     <%

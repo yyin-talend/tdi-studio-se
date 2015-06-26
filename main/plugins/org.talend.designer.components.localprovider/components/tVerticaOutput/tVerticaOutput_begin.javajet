@@ -69,7 +69,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 	boolean useBatch = (rejectConnName == null)
 	                   && (
-	                        ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+	                        ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction) || "COPY".equals(dataAction)
 	                      )
 	                   && batchMode;
 
