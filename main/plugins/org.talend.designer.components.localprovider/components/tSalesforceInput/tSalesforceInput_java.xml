@@ -2494,7 +2494,7 @@
 			REQUIRED="false" 
 			SHOW_IF="MANUAL_QUERY == 'false'"
 		>
-			<DEFAULT>"name='talend'"</DEFAULT>
+			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="MANUAL_QUERY" FIELD="CHECK" NUM_ROW="80"
