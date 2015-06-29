@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -726,7 +727,8 @@ public class ExportItemWizardPage extends WizardPage {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                saveExportPath(DIRECTORY_PATH, directoryPathField.getText());
+                String exportPath = resetExportPath(directoryPathField.getText());
+                saveExportPath(DIRECTORY_PATH, exportPath);
             }
 
         });
@@ -807,6 +809,23 @@ public class ExportItemWizardPage extends WizardPage {
                 }
             }
         });
+    }
+
+    private String resetExportPath(String exportPath) {
+        if (getSelectedItems() == null || getSelectedItems().isEmpty()) {
+            return exportPath;
+        }
+        for (Item item : getSelectedItems()) {
+            if (item.getProperty() == null) {
+                continue;
+            }
+            String label = item.getProperty().getLabel();
+            IPath path = new Path(exportPath);
+            if (label.equals(path.lastSegment())) {
+                return path.removeLastSegments(1).toOSString();
+            }
+        }
+        return exportPath;
     }
 
     private void refreshExportDependNodes() {
@@ -929,7 +948,8 @@ public class ExportItemWizardPage extends WizardPage {
             previouslyBrowsedDirectory = selectedDirectory;
             directoryPathField.setText(previouslyBrowsedDirectory);
             lastPath = directoryPathField.getText().trim();
-            saveExportPath(DIRECTORY_PATH, lastPath);
+            String exportPath = resetExportPath(lastPath);
+            saveExportPath(DIRECTORY_PATH, exportPath);
 
         }
 
