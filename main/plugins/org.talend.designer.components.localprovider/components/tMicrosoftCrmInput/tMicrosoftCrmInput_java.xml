@@ -11470,117 +11470,248 @@
                 <IMPORT NAME="httpcore-4.2.1" MODULE="httpcore-4.2.1.jar" MVN="mvn:org.talend.libraries/httpcore-4.2.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.2.1.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
                 <IMPORT NAME="httpclient-4.2.1" MODULE="httpclient-4.2.1.jar" MVN="mvn:org.talend.libraries/httpclient-4.2.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpclient-4.2.1.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
                 <!-- log4j -->
-                <IMPORT NAME="Driver-Commons-Log4j-1.2.15" MODULE="log4j-1.2.15.jar" MVN="mvn:org.talend.libraries/log4j-1.2.15/6.0.0"  UrlPath="platform:/base/plugins/org.apache.log4j_1.2.15.v201012070815.jar" REQUIRED="true" BundleID="" /><!-- Jars for CRM 2015 CXF begin -->
+                <IMPORT NAME="Driver-Commons-Log4j-1.2.15" MODULE="log4j-1.2.15.jar" MVN="mvn:org.talend.libraries/log4j-1.2.15/6.0.0"  UrlPath="platform:/base/plugins/org.apache.log4j_1.2.15.v201012070815.jar" REQUIRED="true" BundleID="" />
+                <!-- Jars for CRM 2015 CXF begin -->
                 <IMPORT
-                    NAME="commons-logging-1.1.1.jar"
+                    NAME="commons-logging-1.1.1"
                     MODULE="commons-logging-1.1.1.jar"
                     MVN="mvn:org.talend.libraries/commons-logging-1.1.1/6.0.0"
                     UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-2.7.12.jar"
-                    MODULE="cxf-2.7.12.jar"
-                    MVN="mvn:org.talend.libraries/cxf-2.7.12/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-2.7.12.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="asm-5.0.4"
+                    MODULE="asm-5.0.4.jar"
+                    MVN="mvn:org.talend.libraries/asm-5.0.4/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/asm-5.0.4.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="geronimo-jaxws_2.2_spec-1.1.jar"
-                    MODULE="geronimo-jaxws_2.2_spec-1.1.jar"
-                    MVN="mvn:org.talend.libraries/geronimo-jaxws_2.2_spec-1.1/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/geronimo-jaxws_2.2_spec-1.1.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="cxf-core-3.1.1"
+                    MODULE="cxf-core-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-core-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="jaxb-api-2.2.6.jar"
-                    MODULE="jaxb-api-2.2.6.jar"
-                    MVN="mvn:org.talend.libraries/jaxb-api-2.2.6/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jaxb-api-2.2.6.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="cxf-rt-bindings-soap-3.1.1"
+                    MODULE="cxf-rt-bindings-soap-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-bindings-soap-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-bindings-soap-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="jaxb-impl-2.2.6.jar"
-                    MODULE="jaxb-impl-2.2.6.jar"
-                    MVN="mvn:org.talend.libraries/jaxb-impl-2.2.6/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jaxb-impl-2.2.6.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="cxf-rt-bindings-xml-3.1.1"
+                    MODULE="cxf-rt-bindings-xml-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-bindings-xml-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-bindings-xml-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="neethi-3.0.3.jar"
+                    NAME="cxf-rt-databinding-jaxb-3.1.1"
+                    MODULE="cxf-rt-databinding-jaxb-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-databinding-jaxb-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-databinding-jaxb-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-databinding-xmlbeans-3.1.1"
+                    MODULE="cxf-rt-databinding-xmlbeans-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-databinding-xmlbeans-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-databinding-xmlbeans-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-frontend-jaxws-3.1.1"
+                    MODULE="cxf-rt-frontend-jaxws-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-frontend-jaxws-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-frontend-jaxws-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-frontend-simple-3.1.1"
+                    MODULE="cxf-rt-frontend-simple-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-frontend-simple-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-frontend-simple-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-security-3.1.1"
+                    MODULE="cxf-rt-security-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-security-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-security-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-transports-http-3.1.1"
+                    MODULE="cxf-rt-transports-http-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-transports-http-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-transports-http-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-ws-addr-3.1.1"
+                    MODULE="cxf-rt-ws-addr-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-ws-addr-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-ws-addr-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-ws-mex-3.1.1"
+                    MODULE="cxf-rt-ws-mex-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-ws-mex-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-ws-mex-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-ws-policy-3.1.1"
+                    MODULE="cxf-rt-ws-policy-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-ws-policy-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-ws-policy-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-ws-rm-3.1.1"
+                    MODULE="cxf-rt-ws-rm-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-ws-rm-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-ws-rm-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-ws-security-3.1.1"
+                    MODULE="cxf-rt-ws-security-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-ws-security-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-ws-security-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-rt-wsdl-3.1.1"
+                    MODULE="cxf-rt-wsdl-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-rt-wsdl-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-wsdl-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="cxf-services-sts-core-3.1.1"
+                    MODULE="cxf-services-sts-core-3.1.1.jar"
+                    MVN="mvn:org.talend.libraries/cxf-services-sts-core-3.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-services-sts-core-3.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="ehcache-2.9.0"
+                    MODULE="ehcache-2.9.0.jar"
+                    MVN="mvn:org.talend.libraries/ehcache-2.9.0/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/ehcache-2.9.0.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="jasypt-1.9.2"
+                    MODULE="jasypt-1.9.2.jar"
+                    MVN="mvn:org.talend.libraries/jasypt-1.9.2/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jasypt-1.9.2.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="jaxb-core-2.2.11"
+                    MODULE="jaxb-core-2.2.11.jar"
+                    MVN="mvn:org.talend.libraries/jaxb-core-2.2.11/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jaxb-core-2.2.11.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="jaxb-impl-2.2.11"
+                    MODULE="jaxb-impl-2.2.11.jar"
+                    MVN="mvn:org.talend.libraries/jaxb-impl-2.2.11/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jaxb-impl-2.2.11.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="jcl-over-slf4j-1.7.12"
+                    MODULE="jcl-over-slf4j-1.7.12.jar"
+                    MVN="mvn:org.talend.libraries/jcl-over-slf4j-1.7.12/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jcl-over-slf4j-1.7.12.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="neethi-3.0.3"
                     MODULE="neethi-3.0.3.jar"
                     MVN="mvn:org.talend.libraries/neethi-3.0.3/6.0.0"
                     UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/neethi-3.0.3.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="stax2-api-3.1.4.jar"
+                    NAME="slf4j-api-1.7.12"
+                    MODULE="slf4j-api-1.7.12.jar"
+                    MVN="mvn:org.talend.libraries/slf4j-api-1.7.12/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/slf4j-api-1.7.12.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="slf4j-jdk14-1.7.12"
+                    MODULE="slf4j-jdk14-1.7.12.jar"
+                    MVN="mvn:org.talend.libraries/slf4j-jdk14-1.7.12/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/slf4j-jdk14-1.7.12.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="stax2-api-3.1.4"
                     MODULE="stax2-api-3.1.4.jar"
                     MVN="mvn:org.talend.libraries/stax2-api-3.1.4/6.0.0"
                     UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/stax2-api-3.1.4.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="woodstox-core-asl-4.4.0.jar"
-                    MODULE="woodstox-core-asl-4.4.0.jar"
-                    MVN="mvn:org.talend.libraries/woodstox-core-asl-4.4.0/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/woodstox-core-asl-4.4.0.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="woodstox-core-asl-4.4.1"
+                    MODULE="woodstox-core-asl-4.4.1.jar"
+                    MVN="mvn:org.talend.libraries/woodstox-core-asl-4.4.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/woodstox-core-asl-4.4.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="wsdl4j-1.6.3.jar"
+                    NAME="wsdl4j-1.6.3"
                     MODULE="wsdl4j-1.6.3.jar"
                     MVN="mvn:org.talend.libraries/wsdl4j-1.6.3/6.0.0"
                     UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/wsdl4j-1.6.3.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="wss4j-1.6.16.jar"
-                    MODULE="wss4j-1.6.16.jar"
-                    MVN="mvn:org.talend.libraries/wss4j-1.6.16/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/wss4j-1.6.16.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="wss4j-bindings-2.1.1"
+                    MODULE="wss4j-bindings-2.1.1.jar"
+                    MVN="mvn:org.talend.libraries/wss4j-bindings-2.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/wss4j-bindings-2.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="xml-resolver-1.2.jar"
-                    MODULE="xml-resolver-1.2.jar"
-                    MVN="mvn:org.talend.libraries/xml-resolver-1.2/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xml-resolver-1.2.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="wss4j-policy-2.1.1"
+                    MODULE="wss4j-policy-2.1.1.jar"
+                    MVN="mvn:org.talend.libraries/wss4j-policy-2.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/wss4j-policy-2.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="xmlschema-core-2.1.0.jar"
-                    MODULE="xmlschema-core-2.1.0.jar"
-                    MVN="mvn:org.talend.libraries/xmlschema-core-2.1.0/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlschema-core-2.1.0.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="wss4j-ws-security-common-2.1.1"
+                    MODULE="wss4j-ws-security-common-2.1.1.jar"
+                    MVN="mvn:org.talend.libraries/wss4j-ws-security-common-2.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/wss4j-ws-security-common-2.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="xmlsec-1.5.7.jar"
-                    MODULE="xmlsec-1.5.7.jar"
-                    MVN="mvn:org.talend.libraries/xmlsec-1.5.7/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlsec-1.5.7.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="wss4j-ws-security-dom-2.1.1"
+                    MODULE="wss4j-ws-security-dom-2.1.1.jar"
+                    MVN="mvn:org.talend.libraries/wss4j-ws-security-dom-2.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/wss4j-ws-security-dom-2.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="talend-microsoft-crm-2015-on-premises-0.1.jar"
-                    MODULE="talend-microsoft-crm-2015-on-premises-0.1.jar"
-                    MVN="mvn:org.talend.libraries/talend-microsoft-crm-2015-on-premises-0.1/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.crm/lib/talend-microsoft-crm-2015-on-premises-0.1.jar"
-                    BundleID=""
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="wss4j-ws-security-policy-stax-2.1.1"
+                    MODULE="wss4j-ws-security-policy-stax-2.1.1.jar"
+                    MVN="mvn:org.talend.libraries/wss4j-ws-security-policy-stax-2.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/wss4j-ws-security-policy-stax-2.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="Java-JAXEN"
-                    MODULE="jaxen-1.1.1.jar"
-                    MVN="mvn:org.talend.libraries/jaxen-1.1.1/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar"
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    NAME="wss4j-ws-security-stax-2.1.1"
+                    MODULE="wss4j-ws-security-stax-2.1.1.jar"
+                    MVN="mvn:org.talend.libraries/wss4j-ws-security-stax-2.1.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/wss4j-ws-security-stax-2.1.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="xmlbeans-2.6.0"
+                    MODULE="xmlbeans-2.6.0.jar"
+                    MVN="mvn:org.talend.libraries/xmlbeans-2.6.0/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlbeans-2.6.0.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="xmlschema-core-2.2.1"
+                    MODULE="xmlschema-core-2.2.1.jar"
+                    MVN="mvn:org.talend.libraries/xmlschema-core-2.2.1/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlschema-core-2.2.1.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="xmlsec-2.0.4"
+                    MODULE="xmlsec-2.0.4.jar"
+                    MVN="mvn:org.talend.libraries/xmlsec-2.0.4/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlsec-2.0.4.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
                     NAME="DOM4J"
                     MODULE="dom4j-1.6.1.jar"
                     MVN="mvn:org.talend.libraries/dom4j-1.6.1/6.0.0"
                     UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar"
-                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')"/>
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+                <IMPORT
+                    NAME="talend-microsoft-crm-2015-on-premises-0.2"
+                    MODULE="talend-microsoft-crm-2015-on-premises-0.2"
+                    MVN="mvn:org.talend.libraries/talend-microsoft-crm-2015-on-premises-0.2/6.0.0"
+                    UrlPath="platform:/plugin/org.talend.libraries.crm/lib/talend-microsoft-crm-2015-on-premises-0.2.jar"
+                    REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <!-- Jars for CRM 2015 CXF end -->
             </IMPORTS>
         </CODEGENERATION>
