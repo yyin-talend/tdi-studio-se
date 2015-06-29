@@ -460,8 +460,16 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         if (Platform.OS_WIN32.equals(tp)) {
             this.windowsAddition = libJarStr;
         } else {
-            String unixRootPath = getLibPrefixPath(true);
-            this.unixAddition = libJarStr.replace(unixRootPath, ""); // remove the Path root string
+            String oldTargetPlatform = this.getTargetPlatform();
+            try {
+                // because the cmds are from another processor, so must set the target platform same.
+                setTargetPlatform(tp);
+                // reuse the same api
+                String unixRootPath = getLibPrefixPath(true);
+                this.unixAddition = libJarStr.replace(unixRootPath, ""); // remove the Path root string
+            } finally {
+                setTargetPlatform(oldTargetPlatform);
+            }
         }
     }
 
