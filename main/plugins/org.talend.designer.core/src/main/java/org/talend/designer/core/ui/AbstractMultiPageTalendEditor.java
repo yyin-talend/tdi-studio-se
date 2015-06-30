@@ -182,14 +182,18 @@ import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IJobSettingsView;
+import org.talend.themes.core.elements.interfaces.ITalendThemeChangeListener;
+import org.talend.themes.core.elements.utils.TalendThemeUtils;
 
 /**
  * DOC qzhang class global comment. Detailled comment
  */
 public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
-        ISelectionListener, IUIRefresher, IMultiPageTalendEditor {
+        ISelectionListener, IUIRefresher, IMultiPageTalendEditor, ITalendThemeChangeListener {
 
     public static final String DISPLAY_CODE_VIEW = "DISPLAY_CODE_VIEW"; //$NON-NLS-1$
+
+    public static final String CSS_CLASS_ID = "org-talend-rcp-abstractMultiPageEditor-footer"; //$NON-NLS-1$
 
     protected AdapterImpl dirtyListener = new AdapterImpl() {
 
@@ -793,7 +797,22 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected void setCSSStylingClass() {
         Composite container = getContainer();
         if (container instanceof CTabFolder) {
-            CoreUIPlugin.setCSSClass(container, "org-talend-rcp-abstractMultiPageEditor-footer"); //$NON-NLS-1$
+            CoreUIPlugin.setCSSClass(container, CSS_CLASS_ID);
+        }
+    }
+
+    @Override
+    public void onThemeChanging(String newThemeId, String oldThemeId) {
+        if (newThemeId == null) {
+            return;
+        }
+        if (TalendThemeUtils.isThemeFromTalend(newThemeId)) {
+            return;
+        }
+        Composite container = getContainer();
+        if (container instanceof CTabFolder) {
+            ((CTabFolder) container).setBackground(null, null, true);
+            ((CTabFolder) container).setSelectionBackground(null, null, true);
         }
     }
 
