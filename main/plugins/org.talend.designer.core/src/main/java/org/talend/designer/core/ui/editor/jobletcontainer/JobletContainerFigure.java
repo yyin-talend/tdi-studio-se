@@ -362,7 +362,7 @@ public class JobletContainerFigure extends Figure {
 
     public void initializejobletContainer(Rectangle rectangle) {
         Point location = this.getLocation();
-        if (location.equals(lastLocation) && !jobletContainer.getNode().isMapReduceStart()) {
+        if (location.equals(lastLocation) && !jobletContainer.getNode().isMapReduceStart() && mrFigures.isEmpty()) {
             // avoid to calculate locations for nothing
             return;
         }
@@ -607,8 +607,8 @@ public class JobletContainerFigure extends Figure {
         }
 
         Image image = ImageProvider.getImage(ECoreImage.MRGREEBAR);
-//        Image map = ImageProvider.getImage(ECoreImage.MRMAP);
-//        Image reduce = ImageProvider.getImage(ECoreImage.MRREDUCE);
+        // Image map = ImageProvider.getImage(ECoreImage.MRMAP);
+        // Image reduce = ImageProvider.getImage(ECoreImage.MRREDUCE);
 
         int progressHeight = image.getBounds().height;
         int progressWidth = image.getBounds().width;
@@ -622,7 +622,6 @@ public class JobletContainerFigure extends Figure {
             progressMap.setLayoutManager(new ToolbarLayout(true));
             progressMap.setVisible(false);
 
-            
             SimpleHtmlFigure mapTitle = new SimpleHtmlFigure();
             mapTitle.setText("<b>Map</b> ");
             mapTitle.setSize(mapTitle.getPreferredSize());

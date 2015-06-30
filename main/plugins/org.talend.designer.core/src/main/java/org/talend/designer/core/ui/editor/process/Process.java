@@ -4338,4 +4338,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         return JavaProcessUtil.getNeededModules(this, withChildrens);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#setMRData()
+     */
+    @Override
+    public void setMRData() {
+        // TODO Auto-generated method stub
+
+    }
+
 }
