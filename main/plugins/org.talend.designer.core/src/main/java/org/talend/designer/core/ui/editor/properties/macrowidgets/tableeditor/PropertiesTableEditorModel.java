@@ -355,6 +355,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
                 return;
             }
             ((IProcess2) node.getProcess()).getGeneratingNodes();
+            ((IProcess2) node.getProcess()).setMRData();
             node.refreshNodeContainer();
         }
     }

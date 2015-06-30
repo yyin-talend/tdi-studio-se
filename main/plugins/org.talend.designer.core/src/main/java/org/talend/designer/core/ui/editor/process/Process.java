@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
@@ -4259,6 +4258,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             this.additionalProperties = new HashMap<Object, Object>();
         }
         return this.additionalProperties;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#setMRData()
+     */
+    @Override
+    public void setMRData() {
     }
 
 }
