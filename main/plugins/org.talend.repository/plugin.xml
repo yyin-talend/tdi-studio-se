@@ -2578,7 +2578,34 @@
               id="org.talend.repository.model.migration.ChangeBatchParameter4SomeDBComponents"
               name="ChangeBatchParameter4SomeDBComponents"
               version="6.1.0">
+         </projecttask>
+          <projecttask
+                beforeLogon="false"
+                breaks="5.6.2"
+                class="org.talend.repository.model.migration.MigrateEncoding4tSalesforceWave"
+                id="org.talend.repository.model.migration.MigrateEncoding4tSalesforceWave"
+                description="Migrate the encoding for tSalesforceWave"
+                name="MigrateEncoding4tSalesforceWave"
+                version="5.6.3">
+          </projecttask>
+          <projecttask
+               beforeLogon="false"
+               breaks="5.6.2"
+               class="org.talend.repository.model.migration.CheckIncludeSeparatorOnTFileOutputPositional"
+               id="org.talend.repository.model.migration.CheckIncludeSeparatorOnTFileOutputPositional"
+               description="Keep using separator if exists within file headers written by tFileOutputPositional (MR)"
+               name="CheckIncludeSeparatorOnTFileOutputPositional"
+               version="5.6.3">
         </projecttask>
+        <projecttask
+                beforeLogon="true"
+                breaks="5.5.2"
+                class="org.talend.repository.model.migration.ChangeComponentSettingNameMigrationTask"
+                description="ChangeComponentSettingNameMigrationTask"
+                id="org.talend.repository.model.migration.ChangeComponentSettingNameMigrationTask"
+                name="ChangeComponentSettingNameMigrationTask"
+                version="5.6.2">
+          </projecttask>
    </extension>
 
    <extension
