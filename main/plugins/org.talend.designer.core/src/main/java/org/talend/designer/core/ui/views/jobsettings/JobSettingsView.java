@@ -449,7 +449,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 } else if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())) {
                     icon = ImageProvider.getImage(EJobSettingImage.PROCESS_SPARK_ICON_X16);
                 } else if (ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
-                    icon = ImageProvider.getImage(EJobSettingImage.PROCESS_SPARK_ICON_X16);
+                    icon = ImageProvider.getImage(EJobSettingImage.PROCESS_SPARK_STREAMING_ICON_X16);
                 } else if (ComponentCategory.CATEGORY_4_STORM.getName().equals(process.getComponentsType())) {
                     icon = ImageProvider.getImage(EJobSettingImage.PROCESS_STORM_ICON_X16);
                 }
