@@ -12,14 +12,13 @@ imports="
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     boolean willValidateDN = "true".equals(ElementParameterParser.getValue(node,"__VALIDATE_DISTINGUISHED_NAME__"));
-        // component id
-        String cid = node.getUniqueName();
-        String wrap = ElementParameterParser.getValue(node, "__WRAP__");
-        String filename = ElementParameterParser.getValue(node, "__FILENAME__");
-        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-        boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
+    String cid = node.getUniqueName();
+    String wrap = ElementParameterParser.getValue(node, "__WRAP__");
+    String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+    String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+    boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
 
-        log4jFileUtil.componentStartInfo(node);
+    log4jFileUtil.componentStartInfo(node);
 %>
 
 java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
@@ -34,7 +33,7 @@ if(file_<%=cid %>.exists()){
     }
 if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
-//create directory only if not exists
+ //create directory only if not exists
  java.io.File parentFile_<%=cid%> = file_<%=cid %>.getParentFile();
   if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {
      parentFile_<%=cid%>.mkdirs();
@@ -159,12 +158,54 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                            }
                     return !isSafeUTF8String(distinguishedName) || !consistOfSafeCharacters(bytArr);
                 }
-            }
+
+                //Reference: http://www.ietf.org/rfc/rfc2253.txt
+                public boolean needBase64ForDN(String dn){
+                    String[] splitByComma = dn.replace("\\,", "").split(",");
+                    for(String str: splitByComma){
+                        String[] splitByPlus = str.replace("\\+", "").split("\\+");
+                        for(String strX: splitByPlus){
+                            String[] splitByEquals = strX.replace("\\=", "").split("=");
+                            if(!isValidAttributeType(splitByEquals[0].trim())){
+                                return true;
+                            }
+                            if(!isValidAttributeValue(splitByEquals[1])){
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                   }
+
+             public boolean isValidAttributeType(String attributeType){
+                return attributeType.matches("^([A-Za-z][A-Za-z0-9\\-]+)|(\\d+(.\\d+)*)$");
+             }
+
+             public  boolean isValidAttributeValue(String attriValue){
+                if(attriValue.equals("")){
+                    return true;
+                }
+                if(attriValue.startsWith(" ")){
+                    return false;
+                }
+                if(attriValue.endsWith(" ") && !attriValue.endsWith("\\ ")){
+                    return false;
+                }
+                if(attriValue.startsWith("\\ ")){
+                  attriValue = attriValue.substring(2,attriValue.length());
+                }
+                if(attriValue.endsWith("\\ ")){
+                    attriValue = attriValue.substring(0,attriValue.length()-2);
+                }
+                return attriValue.matches("^(#([0-9A-Fa-f]{2})+)|(\"(([^\"\\\\])|(\\\\([\\\\,=+<>#;\"]|[0-9A-Fa-f]{2})))*\")|([^\\\\,=+<>#;\"]|(\\\\([\\\\,=+<>#;\"]|[0-9A-Fa-f]{2})))+$");
+             }
+
+    }
 
     Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
 
     int nb_line_<%=cid %> = 0;
-    final String dn_<%=cid %> = "dn: ";
+    String dn_<%=cid %> = "dn: ";
     final String changetype_<%=cid %> = "changetype: ";
     final int wrap_<%=cid %> = <%=wrap %>;
 <%if(!isAppend){%>
