@@ -64,25 +64,25 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                 public String getBase64StringOrNot(boolean encodingBase64,String srcData,String encoding){
                   String returnValue = "";
                   try {
-            if(encodingBase64 <%
-                  if(!willValidateDN){
-                       %>
-                          && !netscape.ldap.util.LDIF.isPrintable(srcData.getBytes(encoding))
-                       <%
-                }else{
-                      %>
-                         && needEncodeBase64(srcData)
-                      <%
-              }
-             %>){
-              returnValue = org.apache.commons.codec.binary.Base64.encodeBase64String(srcData.getBytes(encoding));
-            }else{
-              returnValue = srcData;
-            }
-          }catch(java.lang.Exception e){
-            e.printStackTrace();
-          }
-          return returnValue;
+                        if(encodingBase64 <%
+                              if(!willValidateDN){
+                                   %>
+                                      && !netscape.ldap.util.LDIF.isPrintable(srcData.getBytes(encoding))
+                                   <%
+                                }else{
+                                      %>
+                                         && needEncodeBase64(srcData)
+                                      <%
+                                }
+                         %>){
+                                returnValue = ":: " + org.apache.commons.codec.binary.Base64.encodeBase64String(srcData.getBytes(encoding));
+                            }else{
+                                returnValue = ": " + srcData;
+                            }
+                      }catch(java.lang.Exception e){
+                        e.printStackTrace();
+                      }
+                                return returnValue;
                 }
 
             //Feature: TDI-31864
