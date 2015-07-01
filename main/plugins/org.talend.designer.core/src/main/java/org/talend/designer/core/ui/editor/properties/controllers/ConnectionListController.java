@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
@@ -319,14 +320,31 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
                                             return;
                                         }
                                     }
-                                    if (elem instanceof INode) {
-                                        INode node = (INode) elem;
-                                        if (node.getComponent() != null && "tSAPBapi".equals(node.getComponent().getName())) {
-                                            // not changed
-                                            return;
-                                        }
-                                    }
                                     if (connectionName.equals(oldConnectionName)) {
+                                        if (elem instanceof INode) {
+                                            INode node = (INode) elem;
+                                            if (node.getComponent() != null && "tSAPBapi".equals(node.getComponent().getName())) {
+                                                // if SCHEMA_TYPE is renamed,rename the corresponding metadata table
+                                                // name and connection meta name
+                                                List<IMetadataTable> metadataList = node.getMetadataList();
+                                                for (IMetadataTable metadataTable : metadataList) {
+                                                    if (metadataTable.getTableName() != null
+                                                            && metadataTable.getTableName().equals(oldConnectionName)) {
+                                                        metadataTable.setTableName(newConnectionName);
+                                                        break;
+                                                    }
+                                                }
+                                                List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+                                                for (IConnection connection : outgoingConnections) {
+                                                    if (connection.getMetaName() != null
+                                                            && connection.getMetaName().equals(oldConnectionName)) {
+                                                        connection.setMetaName(newConnectionName);
+                                                        break;
+                                                    }
+                                                }
+
+                                            }
+                                        }
                                         curLine.put(param.getName(), newConnectionName);
                                     }
                                 }
