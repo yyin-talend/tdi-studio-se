@@ -249,6 +249,7 @@
                <GlobalActionId actionId="cut"/>
                <GlobalActionId actionId="copy"/>
                <GlobalActionId actionId="paste"/>
+               <GlobalActionId actionId="save"/>
             </ElementType>
          </ViewId>
       </GlobalActionHandlerProvider>
