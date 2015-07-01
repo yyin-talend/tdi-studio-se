@@ -2454,6 +2454,15 @@
         <projecttask
               beforeLogon="false"
               breaks="6.0.0"
+              class="org.talend.repository.model.migration.MigrateDeprecatedHadoopDistribution1"
+              id="org.talend.repository.model.migration.MigrateDeprecatedHadoopDistribution1"
+              description="Migrate HDP 1.0 to HDP 1.2, CDH 3 to CDH 4, MapR 1 to MapR 2, and MapR EMR to EMR 1.4.0."
+              name="MigrateDeprecatedHadoopDistribution1"
+              version="6.0.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
               class="org.talend.repository.model.migration.MapNetsuiteOperatorValueTDI32245"
               description="map old value to new"
               id="org.talend.repository.model.migration.MapNetsuiteOperatorValueTDI32245"
