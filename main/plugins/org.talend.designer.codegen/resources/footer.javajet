@@ -207,34 +207,35 @@
 
    <% 
     if (isTestContainer) {
-        List<IContext> contexts = process.getContextManager().getListContext();   
-        for (IContext context : contexts)
-        {
+         List<String> instanceList =  ProcessUtils.getTestInstances(process);
+         for(String instance : instanceList)
+         {
+         String context = ProcessUtils.getInstanceContext(process,instance); 
         %>
       @Test
-        public void test<%=context.getName()%>() throws java.lang.Exception{
+        public void test<%=instance%>() throws java.lang.Exception{
             junitGlobalMap.put("tests.log",new String());
             junitGlobalMap.put("tests.nbFailure",new Integer(0));
             final <%=className %> <%=className %>Class = new <%=className %>();
-            java.util.List<String> paraList_<%=context.getName()%> = new java.util.ArrayList<String>();
-            paraList_<%=context.getName()%>.add("--context=<%=context.getName()%>");
+            java.util.List<String> paraList_<%=instance%> = new java.util.ArrayList<String>();
+            paraList_<%=instance%>.add("--context=<%=context%>");
             <%
-        for(IContextParameter contextPara:context.getContextParameterList()){
-            String path =  ProcessUtils.getTestDataValue(process, context, contextPara);
+        for(String testData : ProcessUtils.getTestData(process,instance)){
+            String path =  ProcessUtils.getTestDataValue(process, instance, testData);
             if(path!=null&&path.length()>0){
             %>
-            java.net.URL url_<%=contextPara.getName()%> = getClass().getResource("<%=path%>");
-            String context_<%=contextPara.getName()%>="<%=contextPara.getName()%>=" + url_<%=contextPara.getName()%>.getPath();
-            paraList_<%=context.getName()%>.add("--context_param");
-            paraList_<%=context.getName()%>.add(context_<%=contextPara.getName()%>);
+            java.net.URL url_<%=testData%> = getClass().getResource("<%=path%>");
+            String instance_<%=testData%>="<%=testData%>=" + url_<%=testData%>.getPath();
+            paraList_<%=instance%>.add("--context_param");
+            paraList_<%=instance%>.add(instance_<%=testData%>);
         <%
          }
                
         }
         %>  
-        String[] arrays = new String[paraList_<%=context.getName()%>.size()];
-        for(int i=0;i<paraList_<%=context.getName()%>.size();i++){
-            arrays[i] = (String)paraList_<%=context.getName()%>.get(i);
+        String[] arrays = new String[paraList_<%=instance%>.size()];
+        for(int i=0;i<paraList_<%=instance%>.size();i++){
+            arrays[i] = (String)paraList_<%=instance%>.get(i);
         }
         <%=className %>Class.runJobInTOS(arrays);
        
