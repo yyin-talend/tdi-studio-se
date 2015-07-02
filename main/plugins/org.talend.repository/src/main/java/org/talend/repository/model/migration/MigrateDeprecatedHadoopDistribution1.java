@@ -72,8 +72,10 @@ public class MigrateDeprecatedHadoopDistribution1 extends AbstractAllJobMigratio
             @Override
             public void transform(NodeType node) {
                 ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, parameter);
-                String dbVersionValue = dbVersion.getValue();
-                replaceValue(node, dbVersionValue, parameter);
+                if (dbVersion != null && dbVersion.getValue() != null) { // fixed for TBD-2206
+                    String dbVersionValue = dbVersion.getValue();
+                    replaceValue(node, dbVersionValue, parameter);
+                }
             }
 
         }
