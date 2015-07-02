@@ -224,6 +224,7 @@
 	            <ITEM NAME="BLOB" VALUE="BLOB"/>
 	            <ITEM NAME="DECIMAL" VALUE="DECIMAL"/>
 	            <ITEM NAME="NUMERIC" VALUE="NUMERIC"/>
+	            <ITEM NAME="XMLTYPE" VALUE="XMLTYPE"/>
 	          </ITEMS>
     </PARAMETER>
 
@@ -252,6 +253,7 @@
 	            <ITEM NAME="BLOB" VALUE="BLOB"/>
 	          	<ITEM NAME="DECIMAL" VALUE="DECIMAL"/>
 	            <ITEM NAME="NUMERIC" VALUE="NUMERIC"/>
+	            <ITEM NAME="XMLTYPE" VALUE="XMLTYPE"/>
 	          </ITEMS>
          </ITEM>
         <ITEM NAME="ISCUSTOME" FIELD="CHECK"></ITEM>
@@ -465,6 +467,8 @@
       <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_10') AND (USE_EXISTING_CONNECTION == 'false')" />
       <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14-9i.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_9') AND (USE_EXISTING_CONNECTION == 'false')" />
       <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc12.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_8') AND (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="XDB"  MODULE="xdb.jar" REQUIRED_IF="((RETURN_BDTYPE == 'XMLTYPE') or (SP_ARGS.DBTYPE IN ['XMLTYPE'])) and (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="XMLPARSEV2"  MODULE="xmlparserv2.jar" REQUIRED_IF="((RETURN_BDTYPE == 'XMLTYPE') or (SP_ARGS.DBTYPE IN ['XMLTYPE'])) and (USE_EXISTING_CONNECTION == 'false')" />
     </IMPORTS>
    </CODEGENERATION>
 

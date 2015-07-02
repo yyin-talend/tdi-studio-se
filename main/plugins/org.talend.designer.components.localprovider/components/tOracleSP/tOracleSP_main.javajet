@@ -205,7 +205,12 @@ if (canGenerate) {
     					%>
     					statement_<%=cid%>.setTimestamp(<%=argIndex%>, new java.sql.Timestamp(<%=inConnectionName%>.<%=argName%>.getTime()));
     					<%
-    				} else {
+    				} else if ("XMLTYPE".equals(dbType)){
+						%>
+						oracle.xdb.XMLType xmlType_<%=cid%> = oracle.xdb.XMLType.createXML(connection_<%=cid%>, <%=inConnectionName%>.<%=argName%>);
+						statement_<%=cid%>.setObject(<%=argIndex%>, xmlType_<%=cid%>);
+						<%
+					} else {
     					%>
     					statement_<%=cid%>.set<%=method%>(<%=argIndex%>, <%=inConnectionName%>.<%=argName%>);
     					<%
@@ -230,10 +235,13 @@ if (canGenerate) {
 %>
 					statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 <%
+					} else if("XMLTYPE".equals(dbType)) {
+%>
+					statement_<%=cid%>.registerOutParameter(<%=argIndex%>, oracle.jdbc.OracleTypes.OPAQUE, "SYS.XMLTYPE");
+<%
 					} else {
 %>
 					statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=dbType %>);
-					
 <%
 					}
 	  			}
@@ -270,6 +278,7 @@ if (canGenerate) {
 					for (int i = 0; i < spArgs.size(); i++) {
 						Map<String, String> spArg = spArgs.get(i);
 						String argName = spArg.get("COLUMN");
+				    	String dbType = spArg.get("DBTYPE");
 						
 						if (column.getLabel().equals(argName)) {
 							String argType = spArg.get("TYPE");
@@ -287,6 +296,11 @@ if (canGenerate) {
 %>
 								<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.getObject(<%=argIndex%>);
 <%
+							} else if((("OUT").equals(argType) || ("INOUT").equals(argType)) && ("XMLTYPE").equals(dbType)) {
+%>
+									oracle.xdb.XMLType xml_<%=cid%> = (oracle.xdb.XMLType) statement_<%=cid%>.getObject(<%=argIndex%>);
+									<%=firstOutConnection.getName()%>.<%=argName%> = xml_<%=cid%>.getStringVal();
+<%	
 							} else {
 								// Retrieve parameter value (INOUT or OUT)
 								String method;
