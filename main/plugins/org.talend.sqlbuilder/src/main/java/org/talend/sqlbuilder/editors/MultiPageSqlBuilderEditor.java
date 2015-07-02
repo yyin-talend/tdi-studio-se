@@ -14,17 +14,29 @@ package org.talend.sqlbuilder.editors;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.internal.services.INestable;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.services.IServiceLocator;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.repository.model.IRepositoryNode;
@@ -47,7 +59,7 @@ import org.talend.sqlbuilder.ui.SQLBuilderEditorComposite;
  */
 public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
-    private SQLBuilderEditorComposite sqlEdit;
+	private SQLBuilderEditorComposite sqlEdit;
 
     private SQLBuilderDesignerComposite sqlDesigner;
 
@@ -94,6 +106,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     }
 
     private ErDiagramComposite erDiagramComposite;
+	private CTabFolder container;
+	private INestable activeServiceLocator;
 
     /*
      * (non-Java)
@@ -137,7 +151,66 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         }
 
     }
+    
+    public final void createPartControl2(Composite parent) {
+    	//super.createPartControl(parent);
+		Composite pageContainer = createPageContainer(parent);
+		this.container = createContainer(pageContainer);
+		createPages();
+		// set the active page (page 0 by default), unless it has already been
+		// done
+		if (getActivePage() == -1) {
+			setActivePage(0);
+			IEditorPart part = getEditor(0);
+			if (part!=null) {
+				final IServiceLocator serviceLocator = part.getEditorSite();
+				if (serviceLocator instanceof INestable) {
+					activeServiceLocator = (INestable) serviceLocator;
+					activeServiceLocator.activate();
+				}
+			}
+		}
+	}
 
+    private CTabFolder createContainer(Composite parent) {
+		// use SWT.FLAT style so that an extra 1 pixel border is not reserved
+		// inside the folder
+		parent.setLayout(new FillLayout());
+		final CTabFolder newContainer = new CTabFolder(parent, SWT.BOTTOM
+				| SWT.FLAT);
+		newContainer.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int newPageIndex = newContainer.indexOf((CTabItem) e.item);
+				pageChange(newPageIndex);
+			}
+		});
+		newContainer.addTraverseListener(new TraverseListener() { 
+			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=199499 : Switching tabs by Ctrl+PageUp/PageDown must not be caught on the inner tab set
+			@Override
+			public void keyTraversed(TraverseEvent e) {
+				switch (e.detail) {
+					case SWT.TRAVERSE_PAGE_NEXT:
+					case SWT.TRAVERSE_PAGE_PREVIOUS:
+						int detail = e.detail;
+						e.doit = true;
+						e.detail = SWT.TRAVERSE_NONE;
+						Control control = newContainer.getParent();
+						do {
+							if (control.traverse(detail))
+								return;
+							if (control.getListeners(SWT.Traverse).length != 0)
+								return;
+							if (control instanceof Shell)
+								return;
+							control = control.getParent();
+						} while (control != null);
+				}
+			}
+		});
+		return newContainer;
+	}
+    
     private boolean isFirst = true;
 
     private boolean isFirst2 = true;
@@ -196,8 +269,12 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
      */
     @Override
     public int getActivePage() {
-        return super.getActivePage();
-    }
+		CTabFolder tabFolder = getTabFolder();
+		if (tabFolder != null && !tabFolder.isDisposed()) {
+			return tabFolder.getSelectionIndex();
+		}
+		return -1;
+	}
 
     public void setSqlText(String sql) {
         erDiagramComposite.setSqlText(sql);
@@ -342,7 +419,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
      */
     @Override
     public Composite getContainer() {
-        return super.getContainer();
+        return this.container;
     }
 
     public void updateEditorTitle(String text) {
@@ -412,12 +489,88 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
      * 
      * @see org.eclipse.ui.part.MultiPageEditorPart#initializePageSwitching()
      */
+
     @Override
     protected void initializePageSwitching() {
 
     }
-
+    
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
+    public int addPage(Control control) {
+		int index = getPageCount();
+		addPage(index, control);
+		return index;
+	}
+    @Override
+    protected int getPageCount() {
+		CTabFolder folder = getTabFolder();
+		// May not have been created yet, or may have been disposed.
+		if (folder != null && !folder.isDisposed()) {
+			return folder.getItemCount();
+		}
+		return 0;
+	}
+    
+    //These methods are from MultiPageEditor mostly
+    public void addPage(int index, Control control) {
+		createItem(index, control);
+	}
+    
+    private CTabItem createItem(int index, Control control) {
+		CTabItem item = new CTabItem(getTabFolder(), SWT.NONE, index);
+		item.setControl(control);
+		return item;
+	}
+    private CTabFolder getTabFolder() {
+		return this.container;
+	}
+    
+    private CTabItem getItem(int pageIndex) {
+		return getTabFolder().getItem(pageIndex);
+	}
+    
+    protected void setActivePage(int pageIndex) {
+		Assert.isTrue(pageIndex >= 0 && pageIndex < getPageCount());
+		getTabFolder().setSelection(pageIndex);
+		pageChange(pageIndex);
+	}
+
+    @Override
+    protected Control getControl(int pageIndex) {
+		return getItem(pageIndex).getControl();
+	}
+    @Override
+    protected IEditorPart getEditor(int pageIndex) {
+		Item item = getItem(pageIndex);
+		if (item != null) {
+			Object data = item.getData();
+			if (data instanceof IEditorPart) {
+				return (IEditorPart) data;
+			}
+		}
+		return null;
+	}
+    @Override
+    protected Image getPageImage(int pageIndex) {
+		return getItem(pageIndex).getImage();
+	}
+    @Override   
+    protected String getPageText(int pageIndex) {
+		return getItem(pageIndex).getText();
+	}
+    @Override
+    protected void setControl(int pageIndex, Control control) {
+		getItem(pageIndex).setControl(control);
+	}
+    @Override
+    protected void setPageImage(int pageIndex, Image image) {
+		getItem(pageIndex).setImage(image);
+	}
+    @Override
+    protected void setPageText(int pageIndex, String text) {
+		getItem(pageIndex).setText(text);
+	}
+
 }

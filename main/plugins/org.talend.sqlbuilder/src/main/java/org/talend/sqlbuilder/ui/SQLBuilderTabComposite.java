@@ -190,7 +190,7 @@ public class SQLBuilderTabComposite extends Composite {
         } catch (PartInitException e) {
             ExceptionHandler.process(e);
         }
-        builderEditor.createPartControl(tabFolder);
+        builderEditor.createPartControl2(tabFolder);
         tabItem.setControl(builderEditor.getContainer());
         tabItem.setData(TextUtil.KEY, builderEditor);
         if (connParam.isFromRepository() && connParam.getQueryObject() != null) {
