@@ -293,7 +293,7 @@
 	  }
     <%}%>
     final java.util.List<java.io.File> list_<%=cid%> = new java.util.ArrayList<java.io.File>();
-    final java.util.List<String> filePath_<%=cid%> = new java.util.ArrayList<String>();
+    final java.util.Set<String> filePath_<%=cid%> = new java.util.HashSet<String>();
 	java.io.File file_<%=cid%> = new java.io.File(directory_<%=cid%>);
     
     <%
