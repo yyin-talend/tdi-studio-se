@@ -178,6 +178,10 @@ public class JavaProcessUtil {
 
         List<? extends INode> nodeList = process.getGeneratingNodes();
         for (INode node : nodeList) {
+            if (process instanceof IProcess2) {
+                ((IProcess2) node.getProcess()).setNeedLoadmodules(((IProcess2) process).isNeedLoadmodules());
+            }
+
             Set<ModuleNeeded> nodeNeededModules = getNeededModules(node, searchItems, withChildrens, forMR);
             if (nodeNeededModules != null) {
                 modulesNeeded.addAll(nodeNeededModules);

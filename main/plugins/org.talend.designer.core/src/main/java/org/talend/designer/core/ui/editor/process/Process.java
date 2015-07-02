@@ -247,6 +247,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     private String componentsType;
 
+    private boolean isNeedLoadmodules = true;
+
     public Process(Property property) {
         this.property = property;
         screenshots = new HashMap<String, byte[]>();
@@ -4267,6 +4269,26 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      */
     @Override
     public void setMRData() {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#isNeedLoadmodules()
+     */
+    @Override
+    public boolean isNeedLoadmodules() {
+        return this.isNeedLoadmodules;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#setNeedLoadmodules(boolean)
+     */
+    @Override
+    public void setNeedLoadmodules(boolean isNeedLoadmodules) {
+        this.isNeedLoadmodules = isNeedLoadmodules;
     }
 
 }
