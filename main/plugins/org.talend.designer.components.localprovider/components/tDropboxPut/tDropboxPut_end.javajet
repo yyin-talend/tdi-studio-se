@@ -22,7 +22,7 @@ imports="
 %>
 
 <%if("true".equals(exposeOutput)){%>
-		     <%=cid%>_uploader.finish();
+		     //<%=cid%>_uploader.finish();
 		 }finally {
 			 <%=cid%>_uploader.close();
 		 }
