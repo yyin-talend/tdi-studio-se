@@ -45,63 +45,67 @@ public class MigrateDeprecatedHadoopDistribution1 extends AbstractAllJobMigratio
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
-        String[] dbVersionComponents = { "tHDFSConnection", "tHDFSCompare", "tHDFSDelete", "tHDFSCopy", "tHDFSExist", "tHDFSGet", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                "tHDFSInput", "tHDFSOutput", "tHDFSList", "tHDFSOutputRaw", "tHDFSProperties", "tHDFSPut", "tHDFSRename", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-                "tHDFSRowCount", "tSqoopImport", "tSqoopExport", "tSqoopMerge", "tSqoopImportAllTables" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        if (processType != null) {
+            String[] dbVersionComponents = {
+                    "tHDFSConnection", "tHDFSCompare", "tHDFSDelete", "tHDFSCopy", "tHDFSExist", "tHDFSGet", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                    "tHDFSInput", "tHDFSOutput", "tHDFSList", "tHDFSOutputRaw", "tHDFSProperties", "tHDFSPut", "tHDFSRename", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+                    "tHDFSRowCount", "tSqoopImport", "tSqoopExport", "tSqoopMerge", "tSqoopImportAllTables" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
-        String[] hbaseVersionComponents = { "tPigStoreResult", "tHBaseConnection", "tHBaseInput", "tHBaseOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            String[] hbaseVersionComponents = { "tPigStoreResult", "tHBaseConnection", "tHBaseInput", "tHBaseOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        String[] hcatVersionComponents = { "tHCatalogOperation", "tHCatalogLoad", "tHCatalogInput", "tHCatalogOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            String[] hcatVersionComponents = { "tHCatalogOperation", "tHCatalogLoad", "tHCatalogInput", "tHCatalogOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        String[] hiveVersionComponents = {
-                "tHiveConnection", "tHiveRow", "tHiveInput", "tHiveLoad", "tHiveCreateTable", "tELTHiveMap" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            String[] hiveVersionComponents = {
+                    "tHiveConnection", "tHiveRow", "tHiveInput", "tHiveLoad", "tHiveCreateTable", "tELTHiveMap" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
-        values.put("HDP_1_0", "HDP_1_2"); //$NON-NLS-1$ //$NON-NLS-2$
-        values.put("Cloudera_CDH3", "Cloudera_CDH4"); //$NON-NLS-1$ //$NON-NLS-2$
-        values.put("MAPR1", "MAPR2"); //$NON-NLS-1$ //$NON-NLS-2$
-        values.put("MapR_EMR", "APACHE_1_0_3_EMR"); //$NON-NLS-1$ //$NON-NLS-2$
+            values.put("HDP_1_0", "HDP_1_2"); //$NON-NLS-1$ //$NON-NLS-2$
+            values.put("Cloudera_CDH3", "Cloudera_CDH4"); //$NON-NLS-1$ //$NON-NLS-2$
+            values.put("MAPR1", "MAPR2"); //$NON-NLS-1$ //$NON-NLS-2$
+            values.put("MapR_EMR", "APACHE_1_0_3_EMR"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        class ComponentConversion implements IComponentConversion {
+            class ComponentConversion implements IComponentConversion {
 
-            private String parameter;
+                private String parameter;
 
-            public ComponentConversion(String parameterName) {
-                this.parameter = parameterName;
-            }
-
-            @Override
-            public void transform(NodeType node) {
-                ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, parameter);
-                if (dbVersion != null && dbVersion.getValue() != null) { // fixed for TBD-2206
-                    String dbVersionValue = dbVersion.getValue();
-                    replaceValue(node, dbVersionValue, parameter);
+                public ComponentConversion(String parameterName) {
+                    this.parameter = parameterName;
                 }
+
+                @Override
+                public void transform(NodeType node) {
+                    ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, parameter);
+                    // dbVersion can be null for tHDFSInput and tHDFSOutput in M/R. In this case, ignore the task.
+                    if (dbVersion != null && dbVersion.getValue() != null) {
+                        String dbVersionValue = dbVersion.getValue();
+                        replaceValue(node, dbVersionValue, parameter);
+                    }
+                }
+
             }
 
+            IComponentConversion changeDbVersion = new ComponentConversion("DB_VERSION"); //$NON-NLS-1$
+            IComponentConversion changeHbaseVersion = new ComponentConversion("HBASE_VERSION"); //$NON-NLS-1$
+            IComponentConversion changeHcatVersion = new ComponentConversion("HCAT_VERSION"); //$NON-NLS-1$
+            IComponentConversion changePigVersion = new ComponentConversion("PIG_VERSION"); //$NON-NLS-1$
+            IComponentConversion changeHiveVersion = new ComponentConversion("HIVE_VERSION"); //$NON-NLS-1$
+            IComponentConversion changeMRVersion = new ComponentConversion("MR_VERSION"); //$NON-NLS-1$
+
+            try {
+                searchAndModify(dbVersionComponents, item, processType, changeDbVersion);
+                searchAndModify(hbaseVersionComponents, item, processType, changeHbaseVersion);
+                searchAndModify(hcatVersionComponents, item, processType, changeHcatVersion);
+                searchAndModify(new String[] { "tPigLoad" }, item, processType, changePigVersion); //$NON-NLS-1$
+                searchAndModify(hiveVersionComponents, item, processType, changeHiveVersion);
+                changeMRConfiguration(processType, item);
+                searchAndModify(new String[] { "tMRConfiguration" }, item, processType, changeMRVersion); //$NON-NLS-1$
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
+            }
+
+            return ExecutionResult.SUCCESS_NO_ALERT;
         }
-
-        IComponentConversion changeDbVersion = new ComponentConversion("DB_VERSION"); //$NON-NLS-1$
-        IComponentConversion changeHbaseVersion = new ComponentConversion("HBASE_VERSION"); //$NON-NLS-1$
-        IComponentConversion changeHcatVersion = new ComponentConversion("HCAT_VERSION"); //$NON-NLS-1$
-        IComponentConversion changePigVersion = new ComponentConversion("PIG_VERSION"); //$NON-NLS-1$
-        IComponentConversion changeHiveVersion = new ComponentConversion("HIVE_VERSION"); //$NON-NLS-1$
-        IComponentConversion changeMRVersion = new ComponentConversion("MR_VERSION"); //$NON-NLS-1$
-
-        try {
-            searchAndModify(dbVersionComponents, item, processType, changeDbVersion);
-            searchAndModify(hbaseVersionComponents, item, processType, changeHbaseVersion);
-            searchAndModify(hcatVersionComponents, item, processType, changeHcatVersion);
-            searchAndModify(new String[] { "tPigLoad" }, item, processType, changePigVersion); //$NON-NLS-1$
-            searchAndModify(hiveVersionComponents, item, processType, changeHiveVersion);
-            changeMRConfiguration(processType, item);
-            searchAndModify(new String[] { "tMRConfiguration" }, item, processType, changeMRVersion); //$NON-NLS-1$
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-            return ExecutionResult.FAILURE;
-        }
-
-        return ExecutionResult.SUCCESS_NO_ALERT;
-
+        return ExecutionResult.NOTHING_TO_DO;
     }
 
     private void changeMRConfiguration(ProcessType processType, Item item) throws PersistenceException {
