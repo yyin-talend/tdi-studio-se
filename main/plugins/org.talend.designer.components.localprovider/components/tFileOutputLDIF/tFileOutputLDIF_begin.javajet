@@ -75,9 +75,9 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                       <%
               }
              %>){
-              returnValue = org.apache.commons.codec.binary.Base64.encodeBase64String(srcData.getBytes(encoding));
+                                returnValue = ":: " + org.apache.commons.codec.binary.Base64.encodeBase64String(srcData.getBytes(encoding));
             }else{
-              returnValue = srcData;
+                                returnValue = ": " + srcData;
             }
           }catch(java.lang.Exception e){
             e.printStackTrace();
