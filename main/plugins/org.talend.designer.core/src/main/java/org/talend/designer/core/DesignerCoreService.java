@@ -344,9 +344,12 @@ public class DesignerCoreService implements IDesignerCoreService {
         }
 
         IComponentsFactory compFac = CorePlugin.getDefault().getRepositoryService().getComponentsFactory();
-        IComponent salesforceComponent = compFac.get(componentName, paletteType);
+        IComponent component = compFac.get(componentName, paletteType);
+        if (component == null) {
+            return null;
+        }
 
-        return new DataNode(salesforceComponent, componentName);
+        return new DataNode(component, componentName);
     }
 
     /*
