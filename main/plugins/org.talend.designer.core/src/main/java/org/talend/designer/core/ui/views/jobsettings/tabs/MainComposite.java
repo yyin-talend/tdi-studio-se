@@ -108,6 +108,8 @@ public class MainComposite extends AbstractTabComposite {
 
     private ControlDecoration nameTextDecorator;
 
+    private IRepositoryViewObject newRepositoryObject = null;
+
     /**
      * yzhang MainComposite constructor comment.
      * 
@@ -561,7 +563,6 @@ public class MainComposite extends AbstractTabComposite {
                             // Convert
                             final Item newItem = ConvertJobsUtil.createOperation(originalName, originalJobType,
                                     originalFramework, repositoryObject);
-
                             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
                                 @Override
@@ -577,13 +578,16 @@ public class MainComposite extends AbstractTabComposite {
                                         }
                                         proxyRepositoryFactory.deleteObjectPhysical(repositoryObject);
                                         proxyRepositoryFactory.saveProject(ProjectManager.getInstance().getCurrentProject());
-                                        if (newItem != null && newItem.getProperty() != null && !isOpened) {
+                                        if (newItem != null && newItem.getProperty() != null) {
                                             String newId = newItem.getProperty().getId();
-                                            repositoryObject = proxyRepositoryFactory.getLastVersion(ProjectManager.getInstance()
-                                                    .getCurrentProject(), newId);
-                                            if (!jobTypeCCombo.isDisposed() && !jobFrameworkCCombo.isDisposed()) {
-                                                jobTypeValue = jobTypeCCombo.getText();
-                                                frameworkValue = jobFrameworkCCombo.getText();
+                                            newRepositoryObject = proxyRepositoryFactory.getLastVersion(ProjectManager
+                                                    .getInstance().getCurrentProject(), newId);
+                                            if (!isOpened) {
+                                                repositoryObject = newRepositoryObject;
+                                                if (!jobTypeCCombo.isDisposed() && !jobFrameworkCCombo.isDisposed()) {
+                                                    jobTypeValue = jobTypeCCombo.getText();
+                                                    frameworkValue = jobFrameworkCCombo.getText();
+                                                }
                                             }
                                         }
                                     } catch (PersistenceException e1) {
@@ -607,7 +611,9 @@ public class MainComposite extends AbstractTabComposite {
                                 MessageBoxExceptionHandler.process(e1.getCause());
                             }
                             if (newItem != null && repositoryObject instanceof IProcess2) {
-                                openEditorOperation(newItem);
+                                if (newRepositoryObject != null && newRepositoryObject.getProperty() != null) {
+                                    openEditorOperation(newRepositoryObject.getProperty().getItem());
+                                }
                             }
                         } else {
                             // set the new value
