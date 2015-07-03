@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.commands.Command;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.EComponentType;
@@ -95,6 +96,25 @@ public class PropertyChangeCommand extends Command {
         }
     };
 
+    // for bug TDI-32692,the ExecutionLimiterImproved could avoid some thread exception especially in duplicated issue TDI-32672.
+    private static ExecutionLimiterImproved checkProcess = new ExecutionLimiterImproved(500, true) {
+
+        @Override
+        protected void execute(boolean isFinalExecution, Object data) {
+            if (isFinalExecution) {
+                if (data instanceof IGraphicalNode) {
+                    ((IGraphicalNode) data).checkAndRefreshNode();
+                }
+                if (data instanceof IConnection) {
+                    IProcess process = ((IConnection) data).getSource().getProcess();
+                    if (process instanceof IProcess2) {
+                        ((IProcess2) process).checkProcess();
+                    }
+                }
+            }
+        }
+    };
+    
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -403,17 +423,8 @@ public class PropertyChangeCommand extends Command {
             }
         }
         updateRelativeNodesIfNeeded(currentParam);
-        //
-        if (elem instanceof IGraphicalNode) {
-            ((IGraphicalNode) elem).checkAndRefreshNode();
-        }
-
-        if (elem instanceof IConnection) {
-            IProcess process = ((IConnection) elem).getSource().getProcess();
-            if (process instanceof IProcess2) {
-                ((IProcess2) process).checkProcess();
-            }
-        }
+        
+        checkProcess.startIfExecutable(elem);
 
         // See feature 3902
         if (needUpdateMonitorConnection()) {
