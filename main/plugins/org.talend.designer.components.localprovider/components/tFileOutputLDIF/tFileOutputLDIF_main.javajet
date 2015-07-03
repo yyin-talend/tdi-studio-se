@@ -1,22 +1,23 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode
-		org.talend.core.model.process.ElementParameterParser  
-		org.talend.core.model.metadata.IMetadataTable
-		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.IConnectionCategory
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType
-		java.util.List
-		java.util.Map
-	"
+    imports="
+        org.talend.core.model.process.INode
+        org.talend.core.model.process.ElementParameterParser  
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.core.model.metadata.types.JavaTypesManager
+        org.talend.core.model.metadata.types.JavaType
+        java.util.List
+        java.util.Map
+    "
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+boolean willValidateDN = "true".equals(ElementParameterParser.getValue(node,"__VALIDATE_DISTINGUISHED_NAME__"));
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -24,254 +25,248 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = node.getUniqueName();
         String changetype = ElementParameterParser.getValue(node, "__CHANGETYPE__");
-        boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));		
+        boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));      
         String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
         
         List<Map<String, String>> multiValueColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MULTIVALUECOLUMNS__");
         List<Map<String, String>> modifyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MODIFYCONFIG__");
 %>
-		//////////////////////////
-		boolean encodingBase64_<%=cid%> = false;
+        //////////////////////////
+        boolean encodingBase64_<%=cid%> = false;
 <%
-    	List< ? extends IConnection> conns = node.getIncomingConnections();
-    	for (IConnection conn : conns) {
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    		
+        List<? extends IConnection> conns = node.getIncomingConnections();
+        for (IConnection conn : conns) {
+            if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {          
 %> 
-		StringBuilder sb_<%=cid %> = new StringBuilder();
-		boolean needSeparator_<%=cid %> = false;
-		boolean canOutput_<%=cid %> = false;				   		
-		boolean isPrintable_<%=cid %> = false;
-<%		
-    			boolean generateOneAlready = false; //only for Modify append the char '-'
-    			List<IMetadataColumn> columns = metadata.getListColumns();
-    			int sizeColumns = columns.size();
-    			boolean firstLoop = true;
-    			for (int i = 0; i < sizeColumns; i++) {    				
-    				IMetadataColumn column = columns.get(i);
-					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
+        StringBuilder sb_<%=cid %> = new StringBuilder();
+        boolean needSeparator_<%=cid %> = false;
+        boolean canOutput_<%=cid %> = false;                        
+        boolean isPrintable_<%=cid %> = false;
+<%      
+                boolean generateOneAlready = false; //only for Modify append the char '-'
+                List<IMetadataColumn> columns = metadata.getListColumns();
+                int sizeColumns = columns.size();
+                boolean firstLoop = true;
+                for (int i = 0; i < sizeColumns; i++) {                 
+                    IMetadataColumn column = columns.get(i);
+                    JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                    boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());                 
 %>
-		encodingBase64_<%=cid%> = false;
-		String value_<%=column.getLabel() %>_<%=cid %> = "";
-		<%//For bug TDI-26863
-		String modify_operation = null;
-		for(Map<String, String> line:modifyColumns){
-			String columnName = line.get("SCHEMA_COLUMN");				
-			if(column.getLabel().equals(columnName)){
-				modify_operation = line.get("OPERATION");
-				break;
-			}
-		}		
-		if(i > 1 && "modify".equals(changetype) && !("none".equals(modify_operation))) {
-		%>
-			if(needSeparator_<%=cid %>){
-				sb_<%=cid %>.append("-\n");
-				needSeparator_<%=cid %> = false;
-			} 
-		<%
-		}
-		%>
-<%					
-					if(!isPrimitive) {
-%>   				
-	    if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !("").equals(<%=conn.getName() %>.<%=column.getLabel() %>)) {
+        encodingBase64_<%=cid%> = false;
+        String value_<%=column.getLabel() %>_<%=cid %> = "";
+        <%//For bug TDI-26863
+        String modify_operation = null;
+        for(Map<String, String> line:modifyColumns){
+            String columnName = line.get("SCHEMA_COLUMN");              
+            if(column.getLabel().equals(columnName)){
+                modify_operation = line.get("OPERATION");
+                break;
+            }
+        }       
+        if(i > 1 && "modify".equals(changetype) && !("none".equals(modify_operation))) {
+        %>
+            if(needSeparator_<%=cid %>){
+                sb_<%=cid %>.append("-\n");
+                needSeparator_<%=cid %> = false;
+            } 
+        <%
+        }
+        %>
+<%                  
+                    if(!isPrimitive) {
+%>                  
+        if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !("").equals(<%=conn.getName() %>.<%=column.getLabel() %>)) {
 <%
 } 
 %>
-    	value_<%=column.getLabel() %>_<%=cid %> =  						
+        value_<%=column.getLabel() %>_<%=cid %> =                       
 <%
-    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+                    String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+                    if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
 %>
-		FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
-<%				
-					} else if(javaType == JavaTypesManager.STRING) {
+        FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
+<%              
+                    } else if(javaType == JavaTypesManager.STRING) {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %>;
+        <%=conn.getName() %>.<%=column.getLabel() %>;
 <%
-					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+                    } else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
-		String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>);
+        String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>);
 <%
-					} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+                    } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>
-		org.apache.commons.codec.binary.Base64.encodeBase64String(<%=conn.getName() %>.<%=column.getLabel() %>);
+        org.apache.commons.codec.binary.Base64.encodeBase64String(<%=conn.getName() %>.<%=column.getLabel() %>);
 <%
-					} else {
+                    } else {
 %>
-		String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
+        String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
 <%
-					}
+                    }
 %>
 <% 
-	if(i==0) {
-%>		
-		util_<%=cid %>.breakString(sb_<%=cid %>, dn_<%=cid %> + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-<%if(!"none".equals(changetype)){%>		
+    if(i==0) {
+%>      
+        util_<%=cid %>.breakString(sb_<%=cid %>, dn_<%=cid %> + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%if(!"none".equals(changetype)){%>     
         util_<%=cid %>.breakString(sb_<%=cid %>, changetype_<%=cid %> + "<%=changetype %>", wrap_<%=cid %>);
 <%}%>
 
 <%if("delete".equals(changetype)){%>
-	canOutput_<%=cid %> = true;        
+    canOutput_<%=cid %> = true;        
 <%}%> 
 
 <%
-	if(!isPrimitive) {
+    if(!isPrimitive) {
 %>
-	    }
-<%					
-	} 
+        }
+<%                  
+    } 
 %>   
 <%
-	continue;
+    continue;
  } 
-%>						
+%>                      
 <% if ("delete".equals(changetype)) {
-	if(firstLoop){
-	%>
+    if(firstLoop){
+    %>
 <%
-	if(!isPrimitive) {
+    if(!isPrimitive) {
 %>
-	    }
-<%					
-	} 
-%> 		
-	<%	
-	}
-	firstLoop = false; 
-	break; 
+        }
+<%                  
+    } 
+%>      
+    <%  
+    }
+    firstLoop = false; 
+    break; 
 } %>
 <% if ("modify".equals(changetype)) {
-		String operation = null;
-		boolean isMultiValue = false;   
-		String separator = null;
-		boolean isBinary = false;
-		boolean isBase64 = false;
-		for(Map<String, String> line:modifyColumns){// search in the configuration table
-				String columnName = line.get("SCHEMA_COLUMN");				
-				if(column.getLabel().equals(columnName)){
-					operation = line.get("OPERATION");					
-					isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
-					separator = line.get("SEPARATOR");
-					isBinary = "true".equals(line.get("BINARY"));
-					isBase64 = "true".equals(line.get("BASE64"));
-					// Binary content --> always Base64 encoded
-					// Explicit base64 encoding : base64 checkbox checked for this column
-					if(isBinary && !isBase64){
+        String operation = null;
+        boolean isMultiValue = false;   
+        String separator = null;
+        boolean isBinary = false;
+        boolean isBase64 = false;
+        for(Map<String, String> line:modifyColumns){// search in the configuration table
+                String columnName = line.get("SCHEMA_COLUMN");              
+                if(column.getLabel().equals(columnName)){
+                    operation = line.get("OPERATION");                  
+                    isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
+                    separator = line.get("SEPARATOR");
+                    isBinary = "true".equals(line.get("BINARY"));
+                    isBase64 = "true".equals(line.get("BASE64"));
+                    // Binary content --> always Base64 encoded
+                    // Explicit base64 encoding : base64 checkbox checked for this column
+                    if(isBinary && !isBase64){
 %>
 //////////////////////////////////////////////////
 Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 //////////////////////////////////////////////////
 <%
-					}
-					if(isBinary || isBase64){
-						%>
-						// Convert binary or Base64 value to Base64 encoded string				
-						encodingBase64_<%=cid%> = true;
-						<%	
-					}
-					break;
-				}
-		}	
+                    }
+                    if(isBinary || isBase64){
+                        %>
+                        // Convert binary or Base64 value to Base64 encoded string              
+                        encodingBase64_<%=cid%> = true;
+                        <%  
+                    }
+                    break;
+                }
+        }   
 %>
 
 <%if(!"none".equals(operation)){%>
-	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=operation %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
-	<%if(isMultiValue){%>		
-		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
-		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
-			// follow LDIF rules or not
+    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=operation %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
+    <%if(isMultiValue){%>       
+        String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
+        for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
+            // follow LDIF rules or not
+            <%
+               if(willValidateDN){
+                    %>
+                       isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(item_<%=cid %>));
+                    <%
+               }else{
+                    %>
             isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>));
-			<%
-			// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
-			if(!isBinary && !isBase64){
-				%>
-				// If content doesn't follow LDIF rules, it must be base64 encoded
-				if(!isPrintable_<%=cid %>){
-					encodingBase64_<%=cid%> = true;
-				}
-				else{
-					encodingBase64_<%=cid%> = false;
-				}
-				<%
-			}
-			%>
-			// Add ":" to comply with base64 ldif syntax
-				item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,item_<%=cid %>,<%=encoding%>);
+            <%
+               }
+            // Not binary and no explicit base64 encoding --> check if base 64 encoding needed
+            if(!isBinary && !isBase64){
+                %>
+                // If content doesn't follow LDIF rules, it must be base64 encoded
+                if(!isPrintable_<%=cid %>){
+                    encodingBase64_<%=cid%> = true;
+                }
+                else{
+                    encodingBase64_<%=cid%> = false;
+                }
+                <%
+            }
+            %>
+                item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,item_<%=cid %>,<%=encoding%>);
 <%
-			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            List<IMetadataColumn> columns_sub = metadata.getListColumns();
             for (int j = 0; j < columns_sub.size(); j++) {
                 IMetadataColumn column_sub = columns_sub.get(j);
                 JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
                 if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
 %>
-				    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + item_<%=cid %>, wrap_<%=cid %>);
+                       util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary:<%}%>" + item_<%=cid %>, wrap_<%=cid %>);
 <%
                 }else if(column_sub.getLabel().equals(column.getLabel())){
-					if(isBase64){
-%>
-						if(!isPrintable_<%=cid %>){
-							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
-						}else{
-							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
-	               		}
-<%
-					}else{
-%>
-                    	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
-<%
-				   }
+                    %>
+                       util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>" + item_<%=cid %>, wrap_<%=cid %>);
+                    <%
                 }
             }
 %>
-		}
-<%			
-	}else{
+        }
+<%          
+    }else{
 %>
-		// follow LDIF rules or not
+        // follow LDIF rules or not
+        <%
+           if(willValidateDN){
+                %>
+                   isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(value_<%=column.getLabel() %>_<%=cid %>));
+                <%
+           }else{
+                %>
         isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>));
 <%
-		// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
-		if(!isBinary && !isBase64){
+           }
+        // Not binary and no explicit base64 encoding --> check if base 64 encoding needed
+        if(!isBinary && !isBase64){
 %>
-			// If content doesn't follow LDIF rules, it must be base64 encoded
-			if(!isPrintable_<%=cid %>){
-				encodingBase64_<%=cid%> = true;
-			}
-			<%
-		}
-		%>
-		// Add ":" to comply with base64 ldif syntax
-			value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
+            // If content doesn't follow LDIF rules, it must be base64 encoded
+            if(!isPrintable_<%=cid %>){
+                encodingBase64_<%=cid%> = true;
+            }
+            <%
+        }
+        %>
+            value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
 <%
-			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            List<IMetadataColumn> columns_sub = metadata.getListColumns();
             for (int j = 0; j < columns_sub.size(); j++) {
                 IMetadataColumn column_sub = columns_sub.get(j);
                 JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
                 if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
 %>
-                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary:<%}%>" + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 <%
                 }else if(column_sub.getLabel().equals(column.getLabel())){
-					if(isBase64){
 %>
-						if(!isPrintable_<%=cid %>){
-							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-						}else{
-							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-	               		}
+                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>" + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 <%
-					}else{
-%>
-	                   util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-<%
-					}
                 }
             }
-	}
+    }
 %>
-	needSeparator_<%=cid %> = true;
-	canOutput_<%=cid %> = true;   	
+    needSeparator_<%=cid %> = true;
+    canOutput_<%=cid %> = true;     
 <%}
   if(i==sizeColumns - 1){
 %>
@@ -280,19 +275,19 @@ sb_<%=cid %>.append("-\n");
 }// here end the if modify
 %>
 <% if ("add".equals(changetype) || "none".equals(changetype)) {   
-		boolean isMultiValue = false;
-		String separator = null;
-		boolean isBinary = false;
-		boolean isBase64 = false;
-		for(Map<String, String> line:multiValueColumns){// search in the configuration table
-				String columnName = line.get("SCHEMA_COLUMN");				
-				if(column.getLabel().equals(columnName)){
-					isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
-					separator = line.get("SEPARATOR");
-					isBinary = "true".equals(line.get("BINARY"));
-					isBase64 = "true".equals(line.get("BASE64"));
-					// Binary content --> always Base64 encoded
-					// Explicit base64 encoding : base64 checkbox checked for this column
+        boolean isMultiValue = false;
+        String separator = null;
+        boolean isBinary = false;
+        boolean isBase64 = false;
+        for(Map<String, String> line:multiValueColumns){// search in the configuration table
+                String columnName = line.get("SCHEMA_COLUMN");              
+                if(column.getLabel().equals(columnName)){
+                    isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
+                    separator = line.get("SEPARATOR");
+                    isBinary = "true".equals(line.get("BINARY"));
+                    isBase64 = "true".equals(line.get("BASE64"));
+                    // Binary content --> always Base64 encoded
+                    // Explicit base64 encoding : base64 checkbox checked for this column
                     if(isBinary && !isBase64){
 %>
 //////////////////////////////////////////////////
@@ -300,150 +295,144 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 //////////////////////////////////////////////////
 <%
                     }
-					if(isBinary || isBase64){
-						%>
-						// Convert binary or Base64 value to Base64 encoded string				
-						encodingBase64_<%=cid%> = true;
-						<%	
-					}
-					break;
-				}
-		}
+                    if(isBinary || isBase64){
+                        %>
+                        // Convert binary or Base64 value to Base64 encoded string              
+                        encodingBase64_<%=cid%> = true;
+                        <%  
+                    }
+                    break;
+                }
+        }
 %>
-	<%if(isMultiValue){%>
-		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
-		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
-		        //follow LDIF rules or not
+    <%if(isMultiValue){%>
+        String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
+        for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
+                //follow LDIF rules or not
+                <%
+                   if(willValidateDN){
+                        %>
+                           isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(item_<%=cid %>));
+                        <%
+                   }else{
+                        %>
                 isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>));     
-				<%
-				// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
-				if(!isBinary && !isBase64){
-					%>
-					// If content doesn't follow LDIF rules, it must be base64 encoded
-					if(!isPrintable_<%=cid %>){
-						encodingBase64_<%=cid%> = true;
-					}
-					else{
-						encodingBase64_<%=cid%> = false;
-					}
-					<%
-				}
-				%>
-				// Add ":" to comply with base64 ldif syntax
-	                item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,item_<%=cid %>,<%=encoding%>);
+                <%
+                   }
+                // Not binary and no explicit base64 encoding --> check if base 64 encoding needed
+                if(!isBinary && !isBase64){
+                    %>
+                    // If content doesn't follow LDIF rules, it must be base64 encoded
+                    if(!isPrintable_<%=cid %>){
+                        encodingBase64_<%=cid%> = true;
+                    }
+                    else{
+                        encodingBase64_<%=cid%> = false;
+                    }
+                    <%
+                }
+                %>
+                    item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,item_<%=cid %>,<%=encoding%>);
 <%
-    			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+                List<IMetadataColumn> columns_sub = metadata.getListColumns();
                 for (int j = 0; j < columns_sub.size(); j++) {
                     IMetadataColumn column_sub = columns_sub.get(j);
                     JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
                     if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
 %>
-						util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + item_<%=cid %>, wrap_<%=cid %>);
+                        util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary:<%}%>" + item_<%=cid %>, wrap_<%=cid %>);
 <%
                     }else if(column_sub.getLabel().equals(column.getLabel())){
-    					if(isBase64){
 %>
-    						if(!isPrintable_<%=cid %>){
-    							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
-    						}else{
-    							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
-    	               		}
+                        util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>" + item_<%=cid %>, wrap_<%=cid %>);
 <%
-					   }else{
-%>
-	                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
-<%
-					   }
                     }
-			     }
+                 }
 %>
-		}
+        }
 <%
-	}else{
+    }else{
 %>
                 // follow LDIF rules or not
+                <%
+                   if(willValidateDN){
+                        %>
+                           isPrintable_<%=cid %> = !(util_<%=cid %>.needEncodeBase64(value_<%=column.getLabel() %>_<%=cid %>));
+                        <%
+                   }else{
+                        %>
                 isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>)); 
 <%
-				// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
-				if(!isBinary && !isBase64){
+                   }
+                // Not binary and no explicit base64 encoding --> check if base 64 encoding needed
+                if(!isBinary && !isBase64){
 %>
-					// If content doesn't follow LDIF rules, it must be base64 encoded
-					if(!isPrintable_<%=cid %>){
-						encodingBase64_<%=cid%> = true;
-					}
-				<%
-				}
-			%>
-			// Add ":" to comply with base64 ldif syntax
-				value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
+                    // If content doesn't follow LDIF rules, it must be base64 encoded
+                    if(!isPrintable_<%=cid %>){
+                        encodingBase64_<%=cid%> = true;
+                    }
+                <%
+                }
+            %>
+                value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
 <%
-			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            List<IMetadataColumn> columns_sub = metadata.getListColumns();
             for (int j = 0; j < columns_sub.size(); j++) {
                 IMetadataColumn column_sub = columns_sub.get(j);
                 JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
                 if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
 %>
-                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary:<%}%>" + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 <%
                 }else if(column_sub.getLabel().equals(column.getLabel())){
-					if(isBase64){
 %>
-						if(!isPrintable_<%=cid %>){
-							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-						}else{
-							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-	               		}
+                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>" + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 <%
-					}else{
-%>
-	                   util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-<%
-					}
                 }
             }
-	}
+    }
 %>
-		canOutput_<%=cid %> = true;
+        canOutput_<%=cid %> = true;
 <%
 }// here end the if add
 %>
 <% if ("modrdn".equals(changetype)) {
 %>
-		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-		canOutput_<%=cid %> = true;
+        util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+        canOutput_<%=cid %> = true;
 <%
 }// here end the if modrdn
 %>
 
 <%
-	if(!isPrimitive) {
+    if(!isPrimitive) {
 %>
-	    }
-<%					
-	} 
-%>   				
+        }
+<%                  
+    } 
+%>                  
 <% 
 }//here end the last for, the List "columns"
-%>						
-		sb_<%=cid %>.append('\n');		
-		
-	if(canOutput_<%=cid %>){		
-		pw_<%=cid %>.write(sb_<%=cid %>.toString());
-		<% if(flushOnRow) { %>
-            if(nb_line_<%=cid %>%<%=flushMod %> == 0) {		
-    		pw_<%=cid %>.flush();
-    		}
-		<%
-			}
-		%> 		
-		
-    	nb_line_<%=cid %>++;
-    }	
+%>                      
+        sb_<%=cid %>.append('\n');      
+        
+    if(canOutput_<%=cid %>){        
+        pw_<%=cid %>.write(sb_<%=cid %>.toString());
+        <% if(flushOnRow) { %>
+            if(nb_line_<%=cid %>%<%=flushMod %> == 0) {     
+            pw_<%=cid %>.flush();
+            }
+        <%
+            }
+        %>      
+        
+        nb_line_<%=cid %>++;
+    }   
 <%
-	}
+    }
 }//here end the first for, the List "conns"
-%>    	
-    	//////////////////////////
+%>      
+        //////////////////////////
 <%
   }
 }  
