@@ -50,7 +50,7 @@
 %>
 			command_<%=cid%>[<%=command_array_index++%>] = <%=map.get("VALUE")%>;
 			<%if(isLog4jEnabled){%>
-				if(<%=map.get("VALUE")%>.contains(" "))
+				if((<%=map.get("VALUE")%>).contains(" "))
 					commandArrayForLog_<%=cid%>+="\"" + <%=map.get("VALUE")%> + "\" ";
 				else
 					commandArrayForLog_<%=cid%>+=<%=map.get("VALUE")%> + " ";
