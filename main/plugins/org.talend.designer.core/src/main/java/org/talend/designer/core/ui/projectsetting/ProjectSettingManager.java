@@ -59,6 +59,7 @@ import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -176,24 +177,37 @@ public class ProjectSettingManager extends Utils {
     }
 
     public static void reloadStatsAndLogFromProjectSettings(Element process, Project pro, StatsAndLogsComposite statsComposite) {
-        createStatsAndLogsElement(pro);
+        Element elem = createStatsAndLogsElement(pro);
         ParametersType stats = pro.getEmfProject().getStatAndLogsSettings().getParameters();
         ElementParameterType eleType = ElementParameter2ParameterType.findElementParameterType(stats,
-                EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()); //$NON-NLS-1$
         if (eleType != null) {
             String value = eleType.getValue();
-            IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(value);
-            if (lastVersion != null && lastVersion.getProperty() != null) {
-                Item item = lastVersion.getProperty().getItem();
-                if (item != null) {
-                    // load the project settings to process
-                    ElementParameter2ParameterType.loadElementParameters(process, stats, EParameterName.PROPERTY_TYPE.getName()
-                            + ":" + EParameterName.PROPERTY_TYPE.getName());
-                    // change repository item
-                    // TODO
-                    // StatsAndLogsHelper.changeRepositoryConnection(process, statsComposite);
+            if (value != null && !"".equals(value) && !RepositoryNode.NO_ID.equals(value)) { //$NON-NLS-1$
+                ElementParameterType propertyType = ElementParameter2ParameterType.findElementParameterType(stats,
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()); //$NON-NLS-1$
+                if (propertyType != null) {
+                    String propertyTypeValue = propertyType.getValue();
+                    if (propertyTypeValue != null && !"".equals(propertyTypeValue)//$NON-NLS-1$
+                            && !EmfComponent.BUILTIN.equals(propertyTypeValue)) {
+                        IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(value);
+                        if (lastVersion == null || lastVersion.getProperty() == null
+                                || lastVersion.getProperty().getItem() == null) {
+                            ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem, null,
+                                    EParameterName.PROPERTY_TYPE.getName() + ":" //$NON-NLS-1$
+                                            + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                            changeValuesFromRepository.execute();
+                            saveStatsAndLogToProjectSettings(elem, pro);
+                        }
+                    }
                 }
             }
+            // load the project settings to process
+            ElementParameter2ParameterType.loadElementParameters(process, stats, EParameterName.PROPERTY_TYPE.getName() + ":" //$NON-NLS-1$
+                    + EParameterName.PROPERTY_TYPE.getName());
+            // change repository item
+            // TODO
+            // StatsAndLogsHelper.changeRepositoryConnection(process, statsComposite);
         }
     }
 
