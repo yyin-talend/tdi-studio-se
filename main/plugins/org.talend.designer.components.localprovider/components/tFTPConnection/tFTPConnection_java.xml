@@ -155,6 +155,15 @@
      	<ITEM NAME="EXPLICIT"  VALUE="EXPLICIT" />
       </ITEMS>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="USE_ENCODING"
+      FIELD="CHECK"
+      NUM_ROW="105"
+      REPOSITORY_VALUE="USE_ENCODING"
+      REQUIRED="true" SHOW_IF="SFTP == 'true'">
+       <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="ENCODING"
@@ -165,13 +174,6 @@
        <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="USE_ENCODING"
-      FIELD="CHECK"
-      NUM_ROW="105"
-      REQUIRED="true" SHOW_IF="SFTP == 'true'">
-       <DEFAULT>false</DEFAULT>
-    </PARAMETER>
    </PARAMETERS>
 
 	<ADVANCED_PARAMETERS>
