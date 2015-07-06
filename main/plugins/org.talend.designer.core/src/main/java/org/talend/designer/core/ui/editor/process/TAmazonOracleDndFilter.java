@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.process;
 
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -21,6 +22,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.DefaultRepositoryComponentDndFilter;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.metadata.managment.utils.MetadataConnectionUtils;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -35,27 +37,43 @@ public class TAmazonOracleDndFilter extends DefaultRepositoryComponentDndFilter 
     @Override
     public boolean except(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
             String repositoryType) {
-        // for tAmazonOracleInput/Output/Connection/Row
-        if (component != null && component.getName().startsWith("tAmazonOracle")) { //$NON-NLS-1$
-            String dbType = null;
-            if (item != null && item instanceof DatabaseConnectionItem) {
-                if (((DatabaseConnectionItem) item).getConnection() instanceof DatabaseConnection)
-                    dbType = ((DatabaseConnection) ((DatabaseConnectionItem) item).getConnection()).getDatabaseType();
-            }
-            Node node = new Node(component);
-            if (node != null) {
-                IElementParameter param = node.getElementParameter("CONNECTION_TYPE");
-                if (param != null) {
-                    Object[] valuesList = param.getListItemsValue();
-                    for (int i = 0; i < valuesList.length; i++) {
-                        String conType = EDatabaseTypeName.getTypeFromDbType(valuesList[i].toString()).getDisplayName();
-                        if (conType != null && dbType != null && conType.equals(dbType)) {
-                            return false;
+        if (component != null) {
+            // for tAmazonOracleInput/Output/Connection/Row
+            if (component.getName().startsWith("tAmazonOracle")) { //$NON-NLS-1$
+                String dbType = null;
+                if (item != null && item instanceof DatabaseConnectionItem) {
+                    if (((DatabaseConnectionItem) item).getConnection() instanceof DatabaseConnection) {
+                        dbType = ((DatabaseConnection) ((DatabaseConnectionItem) item).getConnection()).getDatabaseType();
+                    }
+                }
+                Node node = new Node(component);
+                if (node != null) {
+                    IElementParameter param = node.getElementParameter("CONNECTION_TYPE");//$NON-NLS-1$
+                    if (param != null) {
+                        Object[] valuesList = param.getListItemsValue();
+                        for (Object element : valuesList) {
+                            String conType = EDatabaseTypeName.getTypeFromDbType(element.toString()).getDisplayName();
+                            if (conType != null && dbType != null && conType.equals(dbType)) {
+                                return false;
+                            }
                         }
                     }
                 }
+                return true;
+            } else if (("tOracleCDCOutput").equals(component.getName())) { //$NON-NLS-1$
+                if (item != null && item instanceof DatabaseConnectionItem) {
+                    if (((DatabaseConnectionItem) item).getConnection() instanceof DatabaseConnection) {
+                        DatabaseConnection connection = ((DatabaseConnection) ((DatabaseConnectionItem) item).getConnection());
+                        if (MetadataConnectionUtils.isOracle(connection)) {
+                            String version = connection.getDbVersionString();
+                            if (EDatabaseVersion4Drivers.ORACLE_12.name().equals(version)) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }
