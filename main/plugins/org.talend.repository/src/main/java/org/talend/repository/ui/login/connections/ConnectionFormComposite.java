@@ -412,21 +412,23 @@ public class ConnectionFormComposite extends Composite {
                 passwordText.getParent().layout();
             }
         } else {
-            if (getRepository().getName().equals("Remote")) {
-                passwordText.setEnabled(true);
-                passwordText.setEditable(true);
-                passwordText.setBackground(LoginDialogV2.WHITE_COLOR);
-                hideControl(passwordText, false, false);
-                hideControl(passwordLabel, false, false);
-            } else {
-                passwordText.setText(""); //$NON-NLS-1$
-                passwordText.setEnabled(false);
-                passwordText.setEditable(false);
-                passwordText.setBackground(LoginDialogV2.GREY_COLOR);
-                hideControl(passwordText, true, false);
-                hideControl(passwordLabel, true, false);
+            if (getRepository() != null) {
+                if (getRepository().getName().equals("Remote")) {
+                    passwordText.setEnabled(true);
+                    passwordText.setEditable(true);
+                    passwordText.setBackground(LoginDialogV2.WHITE_COLOR);
+                    hideControl(passwordText, false, false);
+                    hideControl(passwordLabel, false, false);
+                } else {
+                    passwordText.setText(""); //$NON-NLS-1$
+                    passwordText.setEnabled(false);
+                    passwordText.setEditable(false);
+                    passwordText.setBackground(LoginDialogV2.GREY_COLOR);
+                    hideControl(passwordText, true, false);
+                    hideControl(passwordLabel, true, false);
+                }
+                passwordText.getParent().layout();
             }
-            passwordText.getParent().layout();
         }
     }
 
