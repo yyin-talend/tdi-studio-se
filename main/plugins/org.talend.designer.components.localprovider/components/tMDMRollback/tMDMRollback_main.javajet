@@ -3,6 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.utils.NodeUtil
 " 
 %>
 
@@ -19,19 +20,50 @@ imports="
 	String mdmTransaction = "mdmTransaction_" + connection;
 
 	String conn = "";
+	
+	boolean useClientTransactionId = false;
+	INode connectionNode = null;
 %>
 
 	<%conn = "TMDMService_" + connection;%>
-
-    org.talend.mdm.webservice.TMDMService_PortType conn_<%=cid%> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("<%=conn%>");
-
+	
+	  org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
+	  org.talend.mdm.webservice.TMDMService_PortType conn_<%=cid %> = null;
+  	  String globalMdmURL_<%=cid%> = (String) globalMap.get("mdmURL_<%=connection%>");
+  	  String globalMdmUsername_<%=cid%> = (String) globalMap.get("mdmUsername_<%=connection%>");
+ 	  String globalMdmPassword_<%=cid%> = (String) globalMap.get("mdmPassword_<%=connection%>");
+ 	  if(null != globalMdmURL_<%=cid%> && null != globalMdmUsername_<%=cid%> && null != globalMdmPassword_<%=cid%>){
+  		  tmdmService_<%=cid %>.setTMDMPortEndpointAddress(globalMdmURL_<%=cid%>);
+		  conn_<%=cid %> = tmdmService_<%=cid %>.getTMDMPort();    
+		  ((org.talend.mdm.webservice.TMDMServiceSoapBindingStub)conn_<%=cid %>).setUsername(globalMdmUsername_<%=cid%>);
+		  ((org.talend.mdm.webservice.TMDMServiceSoapBindingStub)conn_<%=cid %>).setPassword(globalMdmPassword_<%=cid%>);
+  	  }
+	
     if(conn_<%=cid%> != null)
     {
-    	com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = (com.talend.mdm.transaction.client.MDMTransaction)globalMap.get("<%=mdmTransaction%>");
-    	if(mdmTransaction_<%=cid%>!=null) {
-    		mdmTransaction_<%=cid%>.rollback();
-    	}
-    <%  if(close){%>
+    <% 
+  	   connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),connection,false);
+	   if(null != connectionNode){ 
+    		useClientTransactionId = "true".equals(ElementParameterParser.getValue(connectionNode, "__GEN_TRANSACTION_ID__"));
+			if(useClientTransactionId){ 
+	 %>
+			   com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = null;
+				java.util.Map threadRunResultMap_<%=cid%> = threadLocal.get();
+				if(threadRunResultMap_<%=cid%>.get("mdmTransaction")!=null){
+					mdmTransaction_<%=cid%> = (com.talend.mdm.transaction.client.MDMTransaction)threadRunResultMap_<%=cid%>.get("mdmTransaction");
+				}
+				if(mdmTransaction_<%=cid%>!=null) {
+    				mdmTransaction_<%=cid%>.rollback();
+    				threadRunResultMap_<%=cid%>.remove("mdmTransaction");
+					threadLocal.set(threadRunResultMap_<%=cid%>);
+    			}
+    	 <%}else{%>
+    	 		com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = (com.talend.mdm.transaction.client.MDMTransaction)globalMap.get("<%=mdmTransaction%>");
+    			if(mdmTransaction_<%=cid%>!=null) {
+    				mdmTransaction_<%=cid%>.rollback();
+    			}
+    	 <%}
+  	  } if(close){%>
         conn_<%=cid%>.logout(new org.talend.mdm.webservice.WSLogout());
     <% }%>
     }

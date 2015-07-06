@@ -147,9 +147,9 @@
 
     private boolean execStat = true;
 
-    private ThreadLocal<java.util.Map<String, String>> threadLocal = new ThreadLocal<java.util.Map<String, String>>() {
-        protected java.util.Map<String, String> initialValue() {
-            java.util.Map<String,String> threadRunResultMap = new java.util.HashMap<String, String>();
+    private ThreadLocal<java.util.Map<String, Object>> threadLocal = new ThreadLocal<java.util.Map<String, Object>>() {
+        protected java.util.Map<String, Object> initialValue() {
+            java.util.Map<String,Object> threadRunResultMap = new java.util.HashMap<String, Object>();
             threadRunResultMap.put("errorCode", null);
             threadRunResultMap.put("status", "");
             return threadRunResultMap;

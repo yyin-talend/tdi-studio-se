@@ -5,7 +5,6 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
-	
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -37,27 +36,19 @@ stub_<%=cid %>.setPassword(decryptedPassword_<%=cid%>);
 
 <%if(useTransaction) {%>
 	String turl_<%=cid%> = com.talend.mdm.transaction.client.MDMTransactionClient.getMDMTransactionURL(<%=mdmUrl %>, true);
-com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = null;
+	com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = null;
 <%
-if(useClientTranId){
+	if(!useClientTranId){
 %>
-	mdmTransaction_<%=cid%> = new com.talend.mdm.transaction.client.MDMTransaction();
-	mdmTransaction_<%=cid%>.setUrl(turl_<%=cid%>);
-	String clientTranId_<%=cid%> = "<%=cid%>"+java.util.UUID.randomUUID()+Thread.currentThread().getId();
-	mdmTransaction_<%=cid%>.setId(clientTranId_<%=cid%>);
-	mdmTransaction_<%=cid%>.setUsername(stub_<%=cid %>.getUsername());
-	mdmTransaction_<%=cid%>.setPassword(stub_<%=cid %>.getPassword());
+		mdmTransaction_<%=cid%> = com.talend.mdm.transaction.client.MDMTransactionClient.newTransaction(turl_<%=cid%>,stub_<%=cid %>.getUsername(),stub_<%=cid %>.getPassword());
+		stub_<%=cid %>.setHeader(new org.apache.axis.message.SOAPHeaderElement("http://www.talend.com/mdm", "transaction-id", mdmTransaction_<%=cid%>.getId()));
+		globalMap.put("mdmTransaction_<%=cid %>", mdmTransaction_<%=cid%>);
 <%
-}else{
-%>
-	mdmTransaction_<%=cid%> = com.talend.mdm.transaction.client.MDMTransactionClient.newTransaction(turl_<%=cid%>,stub_<%=cid %>.getUsername(),stub_<%=cid %>.getPassword());
-<%
-}
-%>
-stub_<%=cid %>.setHeader(new org.apache.axis.message.SOAPHeaderElement("http://www.talend.com/mdm", "transaction-id", mdmTransaction_<%=cid%>.getId()));
-globalMap.put("mdmTransaction_<%=cid %>", mdmTransaction_<%=cid%>);
-<%}%>
-
-    stub_<%=cid %>.ping(new org.talend.mdm.webservice.WSPing());<%//For TDI-26109%>
-    
-    globalMap.put("TMDMService_<%=cid %>", tmdmWS_<%=cid %>);
+	}
+}%>
+    //stub_<%=cid %>.ping(new org.talend.mdm.webservice.WSPing());<%//For TDI-26109%>
+    //globalMap.put("TMDMService_<%=cid %>", tmdmWS_<%=cid %>);
+    //globalMap.put("TMDMService_<%=cid %>", tmdmService_<%=cid %>);
+    globalMap.put("mdmURL_<%=cid %>", <%=mdmUrl %>);
+    globalMap.put("mdmUsername_<%=cid %>", stub_<%=cid %>.getUsername());
+    globalMap.put("mdmPassword_<%=cid %>", stub_<%=cid %>.getPassword());

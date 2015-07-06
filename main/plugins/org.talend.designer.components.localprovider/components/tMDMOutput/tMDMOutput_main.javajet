@@ -8,6 +8,7 @@
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.process.EConnectionType
+    org.talend.core.model.utils.NodeUtil
     java.util.List
     java.util.Map
   "
@@ -18,6 +19,9 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
+
+boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 
 String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
@@ -44,10 +48,27 @@ String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
 
 String doc = ElementParameterParser.getValue(node, "__DOCUMENT__");
 
+boolean useClientTransactionId = false;
+INode connectionNode = null;
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 
 if (destination != null && !"".equals(destination)) {
   cid = destination;
+}
+
+if (useExistingConn){
+	connectionNode = NodeUtil.getNodeByUniqueName(node.getProcess(),connection,false);
+	if(null != connectionNode){ 
+    	useClientTransactionId = "true".equals(ElementParameterParser.getValue(connectionNode, "__GEN_TRANSACTION_ID__"));
+		if(useClientTransactionId){ 
+%>
+			if(mdmTransaction_<%=cid%>!=null){
+				((org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>).setHeader(new org.apache.axis.message.SOAPHeaderElement("http://www.talend.com/mdm", "transaction-id", mdmTransaction_<%=cid%>.getId()));
+			}
+<%
+		}
+	}
 }
 
 if (metadatas != null && metadatas.size()>0) { 
