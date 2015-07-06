@@ -598,7 +598,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
      */
     @Override
     public void addRepositoryTreeViewListener(ISelectionChangedListener listener) {
-        IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
+        IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
         if (repositoryView != null) {
             StructuredViewer treeViewer = repositoryView.getViewer();
             if (treeViewer != null) {
@@ -617,7 +617,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
      */
     @Override
     public void removeRepositoryTreeViewListener(ISelectionChangedListener listener) {
-        IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
+        IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
         if (repositoryView != null) {
             StructuredViewer treeViewer = repositoryView.getViewer();
             if (treeViewer != null) {
