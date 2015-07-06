@@ -52,9 +52,9 @@
 #[[
         <property name="securityProps" >
             <map>
-                <entry key="ws-security.signature.properties" value="$saml{ws-security.signature.properties}" />
-                <entry key="ws-security.signature.username" value="$saml{ws-security.signature.username}" />
-                <entry key="ws-security.signature.password" value="$saml{ws-security.signature.password}" />
+                <entry key="security.signature.properties" value="$saml{security.signature.properties}" />
+                <entry key="security.signature.username" value="$saml{security.signature.username}" />
+                <entry key="security.signature.password" value="$saml{security.signature.password}" />
             </map>
         </property>
 ]]#
@@ -63,9 +63,9 @@
 #[[
         <property name="clientProperties">
             <map>
-                <entry key="ws-security.signature.properties" value="$client{ws-security.signature.properties}" />
-                <entry key="ws-security.signature.username" value="$client{ws-security.signature.username}" />
-                <entry key="ws-security.signature.password" value="$client{ws-security.signature.password}" />
+                <entry key="security.signature.properties" value="$client{security.signature.properties}" />
+                <entry key="security.signature.username" value="$client{security.signature.username}" />
+                <entry key="security.signature.password" value="$client{security.signature.password}" />
             </map>
         </property>
         <property name="stsProperties">
@@ -80,8 +80,8 @@
                 <entry key="ws-security.is-bsp-compliant" value="$sts{ws-security.is-bsp-compliant}" />
 
                 <entry key="ws-security.sts.token.properties" value="$sts{ws-security.sts.token.properties}" />
-                <entry key="ws-security.encryption.properties" value="$sts{ws-security.encryption.properties}" />
-                <entry key="ws-security.encryption.username" value="$sts{ws-security.encryption.username}" />
+                <entry key="security.encryption.properties" value="$sts{security.encryption.properties}" />
+                <entry key="security.encryption.username" value="$sts{security.encryption.username}" />
 
                 <entry key="sts.x509.wsdl.location" value="$sts{sts.x509.wsdl.location}" />
                 <entry key="sts.x509.endpoint.name" value="$sts{sts.x509.endpoint.name}" />
