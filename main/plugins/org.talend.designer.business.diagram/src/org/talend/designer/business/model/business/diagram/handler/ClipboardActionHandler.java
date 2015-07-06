@@ -38,6 +38,8 @@ import org.eclipse.gmf.runtime.notation.View;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.business.diagram.custom.commands.GmfPastCommand;
@@ -84,16 +86,24 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
             isCut = false;
             older = workbenchPart;
             orginalCopyFrom = workbenchPart;
-            clonedSourceProcessItemsList = new ArrayList<BusinessItem>(((BusinessProcess) ((Diagram) diagramEditPart.getModel())
-                    .getElement()).getBusinessItems());
+            clonedSourceProcessItemsList = new ArrayList<BusinessItem>(
+                    ((BusinessProcess) ((Diagram) diagramEditPart.getModel()).getElement()).getBusinessItems());
         } else if (actionId.equals(GlobalActionId.CUT) && cntxt.getSelection() != null) {
             saveCut(cntxt.getSelection());
             command = getCutCommand(cntxt, workbenchPart);
             transfer(cntxt.getSelection());
             isCut = true;
             older = workbenchPart;
-            clonedSourceProcessItemsList = new ArrayList<BusinessItem>(((BusinessProcess) ((Diagram) diagramEditPart.getModel())
-                    .getElement()).getBusinessItems());
+            clonedSourceProcessItemsList = new ArrayList<BusinessItem>(
+                    ((BusinessProcess) ((Diagram) diagramEditPart.getModel()).getElement()).getBusinessItems());
+        } else if (actionId.equals(GlobalActionId.SAVE)) {
+            if (workbenchPart instanceof IEditorPart) {
+                IEditorPart editorPart = (IEditorPart) workbenchPart;
+                if (editorPart.isDirty()) {
+                    IWorkbenchPage page = editorPart.getSite().getPage();
+                    page.saveEditor(editorPart, false);
+                }
+            }
         }
         if (actionId.equals(GlobalActionId.PASTE)) {
 
@@ -140,8 +150,9 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
                 // always keep the last one as the current selection.
                 older = workbenchPart;
 
-                GmfPastCommand pastBusiness = new GmfPastCommand((BusinessProcess) ((Diagram) diagramEditPart.getModel())
-                        .getElement(), list, diagramEditPart, this.cutItemIds, this.isCut | inEditors);
+                GmfPastCommand pastBusiness = new GmfPastCommand(
+                        (BusinessProcess) ((Diagram) diagramEditPart.getModel()).getElement(), list, diagramEditPart,
+                        this.cutItemIds, this.isCut | inEditors);
                 pastBusiness.setClonedSourceProcessItemsList(clonedSourceProcessItemsList);
                 try {
                     pastBusiness.execute(null, null);
