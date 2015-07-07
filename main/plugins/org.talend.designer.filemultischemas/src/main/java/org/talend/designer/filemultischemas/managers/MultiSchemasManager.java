@@ -546,7 +546,8 @@ public class MultiSchemasManager {
         for (Map<String, String> line : schemasValues) {
             String code = line.get(IMultiSchemaConstant.RECORD);
             if (code != null) {
-                code = TalendTextUtils.removeQuotes(code);
+                // code = MultiSchemasManager.removeQuotes(code);
+                code = TalendTextUtils.trimParameter(code);
                 SchemasKeyData data = new SchemasKeyData(code);
                 final String schemaName = line.get(IMultiSchemaConstant.SCHEMA);
                 if (schemaName != null) {
