@@ -34,7 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -48,6 +48,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.process.IGraphicalNode;
 import org.talend.designer.core.ITestContainerGEFService;
@@ -386,10 +387,18 @@ public class NodesPasteCommand extends Command {
             IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName(),
                     process.getComponentsType());
             if (component == null) {
-                if ((ComponentCategory.CATEGORY_4_MAPREDUCE.getName()).equals(process.getComponentsType())) {
-                    component = new DummyComponent(copiedNode.getComponent().getName());
-                } else {
+                boolean isJobletInOutComponent = false;
+                if (PluginChecker.isJobLetPluginLoaded()) {
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null && service.isJobletInOutComponent(copiedNode)) {
+                        isJobletInOutComponent = true;
+                    }
+                }
+                if (isJobletInOutComponent) {
                     component = copiedNode.getComponent();
+                } else {
+                    component = new DummyComponent(copiedNode.getComponent().getName());
                 }
             }
             IGraphicalNode pastedNode = new Node(component, process);
