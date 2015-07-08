@@ -70,6 +70,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.hadoop.IOozieService;
 import org.talend.core.model.components.ComponentCategory;
@@ -620,7 +621,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         }
 
         IProcess process = editor.getProcess();
-        if (!ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
+        if (!ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())
+                && !ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())) {
             return;
         }
 
@@ -647,6 +649,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.title"), //$NON-NLS-1$
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.msg")); //$NON-NLS-1$
             if (confirmUpdate) {
+                // Update spark mode to YARN_CLIENT if repository
+                if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())) {
+                    IElementParameter sparkParam = process.getElementParameter(HadoopConstants.SPARK_MODE);
+                    if (sparkParam != null && !HadoopConstants.SPARK_MODE_YARN_CLIENT.equals(sparkParam.getValue())) {
+                        sparkParam.setValue(HadoopConstants.SPARK_MODE_YARN_CLIENT);
+                    }
+                }
                 propertyParam.setValue(EmfComponent.REPOSITORY);
                 ChangeValuesFromRepository command = new ChangeValuesFromRepository(process, connection,
                         propertyRepTypeParamName, subItem.getProperty().getId());
