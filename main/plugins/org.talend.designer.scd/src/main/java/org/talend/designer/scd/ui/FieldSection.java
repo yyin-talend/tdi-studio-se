@@ -28,14 +28,14 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -100,13 +100,14 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         table.setLayoutData(gd);
 
         TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
-        table.addPaintListener(new PaintListener() {
+        table.addListener(SWT.Resize, new Listener() {
 
-            public void paintControl(PaintEvent e) {
-                TableColumn[] columns = table.getColumns();
+			public void handleEvent(Event event) {
+				TableColumn[] columns = table.getColumns();
                 int clientWidth = table.getBounds().width;
-                columns[0].setWidth(clientWidth);
-            }
+                columns[0].setWidth(clientWidth);				
+			}
+
         });
 
         if (editable) {
