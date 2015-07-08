@@ -39,6 +39,8 @@ imports="
 %>       
 int nb_line_<%=cid %> = 0;
 int nb_line_rejected_<%=cid%> = 0;
+Boolean useClientTransactionId = false;
+com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid %> = null;
 <%if(!usePartialUpdate){%>
 	<%if(addTaskID){%>
 		class Util_<%=cid%>{
@@ -74,7 +76,6 @@ int nb_line_rejected_<%=cid%> = 0;
 		}
 	}
 }%>
-
 <%if(!useExistingConn){%>
 	org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
 	tmdmService_<%=cid %>.setTMDMPortEndpointAddress(<%=mdmUrl %>);
@@ -92,7 +93,37 @@ int nb_line_rejected_<%=cid%> = 0;
 	
 	stub_<%=cid %>.setPassword(decryptedPassword_<%=cid%>);
 <%}else{%>
+	org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
 	org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("<%=conn%>");
+	
+	useClientTransactionId = (Boolean)globalMap.get("useClientTransactionId_<%=connection%>");
+	String mdmConnection_username_<%=cid %>=null,mdmConnection_password_<%=cid %>=null,mdmConnection_url_<%=cid %>=null;
+	if(null != useClientTransactionId && useClientTransactionId){
+		java.util.Map threadRunResultMap = threadLocal.get();
+		if(threadRunResultMap.get("mdmTransaction")!=null){
+			mdmTransaction_<%=cid %> = (com.talend.mdm.transaction.client.MDMTransaction)threadRunResultMap.get("mdmTransaction");
+		}else{
+			mdmTransaction_<%=cid %> = new com.talend.mdm.transaction.client.MDMTransaction();
+			mdmConnection_username_<%=cid %> = (String) globalMap.get("mdmUsername_<%=connection%>");
+			mdmConnection_password_<%=cid %> = (String) globalMap.get("mdmPassword_<%=connection%>");
+			mdmConnection_url_<%=cid %> = (String) globalMap.get("mdmURL_<%=connection%>");
+			String finalURL = com.talend.mdm.transaction.client.MDMTransactionClient.getMDMTransactionURL(mdmConnection_url_<%=cid %>,true);
+			mdmTransaction_<%=cid %>.setUrl(finalURL);
+			String clientTranId = jobName + "_"+ java.util.UUID.randomUUID().toString() + Thread.currentThread().getId();
+			mdmTransaction_<%=cid %>.setId(clientTranId);
+			mdmTransaction_<%=cid %>.setUsername(mdmConnection_username_<%=cid %>);
+			mdmTransaction_<%=cid %>.setPassword(mdmConnection_password_<%=cid %>);
+			threadRunResultMap.put("mdmTransaction",mdmTransaction_<%=cid %>);
+			threadLocal.set(threadRunResultMap);
+		}
+		
+      if(null != mdmConnection_url_<%=cid %> && null != mdmConnection_username_<%=cid %> && null != mdmConnection_password_<%=cid %>){  
+  			tmdmService_<%=cid %>.setTMDMPortEndpointAddress(mdmConnection_url_<%=cid %>);
+			tmdmWS_<%=cid %> = tmdmService_<%=cid %>.getTMDMPort();    
+			((org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>).setUsername(mdmConnection_username_<%=cid %>);
+			((org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>).setPassword(mdmConnection_password_<%=cid %>);
+  	 }
+	}
 <%}%>
 
 org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %> + "<%=isStaging?"#STAGING":""%>");
@@ -114,6 +145,7 @@ if(startNode != null){
 IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
 if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){	
 %>
+   
 	java.util.Queue<String> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
 	<%
 	if(storeFlow){

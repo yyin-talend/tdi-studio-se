@@ -10,26 +10,6 @@ import org.apache.commons.httpclient.methods.PutMethod;
 
 public class MDMTransactionClient {
 	
-	public static void startTransaction(String url, String username, String password, String transactionId) throws IOException {
-		HttpClient client = new HttpClient();
-		client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-		
-		PutMethod put = new PutMethod(url);
-		put.setDoAuthentication(true);
-		put.addRequestHeader("transaction-id", transactionId);
-		System.out.println("**** client transactionId: "+transactionId);
-		try {
-			client.executeMethod(put);
-			System.out.println("*** headers: "+ put.getResponseHeaders().length);
-		} catch (HttpException e) {
-			throw e;
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			put.releaseConnection();
-		}
-	}
-	
 	public static MDMTransaction newTransaction(String url, String username, String password) throws IOException {
 		HttpClient client = new HttpClient();
 		client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));

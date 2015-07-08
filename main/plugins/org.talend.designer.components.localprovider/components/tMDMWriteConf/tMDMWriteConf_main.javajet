@@ -50,9 +50,17 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 
 if (destination != null && !"".equals(destination)) {
   cid = destination;
+} 
+%>
+
+if(null != useClientTransactionId && useClientTransactionId){
+	if(mdmTransaction_<%=cid%> != null){
+		((org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>).
+		setHeader(new org.apache.axis.message.SOAPHeaderElement("http://www.talend.com/mdm", "transaction-id", mdmTransaction_<%=cid%>.getId()));
+	}
 }
 
-if (metadatas != null && metadatas.size()>0) { 
+<%if (metadatas != null && metadatas.size()>0) { 
   IMetadataTable metadata = metadatas.get(0);
   if (metadata != null) { 
   
