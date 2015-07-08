@@ -361,25 +361,40 @@ public class ConnectionFormComposite extends Composite {
     }
 
     private void showHideTexts() {
-        if (connection != null) {
-            IRepositoryFactory factory = RepositoryFactoryProvider.getRepositoriyById(connection.getRepositoryId());
-            if (factory != null) {
-                boolean authenticationNeeded = factory.isAuthenticationNeeded();
-                if (authenticationNeeded) {
-                    passwordText.setEnabled(true);
-                    passwordText.setEditable(true);
-                    passwordText.setBackground(LoginComposite.WHITE_COLOR);
-                    hideControl(passwordText, false);
-                    hideControl(passwordLabel, false);
-                } else {
-                    passwordText.setText(""); //$NON-NLS-1$
-                    passwordText.setEnabled(false);
-                    passwordText.setEditable(false);
-                    passwordText.setBackground(LoginComposite.GREY_COLOR);
-                    hideControl(passwordText, true);
-                    hideControl(passwordLabel, true);
+        if (passwordText != null && !passwordText.isDisposed()) {
+            boolean enablePasswordField = false;
+            if (connection != null) {
+                IRepositoryFactory factory = RepositoryFactoryProvider.getRepositoriyById(connection.getRepositoryId());
+                if (factory != null && factory.isAuthenticationNeeded()) {
+                    enablePasswordField = true;
                 }
+            } else if (getRepository() != null && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(getRepository().getId())) {
+                enablePasswordField = true;
             }
+
+            if (enablePasswordField) {
+                passwordText.setBackground(LoginComposite.WHITE_COLOR);
+            } else {
+                passwordText.setText(""); //$NON-NLS-1$
+                passwordText.setBackground(LoginComposite.GREY_COLOR);
+            }
+            passwordText.setEnabled(enablePasswordField);
+            passwordText.setEditable(enablePasswordField);
+
+            hideControl(passwordText, !enablePasswordField, false);
+            hideControl(passwordLabel, !enablePasswordField, false);
+
+            passwordText.getParent().layout();
+
+        }
+    }
+
+    private void hideControl(Control control, boolean hide, boolean autoLayout) {
+        control.setVisible(!hide);
+        GridData layoutData = (GridData) control.getLayoutData();
+        layoutData.exclude = hide;
+        if (autoLayout) {
+            control.getParent().layout();
         }
     }
 
