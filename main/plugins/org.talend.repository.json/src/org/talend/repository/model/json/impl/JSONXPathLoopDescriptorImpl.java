@@ -171,7 +171,7 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
      */
     public JSONFileConnection getConnection() {
         if (eContainerFeatureID() != JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION) return null;
-        return (JSONFileConnection)eContainer();
+        return (JSONFileConnection)eInternalContainer();
     }
 
     /**

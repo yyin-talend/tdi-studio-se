@@ -14,6 +14,7 @@ package org.talend.repository.json.ui.wizards.extraction;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -21,8 +22,13 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.talend.commons.runtime.xml.XmlNodeRetriever;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.proposal.xpath.XPathContentProposal;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.AbstractTreePopulator;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonReadbyMode;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.JsonTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.JsonTreePopulator;
 import org.w3c.dom.Node;
 
 /**
@@ -45,6 +51,8 @@ public class JSONXPathProposalProvider implements IContentProposalProvider {
 
     private boolean isRelativeTable;
 
+    private String readbyMode;
+
     /**
      * Constructs a new ProcessProposalProvider.
      * 
@@ -55,6 +63,7 @@ public class JSONXPathProposalProvider implements IContentProposalProvider {
      */
     public JSONXPathProposalProvider(JSONToXPathLinker linker, boolean isRelative) {
         super();
+        this.readbyMode = EJsonReadbyMode.XPATH.getValue();
         this.linker = linker;
         this.isRelativeTable = isRelative;
     }
@@ -63,13 +72,83 @@ public class JSONXPathProposalProvider implements IContentProposalProvider {
 
     }
 
+    public void setReadbyMode(String readbyMode) {
+        this.readbyMode = readbyMode;
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.jface.fieldassist.IContentProposalProvider#getProposals(java.lang.String, int)
      */
+    @Override
     public IContentProposal[] getProposals(String contents, int position) {
+        if (EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode)) {
+            return getProposals4JsonPath(contents, position);
+        } else {
+            return getProposals4XPath(contents, position);
+        }
+    }
 
+    private IContentProposal[] getProposals4JsonPath(String contents, int position) {
+        AbstractTreePopulator treePopulator = linker.getTreePopulator();
+        if (!(treePopulator instanceof JsonTreePopulator)) {
+            return null;
+        }
+
+        XmlNodeRetriever nodeRetriever = linker.getNodeRetriever();
+        if (!(nodeRetriever instanceof JsonNodeRetriever)) {
+            return null;
+        }
+        JsonNodeRetriever jsonNodeRetriever = (JsonNodeRetriever) nodeRetriever;
+
+        String beforeCursorExp = null;
+        boolean isAbsoluteExpression = contents.trim().startsWith(linker.getRootSeperator());
+        beforeCursorExp = contents.substring(0, position);
+        int lastIndexFieldSeperator = beforeCursorExp.lastIndexOf(linker.getFieldSeperator());
+
+        String currentExpr = null;
+        if (0 <= lastIndexFieldSeperator) {
+            currentExpr = beforeCursorExp.substring(0, lastIndexFieldSeperator);
+        } else {
+            currentExpr = beforeCursorExp;
+        }
+
+        currentExpr = currentExpr.trim();
+        String currentWord = extractLastWord(beforeCursorExp);
+
+        if (!isAbsoluteExpression && lastIndexFieldSeperator < 0) {
+            currentWord = currentExpr;
+            currentExpr = "";
+        }
+        if (currentWord != null) {
+            currentWord = currentWord.trim();
+        }
+
+        List<JsonTreeNode> proposalNodes = jsonNodeRetriever.retrieveProposalJsonTreeNode((JsonTreePopulator) treePopulator,
+                currentExpr, currentWord, isRelativeTable, isAbsoluteExpression);
+
+        List<IContentProposal> proposals = new ArrayList<IContentProposal>();
+        if (proposalNodes != null && !proposalNodes.isEmpty()) {
+            Iterator<JsonTreeNode> iter = proposalNodes.iterator();
+            while (iter.hasNext()) {
+                JsonTreeNode jsonTreeNode = iter.next();
+                JsonPathContentProposal proposal = new JsonPathContentProposal(jsonTreeNode.getLabel());
+                proposals.add(proposal);
+            }
+        }
+
+        return proposals.toArray(new IContentProposal[proposals.size()]);
+    }
+
+    /**
+     * DOC cmeng Comment method "getProposals4XPath".
+     * 
+     * @param contents
+     * @param position
+     * @return
+     */
+    private IContentProposal[] getProposals4XPath(String contents, int position) {
         int nodeFieldMax = 500;
         int nodeLoopMax = 3000;
         int nodeLoopNumberLimit = 10;

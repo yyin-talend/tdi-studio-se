@@ -144,7 +144,7 @@ public class SchemaTargetImpl extends EObjectImpl implements SchemaTarget {
      */
     public JSONXPathLoopDescriptor getSchema() {
         if (eContainerFeatureID() != JsonPackage.SCHEMA_TARGET__SCHEMA) return null;
-        return (JSONXPathLoopDescriptor)eContainer();
+        return (JSONXPathLoopDescriptor)eInternalContainer();
     }
 
     /**

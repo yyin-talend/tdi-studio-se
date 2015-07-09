@@ -35,7 +35,7 @@ import org.talend.repository.ProjectManager;
  */
 public class JSONUtil {
 
-    public static final String TMP_JSON_FILE = "tempJSONFile" + '.' + "xml"; //$NON-NLS-1$
+    public static final String TMP_JSON_FILE = "tempJSONFile" + '.' + "xml"; //$NON-NLS-1$ //$NON-NLS-2$
 
     public static final String JSON_FILE = '.' + "xml"; //$NON-NLS-1$
 

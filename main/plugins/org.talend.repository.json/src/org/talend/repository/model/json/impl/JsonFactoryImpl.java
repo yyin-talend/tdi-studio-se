@@ -31,7 +31,7 @@ public class JsonFactoryImpl extends EFactoryImpl implements JsonFactory {
      */
     public static JsonFactory init() {
         try {
-            JsonFactory theJsonFactory = (JsonFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.talend.org/json"); 
+            JsonFactory theJsonFactory = (JsonFactory)EPackage.Registry.INSTANCE.getEFactory(JsonPackage.eNS_URI);
             if (theJsonFactory != null) {
                 return theJsonFactory;
             }
