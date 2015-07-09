@@ -27,11 +27,12 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.resource.ColorRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -74,7 +75,8 @@ import org.talend.metadata.managment.ui.wizard.metadata.xml.XmlExtractorBgRefres
 import org.talend.repository.json.ui.wizards.dnd.JSONToSchemaDragAndDropHandler;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.SchemaTarget;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.AbstractTreePopulator;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonReadbyMode;
 import org.w3c.dom.Node;
 
 /**
@@ -85,7 +87,7 @@ import org.w3c.dom.Node;
  */
 public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
-    private TreePopulator treePopulator;
+    protected AbstractTreePopulator treePopulator;
 
     private ExtractionFieldsWithJSONXPathEditorView fieldsTableEditorView;
 
@@ -95,7 +97,7 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     private StyleLink selectedLoopStyleLink;
 
-    private ArrayList<String> loopXpathNodes = new ArrayList<String>(0);
+    protected ArrayList<String> loopXpathNodes = new ArrayList<String>(0);
 
     private Comparator<LinkDescriptor<TreeItem, Object, Table, Object>> drawingLinksComparator;
 
@@ -106,6 +108,10 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
     private Color selectedLoopLinkColor;
 
     private Color selectedRelativeLinkColor;
+
+    protected JSONToSchemaDragAndDropHandler jsonDndHandler;
+
+    private XmlExtractorBgRefresher xmlExtractorBgRefresher;
 
     /**
      * DOC amaumont JSONToMetadataTableLinker constructor comment.
@@ -121,29 +127,39 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
     }
 
     public void init(Tree tree, ExtractionLoopWithJSONXPathEditorView loopTableEditorView,
-            ExtractionFieldsWithJSONXPathEditorView fieldsTableEditorView, TreePopulator treePopulator) {
+            ExtractionFieldsWithJSONXPathEditorView fieldsTableEditorView, AbstractTreePopulator treePopulator) {
+        xmlExtractorBgRefresher = new XmlExtractorBgRefresher(this);
         init(tree, new Table[] { loopTableEditorView.getExtendedTableViewer().getTableViewerCreator().getTable(),
-                fieldsTableEditorView.getExtendedTableViewer().getTableViewerCreator().getTable(), },
-                new XmlExtractorBgRefresher(this));
+                fieldsTableEditorView.getExtendedTableViewer().getTableViewerCreator().getTable(), }, xmlExtractorBgRefresher);
         this.treePopulator = treePopulator;
         this.loopTableEditorView = loopTableEditorView;
         this.fieldsTableEditorView = fieldsTableEditorView;
-        this.nodeRetriever = new XmlNodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
+        this.nodeRetriever = getXmlNodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
 
         TextCellEditorWithProposal xPathCellEditor = loopTableEditorView.getXPathCellEditor();
-        xPathCellEditor.setContentProposalProvider(new JSONXPathProposalProvider(this, false));
+        xPathCellEditor.setContentProposalProvider(getJSONXPathProposalProvider(this, false));
         xPathCellEditor = fieldsTableEditorView.getXPathCellEditor();
-        xPathCellEditor.setContentProposalProvider(new JSONXPathProposalProvider(this, true));
+        xPathCellEditor.setContentProposalProvider(getJSONXPathProposalProvider(this, true));
         init();
     }
 
-    public void init(TreePopulator treePopulator) {
+    public void init(AbstractTreePopulator treePopulator) {
         this.treePopulator = treePopulator;
-        this.nodeRetriever = new XmlNodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
+        this.nodeRetriever = getXmlNodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
     }
 
     public String getAbsoluteXPath(TreeItem treeItem) {
         return treePopulator.getAbsoluteXPath(treeItem);
+    }
+
+    protected JSONXPathProposalProvider getJSONXPathProposalProvider(JSONToXPathLinker linker, boolean isRelative) {
+        JSONXPathProposalProvider provider = new JSONXPathProposalProvider(linker, isRelative);
+        provider.setReadbyMode(EJsonReadbyMode.XPATH.getValue());
+        return provider;
+    }
+
+    protected XmlNodeRetriever getXmlNodeRetriever(String filePath, String loopXPath) {
+        return new XmlNodeRetriever(filePath, loopXPath);
     }
 
     /**
@@ -181,28 +197,33 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param display
      */
     private void initColors(Display display) {
-        selectedLoopLinkColor = new Color(display, 255, 131, 0);
-        selectedRelativeLinkColor = new Color(display, 110, 168, 255);
-        getTree().addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                selectedLoopLinkColor.dispose();
-                selectedRelativeLinkColor.dispose();
-                getTree().removeDisposeListener(this);
-            }
-
-        });
+        RGB selectedLoopLinkRGB = new RGB(255, 131, 0);
+        RGB selectedRelativeLinkRGB = new RGB(110, 168, 255);
+        ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
+        if (colorRegistry.get(selectedLoopLinkRGB.toString()) == null) {
+            colorRegistry.put(selectedLoopLinkRGB.toString(), selectedLoopLinkRGB);
+        }
+        if (colorRegistry.get(selectedRelativeLinkRGB.toString()) == null) {
+            colorRegistry.put(selectedRelativeLinkRGB.toString(), selectedRelativeLinkRGB);
+        }
+        selectedLoopLinkColor = colorRegistry.get(selectedLoopLinkRGB.toString());
+        selectedRelativeLinkColor = colorRegistry.get(selectedRelativeLinkRGB.toString());
 
     }
 
     /**
      * DOC amaumont Comment method "initListeners".
      */
-    private void initListeners() {
+    protected void initListeners() {
         initLoopListeners();
         initFieldsListeners();
-        new JSONToSchemaDragAndDropHandler(this);
+        jsonDndHandler = new JSONToSchemaDragAndDropHandler(this);
+    }
+
+    private void removeListeners() {
+        removeLoopListeners();
+        removeFieldsListeners();
+        jsonDndHandler.dispose();
     }
 
     /**
@@ -313,6 +334,12 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
         getBackgroundRefresher().refreshBackground();
     }
 
+    private IModifiedBeanListener loopModelModifiedBeanListener;
+
+    private IExtendedControlListener loopTableExtendedControlListener;
+
+    private ILineSelectionListener afterLineSelectionListener;
+
     /**
      * DOC amaumont Comment method "initListeners".
      */
@@ -321,8 +348,7 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
         JSONExtractorLoopModel loopModel = this.loopTableEditorView.getModel();
 
         final Table loopTable = this.loopTableEditorView.getTableViewerCreator().getTable();
-
-        loopModel.addModifiedBeanListener(new IModifiedBeanListener<JSONXPathLoopDescriptor>() {
+        loopModelModifiedBeanListener = new IModifiedBeanListener<JSONXPathLoopDescriptor>() {
 
             @Override
             public void handleEvent(ModifiedBeanEvent<JSONXPathLoopDescriptor> event) {
@@ -336,9 +362,10 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
             }
 
-        });
+        };
+        loopModel.addModifiedBeanListener(loopModelModifiedBeanListener);
 
-        this.loopTableEditorView.getExtendedTableViewer().addListener(new IExtendedControlListener() {
+        loopTableExtendedControlListener = new IExtendedControlListener() {
 
             @Override
             public void handleEvent(ExtendedControlEvent event) {
@@ -347,10 +374,11 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
                 }
             }
 
-        });
+        };
+        this.loopTableEditorView.getExtendedTableViewer().addListener(loopTableExtendedControlListener);
 
         SelectionHelper selectionHelper = this.loopTableEditorView.getTableViewerCreator().getSelectionHelper();
-        final ILineSelectionListener afterLineSelectionListener = new ILineSelectionListener() {
+        afterLineSelectionListener = new ILineSelectionListener() {
 
             @Override
             public void handle(LineSelectionEvent e) {
@@ -359,6 +387,22 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
         };
         selectionHelper.addAfterSelectionListener(afterLineSelectionListener);
     }
+
+    private void removeLoopListeners() {
+        JSONExtractorLoopModel loopModel = this.loopTableEditorView.getModel();
+        loopModel.removeModifiedBeanListener(loopModelModifiedBeanListener);
+        this.loopTableEditorView.getExtendedTableViewer().removeListener(loopTableExtendedControlListener);
+        SelectionHelper selectionHelper = this.loopTableEditorView.getTableViewerCreator().getSelectionHelper();
+        selectionHelper.removeAfterSelectionListener(afterLineSelectionListener);
+    }
+
+    private IModifiedBeanListener schemaModelModifiedBeanListener;
+
+    private IListenableListListener schemaModelBeforeListenableListListener;
+
+    private IListenableListListener schemaModelAfterListenableListListener;
+
+    private ILineSelectionListener fieldsTableLineSelectionListener;
 
     /**
      * DOC amaumont Comment method "initListeners".
@@ -369,7 +413,7 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
         final Table fieldsTable = this.fieldsTableEditorView.getTable();
 
-        schemaModel.addModifiedBeanListener(new IModifiedBeanListener<SchemaTarget>() {
+        schemaModelModifiedBeanListener = new IModifiedBeanListener<SchemaTarget>() {
 
             @Override
             public void handleEvent(ModifiedBeanEvent<SchemaTarget> event) {
@@ -383,36 +427,48 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
             }
 
-        });
+        };
+        schemaModel.addModifiedBeanListener(schemaModelModifiedBeanListener);
 
-        schemaModel.addBeforeOperationListListener(-50, new IListenableListListener<SchemaTarget>() {
+        schemaModelBeforeListenableListListener = new IListenableListListener<SchemaTarget>() {
 
             @Override
             public void handleEvent(ListenableListEvent<SchemaTarget> event) {
                 handleListenableListBeforeTableViewerRefreshedEvent(event);
             }
 
-        });
+        };
+        schemaModel.addBeforeOperationListListener(-50, schemaModelBeforeListenableListListener);
 
-        schemaModel.addAfterOperationListListener(new IListenableListListener<SchemaTarget>() {
+        schemaModelAfterListenableListListener = new IListenableListListener<SchemaTarget>() {
 
             @Override
             public void handleEvent(ListenableListEvent<SchemaTarget> event) {
                 handleListenableListAfterTableViewerRefreshedEvent(event);
             }
 
-        });
+        };
+        schemaModel.addAfterOperationListListener(schemaModelAfterListenableListListener);
 
         SelectionHelper selectionHelper = this.fieldsTableEditorView.getTableViewerCreator().getSelectionHelper();
-        final ILineSelectionListener afterLineSelectionListener = new ILineSelectionListener() {
+        fieldsTableLineSelectionListener = new ILineSelectionListener() {
 
             @Override
             public void handle(LineSelectionEvent e) {
                 updateLinksStyleAndControlsSelection(e.source.getTable(), true);
             }
         };
-        selectionHelper.addAfterSelectionListener(afterLineSelectionListener);
+        selectionHelper.addAfterSelectionListener(fieldsTableLineSelectionListener);
 
+    }
+
+    private void removeFieldsListeners() {
+        JSONExtractorFieldModel schemaModel = this.fieldsTableEditorView.getModel();
+        schemaModel.removeModifiedBeanListener(schemaModelModifiedBeanListener);
+        schemaModel.removeModifiedListListener(schemaModelBeforeListenableListListener);
+        schemaModel.removeModifiedListListener(schemaModelAfterListenableListListener);
+        SelectionHelper selectionHelper = this.fieldsTableEditorView.getTableViewerCreator().getSelectionHelper();
+        selectionHelper.removeAfterSelectionListener(fieldsTableLineSelectionListener);
     }
 
     /*
@@ -679,7 +735,7 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param progressMonitor
      * @throws XPathExpressionException
      */
-    private void createFieldLinks(final String relativeXpathPrm, final TableItem tableItemTarget,
+    protected void createFieldLinks(final String relativeXpathPrm, final TableItem tableItemTarget,
             IProgressMonitor progressMonitor, SchemaTarget schemaTarget) {
 
         if (relativeXpathPrm == null || relativeXpathPrm.trim().length() == 0) {
@@ -1018,6 +1074,30 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
      */
     public XmlNodeRetriever getNodeRetriever() {
         return this.nodeRetriever;
+    }
+
+    public String getFieldSeperator() {
+        return "/"; //$NON-NLS-1$
+    }
+
+    public String getRootSeperator() {
+        return "/"; //$NON-NLS-1$
+    }
+
+    public AbstractTreePopulator getTreePopulator() {
+        return this.treePopulator;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.linking.TreeToTablesLinker#dispose()
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        removeListeners();
+        xmlExtractorBgRefresher.dispose();
     }
 
 }

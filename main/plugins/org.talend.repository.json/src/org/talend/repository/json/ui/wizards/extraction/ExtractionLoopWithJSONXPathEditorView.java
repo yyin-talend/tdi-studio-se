@@ -123,6 +123,7 @@ public class ExtractionLoopWithJSONXPathEditorView extends AbstractDataTableEdit
     protected void createColumns(TableViewerCreator<JSONXPathLoopDescriptor> tableViewerCreator, final Table table) {
         CellEditorValueAdapter intValueAdapter = new CellEditorValueAdapter() {
 
+            @Override
             public Object getOriginalTypedValue(final CellEditor cellEditor, Object value) {
                 try {
                     return new Integer(value.toString());
@@ -131,6 +132,7 @@ public class ExtractionLoopWithJSONXPathEditorView extends AbstractDataTableEdit
                 }
             }
 
+            @Override
             public Object getCellEditorTypedValue(final CellEditor cellEditor, Object value) {
                 if (value != null) {
                     return String.valueOf(value);
@@ -152,13 +154,15 @@ public class ExtractionLoopWithJSONXPathEditorView extends AbstractDataTableEdit
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
-        column.setTitle("Absolute XPath expression");
+        column.setTitle("Absolute path expression");
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<JSONXPathLoopDescriptor, String>() {
 
+            @Override
             public String get(JSONXPathLoopDescriptor bean) {
                 return bean.getAbsoluteXPathQuery();
             }
 
+            @Override
             public void set(JSONXPathLoopDescriptor bean, String value) {
                 String currentFlag = ConvertJSONString.getCurrentFlag();
                 bean.setAbsoluteXPathQuery(value);
@@ -194,10 +198,12 @@ public class ExtractionLoopWithJSONXPathEditorView extends AbstractDataTableEdit
         column.setTitle("Loop limit");
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<JSONXPathLoopDescriptor, Integer>() {
 
+            @Override
             public Integer get(JSONXPathLoopDescriptor bean) {
                 return bean.getLimitBoucle();
             }
 
+            @Override
             public void set(JSONXPathLoopDescriptor bean, Integer value) {
                 if (value != null) {
                     bean.setLimitBoucle(value.intValue());

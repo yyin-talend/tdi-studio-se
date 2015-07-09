@@ -44,6 +44,7 @@ import org.talend.repository.json.ui.wizards.extraction.ExtractionLoopWithJSONXP
 import org.talend.repository.json.ui.wizards.extraction.JSONToXPathLinker;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.SchemaTarget;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonReadbyMode;
 
 /**
  * DOC amaumont class global comment. Detailed comment <br/>
@@ -69,12 +70,15 @@ public class JSONToSchemaDragAndDropHandler {
 
     private DropTarget loopDropTarget;
 
+    private String readbyMode;
+
     /**
      * DOC amaumont TreeToTableDragAndDropHandler constructor comment.
      * 
      * @param linker
      */
     public JSONToSchemaDragAndDropHandler(JSONToXPathLinker linker) {
+        this.readbyMode = EJsonReadbyMode.XPATH.getValue();
         this.linker = linker;
         tree = linker.getTree();
         loopTable = linker.getLoopTableEditorView().getTableViewerCreator().getTable();
@@ -88,6 +92,22 @@ public class JSONToSchemaDragAndDropHandler {
     private void init() {
         createDragSource();
         createDropTarget();
+    }
+
+    public void dispose() {
+        if (dragSource != null) {
+            dragSource.dispose();
+        }
+        if (loopDropTarget != null) {
+            loopDropTarget.dispose();
+        }
+        if (fieldsDropTarget != null) {
+            fieldsDropTarget.dispose();
+        }
+    }
+
+    public void setReadbyMode(String readbyMode) {
+        this.readbyMode = readbyMode;
     }
 
     /**
@@ -138,9 +158,11 @@ public class JSONToSchemaDragAndDropHandler {
      */
     class TreeDragSourceListener implements TransferDragSourceListener {
 
+        @Override
         public void dragFinished(DragSourceEvent event) {
         }
 
+        @Override
         public void dragSetData(DragSourceEvent event) {
             // System.out.println("\n>>dragSetData");
             // System.out.println(event);
@@ -148,6 +170,7 @@ public class JSONToSchemaDragAndDropHandler {
             // }
         }
 
+        @Override
         public void dragStart(DragSourceEvent event) {
             // System.out.println("\n>>dragStart");
             // System.out.println(event);
@@ -165,6 +188,7 @@ public class JSONToSchemaDragAndDropHandler {
             }
         }
 
+        @Override
         public Transfer getTransfer() {
             return XPathTransfer.getInstance();
         }
@@ -179,6 +203,7 @@ public class JSONToSchemaDragAndDropHandler {
      */
     public class TableDropTargetListener implements TransferDropTargetListener {
 
+        @Override
         public void dragEnter(DropTargetEvent event) {
             dragEnterExecute(event);
         }
@@ -192,16 +217,19 @@ public class JSONToSchemaDragAndDropHandler {
             fieldsTable.setFocus();
         }
 
+        @Override
         public void dragOver(DropTargetEvent event) {
             // System.out.println("\n>>dragOver");
 
         }
 
+        @Override
         public void dragLeave(DropTargetEvent event) {
             // System.out.println("\n>>dragLeave");
             // System.out.println(event);
         }
 
+        @Override
         public void dragOperationChanged(DropTargetEvent event) {
             // System.out.println("\n>>dragOperationChanged");
             // showInfos(event);
@@ -209,6 +237,7 @@ public class JSONToSchemaDragAndDropHandler {
 
         }
 
+        @Override
         public void dropAccept(DropTargetEvent event) {
             // System.out.println("\n>>dropAccept");
             // System.out.println(event);
@@ -221,6 +250,7 @@ public class JSONToSchemaDragAndDropHandler {
          * 
          * @see org.eclipse.jface.util.TransferDropTargetListener#getTransfer()
          */
+        @Override
         public Transfer getTransfer() {
             return null;
         }
@@ -230,6 +260,7 @@ public class JSONToSchemaDragAndDropHandler {
          * 
          * @see org.eclipse.jface.util.TransferDropTargetListener#isEnabled(org.eclipse.swt.dnd.DropTargetEvent)
          */
+        @Override
         public boolean isEnabled(DropTargetEvent event) {
             // TODO Auto-generated method stub
             return false;
@@ -240,6 +271,7 @@ public class JSONToSchemaDragAndDropHandler {
          * 
          * @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
          */
+        @Override
         public void drop(DropTargetEvent event) {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
@@ -279,6 +311,8 @@ public class JSONToSchemaDragAndDropHandler {
                 // full list of columns to calculate the rename of target columns automatically
                 List<SchemaTarget> fullSchemaTargetList = new ArrayList<SchemaTarget>(tableEditorView.getModel().getBeansList());
 
+                boolean isUsingJsonPath = EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode);
+
                 // list of columns just added with drag&drop
                 List<SchemaTarget> list = new ArrayList<SchemaTarget>(transferableEntryList.size());
                 for (TransferableJSONXPathEntry entry : transferableEntryList) {
@@ -286,20 +320,33 @@ public class JSONToSchemaDragAndDropHandler {
                     ArrayList<String> loopXpathNodes = linker.getLoopXpathNodes();
                     if (loopXpathNodes.size() > 0) {
                         String loopPath = loopXpathNodes.get(0);
-                        String relativeXPath = XPathPopulationUtil.populateColumnPath(loopPath, entry.getAbsoluteXPath());
+                        String relativeXPath = null;
+                        if (isUsingJsonPath) {
+                            String absoluteXPath = entry.getAbsoluteXPath();
+                            String loopJsonPath = loopPath + linker.getFieldSeperator();
+                            if (absoluteXPath.equals(loopPath)) {
+                                relativeXPath = "@"; //$NON-NLS-1$
+                            } else if (absoluteXPath.startsWith(loopJsonPath)) {
+                                relativeXPath = absoluteXPath.substring(loopJsonPath.length());
+                            } else {
+                                relativeXPath = absoluteXPath;
+                            }
+                        } else {
+                            relativeXPath = XPathPopulationUtil.populateColumnPath(loopPath, entry.getAbsoluteXPath());
 
-                        if (relativeXPath.startsWith("/")) { //$NON-NLS-1$
-                            relativeXPath = relativeXPath.substring(1);
-                        }
-                        if (relativeXPath.endsWith("../")) { //$NON-NLS-1$
-                            relativeXPath = relativeXPath.substring(0, relativeXPath.length() - 1);
-                        }
-                        if (relativeXPath.trim().equals("")) { //$NON-NLS-1$
-                            relativeXPath = "."; //$NON-NLS-1$
+                            if (relativeXPath.startsWith("/")) { //$NON-NLS-1$
+                                relativeXPath = relativeXPath.substring(1);
+                            }
+                            if (relativeXPath.endsWith("../")) { //$NON-NLS-1$
+                                relativeXPath = relativeXPath.substring(0, relativeXPath.length() - 1);
+                            }
+                            if (relativeXPath.trim().equals("")) { //$NON-NLS-1$
+                                relativeXPath = "."; //$NON-NLS-1$
+                            }
                         }
 
                         SchemaTarget newTargetEntry = linker.getNewSchemaTargetEntry(relativeXPath);
-                        String name = extractColumnName(extractTagName(relativeXPath), fullSchemaTargetList);
+                        String name = extractColumnName(extractTagName(relativeXPath, readbyMode), fullSchemaTargetList);
                         // if (!name.equals(relativeXPath)) {
                         newTargetEntry.setTagName(name);
                         // }
@@ -344,6 +391,23 @@ public class JSONToSchemaDragAndDropHandler {
         return currentExpr;
     }
 
+    private String extractTagName(String currentExpr, String readbyMode) {
+        if (EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode)) {
+            return extractTagName4JsonPath(currentExpr);
+        } else {
+            return extractTagName(currentExpr);
+        }
+    }
+
+    private String extractTagName4JsonPath(String currentExpr) {
+        String tagName = currentExpr;
+        String[] exprs = currentExpr.split("\\."); //$NON-NLS-1$
+        if (0 < exprs.length) {
+            tagName = exprs[exprs.length - 1];
+        }
+        return tagName;
+    }
+
     /**
      * Extract last word of an expression, the last character must be a letter or a number.
      * 
@@ -373,6 +437,9 @@ public class JSONToSchemaDragAndDropHandler {
 
         String columnName = currentExpr.startsWith("@") ? currentExpr.substring(1) : currentExpr;
         columnName = columnName.replaceAll("[^a-zA-Z0-9]", "_");
+        if (columnName.isEmpty()) {
+            columnName = "column";
+        }
 
         UniqueStringGenerator<SchemaTarget> uniqueStringGenerator = new UniqueStringGenerator<SchemaTarget>(columnName,
                 fullSchemaTargetList) {

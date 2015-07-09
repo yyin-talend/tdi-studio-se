@@ -551,13 +551,22 @@ public interface JsonPackage extends EPackage {
     int JSON_FILE_CONNECTION__FILE_CONTENT = ConnectionPackage.CONNECTION_FEATURE_COUNT + 10;
 
     /**
+     * The feature id for the '<em><b>Readby Mode</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int JSON_FILE_CONNECTION__READBY_MODE = ConnectionPackage.CONNECTION_FEATURE_COUNT + 11;
+
+    /**
      * The number of structural features of the '<em>JSON File Connection</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int JSON_FILE_CONNECTION_FEATURE_COUNT = ConnectionPackage.CONNECTION_FEATURE_COUNT + 11;
+    int JSON_FILE_CONNECTION_FEATURE_COUNT = ConnectionPackage.CONNECTION_FEATURE_COUNT + 12;
 
     /**
      * The meta object id for the '{@link org.talend.repository.model.json.impl.JSONFileConnectionItemImpl <em>JSON File Connection Item</em>}' class.
@@ -613,6 +622,15 @@ public interface JsonPackage extends EPackage {
      * @ordered
      */
     int JSON_FILE_CONNECTION_ITEM__FILE_EXTENSION = PropertiesPackage.CONNECTION_ITEM__FILE_EXTENSION;
+
+    /**
+     * The feature id for the '<em><b>Need Version</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int JSON_FILE_CONNECTION_ITEM__NEED_VERSION = PropertiesPackage.CONNECTION_ITEM__NEED_VERSION;
 
     /**
      * The feature id for the '<em><b>Connection</b></em>' reference.
@@ -950,6 +968,17 @@ public interface JsonPackage extends EPackage {
     EAttribute getJSONFileConnection_FileContent();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.repository.model.json.JSONFileConnection#getReadbyMode <em>Readby Mode</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Readby Mode</em>'.
+     * @see org.talend.repository.model.json.JSONFileConnection#getReadbyMode()
+     * @see #getJSONFileConnection()
+     * @generated
+     */
+    EAttribute getJSONFileConnection_ReadbyMode();
+
+    /**
      * Returns the meta object for class '{@link org.talend.repository.model.json.JSONFileConnectionItem <em>JSON File Connection Item</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1262,6 +1291,14 @@ public interface JsonPackage extends EPackage {
          * @generated
          */
         EAttribute JSON_FILE_CONNECTION__FILE_CONTENT = eINSTANCE.getJSONFileConnection_FileContent();
+
+        /**
+         * The meta object literal for the '<em><b>Readby Mode</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute JSON_FILE_CONNECTION__READBY_MODE = eINSTANCE.getJSONFileConnection_ReadbyMode();
 
         /**
          * The meta object literal for the '{@link org.talend.repository.model.json.impl.JSONFileConnectionItemImpl <em>JSON File Connection Item</em>}' class.

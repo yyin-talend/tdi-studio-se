@@ -36,6 +36,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -93,7 +94,10 @@ import org.talend.repository.model.json.JSONFileConnectionItem;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.JsonFactory;
 import org.talend.repository.model.json.SchemaTarget;
-
+import org.talend.repository.ui.wizards.metadata.connection.files.json.AbstractTreePopulator;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonReadbyMode;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.JsonTreePopulator;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
 import orgomg.cwm.resource.record.RecordFactory;
 import orgomg.cwm.resource.record.RecordFile;
 
@@ -140,7 +144,11 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     protected static final String DEFAULT_LABEL = "Column";
 
-    private String tempJsonPath = "";
+    private String tempJsonPath4Json = "";
+
+    private String tempJsonPath4Xml = "";
+
+    private String readbyMode;
 
     /**
      * Sets the isToolbar.
@@ -600,12 +608,17 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
     }
 
     private void resetMetadata(List<SchemaTarget> schemaTarget, boolean flag) {
+        // TODO
         JSONFileConnection connection2 = JSONConnectionContextUtils.getJSONOriginalValueConnection(connection,
                 this.connectionItem, connection.isContextMode(), true);
-        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, tempJsonPath);
+        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, getTempJsonPath());
         CsvArray csvArray = null;
         try {
-            csvArray = JSONShadowProcessHelper.getCsvArray(processDescription, "FILE_XML");//$NON-NLS-1$
+            if (EJsonReadbyMode.JSONPATH.getValue().equals(getReadbyMode())) {
+                csvArray = JSONShadowProcessHelper.getCsvArray(processDescription, "FILE_JSON");//$NON-NLS-1$
+            } else {
+                csvArray = JSONShadowProcessHelper.getCsvArray(processDescription, "FILE_XML");//$NON-NLS-1$
+            }
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
@@ -833,7 +846,11 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
      * @return the tempJsonPath
      */
     public String getTempJsonPath() {
-        return this.tempJsonPath;
+        if (EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode)) {
+            return this.tempJsonPath4Json;
+        } else {
+            return this.tempJsonPath4Xml;
+        }
     }
 
     /**
@@ -842,7 +859,36 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
      * @param tempJsonPath the tempJsonPath to set
      */
     public void setTempJsonPath(String tempJsonPath) {
-        this.tempJsonPath = tempJsonPath;
+        if (EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode)) {
+            this.tempJsonPath4Json = tempJsonPath;
+        } else {
+            this.tempJsonPath4Xml = tempJsonPath;
+        }
     }
 
+    /**
+     * Getter for readbyMode.
+     * 
+     * @return the readbyMode
+     */
+    public String getReadbyMode() {
+        return this.readbyMode;
+    }
+
+    /**
+     * Sets the readbyMode.
+     * 
+     * @param readbyMode the readbyMode to set
+     */
+    public void setReadbyMode(String readbyMode) {
+        this.readbyMode = readbyMode;
+    }
+
+    public AbstractTreePopulator getTreePopulator(TreeViewer treeViewer) {
+        if (EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode)) {
+            return new JsonTreePopulator(treeViewer);
+        } else {
+            return new TreePopulator(treeViewer);
+        }
+    }
 }

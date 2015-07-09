@@ -171,13 +171,15 @@ public class ExtractionFieldsWithJSONXPathEditorView extends AbstractDataTableEd
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
-        column.setTitle("Relative or absolute XPath expression"); //$NON-NLS-1$
+        column.setTitle("Relative or absolute path expression"); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
+            @Override
             public String get(SchemaTarget bean) {
                 return bean.getRelativeXPathQuery();
             }
 
+            @Override
             public void set(SchemaTarget bean, String value) {
                 bean.setRelativeXPathQuery(value);
             }
@@ -200,10 +202,10 @@ public class ExtractionFieldsWithJSONXPathEditorView extends AbstractDataTableEd
                 String value = null;
                 if (newValue.trim().length() == 0) {
                     return null;
-                } else if (newValue.trim().startsWith("/")) { //$NON-NLS-1$
+                } else if (newValue.trim().startsWith(linker.getRootSeperator())) {
                     value = newValue;
                 } else {
-                    value = currentLoopXPath + "/" + newValue; //$NON-NLS-1$
+                    value = currentLoopXPath + linker.getFieldSeperator() + newValue;
                 }
                 return linker.validateXPathExpression(value);
             }
@@ -221,10 +223,12 @@ public class ExtractionFieldsWithJSONXPathEditorView extends AbstractDataTableEd
         column.setTitle("Column Name"); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
+            @Override
             public String get(SchemaTarget bean) {
                 return bean.getTagName();
             }
 
+            @Override
             public void set(SchemaTarget bean, String value) {
                 bean.setTagName(value);
             }
@@ -293,8 +297,9 @@ public class ExtractionFieldsWithJSONXPathEditorView extends AbstractDataTableEd
             if (path == null) {
                 path = "";
             }
-            if (name == null)
+            if (name == null) {
                 name = "";
+            }
             if (names.contains(name)) {
                 conflictNames.add(name);
             } else {

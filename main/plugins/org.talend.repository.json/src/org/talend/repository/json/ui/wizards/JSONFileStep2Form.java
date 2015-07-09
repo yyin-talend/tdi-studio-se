@@ -29,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -83,6 +84,7 @@ import org.talend.repository.json.ui.wizards.extraction.ExtractionFieldsWithJSON
 import org.talend.repository.json.ui.wizards.extraction.ExtractionLoopWithJSONXPathEditorView;
 import org.talend.repository.json.ui.wizards.extraction.JSONExtractorFieldModel;
 import org.talend.repository.json.ui.wizards.extraction.JSONExtractorLoopModel;
+import org.talend.repository.json.ui.wizards.extraction.JSONToJsonPathLinker;
 import org.talend.repository.json.ui.wizards.extraction.JSONToXPathLinker;
 import org.talend.repository.json.util.JSONConnectionContextUtils;
 import org.talend.repository.json.util.JSONUtil;
@@ -90,6 +92,9 @@ import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.JsonFactory;
 import org.talend.repository.model.json.SchemaTarget;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.AbstractTreePopulator;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonReadbyMode;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.JsonTreePopulator;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
 
 /**
@@ -105,6 +110,8 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
      */
 
     private transient Tree availableJSONTree;
+
+    private transient TreeViewer availableJSONTreeViewer;
 
     private ATreeNode treeNode;
 
@@ -132,7 +139,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     private JSONToXPathLinker linker;
 
-    private TreePopulator treePopulator;
+    private AbstractTreePopulator treePopulator;
 
     private JSONExtractorLoopModel loopModel;
 
@@ -163,6 +170,8 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     private JSONWizard wizard;
 
+    private String currentReadbyMode;
+
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -172,8 +181,8 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
      */
     public JSONFileStep2Form(Composite parent, ConnectionItem connectionItem, JSONWizard wizard) {
         super(parent, connectionItem);
-        setupForm(true);
         this.wizard = wizard;
+        setupForm(true);
     }
 
     /**
@@ -183,7 +192,9 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
     @Override
     protected void initialize() {
 
-        this.treePopulator = new TreePopulator(availableJSONTree);
+        availableJSONTreeViewer = new TreeViewer(availableJSONTree);
+        currentReadbyMode = this.wizard.getReadbyMode();
+        initTreePopulator();
 
         checkFieldsValue();
 
@@ -218,6 +229,16 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             adaptFormToEditable();
         }
 
+    }
+
+    private void initTreePopulator() {
+        if (EJsonReadbyMode.JSONPATH.getValue().equals(this.wizard.getReadbyMode())) {
+            this.treePopulator = new JsonTreePopulator(availableJSONTreeViewer);
+        } else {
+            this.treePopulator = new TreePopulator(availableJSONTreeViewer);
+        }
+        this.treePopulator.setFilePath(this.wizard.getTempJsonPath());
+        this.treePopulator.configureDefaultTreeViewer();
     }
 
     @Override
@@ -334,7 +355,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
         CommandStackForComposite commandStack = new CommandStackForComposite(schemaTargetGroup);
 
-        loopModel = new JSONExtractorLoopModel("Xpath loop expression");
+        loopModel = new JSONExtractorLoopModel("Path loop expression");
 
         loopTableEditorView = new ExtractionLoopWithJSONXPathEditorView(loopModel, schemaTargetGroup);
         loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
@@ -530,9 +551,15 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
         previewInformationLabel.setText("   " + "Preview in progress...");
 
+        String shadowProcessType = null;
+        if (EJsonReadbyMode.JSONPATH.getValue().equals(getConnection().getReadbyMode())) {
+            shadowProcessType = "FILE_JSON"; //$NON-NLS-1$
+        }
+        final String finalShadowProcessType = shadowProcessType;
+
         AsynchronousPreviewHandler<CsvArray> previewHandler = null;
         try {
-            previewHandler = ShadowProcessHelper.createPreviewHandler();
+            previewHandler = ShadowProcessHelper.createPreviewHandler(finalShadowProcessType);
         } catch (CoreException e) {
             previewInError(e);
             return;
@@ -570,6 +597,14 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
                 JSONFileStep2Form.this.previewInError(e);
             }
 
+            @Override
+            protected String getShadowProcessType() {
+                if (finalShadowProcessType != null && !finalShadowProcessType.isEmpty()) {
+                    return finalShadowProcessType;
+                } else {
+                    return super.getShadowProcessType();
+                }
+            }
         };
 
         previewLoader.load(getProcessDescription(false));
@@ -899,11 +934,14 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             }
 
             // diffrent from xml , we do not save the content in item , find it in wizard temp
-            if (pathStr == null || !new File(pathStr).exists()) {
+            if (EJsonReadbyMode.XPATH.getValue().equals(this.wizard.getReadbyMode())
+                    && (pathStr == null || !new File(pathStr).exists())) {
                 // initFileContent();
                 tempJSONXsdPath = JSONUtil.tempJSONXsdPath;
                 pathStr = tempJSONXsdPath;
             }
+            // fix bug: when the JSON file is changed, the linker doesn't work.
+            resetStatusIfNecessary();
             String tempJson = this.wizard.getTempJsonPath();
             this.treePopulator.populateTree(tempJson, treeNode);
 
@@ -911,14 +949,10 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             if (verticalBar != null) {
                 verticalBar.setSelection(0);
             }
-            // fix bug: when the JSON file is changed, the linker doesn't work.
-            resetStatusIfNecessary();
 
             if (this.linker == null) {
-                this.linker = new JSONToXPathLinker(this.jsonToSchemaSash);
-                this.linker.init(availableJSONTree, loopTableEditorView, fieldsTableEditorView, treePopulator);
-                loopTableEditorView.setLinker(this.linker);
-                fieldsTableEditorView.setLinker(this.linker);
+                this.linker = prepareJsonLinker();
+
             } else {
                 this.linker.init(treePopulator);
                 this.linker.createLinks();
@@ -930,6 +964,21 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             }
 
         }
+    }
+
+    private JSONToXPathLinker prepareJsonLinker() {
+        if (this.linker != null) {
+            this.linker.dispose();
+        }
+        if (EJsonReadbyMode.JSONPATH.getValue().equals(this.wizard.getReadbyMode())) {
+            this.linker = new JSONToJsonPathLinker(this.jsonToSchemaSash);
+        } else {
+            this.linker = new JSONToXPathLinker(this.jsonToSchemaSash);
+        }
+        this.linker.init(availableJSONTree, loopTableEditorView, fieldsTableEditorView, treePopulator);
+        loopTableEditorView.setLinker(this.linker);
+        fieldsTableEditorView.setLinker(this.linker);
+        return this.linker;
     }
 
     /**
@@ -945,7 +994,9 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
                         connectionItem.getConnection().getContextName());
                 oraginalPath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, curJSONPath));
             }
-            if ((!jsonFilePath.equals(curJSONPath) && !jsonFilePath.equals(oraginalPath))) {
+            if ((!jsonFilePath.equals(curJSONPath) && !jsonFilePath.equals(oraginalPath))
+                    || !this.wizard.getReadbyMode().equals(currentReadbyMode)) {
+                currentReadbyMode = this.wizard.getReadbyMode();
                 // clear command stack
                 CommandStackForComposite commandStack = new CommandStackForComposite(schemaTargetGroup);
                 loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
@@ -961,11 +1012,12 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
                 fieldsModel.setJSONXPathLoopDescriptor(jsonXPathLoopDescriptor.getSchemaTargets());
                 fieldsTableEditorView.getTableViewerCreator().layout();
-
+                initTreePopulator();
+                prepareJsonLinker();
                 // reset linker
-                if (linker != null) {
-                    linker.init(treePopulator);
-                }
+                linker.init(treePopulator);
+                loopTableEditorView.setLinker(linker);
+                fieldsTableEditorView.setLinker(linker);
                 jsonFilePreview.removePreviewContent();
             }
         }

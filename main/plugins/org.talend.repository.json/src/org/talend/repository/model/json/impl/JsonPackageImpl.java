@@ -244,6 +244,15 @@ public class JsonPackageImpl extends EPackageImpl implements JsonPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getJSONFileConnection_ReadbyMode() {
+        return (EAttribute)jsonFileConnectionEClass.getEStructuralFeatures().get(11);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getJSONFileConnectionItem() {
         return jsonFileConnectionItemEClass;
     }
@@ -441,6 +450,7 @@ public class JsonPackageImpl extends EPackageImpl implements JsonPackage {
         createEAttribute(jsonFileConnectionEClass, JSON_FILE_CONNECTION__INPUT_MODEL);
         createEAttribute(jsonFileConnectionEClass, JSON_FILE_CONNECTION__OUTPUT_FILE_PATH);
         createEAttribute(jsonFileConnectionEClass, JSON_FILE_CONNECTION__FILE_CONTENT);
+        createEAttribute(jsonFileConnectionEClass, JSON_FILE_CONNECTION__READBY_MODE);
 
         jsonFileConnectionItemEClass = createEClass(JSON_FILE_CONNECTION_ITEM);
 
@@ -513,6 +523,7 @@ public class JsonPackageImpl extends EPackageImpl implements JsonPackage {
         initEAttribute(getJSONFileConnection_InputModel(), ecorePackage.getEBoolean(), "inputModel", "true", 0, 1, JSONFileConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getJSONFileConnection_OutputFilePath(), ecorePackage.getEString(), "outputFilePath", null, 0, 1, JSONFileConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getJSONFileConnection_FileContent(), ecorePackage.getEByteArray(), "fileContent", null, 0, 1, JSONFileConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getJSONFileConnection_ReadbyMode(), ecorePackage.getEString(), "readbyMode", null, 0, 1, JSONFileConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(jsonFileConnectionItemEClass, JSONFileConnectionItem.class, "JSONFileConnectionItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

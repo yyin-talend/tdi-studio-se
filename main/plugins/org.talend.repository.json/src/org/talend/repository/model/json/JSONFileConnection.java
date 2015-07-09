@@ -28,6 +28,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
  *   <li>{@link org.talend.repository.model.json.JSONFileConnection#isInputModel <em>Input Model</em>}</li>
  *   <li>{@link org.talend.repository.model.json.JSONFileConnection#getOutputFilePath <em>Output File Path</em>}</li>
  *   <li>{@link org.talend.repository.model.json.JSONFileConnection#getFileContent <em>File Content</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.JSONFileConnection#getReadbyMode <em>Readby Mode</em>}</li>
  * </ul>
  * </p>
  *
@@ -284,5 +285,31 @@ public interface JSONFileConnection extends Connection {
      * @generated
      */
     void setFileContent(byte[] value);
+
+    /**
+     * Returns the value of the '<em><b>Readby Mode</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Readby Mode</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Readby Mode</em>' attribute.
+     * @see #setReadbyMode(String)
+     * @see org.talend.repository.model.json.JsonPackage#getJSONFileConnection_ReadbyMode()
+     * @model
+     * @generated
+     */
+    String getReadbyMode();
+
+    /**
+     * Sets the value of the '{@link org.talend.repository.model.json.JSONFileConnection#getReadbyMode <em>Readby Mode</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Readby Mode</em>' attribute.
+     * @see #getReadbyMode()
+     * @generated
+     */
+    void setReadbyMode(String value);
 
 } // JSONFileConnection
