@@ -95,6 +95,7 @@ public class PropertyChangeCommand extends Command {
             }
         }
     };
+
     // for bug TDI-32692,the ExecutionLimiterImproved could avoid some thread exception especially in duplicated issue TDI-32672.
     private static ExecutionLimiterImproved checkProcess = new ExecutionLimiterImproved(500, true) {
 
@@ -104,14 +105,12 @@ public class PropertyChangeCommand extends Command {
                 if (data instanceof IGraphicalNode) {
                     ((IGraphicalNode) data).checkAndRefreshNode();
                 }
-
                 if (data instanceof IConnection) {
                     IProcess process = ((IConnection) data).getSource().getProcess();
                     if (process instanceof IProcess2) {
                         ((IProcess2) process).checkProcess();
                     }
                 }
-
             }
         }
     };
@@ -424,7 +423,7 @@ public class PropertyChangeCommand extends Command {
             }
         }
         updateRelativeNodesIfNeeded(currentParam);
-
+        
         checkProcess.startIfExecutable(elem);
 
         // See feature 3902
