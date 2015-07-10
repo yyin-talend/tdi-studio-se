@@ -12,16 +12,31 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.tools.ConnectionCreationTool;
+import org.eclipse.gmf.runtime.notation.View;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.widgets.Display;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
 
 /**
  * This tool is used to create a connection in the context menu. After the constructor, the function
@@ -33,6 +48,10 @@ import org.eclipse.swt.events.TraverseEvent;
 public class TalendConnectionCreationTool extends ConnectionCreationTool {
 
     private boolean fromMenu;
+
+    protected EditPart sourcePart;
+
+    protected boolean avoidDeactivation = false;
 
     public TalendConnectionCreationTool(CreationFactory factory, boolean fromMenu) {
         super(factory);
@@ -46,11 +65,31 @@ public class TalendConnectionCreationTool extends ConnectionCreationTool {
      * @param sourcePart the edit part that will be the source of the connection
      */
     public void performConnectionStartWith(EditPart sourcePart) {
+        this.sourcePart = sourcePart;
         setConnectionSource(sourcePart);
         updateTargetRequest();
         Command cmd = ((AbstractEditPart) sourcePart).getCommand(getTargetRequest());
         setCurrentCommand(cmd);
         setState(STATE_CONNECTION_STARTED);
+    }
+
+    protected EditPart getProcessPart(EditPart editPart) {
+        EditPart parent = editPart.getParent();
+        if (parent == null) {
+            return null;
+        }
+        if (parent instanceof ProcessPart) {
+            return parent;
+        }
+        return getProcessPart(parent);
+    }
+
+    protected void setAvoidDeactivation(boolean avoidDeactivation) {
+        this.avoidDeactivation = avoidDeactivation;
+    }
+
+    protected boolean avoidDeactivation() {
+        return avoidDeactivation;
     }
 
     /*
@@ -64,12 +103,98 @@ public class TalendConnectionCreationTool extends ConnectionCreationTool {
         if (endCommand != null) {
             return super.handleCreateConnection();
         }
+        if (getTargetEditPart() == null) {
+            EditPart processPart = getProcessPart(this.sourcePart);
+            if (processPart != null) {
+                this.setTargetEditPart(getProcessPart(this.sourcePart));
+                this.getTargetRequest().setType(RequestConstants.REQ_CONNECTION_END);
+            }
+            return handleConnection();
+        }
         if (isInState(STATE_TERMINAL)) {
             // Fake a drag to cause feedback to be displayed immediately on mouse down.
             setState(STATE_CONNECTION_STARTED);
             handleDrag();
         }
         return true;
+    }
+
+    protected boolean handleConnection() {
+        setAvoidDeactivation(true);
+
+        EditPartViewer viewer = getCurrentViewer();
+        Command endCommand = getCommand();
+        if (endCommand == null) {
+            if (isInState(STATE_TERMINAL)) {
+                // Fake a drag to cause feedback to be displayed immediately on mouse down.
+                setState(STATE_CONNECTION_STARTED);
+                handleDrag();
+            }
+            return true;
+        }
+        sourcePart.getViewer().getSelectionManager().deselect(sourcePart);
+
+        setCurrentCommand(endCommand);
+
+        executeCurrentCommand();
+
+        selectAddedObject(viewer, getReturnValues(endCommand));
+
+        setAvoidDeactivation(false);
+        getSourceRequest().setType(RequestConstants.REQ_CONNECTION_END);
+        eraseSourceFeedback();
+        deactivate();
+        return true;
+    }
+
+    protected void selectAddedObject(EditPartViewer viewer, Collection objects) {
+        final List editparts = new ArrayList();
+        final EditPart[] primaryEP = new EditPart[1];
+        for (Iterator i = objects.iterator(); i.hasNext();) {
+            Object object = i.next();
+            if (object instanceof IAdaptable) {
+                Object editPart = viewer.getEditPartRegistry().get(((IAdaptable) object).getAdapter(View.class));
+
+                if (editPart instanceof GraphicalEditPart) {
+                    editparts.add(editPart);
+                }
+            }
+        }
+
+        if (!editparts.isEmpty()) {
+            viewer.setSelection(new StructuredSelection(editparts));
+
+            // automatically put the first shape into edit-mode
+            Display.getCurrent().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (primaryEP[0] == null) {
+                        primaryEP[0] = (EditPart) editparts.get(0);
+                    }
+                    //
+                    // add active test since test scripts are failing on this
+                    // basically, the editpart has been deleted when this
+                    // code is being executed. (see RATLC00527114)
+                    if (primaryEP[0].isActive()) {
+                        primaryEP[0].performRequest(new Request("direct edit"));
+                    }
+                }
+            });
+        }
+    }
+
+    public Collection getReturnValues(Command c) {
+        if (c instanceof CompoundCommand) {
+            CompoundCommand cc = (CompoundCommand) c;
+            List l = new ArrayList(cc.size());
+            for (Iterator i = cc.getCommands().iterator(); i.hasNext();) {
+                l.addAll(getReturnValues((Command) i.next()));
+            }
+            return l;
+
+        }
+        return Collections.EMPTY_LIST;
     }
 
     /*
@@ -94,6 +219,12 @@ public class TalendConnectionCreationTool extends ConnectionCreationTool {
     protected boolean handleButtonUp(int button) {
         if (!fromMenu && button == 3) {
             super.handleButtonDown(1);
+        }
+        if (getTargetEditPart() == this.sourcePart) {
+            return false;
+        }
+        if (getTargetEditPart() instanceof ProcessPart) {
+            return false;
         }
         return super.handleButtonUp(button);
     }
