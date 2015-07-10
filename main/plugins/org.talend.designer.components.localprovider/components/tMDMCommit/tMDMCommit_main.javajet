@@ -21,7 +21,7 @@ imports="
 	
 	String conn = "";
 %>
-	Boolean useClientTransactionId = false;
+	Boolean useClientTransactionId_<%=cid%> = false;
 	<%conn = "TMDMService_" + connection;%>
 	
 	  org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
@@ -37,8 +37,8 @@ imports="
   	  }
 	
     if(conn_<%=cid%> != null){
-       useClientTransactionId = (Boolean)globalMap.get("useClientTransactionId_<%=connection%>");
-       if(null != useClientTransactionId && useClientTransactionId){
+       useClientTransactionId_<%=cid%> = (Boolean)globalMap.get("useClientTransactionId_<%=connection%>");
+       if(null != useClientTransactionId_<%=cid%> && useClientTransactionId_<%=cid%>){
 		  com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = null;
 		  java.util.Map threadRunResultMap = threadLocal.get();
 		  if(threadRunResultMap.get("mdmTransaction")!=null){

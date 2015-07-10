@@ -39,7 +39,7 @@ imports="
 %>       
 int nb_line_<%=cid %> = 0;
 int nb_line_rejected_<%=cid%> = 0;
-Boolean useClientTransactionId = false;
+Boolean useClientTransactionId_<%=cid%> = false;
 com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid %> = null;
 <%if(!usePartialUpdate){%>
 	<%if(addTaskID){%>
@@ -96,9 +96,9 @@ com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid %> = null
 	org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
 	org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("<%=conn%>");
 	
-	useClientTransactionId = (Boolean)globalMap.get("useClientTransactionId_<%=connection%>");
+	useClientTransactionId_<%=cid%> = (Boolean)globalMap.get("useClientTransactionId_<%=connection%>");
 	String mdmConnection_username_<%=cid %>=null,mdmConnection_password_<%=cid %>=null,mdmConnection_url_<%=cid %>=null;
-	if(null != useClientTransactionId && useClientTransactionId){
+	if(null != useClientTransactionId_<%=cid%> && useClientTransactionId_<%=cid%>){
 		java.util.Map threadRunResultMap = threadLocal.get();
 		if(threadRunResultMap.get("mdmTransaction")!=null){
 			mdmTransaction_<%=cid %> = (com.talend.mdm.transaction.client.MDMTransaction)threadRunResultMap.get("mdmTransaction");

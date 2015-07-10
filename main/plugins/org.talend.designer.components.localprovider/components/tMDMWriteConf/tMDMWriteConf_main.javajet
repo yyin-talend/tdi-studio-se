@@ -53,7 +53,7 @@ if (destination != null && !"".equals(destination)) {
 } 
 %>
 
-if(null != useClientTransactionId && useClientTransactionId){
+if(null != useClientTransactionId_<%=cid%> && useClientTransactionId_<%=cid%>){
 	if(mdmTransaction_<%=cid%> != null){
 		((org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>).
 		setHeader(new org.apache.axis.message.SOAPHeaderElement("http://www.talend.com/mdm", "transaction-id", mdmTransaction_<%=cid%>.getId()));
