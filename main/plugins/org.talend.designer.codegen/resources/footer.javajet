@@ -214,6 +214,12 @@
         %>
       @Test
         public void test<%=instance%>() throws java.lang.Exception{
+        <%
+        int assertNum = ProcessUtils.getAssertAmount(process);
+        %>
+         if(<%=assertNum%><=0){
+            throw new java.lang.Exception("There is no tAssert in your test case!");
+          }
             junitGlobalMap.put("tests.log",new String());
             junitGlobalMap.put("tests.nbFailure",new Integer(0));
             final <%=className %> <%=className %>Class = new <%=className %>();
