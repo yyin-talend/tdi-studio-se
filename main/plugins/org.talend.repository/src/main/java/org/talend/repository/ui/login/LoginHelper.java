@@ -44,6 +44,7 @@ import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.PasswordHelper;
+import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -68,6 +69,7 @@ import org.talend.core.services.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.registration.wizards.register.TalendForgeDialog;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
@@ -155,6 +157,25 @@ public class LoginHelper {
                     break;
                 }
             }
+        }
+    }
+
+    public static boolean isWorkspaceSame(ConnectionBean connectionBean) {
+        if (connectionBean == null) {
+            return false;
+        }
+
+        if (RepositoryPlugin.getDefault().getBundle().getBundleContext().getProperty("osgi.dev") != null) { //$NON-NLS-1$
+            // in development, always tell the workspace is the same as before.
+            return true;
+        }
+        String workspace = connectionBean.getWorkSpace();
+
+        String defaultPath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath();
+        if (EnvironmentUtils.isWindowsSystem()) {
+            return workspace.equalsIgnoreCase(defaultPath);
+        } else {
+            return workspace.equals(defaultPath);// workspace.equals(filePath1) || workspace.equals(filePath2);
         }
     }
 

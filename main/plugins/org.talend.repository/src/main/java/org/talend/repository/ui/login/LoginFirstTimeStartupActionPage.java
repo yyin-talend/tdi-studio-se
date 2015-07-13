@@ -311,7 +311,17 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
                         if (defaultConnectionBean.isComplete()) {
                             LoginHelper.getInstance().setStoredConnections(storedConnections);
                             LoginHelper.getInstance().saveConnections(storedConnections);
+
+                            boolean shouldGotoNextPage = false;
                             if (LoginHelper.isRemoteConnection(defaultConnectionBean)) {
+                                shouldGotoNextPage = true;
+                            } else if (!LoginHelper.isWorkspaceSame(defaultConnectionBean)) {
+                                shouldGotoNextPage = true;
+                            } else {
+                                shouldGotoNextPage = false;
+                            }
+
+                            if (shouldGotoNextPage) {
                                 try {
                                     gotoNextPage();
                                     return;
