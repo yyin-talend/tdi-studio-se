@@ -61,6 +61,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
@@ -84,6 +86,7 @@ import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.SQLPatternUtils;
+import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -1157,8 +1160,36 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      */
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
+        boolean needRefresh = false;
+        boolean modifySQL = true;
+        if (event.getSource() instanceof SQLPatternItem && event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+            needRefresh = true;
+            modifySQL = false;
+            //if still have sql template editor to be opened.
+            IEditorReference[] currentOpenedEditors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .getEditorReferences();
+            if (currentOpenedEditors != null) {
+                for (IEditorReference editor : currentOpenedEditors) {
+                    try {
+                        RepositoryEditorInput repoEditorInput = (RepositoryEditorInput) editor.getEditorInput();
+                        if (repoEditorInput != null) {
+                            Item item = repoEditorInput.getItem();
+                            ERepositoryObjectType type = ERepositoryObjectType.getItemType(item);
+                            if (type != null && ERepositoryObjectType.SQLPATTERNS.equals(type)) {
+                                modifySQL = true;
+                            }
+                        }
+                    } catch (PartInitException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        }
         if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-            refreshComboContent(this.tableViewer, true);
+            needRefresh = true;
+        }
+        if (needRefresh) {
+            refreshComboContent(this.tableViewer, modifySQL);
             refresh();
         }
     }
