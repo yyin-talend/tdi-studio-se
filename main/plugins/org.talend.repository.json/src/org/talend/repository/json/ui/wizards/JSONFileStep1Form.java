@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MalformedPatternException;
@@ -34,6 +35,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -50,6 +52,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
@@ -75,6 +78,9 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.json.util.JSONUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.AbstractTreePopulator;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonReadbyMode;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.JsonTreePopulator;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
 
 /**
@@ -94,6 +100,8 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
      * Main Fields.
      */
 
+    private LabelledCombo readbyCombo;
+
     private LabelledFileField fileFieldJSON;
 
     private LabelledText fieldMaskXPattern;
@@ -109,6 +117,8 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
     private transient Tree availableJSONTree;
 
+    private transient TreeViewer availableJSONTreeViewer;
+
     private ATreeNode treeNode;
 
     private UtilsButton cancelButton;
@@ -117,7 +127,11 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
     private boolean creation;
 
-    private TreePopulator treePopulator;
+    private AbstractTreePopulator treePopulator;
+
+    private TreePopulator xmlTreePopulator;
+
+    private JsonTreePopulator jsonTreePopulator;
 
     private LabelledCombo encodingCombo;
 
@@ -128,6 +142,10 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
     private boolean isModifing = true;
 
     private JSONWizard wizard;
+
+    private int limit;
+
+    private Text commonNodesLimitation;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -153,7 +171,12 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
     @Override
     protected void initialize() {
         getConnection().setInputModel(true);
-        this.treePopulator = new TreePopulator(availableJSONTree);
+        availableJSONTreeViewer = new TreeViewer(availableJSONTree);
+        this.xmlTreePopulator = new TreePopulator(availableJSONTreeViewer);
+        // this.xmlTreePopulator.configureDefaultTreeViewer();
+        this.jsonTreePopulator = new JsonTreePopulator(availableJSONTreeViewer);
+        // this.jsonTreePopulator.configureDefaultTreeViewer();
+        this.availableJSONTreeViewer.setUseHashlookup(true);
 
         // add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorJSON
         // if (getConnection().getXsdFilePath() != null) {
@@ -162,6 +185,20 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         // this.treePopulator.populateTree(fileFieldXsd.getText(), treeNode);
         // checkFieldsValue();
         // }
+
+        EJsonReadbyMode eJsonReadbyMode = null;
+
+        if (getConnection().getReadbyMode() != null) {
+            eJsonReadbyMode = EJsonReadbyMode.getEJsonReadbyModeByValue(getConnection().getReadbyMode());
+        }
+        if (eJsonReadbyMode == null) {
+            eJsonReadbyMode = getDefaultJsonReadbyMode();
+        }
+        // JSONFileStep1Form.this.wizard.setReadbyMode(readbyCombo.getText());
+        readbyCombo.setText(eJsonReadbyMode.getDisplayName());
+        getConnection().setReadbyMode(eJsonReadbyMode.getValue());
+        JSONFileStep1Form.this.wizard.setReadbyMode(eJsonReadbyMode.getValue());
+
         if (getConnection().getJSONFilePath() != null) {
             fileFieldJSON.setText(getConnection().getJSONFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
             // init the fileViewer
@@ -178,14 +215,8 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 jsonFilePath = tempJSONXsdPath;
             }
             String tempxml = null;
-            if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
-                    || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
-                tempxml = JSONUtil.changeJsonToXml(jsonFilePath);
-                JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
-            } else {
-                tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
-            }
-            valid = this.treePopulator.populateTree(tempxml, treeNode);
+            tempxml = getFilePath4Populate(jsonFilePath);
+            switchPopulator(JSONFileStep1Form.this.wizard.getReadbyMode(), tempxml);
 
         }
 
@@ -202,6 +233,42 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         // }
         adaptFormToEditable();
 
+    }
+
+    private String getFilePath4Populate(String jsonFilePath) {
+        String tempxml = null;
+        if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
+                || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
+            if (EJsonReadbyMode.XPATH.getValue().equals(JSONFileStep1Form.this.wizard.getReadbyMode())) {
+                tempxml = JSONUtil.changeJsonToXml(jsonFilePath);
+            } else {
+                tempxml = jsonFilePath;
+            }
+            JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+        } else {
+            tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
+        }
+        return tempxml;
+    }
+
+    private void switchPopulator(String readbyMode, String filePath) {
+        if (EJsonReadbyMode.XPATH.getValue().equals(readbyMode)) {
+            JSONFileStep1Form.this.wizard.setReadbyMode(readbyMode);
+            this.treePopulator = xmlTreePopulator;
+        } else if (EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode)) {
+            JSONFileStep1Form.this.wizard.setReadbyMode(readbyMode);
+            this.treePopulator = jsonTreePopulator;
+        } else {
+            CommonExceptionHandler.process(new Exception("Unknown ReadBy mode"));
+            JSONFileStep1Form.this.wizard.setReadbyMode(EJsonReadbyMode.JSONPATH.getValue());
+            this.treePopulator = jsonTreePopulator;
+        }
+        getConnection().setReadbyMode(readbyMode);
+        treePopulator.setLimit(limit);
+        this.treePopulator.configureDefaultTreeViewer();
+        if (filePath != null && !filePath.isEmpty()) {
+            valid = this.treePopulator.populateTree(filePath, treeNode);
+        }
     }
 
     /**
@@ -254,6 +321,9 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         // labelIsGuess.setText(Messages.getString("JSONFileStep1.checkBoxIsGuess"));
 
         // file Field JSON
+        List<String> readbyModeValues = EJsonReadbyMode.getUsableReadbyModeValues();
+        readbyCombo = new LabelledCombo(compositeFileLocation, "Read By", "Read By",
+                readbyModeValues.toArray(new String[readbyModeValues.size()]), 2, true, SWT.READ_ONLY);
         String[] JSONExtensions = { "*.JSON", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
         fileFieldJSON = new LabelledFileField(compositeFileLocation, "Json", //$NON-NLS-1$
                 JSONExtensions);
@@ -271,7 +341,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
         Label labelLimitation = new Label(limitation, SWT.LEFT);
         labelLimitation.setText("Limit"); //$NON-NLS-1$
-        final Text commonNodesLimitation = new Text(limitation, SWT.BORDER);
+        commonNodesLimitation = new Text(limitation, SWT.BORDER);
         GridData gd = new GridData(18, 12);
         commonNodesLimitation.setLayoutData(gd);
         commonNodesLimitation.setText(String.valueOf(TreePopulator.getLimit()));
@@ -286,31 +356,17 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 if ((!str.matches("\\d+")) || (Integer.valueOf(str) < 0)) { //$NON-NLS-1$
                     commonNodesLimitation.setText(String.valueOf(treePopulator.getLimit()));
                 } else {
-                    treePopulator.setLimit(Integer.valueOf(str));
+                    limit = Integer.valueOf(str);
                 }
 
+                String tempxml = null;
                 if (tempJSONXsdPath != null && getConnection().getFileContent() != null
                         && getConnection().getFileContent().length > 0) {
-                    String tempxml = null;
-                    if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
-                            || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
-                        tempxml = JSONUtil.changeJsonToXml(tempJSONXsdPath);
-                        JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
-                    } else {
-                        tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
-                    }
-                    valid = treePopulator.populateTree(tempxml, treeNode);
+                    tempxml = getFilePath4Populate(tempJSONXsdPath);
                 } else {
-                    String tempxml = null;
-                    if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
-                            || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
-                        tempxml = JSONUtil.changeJsonToXml(fileFieldJSON.getText());
-                        JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
-                    } else {
-                        tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
-                    }
-                    valid = treePopulator.populateTree(tempxml, treeNode);
+                    tempxml = getFilePath4Populate(fileFieldJSON.getText());
                 }
+                switchPopulator(JSONFileStep1Form.this.wizard.getReadbyMode(), tempxml);
                 checkFieldsValue();
 
             }
@@ -420,47 +476,65 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         // }
         // });
 
+        readbyCombo.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                EJsonReadbyMode eJsonReadbyMode = EJsonReadbyMode.getEJsonReadbyModeByDisplayName(readbyCombo.getText());
+                if (eJsonReadbyMode == null) {
+                    eJsonReadbyMode = getDefaultJsonReadbyMode();
+                }
+                String readbyMode = eJsonReadbyMode.getValue();
+                JSONFileStep1Form.this.wizard.setReadbyMode(readbyMode);
+                String jsonPath = fileFieldJSON.getText();
+                String text = validateJsonFilePath(jsonPath);
+                if (text == null || text.isEmpty()) {
+                    return;
+                }
+
+                String tempxml = null;
+
+                if (EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode)) {
+                    tempxml = text;
+                } else {
+                    tempxml = JSONUtil.changeJsonToXml(text);
+                }
+                JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+                switchPopulator(readbyMode, tempxml);
+            }
+        });
+
         // fileFieldJSON : Event modifyText
         fileFieldJSON.addModifyListener(new ModifyListener() {
 
             @Override
             public void modifyText(final ModifyEvent e) {
                 String jsonPath = fileFieldJSON.getText();
-                try {
-                    valid = jsonPath != null && !jsonPath.isEmpty()
-                            && (new File(jsonPath).exists() || new URL(jsonPath).openStream() != null);
+                String text = validateJsonFilePath(jsonPath);
+                if (text == null || text.isEmpty()) {
+                    return;
+                }
 
-                } catch (MalformedURLException e1) {
-                    valid = false;
-                } catch (IOException e1) {
-                    valid = false;
+                String tempxml = null;
+                String readbyMode = JSONFileStep1Form.this.wizard.getReadbyMode();
+
+                if (EJsonReadbyMode.JSONPATH.getValue().equals(readbyMode)) {
+                    tempxml = text;
+                } else {
+                    tempxml = JSONUtil.changeJsonToXml(text);
                 }
-                // add for bug TDI-20432
-                checkFieldsValue();
-                if (!valid) {
-                    return;
-                }
-                String text = jsonPath;
-                if (isContextMode()) {
-                    ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
-                            connectionItem.getConnection(), true);
-                    text = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, text));
-                }
-                // getConnection().setJSONFilePath(PathUtils.getPortablePath(JSONXsdFilePath.getText()));
                 File file = new File(text);
-                if (file.isDirectory()) {
-                    valid = false;
-                    checkFieldsValue();
-                    return;
-                }
-                // if (file.exists()) {
-                // if (file.exists()) {
-                String tempxml = JSONUtil.changeJsonToXml(text);
                 if (!file.exists()) {
                     file = new File(JSONUtil.tempJSONXsdPath);
                 }
                 JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
-                valid = treePopulator.populateTree(tempxml, treeNode);
+                String limitString = commonNodesLimitation.getText();
+                try {
+                    limit = Integer.valueOf(limitString);
+                } catch (Exception excpt) {
+                    // nothing need to do
+                }
+                switchPopulator(readbyMode, tempxml);
                 // }
                 // add for bug TDI-20432
                 checkFieldsValue();
@@ -599,6 +673,40 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
             }
         });
 
+    }
+
+    private String validateJsonFilePath(String jsonPath) {
+        try {
+            valid = jsonPath != null && !jsonPath.isEmpty()
+                    && (new File(jsonPath).exists() || new URL(jsonPath).openStream() != null);
+
+        } catch (MalformedURLException e1) {
+            valid = false;
+        } catch (IOException e1) {
+            valid = false;
+        }
+        // add for bug TDI-20432
+        checkFieldsValue();
+        if (!valid) {
+            return null;
+        }
+        String text = jsonPath;
+        if (isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
+            text = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, text));
+        }
+        // getConnection().setJSONFilePath(PathUtils.getPortablePath(JSONXsdFilePath.getText()));
+        File file = new File(text);
+        if (file.isDirectory()) {
+            valid = false;
+            checkFieldsValue();
+            return null;
+        }
+        return text;
+    }
+
+    private EJsonReadbyMode getDefaultJsonReadbyMode() {
+        return EJsonReadbyMode.JSONPATH;
     }
 
     /**

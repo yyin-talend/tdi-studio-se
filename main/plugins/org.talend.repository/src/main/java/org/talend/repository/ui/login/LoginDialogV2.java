@@ -292,8 +292,10 @@ public class LoginDialogV2 extends TrayDialog {
         Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
         if (projects == null || projects.length == 0) {
             List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
-            if (storedConnections == null || storedConnections.isEmpty()
-                    || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)))) {
+            if (storedConnections == null
+                    || storedConnections.isEmpty()
+                    || (storedConnections.size() == 1 && !LoginHelper.isRemoteConnection(storedConnections.get(0)) && LoginHelper
+                            .isWorkspaceSame(storedConnections.get(0)))) {
                 // for local license case
                 loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
             }

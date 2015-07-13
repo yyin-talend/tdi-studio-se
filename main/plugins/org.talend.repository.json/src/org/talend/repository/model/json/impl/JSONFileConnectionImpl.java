@@ -39,6 +39,7 @@ import org.talend.repository.model.json.JsonPackage;
  *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#isInputModel <em>Input Model</em>}</li>
  *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getOutputFilePath <em>Output File Path</em>}</li>
  *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getFileContent <em>File Content</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getReadbyMode <em>Readby Mode</em>}</li>
  * </ul>
  * </p>
  *
@@ -225,6 +226,26 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
      * @ordered
      */
     protected byte[] fileContent = FILE_CONTENT_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getReadbyMode() <em>Readby Mode</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getReadbyMode()
+     * @generated
+     * @ordered
+     */
+    protected static final String READBY_MODE_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getReadbyMode() <em>Readby Mode</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getReadbyMode()
+     * @generated
+     * @ordered
+     */
+    protected String readbyMode = READBY_MODE_EDEFAULT;
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -421,6 +442,27 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     }
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getReadbyMode() {
+        return readbyMode;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setReadbyMode(String newReadbyMode) {
+        String oldReadbyMode = readbyMode;
+        readbyMode = newReadbyMode;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__READBY_MODE, oldReadbyMode, readbyMode));
+    }
+
+    /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
@@ -482,6 +524,8 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
                 return getOutputFilePath();
             case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
                 return getFileContent();
+            case JsonPackage.JSON_FILE_CONNECTION__READBY_MODE:
+                return getReadbyMode();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -531,6 +575,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
             case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
                 setFileContent((byte[])newValue);
                 return;
+            case JsonPackage.JSON_FILE_CONNECTION__READBY_MODE:
+                setReadbyMode((String)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -575,6 +622,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
             case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
                 setFileContent(FILE_CONTENT_EDEFAULT);
                 return;
+            case JsonPackage.JSON_FILE_CONNECTION__READBY_MODE:
+                setReadbyMode(READBY_MODE_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -608,6 +658,8 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
                 return OUTPUT_FILE_PATH_EDEFAULT == null ? outputFilePath != null : !OUTPUT_FILE_PATH_EDEFAULT.equals(outputFilePath);
             case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
                 return FILE_CONTENT_EDEFAULT == null ? fileContent != null : !FILE_CONTENT_EDEFAULT.equals(fileContent);
+            case JsonPackage.JSON_FILE_CONNECTION__READBY_MODE:
+                return READBY_MODE_EDEFAULT == null ? readbyMode != null : !READBY_MODE_EDEFAULT.equals(readbyMode);
         }
         return super.eIsSet(featureID);
     }
@@ -635,6 +687,8 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
         result.append(outputFilePath);
         result.append(", fileContent: ");
         result.append(fileContent);
+        result.append(", readbyMode: ");
+        result.append(readbyMode);
         result.append(')');
         return result.toString();
     }

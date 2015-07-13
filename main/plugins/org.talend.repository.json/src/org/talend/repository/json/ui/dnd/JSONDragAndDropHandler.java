@@ -122,7 +122,7 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
                 return xmlDesc.getLimitBoucle().toString();
             }
         }
-        if (value.equals("XPATH_QUERY")) { //$NON-NLS-1$
+        if (value.equals("XPATH_QUERY")) { //$NON-NLS-1$ 
             if (xmlDesc == null) {
                 return ""; //$NON-NLS-1$
             } else {
@@ -134,6 +134,9 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
                     return TalendQuoteUtils.addQuotes(xpath);
                 }
             }
+        }
+        if (value.equals("READ_BY")) { //$NON-NLS-1$
+            return connection.getReadbyMode();
         }
         if (value.equals("ENCODING")) { //$NON-NLS-1$
             if (isContextMode(connection, connection.getEncoding())) {

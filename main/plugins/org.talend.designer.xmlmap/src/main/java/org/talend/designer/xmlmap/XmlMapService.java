@@ -368,9 +368,9 @@ public class XmlMapService implements IXmlMapService {
                 }
 
                 if (oriConn instanceof Connection) {
-                    XmlMapConnectionBuilder.createConnection((AbstractNode) source, (AbstractNode) target, newXmlMapData);
+                    new XmlMapConnectionBuilder().createConnection((AbstractNode) source, (AbstractNode) target, newXmlMapData);
                 } else if (oriConn instanceof LookupConnection) {
-                    XmlMapConnectionBuilder.createLookupConnection((TreeNode) source, (TreeNode) target, newXmlMapData);
+                    new XmlMapConnectionBuilder().createLookupConnection((TreeNode) source, (TreeNode) target, newXmlMapData);
                 }
             } else if (oriConn instanceof FilterConnection) {
                 AbstractNode sourceNode = ((FilterConnection) oriConn).getSource();
@@ -391,7 +391,8 @@ public class XmlMapService implements IXmlMapService {
                     nodeMaps.put(targetNode, target);
                 }
 
-                XmlMapConnectionBuilder.createFilterConnection((AbstractNode) source, (AbstractInOutTree) target, newXmlMapData);
+                new XmlMapConnectionBuilder().createFilterConnection((AbstractNode) source, (AbstractInOutTree) target,
+                        newXmlMapData);
             }
         }
 

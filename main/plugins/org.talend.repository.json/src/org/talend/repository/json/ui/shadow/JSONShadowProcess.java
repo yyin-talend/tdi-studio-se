@@ -72,6 +72,7 @@ public class JSONShadowProcess<T extends IProcessDescription> {
      * 
      */
     public static enum EJSONShadowProcessType {
+        FILE_JSON,
         FILE_XML;
 
         private EJSONShadowProcessType() {
@@ -165,6 +166,18 @@ public class JSONShadowProcess<T extends IProcessDescription> {
             FileInputXmlNode inXmlNode = new FileInputXmlNode(inPath, description.getLoopQuery(), description.getMapping(),
                     description.getLoopLimit(), description.getEncoding());
             ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
+            break;
+        case FILE_JSON:
+            List<Map<String, String>> newmappings4Jsonpath = new ArrayList<Map<String, String>>();
+            List<Map<String, String>> oldmappings4Jsonpath = description.getMapping();
+            for (int i = 0; i < oldmappings4Jsonpath.size(); i++) {
+                Map<String, String> map = oldmappings4Jsonpath.get(i);
+                map.put("SCHEMA_COLUMN", "row" + i); //$NON-NLS-1$ //$NON-NLS-2$
+                newmappings4Jsonpath.add(map);
+            }
+            FileInputJsonNode4Input inJsonNode = new FileInputJsonNode4Input(inPath, description.getLoopQuery(),
+                    description.getMapping(), description.getLoopLimit(), description.getEncoding(), description.getReadbyMode());
+            ps = new FileinToDelimitedProcess<FileInputJsonNode4Input>(inJsonNode, outNode);
             break;
         default:
             break;

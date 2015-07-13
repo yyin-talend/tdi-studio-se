@@ -39,6 +39,15 @@
       </repositoryNode>
    </extension>
    <extension
+       point="org.talend.core.runtime.filepreview_provider">
+      <preview
+            class="org.talend.repository.json.ui.shadow.JSONShadowFilePreview"
+            language="java"
+            type="FILE_JSON"
+            >
+      </preview>
+   </extension>
+   <extension
          point="org.talend.core.repository.repository_content">
       <RepositoryContent
             class="org.talend.repository.json.node.JSONRepositoryContentHandler">
@@ -193,5 +202,17 @@
               name="xom-1.2.7.jar"
               required="true">
         </libraryNeeded>
+   </extension>
+   <extension
+         point="org.talend.core.migrationTask">
+      <projecttask
+            beforeLogon="false"
+            breaks="6.0.0"
+            class="org.talend.repository.json.migrations.JsonPathMigrationTask"
+            description="Set default readby mode"
+            id="org.talend.repository.json.migrations.JsonPathMigrationTask"
+            name="Set default readby mode"
+            version="6.0.1">
+      </projecttask>
    </extension>
 </plugin>

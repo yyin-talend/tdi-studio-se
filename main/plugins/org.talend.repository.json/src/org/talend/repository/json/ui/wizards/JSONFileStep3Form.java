@@ -66,6 +66,7 @@ import org.talend.repository.json.util.JSONConnectionContextUtils;
 import org.talend.repository.json.util.JSONUtil;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.SchemaTarget;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonReadbyMode;
 
 /**
  * @author ocarbone
@@ -323,8 +324,12 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
         if (wizard != null) {
             processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, wizard.getTempJsonPath());
         } else {
-            processDescription = JSONShadowProcessHelper.getProcessDescription(connection2,
-                    JSONUtil.changeJsonToXml(connection2.getJSONFilePath()));
+            if (EJsonReadbyMode.JSONPATH.getValue().equals(connection2.getReadbyMode())) {
+                processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, connection2.getJSONFilePath());
+            } else {
+                processDescription = JSONShadowProcessHelper.getProcessDescription(connection2,
+                        JSONUtil.changeJsonToXml(connection2.getJSONFilePath()));
+            }
         }
         return processDescription;
     }
@@ -351,7 +356,12 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
         try {
             informationLabel.setText("   " + "Guess in progress...");
 
-            CsvArray csvArray = JSONShadowProcessHelper.getCsvArray(getProcessDescription(false), "FILE_XML"); //$NON-NLS-1$
+            CsvArray csvArray = null;
+            if (EJsonReadbyMode.JSONPATH.getValue().equals(connection2.getReadbyMode())) {
+                csvArray = JSONShadowProcessHelper.getCsvArray(getProcessDescription(false), "FILE_JSON"); //$NON-NLS-1$
+            } else {
+                csvArray = JSONShadowProcessHelper.getCsvArray(getProcessDescription(false), "FILE_XML"); //$NON-NLS-1$
+            }
             if (csvArray == null) {
                 informationLabel.setText("   " + "Guess failure");
 
