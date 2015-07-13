@@ -60,7 +60,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
     private static Logger log = Logger.getLogger(Processor.class);
 
-    public static final String CTX_ARG = TalendProcessArgumentConstant.CMD_ARG_CONTEXT_NAME; //$NON-NLS-1$
+    public static final String CTX_ARG = TalendProcessArgumentConstant.CMD_ARG_CONTEXT_NAME;
 
     private static final String STAT_PORT_ARG = "--stat_port="; //$NON-NLS-1$
 
@@ -190,6 +190,11 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
             return exec(Level.INFO, statisticsPort, tracePort);
         }
         return exec(Level.INFO, statisticsPort, tracePort, optionsParam);
+    }
+
+    @Override
+    public void cleanWorkingDirectory() throws SecurityException {
+        // Nothing to clean.
     }
 
     /**

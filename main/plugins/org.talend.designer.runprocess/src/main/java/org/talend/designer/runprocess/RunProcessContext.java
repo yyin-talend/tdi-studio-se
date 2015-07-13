@@ -186,6 +186,8 @@ public class RunProcessContext {
 
     private List<PerformanceMonitor> perMonitorList = new ArrayList<PerformanceMonitor>();
 
+    protected IProcessor processor;
+
     /** trace mananger */
     private TraceConnectionsManager traceConnectionsManager;
 
@@ -668,16 +670,35 @@ public class RunProcessContext {
         }
     }
 
+    public void cleanWorkingDirectory() {
+        final IProcessor fProcessor = getProcessor(process, process.getProperty());
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (isRunning()) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                fProcessor.cleanWorkingDirectory();
+            }
+
+        }).start();
+    }
+
     /**
      * DOC amaumont Comment method "getProcessor".
      * 
      * @return
      */
     protected IProcessor getProcessor(IProcess process, Property property) {
-        // if (ComponentCategory.CATEGORY_4_DI.getName().equals(process.getComponentsType())) {
-        // return new ExportModelJavaProcessor(process, property, true);
-        // }
-        return ProcessorUtilities.getProcessor(process, property);
+        if (processor == null) {
+            processor = ProcessorUtilities.getProcessor(process, property);
+        }
+        return processor;
     }
 
     public synchronized int kill() {

@@ -54,6 +54,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
+import org.talend.utils.io.FilesUtils;
 
 /**
  * created by rdubois on 27 janv. 2015 Detailled comment
@@ -64,6 +65,8 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
     protected String windowsAddition, unixAddition;
 
     protected String unzipFolder;
+
+    protected String archive;
 
     /**
      * DOC rdubois BigDataJavaProcessor constructor comment.
@@ -92,13 +95,22 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
             IProcessMessageManager processMessageManager) throws ProcessorException {
         ProcessItem processItem = (ProcessItem) property.getItem();
         // Step 1: Export Map/Reduce job
-        String archive = buildExportZip(processItem, monitor);
+        archive = buildExportZip(processItem, monitor);
         // Step 2: Deploy in local(Maybe just unpack)
         unzipFolder = unzipAndDeploy(archive);
         // Step 3: Run Map/Reduce job from given folder.
 
         return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort,
                 optionsParam);
+    }
+
+    @Override
+    public void cleanWorkingDirectory() throws SecurityException {
+        File archiveFile = new File(archive);
+        if (archiveFile != null && archiveFile.exists()) {
+            archiveFile.delete();
+        }
+        FilesUtils.removeFolder(unzipFolder, true);
     }
 
     @Override

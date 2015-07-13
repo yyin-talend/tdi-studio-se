@@ -1448,6 +1448,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         checkSaveBeforeRunSelection();
         processContext.setSelectedContext(processManager.getSelectContext());
         processContext.exec(processManager.getProcessShell());
+        processContext.cleanWorkingDirectory();
 
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
         ILaunch[] launches = manager.getLaunches();
@@ -1579,6 +1580,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                                                 ExceptionHandler.process(e);
                                             }
                                             processContext.setRunning(false);
+
                                         }
                                     }
                                     debugMode = false;
