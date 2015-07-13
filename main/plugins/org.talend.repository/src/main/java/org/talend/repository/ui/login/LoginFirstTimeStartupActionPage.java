@@ -311,7 +311,16 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
                         if (defaultConnectionBean.isComplete()) {
                             LoginHelper.getInstance().setStoredConnections(storedConnections);
                             LoginHelper.getInstance().saveConnections(storedConnections);
-                            setRepositoryContextInContext();
+                            if (LoginHelper.isRemoteConnection(defaultConnectionBean)) {
+                                try {
+                                    gotoNextPage();
+                                    return;
+                                } catch (Throwable e1) {
+                                    CommonExceptionHandler.process(e1);
+                                }
+                            } else {
+                                setRepositoryContextInContext();
+                            }
                         } else {
                             iErrorManager.setManageConnectionsError(Messages
                                     .getString("LoginFirstTimeStartupActionPage.manageConnection.incomplete")); //$NON-NLS-1$
@@ -322,6 +331,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
                             LoginHelper.getInstance().setStoredConnections(storedConnections);
                             LoginHelper.getInstance().saveConnections(storedConnections);
                             gotoNextPage();
+                            return;
                         } catch (Throwable e1) {
                             CommonExceptionHandler.process(e1);
                         }
