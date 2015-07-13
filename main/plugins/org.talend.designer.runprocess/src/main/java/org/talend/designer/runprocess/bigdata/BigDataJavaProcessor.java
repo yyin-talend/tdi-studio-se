@@ -106,11 +106,15 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
     @Override
     public void cleanWorkingDirectory() throws SecurityException {
-        File archiveFile = new File(archive);
-        if (archiveFile != null && archiveFile.exists()) {
-            archiveFile.delete();
+        if (archive != null) {
+            File archiveFile = new File(archive);
+            if (archiveFile != null && archiveFile.exists()) {
+                archiveFile.delete();
+            }
         }
-        FilesUtils.removeFolder(unzipFolder, true);
+        if (unzipFolder != null) {
+            FilesUtils.removeFolder(unzipFolder, true);
+        }
     }
 
     @Override
