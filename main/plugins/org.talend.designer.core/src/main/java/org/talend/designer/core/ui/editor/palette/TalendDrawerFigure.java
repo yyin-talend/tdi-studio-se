@@ -44,14 +44,13 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.CommonExceptionHandler;
-import org.talend.themes.core.elements.interfaces.ICSSStylingChangedListener;
 import org.talend.themes.core.elements.stylesettings.CommonCSSStyleSetting;
 import org.talend.themes.core.elements.stylesettings.TalendPaletteCSSStyleSetting;
 
 /**
  * 
  */
-public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChangedListener {
+public class TalendDrawerFigure extends DrawerFigure {
 
     protected Control control;
 
@@ -85,7 +84,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
 
         this.cssStyleSetting = cssStyleSetting;
         this.customizedCSSStyleSetting = new CustomizedCSSStyleSetting();
-        cssStyleSetting.addStylingChangeListener(this);
 
         applyChange(cssStyleSetting);
 
@@ -370,14 +368,6 @@ public class TalendDrawerFigure extends DrawerFigure implements ICSSStylingChang
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.themes.core.elements.interfaces.ICSSStylingChangedLisener#applyChange(org.talend.themes.core.elements
-     * .stylesettings.CommonCSSStyleSetting)
-     */
-    @Override
     public void applyChange(CommonCSSStyleSetting setting) {
         // this.X_OFFSET = cssStyleSetting.getxOffset();
         // this.COLOR_INCREMENT = cssStyleSetting.getColorIncrement();
