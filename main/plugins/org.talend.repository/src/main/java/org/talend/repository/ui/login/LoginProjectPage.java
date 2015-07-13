@@ -80,6 +80,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.repository.model.IRepositoryFactory;
@@ -1744,7 +1745,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     public String getBranch() {
         Project project = getProject();
-        if (branchesViewer != null && !branchesViewer.getSelection().isEmpty() && project != null) {
+        boolean isRemoteConnection = LoginHelper.isRemoteConnection(getConnection());
+        if (branchesViewer != null && isRemoteConnection && !branchesViewer.getSelection().isEmpty() && project != null) {
             IStructuredSelection ss = (IStructuredSelection) branchesViewer.getSelection();
             String branch = (String) ss.getFirstElement();
             /*
@@ -1754,6 +1756,32 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             // if (branchList != null && branchList.contains(branch)) {
             return branch;
             // }
+        } else if (!isRemoteConnection && project != null) {
+            List<ProjectReference> referenceProjects = project.getEmfProject().getReferencedProjects();
+            String currentBranch = null;
+            if (referenceProjects != null && !referenceProjects.isEmpty()) {
+                boolean allBranchesAreSame = true;
+                for (ProjectReference referenceProject : referenceProjects) {
+                    String branchFromReference = referenceProject.getBranch();
+                    if (currentBranch == null) {
+                        if (branchFromReference == null) {
+                            branchFromReference = ""; //$NON-NLS-1$
+                        }
+                        currentBranch = branchFromReference;
+                        continue;
+                    }
+                    if (!currentBranch.equals(branchFromReference)) {
+                        allBranchesAreSame = false;
+                        break;
+                    }
+                }
+                if (!allBranchesAreSame) {
+                    currentBranch = ""; //$NON-NLS-1$
+                }
+            } else {
+                currentBranch = ""; //$NON-NLS-1$
+            }
+            return currentBranch;
         }
         return null;
     }
