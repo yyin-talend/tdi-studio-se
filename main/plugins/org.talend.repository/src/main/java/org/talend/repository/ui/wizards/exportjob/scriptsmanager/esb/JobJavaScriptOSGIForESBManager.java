@@ -385,7 +385,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     private static boolean isTalendStepTemplate(ProcessItem processItem) {
-        return null != EmfModelUtils.getComponentByName(processItem, "tActionInput", "tActionOutput");
+        return null != EmfModelUtils.getComponentByName(processItem, "tActionInput", "tActionOutput", "tActionReject");
     }
 
     private static NodeType getRESTRequestComponent(ProcessItem processItem) {
