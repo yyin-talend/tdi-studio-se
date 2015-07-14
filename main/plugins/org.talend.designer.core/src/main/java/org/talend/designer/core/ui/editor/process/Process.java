@@ -2978,7 +2978,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     @Override
     public void checkStartNodes() {
-        for (INode node : nodes) {
+        for (INode node : new ArrayList<INode>(nodes)) {
             if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 if (node.isActivate()) {
                     boolean checkIfCanBeStart = node.checkIfCanBeStart();
@@ -3248,7 +3248,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     private void getMatchingNodes(String componentName, List<INode> matchingNodes, List<INode> generatingNodes) {
-        for (INode node : generatingNodes) {
+        for (INode node : new ArrayList<INode>(generatingNodes)) {
             if (node.isActivate()) {
                 if (componentName == null) { // means all nodes will be
                     // returned
