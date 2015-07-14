@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.core.GlobalServiceRegister;
@@ -96,21 +97,27 @@ public class PropertyChangeCommand extends Command {
         }
     };
 
-    // for bug TDI-32692,the ExecutionLimiterImproved could avoid some thread exception especially in duplicated issue TDI-32672.
+    // for bug TDI-32692
     private static ExecutionLimiterImproved checkProcess = new ExecutionLimiterImproved(500, true) {
 
         @Override
-        protected void execute(boolean isFinalExecution, Object data) {
+        protected void execute(boolean isFinalExecution, final Object data) {
             if (isFinalExecution) {
-                if (data instanceof IGraphicalNode) {
-                    ((IGraphicalNode) data).checkAndRefreshNode();
-                }
-                if (data instanceof IConnection) {
-                    IProcess process = ((IConnection) data).getSource().getProcess();
-                    if (process instanceof IProcess2) {
-                        ((IProcess2) process).checkProcess();
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (data instanceof IGraphicalNode) {
+                            ((IGraphicalNode) data).checkAndRefreshNode();
+                        }
+                        if (data instanceof IConnection) {
+                            IProcess process = ((IConnection) data).getSource().getProcess();
+                            if (process instanceof IProcess2) {
+                                ((IProcess2) process).checkProcess();
+                            }
+                        }
                     }
-                }
+                });
             }
         }
     };
