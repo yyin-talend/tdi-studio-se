@@ -430,7 +430,7 @@ public class PropertyChangeCommand extends Command {
             }
         }
         updateRelativeNodesIfNeeded(currentParam);
-        
+
         checkProcess.startIfExecutable(elem);
 
         // See feature 3902
@@ -684,61 +684,61 @@ public class PropertyChangeCommand extends Command {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         testedParam.setValueToDefault(node.getElementParameters());
                         newMetadataTable = ((IMetadataTable) testedParam.getValue()).clone(true);
+
+                        if (metadataTable != null && newMetadataTable != null) {
+                            newMetadataTable.setTableName(metadataTable.getTableName());
+                            newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
+
+                            // condition to know if it needs to clear the table or not to get the new table:
+                            // if table have any non-custom column or if "newMetadataTable" is empty, then clear
+                            boolean needClearTargetTable = newMetadataTable.getListColumns().isEmpty();
+                            if (!needClearTargetTable) {
+                                needClearTargetTable = false;
+                                for (IMetadataColumn column : newMetadataTable.getListColumns()) {
+                                    if (!column.isCustom()) {
+                                        needClearTargetTable = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (needClearTargetTable) {
+                                metadataTable.getListColumns().clear();
+                            }
+                            // remove all custom columns first, since new custom columns from default table will be
+                            // added
+                            // automatically
+                            List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+                            for (IMetadataColumn column : metadataTable.getListColumns()) {
+                                if (column.isCustom() || column.isReadOnly()) {
+                                    columnsToRemove.add(column);
+                                }
+                            }
+                            metadataTable.getListColumns().removeAll(columnsToRemove);
+
+                            boolean onlyHaveCustomInDefault = true;
+                            List<IMetadataColumn> customColumnsFromDefault = new ArrayList<IMetadataColumn>();
+                            for (IMetadataColumn column : newMetadataTable.getListColumns()) {
+                                if (!column.isCustom() && !column.isReadOnly()) {
+                                    onlyHaveCustomInDefault = false;
+                                } else {
+                                    customColumnsFromDefault.add(column);
+                                }
+                            }
+                            metadataTable.getListColumns().addAll(customColumnsFromDefault);
+                            if (onlyHaveCustomInDefault) {
+                                metadataTable.setReadOnly(newMetadataTable.isReadOnly());
+                                newMetadataTable = metadataTable;
+                            }
+                            ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, null, null,
+                                    newMetadataTable);
+                            changeMetadataCommands.add(changeMetadataCommand);
+                            changeMetadataCommand.execute(true);
+                        }
                     } else {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         if (testedParam.getName().equals("SCHEMA")) {//$NON-NLS-1$
                             newMetadataTable = metadataTable;
                         }
-                    }
-                    if (metadataTable != null && newMetadataTable != null) {
-                        newMetadataTable.setTableName(metadataTable.getTableName());
-                        newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
-
-                        // condition to know if it needs to clear the table or not to get the new table:
-                        // if table have any non-custom column or if "newMetadataTable" is empty, then clear
-
-                        boolean needClearTargetTable = newMetadataTable.getListColumns().isEmpty();
-                        if (!needClearTargetTable) {
-                            needClearTargetTable = false;
-                            for (IMetadataColumn column : newMetadataTable.getListColumns()) {
-                                if (!column.isCustom()) {
-                                    needClearTargetTable = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (needClearTargetTable) {
-                            metadataTable.getListColumns().clear();
-                        }
-
-                        // remove all custom columns first, since new custom columns from default table will be added
-                        // automatically
-                        List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
-                        for (IMetadataColumn column : metadataTable.getListColumns()) {
-                            if (column.isCustom() || column.isReadOnly()) {
-                                columnsToRemove.add(column);
-                            }
-                        }
-                        metadataTable.getListColumns().removeAll(columnsToRemove);
-
-                        boolean onlyHaveCustomInDefault = true;
-                        List<IMetadataColumn> customColumnsFromDefault = new ArrayList<IMetadataColumn>();
-                        for (IMetadataColumn column : newMetadataTable.getListColumns()) {
-                            if (!column.isCustom() && !column.isReadOnly()) {
-                                onlyHaveCustomInDefault = false;
-                            } else {
-                                customColumnsFromDefault.add(column);
-                            }
-                        }
-                        metadataTable.getListColumns().addAll(customColumnsFromDefault);
-                        if (onlyHaveCustomInDefault) {
-                            metadataTable.setReadOnly(newMetadataTable.isReadOnly());
-                            newMetadataTable = metadataTable;
-                        }
-                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, null, null,
-                                newMetadataTable);
-                        changeMetadataCommands.add(changeMetadataCommand);
-                        changeMetadataCommand.execute(true);
                     }
                 }
             }
