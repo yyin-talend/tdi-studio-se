@@ -152,11 +152,13 @@ public class ConnectionDeleteCommand extends Command {
 
     private void collpseJoblet(Connection conn) {
         INode source = conn.getSource();
-        if ((source instanceof Node) && ((Node) source).isJoblet()) {
+        if ((source instanceof Node) && ((Node) source).isJoblet()
+                && (((Node) source).getNodeContainer() instanceof JobletContainer)) {
             ((JobletContainer) ((Node) source).getNodeContainer()).setCollapsed(true);
         }
         INode target = conn.getTarget();
-        if ((target instanceof Node) && ((Node) target).isJoblet()) {
+        if ((target instanceof Node) && ((Node) target).isJoblet()
+                && (((Node) target).getNodeContainer() instanceof JobletContainer)) {
             ((JobletContainer) ((Node) target).getNodeContainer()).setCollapsed(true);
         }
     }

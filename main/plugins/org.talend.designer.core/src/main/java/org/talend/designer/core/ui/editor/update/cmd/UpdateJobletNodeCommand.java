@@ -124,7 +124,9 @@ public class UpdateJobletNodeCommand extends Command {
                                     if (result.isNeedReloadJoblet()) {
                                         reloadNode(currentNode, newComponent);
                                     }
-                                    ((JobletContainer) currentNode.getNodeContainer()).updateJobletNodes(true);
+                                    if (currentNode.getNodeContainer() instanceof JobletContainer) {
+                                        ((JobletContainer) currentNode.getNodeContainer()).updateJobletNodes(true);
+                                    }
                                 } else {
                                     reloadNode(currentNode, newComponent);
                                 }

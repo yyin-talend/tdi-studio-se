@@ -1358,6 +1358,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 for (NodeContainer container : ((SubjobContainer) element).getNodeContainers()) {
                     if (container.getNode().isJoblet()) {
                         if (checkJoblet) {
+                            if (!(container instanceof JobletContainer)) {
+                                continue;
+                            }
                             JobletContainer jobletCon = (JobletContainer) container;
                             boolean needUpdate = false;
                             IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
