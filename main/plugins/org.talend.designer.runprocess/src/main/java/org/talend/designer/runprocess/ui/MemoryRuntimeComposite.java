@@ -114,6 +114,8 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
     
     private static Timer timer = new Timer();
     
+    private static boolean lock = false;
+    
     public MemoryRuntimeComposite(ProcessView viewPart, Composite parent, RunProcessContext processContext, int style) {
         super(parent, style);
         this.viewPart = viewPart;
@@ -228,7 +230,6 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         contextCombo.setLabelProvider(new ContextNameLabelProvider());
         initContextInput();
 
-//        chartComposite = new RuntimeGraphcsComposite(monitorComposite, processContextSelection, SWT.NULL);
         chartComposite = new RuntimeGraphcsComposite(monitorComposite, processContextSelection, SWT.NULL);
         FormLayout rgcLayout = new FormLayout();
         FormData charLayData = new FormData();
@@ -313,19 +314,26 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 
             @Override
             public void widgetSelected(SelectionEvent event) {
-            	if(processContext != null && !processContext.isRunning() && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))){
+            	if (lock && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))) {
+            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.anotherJobMonitoring"));
+            		return;
+            	}
+            	
+            	if (processContext != null && !processContext.isRunning() && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))){
             		runtimeButton.setEnabled(false);
             		exec();
             	}
             	if (processContext != null && processContext.isRunning()) {
             		if(runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))){
-            			//seems not work using background thread, fix later 
-            			acquireJVM();
-            			
+						if (!acquireJVM()) {
+							runtimeButton.setEnabled(true);
+							MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.noJobRunning"));
+							return;
+						}
             			initMonitoringModel();
             			refreshMonitorComposite();
             			processContext.setMonitoring(true);
-            			setRuntimeButtonByStatus(!processContext.isMonitoring());
+            			setRuntimeButtonByStatus(false);
             			
             			if(periodCombo.isEnabled() && periodCombo.getSelectionIndex()!=0){
             				startCustomerGCSchedule();
@@ -334,11 +342,13 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
             			String content = "Start time : "+ new SimpleDateFormat("hh:mm:ss a MM/dd/YYYY").format(new Date())+"\r\n";
             			messageManager.setStartMessage(content, getDisplay().getSystemColor(SWT.COLOR_BLUE), getDisplay().getSystemColor(SWT.COLOR_WHITE));
             			((RuntimeGraphcsComposite)chartComposite).displayReportField();
+            			lock = true;
             			
             		}else if(runtimeButton.getText().equals(Messages.getString("ProcessComposite.kill"))){
             			processContext.kill();
             			processContext.setMonitoring(false);
             			setRuntimeButtonByStatus(!processContext.isMonitoring());
+            			lock = false;
             		}
 //                    runtimeButton.setEnabled(!processContext.isMonitoring());
             	} else {
@@ -423,14 +433,14 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 		timer.schedule(gcTask, interval*1000, interval*1000);
 	}
 	
-	private void acquireJVM() {
+	private boolean acquireJVM() {
 		long startTime = System.currentTimeMillis();
 		long endTime;
 		
 		while(true){
 			System.out.println("background thread searching...");
 			if(initCurrentActiveJobJvm()){
-				break;
+				return true;
 			}
 			try {
 				Thread.sleep(100);
@@ -439,9 +449,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 			}
 			endTime = System.currentTimeMillis();
 			if(endTime - startTime > 10*1000){
-				MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.noJobRunning"));
-				runtimeButton.setEnabled(true);
-				return;
+				return false;
 			}
 		}
 	}
@@ -503,10 +511,12 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
                     		setRuntimeButtonByStatus(false);
                     	}else{
                     		setRuntimeButtonByStatus(true);
+                    		processContext.setMonitoring(false);
                     		//need to extract
                     		String content = "End time : "+ new SimpleDateFormat("hh:mm:ss a MM/dd/YYYY").format(new Date())+"\r\n";
                 			messageManager.setEndMessage(content, getDisplay().getSystemColor(SWT.COLOR_BLUE), getDisplay().getSystemColor(SWT.COLOR_WHITE));
                     		((RuntimeGraphcsComposite)chartComposite).displayReportField();
+                    		lock = false;
                     	}
                     }
                     if (!monitoring && chartComposite != null && chartComposite.isDisposed()) {
