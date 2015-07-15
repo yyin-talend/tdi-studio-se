@@ -1023,7 +1023,7 @@ public class SQLBuilderRepositoryNodeManager {
     public void deleteQueries(RepositoryNode repositoryNode, List<Query> queries) {
         DatabaseConnectionItem item = getEMFItem(repositoryNode.getObject().getId());
         for (Query query : queries) {
-            SubItemHelper.setDeleted(query, true);
+            ProxyRepositoryFactory.getInstance().setSubItemDeleted(item, query, true);
         }
         saveMetaData(item);
     }

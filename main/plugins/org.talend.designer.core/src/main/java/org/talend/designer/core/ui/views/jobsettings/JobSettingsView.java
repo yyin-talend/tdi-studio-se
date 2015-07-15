@@ -639,7 +639,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 CorePlugin.getDefault().getRepositoryService().removeRepositoryTreeViewListener(JobSettingsView.this);
             }
         });
-
     }
 
     /*
