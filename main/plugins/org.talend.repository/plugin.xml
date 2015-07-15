@@ -2495,7 +2495,7 @@
           context="JBoss ESB Export"
           language="java"
           message="Library needed to export to JBoss ESB"
-          name="jbossesb-rosetta.jar"
+          name="jbossesb-rosetta.jar"  mvn_uri="mvn:org.talend.libraries/jbossesb-rosetta/6.0.0" 
           required="true"/>
    </extension>
    <!--

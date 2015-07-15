@@ -6,7 +6,7 @@
               context="plugin:org.talend.libraries.css"
               language="java"
               message="Needed for css parser"
-              name="cssparser-0.9.5.jar"
+              name="cssparser-0.9.5.jar" mvn_uri="mvn:org.talend.libraries/cssparser-0.9.5/6.0.0" 
               required="true">
       </libraryNeeded>
    </extension>
