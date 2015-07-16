@@ -52,22 +52,17 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.properties.ExchangeUser;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.SVNConstant;
-import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.runtime.CoreRuntimePlugin;
-import org.talend.core.service.IExchangeService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.services.ISVNProviderService;
-import org.talend.core.ui.branding.IBrandingService;
-import org.talend.registration.wizards.register.TalendForgeDialog;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -157,25 +152,6 @@ public class LoginHelper {
                     break;
                 }
             }
-        }
-    }
-
-    public static boolean isWorkspaceSame(ConnectionBean connectionBean) {
-        if (connectionBean == null) {
-            return false;
-        }
-
-        if (RepositoryPlugin.getDefault().getBundle().getBundleContext().getProperty("osgi.dev") != null) { //$NON-NLS-1$
-            // in development, always tell the workspace is the same as before.
-            return true;
-        }
-        String workspace = connectionBean.getWorkSpace();
-
-        String defaultPath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath();
-        if (EnvironmentUtils.isWindowsSystem()) {
-            return workspace.equalsIgnoreCase(defaultPath);
-        } else {
-            return workspace.equals(defaultPath);// workspace.equals(filePath1) || workspace.equals(filePath2);
         }
     }
 
