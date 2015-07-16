@@ -20,16 +20,13 @@ import com.salesforce.soap.partner.SforceServiceStub;
 
 /**
  * created by bchen on Jul 9, 2014 Detailled comment
- * 
+ *
  */
 public class SforceBasicConnection extends SforceConnection {
-
     private final String login_endpoint;
-
     private final Login userInfo;
-
     private boolean needCompression;
-
+    private boolean useHttpChunked;
     private int timeout;
 
     private String clientID;
@@ -42,6 +39,7 @@ public class SforceBasicConnection extends SforceConnection {
         this.login_endpoint = builder.login_endpoint;
         this.userInfo = builder.userInfo;
         this.needCompression = builder.needCompression;
+        this.useHttpChunked = builder.useHttpChunked;
         this.timeout = builder.timeout;
         this.clientID = builder.clientID;
         check();
@@ -64,6 +62,7 @@ public class SforceBasicConnection extends SforceConnection {
         stub = new SforceServiceStub();
         SforceManagementUtil.needCompression(stub, needCompression);
         SforceManagementUtil.setTimeout(stub, timeout);
+        SforceManagementUtil.useHttpChunked(stub, useHttpChunked);
         SforceManagementUtil.setHttpProxy(stub);
         sh = new SessionHeader();
         renewSession();
@@ -78,15 +77,11 @@ public class SforceBasicConnection extends SforceConnection {
     }
 
     public static class Builder {
-
         private final String login_endpoint;
-
         private final Login userInfo;
-
         private boolean needCompression = false;
-
+        private boolean useHttpChunked;
         private int timeout = 60000;
-
         private String clientID = null;
 
         public Builder(String login_endpoint, String username, String password) {
@@ -98,6 +93,11 @@ public class SforceBasicConnection extends SforceConnection {
 
         public Builder needCompression(boolean needCompression) {
             this.needCompression = needCompression;
+            return this;
+        }
+
+        public Builder useHttpChunked(boolean useHttpChunked){
+            this.useHttpChunked = useHttpChunked;
             return this;
         }
 
