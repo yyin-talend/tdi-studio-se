@@ -18,20 +18,15 @@ import com.salesforce.soap.partner.SforceServiceStub;
 
 /**
  * created by bchen on Jul 9, 2014 Detailled comment
- * 
+ *
  */
 public class SforceSessionConnection extends SforceConnection {
-
     private final String endpoint;
-
     private final String session_id;
-
     private boolean needCompression;
-
+    private boolean useHttpChunked;
     private int timeout;
-
     private String clientID;
-
     private SforceSessionConnection() throws Exception {
         throw new Exception("should use builder to init"); //$NON-NLS-1$
     }
@@ -57,6 +52,7 @@ public class SforceSessionConnection extends SforceConnection {
         stub = new SforceServiceStub();
         SforceManagementUtil.needCompression(stub, needCompression);
         SforceManagementUtil.setTimeout(stub, timeout);
+        SforceManagementUtil.useHttpChunked(stub, useHttpChunked);
         // SforceManagementUtil.setHttpProxy(stub);//don't support proxy for OAuth
         sh = new SessionHeader();
         // renewSession();
@@ -70,17 +66,12 @@ public class SforceSessionConnection extends SforceConnection {
     }
 
     public static class Builder {
-
         private final String endpoint;
-
         private final String session_id;
-
         private boolean needCompression = false;
-
+        private boolean useHttpChunked;
         private int timeout = 60000;
-
         private String clientID = null;
-
         public Builder(String endpoint, String session_id) {
             this.endpoint = endpoint;
             this.session_id = session_id;
@@ -88,6 +79,11 @@ public class SforceSessionConnection extends SforceConnection {
 
         public Builder needCompression(boolean needCompression) {
             this.needCompression = needCompression;
+            return this;
+        }
+
+        public Builder useHttpChunked(boolean useHttpChunked) {
+            this.useHttpChunked = useHttpChunked;
             return this;
         }
 

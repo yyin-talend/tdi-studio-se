@@ -28,6 +28,7 @@ imports="
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
     String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
+    boolean useHttpChunked = "true".equals(ElementParameterParser.getValue(node,"__USE_HTTP_CHUNKED__"));
     // if the extended insert is disabled set the commit level to 1
     if (!extendedInsert) commitLevel = "1";
 
@@ -94,6 +95,7 @@ imports="
                     <%
                     }
                     %>
+                    .useHttpChunked(<%= useHttpChunked %>)
                     .build();
         <%
         }else{
@@ -115,6 +117,7 @@ imports="
                     <%
                     }
                     %>
+                    .useHttpChunked(<%= useHttpChunked %>)
                     .build();
         <%
         }
