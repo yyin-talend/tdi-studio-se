@@ -46,6 +46,8 @@ public class SforceOAuthConnection extends SforceConnection {
     private final int callbackPort;
 
     private boolean needCompression;
+    
+    private boolean useHttpChunked;
 
     private int timeout;
 
@@ -70,6 +72,7 @@ public class SforceOAuthConnection extends SforceConnection {
         this.callbackHost = builder.callbackHost;
         this.callbackPort = builder.callbackPort;
         this.needCompression = builder.needCompression;
+        this.useHttpChunked = builder.useHttpChunked;
         this.timeout = builder.timeout;
         this.clientID = builder.clientID;
         init();
@@ -125,6 +128,7 @@ public class SforceOAuthConnection extends SforceConnection {
         stub = new SforceServiceStub();
         SforceManagementUtil.needCompression(stub, needCompression);
         SforceManagementUtil.setTimeout(stub, timeout);
+        SforceManagementUtil.useHttpChunked(stub, useHttpChunked);
         // SforceManagementUtil.setHttpProxy(stub);//don't support proxy for OAuth
         sh = new SessionHeader();
         renewSession();
@@ -157,6 +161,8 @@ public class SforceOAuthConnection extends SforceConnection {
         private final int callbackPort;
 
         private boolean needCompression = false;
+        
+        private boolean useHttpChunked;
 
         private int timeout = 60000;
 
@@ -179,6 +185,11 @@ public class SforceOAuthConnection extends SforceConnection {
 
         public Builder needCompression(boolean needCompression) {
             this.needCompression = needCompression;
+            return this;
+        }
+        
+        public Builder useHttpChunked(boolean useHttpChunked) {
+            this.useHttpChunked = useHttpChunked;
             return this;
         }
 

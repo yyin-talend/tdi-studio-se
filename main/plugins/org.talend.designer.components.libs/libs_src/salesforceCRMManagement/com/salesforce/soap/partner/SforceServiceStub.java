@@ -1,6 +1,6 @@
 /**
  * SforceServiceStub.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:33:49 IST)
  */
 package com.salesforce.soap.partner;
@@ -1561,8 +1561,6 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 		_serviceClient = new org.apache.axis2.client.ServiceClient(
 				configurationContext, _service);
 
-		_serviceClient.getOptions().setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, "false");
-		
 		_serviceClient.getOptions().setTo(
 				new org.apache.axis2.addressing.EndpointReference(
 						targetEndpoint));
@@ -1602,30 +1600,30 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Merge and update a set of sObjects based
 	 * on object id
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#merge
 	 * @param merge335
-	 * 
+	 *
 	 * @param sessionHeader336
-	 * 
+	 *
 	 * @param callOptions337
-	 * 
+	 *
 	 * @param assignmentRuleHeader338
-	 * 
+	 *
 	 * @param mruHeader339
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader340
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader341
-	 * 
+	 *
 	 * @param streamingEnabledHeader342
-	 * 
+	 *
 	 * @param debuggingHeader343
-	 * 
+	 *
 	 * @param packageVersionHeader344
-	 * 
+	 *
 	 * @param emailHeader345
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
@@ -1908,28 +1906,28 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Merge and
 	 * update a set of sObjects based on object id
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startmerge
 	 * @param merge335
-	 * 
+	 *
 	 * @param sessionHeader336
-	 * 
+	 *
 	 * @param callOptions337
-	 * 
+	 *
 	 * @param assignmentRuleHeader338
-	 * 
+	 *
 	 * @param mruHeader339
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader340
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader341
-	 * 
+	 *
 	 * @param streamingEnabledHeader342
-	 * 
+	 *
 	 * @param debuggingHeader343
-	 * 
+	 *
 	 * @param packageVersionHeader344
-	 * 
+	 *
 	 * @param emailHeader345
 	 */
 	public void startmerge(
@@ -2244,14 +2242,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Returns standard information relevant to
 	 * the current user
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#getUserInfo
 	 * @param getUserInfo347
-	 * 
+	 *
 	 * @param sessionHeader348
-	 * 
+	 *
 	 * @param callOptions349
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -2417,12 +2415,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Returns
 	 * standard information relevant to the current user
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startgetUserInfo
 	 * @param getUserInfo347
-	 * 
+	 *
 	 * @param sessionHeader348
-	 * 
+	 *
 	 * @param callOptions349
 	 */
 	public void startgetUserInfo(
@@ -2626,16 +2624,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Describe the layout of the SoftPhone
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#describeSoftphoneLayout
 	 * @param describeSoftphoneLayout351
-	 * 
+	 *
 	 * @param sessionHeader352
-	 * 
+	 *
 	 * @param callOptions353
-	 * 
+	 *
 	 * @param packageVersionHeader354
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -2822,14 +2820,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Describe the
 	 * layout of the SoftPhone
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdescribeSoftphoneLayout
 	 * @param describeSoftphoneLayout351
-	 * 
+	 *
 	 * @param sessionHeader352
-	 * 
+	 *
 	 * @param callOptions353
-	 * 
+	 *
 	 * @param packageVersionHeader354
 	 */
 	public void startdescribeSoftphoneLayout(
@@ -3051,32 +3049,32 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Update a set of sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#update
 	 * @param update356
-	 * 
+	 *
 	 * @param sessionHeader357
-	 * 
+	 *
 	 * @param callOptions358
-	 * 
+	 *
 	 * @param assignmentRuleHeader359
-	 * 
+	 *
 	 * @param mruHeader360
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader361
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader362
-	 * 
+	 *
 	 * @param streamingEnabledHeader363
-	 * 
+	 *
 	 * @param allOrNoneHeader364
-	 * 
+	 *
 	 * @param debuggingHeader365
-	 * 
+	 *
 	 * @param packageVersionHeader366
-	 * 
+	 *
 	 * @param emailHeader367
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
@@ -3371,30 +3369,30 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Update a set
 	 * of sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startupdate
 	 * @param update356
-	 * 
+	 *
 	 * @param sessionHeader357
-	 * 
+	 *
 	 * @param callOptions358
-	 * 
+	 *
 	 * @param assignmentRuleHeader359
-	 * 
+	 *
 	 * @param mruHeader360
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader361
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader362
-	 * 
+	 *
 	 * @param streamingEnabledHeader363
-	 * 
+	 *
 	 * @param allOrNoneHeader364
-	 * 
+	 *
 	 * @param debuggingHeader365
-	 * 
+	 *
 	 * @param packageVersionHeader366
-	 * 
+	 *
 	 * @param emailHeader367
 	 */
 	public void startupdate(
@@ -3720,14 +3718,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Set a user's password
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#setPassword
 	 * @param setPassword369
-	 * 
+	 *
 	 * @param sessionHeader370
-	 * 
+	 *
 	 * @param callOptions371
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -3907,12 +3905,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Set a user's
 	 * password
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startsetPassword
 	 * @param setPassword369
-	 * 
+	 *
 	 * @param sessionHeader370
-	 * 
+	 *
 	 * @param callOptions371
 	 */
 	public void startsetPassword(
@@ -4127,14 +4125,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Logout the current user, invalidating the
 	 * current session.
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#logout
 	 * @param logout373
-	 * 
+	 *
 	 * @param sessionHeader374
-	 * 
+	 *
 	 * @param callOptions375
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -4300,12 +4298,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Logout the
 	 * current user, invalidating the current session.
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startlogout
 	 * @param logout373
-	 * 
+	 *
 	 * @param sessionHeader374
-	 * 
+	 *
 	 * @param callOptions375
 	 */
 	public void startlogout(
@@ -4508,20 +4506,20 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Get a set of sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#retrieve
 	 * @param retrieve377
-	 * 
+	 *
 	 * @param sessionHeader378
-	 * 
+	 *
 	 * @param callOptions379
-	 * 
+	 *
 	 * @param queryOptions380
-	 * 
+	 *
 	 * @param mruHeader381
-	 * 
+	 *
 	 * @param packageVersionHeader382
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.MalformedQueryFault
@@ -4751,18 +4749,18 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Get a set of
 	 * sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startretrieve
 	 * @param retrieve377
-	 * 
+	 *
 	 * @param sessionHeader378
-	 * 
+	 *
 	 * @param callOptions379
-	 * 
+	 *
 	 * @param queryOptions380
-	 * 
+	 *
 	 * @param mruHeader381
-	 * 
+	 *
 	 * @param packageVersionHeader382
 	 */
 	public void startretrieve(
@@ -5022,16 +5020,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Create a Query Cursor, including deleted
 	 * sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#queryAll
 	 * @param queryAll384
-	 * 
+	 *
 	 * @param sessionHeader385
-	 * 
+	 *
 	 * @param callOptions386
-	 * 
+	 *
 	 * @param queryOptions387
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.MalformedQueryFault
@@ -5244,14 +5242,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Create a
 	 * Query Cursor, including deleted sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startqueryAll
 	 * @param queryAll384
-	 * 
+	 *
 	 * @param sessionHeader385
-	 * 
+	 *
 	 * @param callOptions386
-	 * 
+	 *
 	 * @param queryOptions387
 	 */
 	public void startqueryAll(
@@ -5491,14 +5489,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Get the IDs for updated sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#getUpdated
 	 * @param getUpdated389
-	 * 
+	 *
 	 * @param sessionHeader390
-	 * 
+	 *
 	 * @param callOptions391
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -5671,12 +5669,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Get the IDs
 	 * for updated sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startgetUpdated
 	 * @param getUpdated389
-	 * 
+	 *
 	 * @param sessionHeader390
-	 * 
+	 *
 	 * @param callOptions391
 	 */
 	public void startgetUpdated(
@@ -5885,26 +5883,26 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Undelete a set of sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#undelete
 	 * @param undelete393
-	 * 
+	 *
 	 * @param sessionHeader394
-	 * 
+	 *
 	 * @param callOptions395
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader396
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader397
-	 * 
+	 *
 	 * @param streamingEnabledHeader398
-	 * 
+	 *
 	 * @param allOrNoneHeader399
-	 * 
+	 *
 	 * @param debuggingHeader400
-	 * 
+	 *
 	 * @param packageVersionHeader401
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -6142,24 +6140,24 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Undelete a
 	 * set of sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startundelete
 	 * @param undelete393
-	 * 
+	 *
 	 * @param sessionHeader394
-	 * 
+	 *
 	 * @param callOptions395
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader396
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader397
-	 * 
+	 *
 	 * @param streamingEnabledHeader398
-	 * 
+	 *
 	 * @param allOrNoneHeader399
-	 * 
+	 *
 	 * @param debuggingHeader400
-	 * 
+	 *
 	 * @param packageVersionHeader401
 	 */
 	public void startundelete(
@@ -6434,32 +6432,32 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Create a set of new sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#create
 	 * @param create403
-	 * 
+	 *
 	 * @param sessionHeader404
-	 * 
+	 *
 	 * @param callOptions405
-	 * 
+	 *
 	 * @param assignmentRuleHeader406
-	 * 
+	 *
 	 * @param mruHeader407
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader408
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader409
-	 * 
+	 *
 	 * @param streamingEnabledHeader410
-	 * 
+	 *
 	 * @param allOrNoneHeader411
-	 * 
+	 *
 	 * @param debuggingHeader412
-	 * 
+	 *
 	 * @param packageVersionHeader413
-	 * 
+	 *
 	 * @param emailHeader414
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
@@ -6754,30 +6752,30 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Create a set
 	 * of new sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startcreate
 	 * @param create403
-	 * 
+	 *
 	 * @param sessionHeader404
-	 * 
+	 *
 	 * @param callOptions405
-	 * 
+	 *
 	 * @param assignmentRuleHeader406
-	 * 
+	 *
 	 * @param mruHeader407
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader408
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader409
-	 * 
+	 *
 	 * @param streamingEnabledHeader410
-	 * 
+	 *
 	 * @param allOrNoneHeader411
-	 * 
+	 *
 	 * @param debuggingHeader412
-	 * 
+	 *
 	 * @param packageVersionHeader413
-	 * 
+	 *
 	 * @param emailHeader414
 	 */
 	public void startcreate(
@@ -7103,14 +7101,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Send outbound email
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#sendEmail
 	 * @param sendEmail416
-	 * 
+	 *
 	 * @param sessionHeader417
-	 * 
+	 *
 	 * @param callOptions418
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -7276,12 +7274,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Send
 	 * outbound email
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startsendEmail
 	 * @param sendEmail416
-	 * 
+	 *
 	 * @param sessionHeader417
-	 * 
+	 *
 	 * @param callOptions418
 	 */
 	public void startsendEmail(
@@ -7485,16 +7483,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Search for sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#search
 	 * @param search420
-	 * 
+	 *
 	 * @param sessionHeader421
-	 * 
+	 *
 	 * @param callOptions422
-	 * 
+	 *
 	 * @param packageVersionHeader423
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.MalformedSearchFault
@@ -7693,14 +7691,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Search for
 	 * sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startsearch
 	 * @param search420
-	 * 
+	 *
 	 * @param sessionHeader421
-	 * 
+	 *
 	 * @param callOptions422
-	 * 
+	 *
 	 * @param packageVersionHeader423
 	 */
 	public void startsearch(
@@ -7930,20 +7928,20 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Create a Query Cursor
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#query
 	 * @param query425
-	 * 
+	 *
 	 * @param sessionHeader426
-	 * 
+	 *
 	 * @param callOptions427
-	 * 
+	 *
 	 * @param queryOptions428
-	 * 
+	 *
 	 * @param mruHeader429
-	 * 
+	 *
 	 * @param packageVersionHeader430
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.MalformedQueryFault
@@ -8180,18 +8178,18 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Create a
 	 * Query Cursor
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startquery
 	 * @param query425
-	 * 
+	 *
 	 * @param sessionHeader426
-	 * 
+	 *
 	 * @param callOptions427
-	 * 
+	 *
 	 * @param queryOptions428
-	 * 
+	 *
 	 * @param mruHeader429
-	 * 
+	 *
 	 * @param packageVersionHeader430
 	 */
 	public void startquery(
@@ -8455,14 +8453,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Get the IDs for deleted sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#getDeleted
 	 * @param getDeleted432
-	 * 
+	 *
 	 * @param sessionHeader433
-	 * 
+	 *
 	 * @param callOptions434
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -8635,12 +8633,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Get the IDs
 	 * for deleted sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startgetDeleted
 	 * @param getDeleted432
-	 * 
+	 *
 	 * @param sessionHeader433
-	 * 
+	 *
 	 * @param callOptions434
 	 */
 	public void startgetDeleted(
@@ -8850,24 +8848,24 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Submit an entity to a workflow process or
 	 * process a workitem
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#process
 	 * @param process436
-	 * 
+	 *
 	 * @param sessionHeader437
-	 * 
+	 *
 	 * @param callOptions438
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader439
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader440
-	 * 
+	 *
 	 * @param streamingEnabledHeader441
-	 * 
+	 *
 	 * @param debuggingHeader442
-	 * 
+	 *
 	 * @param packageVersionHeader443
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -9100,22 +9098,22 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Submit an
 	 * entity to a workflow process or process a workitem
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startprocess
 	 * @param process436
-	 * 
+	 *
 	 * @param sessionHeader437
-	 * 
+	 *
 	 * @param callOptions438
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader439
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader440
-	 * 
+	 *
 	 * @param streamingEnabledHeader441
-	 * 
+	 *
 	 * @param debuggingHeader442
-	 * 
+	 *
 	 * @param packageVersionHeader443
 	 */
 	public void startprocess(
@@ -9384,18 +9382,18 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Describe the data category group
 	 * structures for a given set of pair of types and data category group name
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#describeDataCategoryGroupStructures
 	 * @param describeDataCategoryGroupStructures445
-	 * 
+	 *
 	 * @param sessionHeader446
-	 * 
+	 *
 	 * @param callOptions447
-	 * 
+	 *
 	 * @param packageVersionHeader448
-	 * 
+	 *
 	 * @param localeOptions244
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -9605,16 +9603,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	 * Auto generated method signature for Asynchronous Invocations Describe the
 	 * data category group structures for a given set of pair of types and data
 	 * category group name
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdescribeDataCategoryGroupStructures
 	 * @param describeDataCategoryGroupStructures445
-	 * 
+	 *
 	 * @param sessionHeader446
-	 * 
+	 *
 	 * @param callOptions447
-	 * 
+	 *
 	 * @param packageVersionHeader448
-	 * 
+	 *
 	 * @param localeOptions244
 	 */
 	public void startdescribeDataCategoryGroupStructures(
@@ -9854,16 +9852,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Reset a user's password
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#resetPassword
 	 * @param resetPassword450
-	 * 
+	 *
 	 * @param sessionHeader451
-	 * 
+	 *
 	 * @param callOptions452
-	 * 
+	 *
 	 * @param emailHeader453
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -10048,14 +10046,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Reset a
 	 * user's password
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startresetPassword
 	 * @param resetPassword450
-	 * 
+	 *
 	 * @param sessionHeader451
-	 * 
+	 *
 	 * @param callOptions452
-	 * 
+	 *
 	 * @param emailHeader453
 	 */
 	public void startresetPassword(
@@ -10276,16 +10274,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Describe the Global state
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#describeGlobal
 	 * @param describeGlobal455
-	 * 
+	 *
 	 * @param sessionHeader456
-	 * 
+	 *
 	 * @param callOptions457
-	 * 
+	 *
 	 * @param packageVersionHeader458
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -10315,7 +10313,7 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
     			 * 1. Because this API seems not support this case: server use HTTP Protocol 1.0(not support CHUNKED) while client use HTTP Protocol 1.1<br>
     			 * , then client will throw exception(org.apache.axis2.AxisFault: Transport error: 411 Error: Length Required)<br>
     			 * 2. If the new API can support this case, then this additional codes can be cancelled.
-    			 * 
+    			 *
     			 * Some information I searched on the net:<br>
     			 * https://www.mail-archive.com/basedb-devel@lists.sourceforge.net/msg00309.html
     			 * http://axis.apache.org/axis2/java/core/docs/http-transport.html
@@ -10480,14 +10478,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Describe the
 	 * Global state
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdescribeGlobal
 	 * @param describeGlobal455
-	 * 
+	 *
 	 * @param sessionHeader456
-	 * 
+	 *
 	 * @param callOptions457
-	 * 
+	 *
 	 * @param packageVersionHeader458
 	 */
 	public void startdescribeGlobal(
@@ -10703,16 +10701,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Describe the layout of an sObject
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#describeLayout
 	 * @param describeLayout460
-	 * 
+	 *
 	 * @param sessionHeader461
-	 * 
+	 *
 	 * @param callOptions462
-	 * 
+	 *
 	 * @param packageVersionHeader463
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
@@ -10904,14 +10902,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Describe the
 	 * layout of an sObject
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdescribeLayout
 	 * @param describeLayout460
-	 * 
+	 *
 	 * @param sessionHeader461
-	 * 
+	 *
 	 * @param callOptions462
-	 * 
+	 *
 	 * @param packageVersionHeader463
 	 */
 	public void startdescribeLayout(
@@ -11138,16 +11136,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Describe the tabs that appear on a users
 	 * page
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#describeTabs
 	 * @param describeTabs465
-	 * 
+	 *
 	 * @param sessionHeader466
-	 * 
+	 *
 	 * @param callOptions467
-	 * 
+	 *
 	 * @param packageVersionHeader468
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -11325,14 +11323,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Describe the
 	 * tabs that appear on a users page
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdescribeTabs
 	 * @param describeTabs465
-	 * 
+	 *
 	 * @param sessionHeader466
-	 * 
+	 *
 	 * @param callOptions467
-	 * 
+	 *
 	 * @param packageVersionHeader468
 	 */
 	public void startdescribeTabs(
@@ -11549,18 +11547,18 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Describe all the data category groups
 	 * available for a given set of types
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#describeDataCategoryGroups
 	 * @param describeDataCategoryGroups470
-	 * 
+	 *
 	 * @param sessionHeader471
-	 * 
+	 *
 	 * @param callOptions472
-	 * 
+	 *
 	 * @param packageVersionHeader473
-	 * 
+	 *
 	 * @param localeOptions270
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -11768,16 +11766,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Describe all
 	 * the data category groups available for a given set of types
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdescribeDataCategoryGroups
 	 * @param describeDataCategoryGroups470
-	 * 
+	 *
 	 * @param sessionHeader471
-	 * 
+	 *
 	 * @param callOptions472
-	 * 
+	 *
 	 * @param packageVersionHeader473
-	 * 
+	 *
 	 * @param localeOptions270
 	 */
 	public void startdescribeDataCategoryGroups(
@@ -12017,14 +12015,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Gets server timestamp
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#getServerTimestamp
 	 * @param getServerTimestamp475
-	 * 
+	 *
 	 * @param sessionHeader476
-	 * 
+	 *
 	 * @param callOptions477
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -12198,12 +12196,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Gets server
 	 * timestamp
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startgetServerTimestamp
 	 * @param getServerTimestamp475
-	 * 
+	 *
 	 * @param sessionHeader476
-	 * 
+	 *
 	 * @param callOptions477
 	 */
 	public void startgetServerTimestamp(
@@ -12407,14 +12405,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Logs out and invalidates session ids
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#invalidateSessions
 	 * @param invalidateSessions479
-	 * 
+	 *
 	 * @param sessionHeader480
-	 * 
+	 *
 	 * @param callOptions481
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -12588,12 +12586,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Logs out and
 	 * invalidates session ids
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startinvalidateSessions
 	 * @param invalidateSessions479
-	 * 
+	 *
 	 * @param sessionHeader480
-	 * 
+	 *
 	 * @param callOptions481
 	 */
 	public void startinvalidateSessions(
@@ -12797,18 +12795,18 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Describe an sObject
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#describeSObject
 	 * @param describeSObject483
-	 * 
+	 *
 	 * @param sessionHeader484
-	 * 
+	 *
 	 * @param callOptions485
-	 * 
+	 *
 	 * @param packageVersionHeader486
-	 * 
+	 *
 	 * @param localeOptions487
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -12842,7 +12840,7 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
                  * 1. Because this API seems not support this case: server use HTTP Protocol 1.0(not support CHUNKED) while client use HTTP Protocol 1.1<br>
                  * , then client will throw exception(org.apache.axis2.AxisFault: Transport error: 411 Error: Length Required)<br>
                  * 2. If the new API can support this case, then this additional codes can be cancelled.
-                 * 
+                 *
                  * Some information I searched on the net:<br>
                  * https://www.mail-archive.com/basedb-devel@lists.sourceforge.net/msg00309.html
                  * http://axis.apache.org/axis2/java/core/docs/http-transport.html
@@ -13026,16 +13024,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Describe an
 	 * sObject
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdescribeSObject
 	 * @param describeSObject483
-	 * 
+	 *
 	 * @param sessionHeader484
-	 * 
+	 *
 	 * @param callOptions485
-	 * 
+	 *
 	 * @param packageVersionHeader486
-	 * 
+	 *
 	 * @param localeOptions487
 	 */
 	public void startdescribeSObject(
@@ -13268,14 +13266,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Login to the Salesforce.com SOAP Api
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#login
 	 * @param login489
-	 * 
+	 *
 	 * @param loginScopeHeader490
-	 * 
+	 *
 	 * @param callOptions491
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -13455,12 +13453,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Login to the
 	 * Salesforce.com SOAP Api
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startlogin
 	 * @param login489
-	 * 
+	 *
 	 * @param loginScopeHeader490
-	 * 
+	 *
 	 * @param callOptions491
 	 */
 	public void startlogin(
@@ -13674,16 +13672,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Gets the next batch of sObjects from a
 	 * query
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#queryMore
 	 * @param queryMore493
-	 * 
+	 *
 	 * @param sessionHeader494
-	 * 
+	 *
 	 * @param callOptions495
-	 * 
+	 *
 	 * @param queryOptions496
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.MalformedQueryFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.InvalidFieldFault
@@ -13882,14 +13880,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Gets the
 	 * next batch of sObjects from a query
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startqueryMore
 	 * @param queryMore493
-	 * 
+	 *
 	 * @param sessionHeader494
-	 * 
+	 *
 	 * @param callOptions495
-	 * 
+	 *
 	 * @param queryOptions496
 	 */
 	public void startqueryMore(
@@ -14120,18 +14118,18 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Describe a number sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#describeSObjects
 	 * @param describeSObjects498
-	 * 
+	 *
 	 * @param sessionHeader499
-	 * 
+	 *
 	 * @param callOptions500
-	 * 
+	 *
 	 * @param packageVersionHeader501
-	 * 
+	 *
 	 * @param localeOptions502
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
@@ -14334,16 +14332,16 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Describe a
 	 * number sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdescribeSObjects
 	 * @param describeSObjects498
-	 * 
+	 *
 	 * @param sessionHeader499
-	 * 
+	 *
 	 * @param callOptions500
-	 * 
+	 *
 	 * @param packageVersionHeader501
-	 * 
+	 *
 	 * @param localeOptions502
 	 */
 	public void startdescribeSObjects(
@@ -14577,14 +14575,14 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Empty a set of sObjects from the recycle
 	 * bin
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#emptyRecycleBin
 	 * @param emptyRecycleBin504
-	 * 
+	 *
 	 * @param sessionHeader505
-	 * 
+	 *
 	 * @param callOptions506
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -14752,12 +14750,12 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Empty a set
 	 * of sObjects from the recycle bin
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startemptyRecycleBin
 	 * @param emptyRecycleBin504
-	 * 
+	 *
 	 * @param sessionHeader505
-	 * 
+	 *
 	 * @param callOptions506
 	 */
 	public void startemptyRecycleBin(
@@ -14962,32 +14960,32 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature Update or insert a set of sObjects based
 	 * on object id
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#upsert
 	 * @param upsert508
-	 * 
+	 *
 	 * @param sessionHeader509
-	 * 
+	 *
 	 * @param callOptions510
-	 * 
+	 *
 	 * @param assignmentRuleHeader511
-	 * 
+	 *
 	 * @param mruHeader512
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader513
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader514
-	 * 
+	 *
 	 * @param streamingEnabledHeader515
-	 * 
+	 *
 	 * @param allOrNoneHeader516
-	 * 
+	 *
 	 * @param debuggingHeader517
-	 * 
+	 *
 	 * @param packageVersionHeader518
-	 * 
+	 *
 	 * @param emailHeader519
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.InvalidSObjectFault
 	 *             :
 	 * @throws com.salesforce.soap.partner.InvalidIdFault
@@ -15282,30 +15280,30 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Update or
 	 * insert a set of sObjects based on object id
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startupsert
 	 * @param upsert508
-	 * 
+	 *
 	 * @param sessionHeader509
-	 * 
+	 *
 	 * @param callOptions510
-	 * 
+	 *
 	 * @param assignmentRuleHeader511
-	 * 
+	 *
 	 * @param mruHeader512
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader513
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader514
-	 * 
+	 *
 	 * @param streamingEnabledHeader515
-	 * 
+	 *
 	 * @param allOrNoneHeader516
-	 * 
+	 *
 	 * @param debuggingHeader517
-	 * 
+	 *
 	 * @param packageVersionHeader518
-	 * 
+	 *
 	 * @param emailHeader519
 	 */
 	public void startupsert(
@@ -15631,24 +15629,24 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature convert a set of leads
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#convertLead
 	 * @param convertLead521
-	 * 
+	 *
 	 * @param sessionHeader522
-	 * 
+	 *
 	 * @param callOptions523
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader524
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader525
-	 * 
+	 *
 	 * @param streamingEnabledHeader526
-	 * 
+	 *
 	 * @param debuggingHeader527
-	 * 
+	 *
 	 * @param packageVersionHeader528
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -15874,22 +15872,22 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations convert a
 	 * set of leads
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startconvertLead
 	 * @param convertLead521
-	 * 
+	 *
 	 * @param sessionHeader522
-	 * 
+	 *
 	 * @param callOptions523
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader524
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader525
-	 * 
+	 *
 	 * @param streamingEnabledHeader526
-	 * 
+	 *
 	 * @param debuggingHeader527
-	 * 
+	 *
 	 * @param packageVersionHeader528
 	 */
 	public void startconvertLead(
@@ -16153,30 +16151,30 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 
 	/**
 	 * Auto generated method signature Delete a set of sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#delete
 	 * @param delete530
-	 * 
+	 *
 	 * @param sessionHeader531
-	 * 
+	 *
 	 * @param callOptions532
-	 * 
+	 *
 	 * @param packageVersionHeader533
-	 * 
+	 *
 	 * @param userTerritoryDeleteHeader534
-	 * 
+	 *
 	 * @param emailHeader535
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader536
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader537
-	 * 
+	 *
 	 * @param streamingEnabledHeader538
-	 * 
+	 *
 	 * @param allOrNoneHeader539
-	 * 
+	 *
 	 * @param debuggingHeader540
-	 * 
+	 *
 	 * @throws com.salesforce.soap.partner.UnexpectedErrorFault
 	 *             :
 	 */
@@ -16438,28 +16436,28 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 	/**
 	 * Auto generated method signature for Asynchronous Invocations Delete a set
 	 * of sObjects
-	 * 
+	 *
 	 * @see com.salesforce.soap.partner.SforceService#startdelete
 	 * @param delete530
-	 * 
+	 *
 	 * @param sessionHeader531
-	 * 
+	 *
 	 * @param callOptions532
-	 * 
+	 *
 	 * @param packageVersionHeader533
-	 * 
+	 *
 	 * @param userTerritoryDeleteHeader534
-	 * 
+	 *
 	 * @param emailHeader535
-	 * 
+	 *
 	 * @param allowFieldTruncationHeader536
-	 * 
+	 *
 	 * @param disableFeedTrackingHeader537
-	 * 
+	 *
 	 * @param streamingEnabledHeader538
-	 * 
+	 *
 	 * @param allOrNoneHeader539
-	 * 
+	 *
 	 * @param debuggingHeader540
 	 */
 	public void startdelete(

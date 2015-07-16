@@ -1,15 +1,15 @@
-<%@ jet 
+<%@ jet
 imports="
-    	org.talend.core.model.process.INode 
-    	org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
+    	org.talend.core.model.process.INode
+    	org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
 		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType	
-		org.talend.core.model.utils.TalendTextUtils	
+		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.utils.TalendTextUtils
 		java.util.List
 		"
 %>
@@ -17,48 +17,48 @@ imports="
 	<%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();    	
+	String cid = node.getUniqueName();
 	log = new LogUtil(node);
-	
+
 	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 	String apiVersion = ElementParameterParser.getValue(node, "__API_VERSION__");
 	String username = ElementParameterParser.getValue(node, "__USER__");
 
-	
+
 	String sObject = ElementParameterParser.getValue(node, "__MODULENAME__");
 	String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__");
 	if ("CustomModule".equals(sObject)) {
-		//modulename = customModulename; 
+		//modulename = customModulename;
 		sObject = customModulename;
 	}else{
 		sObject = "\""+sObject+"\"";
 	}
-	
+
 	String action = ElementParameterParser.getValue(node, "__ACTION__");
 	String externalId = ElementParameterParser.getValue(node, "__UPSERT_KEY_COLUMN__");
 	//String contentType = ElementParameterParser.getValue(node, "__CONTENTTYPE__");
 	String contentType = "csv";
 	String bulkFileName = ElementParameterParser.getValue(node, "__BULKFILENAME__").trim();
-	
+
 	String maxBytes = ElementParameterParser.getValue(node,"__COMMIT_LEVEL_BYTES__");
 	String maxRows = ElementParameterParser.getValue(node,"__COMMIT_LEVEL_ROWS__");
-	
+
 	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
-	
+
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	
+
 	String concurrencyMode = ElementParameterParser.getValue(node,"__CONCURRENCY_MODE__");
 	String awaitTime = ElementParameterParser.getValue(node,"__AWAIT_TIME__");
-	
+
 	boolean bulkConnection = true; //for tSalesforceOAuth.javajet
-	
+
 	String passwordFieldName = "";
-	
+
 	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 	boolean useOAuth = "OAUTH".equals(loginType);
 	%>
@@ -66,7 +66,7 @@ imports="
     int nb_success_<%=cid%> = 0;
     int nb_reject_<%=cid%> = 0;
 	System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-	
+
 	org.talend.salesforceBulk.SforceBulkConnection sforceConn_<%=cid%> = null;
 	<%
 	if(useExistingConn){
@@ -95,7 +95,7 @@ imports="
     		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
     		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
     		%>
-    		sforceConn_<%=cid%> 
+    		sforceConn_<%=cid%>
         		= new org.talend.salesforceBulk.SforceOAuthBulkConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
         			<%
         			if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
@@ -114,7 +114,7 @@ imports="
 			<%
 			if(useProxy){
     			passwordFieldName = "__PROXY_PASSWORD__";
-    			
+
     			if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
         		%>
         			String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
@@ -126,16 +126,16 @@ imports="
         		}
     			%>
     		<%
-    		}	
+    		}
 			%>
-			sforceConn_<%=cid%> 
+			sforceConn_<%=cid%>
     			= new org.talend.salesforceBulk.SforceBasicBulkConnection.Builder(<%=endpoint%>,<%=username%>,decryptedPassword_<%=cid%>,<%=apiVersion%>)
     				<%
     				if(useProxy){
             		%>
             			.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,decryptedPwd_<%=cid%>)
             		<%
-            		}	
+            		}
     				%>
     				.build();
 		<%
@@ -162,22 +162,22 @@ imports="
 				for(java.util.Map<String,String> resultMessage_<%=cid%> : resultListMessage_<%=cid%>){
 					j_<%=cid%>++;
 				 	nb_line_<%=cid %>++;
-					<% 
+					<%
 					List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 					if(outgoingConns!=null){
 						for (int i=0;i<outgoingConns.size();i++) {
 					   		IConnection outgoingConn = outgoingConns.get(i);
 					    	if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 							%>
-								<%=outgoingConn.getName() %> = null;			
+								<%=outgoingConn.getName() %> = null;
 							<%
 					    	}
 					    }
 					}
-    	
+
 					List<? extends IConnection> connsSuccess = node.getOutgoingConnections("MAIN");
 					List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
-					%>	
+					%>
 					if("true".equals(resultMessage_<%=cid%>.get("Success"))){
 						nb_success_<%=cid %>++;
 						<%log.debug(log.str(logHelper.upperFirstChar(action) + " record "), log.var("nb_line"), log.str(" successfully."));%>
@@ -187,7 +187,7 @@ imports="
 							if (connSuccess.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 							%>
 								<%=connSuccess.getName() %> = new <%=connSuccess.getName() %>Struct();
-		
+
 								<%=connSuccess.getName() %>.salesforce_created = resultMessage_<%=cid%>.get("Created");
 								<%=connSuccess.getName() %>.salesforce_id = resultMessage_<%=cid%>.get("Id");
 								<%
@@ -195,11 +195,11 @@ imports="
 									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 									String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-									%>			
+									%>
 									if("#N/A".equals(String.valueOf(resultMessage_<%=cid%>.get("<%=column.getLabel() %>")))){
 						        		resultMessage_<%=cid%>.put("<%=column.getLabel() %>",null);
 						        	}
-								    <%		
+								    <%
 							        if(javaType == JavaTypesManager.STRING ){
 									%>
 							            <%=connSuccess.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");
@@ -212,7 +212,7 @@ imports="
 							        %>
 							            <%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
 							        <%
-							        }else { 
+							        }else {
 									%>
 										<%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
 									<%
@@ -236,11 +236,11 @@ imports="
 									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 									String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-									%>			
+									%>
 									if("#N/A".equals(String.valueOf(resultMessage_<%=cid%>.get("<%=column.getLabel() %>")))){
 							        	resultMessage_<%=cid%>.put("<%=column.getLabel() %>", null);
 							        }
-								    <%		
+								    <%
 							        if(javaType == JavaTypesManager.STRING ){
 									%>
 							            <%=connReject.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");
@@ -253,7 +253,7 @@ imports="
 							        %>
 							            <%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
 							        <%
-							        }else { 
+							        }else {
 									%>
 										<%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
 									<%
@@ -262,7 +262,7 @@ imports="
 							}
 						}else{
 						%>
-							String errorMessage_<%=cid%> = "Row "+j_<%=cid%>+":"+resultMessage_<%=cid%>.get("Error"); 
+							String errorMessage_<%=cid%> = "Row "+j_<%=cid%>+":"+resultMessage_<%=cid%>.get("Error");
 							System.err.println(errorMessage_<%=cid%>);
 							<%log.logPrintedException(log.var("errorMessage"));%>
 						<%
@@ -272,5 +272,4 @@ imports="
 		}//2
 	}//1
 	%>
-					}
-				
+}

@@ -1,7 +1,7 @@
-<%@ jet 
+<%@ jet
 imports="
-    	org.talend.core.model.process.INode 
-    	org.talend.core.model.process.ElementParameterParser 
+    	org.talend.core.model.process.INode
+    	org.talend.core.model.process.ElementParameterParser
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -17,13 +17,14 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
-	log = new LogUtil(node);	
+	log = new LogUtil(node);
 	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
    	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
+    boolean useHttpChunked = "true".equals(ElementParameterParser.getValue(node,"__USE_HTTP_CHUNKED__"));
 
 	String cid = node.getUniqueName();
 
@@ -36,14 +37,14 @@ int nb_line_<%=cid%> = 0;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
 	IMetadataTable metadata = metadatas.get(0);
-	
+
 	if (metadata != null) {
-	
-		List<IMetadataColumn> columnList = metadata.getListColumns(); 
+
+		List<IMetadataColumn> columnList = metadata.getListColumns();
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 
 		if (outgoingConns != null && outgoingConns.size() > 0){
-			
+
 			String sd = ElementParameterParser.getValue(node, "__START_DATE__");
 			String ed = ElementParameterParser.getValue(node, "__END_DATE__");
 
@@ -57,13 +58,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
-			
+
 			boolean bulkConnection = false; //for tSalesforceOAuth.javajet
-			
+
 			String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
 			String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 			boolean useOAuth = "OAUTH".equals(loginType);
-						
+
 			boolean hasDynamic = false;
 			StringBuilder unDynamicCols = new StringBuilder();
 			String dynamicColName = "";
@@ -90,10 +91,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
         	System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 			java.text.SimpleDateFormat startdf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		    java.text.SimpleDateFormat enddf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			
+
 			startdf_<%=cid%>.parse(<%=sd%>);
 		    enddf_<%=cid%>.parse(<%=ed%>);
-		    
+
 		    java.util.Calendar startCal_<%=cid%> = startdf_<%=cid%>.getCalendar();
 		    java.util.Calendar endCal_<%=cid%> = enddf_<%=cid%>.getCalendar();
 			org.talend.salesforce.SforceConnection sforceConn_<%=cid%> = null;
@@ -121,11 +122,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 	<%
                 	}
                 	String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
-            		
+
             		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
             		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
 					%>
-					sforceConn_<%=cid%> = 	
+					sforceConn_<%=cid%> =
 						new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
             				<%
             				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
@@ -142,6 +143,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                         	<%
                         	}
                         	%>
+                            .useHttpChunked(<%= useHttpChunked %>)
                         	.build();
 				<%
 				}else{
@@ -158,21 +160,21 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 		}
 						%>
 					    java.util.Properties props_<%=cid%> = System.getProperties();
-					    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
+					    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);
 					    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
 					    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
-					    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>); 
+					    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>);
 					<%
 					}
 					%>
-					
+
 					<%
         			passwordFieldName = "__PASS__";
         			%>
-        
+
         			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-			
-					sforceConn_<%=cid%> = 
+
+					sforceConn_<%=cid%> =
             			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, decryptedPassword_<%=cid%>)
             				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
                         	<%
@@ -182,6 +184,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                         	<%
                         	}
                         	%>
+                            .useHttpChunked(<%= useHttpChunked %>)
                         	.build();
 				<%
 				}
@@ -201,31 +204,31 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				            for (com.salesforce.soap.partner.Field field:fields) {
 								if(!unDynamicCols.contains(field.getName())){
 									String sfType = field.getType().toString();
-									String talendType = "String"; 
-							        if (sfType.equals("boolean")) { 
-							            talendType = "Boolean"; 
-							        } else if (sfType.equals("int")) { 
-							            talendType = "Integer"; 
-							        } else if (sfType.equals("date") || sfType.equals("datetime")) {  
-							            talendType = "Date"; 
-							        } else if (sfType.equals("double") || sfType.equals("currency")) {  
-							            talendType = "Double"; 
+									String talendType = "String";
+							        if (sfType.equals("boolean")) {
+							            talendType = "Boolean";
+							        } else if (sfType.equals("int")) {
+							            talendType = "Integer";
+							        } else if (sfType.equals("date") || sfType.equals("datetime")) {
+							            talendType = "Date";
+							        } else if (sfType.equals("double") || sfType.equals("currency")) {
+							            talendType = "Double";
 							        } else {
-							            talendType = "String"; 
+							            talendType = "String";
 							        }
 							    	routines.system.DynamicMetadata dynamicMetadata = new routines.system.DynamicMetadata();
 							    	dynamicColsName.add(field.getName());
 							    	dynamicMetadata.setName(field.getName());
 							    	dynamicMetadata.setDbName(dynamicMetadata.getName());
 							    	dynamicMetadata.setType("id_" + talendType);
-							    	 if (sfType.equals("date")) { 
-							            dynamicMetadata.setFormat("yyyy-MM-dd"); 
-							        } else if (sfType.equals("datetime")) { 
-							            dynamicMetadata.setFormat("yyyy-MM-dd'T'HH:mm:ss.'000Z'"); 
+							    	 if (sfType.equals("date")) {
+							            dynamicMetadata.setFormat("yyyy-MM-dd");
+							        } else if (sfType.equals("datetime")) {
+							            dynamicMetadata.setFormat("yyyy-MM-dd'T'HH:mm:ss.'000Z'");
 							        } else {
 							            dynamicMetadata.setFormat(null);
 							        }
-							        if ("String".equals(talendType)) { 
+							        if ("String".equals(talendType)) {
 							            dynamicMetadata.setLength(field.getLength());
 							            dynamicMetadata.setPrecision(field.getPrecision());
 							        } else {
@@ -249,8 +252,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				        }
 					}
 				}
-				SFDynamicUtil_<%=cid%> sfDynamicUtil_<%=cid%> =new SFDynamicUtil_<%=cid%>();   
-				sfDynamicUtil_<%=cid%>.genDynamicColumn(sfMgr_<%=cid%>, dynamic_<%=cid%>, dynamicColsName_<%=cid%>, unDynamicCols_<%=cid%> ); 
+				SFDynamicUtil_<%=cid%> sfDynamicUtil_<%=cid%> =new SFDynamicUtil_<%=cid%>();
+				sfDynamicUtil_<%=cid%>.genDynamicColumn(sfMgr_<%=cid%>, dynamic_<%=cid%>, dynamicColsName_<%=cid%>, unDynamicCols_<%=cid%> );
 			<%
 			}
 			%>
@@ -268,47 +271,47 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 			<%
 			}
-			
+
 			IConnection outgoingConn = outgoingConns.get(0);
-			
+
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 				log.info(log.str("Retrieving records from the datasource."));
-%>				
+%>
 
 	com.salesforce.soap.partner.sobject.SObject[] so_<%=cid%> = null;
 	com.salesforce.soap.partner.ID[] ids_<%=cid %> = sfMgr_<%=cid%>.getUpdated(<%=module%>, startCal_<%=cid%>, endCal_<%=cid%>);
-	
+
 	if(ids_<%=cid %> !=null && ids_<%=cid %>.length > 0){
-						
+
 		int newMax_<%=cid %> = 0;
 		int newBase_<%=cid %> = 0;
-		
+
 		while (newMax_<%=cid %> < ids_<%=cid %>.length){
-		
+
 			newBase_<%=cid %> = newMax_<%=cid %>;
 			newMax_<%=cid %> += 2000;
-			
+
 			if (newMax_<%=cid %> > ids_<%=cid %>.length){
 				newMax_<%=cid %> = ids_<%=cid %>.length;
 			}
-			
+
 			com.salesforce.soap.partner.ID[] localIds_<%=cid %> = new com.salesforce.soap.partner.ID[newMax_<%=cid %>-newBase_<%=cid %>];
 
 			for (int i_<%=cid %>=newBase_<%=cid %>;i_<%=cid %> < newMax_<%=cid %>;i_<%=cid %>++){
 				localIds_<%=cid %>[i_<%=cid %>-newBase_<%=cid %>] = ids_<%=cid %>[i_<%=cid %>];
 			}
-			
+
 			so_<%=cid %> = sfMgr_<%=cid %>.retrieve(localIds_<%=cid %>,<%=module %>,fieldsName_<%=cid%>.toString());
-    		
+
     		if(so_<%=cid%> != null){
-    		
+
 			for (int i_<%=cid %>=0;i_<%=cid %><so_<%=cid%>.length;i_<%=cid %>++){
 				nb_line_<%=cid%> ++;
-				
+
 			  if(so_<%=cid%>[i_<%=cid %>]!=null){
 				org.apache.axiom.om.OMElement[] fields_<%=cid %> = so_<%=cid%>[i_<%=cid %>].getExtraElement();
 				int len_<%=cid%> = fields_<%=cid %>.length;
-<% 
+<%
 						boolean isAfterDynamic =  false;
 						int columnIndex = 0;
 						for( int i = 0; i < columnList.size(); i++) {
@@ -325,11 +328,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							}
 
 							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-							
+
 							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-							
+
 							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-							%>						
+							%>
 				    		if (<%=columnIndex %> < len_<%=cid%> &&  fields_<%=cid %>[<%=columnIndex %>]!=null && fields_<%=cid %>[<%=columnIndex %>].getText() != null && !"".equals(fields_<%=cid %>[<%=columnIndex %>].getText())){
 								<%
 								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
@@ -345,15 +348,15 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=columnIndex %>].getText().getBytes();
 								<%
 								} else  { // other
-								%>						
+								%>
 									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields_<%=cid %>[<%=columnIndex %>].getText());
-								<% 
+								<%
 								}
-								%>			
+								%>
 							} else {
 								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 							}
-						<% 
+						<%
 						}
 						if(hasDynamic){
 					    %>
@@ -384,7 +387,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 						log.debug(log.str("Retrieving the record "), log.var("nb_line"), log.str("."));
 			}
-		
+
 		}
 	}
 }
