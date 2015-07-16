@@ -187,7 +187,7 @@ public class MainComposite extends AbstractTabComposite {
         authorText.setEnabled(false);
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(70, 0);
+        data.right = new FormAttachment(50, 0);
         data.top = new FormAttachment(nameLabel, ITabbedPropertyConstants.VSPACE);
         authorText.setLayoutData(data);
         User user = repositoryObject.getAuthor();
@@ -246,7 +246,7 @@ public class MainComposite extends AbstractTabComposite {
             jobTypeCCombo = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
             data = new FormData();
             data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-            data.right = new FormAttachment(70, 0);
+            data.right = new FormAttachment(50, 0);
             data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
             jobTypeCCombo.setLayoutData(data);
             jobTypeCCombo.setItems(JobType.getJobTypeToDispaly());
@@ -278,15 +278,15 @@ public class MainComposite extends AbstractTabComposite {
             CLabel jobFrameworkLabel = widgetFactory.createCLabel(composite,
                     Messages.getString("MainComposite.JobFrameworkSection.jobFrameworkLabel")); //$NON-NLS-1$
             data = new FormData();
-            data.left = new FormAttachment(jobTypeCCombo, ITabbedPropertyConstants.HSPACE);
-            data.right = new FormAttachment(jobFrameworkCCombo, -ITabbedPropertyConstants.HSPACE);
+            data.left = new FormAttachment(jobTypeCCombo, ITabbedPropertyConstants.HSPACE - 10);
+            data.right = new FormAttachment(jobFrameworkCCombo, ITabbedPropertyConstants.HSPACE + 1);
             data.top = new FormAttachment(jobFrameworkCCombo, 0, SWT.CENTER);
             jobFrameworkLabel.setLayoutData(data);
 
             purposeText = widgetFactory.createText(composite, ""); //$NON-NLS-1$
             data = new FormData();
             data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-            data.right = new FormAttachment(70, 0);
+            data.right = new FormAttachment(50, 0);
             data.top = new FormAttachment(jobTypeLabel, ITabbedPropertyConstants.VSPACE);
             purposeText.setLayoutData(data);
             String content = repositoryObject.getPurpose();
@@ -315,7 +315,7 @@ public class MainComposite extends AbstractTabComposite {
             purposeText = widgetFactory.createText(composite, ""); //$NON-NLS-1$
             data = new FormData();
             data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-            data.right = new FormAttachment(70, 0);
+            data.right = new FormAttachment(50, 0);
             data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
             purposeText.setLayoutData(data);
             String content = repositoryObject.getPurpose();
