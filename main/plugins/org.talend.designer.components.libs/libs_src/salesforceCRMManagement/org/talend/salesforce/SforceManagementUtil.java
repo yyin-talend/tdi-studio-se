@@ -23,7 +23,7 @@ import com.salesforce.soap.partner.SforceServiceStub;
 
 /**
  * created by bchen on Jul 8, 2014 Detailled comment
- * 
+ *
  */
 public class SforceManagementUtil {
 
@@ -45,6 +45,15 @@ public class SforceManagementUtil {
         Options options = stub._getServiceClient().getOptions();
         options.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
         options.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
+    }
+
+    public static void useHttpChunked(SforceServiceStub stub, boolean chunked){
+        Options options = stub._getServiceClient().getOptions();
+        if(chunked){
+            options.setProperty(HTTPConstants.CHUNKED, Boolean.TRUE);
+        }else{
+            options.setProperty(HTTPConstants.CHUNKED, Boolean.FALSE);
+        }
     }
 
     public static void setTimeout(SforceServiceStub stub, int timeout) {
