@@ -196,7 +196,6 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         periodLabel.setBackground(getBackground());
         FormData periodLabelData = new FormData();
         periodLabelData.left = new FormAttachment(gcCheckButton, 0, SWT.RIGHT);
-        periodLabelData.right = new FormAttachment(gcCheckButton, 200, SWT.RIGHT);
         periodLabelData.top = new FormAttachment(0, 7);
         periodLabelData.bottom = new FormAttachment(100, 0);
         periodLabelData.height = 30;
@@ -205,7 +204,6 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         periodCombo = new Combo(topGroup, SWT.READ_ONLY);
         FormData periodData = new FormData();
         periodData.left = new FormAttachment(periodLabel, 2, SWT.RIGHT);
-        periodData.right = new FormAttachment(periodLabel, 75, SWT.RIGHT);
         periodData.top = new FormAttachment(0,3);
         periodData.height = 25;
         periodCombo.setLayoutData(periodData);
@@ -221,7 +219,6 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         contextCombo = new ComboViewer(topGroup, SWT.BORDER | SWT.READ_ONLY);
         contextCombo.getCombo().setLayout(new FormLayout());
         FormData contextComboData = new FormData();
-        contextComboData.left = new FormAttachment(100, -80);;
         contextComboData.right = new FormAttachment(100,-5);
         contextComboData.top = new FormAttachment(0,3);
         contextComboData.height = 25;
