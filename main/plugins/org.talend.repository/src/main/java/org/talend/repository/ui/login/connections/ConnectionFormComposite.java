@@ -328,7 +328,6 @@ public class ConnectionFormComposite extends Composite {
                         getWorkspace(), connection.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
             }
         } else if (valid && getTextName() != null) {
-            ConnectionBean currentConnectionBean = connectionsListComposite.getConnectionBean();
             List<ConnectionBean> connectionBeanList = dialog.getConnections();
             if (connectionBeanList != null && connectionBeanList.size() > 1) {
                 for (ConnectionBean connectionBean : connectionBeanList) {
