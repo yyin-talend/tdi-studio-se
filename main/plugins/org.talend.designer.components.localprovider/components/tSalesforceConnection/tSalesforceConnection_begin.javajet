@@ -139,7 +139,7 @@ if(bulkConnection){
             	<%
             	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
             	%>
-            		.setClientID(<%=clientID%>);
+            		.setClientID(<%=clientID%>)
             	<%
             	}
             	%>
@@ -180,7 +180,7 @@ if(bulkConnection){
             	<%
             	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
             	%>
-            		.setClientID(<%=clientID%>);
+            		.setClientID(<%=clientID%>)
             	<%
             	}
             	%>
