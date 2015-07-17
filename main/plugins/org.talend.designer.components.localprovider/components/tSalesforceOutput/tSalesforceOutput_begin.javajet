@@ -1,6 +1,6 @@
 <%@ jet
 imports="
-        org.talend.core.model.process.INode 
+        org.talend.core.model.process.INode
         org.talend.core.model.process.ElementParameterParser
         org.talend.designer.codegen.config.CodeGeneratorArgument
         "
@@ -29,15 +29,15 @@ imports="
     boolean useHttpChunked = "true".equals(ElementParameterParser.getValue(node,"__USE_HTTP_CHUNKED__"));
     // if the extended insert is disabled set the commit level to 1
     if (!extendedInsert) commitLevel = "1";
-    
+
     String passwordFieldName = "";
-    
+
     boolean bulkConnection = false; //for tSalesforceOAuth.javajet
-    
+
     String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
     String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
     boolean useOAuth = "OAUTH".equals(loginType);
-    %>       
+    %>
     int nb_line_<%=cid %> = 0;
     int nb_success_<%=cid%> = 0;
     int nb_reject_<%=cid%> = 0;
@@ -86,7 +86,7 @@ imports="
                     <%
                     if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                     %>
-                        .setClientID(<%=clientID%>);
+                        .setClientID(<%=clientID%>)
                     <%
                     }
                     %>
@@ -108,7 +108,7 @@ imports="
                     <%
                     if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                     %>
-                        .setClientID(<%=clientID%>);
+                        .setClientID(<%=clientID%>)
                     <%
                     }
                     %>
