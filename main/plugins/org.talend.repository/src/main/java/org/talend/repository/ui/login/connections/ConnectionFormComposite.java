@@ -327,6 +327,21 @@ public class ConnectionFormComposite extends Composite {
                 errorMsg = loginConncetion.checkConnectionValidation(getTextName(), getDesc(), getUser(), getPassword(),
                         getWorkspace(), connection.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
             }
+        } else if (valid && getTextName() != null) {
+            ConnectionBean currentConnectionBean = connectionsListComposite.getConnectionBean();
+            List<ConnectionBean> connectionBeanList = dialog.getConnections();
+            if (connectionBeanList != null && connectionBeanList.size() > 1) {
+                for (ConnectionBean connectionBean : connectionBeanList) {
+                    String connectionBeanName = connectionBean.getName();
+                    if (connectionBeanName != null) {
+                        if (this.connection != connectionBean) {
+                            if (connectionBeanName.equals(getTextName())) {
+                                errorMsg = Messages.getString("ConnectionFormComposite.connectionNameInvalid"); //$NON-NLS-1$
+                            }
+                        }
+                    }
+                }
+            }
         }
         if (errorMsg != null && !errorMsg.equals("")) { //$NON-NLS-1$
             valid = false;
