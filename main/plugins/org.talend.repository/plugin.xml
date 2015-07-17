@@ -409,6 +409,13 @@
             version="5.4.2"/>
       <projecttask
             beforeLogon="true"
+            breaks="6.0.0"
+            class="org.talend.repository.model.migration.RemoveRoutineAntlrJarDependencyTask"
+            id="org.talend.repository.model.migration.RemoveRoutineAntlrJarDependencyTask"
+            name="Remove routine dependency on antlr-3.3 jars"
+            version="6.0.1"/>
+      <projecttask
+            beforeLogon="true"
             breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeXmiSerialization"
             id="org.talend.repository.localprovider.model.migration.ChangeXmiSerialization"
