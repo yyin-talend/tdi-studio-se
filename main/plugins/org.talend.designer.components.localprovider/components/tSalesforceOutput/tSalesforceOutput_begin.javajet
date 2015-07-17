@@ -91,7 +91,7 @@ imports="
                     <%
                     if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                     %>
-                        .setClientID(<%=clientID%>);
+                        .setClientID(<%=clientID%>)
                     <%
                     }
                     %>
@@ -113,7 +113,7 @@ imports="
                     <%
                     if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                     %>
-                        .setClientID(<%=clientID%>);
+                        .setClientID(<%=clientID%>)
                     <%
                     }
                     %>

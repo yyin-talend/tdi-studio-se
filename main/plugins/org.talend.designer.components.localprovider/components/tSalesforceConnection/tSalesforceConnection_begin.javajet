@@ -140,7 +140,7 @@ if(bulkConnection){//TODO: ==> need to investigate set http chunked for bulk con
             	<%
             	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
             	%>
-            		.setClientID(<%=clientID%>);
+            		.setClientID(<%=clientID%>)
             	<%
             	}
             	%>
@@ -182,7 +182,7 @@ if(bulkConnection){//TODO: ==> need to investigate set http chunked for bulk con
             	<%
             	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
             	%>
-            		.setClientID(<%=clientID%>);
+            		.setClientID(<%=clientID%>)
             	<%
             	}
             	%>

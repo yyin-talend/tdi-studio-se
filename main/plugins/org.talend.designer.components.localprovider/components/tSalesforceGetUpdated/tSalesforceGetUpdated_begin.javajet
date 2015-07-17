@@ -139,7 +139,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                         	<%
                         	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                         	%>
-                        		.setClientID(<%=clientID%>);
+                        		.setClientID(<%=clientID%>)
                         	<%
                         	}
                         	%>
@@ -180,7 +180,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                         	<%
                         	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                         	%>
-                        		.setClientID(<%=clientID%>);
+                        		.setClientID(<%=clientID%>)
                         	<%
                         	}
                         	%>
