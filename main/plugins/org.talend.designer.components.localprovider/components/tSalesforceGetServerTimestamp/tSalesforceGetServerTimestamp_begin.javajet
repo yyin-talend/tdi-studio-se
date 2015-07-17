@@ -1,7 +1,7 @@
-<%@ jet 
+<%@ jet
 imports="
-    	org.talend.core.model.process.INode 
-    	org.talend.core.model.process.ElementParameterParser 
+    	org.talend.core.model.process.INode
+    	org.talend.core.model.process.ElementParameterParser
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
@@ -29,7 +29,7 @@ int nb_line_<%=cid%> = 0;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
 	IMetadataTable metadata = metadatas.get(0);
-	
+
 	if (metadata != null) {
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 
@@ -41,9 +41,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
-			
+
 			boolean bulkConnection = false; //for tSalesforceOAuth.javajet
-			
+
 			String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
 			String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 			boolean useOAuth = "OAUTH".equals(loginType);
@@ -54,7 +54,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				if(globalMap.get("conn_<%=connection%>") == null){
 					throw new RuntimeException("Get null connection from <%=connection%>");
 				}
-				sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>"); 
+				sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>");
 			<%}else{
 				if(useOAuth){
 					String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
@@ -72,12 +72,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 	<%
                 	}
                 	String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
-            		
+
             		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
             		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
 					%>
 					try{
-						sforceConn_<%=cid%> = 
+						sforceConn_<%=cid%> =
     						new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
                 				<%
                 				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
@@ -90,7 +90,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                             	<%
                             	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                             	%>
-                            		.setClientID(<%=clientID%>);
+                            		.setClientID(<%=clientID%>)
                             	<%
                             	}
                             	%>
@@ -113,28 +113,28 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 		}
 						%>
 					    java.util.Properties props_<%=cid%> = System.getProperties();
-					    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
+					    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);
 					    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
 					    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
-					    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>); 
+					    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>);
 					<%
 					}
 					%>
-					
+
 					<%
         			passwordFieldName = "__PASS__";
         			%>
-        
+
         			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-			
+
 					try{
-						sforceConn_<%=cid%> = 
+						sforceConn_<%=cid%> =
                 			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, decryptedPassword_<%=cid%>)
                 				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
                             	<%
                             	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                             	%>
-                            		.setClientID(<%=clientID%>);
+                            		.setClientID(<%=clientID%>)
                             	<%
                             	}
                             	%>

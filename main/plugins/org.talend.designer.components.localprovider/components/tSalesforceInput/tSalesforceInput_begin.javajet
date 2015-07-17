@@ -1,7 +1,7 @@
-<%@ jet 
+<%@ jet
 imports="
         java.util.List
-        
+
         org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.metadata.types.JavaType
@@ -11,7 +11,7 @@ imports="
         org.talend.core.model.process.IConnectionCategory
         org.talend.core.model.process.INode
         org.talend.designer.codegen.config.CodeGeneratorArgument
-        org.talend.core.model.utils.TalendTextUtils	
+        org.talend.core.model.utils.TalendTextUtils
 		"
 %>
 <%
@@ -28,7 +28,7 @@ imports="
    	String limit = ElementParameterParser.getValue(node,"__LIMIT__");
    	String passwordFieldName = "";
 	%>
- 
+
 int nb_line_<%=cid%> = 0;
 int limit_<%=cid %> = <%=limit %>;
 System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
@@ -36,9 +36,9 @@ System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
 	IMetadataTable metadata = metadatas.get(0);
-	
+
 	if (metadata != null) {
-	
+
 		List<IMetadataColumn> columnList = metadata.getListColumns();
 		int nbSchemaColumns = columnList.size();
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
@@ -48,12 +48,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			String api = ElementParameterParser.getValue(node,"__API__");
-			
+
 			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			String username = ElementParameterParser.getValue(node, "__USER__");
 
 			boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
-			
+
 			String modulename = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
 			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE__").trim();
 			String sObject = (("CustomModule").equals(modulename)) ? customModulename : "\""+modulename+"\"";
@@ -61,7 +61,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			//for bulk query
 		   	String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
 		   	boolean needTraceMessage = ("true").equals(ElementParameterParser.getValue(node,"__HTTP_TRACEMESSAGE__"));
-		   	
+
 		   	//for soap query
 		   	String batchSize = ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
@@ -69,9 +69,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String columnname_delimiter = ElementParameterParser.getValue(node, "__COLUMNNAME_DELIMITER__");
 			boolean queryAll = ("true").equals(ElementParameterParser.getValue(node,"__QUERY_ALL__"));
 			String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
-			
+
 			boolean bulkConnection = ("bulk").equals(ElementParameterParser.getValue(node,"__API__"));
-			
+
 			String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 			boolean useOAuth = "OAUTH".equals(loginType);
 			if("soap".equals(api)){%>
@@ -80,7 +80,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					if(globalMap.get("conn_<%=connection%>") == null){
 						throw new RuntimeException("Get null connection from <%=connection%>");
 					}
-					sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>"); 
+					sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>");
 				<%
 				}else{
 					if(useOAuth){
@@ -99,12 +99,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     	<%
                     	}
                     	String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
-                		
+
                 		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
                 		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
 						%>
 						try{
-							sforceConn_<%=cid%> = 
+							sforceConn_<%=cid%> =
     							new org.talend.salesforce.SforceOAuthConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
                     				<%
                     				if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
@@ -117,7 +117,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                                 	<%
                                 	if(clientID != null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                                 	%>
-                                		.setClientID(<%=clientID%>);
+                                		.setClientID(<%=clientID%>)
                                 	<%
                                 	}
                                 	%>
@@ -140,26 +140,26 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     		}
 							%>
 						    java.util.Properties props_<%=cid%> = System.getProperties();
-						    props_<%=cid%>.put("socksProxyHost",<%=proxyHost%>);  
+						    props_<%=cid%>.put("socksProxyHost",<%=proxyHost%>);
 						    props_<%=cid%>.put("socksProxyPort",<%=proxyPort%>);
 						    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername%>);
-						    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>); 
+						    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>);
 						<%
 						}
 						%>
 						<%
             			passwordFieldName = "__PASS__";
             			%>
-        
+
         				<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 						try{
-							sforceConn_<%=cid%> = 
+							sforceConn_<%=cid%> =
                     			new org.talend.salesforce.SforceBasicConnection.Builder(<%=endpoint%>, <%=username%>, decryptedPassword_<%=cid%>)
                     				.setTimeout(<%=timeout%>).needCompression(<%=needCompression%>)
                                 	<%
                                 	if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
                                 	%>
-                                		.setClientID(<%=clientID%>);
+                                		.setClientID(<%=clientID%>)
                                 	<%
                                 	}
                                 	%>
@@ -204,7 +204,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
                 		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
 						%>
-						sforceConn_<%=cid%> 
+						sforceConn_<%=cid%>
                     		= new org.talend.salesforceBulk.SforceOAuthBulkConnection.Builder(<%=endpoint%>, <%=oauthKey%>, decryptedQauthClientPwd_<%=cid%>, <%=apiVersion%>, <%=callbackHost%>, <%=callbackPort%>)
                     			<%
                     			if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
@@ -221,11 +221,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
             			%>
 
 						<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-						
+
 						<%
         				if(useProxy){
                 			passwordFieldName = "__PROXY_PASSWORD__";
-                			
+
                 			if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
                     		%>
                     			String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
@@ -237,10 +237,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     		}
                 			%>
                 		<%
-                		}	
+                		}
         				%>
-						
-						sforceConn_<%=cid%> 
+
+						sforceConn_<%=cid%>
                 			= new org.talend.salesforceBulk.SforceBasicBulkConnection.Builder(<%=endpoint%>,<%=username%>,decryptedPassword_<%=cid%>,<%=apiVersion%>)
                 				.needCompression(<%=needCompression%>).needTraceMessage(<%=needTraceMessage%>)
                 				<%
@@ -248,7 +248,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                        			%>
                         			.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,decryptedPwd_<%=cid%>)
                         		<%
-                        		}	
+                        		}
                 				%>
                 				.build();
 					<%
@@ -257,21 +257,21 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				<%
 				}
 				%>
-				org.talend.salesforceBulk.SalesforceBulkAPI	sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI(sforceConn_<%=cid%>); 
+				org.talend.salesforceBulk.SalesforceBulkAPI	sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI(sforceConn_<%=cid%>);
 			<%
 			}
-						
+
 			boolean bIsManualQuery = ("true").equals(ElementParameterParser.getValue(node, "__MANUAL_QUERY__"));
 			String sql = "";
 			String condition = null;
-			
+
 			if (bIsManualQuery){
 
 				sql = ElementParameterParser.getValue(node, "__QUERY__");
 				sql = sql.replaceAll("\n", " ").replaceAll("\r", " ");
 
 			} else{
-				
+
 				condition = ElementParameterParser.getValue(node, "__CONDITION__").trim();
 
 				StringBuilder sb = new StringBuilder("\"select ");
@@ -284,13 +284,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				sb.append(" from ");
 				sb.append("\"+");
 				sb.append(sObject);
-				
+
 				sql = sb.toString();
 			}
 
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
-			%>				
+			%>
 				StringBuilder sql_<%=cid%> = new StringBuilder(<%=sql%>);
 				<%
 				if(!("".equals(condition))) {
@@ -301,35 +301,35 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					}
 				<%
 				}
-				if("soap".equals(api)){%>	
-					com.salesforce.soap.partner.QueryResult qr_<%=cid %> = null; 
+				if("soap".equals(api)){%>
+					com.salesforce.soap.partner.QueryResult qr_<%=cid %> = null;
 					<%
 					if(queryAll){
 					%>
 						qr_<%=cid %> = sfMgr_<%=cid%>.queryAll(sql_<%=cid%>.toString(),new Integer(<%=batchSize%>));
-					<%			
+					<%
 					}else{
 					%>
 						qr_<%=cid %> = sfMgr_<%=cid%>.query(sql_<%=cid%>.toString(),new Integer(<%=batchSize%>));
 					<%
 					}
 					%>
-				
+
 					org.talend.salesforce.TopConfig.VALUE_DELIMITER = <%=normalize_delimiter %>;
 					org.talend.salesforce.TopConfig.COLUMNNAME_DELIMTER = <%=columnname_delimiter %>;
-					
-	    			org.talend.salesforce.TopQueryResult topqr_<%=cid %> = null;    			
+
+	    			org.talend.salesforce.TopQueryResult topqr_<%=cid %> = null;
 	    			topqr_<%=cid %> = new org.talend.salesforce.TopQueryResult();
-	    			topqr_<%=cid %>.processTopQueryResult(qr_<%=cid %>);				
-					
+	    			topqr_<%=cid %>.processTopQueryResult(qr_<%=cid %>);
+
 					boolean bContinue_<%=cid %> = true;
-					
+
 					while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
-						
+
 						java.util.List<org.talend.salesforce.TopRecord> allTopRecords_<%=cid %> = topqr_<%=cid %>.getAllTopRecords();
 					    // process the query results
-					    for (int i_<%=cid %> = 0; i_<%=cid %> < allTopRecords_<%=cid %>.size(); i_<%=cid %>++) {					
-							
+					    for (int i_<%=cid %> = 0; i_<%=cid %> < allTopRecords_<%=cid %>.size(); i_<%=cid %>++) {
+
 							org.talend.salesforce.TopRecord topRecord_<%=cid%> = allTopRecords_<%=cid%>.get(i_<%=cid%>);
 
 							nb_line_<%=cid%>++;
@@ -343,21 +343,21 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						org.talend.salesforceBulk.ResultSet resultSet_<%=cid%> = sforceBulk_<%=cid%>.getQueryResultSet(queryResultId_<%=cid%>);
 						java.util.Map<String,String> resultMessage_<%=cid%> = null;
 						while((resultMessage_<%=cid%> = resultSet_<%=cid%>.next())!=null){
-							nb_line_<%=cid%>++;		
-							String value_<%=cid%> = null;		
+							nb_line_<%=cid%>++;
+							String value_<%=cid%> = null;
 				<%
 				}
 							for( int i = 0; i < columnList.size(); i++) {
-							
+
 								IMetadataColumn column = columnList.get(i);
-								
+
 								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-								
+
 								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-								
+
 								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-								
-								if("soap".equals(api)){%>							
+
+								if("soap".equals(api)){%>
 									//get the real value according the columnName
 									valueObj_<%=cid%> = topRecord_<%=cid%>.getValue("<%=columnList.get(i).getLabel()%>");
     								if(valueObj_<%=cid%> != null){
@@ -380,11 +380,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     										<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = value_<%=cid%>.getBytes();
     									<%
     									} else  { // other
-    									%>						
+    									%>
     										<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(value_<%=cid%>);
     									<%
     									}
-    									%>			
+    									%>
     								} else {
     									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
     								}
