@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlMapLabelProvider;
 import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -291,4 +292,9 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
         };
     }
 
+    @Override
+    protected void setTableViewerCreatorOptions(TableViewerCreator<TreeNode> newTableViewerCreator) {
+        super.setTableViewerCreatorOptions(newTableViewerCreator);
+        newTableViewerCreator.setLabelProvider(new XmlMapLabelProvider(newTableViewerCreator));
+    }
 }
