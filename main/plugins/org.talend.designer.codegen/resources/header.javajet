@@ -130,6 +130,13 @@ boolean talendMdmJob = !process.getNodesOfType("tMDMTriggerInput").isEmpty() || 
 
 boolean actAsProvider = !process.getNodesOfType("tESBProviderRequest").isEmpty();
 boolean actAsConsumer = !process.getNodesOfType("tESBConsumer").isEmpty();
+boolean hasSAM4RS = false;
+for (INode node : process.getNodesOfType("tRESTClient")) {
+    if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
+        hasSAM4RS = true;
+        break;
+    }
+}
 
 boolean talendEsbJob = actAsProvider || actAsConsumer || !process.getNodesOfType("tRouteInput").isEmpty();
 boolean talendEsbJobFactory = actAsProvider || !process.getNodesOfType("tRouteInput").isEmpty();
@@ -191,6 +198,12 @@ public class <%=className%> implements <%=talendJobInterfaces%> {
 		}
 		// fix for TESB-7714
 		talendESBJob.setEndpointRegistry(registry);
+
+        // TESB-15920 tRESTClient and SAM not working
+        <% if (hasSAM4RS) { %>
+        talendESBJob.setEventFeature(eventFeature);
+        <% } %>
+
 		return talendESBJob;
 	}
 <% } %>
