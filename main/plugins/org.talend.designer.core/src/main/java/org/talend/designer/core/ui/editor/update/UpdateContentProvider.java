@@ -19,9 +19,11 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.service.IMRProcessService;
@@ -33,6 +35,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class UpdateContentProvider implements ITreeContentProvider {
 
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof Job) {
             return ((Job) parentElement).getCategories().toArray();
@@ -42,6 +45,7 @@ public class UpdateContentProvider implements ITreeContentProvider {
         return null;
     }
 
+    @Override
     public Object getParent(Object element) {
         if (element instanceof Job) {
             return null;
@@ -53,6 +57,7 @@ public class UpdateContentProvider implements ITreeContentProvider {
         return null;
     }
 
+    @Override
     public boolean hasChildren(Object element) {
         if (element instanceof Job) {
             return !((Job) element).getCategories().isEmpty();
@@ -64,6 +69,7 @@ public class UpdateContentProvider implements ITreeContentProvider {
         return false;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Object[] getElements(Object inputElement) {
         List<Job> jobs = new ArrayList<Job>();
@@ -83,6 +89,7 @@ public class UpdateContentProvider implements ITreeContentProvider {
                             job.setReadOnlyProcess(result.isReadOnlyProcess());
                             IProcess2 process = (IProcess2) job2;
                             org.talend.core.model.properties.Item processItem = process.getProperty().getItem();
+                            job.setModelItem(processItem);
                             if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
                                 IMRProcessService mrProcessService = (IMRProcessService) GlobalServiceRegister.getDefault()
                                         .getService(IMRProcessService.class);
@@ -97,6 +104,18 @@ public class UpdateContentProvider implements ITreeContentProvider {
                         }
 
                     } else {
+                        Object updateObject = result.getUpdateObject();
+                        if (updateObject instanceof Node) {
+                            IProcess process = ((Node) updateObject).getProcess();
+                            if (process instanceof IProcess2) {
+                                IProcess2 process2 = (IProcess2) process;
+                                Property property = process2.getProperty();
+                                if (property != null) {
+                                    org.talend.core.model.properties.Item processItem = property.getItem();
+                                    job.setModelItem(processItem);
+                                }
+                            }
+                        }
                         job.setJoblet(result.isJoblet());
                         job.setMR(result.isMR());
                     }
@@ -108,17 +127,17 @@ public class UpdateContentProvider implements ITreeContentProvider {
                     category = new Category(job, result.getCategory());
                     category.setType(result.getUpdateType()); // for icon
                     if (result.getUpdateObject() instanceof Node) { // for node icon
-                        category.setNode((Node) result.getUpdateObject());
+                        category.setNode(result.getUpdateObject());
                     }
                     if (result.getUpdateObject() instanceof NodeType) { // for node icon
-                        category.setNode((NodeType) result.getUpdateObject());
+                        category.setNode(result.getUpdateObject());
                     }
                     if (result.getUpdateObject() instanceof List) { // for node icon
                         List list = (List) result.getUpdateObject();
                         if (list.size() > 0) {
                             Object object = list.get(0);
                             if (object instanceof Node) {
-                                category.setNode((Node) object);
+                                category.setNode(object);
                             }
                         }
                     }
@@ -143,10 +162,12 @@ public class UpdateContentProvider implements ITreeContentProvider {
         return null;
     }
 
+    @Override
     public void dispose() {
 
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
     }
