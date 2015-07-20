@@ -59,11 +59,8 @@ public class MavenJavaProcessor extends JavaProcessor {
 
     protected String windowsClasspath, unixClasspath;
 
-    private boolean isTestJob;
-
     public MavenJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process, property, filenameFromLabel);
-        isTestJob = ProcessUtils.isTestContainer(process);
     }
 
     @Override

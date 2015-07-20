@@ -105,7 +105,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.context.JobContextManager;
@@ -489,9 +488,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             processor.setProcessorStates(IProcessor.STATES_EDIT);
 
             // modified by wzhang to fix bug 8180 in thales branding.
-            if (useCodeView && !(processor.getProperty().getItem() instanceof JobletProcessItem)) {
-                FileEditorInput input = createFileEditorInput();
-                codeEditor.setInput(input);
+            if (useCodeView) {
+                updateCodeEditorContent();
             }
 
             IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
@@ -504,6 +502,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
+        }
+    }
+
+    private void updateCodeEditorContent() {
+        if (!(processor.getProperty().getItem() instanceof JobletProcessItem)) {
+            FileEditorInput input = createFileEditorInput();
+            codeEditor.setInput(input);
         }
     }
 
@@ -610,10 +615,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
 
             codeSync();
-            // for bug 5033
-            if (codeEditor instanceof ISyntaxCheckableEditor && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-                ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
-            }
+            updateCodeEditorContent();
             changeContextsViewStatus(true);
         } else if (newPageIndex == 0 && oldPageIndex == 2) {
             covertJobscriptOnPageChange();
@@ -1269,7 +1271,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         return varNameSet;
     }
 
-    public void codeSync() {
+    private void codeSync() {
         IProcess2 process = getProcess();
         if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
             return;
@@ -1524,7 +1526,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         IPath codePath = processor.getCodePath();
 
-        if (codePath.isEmpty()) {
+        if (codePath == null || codePath.isEmpty()) {
             // reinitialize the processor if there was any problem during the initialization.
             // (should not happen)
             try {
