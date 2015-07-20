@@ -42,6 +42,8 @@ class Job {
 
     private boolean readOnlyProcess = false;
 
+    private org.talend.core.model.properties.Item modelItem;
+
     /**
      * Getter for readOnlyProcess.
      * 
@@ -106,6 +108,14 @@ class Job {
     public void setReadOnlyProcess(boolean readOnlyProcess) {
         this.readOnlyProcess = readOnlyProcess;
 
+    }
+
+    public org.talend.core.model.properties.Item getModelItem() {
+        return this.modelItem;
+    }
+
+    public void setModelItem(org.talend.core.model.properties.Item item) {
+        this.modelItem = item;
     }
 
 }

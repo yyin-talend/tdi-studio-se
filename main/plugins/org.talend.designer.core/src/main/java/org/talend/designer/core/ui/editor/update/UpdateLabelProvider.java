@@ -49,18 +49,23 @@ public class UpdateLabelProvider implements ITableLabelProvider {
         if (image == null && columnIndex == 0) {
             if (element instanceof Job) {
                 Job job = (Job) element;
-                if (job.isMR()) {
-                    for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
-                        String alias = type.getAlias();
-                        if (alias != null && alias.equals("HC")) {
-                            image = CoreImageProvider.getIcon(type);
-                        }
-                    }
-
-                } else if (job.isJoblet()) {
+                if (job.isJoblet()) {
                     image = ECoreImage.JOBLET_ICON;
                 } else {
-                    image = ECoreImage.PROCESS_ICON;
+                    org.talend.core.model.properties.Item item = job.getModelItem();
+                    if (item != null) {
+                        image = CoreImageProvider.getIcon(job.getModelItem());
+                    } else {
+                        if (job.isMR()) {
+                            for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
+                                String alias = type.getAlias();
+                                if (alias != null && alias.equals("HC")) {
+                                    image = CoreImageProvider.getIcon(type);
+                                }
+                            }
+                            image = CoreImageProvider.getIcon(job.getModelItem());
+                        }
+                    }
                 }
 
             } else if (element instanceof Category) {
