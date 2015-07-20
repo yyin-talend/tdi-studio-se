@@ -41,7 +41,7 @@ public class BuildRecycleBinIndexMigrationTask extends AbstractItemMigrationTask
      */
     @Override
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2050, 02, 12, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2015, 07, 20, 12, 0, 0);
         return gc.getTime();
     }
     
