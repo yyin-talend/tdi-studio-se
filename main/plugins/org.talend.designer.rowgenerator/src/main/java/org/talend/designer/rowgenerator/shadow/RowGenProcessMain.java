@@ -34,6 +34,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.designer.rowgenerator.PluginUtils;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
@@ -136,6 +137,7 @@ public class RowGenProcessMain {
         IProcessor contextProcessor = ProcessorUtilities.getProcessor(proc, null);
         contextProcessor.setContext(proc.getContextManager().getDefaultContext());
         try {
+            contextProcessor.cleanBeforeGenerate(TalendProcessOptionConstants.CLEAN_CONTEXTS);
             contextProcessor.generateContextCode();
         } catch (ProcessorException pe) {
             ExceptionHandler.process(pe);

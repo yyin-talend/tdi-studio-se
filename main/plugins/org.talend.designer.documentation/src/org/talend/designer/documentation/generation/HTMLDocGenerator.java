@@ -94,6 +94,7 @@ import org.talend.core.model.repository.documentation.generation.DocumentationPa
 import org.talend.core.model.repository.documentation.generation.IDocumentationGenerator;
 import org.talend.core.model.utils.ParameterValueUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.service.IMRProcessService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.documentation.generation.ExternalNodeComponentHandler;
@@ -750,6 +751,8 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             // in fact, no need to do, because will encrypt via TDI-30368
             // hidePasswordInSourceCode4Doc(process);
             try {
+                processor.cleanBeforeGenerate(TalendProcessOptionConstants.CLEAN_JAVA_CODES
+                        | TalendProcessOptionConstants.CLEAN_CONTEXTS | TalendProcessOptionConstants.CLEAN_DATA_SETS);
                 processor.generateCode(false, true, false);
             } catch (ProcessorException e) {
                 ExceptionHandler.process(e);

@@ -40,6 +40,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -85,7 +86,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
-import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -111,6 +111,7 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.services.IRulesProviderService;
+import org.talend.core.utils.BitwiseOptionUtils;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -128,6 +129,7 @@ import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.utils.EsbConfigUtils;
+import org.talend.utils.io.FilesUtils;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -177,6 +179,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     private final ITalendProcessJavaProject talendJavaProject;
 
+    protected boolean isTestJob = false;
+
     /**
      * Set current status.
      * 
@@ -196,10 +200,13 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      */
     public JavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process);
-        this.process = process;
         this.property = property;
         this.talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
-
+        Assert.isNotNull(this.talendJavaProject, Messages.getString("JavaProcessor.notFoundedProjectException"));
+        this.project = this.talendJavaProject.getProject();
+        if (ProcessUtils.isTestContainer(process)) {
+            isTestJob = true;
+        }
         if (property != null) {
             if (property.getItem() != null && property.getItem() instanceof ProcessItem) {
                 final ProcessItem processItem = (ProcessItem) property.getItem();
@@ -252,12 +259,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (c.equals(this.context)) {
             return;
         }
-
-        ITalendProcessJavaProject tProcessJavaProject = getTalendJavaProject();
-        if (tProcessJavaProject == null) {
-            throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedProjectException")); //$NON-NLS-1$
-        }
-        this.project = tProcessJavaProject.getProject();
         createInternalPackage();
 
         initCodePath(c);
@@ -266,7 +267,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     @Override
     public void initPath() throws ProcessorException {
-        initCodePath(context);
+        IContext initContext = this.context;
+        if (initContext == null) {
+            initContext = this.process.getContextManager().getDefaultContext();
+        }
+        initCodePath(initContext);
     }
 
     protected boolean isStandardJob() {
@@ -279,15 +284,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
 
         ITalendProcessJavaProject tProcessJavaProject = getTalendJavaProject();
-        if (tProcessJavaProject == null) {
-            throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
-        }
-        IProgressMonitor monitor = new NullProgressMonitor();
 
-        boolean isTestJob = false;
-        if (ProcessUtils.isTestContainer(process)) {
-            isTestJob = true;
-        }
+        IProgressMonitor monitor = new NullProgressMonitor();
 
         IFolder srcFolder = null;
         IFolder resourcesFolder = null;
@@ -347,8 +345,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         this.compiledCodePath = jobClassFolder.getProjectRelativePath().append(jobName);
 
         if (isTestJob) {
+            // test/testjob_0_1/datas
             IPath dataPath = new Path(jobClassPackageFolder).append(JavaUtils.JAVA_DATAS_DIRECTORY);
-            this.dataFilePath = resourcesFolder.getFile(dataPath).getProjectRelativePath();
+            this.dataFilePath = resourcesFolder.getFolder(dataPath).getProjectRelativePath();
         }
 
         /*
@@ -411,6 +410,47 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             return code.toString();
         } else {
             return processCode;
+        }
+    }
+
+    public void cleanBeforeGenerate(int options) throws ProcessorException {
+        if (this.getProcess().isNeedRegenerateCode() || this.getProcess() instanceof IProcess2
+                && ((IProcess2) this.getProcess()).isProcessModified()) {
+            // will do clean
+        } else {
+            return;
+        }
+        // clean the generated java source codes.
+        if (BitwiseOptionUtils.containOption(options, CLEAN_JAVA_CODES)) {
+            IFolder javaCodeFolder = getCodeProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
+            cleanFolder(javaCodeFolder);
+
+            IFolder classCodeFolder = getCodeProject().getFolder(this.getCompiledCodePath().removeLastSegments(1));
+            cleanFolder(classCodeFolder);
+        }
+
+        // clean the context groups. Sometimes, if remove the context group, the context file be kept still.
+        if (BitwiseOptionUtils.containOption(options, CLEAN_CONTEXTS)) {
+            IFolder srcContextFolder = getCodeProject().getFolder(this.getSrcContextPath().removeLastSegments(1));
+            cleanFolder(srcContextFolder);
+
+            IFolder classContextFolder = getCodeProject().getFolder(this.getCompiledContextPath().removeLastSegments(1));
+            cleanFolder(classContextFolder);
+        }
+
+        // if test case, clean the data
+        if (BitwiseOptionUtils.containOption(options, CLEAN_DATA_SETS) && isTestJob) {
+            IFolder srcDatasetFolder = getCodeProject().getFolder(this.getSrcDataSetPath());
+            cleanFolder(srcDatasetFolder);
+        }
+    }
+
+    private void cleanFolder(IFolder folder) {
+        try {
+            FilesUtils.deleteFolder(folder.getLocation().toFile(), false);
+            folder.refreshLocal(IResource.DEPTH_ONE, null);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
         }
     }
 
@@ -498,8 +538,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             } catch (IOException e) {
                 ExceptionHandler.process(e);
             }
-            // Generating files
-            IFile codeFile = this.project.getFile(this.codePath);
 
             // format the code before save the file.
             final String toFormat = processCode;
@@ -546,6 +584,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             processCode = computeMethodSizeIfNeeded(processCode);
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
 
+            // Generating files
+            IFile codeFile = this.getCodeProject().getFile(this.getSrcCodePath());
             if (!codeFile.exists()) {
                 // see bug 0003592, detele file with different case in windows
                 deleteFileIfExisted(codeFile);
@@ -714,7 +754,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      */
     @Override
     public IProject getCodeProject() {
-        return this.project.getProject();
+        return this.project;
     }
 
     /**
@@ -779,7 +819,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      */
     @Override
     public int getLineNumber(String nodeName) {
-        IFile codeFile = this.project.getProject().getFile(this.codePath);
+        IFile codeFile = this.getCodeProject().getFile(this.getSrcCodePath());
         int[] lineNumbers = new int[] { 0 };
         try {
             lineNumbers = JavaProcessor.getLineNumbers(codeFile, new String[] { nodeName });
@@ -877,6 +917,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @return the compliedCodePath
      */
     public IPath getCompiledCodePath() {
+        checkPath(this.compiledCodePath);
         return this.compiledCodePath;
     }
 
@@ -886,6 +927,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @return the compiledContextPath
      */
     public IPath getCompiledContextPath() {
+        checkPath(this.compiledContextPath);
         return this.compiledContextPath;
     }
 
@@ -895,6 +937,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @return the codePath
      */
     public IPath getSrcCodePath() {
+        checkPath(this.codePath);
         return this.codePath;
     }
 
@@ -904,6 +947,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @return the srcContextPath
      */
     public IPath getSrcContextPath() {
+        checkPath(this.contextPath);
         return this.contextPath;
     }
 
@@ -913,7 +957,18 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @return the SrcDataSetPath
      */
     public IPath getSrcDataSetPath() {
+        checkPath(this.dataFilePath);
         return this.dataFilePath;
+    }
+
+    private void checkPath(IPath path) {
+        if (path == null) {
+            try {
+                initPath();
+            } catch (ProcessorException e) {
+                ExceptionHandler.process(e);
+            }
+        }
     }
 
     @Override
@@ -1302,8 +1357,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         List<? extends INode> graphicalNodes = process.getGraphicalNodes(); // process.getGeneratingNodes();
 
         try {
-            IPath jobPackagePath = this.codePath.removeLastSegments(1);
-            IFolder jobPackageFolder = this.project.getFolder(jobPackagePath);
+            IPath jobPackagePath = getSrcCodePath().removeLastSegments(1);
+            IFolder jobPackageFolder = this.getCodeProject().getFolder(jobPackagePath);
             IFolder wsdlsPackageFolder = jobPackageFolder.getFolder("wsdl"); //$NON-NLS-1$
             if (wsdlsPackageFolder.exists()) {
                 wsdlsPackageFolder.delete(true, null);
@@ -1502,7 +1557,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             if (content == null) {
                 return;
             }
-            IProject processorProject = this.project;
+            IProject processorProject = getCodeProject();
             ITalendProcessJavaProject tProcessJvaProject = getTalendJavaProject();
             if (processorProject == null && tProcessJvaProject != null) {
                 processorProject = tProcessJvaProject.getProject();
@@ -1625,7 +1680,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             if (breakLineNumber == null || breakLineNumber == -1) {
                 return;
             }
-            IFile codeFile = this.project.getFile(this.codePath);
+            IFile codeFile = this.getCodeProject().getFile(this.getSrcCodePath());
             if (!codeFile.exists()) {
                 JDIDebugModel.removeJavaBreakpointListener(this);
                 return;

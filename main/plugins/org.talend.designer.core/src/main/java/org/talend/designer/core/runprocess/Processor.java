@@ -40,6 +40,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.runprocess.IEclipseProcessor;
 import org.talend.core.runtime.process.TalendProcessArgumentConstant;
+import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
@@ -56,7 +57,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  * 
  * 
  */
-public abstract class Processor implements IProcessor, IEclipseProcessor {
+public abstract class Processor implements IProcessor, IEclipseProcessor, TalendProcessOptionConstants {
 
     private static Logger log = Logger.getLogger(Processor.class);
 
@@ -116,6 +117,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      */
     public Processor(IProcess process) {
         super();
+        this.process = process;
         if (ProcessorUtilities.isExportConfig()) {
             setInterpreter(ProcessorUtilities.getInterpreter());
             setLibraryPath(ProcessorUtilities.getLibraryPath());
@@ -474,6 +476,10 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
     @Override
     public abstract void setSyntaxCheckableEditor(ISyntaxCheckableEditor editor);
 
+    public void cleanBeforeGenerate(int options) throws ProcessorException {
+        // do something...
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -485,7 +491,6 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         if (context == null) {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }
-
         // Remove the synchronization of the routines when generate the code.
         // This shouldn't be needed anymore.
 
@@ -512,7 +517,6 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         if (context == null) {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }
-
         // Remove the synchronization of the routines when generate the code.
         // This shouldn't be needed anymore.
 
@@ -654,8 +658,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
             }
 
-            // IFile contextFile = javaProject.getFile(contextPath);
-            IFile contextFile = this.project.getProject().getFile(contextPath);
+            IFile contextFile = this.getCodeProject().getFile(contextPath);
             InputStream contextStream = new ByteArrayInputStream(processContext.getBytes());
 
             if (!contextFile.exists()) {
