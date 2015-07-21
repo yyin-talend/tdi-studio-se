@@ -2535,9 +2535,11 @@
 			REQUIRED="true" />
 		<IMPORT NAME="stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.1.jar" MVN="mvn:org.talend.libraries/geronimo-stax-api_1.0_spec-1.0.1/6.0.0"  BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/geronimo-stax-api_1.0_spec-1.0.1.jar"
 			REQUIRED="true" />
+		<IMPORT NAME="stax2-api" MODULE="stax2-api-3.1.4.jar" MVN="mvn:org.talend.libraries/stax2-api-3.1.4/6.0.0"  BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/stax2-api-3.1.4.jar"
+			REQUIRED="true" />
 		<IMPORT NAME="activation" MODULE="activation-1.1.jar" MVN="mvn:org.talend.libraries/activation-1.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation-1.1.jar"
 			REQUIRED="true" />
-		<IMPORT NAME="wstx-asl" MODULE="wstx-asl-3.2.9.jar" MVN="mvn:org.talend.libraries/wstx-asl-3.2.9/6.0.0"  BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wstx-asl-3.2.9.jar"
+		<IMPORT NAME="wstx-asl" MODULE="woodstox-core-asl-4.4.1.jar" MVN="mvn:org.talend.libraries/woodstox-core-asl-4.4.1/6.0.0"  BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/woodstox-core-asl-4.4.1.jar"
 			REQUIRED="true" />
         <!-- OAuth2 -->
         <IMPORT NAME="salesforceOAuth"
