@@ -46,7 +46,6 @@ imports="
 
     boolean generateJsonInFile = "true".equals(ElementParameterParser.getValue(node,"__GENERATE_JSON_IN_FILE__"));
     String storagePath = ElementParameterParser.getValue(node,"__CUSTOM_FOLDER__");
-    String csvPath = ElementParameterParser.getValue(node, "__LOAD_DATA_PATH__");
 
     boolean willGenerateJsonMetadata = !specifyJsonMetadata && uploadJsonMetadata;//In File or Memory
 
@@ -199,8 +198,6 @@ imports="
                               customConfig_<%= cid %>.put("fieldsEnclosedBy",<%= fieldsEnclosedBy %>);
                               customConfig_<%= cid %>.put("linesTerminatedBy",<%= linesTerminatedBy %>);
                               customConfig_<%= cid %>.put("numericFormat",<%= numericFormat %>);
-                              customConfig_<%= cid %>.put("csvPath",<%= csvPath %>);
-                              customConfig_<%= cid %>.put("encoding",<%= encoding %>);
                     <%
                        if(generateJsonInFile){
                           %>
