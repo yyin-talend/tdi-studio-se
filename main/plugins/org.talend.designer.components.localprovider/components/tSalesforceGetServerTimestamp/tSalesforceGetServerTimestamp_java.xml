@@ -18,7 +18,7 @@
 
   <FAMILIES>
     <FAMILY>Business/Salesforce</FAMILY>
-    <FAMILY>Cloud/Salesforce</FAMILY>
+	<FAMILY>Cloud/Salesforce</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
@@ -37,25 +37,25 @@
 
 <PARAMETERS>
     <PARAMETER
-        NAME="USE_EXISTING_CONNECTION"
-        FIELD="CHECK"
-        NUM_ROW="10"
-    >
-        <DEFAULT>false</DEFAULT>
-    </PARAMETER>
+		NAME="USE_EXISTING_CONNECTION"
+		FIELD="CHECK"
+	    NUM_ROW="10"
+	>
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
 
-    <PARAMETER
-        NAME="CONNECTION"
-        FIELD="COMPONENT_LIST"
-        REQUIRED="true" FILTER="tSalesforceConnection"
-        NUM_ROW="10"
-        SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-    />
+	<PARAMETER
+		NAME="CONNECTION"
+	    FIELD="COMPONENT_LIST"
+	    REQUIRED="true" FILTER="tSalesforceConnection"
+	    NUM_ROW="10"
+	    SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+	/>
 
-    <PARAMETER
-        NAME="LOGIN_TYPE"
-        FIELD="CLOSED_LIST"
-        NUM_ROW="15"
+    <PARAMETER 
+        NAME="LOGIN_TYPE" 
+        FIELD="CLOSED_LIST" 
+        NUM_ROW="15" 
         REQUIRED="true"
         SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         GROUP="LOGIN">
@@ -64,7 +64,7 @@
             <ITEM NAME="OAUTH" VALUE="OAUTH" />
         </ITEMS>
     </PARAMETER>
-
+        
     <PARAMETER
       NAME="ENDPOINT"
       FIELD="TEXT"
@@ -76,16 +76,16 @@
       <DEFAULT IF="LOGIN_TYPE == 'OAUTH'">"https://login.salesforce.com/services/oauth2"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-        NAME="API_VERSION"
-        FIELD="TEXT"
+    <PARAMETER 
+        NAME="API_VERSION" 
+        FIELD="TEXT" 
         NUM_ROW="25"
-        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"  
         SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
         GROUP="LOGIN">
         <DEFAULT>"25.0"</DEFAULT>
     </PARAMETER>
-
+    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -105,68 +105,68 @@
       GROUP="LOGIN">
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-        NAME="OAUTH_CLIENT_ID"
-        FIELD="TEXT"
-        NUM_ROW="30"
-        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+    
+    <PARAMETER 
+        NAME="OAUTH_CLIENT_ID" 
+        FIELD="TEXT" 
+        NUM_ROW="30" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
         SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
         GROUP="LOGIN">
         <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-        NAME="OAUTH_CLIENT_SECRET"
-        FIELD="PASSWORD"
-        NUM_ROW="30"
-        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+    
+    <PARAMETER 
+        NAME="OAUTH_CLIENT_SECRET" 
+        FIELD="PASSWORD" 
+        NUM_ROW="30" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
         SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
         GROUP="LOGIN">
         <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-        NAME="OAUTH_CALLBACK_HOST"
-        FIELD="TEXT"
-        NUM_ROW="40"
-        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+    
+    <PARAMETER 
+        NAME="OAUTH_CALLBACK_HOST" 
+        FIELD="TEXT" 
+        NUM_ROW="40" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
         SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
         GROUP="LOGIN">
         <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-        NAME="OAUTH_CALLBACK_PORT"
-        FIELD="TEXT"
-        NUM_ROW="40"
-        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+    
+    <PARAMETER 
+        NAME="OAUTH_CALLBACK_PORT" 
+        FIELD="TEXT" 
+        NUM_ROW="40" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
         SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
         GROUP="LOGIN">
         <DEFAULT>8443</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-        NAME="OAUTH_TOKEN_FILE"
-        FIELD="FILE"
-        NUM_ROW="41"
-        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+    
+    <PARAMETER 
+        NAME="OAUTH_TOKEN_FILE" 
+        FIELD="FILE" 
+        NUM_ROW="41" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
         SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
         GROUP="LOGIN">
         <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/token.properties"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-        NAME="TIMEOUT"
-            FIELD="TEXT"
-            NUM_ROW="45"
-            SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-            <DEFAULT>60000</DEFAULT>
-        </PARAMETER>
-    <PARAMETER
+    
+	<PARAMETER
+		NAME="TIMEOUT"
+			FIELD="TEXT"
+			NUM_ROW="45"
+			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			<DEFAULT>60000</DEFAULT>
+		</PARAMETER>
+	<PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      READONLY="true"
+      READONLY="true" 
       REQUIRED="true"
       NUM_ROW="50"
     >
@@ -178,64 +178,64 @@
 
    </PARAMETERS>
 
-    <ADVANCED_PARAMETERS>
+	<ADVANCED_PARAMETERS>
 
-       <PARAMETER
-           NAME="USE_PROXY"
-           FIELD="CHECK"
-           REQUIRED="true"
-           NUM_ROW="10"
+	   <PARAMETER
+	       NAME="USE_PROXY"
+	       FIELD="CHECK"
+	       REQUIRED="true"
+		   NUM_ROW="10"
            SHOW_IF="LOGIN_TYPE=='BASIC'"
-           REPOSITORY_VALUE="UES_PROXY">
-           <DEFAULT>false</DEFAULT>
-        </PARAMETER>
+		   REPOSITORY_VALUE="UES_PROXY">
+		   <DEFAULT>false</DEFAULT>
+		</PARAMETER>
 
-        <PARAMETER
-            NAME="PROXY_HOST"
-            FIELD="TEXT"
-            NUM_ROW="20"
-            SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
-            REPOSITORY_VALUE="PROXY_HOST">
-            <DEFAULT>"61.163.92.4"</DEFAULT>
-        </PARAMETER>
+		<PARAMETER
+			NAME="PROXY_HOST"
+			FIELD="TEXT"
+			NUM_ROW="20"
+			SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
+			REPOSITORY_VALUE="PROXY_HOST">
+			<DEFAULT>"61.163.92.4"</DEFAULT>
+		</PARAMETER>
 
-        <PARAMETER
-            NAME="PROXY_PORT"
-            FIELD="TEXT"
-            NUM_ROW="30"
-            SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
-            REPOSITORY_VALUE="PROXY_PORT">
-            <DEFAULT>"1080"</DEFAULT>
-        </PARAMETER>
+		<PARAMETER
+			NAME="PROXY_PORT"
+			FIELD="TEXT"
+			NUM_ROW="30"
+			SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
+			REPOSITORY_VALUE="PROXY_PORT">
+			<DEFAULT>"1080"</DEFAULT>
+		</PARAMETER>
 
-        <PARAMETER
-            NAME="PROXY_USERNAME"
-            FIELD="TEXT"
-            NUM_ROW="40"
-            SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
-            REPOSITORY_VALUE="PROXY_USERNAME">
-            <DEFAULT>""</DEFAULT>
-        </PARAMETER>
+		<PARAMETER
+			NAME="PROXY_USERNAME"
+			FIELD="TEXT"
+			NUM_ROW="40"
+			SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
+			REPOSITORY_VALUE="PROXY_USERNAME">
+			<DEFAULT>""</DEFAULT>
+		</PARAMETER>
 
-        <PARAMETER
-            NAME="PROXY_PASSWORD"
-            FIELD="PASSWORD"
-            NUM_ROW="50"
-            SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
-            REPOSITORY_VALUE="PROXY_PASSWORD">
-            <DEFAULT>""</DEFAULT>
-        </PARAMETER>
+		<PARAMETER
+			NAME="PROXY_PASSWORD"
+			FIELD="PASSWORD"
+			NUM_ROW="50"
+			SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
+			REPOSITORY_VALUE="PROXY_PASSWORD">
+			<DEFAULT>""</DEFAULT>
+		</PARAMETER>
 
-        <PARAMETER
-           NAME="NEED_COMPRESSION"
-           FIELD="CHECK"
-           REQUIRED="true"
-           NUM_ROW="60"
-           SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-           <DEFAULT>false</DEFAULT>
-        </PARAMETER>
+		<PARAMETER
+	       NAME="NEED_COMPRESSION"
+	       FIELD="CHECK"
+	       REQUIRED="true"
+		   NUM_ROW="60"
+		   SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		   <DEFAULT>false</DEFAULT>
+		</PARAMETER>
 
-        <PARAMETER
+		<PARAMETER
            NAME="USE_HTTP_CHUNKED"
            FIELD="CHECK"
            SHOW="false"
@@ -244,58 +244,60 @@
         </PARAMETER>
 
         <PARAMETER
-            NAME="CLIENT_ID"
-            FIELD="TEXT"
-            NUM_ROW="70"
-            SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-            <DEFAULT>""</DEFAULT>
-        </PARAMETER>
+			NAME="CLIENT_ID"
+			FIELD="TEXT"
+			NUM_ROW="70"
+			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			<DEFAULT>""</DEFAULT>
+		</PARAMETER>
 
-    </ADVANCED_PARAMETERS>
+	</ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-        <IMPORT NAME="salesforceCRM-management" MODULE="salesforceCRMManagement.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceCRMManagement.jar" REQUIRED="true" />
-        <IMPORT NAME="axiom-api"
-            MODULE="axiom-api-1.2.13.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-api-1.2.13.jar" REQUIRED="true" />
-        <IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.13.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-impl-1.2.13.jar" REQUIRED="true" />
-        <IMPORT NAME="axis2-kernel" MODULE="axis2-kernel-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-kernel-1.6.2.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-http-1.6.2.jar" REQUIRED="true" />
-        <IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-local-1.6.2.jar" REQUIRED="true" />
+    	<IMPORT NAME="salesforceCRM-management" MODULE="salesforceCRMManagement.jar"   UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceCRMManagement.jar" REQUIRED="true" />
+    	<IMPORT NAME="axiom-api"
+			MODULE="axiom-api-1.2.13.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-api-1.2.13.jar" REQUIRED="true" />
+		<IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.13.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-impl-1.2.13.jar" REQUIRED="true" />
+		<IMPORT NAME="axis2-kernel" MODULE="axis2-kernel-1.6.2.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-kernel-1.6.2.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.6.2.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-http-1.6.2.jar" REQUIRED="true" />
+		<IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.6.2.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-local-1.6.2.jar" REQUIRED="true" />
         <IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/base/plugins/org.apache.commons.codec_1.3.0.v201101211617.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="commons-httpclient"
-            MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.1.jar" REQUIRED="true" />
-        <IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="httpcore" MODULE="httpcore-4.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.2.1.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="mail" MODULE="mail-1.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail-1.4.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="neethi" MODULE="neethi-3.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/neethi-3.0.1.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="WSDL4J-1_6_3" MODULE="wsdl4j-1.6.3.jar"
-            BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
-        <IMPORT NAME="XmlSchema" MODULE="xmlschema-core-2.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/xmlschema-core-2.0.1.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="axis2-adb" MODULE="axis2-adb-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-adb-1.6.2.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.1.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/geronimo-stax-api_1.0_spec-1.0.1.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="activation" MODULE="activation-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation-1.1.jar"
-            REQUIRED="true" />
-        <IMPORT NAME="wstx-asl" MODULE="wstx-asl-3.2.9.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wstx-asl-3.2.9.jar"
-            REQUIRED="true" />
+			REQUIRED="true" />
+		<IMPORT NAME="commons-httpclient"
+			MODULE="commons-httpclient-3.1.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.1.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar"   UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="httpcore" MODULE="httpcore-4.2.1.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.2.1.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="mail" MODULE="mail-1.4.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail-1.4.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="neethi" MODULE="neethi-3.0.1.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/neethi-3.0.1.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="WSDL4J-1_6_3" MODULE="wsdl4j-1.6.3.jar"  
+			BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
+		<IMPORT NAME="XmlSchema" MODULE="xmlschema-core-2.0.1.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/xmlschema-core-2.0.1.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="axis2-adb" MODULE="axis2-adb-1.6.2.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-adb-1.6.2.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.1.jar"   BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/geronimo-stax-api_1.0_spec-1.0.1.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="stax2-api" MODULE="stax2-api-3.1.4.jar"   BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/stax2-api-3.1.4.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="activation" MODULE="activation-1.1.jar"   UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation-1.1.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="wstx-asl" MODULE="woodstox-core-asl-4.4.1.jar"   BundleID="" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/woodstox-core-asl-4.4.1.jar"
+			REQUIRED="true" />
         <!-- OAuth2 -->
         <IMPORT NAME="salesforceOAuth"
-            MODULE="salesforceOAuth.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceOAuth.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+            MODULE="salesforceOAuth.jar"   UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceOAuth.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
         <IMPORT NAME="jetty-all-8.1.12.v20130726"
-            MODULE="jetty-all-8.1.12.v20130726.jar" UrlPath="platform:/plugin/org.talend.libraries.jetty/lib/jetty-all-8.1.12.v20130726.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+            MODULE="jetty-all-8.1.12.v20130726.jar"   UrlPath="platform:/plugin/org.talend.libraries.jetty/lib/jetty-all-8.1.12.v20130726.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
         <IMPORT NAME="servlet-api-3.0"
-            MODULE="servlet-api-3.0.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/servlet-api-3.0.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+            MODULE="servlet-api-3.0.jar"   UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/servlet-api-3.0.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
         <IMPORT NAME="json_simple-1.1"
-            MODULE="json_simple-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json_simple-1.1.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+            MODULE="json_simple-1.1.jar"   UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json_simple-1.1.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
     </IMPORTS>
   </CODEGENERATION>
 
