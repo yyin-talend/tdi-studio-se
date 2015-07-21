@@ -587,7 +587,21 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setValue("");
         param.setReadOnly(false);
         addElementParameter(param);
-
+        
+        //For adding the param definition in process item prepared 
+        for (EOozieParameterName oozieParam : EOozieParameterName.values()) {
+            if(!"REPOSITORY_CONNECTION_ID".equals(oozieParam.getName())&&!"JOBID_FOR_OOZIE".equals(oozieParam.getName())&&!"HADOOP_APP_PATH".equals(oozieParam.getName())) {
+                param = new ElementParameter(this);
+                param.setName(oozieParam.getName());
+                param.setDisplayName(oozieParam.getDisplayName());
+                param.setCategory(EComponentCategory.TECHNICAL);
+                param.setFieldType(EParameterFieldType.TEXT);
+                param.setShow(false);
+                param.setValue("");
+                param.setReadOnly(false);
+                addElementParameter(param);
+            }
+        }
         // TDI-24548
         param = new ElementParameter(this);
         param.setName(EParameterName.PROJECT_TECHNICAL_NAME.getName());
