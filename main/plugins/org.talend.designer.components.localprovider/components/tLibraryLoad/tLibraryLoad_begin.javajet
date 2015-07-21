@@ -15,7 +15,7 @@
     List<Map<String, String>> hotLibs = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HOTLIBS__");
 %>
 
-<% if(hotLibs.size() > 0){%>
+<% if(hotLibs!=null&&hotLibs.size() > 0){%>
 
 java.net.URLClassLoader sysloader_<%=cid %> = (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
 java.lang.reflect.Method method_<%=cid %> = java.net.URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { java.net.URL.class });
