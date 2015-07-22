@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.model.emf.xmlmap.impl;
+package org.talend.designer.xmlmap.ui;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.talend.commons.ui.runtime.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
@@ -20,6 +20,7 @@ import org.talend.commons.ui.runtime.swt.tableviewer.behavior.ComboEditorValueAd
 import org.talend.commons.ui.runtime.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.runtime.swt.tableviewer.data.AccessorUtils;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl;
 
 /**
  * created by kongxiaohan on Jul 17, 2015 Detailled comment
