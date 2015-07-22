@@ -14,9 +14,7 @@ package org.talend.designer.runprocess.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -335,8 +333,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
             			if(periodCombo.isEnabled() && periodCombo.getSelectionIndex()!=0){
             				startCustomerGCSchedule();
             			}
-            			//need to extract
-            			String content = "Start time : "+ new SimpleDateFormat("hh:mm:ss a MM/dd/YYYY").format(new Date())+"\r\n";
+            			String content = getExecutionInfo("Start");
             			messageManager.setStartMessage(content, getDisplay().getSystemColor(SWT.COLOR_BLUE), getDisplay().getSystemColor(SWT.COLOR_WHITE));
             			((RuntimeGraphcsComposite)chartComposite).displayReportField();
             			lock = true;
@@ -435,12 +432,15 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 		long endTime;
 		
 		while(true){
+			if(processContext != null && !processContext.isRunning()) {
+       			return false;
+       	 }
 			System.out.println("background thread searching...");
 			if(initCurrentActiveJobJvm()){
 				return true;
 			}
 			try {
-				Thread.sleep(100);
+				Thread.sleep(300);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -482,6 +482,10 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         initGraphicComponents(this);
         monitorComposite.layout();
     }
+    
+    private String getExecutionInfo(String prefix){
+    	return prefix + " time : "+ TalendDate.getDate("hh:mm:ss a MM/dd/YYYY") + System.getProperty("line.separator");
+    }
 
     private void runProcessContextChanged(final PropertyChangeEvent evt) {
         if (isDisposed()) {
@@ -509,8 +513,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
                     	}else{
                     		setRuntimeButtonByStatus(true);
                     		processContext.setMonitoring(false);
-                    		//need to extract
-                    		String content = "End time : "+ new SimpleDateFormat("hh:mm:ss a MM/dd/YYYY").format(new Date())+"\r\n";
+                    		String content = getExecutionInfo("End");
                 			messageManager.setEndMessage(content, getDisplay().getSystemColor(SWT.COLOR_BLUE), getDisplay().getSystemColor(SWT.COLOR_WHITE));
                     		((RuntimeGraphcsComposite)chartComposite).displayReportField();
                     		lock = false;
