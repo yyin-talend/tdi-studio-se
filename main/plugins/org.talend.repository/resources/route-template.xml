@@ -1,31 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+    xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.3.0">
 
 	<!-- Talend Route OSGi blueprint descriptor -->
 #if ($hasCXFComponent && ($hasCXFSamlConsumer || $hasCXFSamlProvider))
 #[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job" placeholder-prefix="$job{"
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+	<cm:property-placeholder persistent-id="org.talend.esb.job" placeholder-prefix="$job{" />
 ]]#
 #end
 #if ($hasCXFSamlProvider)
 #[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$saml{"
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$saml{" />
 ]]#
 #end
 #if ($hasCXFRSSamlProviderAuthz)
 #[[
-	<cm:property-placeholder persistent-id="org.talend.esb.authorization.pep" placeholder-prefix="$pep{"
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+	<cm:property-placeholder persistent-id="org.talend.esb.authorization.pep" placeholder-prefix="$pep{" />
 ]]#
 #end
 #if ($hasCXFSamlConsumer)
 #[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job.client" placeholder-prefix="$client{"
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
-	<cm:property-placeholder persistent-id="org.talend.esb.job.client.sts" placeholder-prefix="$sts{"
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+	<cm:property-placeholder persistent-id="org.talend.esb.job.client" placeholder-prefix="$client{" />
 ]]#
 #end
 
@@ -66,25 +61,6 @@
                 <entry key="security.signature.properties" value="$client{security.signature.properties}" />
                 <entry key="security.signature.username" value="$client{security.signature.username}" />
                 <entry key="security.signature.password" value="$client{security.signature.password}" />
-            </map>
-        </property>
-        <property name="stsProperties">
-            <map>
-                <entry key="sts.namespace" value="$sts{sts.namespace}" />
-                <entry key="sts.service.name" value="$sts{sts.service.name}" />
-                <entry key="sts.endpoint.name" value="$sts{sts.endpoint.name}" />
-                <entry key="sts.wsdl.location" value="$sts{sts.wsdl.location}" />
-
-                <entry key="ws-security.sts.token.username" value="$sts{ws-security.sts.token.username}" />
-                <entry key="ws-security.sts.token.usecert" value="$sts{ws-security.sts.token.usecert}" />
-                <entry key="ws-security.is-bsp-compliant" value="$sts{ws-security.is-bsp-compliant}" />
-
-                <entry key="ws-security.sts.token.properties" value="$sts{ws-security.sts.token.properties}" />
-                <entry key="security.encryption.properties" value="$sts{security.encryption.properties}" />
-                <entry key="security.encryption.username" value="$sts{security.encryption.username}" />
-
-                <entry key="sts.x509.wsdl.location" value="$sts{sts.x509.wsdl.location}" />
-                <entry key="sts.x509.endpoint.name" value="$sts{sts.x509.endpoint.name}" />
             </map>
         </property>
 ]]#
