@@ -106,7 +106,7 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
         this.subjobStartNodeIsActive = this.subjobContainer.getSubjobStartNode() != null
                 && this.subjobContainer.getSubjobStartNode().isActivate();
 
-        if (this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
+        if ((!this.subjobContainer.isCollapsed()) && this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
             rectangle.resize((rectangle.width() < TIMEOUT_FIGURE_WIDTH) ? TIMEOUT_FIGURE_WIDTH : 0, TIMEOUT_FIGURE_HEIGHT + 10);
             rectangle.setY(rectangle.y() - TIMEOUT_FIGURE_HEIGHT - 10);
 
@@ -130,7 +130,7 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
         timeoutFigureRect.setLocation(new Point(location.x() + TIMEOUT_PADDING, location.y() + 20));
         timeoutFigureRect.setVisible(false);
         if (this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
-            timeoutFigureRect.setVisible(true);
+            timeoutFigureRect.setVisible(!this.subjobContainer.isCollapsed());
         }
         timeoutFigureRect.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////
         timeoutFigureRect.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
@@ -152,7 +152,7 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
                 + rectangle.height() - STATS_FIGURE_HEIGHT - 5));
         statsFigureRect.setVisible(false);
         if (this.subjobHasMoreThanOneNode && this.subjobStartNodeIsActive) {
-            statsFigureRect.setVisible(true);
+            statsFigureRect.setVisible(!this.subjobContainer.isCollapsed());
         }
         statsFigureRect.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////
         statsFigureRect.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
