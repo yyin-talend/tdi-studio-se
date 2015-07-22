@@ -61,6 +61,7 @@ import org.talend.core.model.component_cache.util.ComponentCacheResourceFactoryI
 import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentManager;
+import org.talend.core.model.components.ComponentProviderInfo;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -894,6 +895,24 @@ public class ComponentsFactory implements IComponentsFactory {
             try {
                 // list.add(componentsProvider.getInstallationFolder());
                 list.put(componentsProvider.getContributer(), componentsProvider.getInstallationFolder());
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+                continue;
+            }
+        }
+        return list;
+    }
+
+    public List<ComponentProviderInfo> getComponentsProvidersInfo() {
+        List<ComponentProviderInfo> list = new ArrayList<ComponentProviderInfo>();
+        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+        for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
+            try {
+                ComponentProviderInfo info = new ComponentProviderInfo();
+                info.setId(componentsProvider.getId());
+                info.setContributer(componentsProvider.getContributer());
+                info.setLocation(componentsProvider.getInstallationFolder().getAbsolutePath());
+                list.add(info);
             } catch (IOException e) {
                 ExceptionHandler.process(e);
                 continue;
