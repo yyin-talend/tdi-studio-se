@@ -63,7 +63,9 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.TraceData;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
@@ -731,14 +733,18 @@ public class InputDataMapTableView extends DataMapTableView {
     private IUIMatchingMode[] getMatchModel() {
         IUIMatchingMode[] allMatchingModel = TMAP_MATCHING_MODE.values();
         List<IUIMatchingMode> avilable = new ArrayList<IUIMatchingMode>();
-
-        for (int i = 0; i < allMatchingModel.length; ++i) {
-            IUIMatchingMode matchingMode = allMatchingModel[i];
+        // Maybe should change the isMRProcess() in class MapperManager
+        boolean isSparkProcess = false;
+        if (mapperManager.getAbstractMapComponent() != null) {
+            IProcess process = mapperManager.getAbstractMapComponent().getProcess();
+            isSparkProcess = ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType());
+        }
+        for (IUIMatchingMode matchingMode : allMatchingModel) {
             final String text = matchingMode.getLabel();
             if (matchingMode == TMAP_MATCHING_MODE.LAST_MATCH) {
                 continue;
             }
-            if (getMapperManager().isMRProcess() && matchingMode == TMAP_MATCHING_MODE.FIRST_MATCH) {
+            if ((getMapperManager().isMRProcess() || isSparkProcess) && matchingMode == TMAP_MATCHING_MODE.FIRST_MATCH) {
                 continue;
             }
             if (text.length() != 0) {
