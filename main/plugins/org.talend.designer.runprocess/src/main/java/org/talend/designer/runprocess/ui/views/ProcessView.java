@@ -341,16 +341,6 @@ public class ProcessView extends ViewPart {
         };
         RunProcessPlugin.getDefault().getRunProcessContextManager().addPropertyChangeListener(contextManagerListener);
         runAction = new RunAction();
-
-        final Job updateJvmStatus = new Job("Update Jvm status") {
-
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-                JvmModel.getInstance();
-                return Status.OK_STATUS;
-            }
-        };
-        updateJvmStatus.schedule();
     }
 
     /**
