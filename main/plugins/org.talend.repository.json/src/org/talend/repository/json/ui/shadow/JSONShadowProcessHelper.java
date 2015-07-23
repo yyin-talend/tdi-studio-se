@@ -200,12 +200,21 @@ public class JSONShadowProcessHelper {
         }
 
         for (IConfigurationElement configurationElement : configurationElements) {
-            if (type != null && !type.isEmpty()) {
-                String fileType = configurationElement.getAttribute("type"); //$NON-NLS-1$
-                if (fileType == null || fileType.isEmpty() || !fileType.equals(type)) {
+            String fileType = configurationElement.getAttribute("type"); //$NON-NLS-1$
+
+            // to do this just make sure the code behaviour is same like before
+            if (type == null && fileType != null) {
+                // fileType is not null which means this previewer is for some specified file type, not good for the
+                // current type(null value, means should use the default)
+                continue;
+            } else if (type != null) { // want to create a specified previewer for a specified type
+                if (fileType == null) { // means this is a gereral previewer, not good for a specified type
+                    continue;
+                } else if (!fileType.equals(type)) {
                     continue;
                 }
             }
+
             IPreview pre = (IPreview) configurationElement.createExecutableExtension("class"); //$NON-NLS-1$
             if (!PluginChecker.isOnlyTopLoaded() && !pre.isTopPreview()) {
                 preview = pre;
