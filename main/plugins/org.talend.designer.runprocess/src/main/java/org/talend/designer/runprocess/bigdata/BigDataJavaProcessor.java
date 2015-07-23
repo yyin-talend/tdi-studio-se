@@ -349,11 +349,6 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         list.add(ProcessorConstants.CMD_KEY_WORD_LIBJAR);
         StringBuffer libJars = new StringBuffer("");//$NON-NLS-1$
         Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
-        if (!this.isOldBuildJob()) {
-            libNames.remove(JavaUtils.SYSTEM_ROUTINE_JAR);
-            libNames.remove(JavaUtils.USER_ROUTINE_JAR);
-            libNames.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
-        }
         if (libNames != null && libNames.size() > 0) {
             Iterator<String> itLibNames = libNames.iterator();
             while (itLibNames.hasNext()) {
@@ -379,9 +374,13 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
             sb.append(getLibFolderInWorkingDir()).append(lib);
             sb.append(getJavaClassSeparator());
         }
-        boolean addUnixRootPath = false;
+
+        // add current always
+        sb.append("."); //$NON-NLS-1$
+        sb.append(getJavaClassSeparator());
 
         // Append root path to class path.
+        boolean addUnixRootPath = false;
         if (ProcessorUtilities.isExportConfig()) {
             if (targetPlatform == null) {
                 if (!Platform.getOS().contains(Platform.WS_WIN32)) {
@@ -395,11 +394,8 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         }
         if (addUnixRootPath) {
             sb.append(ProcessorConstants.CMD_KEY_WORD_ROOTPATH);
-        } else { // add current always
-            // Append the current directory.
-            sb.append("."); //$NON-NLS-1$
+            sb.append(getJavaClassSeparator());
         }
-        sb.append(getJavaClassSeparator());
 
         // Append job jar to class path with ";" or ":".
         sb.append(getRootWorkingDir());
@@ -426,13 +422,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         for (ModuleNeeded neededModule : neededModules) {
             libsRequiredByJob.add(neededModule.getModuleName());
         }
-        if (isOldBuildJob()) {
-            libsRequiredByJob.add(JavaUtils.SYSTEM_ROUTINE_JAR);
-            libsRequiredByJob.add(JavaUtils.USER_ROUTINE_JAR);
-        } else {
-            // after maven only one jar for routine.
-            libsRequiredByJob.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
-        }
+        libsRequiredByJob.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
         return libsRequiredByJob;
     }
 
