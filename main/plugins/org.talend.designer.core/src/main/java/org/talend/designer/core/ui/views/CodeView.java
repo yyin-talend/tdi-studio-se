@@ -306,10 +306,11 @@ public class CodeView extends ViewPart {
                             generatedCode = Messages.getString("CodeView.MultipleComponentError"); //$NON-NLS-1$
                             return org.eclipse.core.runtime.Status.OK_STATUS;
                         }
-                        if (codeGenerator == null) {
-                            ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
-                            codeGenerator = service.createCodeGenerator();
-                        }
+
+                        ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
+                        // have to do this dirty change to avoid the side effect for BD component.
+                        codeGenerator = service.createCodeGenerator(selectedNode.getProcess(), false, false);
+
                         viewStartAction.setChecked(false);
                         viewMainAction.setChecked(false);
                         viewEndAction.setChecked(false);
