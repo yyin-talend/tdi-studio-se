@@ -13,7 +13,9 @@
 package org.talend.designer.core.ui.views.jobsettings.tabs;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,6 +45,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
@@ -70,6 +73,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.ui.properties.StatusHelper;
 
 /**
  * yzhang class global comment. Detailled comment
@@ -109,6 +113,10 @@ public class MainComposite extends AbstractTabComposite {
     private ControlDecoration nameTextDecorator;
 
     private IRepositoryViewObject newRepositoryObject = null;
+
+    protected StatusHelper statusHelper = null;
+
+    protected String statusLabelText = null;
 
     /**
      * yzhang MainComposite constructor comment.
@@ -310,6 +318,8 @@ public class MainComposite extends AbstractTabComposite {
             String status = repositoryObject.getStatusCode();
             statusText.setText(status != null ? status : ""); //$NON-NLS-1$
             statusText.setItems(Status.getStatusToDispaly());
+            statusLabelText = getStatusMap().get(status);
+            setStatusComboText(statusLabelText);
             statusText.setEnabled(allowEnableControl);
         } else {
             purposeText = widgetFactory.createText(composite, ""); //$NON-NLS-1$
@@ -338,6 +348,8 @@ public class MainComposite extends AbstractTabComposite {
             statusText.setLayoutData(data);
             String status = repositoryObject.getStatusCode();
             statusText.setText(status != null ? status : ""); //$NON-NLS-1$
+            statusLabelText = getStatusMap().get(status);
+            setStatusComboText(statusLabelText);
             statusText.setEnabled(enableControl);
         }
 
@@ -348,6 +360,10 @@ public class MainComposite extends AbstractTabComposite {
         data.right = new FormAttachment(statusText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(statusText, 0, SWT.CENTER);
         statusLabel.setLayoutData(data);
+        statusText.setItems(Status.getStatusToDispaly());
+        String status = repositoryObject.getStatusCode();
+        statusLabelText = getStatusMap().get(status);
+        setStatusComboText(statusLabelText);
 
         descriptionText = widgetFactory.createText(composite, "", SWT.MULTI | SWT.V_SCROLL | SWT.WRAP); //$NON-NLS-1$
         data = new FormData();
@@ -665,6 +681,41 @@ public class MainComposite extends AbstractTabComposite {
                 });
             }
         }
+    }
+
+    protected Map<String, String> getStatusMap() {
+        statusHelper = new StatusHelper(CoreRuntimePlugin.getInstance().getProxyRepositoryFactory());
+        Map<String, String> statusMap = new HashMap();
+        try {
+            if (statusHelper != null) {
+                List<org.talend.core.model.properties.Status> statusList = statusHelper.getStatusList(repositoryObject
+                        .getProperty());
+                if (statusList != null) {
+                    for (org.talend.core.model.properties.Status s : statusList) {
+                        statusMap.put(s.getCode(), s.getLabel());
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            CommonExceptionHandler.process(e);
+        }
+        return statusMap;
+    }
+
+    protected void setStatusComboText(String statusLabel) {
+        if (statusLabel == null) {
+            statusText.setText("");
+            return;
+        }
+        int i = 0;
+        for (String s : Status.getStatusToDispaly()) {
+            if (statusLabel != null && !statusLabel.equals(s)) {
+                i++;
+            } else {
+                break;
+            }
+        }
+        statusText.select(i);
     }
 
     protected void evaluateTextField() {
