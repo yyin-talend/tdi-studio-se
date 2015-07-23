@@ -181,6 +181,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected boolean isTestJob = false;
 
+    private boolean doClean = false;
+
     /**
      * Set current status.
      * 
@@ -413,10 +415,20 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
+    protected boolean needDoClean() {
+        return doClean;
+    }
+
+    protected void setDoClean(boolean doClean) {
+        this.doClean = doClean;
+    }
+
     public void cleanBeforeGenerate(int options) throws ProcessorException {
+        setDoClean(false);
         if (this.getProcess().isNeedRegenerateCode() || this.getProcess() instanceof IProcess2
                 && ((IProcess2) this.getProcess()).isProcessModified()) {
             // will do clean
+            setDoClean(true);
         } else {
             return;
         }
