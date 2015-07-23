@@ -41,6 +41,7 @@ import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.utils.data.extractor.ModuleNameExtractor;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
@@ -146,8 +147,7 @@ public class JavaProcessorUtilities {
                 libNames.add(itLibs.next().getModuleName());
             }
         }
-        libNames.add(JavaUtils.SYSTEM_ROUTINE_JAR);
-        libNames.add(JavaUtils.USER_ROUTINE_JAR);
+        libNames.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
         return libNames;
     }
 
