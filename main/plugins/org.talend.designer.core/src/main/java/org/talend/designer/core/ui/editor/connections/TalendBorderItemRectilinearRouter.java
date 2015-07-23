@@ -54,10 +54,42 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
     @Override
     public void routeBendpoints(Connection conn) {
         super.routeBendpoints(conn);
-        manualPosition(conn);
+        boolean horizontalHandle = manualHorizontalScrolBarCase(conn);
+        manualPosition(conn, horizontalHandle);
     }
 
-    private boolean manualPosition(Connection conn) {
+    private boolean manualHorizontalScrolBarCase(Connection conn) {
+        PointList points = conn.getPoints();
+        Point start = getStartPoint(conn);
+        Point end = getEndPoint(conn);
+        boolean handle = false;
+        if ((request != null) && (request instanceof CreateConnectionRequest)) {
+            start = conn.getSourceAnchor().getReferencePoint();
+            CreateConnectionRequest createRequest = (CreateConnectionRequest) request;
+            if (createRequest.getTargetEditPart() != null
+                    && createRequest.getTargetEditPart() != createRequest.getSourceEditPart()
+                    && createRequest.getTargetEditPart().getModel() instanceof Node) {
+                PointList pointList = new PointList();
+                conn.translateToRelative(start);
+                pointList.addPoint(start);
+                Point targetPoint = conn.getTargetAnchor().getReferencePoint();
+                conn.translateToRelative(targetPoint);
+                pointList.addPoint(targetPoint);
+                conn.setPoints(pointList);
+                handle = true;
+            }
+        }
+        if (!handle) {
+            conn.translateToRelative(start);
+            points.setPoint(start, 0);
+            conn.translateToRelative(end);
+            points.setPoint(end, points.size() - 1);
+            conn.setPoints(points);
+        }
+        return handle;
+    }
+
+    private boolean manualPosition(Connection conn, boolean horizontalHandle) {
         boolean isCreation = false;
         boolean isReconnect = false;
         boolean alreadyHandle = false;
@@ -97,7 +129,7 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
                 return false;
             }
 
-            if (((CreateConnectionRequest) request).getTargetEditPart() == null) {
+            if ((((CreateConnectionRequest) request).getTargetEditPart() == null) || horizontalHandle) {
                 if (conn.getPoints().size() <= 2) {
                     makeUpConnection(conn);
                 }
