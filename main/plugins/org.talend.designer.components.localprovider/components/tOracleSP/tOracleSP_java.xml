@@ -499,8 +499,8 @@
       <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" MVN="mvn:org.talend.libraries/ojdbc14/6.0.0"  REQUIRED_IF="(DB_VERSION == 'ORACLE_10') AND (USE_EXISTING_CONNECTION == 'false')" />
       <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" MVN="mvn:org.talend.libraries/ojdbc14-9i/6.0.0"  REQUIRED_IF="(DB_VERSION == 'ORACLE_9') AND (USE_EXISTING_CONNECTION == 'false')" />
       <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" MVN="mvn:org.talend.libraries/ojdbc12/6.0.0"  REQUIRED_IF="(DB_VERSION == 'ORACLE_8') AND (USE_EXISTING_CONNECTION == 'false')" />
-      <IMPORT NAME="XDB"  MODULE="xdb.jar" MVN="mvn:org.talend.libraries/xdb/6.0.0"  REQUIRED_IF="((RETURN_BDTYPE == 'XMLTYPE') or (SP_ARGS.DBTYPE IN ['XMLTYPE'])) and (USE_EXISTING_CONNECTION == 'false')" />
-      <IMPORT NAME="XMLPARSEV2"  MODULE="xmlparserv2.jar" MVN="mvn:org.talend.libraries/xmlparserv2/6.0.0"  REQUIRED_IF="((RETURN_BDTYPE == 'XMLTYPE') or (SP_ARGS.DBTYPE IN ['XMLTYPE'])) and (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="XDB"  MODULE="xdb.jar" MVN="mvn:org.talend.libraries/xdb/6.0.0"  REQUIRED_IF="((RETURN_BDTYPE == 'XMLTYPE') or (SP_ARGS.DBTYPE IN ['XMLTYPE']))" />
+      <IMPORT NAME="XMLPARSEV2"  MODULE="xmlparserv2.jar" MVN="mvn:org.talend.libraries/xmlparserv2/6.0.0"  REQUIRED_IF="((RETURN_BDTYPE == 'XMLTYPE') or (SP_ARGS.DBTYPE IN ['XMLTYPE']))" />
     </IMPORTS>
    </CODEGENERATION>
 
