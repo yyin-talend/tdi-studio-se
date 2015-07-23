@@ -13,12 +13,12 @@
 package org.talend.designer.xmlmap.ui;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.talend.commons.ui.runtime.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
-import org.talend.commons.ui.runtime.swt.tableviewer.TableViewerCreatorNotModifiable;
-import org.talend.commons.ui.runtime.swt.tableviewer.behavior.CellEditorValueAdapter;
-import org.talend.commons.ui.runtime.swt.tableviewer.behavior.ComboEditorValueAdapter;
-import org.talend.commons.ui.runtime.swt.tableviewer.behavior.DefaultTableLabelProvider;
-import org.talend.commons.ui.runtime.swt.tableviewer.data.AccessorUtils;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.behavior.ComboEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
+import org.talend.commons.ui.swt.tableviewer.data.AccessorUtils;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl;
 
