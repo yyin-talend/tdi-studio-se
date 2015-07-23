@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.views;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -275,6 +277,7 @@ public class CodeView extends ViewPart {
             return;
         }
         setGenerating(true);
+        final List<? extends INode> generatingNodes = selectedNode.getProcess().getGeneratingNodes();
         Job job = new Job(Messages.getString("CodeView.initMessage")) { //$NON-NLS-1$
 
             @Override
@@ -297,7 +300,7 @@ public class CodeView extends ViewPart {
                         }
 
                         generatingNode = null;
-                        for (INode node : selectedNode.getProcess().getGeneratingNodes()) {
+                        for (INode node : generatingNodes) {
                             if (node.getUniqueName().equals(selectedNode.getUniqueName())) {
                                 generatingNode = node;
                             }
