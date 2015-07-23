@@ -1195,6 +1195,18 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String[] addVMArguments(String[] strings, boolean exportingJob) {
+        String[] vmargs = getJVMArgs(); //$NON-NLS-1$
+        if (vmargs != null && vmargs.length > 0) {
+            String[] lines = new String[strings.length + vmargs.length];
+            System.arraycopy(strings, 0, lines, 0, 1);
+            System.arraycopy(vmargs, 0, lines, 1, vmargs.length);
+            System.arraycopy(strings, 1, lines, vmargs.length + 1, strings.length - 1);
+            return lines;
+        }
+        return strings; // old
+    }
+
+    public String[] getJVMArgs() {
         String string = null;
         if (this.process != null) {
             IElementParameter param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
@@ -1212,7 +1224,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String replaceAll = string.trim();
         String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
         /* check parameter won't happened on exportingJob */
-        if (!exportingJob) {
+        if (!ProcessorUtilities.isExportConfig()) {
             String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-1$
             String encodingFromIni = "-Dfile.encoding=" + fileEncoding; //$NON-NLS-1$
             List<String> asList = convertArgsToList(vmargs);
@@ -1229,14 +1241,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 vmargs = asList.toArray(new String[0]);
             }
         }
-        if (vmargs != null && vmargs.length > 0) {
-            String[] lines = new String[strings.length + vmargs.length];
-            System.arraycopy(strings, 0, lines, 0, 1);
-            System.arraycopy(vmargs, 0, lines, 1, vmargs.length);
-            System.arraycopy(strings, 1, lines, vmargs.length + 1, strings.length - 1);
-            return lines;
-        }
-        return strings; // old
+        return vmargs;
     }
 
     private List<String> convertArgsToList(String[] args) {

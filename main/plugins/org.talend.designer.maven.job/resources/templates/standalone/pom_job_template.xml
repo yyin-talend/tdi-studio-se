@@ -34,6 +34,7 @@
 		<talend.product.version>@ProductVersion@</talend.product.version>
 
 		<!-- for bat/sh -->
+		<talend.job.jvmargs>@JobJvmArgs@</talend.job.jvmargs>
 		<talend.job.bat.classpath>@JobBatClasspath@</talend.job.bat.classpath>
 		<talend.job.bat.addition>@JobBatAddition@</talend.job.bat.addition>
 		<talend.job.sh.classpath>@JobShClasspath@</talend.job.sh.classpath>

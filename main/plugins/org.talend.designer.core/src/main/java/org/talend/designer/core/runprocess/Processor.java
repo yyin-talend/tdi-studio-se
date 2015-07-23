@@ -778,4 +778,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor, Talend
         this.argumentsMap = argumentsMap;
     }
 
+    public String[] getJVMArgs() {
+        return new String[0];
+    }
 }
