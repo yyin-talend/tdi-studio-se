@@ -574,12 +574,14 @@ public class TalendJavaSourceViewer extends ReconcilerViewer {
                         // class
                         StringTokenizer token = new StringTokenizer(var.getName(), "."); //$NON-NLS-1$
                         String className = token.nextToken();
-                        String newVarName = token.nextToken();
-                        Variable newVar = new Variable(newVarName, var.getValue(), var.getTalendType(), var.isNullable());
-                        if (!classesToGenerate.containsKey(className)) {
-                            classesToGenerate.put(className, new ArrayList<Variable>());
+                        if (token.hasMoreTokens()) {
+                            String newVarName = token.nextToken();
+                            Variable newVar = new Variable(newVarName, var.getValue(), var.getTalendType(), var.isNullable());
+                            if (!classesToGenerate.containsKey(className)) {
+                                classesToGenerate.put(className, new ArrayList<Variable>());
+                            }
+                            classesToGenerate.get(className).add(newVar);
                         }
-                        classesToGenerate.get(className).add(newVar);
                     } else {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(var.getTalendType(), var.isNullable());
                         buff.append("\tprivate " + typeToGenerate + " " + var.getName() + ";\\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
