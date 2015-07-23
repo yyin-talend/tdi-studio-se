@@ -34,6 +34,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -518,4 +519,15 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         }
         return createMavenTemplatePom;
     }
+
+    @Override
+    public void cleanBeforeGenerate(int options) throws ProcessorException {
+        super.cleanBeforeGenerate(options);
+        if (needDoClean() && this.getProcess() instanceof IProcess2) {
+            // need re-generate the "getGeneratingNodes" to make sure generate the record struct
+            // (IRecordStructGenerator) again.
+            ((IProcess2) this.getProcess()).setProcessModified(true);
+        }
+    }
+
 }
