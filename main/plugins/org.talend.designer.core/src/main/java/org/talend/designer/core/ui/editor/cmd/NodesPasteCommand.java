@@ -900,8 +900,10 @@ public class NodesPasteCommand extends Command {
                         }
                     }
                 }
-                StructuredSelection s = new StructuredSelection(sel);
-                viewer.setSelection(s);
+                if (!isJunitCreate() && !isJobletRefactor()) {
+                    StructuredSelection s = new StructuredSelection(sel);
+                    viewer.setSelection(s);
+                }
             }
         }
     }
