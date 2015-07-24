@@ -27,6 +27,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
 
 /**
  * DOC hwang class global comment. Detailled comment
@@ -63,6 +64,7 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
         Point start = getStartPoint(conn);
         Point end = getEndPoint(conn);
         boolean handle = false;
+        boolean processHandle = false;
         if ((request != null) && (request instanceof CreateConnectionRequest)) {
             start = conn.getSourceAnchor().getReferencePoint();
             CreateConnectionRequest createRequest = (CreateConnectionRequest) request;
@@ -77,6 +79,10 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
                 pointList.addPoint(targetPoint);
                 conn.setPoints(pointList);
                 handle = true;
+            } else if (createRequest.getTargetEditPart() != null
+                    && createRequest.getTargetEditPart() != createRequest.getSourceEditPart()
+                    && createRequest.getTargetEditPart() instanceof ProcessPart) {
+                processHandle = true;
             }
         }
         if (!handle) {
@@ -86,7 +92,7 @@ public class TalendBorderItemRectilinearRouter extends BorderItemRectilinearRout
             points.setPoint(end, points.size() - 1);
             conn.setPoints(points);
         }
-        return handle;
+        return handle || processHandle;
     }
 
     private boolean manualPosition(Connection conn, boolean horizontalHandle) {
