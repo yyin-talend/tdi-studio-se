@@ -559,16 +559,16 @@ public class MainComposite extends AbstractTabComposite {
                             newJobName = originalName;
                         }
                         if (!originalversion.equals(StringUtils.trimToEmpty(repositoryObject.getVersion()))) {
-                            property.setVersion(versionText.getText());
+                            property.setVersion(originalversion);
                         }
                         if (!originalPurpose.equals(StringUtils.trimToEmpty(repositoryObject.getPurpose()))) {
-                            property.setPurpose(purposeText.getText());
+                            property.setPurpose(originalPurpose);
                         }
                         if (!originalStatus.equals(StringUtils.trimToEmpty(repositoryObject.getStatusCode()))) {
-                            property.setStatusCode(statusText.getText());
+                            property.setStatusCode(getStatusCode(getStatusMap(), originalStatus));
                         }
                         if (!originalDescription.equals(StringUtils.trimToEmpty(repositoryObject.getDescription()))) {
-                            property.setDescription(descriptionText.getText());
+                            property.setDescription(originalDescription);
                         }
                         //
                         boolean convert = true;
@@ -700,6 +700,16 @@ public class MainComposite extends AbstractTabComposite {
             CommonExceptionHandler.process(e);
         }
         return statusMap;
+    }
+
+    protected String getStatusCode(Map<String, String> map, String statusLabel) {
+        String key = null;
+        for (Object statusCode : map.keySet()) {
+            if (map != null && map.get(statusCode).equals(statusLabel)) {
+                key = (String) statusCode;
+            }
+        }
+        return key;
     }
 
     protected void setStatusComboText(String statusLabel) {
