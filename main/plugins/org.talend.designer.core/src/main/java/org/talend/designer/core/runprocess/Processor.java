@@ -781,4 +781,11 @@ public abstract class Processor implements IProcessor, IEclipseProcessor, Talend
     public String[] getJVMArgs() {
         return new String[0];
     }
+
+    protected boolean isWinTargetPlatform() {
+        if (Platform.OS_WIN32.equals(targetPlatform) || targetPlatform == null && Platform.getOS().contains(Platform.WS_WIN32)) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -32,23 +32,19 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.maven.tools.creator.CreateMavenBundleTemplatePom;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.maven.MavenJavaProcessor;
-import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
@@ -120,64 +116,15 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
     @Override
     protected String getLibFolderInWorkingDir() {
-        if (ProcessorUtilities.isExportConfig()) {
-            if (targetPlatform == null) {
-                if (Platform.getOS().contains(Platform.WS_WIN32)) {
-                    // ../lib
-                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                } else {
-                    // "$ROOT_PATH/../lib";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                }
-            } else {
-                if (Platform.OS_WIN32.equals(targetPlatform)) {
-                    // ../lib
-                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                } else {
-                    // "$ROOT_PATH/../lib";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                }
-            }
-        } else {
-            // ../lib
-            return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                    + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-        }
-    }
+        // ../lib/
+        String libRelativePath = ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
 
-    /**
-     * Returns the root path. Added by Marvin Wang on Mar 22, 2013.
-     * 
-     * @return
-     */
-    protected String getRootWorkingDir() {
         if (ProcessorUtilities.isExportConfig()) {
-            if (targetPlatform == null) {
-                if (Platform.getOS().contains(Platform.WS_WIN32)) {
-                    // empty
-                    return ""; //$NON-NLS-1$
-                } else {
-                    // "$ROOT_PATH/";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                }
-            } else {
-                if (Platform.OS_WIN32.equals(targetPlatform)) {
-                    // empty
-                    return ""; //$NON-NLS-1$
-                } else {
-                    // "$ROOT_PATH/";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                }
-            }
-        } else {
-            return ""; //$NON-NLS-1$
+            // if linux, "$ROOT_PATH/../lib/";
+            libRelativePath = getRootWorkingDir(true) + libRelativePath;
         }
+        return libRelativePath;
     }
 
     private String buildExportZip(ProcessItem processItem, IProgressMonitor progressMonitor) throws ProcessorException {
@@ -269,17 +216,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
     @Override
     public List<String> extractAheadCommandSegments() {
-        List<String> aheadSegments = new ArrayList<String>();
-        if (ProcessorUtilities.isExportConfig()) {
-            if (Platform.OS_WIN32.equals(targetPlatform)) {
-                aheadSegments.add("%~d0\r\n"); //$NON-NLS-1$
-                aheadSegments.add("cd %~dp0\r\n"); //$NON-NLS-1$
-            } else {
-                aheadSegments.add("cd `dirname $0`\n"); //$NON-NLS-1$
-                aheadSegments.add("ROOT_PATH=`pwd`\n"); //$NON-NLS-1$
-            }
-        }
-        return aheadSegments;
+        return super.extractAheadCommandSegments();
     }
 
     @Override
@@ -305,24 +242,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
      */
     protected List<String> extractJavaVMArguments() {
         List<String> vmArgsSegments = new ArrayList<String>();
-        String vmArgsString = ""; //$NON-NLS-1$
-        // VMs from job or preference store
-        if (this.process != null) {
-            IElementParameter param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
-            if (param != null && param.getValue() instanceof Boolean && (Boolean) param.getValue()) { // checked
-                param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
-                if (param != null) {
-                    vmArgsString = (String) param.getValue();
-                }
-            }
-        }
-        // if not check or the value is empty, should use preference
-        if (vmArgsString == null || "".equals(vmArgsString)) { //$NON-NLS-1$
-            vmArgsString = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
-        }
-
-        String[] vmArgs = vmArgsString.trim().split(" "); //$NON-NLS-1$
-
+        String[] vmArgs = getSettingsJVMArguments();
         vmArgsSegments.addAll(Arrays.asList(vmArgs));
         return vmArgsSegments;
     }
@@ -337,9 +257,6 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
     @Override
     public String extractMainClassSegments() {
-        // IPath classPath = getCodePath().removeFirstSegments(1);
-        // String className = classPath.toString().replace('/', '.');
-        // return className;
         return super.extractMainClassSegments();
     }
 
@@ -347,12 +264,12 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
     public List<String> extractArgumentSegments() {
         List<String> list = new ArrayList<String>();
         list.add(ProcessorConstants.CMD_KEY_WORD_LIBJAR);
-        StringBuffer libJars = new StringBuffer("");//$NON-NLS-1$
+        StringBuffer libJars = new StringBuffer();
         Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
         if (libNames != null && libNames.size() > 0) {
             Iterator<String> itLibNames = libNames.iterator();
             while (itLibNames.hasNext()) {
-                libJars.append(getLibFolderInWorkingDir() + itLibNames.next()).append(",");//$NON-NLS-1$
+                libJars.append(getLibFolderInWorkingDir() + itLibNames.next()).append(',');
             }
         }
         list.add(libJars.substring(0, libJars.length() - 1));
@@ -368,39 +285,29 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
      * @return
      */
     protected String makeUpClassPathString() {
-        StringBuffer sb = new StringBuffer("");//$NON-NLS-1$
+        StringBuffer sb = new StringBuffer();
         Set<String> libs = extractAllLibs();
         for (String lib : libs) {
             sb.append(getLibFolderInWorkingDir()).append(lib);
-            sb.append(getJavaClassSeparator());
+            sb.append(extractClassPathSeparator());
         }
 
         // add current always
         sb.append("."); //$NON-NLS-1$
-        sb.append(getJavaClassSeparator());
+        sb.append(extractClassPathSeparator());
 
         // Append root path to class path.
-        boolean addUnixRootPath = false;
         if (ProcessorUtilities.isExportConfig()) {
-            if (targetPlatform == null) {
-                if (!Platform.getOS().contains(Platform.WS_WIN32)) {
-                    addUnixRootPath = true;
-                }
-            } else {
-                if (!Platform.OS_WIN32.equals(targetPlatform)) {
-                    addUnixRootPath = true;
-                }
+            if (!isWinTargetPlatform()) {
+                sb.append(getRootWorkingDir(false));
+                sb.append(extractClassPathSeparator());
             }
         }
-        if (addUnixRootPath) {
-            sb.append(ProcessorConstants.CMD_KEY_WORD_ROOTPATH);
-            sb.append(getJavaClassSeparator());
-        }
 
-        // Append job jar to class path with ";" or ":".
-        sb.append(getRootWorkingDir());
+        // Append job jar to class path.
+        sb.append(getRootWorkingDir(true));
         sb.append(makeupJobJarName());
-        sb.append(getJavaClassSeparator());
+        sb.append(extractClassPathSeparator());
 
         return sb.toString();
     }
@@ -424,23 +331,6 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         }
         libsRequiredByJob.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
         return libsRequiredByJob;
-    }
-
-    /**
-     * Gets the separator for java class Added by Marvin Wang on Mar 22, 2013.
-     * 
-     * @return
-     */
-    protected String getJavaClassSeparator() {
-        if (targetPlatform == null) {
-            return JavaUtils.JAVA_CLASSPATH_SEPARATOR;
-        } else {
-            if (Platform.OS_WIN32.equals(targetPlatform)) {
-                return ";"; //$NON-NLS-1$
-            } else {
-                return ":";//$NON-NLS-1$
-            }
-        }
     }
 
     /**

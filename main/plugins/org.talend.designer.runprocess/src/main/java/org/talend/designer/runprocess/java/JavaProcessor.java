@@ -1015,20 +1015,27 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
         if (exportingJob) {
             // add bat/sh header lines.
-            List<String> list = new ArrayList<String>();
-            if (Platform.OS_WIN32.equals(getTargetPlatform())) {
-                list.add("%~d0\r\n"); //$NON-NLS-1$
-                list.add("cd %~dp0\r\n"); //$NON-NLS-1$
-            } else {
-                list.add("cd `dirname $0`\n"); //$NON-NLS-1$ 
-                list.add("ROOT_PATH=`pwd`\n"); //$NON-NLS-1$ 
-            }
+            List<String> list = extractAheadCommandSegments();
             list.addAll(Arrays.asList(cmd2));
-
             return list.toArray(new String[0]);
         } else {
             return cmd2;
         }
+    }
+
+    public List<String> extractAheadCommandSegments() {
+        List<String> aheadSegments = new ArrayList<String>();
+        if (ProcessorUtilities.isExportConfig()) {
+            if (isWinTargetPlatform()) {
+                aheadSegments.add("%~d0\r\n"); //$NON-NLS-1$
+                aheadSegments.add("cd %~dp0\r\n"); //$NON-NLS-1$
+            } else {
+                aheadSegments.add("cd `dirname $0`\n"); //$NON-NLS-1$
+                aheadSegments.add("ROOT_PATH=`pwd`\n"); //$NON-NLS-1$
+            }
+        }
+        return aheadSegments;
+
     }
 
     protected String getCommand() {
@@ -1044,13 +1051,24 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String getLibPrefixPath(boolean withSep) {
         String prefixPath = "";//$NON-NLS-1$
-        if (ProcessorUtilities.isExportConfig() && !Platform.OS_WIN32.equals(getTargetPlatform())) {
-            prefixPath = ProcessorConstants.CMD_KEY_WORD_ROOTPATH;
-            if (withSep) {
-                prefixPath += JavaUtils.PATH_SEPARATOR;
-            }
+        if (ProcessorUtilities.isExportConfig()) {
+            return getRootWorkingDir(withSep);
         }
         return prefixPath;
+    }
+
+    protected String getRootWorkingDir(boolean withSep) {
+        if (isWinTargetPlatform()) {
+            // empty
+            return ""; //$NON-NLS-1$
+        } else {
+            // "$ROOT_PATH/";
+            if (withSep) {
+                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + JavaUtils.PATH_SEPARATOR;
+            } else {
+                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH;
+            }
+        }
     }
 
     protected String getLibsClasspath() throws ProcessorException {
@@ -1183,15 +1201,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String extractClassPathSeparator() {
-        boolean win32 = false;
-        String classPathSeparator;
-        win32 = Platform.OS_WIN32.equals(getTargetPlatform());
-        if (win32) {
-            classPathSeparator = ";"; //$NON-NLS-1$
+        if (isWinTargetPlatform()) {
+            return ";"; //$NON-NLS-1$
         } else {
-            classPathSeparator = ":"; //$NON-NLS-1$
+            return ":"; //$NON-NLS-1$
         }
-        return classPathSeparator;
     }
 
     protected String[] addVMArguments(String[] strings, boolean exportingJob) {
@@ -1207,22 +1221,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     public String[] getJVMArgs() {
-        String string = null;
-        if (this.process != null) {
-            IElementParameter param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
-            if (param != null && param.getValue() instanceof Boolean && (Boolean) param.getValue()) { // checked
-                param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
-                if (param != null) {
-                    string = (String) param.getValue();
-                }
-            }
-        }
-        // if not check or the value is empty, should use preference
-        if (string == null || "".equals(string)) { //$NON-NLS-1$
-            string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
-        }
-        String replaceAll = string.trim();
-        String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
+        String[] vmargs = getSettingsJVMArguments();
         /* check parameter won't happened on exportingJob */
         if (!ProcessorUtilities.isExportConfig()) {
             String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-1$
@@ -1241,6 +1240,26 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 vmargs = asList.toArray(new String[0]);
             }
         }
+        return vmargs;
+    }
+
+    protected String[] getSettingsJVMArguments() {
+        String string = "";//$NON-NLS-1$
+        if (this.process != null) {
+            IElementParameter param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
+            if (param != null && param.getValue() instanceof Boolean && (Boolean) param.getValue()) { // checked
+                param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
+                if (param != null) {
+                    string = (String) param.getValue();
+                }
+            }
+        }
+        // if not check or the value is empty, should use preference
+        if (string == null || "".equals(string)) { //$NON-NLS-1$
+            string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
+        }
+        String replaceAll = string.trim();
+        String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
         return vmargs;
     }
 
