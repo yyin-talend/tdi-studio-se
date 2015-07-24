@@ -36,6 +36,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
@@ -554,7 +555,12 @@ public class InputDataMapTableView extends DataMapTableView {
                     mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true, true);
                     if (!mapperManager.isCheckSyntaxEnabled()) {
                         mapperManager.getUiManager().applyActivatedCellEditors(tableViewerCreatorForColumns);
-                        mapperManager.getProblemsManager().checkLookupExpressionProblem();
+                        Display.getDefault().asyncExec(new Runnable() {
+
+                            public void run() {
+                                mapperManager.getProblemsManager().checkLookupExpressionProblem();
+                            }
+                        });
                     }
                 }
 
