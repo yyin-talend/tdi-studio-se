@@ -244,7 +244,10 @@
             boolean found_<%=cid %> = false;
             <%
             if(present){
-                %>              
+                %>
+				if(globalMap.get("<%=cid %>_PRESENT_FILE") != null){
+	                globalMap.remove("<%=cid %>_PRESENT_FILE");
+				}              
     			if( count_<%=cid %> < originalFiles_<%=cid %>.size()) {
                     java.io.File file_<%=cid %> = new java.io.File(originalFiles_<%=cid %>.get(count_<%=cid %>));
 					<%if (isLog4jEnabled) {%>
@@ -264,6 +267,9 @@
             <%
             if(("filecreated").equals(triggerAction)) {
             %>
+            	if(globalMap.get("<%=cid %>_CREATED_FILE") != null){
+	                globalMap.remove("<%=cid %>_CREATED_FILE");
+				}
 				java.util.Collections.sort(originalFiles_<%=cid%>);
                 java.util.List<java.io.File> newCreatedFiles_<%=cid %> = util_<%=cid %>.getCreatedFiles(originalFiles_<%=cid%>,fetchFilesOneTime_<%=cid%>);
 
@@ -305,6 +311,9 @@
 			<%
             } else if(("filedeleted").equals(triggerAction)) {
             %>
+            	if(globalMap.get("<%=cid %>_DELETED_FILE") != null){
+	                globalMap.remove("<%=cid %>_DELETED_FILE");
+				}
             	java.util.Collections.sort(fetchFilesOneTime_<%=cid%>);
             	String [] arrayFetchFilesOneTime_<%=cid%> = fetchFilesOneTime_<%=cid %>.toArray(new String[]{});
             	for(String str_<%=cid %> : originalFiles_<%=cid %>) {
@@ -348,6 +357,9 @@
 				<%}%>
 				
                 <%if(!nonUpdate){%>
+                	if(globalMap.get("<%=cid %>_UPDATED_FILE") != null){
+	                	globalMap.remove("<%=cid %>_UPDATED_FILE");
+					}
 					if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
                     	originalMap_<%=cid %>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
                     	originalContentMap_<%=cid%>.put(str_<%=cid%>,util_<%=cid %>.getFileChecksum(file_<%=cid%>));
@@ -366,6 +378,9 @@
 						}
                     }
             	<%}else{%>
+            		if(globalMap.get("<%=cid %>_NOT_UPDATED_FILE") != null){
+	                	globalMap.remove("<%=cid %>_NOT_UPDATED_FILE");
+					}
 					if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
                     	originalMap_<%=cid %>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
                     	originalContentMap_<%=cid%>.put(str_<%=cid%>,util_<%=cid %>.getFileChecksum(file_<%=cid%>));
@@ -400,6 +415,15 @@
                 <%
             } else if(("fileall").equals(triggerAction)) {
                 %>
+	            if(globalMap.get("<%=cid %>_DELETED_FILE") != null){
+	                globalMap.remove("<%=cid %>_DELETED_FILE");
+				}
+	            if(globalMap.get("<%=cid %>_CREATED_FILE") != null){
+	                globalMap.remove("<%=cid %>_CREATED_FILE");
+				}
+	            if(globalMap.get("<%=cid %>_UPDATED_FILE") != null){
+	                globalMap.remove("<%=cid %>_UPDATED_FILE");
+				}
                 java.util.Collections.sort(originalFiles_<%=cid%>);
                 java.util.Collections.sort(fetchFilesOneTime_<%=cid%>);
                 String [] arrayFetchFilesOneTime_<%=cid%> = fetchFilesOneTime_<%=cid %>.toArray(new String[]{});
