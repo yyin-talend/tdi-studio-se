@@ -2510,6 +2510,14 @@
               name="ChangeDefaultValueForCassandraAPIVersion"
               version="6.1.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.AddPortForTCassandraConfigurationSpark"
+              id="org.talend.repository.model.migration.AddPortForTCassandraConfigurationSpark"
+              name="AddPortForTCassandraConfigurationSpark"
+              version="6.1.0">
+        </projecttask>
    </extension>
 
    <extension
