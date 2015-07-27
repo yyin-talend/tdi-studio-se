@@ -581,7 +581,9 @@ if (("true").equals(useBatchSize)) {
                     
                     return blob;
                 } catch(java.sql.SQLException sqlexp){
-                <%dbLog.logPrintedException("sqlexp.getMessage()");%>
+                <%if(isLog4jEnabled){%>
+					log.error("<%=cid %> - " + sqlexp.getMessage());
+				<%}%>
                 	if(blob!=null) {
                 		try {
                     		blob.freeTemporary();
@@ -591,7 +593,9 @@ if (("true").equals(useBatchSize)) {
                     }
                     sqlexp.printStackTrace();
                 } catch(java.lang.Exception exp){
-                <%dbLog.logPrintedException("exp.getMessage()");%>
+                <%if(isLog4jEnabled){%>
+					log.error("<%=cid %> - " + exp.getMessage());
+				<%}%>
                    	if(blob!=null) {
                 		try {
                     		blob.freeTemporary();
