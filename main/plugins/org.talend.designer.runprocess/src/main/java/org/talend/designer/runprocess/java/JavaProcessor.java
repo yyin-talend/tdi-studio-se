@@ -1049,19 +1049,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return new Path(command).toPortableString();
     }
 
-    protected String getLibPrefixPath(boolean withSep) {
-        String prefixPath = "";//$NON-NLS-1$
-        if (ProcessorUtilities.isExportConfig()) {
-            return getRootWorkingDir(withSep);
-        }
-        return prefixPath;
-    }
-
     protected String getRootWorkingDir(boolean withSep) {
-        if (isWinTargetPlatform()) {
-            // empty
-            return ""; //$NON-NLS-1$
-        } else {
+        if (!isWinTargetPlatform() && (ProcessorUtilities.isExportConfig() || isExternalUse())) {
             // "$ROOT_PATH/";
             if (withSep) {
                 return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + JavaUtils.PATH_SEPARATOR;
@@ -1069,6 +1058,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 return ProcessorConstants.CMD_KEY_WORD_ROOTPATH;
             }
         }
+        return ""; //$NON-NLS-1$
     }
 
     protected String getLibsClasspath() throws ProcessorException {
@@ -1105,11 +1095,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
                 if (!Platform.OS_WIN32.equals(getTargetPlatform())) {
                     // add current path
-                    outputPath = getLibPrefixPath(false) + classPathSeparator + outputPath;
+                    outputPath = getRootWorkingDir(false) + classPathSeparator + outputPath;
 
                     String libraryPath = ProcessorUtilities.getLibraryPath();
                     if (libraryPath != null) {
-                        String unixRootPath = getLibPrefixPath(true);
+                        String unixRootPath = getRootWorkingDir(true);
                         outputPath = outputPath.replace(libraryPath, unixRootPath + libraryPath);
                     }
                 } else {
@@ -1130,7 +1120,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     protected String getNeededModulesJarStr() {
         final boolean exportingJob = ProcessorUtilities.isExportConfig();
         final String classPathSeparator = extractClassPathSeparator();
-        final String libPrefixPath = getLibPrefixPath(true);
+        final String libPrefixPath = getRootWorkingDir(true);
         final File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
 
         Set<ModuleNeeded> neededModules = getNeededModules();
@@ -1167,16 +1157,16 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String getExportJarsStr() {
-        final String libPrefixPath = getLibPrefixPath(true);
+        final String rootWorkingDir = getRootWorkingDir(true);
         final String classPathSeparator = extractClassPathSeparator();
 
         String jarName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
-        String exportJar = libPrefixPath + jarName + FileExtensions.JAR_FILE_SUFFIX;
+        String exportJar = rootWorkingDir + jarName + FileExtensions.JAR_FILE_SUFFIX;
 
         Set<JobInfo> infos = getBuildChildrenJobs();
         for (JobInfo jobInfo : infos) {
             String childJarName = JavaResourcesHelper.getJobFolderName(jobInfo.getJobName(), jobInfo.getJobVersion());
-            exportJar += classPathSeparator + libPrefixPath + childJarName + FileExtensions.JAR_FILE_SUFFIX;
+            exportJar += classPathSeparator + rootWorkingDir + childJarName + FileExtensions.JAR_FILE_SUFFIX;
         }
         return exportJar;
 

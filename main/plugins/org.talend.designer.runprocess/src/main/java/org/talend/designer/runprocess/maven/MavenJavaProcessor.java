@@ -172,7 +172,7 @@ public class MavenJavaProcessor extends JavaProcessor {
             return super.getExportJarsStr();
         }
         // use the maven way for jar
-        final String libPrefixPath = getLibPrefixPath(true);
+        final String libPrefixPath = getRootWorkingDir(true);
         final String classPathSeparator = extractClassPathSeparator();
 
         // Test-0.1

@@ -93,12 +93,12 @@ public class ExportModelJavaProcessor extends MavenJavaProcessor {
         return unzipFolder + File.separator + "lib";
     }
 
-    private String unzipAndDeploy(IProcess process, String archiveZipFileStr) {
+    protected String unzipAndDeploy(IProcess process, String archiveZipFileStr) {
         String unzipFolder = unzipProcess(process, archiveZipFileStr);
         return unzipFolder;
     }
 
-    private String unzipProcess(IProcess process, String archiveZipFileStr) {
+    protected String unzipProcess(IProcess process, String archiveZipFileStr) {
         // throws OozieJobDeployException {
         String jobName = process.getName();
         String tempFolder = null;

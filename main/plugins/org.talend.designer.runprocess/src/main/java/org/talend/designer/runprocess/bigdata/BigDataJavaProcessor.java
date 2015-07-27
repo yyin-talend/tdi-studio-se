@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.bigdata;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,35 +22,24 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.maven.tools.creator.CreateMavenBundleTemplatePom;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
-import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.maven.MavenJavaProcessor;
-import org.talend.repository.ui.utils.ZipToFile;
-import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
-import org.talend.utils.io.FilesUtils;
 
 /**
  * created by rdubois on 27 janv. 2015 Detailled comment
@@ -79,109 +67,19 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
     protected abstract JobScriptsManager createJobScriptsManager(ProcessItem processItem,
             Map<ExportChoice, Object> exportChoiceMap);
 
-    protected abstract String getFilePathPrefix();
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.runprocess.Processor#run(java.lang.String[], int, int,
-     * org.eclipse.core.runtime.IProgressMonitor, org.talend.designer.runprocess.IProcessMessageManager)
-     */
     @Override
-    public Process run(String[] optionsParam, int statisticsPort, int tracePort, IProgressMonitor monitor,
-            IProcessMessageManager processMessageManager) throws ProcessorException {
-        ProcessItem processItem = (ProcessItem) property.getItem();
-        // Step 1: Export Map/Reduce job
-        archive = buildExportZip(processItem, monitor);
-        // Step 2: Deploy in local(Maybe just unpack)
-        unzipFolder = unzipAndDeploy(archive);
-        // Step 3: Run Map/Reduce job from given folder.
-
-        return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort,
-                optionsParam);
+    public boolean shouldRunAsExport() {
+        return true; // for BD job, will run for export mode always.
     }
 
-    @Override
-    public void cleanWorkingDirectory() throws SecurityException {
-        if (archive != null) {
-            File archiveFile = new File(archive);
-            if (archiveFile != null && archiveFile.exists()) {
-                archiveFile.delete();
-            }
-        }
-        if (unzipFolder != null) {
-            FilesUtils.removeFolder(unzipFolder, true);
-        }
-    }
-
-    @Override
     protected String getLibFolderInWorkingDir() {
         // ../lib/
         String libRelativePath = ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
                 + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
 
-        if (ProcessorUtilities.isExportConfig()) {
-            // if linux, "$ROOT_PATH/../lib/";
-            libRelativePath = getRootWorkingDir(true) + libRelativePath;
-        }
+        // if linux, "$ROOT_PATH/../lib/";
+        libRelativePath = getRootWorkingDir(true) + libRelativePath;
         return libRelativePath;
-    }
-
-    private String buildExportZip(ProcessItem processItem, IProgressMonitor progressMonitor) throws ProcessorException {
-        Map<ExportChoice, Object> exportChoiceMap = JobScriptsManagerFactory.getDefaultExportChoiceMap();
-        exportChoiceMap.put(ExportChoice.needLauncher, false);
-        exportChoiceMap.put(ExportChoice.needJobItem, false);
-        exportChoiceMap.put(ExportChoice.needJobScript, true);
-        exportChoiceMap.put(ExportChoice.needSourceCode, false);
-        exportChoiceMap.put(ExportChoice.binaries, true);
-        exportChoiceMap.put(ExportChoice.includeLibs, true);
-
-        if (progressMonitor.isCanceled()) {
-            throw new ProcessorException(new InterruptedException());
-        }
-        final String archiveFilePath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore()
-                .getString(ITalendCorePrefConstants.FILE_PATH_TEMP))
-                + "/" + getFilePathPrefix() + "_" + process.getName() + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-        try {
-            exportChoiceMap.put(ExportChoice.needContext, true);
-            String contextName = processItem.getProcess().getDefaultContext();
-            exportChoiceMap.put(ExportChoice.contextName, contextName);
-
-            buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(), contextName, exportChoiceMap,
-                    JobExportType.POJO, progressMonitor);
-        } catch (Exception e) {
-            throw new ProcessorException(e);
-        }
-
-        ProcessorUtilities.resetExportConfig();
-        return archiveFilePath;
-    }
-
-    private String unzipAndDeploy(String archiveZipFileStr) {
-        return unzipProcess(archiveZipFileStr);
-    }
-
-    private String unzipProcess(String archiveZipFileStr) {
-        // throws OozieJobDeployException {
-        String jobName = process.getName();
-        String tempFolder = null;
-        if (archiveZipFileStr != null && !"".equals(archiveZipFileStr)) { //$NON-NLS-1$
-            File file = new File(archiveZipFileStr);
-            tempFolder = file.getParentFile().getPath() + File.separator + jobName;
-            try {
-                ZipToFile.unZipFile(archiveZipFileStr, tempFolder);
-            } catch (Exception e) {
-                // throw new OozieJobDeployException("Can not unzip a file!", e);
-            }
-        }
-        return tempFolder;
-    }
-
-    protected void buildJob(String destinationPath, ProcessItem processItem, String version, String ctx,
-            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
-        BuildJobManager.getInstance().buildJob(destinationPath, processItem, version, ctx, exportChoiceMap, jobExportType,
-                monitor);
     }
 
     /**
@@ -216,6 +114,9 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
 
     @Override
     public List<String> extractAheadCommandSegments() {
+        if (!ProcessorUtilities.isExportConfig() && isExternalUse()) {
+            return new ArrayList<String>();
+        }
         return super.extractAheadCommandSegments();
     }
 
@@ -297,11 +198,10 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         sb.append(extractClassPathSeparator());
 
         // Append root path to class path.
-        if (ProcessorUtilities.isExportConfig()) {
-            if (!isWinTargetPlatform()) {
-                sb.append(getRootWorkingDir(false));
-                sb.append(extractClassPathSeparator());
-            }
+        String rootWorkingDir = getRootWorkingDir(false);
+        if (rootWorkingDir != null && rootWorkingDir.length() > 0) {
+            sb.append(rootWorkingDir);
+            sb.append(extractClassPathSeparator());
         }
 
         // Append job jar to class path.
@@ -362,7 +262,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
                 // because the cmds are from another processor, so must set the target platform same.
                 setTargetPlatform(tp);
                 // reuse the same api
-                String unixRootPath = getLibPrefixPath(true);
+                String unixRootPath = getRootWorkingDir(true);
                 this.unixAddition = libJarStr.replace(unixRootPath, ""); // remove the Path root string
             } finally {
                 setTargetPlatform(oldTargetPlatform);

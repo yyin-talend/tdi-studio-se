@@ -414,6 +414,10 @@ public abstract class Processor implements IProcessor, IEclipseProcessor, Talend
         Processor.externalUse = externalUse;
     }
 
+    protected boolean isExternalUse() {
+        return externalUse;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -787,5 +791,9 @@ public abstract class Processor implements IProcessor, IEclipseProcessor, Talend
             return true;
         }
         return false;
+    }
+
+    public boolean shouldRunAsExport() {
+        return false; // by default, for standard job, run in .Java project
     }
 }
