@@ -12,19 +12,58 @@
 // ============================================================================
 package org.talend.designer.runprocess.java;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.service.IMRProcessService;
+import org.talend.core.service.IStormProcessService;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.runprocess.Processor;
+import org.talend.designer.runprocess.IProcessMessageManager;
+import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.repository.ui.utils.ZipToFile;
+import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
+import org.talend.utils.io.FilesUtils;
 
 /**
  * Created by Marvin Wang on Mar 22, 2013.
  */
 public abstract class AbstractJavaProcessor extends Processor implements IJavaProcessor {
 
+    private final static String FILEPATH_PREFIX = "job_export"; //$NON-NLS-1$
+
     /** main class of job */
     protected String mainClass;
+
+    protected String unzipFolder;
+
+    protected String archive;
 
     /**
      * DOC marvin AbstractJavaProcessor constructor comment.
@@ -116,4 +155,184 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
         return new ArrayList<String>();
     }
 
+    public Process run(String[] optionsParam, int statisticsPort, int tracePort, IProgressMonitor monitor,
+            IProcessMessageManager processMessageManager) throws ProcessorException {
+        Property property = this.getProperty();
+        if (shouldRunAsExport() && property != null) {
+            // use the same function with ExportModelJavaProcessor, but will do for maven
+            ProcessItem processItem = (ProcessItem) property.getItem();
+            // Step 1: Export job
+            archive = buildExportZip(processItem, monitor);
+            // Step 2: Deploy in local(Maybe just unpack)
+            unzipFolder = unzipAndDeploy(process, archive);
+            // Step 3: Run job from given folder.
+            return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort,
+                    optionsParam);
+
+        }
+        return super.run(optionsParam, statisticsPort, tracePort, monitor, processMessageManager);
+    }
+
+    protected abstract String getRootWorkingDir(boolean withSep);
+
+    /**
+     * copied from ExportModelJavaProcessor
+     */
+    @Override
+    public boolean shouldRunAsExport() {
+        List<? extends INode> generatedNodes = process.getGeneratingNodes();
+        try {
+            for (INode node : generatedNodes) {
+                if (node.getComponent() != null && "tRunJob".equals(node.getComponent().getName())) {//$NON-NLS-1$
+                    IElementParameter elementParameter = node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS");//$NON-NLS-1$
+                    if (elementParameter != null) {
+                        Object value = elementParameter.getValue();
+                        if (value != null && !"".equals(value)) {//$NON-NLS-1$
+                            IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
+                                    .getProxyRepositoryFactory().getLastVersion(value.toString());
+                            if (lastVersion != null) {
+                                boolean hasBatchOrStreamingSubProcess = hasBatchOrStreamingSubProcess(lastVersion.getProperty()
+                                        .getItem());
+                                if (hasBatchOrStreamingSubProcess) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (PersistenceException e) {
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * copied from ExportModelJavaProcessor
+     */
+    @SuppressWarnings("unchecked")
+    private boolean hasBatchOrStreamingSubProcess(Item item) throws PersistenceException {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+            IMRProcessService batchService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                    IMRProcessService.class);
+            if (batchService.isMapReduceItem(item)) {
+                return true;
+            }
+        }
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IStormProcessService.class)) {
+            IStormProcessService streamingService = (IStormProcessService) GlobalServiceRegister.getDefault().getService(
+                    IStormProcessService.class);
+            if (streamingService.isStormItem(item)) {
+                return true;
+            }
+        }
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)
+                || GlobalServiceRegister.getDefault().isServiceRegistered(IStormProcessService.class)) {
+            if (item != null && item.eClass() == PropertiesPackage.Literals.PROCESS_ITEM) {
+                ProcessType processType = ((ProcessItem) item).getProcess();
+                EList<NodeType> nodes = processType.getNode();
+                for (NodeType node : nodes) {
+                    if ("tRunJob".equals(node.getComponentName())) {//$NON-NLS-1$
+                        EList<ElementParameterType> elementParameters = node.getElementParameter();
+                        for (ElementParameterType param : elementParameters) {
+                            if (param.getName() != null && "PROCESS:PROCESS_TYPE_PROCESS".equals(param.getName())) {//$NON-NLS-1$
+                                Object value = param.getValue();
+                                if (value != null && !"".equals(value)) {//$NON-NLS-1$
+                                    IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
+                                            .getProxyRepositoryFactory().getLastVersion(value.toString());
+                                    if (lastVersion != null) {
+                                        return hasBatchOrStreamingSubProcess(lastVersion.getProperty().getItem());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * copied from ExportModelJavaProcessor
+     */
+    protected String unzipAndDeploy(IProcess process, String archiveZipFileStr) {
+        String unzipFolder = unzipProcess(process, archiveZipFileStr);
+        return unzipFolder;
+    }
+
+    /**
+     * copied from ExportModelJavaProcessor
+     */
+    protected String unzipProcess(IProcess process, String archiveZipFileStr) {
+        String jobName = process.getName();
+        String tempFolder = null;
+        if (archiveZipFileStr != null && !"".equals(archiveZipFileStr)) {
+            File file = new File(archiveZipFileStr);
+            File tempWorkFolder = new File(file.getParentFile(), jobName);
+            tempFolder = tempWorkFolder.getAbsolutePath();
+            FilesUtils.deleteFolder(tempWorkFolder, false); // if existed, clean up
+            try {
+                ZipToFile.unZipFile(archiveZipFileStr, tempFolder);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return tempFolder;
+    }
+
+    protected String buildExportZip(ProcessItem processItem, IProgressMonitor progressMonitor) throws ProcessorException {
+        Map<ExportChoice, Object> exportChoiceMap = JobScriptsManagerFactory.getDefaultExportChoiceMap();
+        exportChoiceMap.put(ExportChoice.needLauncher, false);
+        exportChoiceMap.put(ExportChoice.needJobItem, false);
+        exportChoiceMap.put(ExportChoice.needJobScript, true);
+        exportChoiceMap.put(ExportChoice.needSourceCode, false);
+        exportChoiceMap.put(ExportChoice.binaries, true);
+        exportChoiceMap.put(ExportChoice.includeLibs, true);
+
+        if (progressMonitor.isCanceled()) {
+            throw new ProcessorException(new InterruptedException());
+        }
+        final String archiveFilePath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore()
+                .getString(ITalendCorePrefConstants.FILE_PATH_TEMP))
+                + "/" + getFilePathPrefix() + "_" + process.getName() + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        try {
+            exportChoiceMap.put(ExportChoice.needContext, true);
+            String contextName = processItem.getProcess().getDefaultContext();
+            exportChoiceMap.put(ExportChoice.contextName, contextName);
+
+            buildJob(archiveFilePath, processItem, processItem.getProperty().getVersion(), contextName, exportChoiceMap,
+                    JobExportType.POJO, progressMonitor);
+        } catch (Exception e) {
+            throw new ProcessorException(e);
+        }
+
+        ProcessorUtilities.resetExportConfig();
+        return archiveFilePath;
+    }
+
+    protected String getFilePathPrefix() {
+        return FILEPATH_PREFIX;
+    }
+
+    protected void buildJob(String destinationPath, ProcessItem processItem, String version, String ctx,
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
+        BuildJobManager.getInstance().buildJob(destinationPath, processItem, version, ctx, exportChoiceMap, jobExportType,
+                monitor);
+    }
+
+    @Override
+    public void cleanWorkingDirectory() throws SecurityException {
+        if (archive != null) {
+            File archiveFile = new File(archive);
+            if (archiveFile != null && archiveFile.exists()) {
+                archiveFile.delete();
+            }
+        }
+        if (unzipFolder != null) {
+            FilesUtils.removeFolder(unzipFolder, true);
+        }
+    }
 }
