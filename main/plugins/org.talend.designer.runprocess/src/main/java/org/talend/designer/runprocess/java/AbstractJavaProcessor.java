@@ -75,6 +75,13 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
     }
 
     /**
+     * if preview or such will be false.
+     */
+    protected boolean isStandardJob() {
+        return true;
+    }
+
+    /**
      * <pre>
      * Makes all command segments up, like ahead commands, jvm commands, cp commands, main-class command, and others.
      * This method should be invoked by {@link #getCommandLine()}. The following is about some methods invoked by this
@@ -157,18 +164,20 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
 
     public Process run(String[] optionsParam, int statisticsPort, int tracePort, IProgressMonitor monitor,
             IProcessMessageManager processMessageManager) throws ProcessorException {
-        Property property = this.getProperty();
-        if (shouldRunAsExport() && property != null) {
-            // use the same function with ExportModelJavaProcessor, but will do for maven
-            ProcessItem processItem = (ProcessItem) property.getItem();
-            // Step 1: Export job
-            archive = buildExportZip(processItem, monitor);
-            // Step 2: Deploy in local(Maybe just unpack)
-            unzipFolder = unzipAndDeploy(process, archive);
-            // Step 3: Run job from given folder.
-            return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort,
-                    optionsParam);
+        if (isStandardJob()) {
+            Property property = this.getProperty();
+            if (shouldRunAsExport() && property != null) {
+                // use the same function with ExportModelJavaProcessor, but will do for maven
+                ProcessItem processItem = (ProcessItem) property.getItem();
+                // Step 1: Export job
+                archive = buildExportZip(processItem, monitor);
+                // Step 2: Deploy in local(Maybe just unpack)
+                unzipFolder = unzipAndDeploy(process, archive);
+                // Step 3: Run job from given folder.
+                return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort,
+                        tracePort, optionsParam);
 
+            }
         }
         return super.run(optionsParam, statisticsPort, tracePort, monitor, processMessageManager);
     }
