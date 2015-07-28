@@ -18,7 +18,7 @@ imports="
     String entityName = ElementParameterParser.getValue(node, "__ENTITYNAME__").trim();
     String customEntityName = ElementParameterParser.getValue(node, "__CUSTOM_ENTITY_NAME__");
     if("CustomEntity".equals(entityName)){
-        entityName = customEntityName.replaceAll("\"","");
+        entityName = customEntityName.replace("\"","");
     }
     entityName = entityName.toLowerCase();
     String action = ElementParameterParser.getValue(node,"__ACTION__");
@@ -52,17 +52,29 @@ imports="
                                        if("BIGINT".equals(crmType)){
                                            //Map 2 Java Long
                                            %>
-                                              map_<%= cid %>.put("<%= columnName %>", Long.valueOf(<%=connName%>.<%=columnName%>));
+                                            if(<%=connName%>.<%=columnName%> != null){
+                                                map_<%= cid %>.put("<%= columnName %>", Long.valueOf(<%=connName%>.<%=columnName%>));
+                                            }else{
+                                                map_<%= cid %>.put("<%= columnName %>", null);
+                                            }
                                            <%
                                        }else if("BOOLEAN".equals(crmType)){
                                             //Map 2 Java Boolean
                                             %>
-                                            map_<%= cid %>.put("<%= columnName %>", Boolean.valueOf(<%=connName%>.<%=columnName%>));
+                                            if(<%=connName%>.<%=columnName%> != null){
+                                                map_<%= cid %>.put("<%= columnName %>", Boolean.valueOf(<%=connName%>.<%=columnName%>));
+                                            }else{
+                                                map_<%= cid %>.put("<%= columnName %>", null);
+                                            }
                                             <%
                                        }else if("CALENDARRULES".equals(crmType) || "PARTYLIST".equals(crmType)){
                                             //Todo: Need to find a better solution.
                                             %>
-                                            map_<%= cid %>.put("<%= columnName %>", (com.microsoft.schemas.xrm._2011.contracts.EntityCollection)<%=connName%>.<%=columnName%>);
+                                            if(<%=connName%>.<%=columnName%> != null){
+                                                map_<%= cid %>.put("<%= columnName %>", (com.microsoft.schemas.xrm._2011.contracts.EntityCollection)<%=connName%>.<%=columnName%>);
+                                            }else{
+                                                map_<%= cid %>.put("<%= columnName %>", null);
+                                            }
                                             <%
                                        }else if("CUSTOMER".equals(crmType) || "LOOKUP".equals(crmType) || "OWNER".equals(crmType)){
                                             //Map 2 Java Document
@@ -117,7 +129,11 @@ imports="
                                                                 if(<%=connName%>.<%=columnName%> instanceof java.util.Date){
                                                                      map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
                                                                 }else{
+                                                                 if(<%=connName%>.<%=columnName%> != null){
                                                                      map_<%= cid %>.put("<%= columnName %>",ParserUtils.parseTo_Date(<%=connName%>.<%=columnName%>.toString(), <%= patternValue %>));
+                                                                 }else{
+                                                                     map_<%= cid %>.put("<%= columnName %>", null);
+                                                                 }
                                                                 }
                                                              <%
                                                   }else if(javaType == JavaTypesManager.DATE){
@@ -126,7 +142,11 @@ imports="
                                                              <%
                                                   }else{
                                                              %>
+                                                             if(<%=connName%>.<%=columnName%> != null){
                                                                      map_<%= cid %>.put("<%= columnName %>",ParserUtils.parseTo_Date(<%=connName%>.<%=columnName%>.toString(), <%= patternValue %>));
+                                                             }else{
+                                                                     map_<%= cid %>.put("<%= columnName %>", null);
+                                                             }
                                                              <%
                                                   }
                                                 %>
@@ -137,21 +157,29 @@ imports="
                                               <%
                                                 if(javaType == JavaTypesManager.OBJECT){
                                                              %>
-                                                                if(<%=connName%>.<%=columnName%> instanceof java.math.BigDecimal){
-                                                                   map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
-                                                                }else{
-                                                                   map_<%= cid %>.put("<%= columnName %>",
-                                                                                     ParserUtils.parseTo_BigDecimal(<%=connName%>.<%=columnName%>.toString()));
-                                                                }
+                                                                 if(<%=connName%>.<%=columnName%> instanceof java.math.BigDecimal){
+                                                                    map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
+                                                                 }else{
+                                                                    if(<%=connName%>.<%=columnName%> != null){
+                                                                    map_<%= cid %>.put("<%= columnName %>",
+                                                                                      ParserUtils.parseTo_BigDecimal(<%=connName%>.<%=columnName%>.toString()));
+                                                                    }else{
+                                                                    map_<%= cid %>.put("<%= columnName %>", null);
+                                                                    }
+                                                                 }
                                                              <%
                                                 }else if(javaType == JavaTypesManager.BIGDECIMAL){
                                                              %>
-                                                                  map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
+                                                                    map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
                                                              <%
                                                 }else{
                                                              %>
-                                                                map_<%= cid %>.put("<%= columnName %>",
-                                                                                  ParserUtils.parseTo_BigDecimal(<%=connName%>.<%=columnName%>.toString()));
+                                                             if(<%=connName%>.<%=columnName%> != null){
+                                                                    map_<%= cid %>.put("<%= columnName %>",
+                                                                                      ParserUtils.parseTo_BigDecimal(<%=connName%>.<%=columnName%>.toString()));
+                                                             }else{
+                                                                    map_<%= cid %>.put("<%= columnName %>", null);
+                                                             }
                                                              <%
                                                 }
                                                %>
@@ -159,20 +187,32 @@ imports="
                                   }else if("DOUBLE".equals(crmType)){
                                               //Map 2 Java Double
                                               %>
-                                              map_<%= cid %>.put("<%= columnName %>",
-                                                                Double.valueOf(<%=connName%>.<%=columnName%>));
+                                                if(<%=connName%>.<%=columnName%> != null){
+                                                     map_<%= cid %>.put("<%= columnName %>",
+                                                                       Double.valueOf(<%=connName%>.<%=columnName%>));
+                                                 }else{
+                                                     map_<%= cid %>.put("<%= columnName %>", null);
+                                                 }
                                               <%
                                   }else if("ENTITYNAME".equals(crmType) || "MEMO".equals(crmType) || "STRING".equals(crmType)){
                                               //Map 2 Java String
                                               %>
-                                              map_<%= cid %>.put("<%= columnName %>",
-                                                                <%=connName%>.<%=columnName%>.toString());
+                                                 if(<%=connName%>.<%=columnName%> != null){
+                                                    map_<%= cid %>.put("<%= columnName %>",
+                                                                      <%=connName%>.<%=columnName%>.toString());
+                                                  }else{
+                                                    map_<%= cid %>.put("<%= columnName %>", null);
+                                                  }
                                               <%
                                   }else if("INTEGER".equals(crmType)){
                                               //Map 2 Java Integer
                                               %>
-                                              map_<%= cid %>.put("<%= columnName %>",
-                                                                Integer.valueOf(<%=connName%>.<%=columnName%>));
+                                                if(<%=connName%>.<%=columnName%> != null){
+                                                      map_<%= cid %>.put("<%= columnName %>",
+                                                                        Integer.valueOf(<%=connName%>.<%=columnName%>));
+                                                }else{
+                                                      map_<%= cid %>.put("<%= columnName %>", null);
+                                                }
                                               <%
                                   }else if("MANAGEDPROPERTY".equals(crmType)){
                                               //Map 2 Java Object
@@ -188,14 +228,18 @@ imports="
                                               <%
                                                if(javaType == JavaTypesManager.OBJECT){
                                                           %>
-                                                             if(<%=connName%>.<%=columnName%> instanceof java.math.BigDecimal){
-                                                                            money_<%= index %>.setValue(<%=connName%>.<%=columnName%>);
-                                                             }else{
-                                                                            money_<%= index %>.setValue(ParserUtils.parseTo_BigDecimal(
-                                                                                                         <%=connName%>.<%=columnName%>.toString()
-                                                                                                         )
-                                                                                                     );
-                                                             }
+                                                                 if(<%=connName%>.<%=columnName%> instanceof java.math.BigDecimal){
+                                                                                money_<%= index %>.setValue(<%=connName%>.<%=columnName%>);
+                                                                 }else{
+                                                                       if(<%=connName%>.<%=columnName%> != null){
+                                                                                money_<%= index %>.setValue(ParserUtils.parseTo_BigDecimal(
+                                                                                                             <%=connName%>.<%=columnName%>.toString()
+                                                                                                             )
+                                                                                                         );
+                                                                        }else{
+                                                                               money_<%= index %>.setValue(null);
+                                                                        }
+                                                                 }
                                                           <%
                                                }else if(javaType == JavaTypesManager.BIGDECIMAL){
                                                           %>
@@ -203,10 +247,14 @@ imports="
                                                           <%
                                                }else{
                                                           %>
+                                                          if(<%=connName%>.<%=columnName%> != null){
                                                              money_<%= index %>.setValue(ParserUtils.parseTo_BigDecimal(
                                                                                           <%=connName%>.<%=columnName%>.toString()
                                                                                           )
                                                                                       );
+                                                          }else{
+                                                            money_<%= index %>.setValue(null);
+                                                          }
                                                           <%
                                                }
                                                %>
@@ -217,7 +265,11 @@ imports="
                                               %>
                                                  com.microsoft.schemas.xrm._2011.contracts.OptionSetValue
                                                                optionSetValue_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.OptionSetValue();
+                                                 if(<%=connName%>.<%=columnName%> != null){
                                                  optionSetValue_<%= index %>.setValue(Integer.valueOf(<%=connName%>.<%=columnName%>));
+                                                 }else{
+                                                 optionSetValue_<%= index %>.setValue(null);
+                                                 }
                                                  map_<%= cid %>.put("<%= columnName %>", optionSetValue_<%= index %>);
                                               <%
                                   }else if("UNIQUEIDENTIFIER".equals(crmType)){
@@ -225,12 +277,16 @@ imports="
                                               %>
                                                  com.microsoft.schemas._2003._10.serialization.Guid
                                                                guid_<%= index %> = new com.microsoft.schemas._2003._10.serialization.Guid();
+                                                 if(<%=connName%>.<%=columnName%> != null){
                                                  guid_<%= index %>.setValue(<%=connName%>.<%=columnName%>.toString());
+                                                 }else{
+                                                 throw new RuntimeException("UNIQUEIDENTIFIER can't be null, the column name is <%= columnName %>");
+                                                 }
                                                  map_<%= cid %>.put("<%= columnName %>", guid_<%= index %>);
                                               <%
                                   }else{
                                                %>
-                                                  System.err.println("Unsupported Crm Data Type.");
+                                                  System.err.println("Unsupported Crm Data Type ==> <%= crmType %>");
                                                   map_<%= cid %>.put("<%= columnName %>", null);
                                                <%
                                   }
@@ -254,7 +310,7 @@ imports="
                             <%
                         }else{
                             %>
-                               System.out.println("Unsupported Operation.");
+                               System.out.println("Unsupported Operation ==> <%= action %>");
                             <%
                         }
                 }
