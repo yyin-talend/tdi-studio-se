@@ -24,6 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.core.PluginChecker;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -125,6 +126,13 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         lineStyle = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_LINESTYLE,
                 Messages.getString("DesignerPreferencePage.lineStyle"), getFieldEditorParent()); //$NON-NLS-1$
         addField(lineStyle);
+
+        if (PluginChecker.isTestCasePluginLoaded()) {
+            BooleanFieldEditor duplicateTestCases;
+            duplicateTestCases = new BooleanFieldEditor(TalendDesignerPrefConstants.DUPLICATE_TESTCASE,
+                    Messages.getString("DesignerPreferencePage.duplicateTestCases"), getFieldEditorParent()); //$NON-NLS-1$
+            addField(duplicateTestCases);
+        }
 
         DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
                 Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()) {
