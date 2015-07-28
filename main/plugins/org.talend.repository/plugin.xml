@@ -2508,7 +2508,7 @@
               class="org.talend.repository.model.migration.ChangeDefaultValueForCassandraAPIVersion"
               id="org.talend.repository.model.migration.ChangeDefaultValueForCassandraAPIVersion"
               name="ChangeDefaultValueForCassandraAPIVersion"
-              version="6.1.0">
+              version="6.0.1">
         </projecttask>
         <projecttask
               beforeLogon="false"
@@ -2516,7 +2516,7 @@
               class="org.talend.repository.model.migration.AddPortForTCassandraConfigurationSpark"
               id="org.talend.repository.model.migration.AddPortForTCassandraConfigurationSpark"
               name="AddPortForTCassandraConfigurationSpark"
-              version="6.1.0">
+              version="6.0.1">
         </projecttask>
         <projecttask
               beforeLogon="false"
@@ -2524,7 +2524,15 @@
               class="org.talend.repository.model.migration.AddTableActionForUpdateCassandraDatastax"
               id="org.talend.repository.model.migration.AddTableActionForUpdateCassandraDatastax"
               name="AddTableActionForUpdateCassandraDatastax"
-              version="6.1.0">
+              version="6.0.1">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.UnifyParameterOfDatastaxAndHectorForCassandra"
+              id="org.talend.repository.model.migration.UnifyParameterOfDatastaxAndHectorForCassandra"
+              name="UnifyParameterOfDatastaxAndHectorForCassandra"
+              version="6.0.1">
         </projecttask>
         <projecttask
               beforeLogon="false"
