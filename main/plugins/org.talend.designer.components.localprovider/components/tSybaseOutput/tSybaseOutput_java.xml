@@ -329,6 +329,7 @@
       NAME="SET_QUERY_TIMEOUT"
       FIELD="CHECK"
       NUM_ROW="40"
+      NOT_SHOW_IF="TABLE_ACTION == 'NONE'"
       >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
