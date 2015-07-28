@@ -46,6 +46,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
@@ -96,6 +97,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         super(parentComposite, mainCompositeStyle, extendedTableModel, readOnly, toolbarVisible, true, false);
         this.rGcomponent = rGcomponent;
         this.functionManager = functionManager;
+        setMapreduce(NodeUtil.isBigDataFrameworkNode(rGcomponent));
         initGraphicComponents();
     }
 

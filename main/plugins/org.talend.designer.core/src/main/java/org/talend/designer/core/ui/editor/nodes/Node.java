@@ -43,7 +43,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -3511,8 +3510,7 @@ public class Node extends Element implements IGraphicalNode {
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                         if (nbDynamic > 0 && service != null) {
-                            // Spark, Storm, Spark Streaming and M/R currently don't support at all the Dynamic type.
-                            if (isBigDataFrameworkNode() || !service.isSupportDynamicType(this.getComponent().getName())) {
+                            if (!service.isSupportDynamicType(this.getComponent().getName())) {
                                 String errorMessage = Messages.getString("Node.componentDoesntSupportDynamic"); //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
@@ -4930,17 +4928,5 @@ public class Node extends Element implements IGraphicalNode {
 
     public boolean isJunitStart() {
         return this.isJunitStart;
-    }
-
-    /**
-     * 
-     * DOC rdubois Comment method "isBigDataFrameworkNode".
-     * 
-     * @return true if a Node is a BigData framework component.
-     */
-    private boolean isBigDataFrameworkNode() {
-        ComponentCategory cat = ComponentCategory.getComponentCategoryFromName(getComponent().getType());
-        return (ComponentCategory.CATEGORY_4_MAPREDUCE == cat || ComponentCategory.CATEGORY_4_STORM == cat
-                || ComponentCategory.CATEGORY_4_SPARK == cat || ComponentCategory.CATEGORY_4_SPARKSTREAMING == cat);
     }
 }

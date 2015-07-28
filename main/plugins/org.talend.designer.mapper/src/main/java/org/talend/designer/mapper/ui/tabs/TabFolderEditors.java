@@ -41,8 +41,8 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.mapper.MapperMain;
@@ -107,14 +107,8 @@ public class TabFolderEditors extends CTabFolder {
         item.setControl(inOutMetaEditorContainer);
 
         CommandStack commandStack = mapperManager.getCommandStack();
-        // check component use from mapreduce
-        boolean isMapreduce = false;
-        if (mapperManager.getAbstractMapComponent() != null) {
-            IComponent component = mapperManager.getAbstractMapComponent().getComponent();
-            if (component != null && component.getPaletteType() != null && component.getPaletteType().equals("MR")) {
-                isMapreduce = true;
-            }
-        }
+        // check component use from mapreduce/spark/storm/spark streaming
+        boolean isMapreduce = NodeUtil.isBigDataFrameworkNode(mapperManager.getAbstractMapComponent());
 
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         inputMetaEditor.setMapreduce(isMapreduce);
