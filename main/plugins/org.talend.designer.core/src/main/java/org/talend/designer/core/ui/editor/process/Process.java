@@ -2247,7 +2247,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
         String errorMessage = null;
         if (unloadedNode.size() == 1) {
-            errorMessage = Messages.getString("Process.component.notloaded", unloadedNode.get(0)); //$NON-NLS-1$
+            errorMessage = Messages.getString("Process.component.notloaded", unloadedNode.get(0).getComponentName()); //$NON-NLS-1$
         } else {
             StringBuilder curentName = new StringBuilder();
             for (NodeType component : unloadedNode) {
