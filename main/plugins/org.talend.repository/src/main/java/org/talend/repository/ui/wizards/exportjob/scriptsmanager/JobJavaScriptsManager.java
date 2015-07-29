@@ -717,7 +717,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                             statisticPort != IProcessor.NO_STATISTICS || isOptionChoosed(ExportChoice.addStatistics),
                             tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
                 }
-                addDependenceModules(jobProcess);
+                // addDependenceModules(jobProcess);
                 analysisModules(processItem.getProperty().getId(), selectedJobVersion);
             } else {
                 LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),

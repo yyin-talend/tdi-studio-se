@@ -4278,7 +4278,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      */
     @Override
     public boolean isNeedLoadmodules() {
-        return this.isNeedLoadmodules;
+        return true;
     }
 
     /*
