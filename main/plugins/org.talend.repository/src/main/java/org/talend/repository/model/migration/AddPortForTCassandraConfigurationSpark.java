@@ -12,9 +12,11 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -66,24 +68,36 @@ public class AddPortForTCassandraConfigurationSpark extends AbstractAllJobMigrat
                 }
 
                 ElementParameterType parameter = ComponentUtilities.getNodeProperty(node, "PORT"); //$NON-NLS-1$
-
+                List<Object> needRemovedList = new ArrayList<Object>();
                 if (parameter == null) {
                     // get the value of native port if the user defined it on the configuration table
                     String portValue = null;
                     ElementParameterType configTable = ComponentUtilities.getNodeProperty(node, "CASSANDRA_CONFIGURATION"); //$NON-NLS-1$
-                    boolean findIt = false;
+                    boolean findNative = false;
+                    boolean findRpc = false;
                     for (Object e : configTable.getElementValue()) {
                         ElementValueTypeImpl el = (ElementValueTypeImpl) e;
-                        if (findIt && "VALUE".equals(el.getElementRef())) { //$NON-NLS-1$
+                        if (findNative && "VALUE".equals(el.getElementRef())) { //$NON-NLS-1$
                             portValue = el.getValue();
-                            break;
+                            needRemovedList.add(e);
+                            findNative = false;
+                        }
+                        if (findRpc && "VALUE".equals(el.getElementRef())) { //$NON-NLS-1$
+                            needRemovedList.add(e);
+                            findRpc = false;
                         }
                         if ("KEY".equals(el.getElementRef())) { //$NON-NLS-1$
                             if ("connection_native_port".equals(el.getValue())) { //$NON-NLS-1$
-                                findIt = true;
+                                findNative = true;
+                                needRemovedList.add(e);
+                            }
+                            if ("connection_rpc_port".equals(el.getValue())) { //$NON-NLS-1$
+                                findRpc = true;
+                                needRemovedList.add(e);
                             }
                         }
                     }
+                    configTable.getElementValue().removeAll(needRemovedList);
                     ComponentUtilities.addNodeProperty(node, "PORT", "TEXT"); //$NON-NLS-1$ //$NON-NLS-2$
                     ComponentUtilities.setNodeValue(node, "PORT", portValue == null ? "9042" : portValue); //$NON-NLS-1$ //$NON-NLS-2$ 
                 }
