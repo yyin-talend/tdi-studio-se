@@ -1439,7 +1439,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (zipOption != null && zipOption.equals("true")) { //$NON-NLS-1$
             // unzip
             try {
-                String zipFile = manager.getDestinationPath();
+                String zipFile;
+                if (manager != null) {
+                    zipFile = manager.getDestinationPath();
+                } else {
+                    zipFile = getDestinationValue();
+                    int separatorIndex = zipFile.lastIndexOf(File.separator);
+                    if (separatorIndex == -1) {
+                        String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+                        zipFile = userDir + File.separator + zipFile;
+                    }
+                }
                 // Added by Marvin Wang on Feb.1, 2012 for bug TDI-18824
                 File file = new File(zipFile);
                 if (file.exists()) {
