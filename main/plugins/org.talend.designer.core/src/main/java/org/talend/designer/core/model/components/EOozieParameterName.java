@@ -19,7 +19,7 @@ import org.talend.designer.core.i18n.Messages;
  */
 public enum EOozieParameterName {
     
-    PROPERTY_TYPENAME(Messages.getString("EOozieParameterName.propertyType")),
+    OOZIE_PROPERTY_TYPENAME(Messages.getString("EOozieParameterName.propertyType")),
 
     HADOOP_APP_PATH(Messages.getString("EOozieParameterName.hadoopAppPath")), //$NON-NLS-1$
 
@@ -27,29 +27,29 @@ public enum EOozieParameterName {
 
     REPOSITORY_CONNECTION_ID(Messages.getString("EOozieParameterName.repositoryConnectionId")), //$NON-NLS-1$
     
-    HADOOP_DISTRIBUTION(Messages.getString("EOozieParameterName.hadoopDistribution")),
+    OOZIE_HADOOP_DISTRIBUTION(Messages.getString("EOozieParameterName.hadoopDistribution")),
     
-    HADOOP_VERSION(Messages.getString("EOozieParameterName.hadoopVersion")),
+    OOZIE_HADOOP_VERSION(Messages.getString("EOozieParameterName.hadoopVersion")),
     
-    ENABLE_KERBEROS(Messages.getString("EOozieParameterName.enableKerberos")),
+    OOZIE_ENABLE_KERBEROS(Messages.getString("EOozieParameterName.enableKerberos")),
     
-    NAME_NODE_PRINCIPAL(Messages.getString("EOozieParameterName.nameNodePrincipal")),
+    OOZIE_NAME_NODE_PRINCIPAL(Messages.getString("EOozieParameterName.nameNodePrincipal")),
     
-    USERNAME(Messages.getString("EOozieParameterName.userName")),
+    OOZIE_USERNAME(Messages.getString("EOozieParameterName.userName")),
     
-    GROUP(Messages.getString("EOozieParameterName.group")),
+    OOZIE_GROUP(Messages.getString("EOozieParameterName.group")),
     
-    USE_KEYTAB(Messages.getString("EOozieParameterName.useKeytab")),
+    OOZIE_USE_KEYTAB(Messages.getString("EOozieParameterName.useKeytab")),
     
-    KT_PRINCIPAL(Messages.getString("EOozieParameterName.ktPrincipal")),
+    OOZIE_KT_PRINCIPAL(Messages.getString("EOozieParameterName.ktPrincipal")),
     
-    KEY_TAB(Messages.getString("EOozieParameterName.keytab")),
+    OOZIE_KEY_TAB(Messages.getString("EOozieParameterName.keytab")),
     
-    ENABLE_OO_KERBEROS(Messages.getString("EOozieParameterName.enableOoKerberos")),
+    OOZIE_ENABLE_OO_KERBEROS(Messages.getString("EOozieParameterName.enableOoKerberos")),
     
-    NAME_NODE_END_POINT(Messages.getString("EOozieParameterName.nameNodeEndPoint")),
+    OOZIE_NAME_NODE_END_POINT(Messages.getString("EOozieParameterName.nameNodeEndPoint")),
     
-    JOB_TRACKER_ENDPOINT(Messages.getString("EOozieParameterName.jobTrackerEndPoint")),
+    OOZIE_JOB_TRACKER_ENDPOINT(Messages.getString("EOozieParameterName.jobTrackerEndPoint")),
     
     OOZIE_END_POINT(Messages.getString("EOozieParameterName.oozieEndPointValue")),
     ;
