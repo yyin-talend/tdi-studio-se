@@ -619,6 +619,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         routeInfo.put("className", getPackageName(processItem) + PACKAGE_SEPARATOR + name); //$NON-NLS-1$
 
         boolean useSAM = false;
+        boolean hasCXFUsernameToken = false;
         boolean hasCXFSamlConsumer = false;
         boolean hasCXFSamlProvider = false;
         boolean hasCXFRSSamlProviderAuthz = false;
@@ -657,7 +658,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         nodeUseSAM = false;
                     } else if (EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
                         String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node); //$NON-NLS-1$
-                        if ("SAML".equals(securityType)) { //$NON-NLS-1$
+                        if ("USER".equals(securityType)) { //$NON-NLS-1$
+                            hasCXFUsernameToken = true;
+                        } else if ("SAML".equals(securityType)) { //$NON-NLS-1$
                             nodeUseSaml = true;
                             nodeUseAuthz = isEEVersion && EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node);
                         }
@@ -670,13 +673,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     hasCXFSamlProvider |= nodeUseSaml | nodeUseRegistry;
                     hasCXFRSSamlProviderAuthz |= nodeUseAuthz;
                 }
-
-                if (useSAM && hasCXFSamlConsumer && hasCXFSamlConsumer && (!isEEVersion || hasCXFRSSamlProviderAuthz)) {
-                    break;
-                }
             }
         }
         routeInfo.put("useSAM", useSAM); //$NON-NLS-1$
+        routeInfo.put("hasCXFUsernameToken", hasCXFUsernameToken); //$NON-NLS-1$
         routeInfo.put("hasCXFSamlConsumer", hasCXFSamlConsumer); //$NON-NLS-1$
         routeInfo.put("hasCXFSamlProvider", hasCXFSamlProvider); //$NON-NLS-1$
         routeInfo.put("hasCXFRSSamlProviderAuthz", hasCXFRSSamlProviderAuthz && !hasCXFComponent); //$NON-NLS-1$

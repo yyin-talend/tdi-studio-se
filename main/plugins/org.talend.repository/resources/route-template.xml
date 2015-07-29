@@ -3,14 +3,9 @@
     xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.3.0">
 
 	<!-- Talend Route OSGi blueprint descriptor -->
-#if ($hasCXFComponent && ($hasCXFSamlConsumer || $hasCXFSamlProvider))
-#[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job" placeholder-prefix="$job{" />
-]]#
-#end
 #if ($hasCXFSamlProvider)
 #[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$saml{" />
+	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$service{" />
 ]]#
 #end
 #if ($hasCXFRSSamlProviderAuthz)
@@ -32,14 +27,10 @@
 			<reference interface="org.talend.esb.sam.agent.feature.EventFeature" />
 		</property>
 #end
-#if ($hasCXFComponent && ($hasCXFSamlConsumer || $hasCXFSamlProvider))
+#if ($hasCXFComponent && ($hasCXFUsernameToken || $hasCXFSamlConsumer || $hasCXFSamlProvider))
 #[[
-        <property name="policies">
-            <map>
-                <entry key="policy.username" value="$job{policy.username}" />
-                <entry key="policy.saml" value="$job{policy.saml}" />
-                <entry key="policy.saml.authz" value="$job{policy.saml.authz}" />
-            </map>
+        <property name="policyProvider">
+            <reference interface="org.talend.esb.security.policy.PolicyProvider" />
         </property>
 ]]#
 #end
@@ -47,9 +38,9 @@
 #[[
         <property name="securityProps" >
             <map>
-                <entry key="security.signature.properties" value="$saml{security.signature.properties}" />
-                <entry key="security.signature.username" value="$saml{security.signature.username}" />
-                <entry key="security.signature.password" value="$saml{security.signature.password}" />
+                <entry key="security.signature.properties" value="$service{security.signature.properties}" />
+                <entry key="security.signature.username" value="$service{security.signature.username}" />
+                <entry key="security.signature.password" value="$service{security.signature.password}" />
             </map>
         </property>
 ]]#
