@@ -99,7 +99,7 @@ public class AddPortForTCassandraConfigurationSpark extends AbstractAllJobMigrat
                     }
                     configTable.getElementValue().removeAll(needRemovedList);
                     ComponentUtilities.addNodeProperty(node, "PORT", "TEXT"); //$NON-NLS-1$ //$NON-NLS-2$
-                    ComponentUtilities.setNodeValue(node, "PORT", portValue == null ? "9042" : portValue); //$NON-NLS-1$ //$NON-NLS-2$ 
+                    ComponentUtilities.setNodeValue(node, "PORT", portValue == null ? "\"9042\"" : portValue); //$NON-NLS-1$ //$NON-NLS-2$ 
                 }
             }
         };
