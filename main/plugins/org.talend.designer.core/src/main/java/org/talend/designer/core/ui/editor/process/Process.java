@@ -587,10 +587,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setValue("");
         param.setReadOnly(false);
         addElementParameter(param);
-        
-        //For adding the param definition in process item prepared 
+
+        // For adding the param definition in process item prepared
         for (EOozieParameterName oozieParam : EOozieParameterName.values()) {
-            if(!"REPOSITORY_CONNECTION_ID".equals(oozieParam.getName())&&!"JOBID_FOR_OOZIE".equals(oozieParam.getName())&&!"HADOOP_APP_PATH".equals(oozieParam.getName())) {
+            if (!"REPOSITORY_CONNECTION_ID".equals(oozieParam.getName()) && !"JOBID_FOR_OOZIE".equals(oozieParam.getName())
+                    && !"HADOOP_APP_PATH".equals(oozieParam.getName())) {
                 param = new ElementParameter(this);
                 param.setName(oozieParam.getName());
                 param.setDisplayName(oozieParam.getDisplayName());
@@ -4374,7 +4375,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      */
     @Override
     public boolean isNeedLoadmodules() {
-        return this.isNeedLoadmodules;
+        return true;
     }
 
     /*
