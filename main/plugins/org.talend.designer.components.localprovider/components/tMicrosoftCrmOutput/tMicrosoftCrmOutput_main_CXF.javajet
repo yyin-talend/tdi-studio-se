@@ -79,47 +79,85 @@ imports="
                                        }else if("CUSTOMER".equals(crmType) || "LOOKUP".equals(crmType) || "OWNER".equals(crmType)){
                                             //Map 2 Java Document
                                             %>
+
+                                                                 org.dom4j.Document doc_<%= index %> = null;
                                                <%
                                                    if(javaType == JavaTypesManager.OBJECT){
                                                               %>
                                                                  if(<%=connName%>.<%=columnName%> instanceof com.microsoft.schemas.xrm._2011.contracts.EntityReference){
                                                                       map_<%= cid %>.put("<%= columnName %>", <%=connName%>.<%=columnName%>);
-                                                                 }else if(<%=connName%>.<%=columnName%> instanceof routines.system.Document){
-                                                                      routines.system.Document document_<%= index %> = <%=connName%>.<%=columnName%>;
-                                                                      org.dom4j.Document doc_<%= index %> = document_<%= index %>.getDocument();
+                                                                 }else if(<%=connName%>.<%=columnName%> instanceof routines.system.Document || <%=connName%>.<%=columnName%> instanceof String){
+                                                                      if(<%=connName%>.<%=columnName%> instanceof routines.system.Document){
+                                                                            routines.system.Document document_<%= index %> = (routines.system.Document)<%=connName%>.<%=columnName%>;
+                                                                            doc_<%= index %> = document_<%= index %>.getDocument();
+                                                                      }else{
+                                                                           try{
+                                                                               doc_<%= index %> = org.dom4j.DocumentHelper.parseText((String)<%=connName%>.<%=columnName%>);
+                                                                           }catch(org.dom4j.DocumentException e){
+                                                                               throw new RuntimeException(e.getMessage(), e);
+                                                                           }
+                                                                      }
                                                                       com.microsoft.schemas.xrm._2011.contracts.EntityReference
                                                                                     entityRef_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.EntityReference();
-                                                                      entityRef_<%= index %>.setId(
-                                                                                           new com.microsoft.schemas._2003._10.serialization.Guid()
-                                                                                               .setValue(
-                                                                                                         xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/guid")
-                                                                                                        )
-                                                                                                 );
-                                                                      entityRef_<%= index %>.setLogicalName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/logical_name"));
-                                                                      entityRef_<%= index %>.setName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/name"));
+                                                                      com.microsoft.schemas._2003._10.serialization.Guid
+                                                                                    guid_<%= index %> = new com.microsoft.schemas._2003._10.serialization.Guid();
+                                                                                    guid_<%= index %>.setValue(
+                                                                                                         xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, guid_xpath_<%= cid %>)
+                                                                                                      );
+                                                                      entityRef_<%= index %>.setId(guid_<%= index %>);
+                                                                      entityRef_<%= index %>.setLogicalName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, logical_name_xpath_<%= cid %>));
+                                                                      entityRef_<%= index %>.setName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, name_xpath_<%= cid %>));
                                                                       map_<%= cid %>.put("<%= columnName %>", entityRef_<%= index %>);
                                                                  }else{
                                                                       map_<%= cid %>.put("<%= columnName %>", null);
                                                                  }
                                                               <%
-                                                   }else{
+                                                   }else if(javaType == JavaTypesManager.STRING){
                                                               %>
-                                                                 routines.system.Document document_<%= index %> = <%=connName%>.<%=columnName%>;
-                                                                 org.dom4j.Document doc_<%= index %> = document_<%= index %>.getDocument();
-                                                                 com.microsoft.schemas.xrm._2011.contracts.EntityReference
-                                                                               entityRef_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.EntityReference();
-                                                                 entityRef_<%= index %>.setId(
-                                                                                      new com.microsoft.schemas._2003._10.serialization.Guid()
-                                                                                          .setValue(
-                                                                                                    xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/guid")
-                                                                                                   )
-                                                                                            );
-                                                                 entityRef_<%= index %>.setLogicalName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/logical_name"));
-                                                                 entityRef_<%= index %>.setName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, "//entity_reference/name"));
-                                                                 map_<%= cid %>.put("<%= columnName %>", entityRef_<%= index %>);
+                                                                if(<%=connName%>.<%=columnName%> != null){
+                                                                    try{
+                                                                        doc_<%= index %> = org.dom4j.DocumentHelper.parseText(<%=connName%>.<%=columnName%>);
+                                                                    }catch(org.dom4j.DocumentException e){
+                                                                        throw new RuntimeException(e.getMessage(), e);
+                                                                    }
+                                                                    com.microsoft.schemas.xrm._2011.contracts.EntityReference
+                                                                                  entityRef_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.EntityReference();
+                                                                    com.microsoft.schemas._2003._10.serialization.Guid
+                                                                                  guid_<%= index %> = new com.microsoft.schemas._2003._10.serialization.Guid();
+                                                                                  guid_<%= index %>.setValue(
+                                                                                                       xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, guid_xpath_<%= cid %>)
+                                                                                                    );
+                                                                    entityRef_<%= index %>.setId(guid_<%= index %>);
+                                                                    entityRef_<%= index %>.setLogicalName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, logical_name_xpath_<%= cid %>));
+                                                                    entityRef_<%= index %>.setName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, name_xpath_<%= cid %>));
+                                                                    map_<%= cid %>.put("<%= columnName %>", entityRef_<%= index %>);
+                                                                }else{
+                                                                    map_<%= cid %>.put("<%= columnName %>", null);
+                                                                }
                                                               <%
+                                                   }else{
+                                                        %>
+                                                            if(<%=connName%>.<%=columnName%> != null){
+                                                                routines.system.Document document_<%= index %> = <%=connName%>.<%=columnName%>;
+                                                                doc_<%= index %> = document_<%= index %>.getDocument();
+                                                                com.microsoft.schemas.xrm._2011.contracts.EntityReference
+                                                                              entityRef_<%= index %> = new com.microsoft.schemas.xrm._2011.contracts.EntityReference();
+                                                                com.microsoft.schemas._2003._10.serialization.Guid
+                                                                              guid_<%= index %> = new com.microsoft.schemas._2003._10.serialization.Guid();
+                                                                              guid_<%= index %>.setValue(
+                                                                                                   xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, guid_xpath_<%= cid %>)
+                                                                                                );
+                                                                entityRef_<%= index %>.setId(guid_<%= index %>);
+                                                                entityRef_<%= index %>.setLogicalName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, logical_name_xpath_<%= cid %>));
+                                                                entityRef_<%= index %>.setName(xmlHelper_<%= cid %>.parseXml(doc_<%= index %>, name_xpath_<%= cid %>));
+                                                                map_<%= cid %>.put("<%= columnName %>", entityRef_<%= index %>);
+                                                            }else{
+                                                                map_<%= cid %>.put("<%= columnName %>", null);
+                                                            }
+                                                        <%
                                                    }
                                                 %>
+
                                             <%
                                    }else if("DATETIME".equals(crmType)){
                                              %>
