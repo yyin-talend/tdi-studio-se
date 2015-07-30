@@ -118,3 +118,7 @@ class XmlHelper{
 CrmEntityHelper crmEntityHelper_<%= cid %> = new CrmEntityHelper(iorgService_<%= cid %>);
 XmlHelper xmlHelper_<%= cid %> = new XmlHelper();
 int nb_line_<%=cid%> = 0;
+
+final String guid_xpath_<%= cid %> = "//entity_reference/guid";
+final String logical_name_xpath_<%= cid %> = "//entity_reference/logical_name";
+final String name_xpath_<%= cid %> = "//entity_reference/name";
