@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.views.jobsettings;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
@@ -33,6 +34,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -43,6 +45,8 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
 import org.talend.core.model.repository.IRepositoryEditorInput;
@@ -53,6 +57,7 @@ import org.talend.core.services.ISVNProviderService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.properties.tab.HorizontalTabFactory;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.core.ui.properties.tab.TalendPropertyTabDescriptor;
@@ -699,11 +704,34 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                         title = repositoryObject.getLabel() + " " + repositoryObject.getVersion(); //$NON-NLS-1$
                     }
                 }
+                Image jobSettingImage = null;
+                ERepositoryObjectType repositoryObjectType = repositoryNode.getObjectType();
+                if (repositoryObjectType == ERepositoryObjectType.PROCESS_MR
+                        || repositoryObjectType == ERepositoryObjectType.PROCESS_STORM) {
+                    jobSettingImage = getImage(repositoryObject);
+                }
+                if (jobSettingImage == null) {
+                    jobSettingImage = ImageProvider.getImage(repositoryNode.getIcon());
+                }
 
-                setElement(repositoryObject, type + SEPARATOR + title, ImageProvider.getImage(repositoryNode.getIcon()));
+                setElement(repositoryObject, type + SEPARATOR + title, jobSettingImage);
             }
         }
 
+    }
+
+    private Image getImage(IRepositoryViewObject repositoryObject) {
+        if (repositoryObject == null) {
+            return null;
+        }
+        Property property = repositoryObject.getProperty();
+        if (property != null) {
+            IImage image = CoreImageProvider.getIcon(property.getItem());
+            if (image != null) {
+                return ImageProvider.getImage(image);
+            }
+        }
+        return null;
     }
 
     /*
@@ -758,6 +786,43 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     public TalendPropertyTabDescriptor getCurrentSelectedTab() {
         return this.currentSelectedTab;
+    }
+
+    @Override
+    public void onPropertiesChanged(Map<String, Object> maps) {
+        if (maps == null || maps.isEmpty()) {
+            return;
+        }
+        Object obj = maps.get(IJobSettingsView.JOBTYPE_CHANGED);
+        if (obj instanceof IRepositoryViewObject) {
+            String type = null;
+            // opened job needn't to change the title
+            if (!(obj instanceof IProcess2)) {
+                Property property = ((IRepositoryViewObject) obj).getProperty();
+                if (property != null) {
+                    Item item = property.getItem();
+                    if (item != null) {
+                        ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(item);
+                        if (repositoryObjectType == ERepositoryObjectType.PROCESS) {
+                            type = getViewNameLable();
+                        } else if (repositoryObjectType != null) {
+                            type = repositoryObjectType.getLabel();
+                        }
+                    }
+                }
+            }
+            Image image = getImage((IRepositoryViewObject) obj);
+            if (image != null && image.isDisposed()) {
+                image = null;
+            }
+            if (type == null) {
+                super.setTitleImage(image);
+                tabFactory.setTitleImage(image);
+            } else {
+                String title = ((IRepositoryViewObject) obj).getLabel();
+                setPartName(type + SEPARATOR + title, image);
+            }
+        }
     }
 
 }

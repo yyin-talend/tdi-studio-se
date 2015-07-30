@@ -41,7 +41,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
@@ -74,6 +76,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.properties.StatusHelper;
+import org.talend.repository.ui.views.IJobSettingsView;
 
 /**
  * yzhang class global comment. Detailled comment
@@ -674,6 +677,15 @@ public class MainComposite extends AbstractTabComposite {
                                 openEditorOperation(property.getItem());
                             }
                         }
+
+                        IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                .findView(IJobSettingsView.ID);
+                        if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
+                            Map<String, Object> propertiesMap = new HashMap<String, Object>();
+                            propertiesMap.put(IJobSettingsView.JOBTYPE_CHANGED, repositoryObject);
+                            ((IJobSettingsView) jobSettingView).onPropertiesChanged(propertiesMap);
+                        }
+
                         if (!btnConfirm.isDisposed()) {
                             btnConfirm.setEnabled(false);
                         }
