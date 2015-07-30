@@ -146,6 +146,32 @@ imports="
 	org.talend.salesforceBulk.SalesforceBulkAPI	sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI(sforceConn_<%=cid%>);
 	sforceBulk_<%=cid%>.setConcurrencyMode("<%=concurrencyMode%>");
 	sforceBulk_<%=cid%>.setAwaitTime(<%=awaitTime%>);
+
+	<%
+	List<IMetadataTable> ms = node.getMetadataList();
+	if ((ms!=null)&&(ms.size()>0)) {//1
+		IMetadataTable m = ms.get(0);
+		if (m!=null) {//2
+			int idIndex = -1;
+			
+			int tmp = 0;
+			for (IMetadataColumn column: m.getListColumns()) {
+				if(column.getLabel().equalsIgnoreCase("id")){
+					idIndex = tmp;
+					break;
+				}
+				tmp++;
+			}
+			
+			if(idIndex != -1){
+	%>
+				sforceBulk_<%=cid%>.setIdColumnIndex(<%=idIndex%>);
+	<%
+			}
+		}
+	}
+	%>
+
 	<%log.info(log.str("Start to " + action + " records in bulk."));%>
 	sforceBulk_<%=cid%>.executeBulk(<%=sObject%>,"<%=action%>",<%=externalId%>,"<%=contentType%>",<%=bulkFileName%>,<%=maxBytes%>,<%=maxRows%>);
 
