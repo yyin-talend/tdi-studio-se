@@ -21,6 +21,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.commons.collections.BidiMap;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
@@ -48,12 +52,15 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.IServerConfiguration;
+import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
@@ -114,16 +121,38 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
     
     private static boolean lock = false;
     
+    private boolean isRemoteRun = false;
+    
+    private boolean isCommandlineRun = false;
+    
+    private boolean isRemoteMonitoring = false;
+    
+    private String remoteHost = null;
+    
+    private int remotePort = -1;
+
     public MemoryRuntimeComposite(ProcessView viewPart, Composite parent, RunProcessContext processContext, int style) {
         super(parent, style);
         this.viewPart = viewPart;
         this.processContext = processContext;
+        getRemoteStatus();
         this.processManager = ProcessManager.getInstance();
         this.messageManager = ReportMessageManager.getInstance();
         init(parent);
         // CSS
         CoreUIPlugin.setCSSClass(this, this.getClass().getSimpleName());
     }
+
+	private void getRemoteStatus() {
+		ITargetExecutionConfig config = processContext.getSelectedTargetExecutionConfig();
+        if (config != null) {
+        	remoteHost = config.getHost();
+        	isRemoteRun = config.isRemote();
+        	isCommandlineRun = config.getCommandlineServerConfig() == null ? false: true;
+        	this.isRemoteMonitoring = config.isUseJMX();
+        	this.remotePort = config.getRemotePort();
+        }
+	}
 
     private void init(final Composite parent) {
         initGraphicComponents(parent);
@@ -309,10 +338,23 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 
             @Override
             public void widgetSelected(SelectionEvent event) {
+            	
+            	getRemoteStatus();
+            	
             	if (lock && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))) {
             		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.anotherJobMonitoring"));
             		return;
             	}
+            	
+            	if (isCommandlineRun) {
+            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.commandlineForbidden"));
+            		return;
+				}
+            	
+            	if (isRemoteRun && !isRemoteMonitoring) {
+            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.remoteMonitoringUnavailable"));
+            		return;
+				}
             	
             	if (processContext != null && !processContext.isRunning() && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))){
             		runtimeButton.setEnabled(false);
@@ -340,6 +382,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
             			
             		}else if(runtimeButton.getText().equals(Messages.getString("ProcessComposite.kill"))){
             			processContext.kill();
+            			disconnectJVM();
             			processContext.setMonitoring(false);
             			setRuntimeButtonByStatus(!processContext.isMonitoring());
             			lock = false;
@@ -452,17 +495,48 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 	}
 	
 	private boolean initCurrentActiveJobJvm() {
-    	boolean isJvmFound = false;
-        JvmModel jvmModel = JvmModel.getInstance();
-        String jobClassName = JavaResourcesHelper.getJobClassName(processContext.getProcess());
-        List<IActiveJvm> activateJvms = jvmModel.getHost(IHost.LOCALHOST).getActiveJvms();
-        for (IActiveJvm jvm : activateJvms) {
-            if (jvm.getMainClass().equals(jobClassName)) {
-                currentJvm = jvm;
-                isJvmFound = true;
-                break;
-            }
-        }
+		boolean isJvmFound = false;
+		JvmModel jvmModel = JvmModel.getInstance();
+		if (isRemoteRun) {
+			if (isRemoteMonitoring && remotePort != -1) {
+				try {
+					
+					if (currentJvm == null) {
+						currentJvm = jvmModel.addRemoteHostAndJvm(remoteHost, remotePort);
+						return true;
+					}
+					
+					if(remotePort == currentJvm.getPort() && currentJvm.isConnected()) {
+						return true;
+					}
+					
+					if(currentJvm.isConnected()) {
+						currentJvm.disconnect();
+					}
+					
+					currentJvm = jvmModel.addRemoteHostAndJvm(remoteHost, remotePort);
+					return true;
+				} catch (JvmCoreException e) {
+					ExceptionHandler.process(e);
+					return false;
+				}
+	    	} 
+		} else {
+    		String jobClassName = JavaResourcesHelper.getJobClassName(processContext.getProcess());
+    		List<IActiveJvm> activateJvms = jvmModel.getHost(IHost.LOCALHOST).getActiveJvms();
+    		for (IActiveJvm jvm : activateJvms) {
+    			String activeJvmClassName = jvm.getMainClass();
+    			System.out.println("target:[" + jobClassName+ "],loop item["+ activeJvmClassName +"]");
+    			if (activeJvmClassName != null) {
+    				activeJvmClassName = activeJvmClassName.trim();
+				}
+    			if (activeJvmClassName.equals(jobClassName)) {
+    				currentJvm = jvm;
+    				isJvmFound = true;
+    				break;
+    			}
+    		}
+    	}
         return isJvmFound;
     }
 
@@ -511,6 +585,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
                     	}else if(processContext.isRunning()){
                     		setRuntimeButtonByStatus(false);
                     	}else{
+                    		disconnectJVM();
                     		setRuntimeButtonByStatus(true);
                     		processContext.setMonitoring(false);
                     		String content = getExecutionInfo("End");
@@ -745,4 +820,22 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         manager.removeLaunches(launches);
 
     }
+    
+    private void disconnectJVM () {
+    	
+    	final Job disconnectJVM = new Job("disconnect JVM") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+            	if (isRemoteMonitoring) {
+					if(currentJvm != null && currentJvm.isConnected()) {
+						currentJvm.disconnect();
+					}
+				}
+                return Status.OK_STATUS;
+            }
+        };
+        disconnectJVM.schedule();
+    }
+    
 }
