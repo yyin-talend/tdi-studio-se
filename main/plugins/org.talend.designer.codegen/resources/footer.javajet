@@ -107,6 +107,12 @@
         exist_tSCP = true;
     }
 
+    boolean exist_tCassandra = false;
+    List<INode> cassandraComponentsList = (List<INode>)process.getNodesOfType("tCassandraConnection");
+    if (cassandraComponentsList.size() > 0) {
+        exist_tCassandra = true;
+    }
+
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -123,6 +129,7 @@
     }
 
 %>
+<%@ include file="@{org.talend.designer.components.bigdata}/components/tCassandraConnection/API_selector.javajet"%>
     public String resuming_logs_dir_path = null;
     public String resuming_checkpoint_path = null;
     public String parent_part_launcher = null;
@@ -781,6 +788,9 @@ if (execStat) {
 <% if (exist_tSQLDB) { %>
     closeSqlDbConnections();
 <% } %>
+<% if (exist_tCassandra) { %>
+    closeCassandraConnections();
+<% } %>
     }
 
 <%
@@ -844,6 +854,35 @@ if (execStat) {
     }
 <%  } %>
 
+<% if (exist_tCassandra) { %>
+    private void closeCassandraConnections() {
+        try {
+            Object obj_cluster;
+            Object obj_conn;
+<%  for (INode cassandraDbNode : cassandraComponentsList) { 
+        if((new API_selector()).useDatastax(cassandraDbNode)) { %>
+            obj_cluster = globalMap.remove("cluster_<%=cassandraDbNode.getUniqueName()%>");
+            obj_conn = globalMap.remove("connection_<%=cassandraDbNode.getUniqueName()%>");
+            if(obj_conn != null) {
+                ((com.datastax.driver.core.Session) obj_conn).close();
+            }
+            if(obj_cluster != null) {
+                ((com.datastax.driver.core.Cluster) obj_cluster).close();
+            }
+<%      } else { %>
+            obj_conn = globalMap.remove("cluster_<%=cassandraDbNode.getUniqueName()%>");
+            if(obj_conn!=null) {
+                ((me.prettyprint.hector.api.Cluster) obj_conn).getConnectionManager().shutdown();
+            }
+<%      }
+    }%>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%   }//End if
+%>
+		
+
 
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
@@ -867,6 +906,17 @@ if (execStat) {
 %>
             connections.put("conn_<%=sqlDbNode.getUniqueName() %>", globalMap.get("conn_<%=sqlDbNode.getUniqueName() %>"));
 <%
+        }
+%>
+<%
+        
+        for (INode cassandraDbNode : cassandraComponentsList) {
+            if((new API_selector()).useDatastax(cassandraDbNode)) { %>
+            connections.put("connection_<%=cassandraDbNode.getUniqueName() %>", globalMap.get("connection_<%=cassandraDbNode.getUniqueName() %>"));
+            connections.put("cluster_<%=cassandraDbNode.getUniqueName() %>", globalMap.get("cluster_<%=cassandraDbNode.getUniqueName() %>"));
+<%          } else { %>
+            connections.put("cluster_<%=cassandraDbNode.getUniqueName() %>", globalMap.get("cluster_<%=cassandraDbNode.getUniqueName()%>"));
+<%          }
         }
 %>
         return connections;
