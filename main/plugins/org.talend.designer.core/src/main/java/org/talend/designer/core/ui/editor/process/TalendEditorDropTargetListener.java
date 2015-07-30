@@ -622,7 +622,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
         IProcess process = editor.getProcess();
         if (!ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())
-                && !ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())) {
+                && !ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())
+                && !ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
             return;
         }
 
@@ -650,7 +651,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.msg")); //$NON-NLS-1$
             if (confirmUpdate) {
                 // Update spark mode to YARN_CLIENT if repository
-                if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())) {
+                if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())
+                        || ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
                     IElementParameter sparkParam = process.getElementParameter(HadoopConstants.SPARK_MODE);
                     if (sparkParam != null && !HadoopConstants.SPARK_MODE_YARN_CLIENT.equals(sparkParam.getValue())) {
                         sparkParam.setValue(HadoopConstants.SPARK_MODE_YARN_CLIENT);
@@ -1080,9 +1082,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             && repositoryNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem
                             && hasDbTableField) {
                         LabelValue = DesignerUtilities.getParameterVar(dbTableParam.getName());
-                    } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS) { // dnd a job
-                        LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
-                    } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS_MR) {
+                    } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS
+                            || repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS_MR
+                            || repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS_STORM) { // dnd a job
                         LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
                     } else if (CorePlugin.getDefault().getDesignerCoreService()
                             .getPreferenceStore(TalendDesignerPrefConstants.DEFAULT_LABEL)
