@@ -96,6 +96,11 @@
     if (cassandraComponentsList.size() > 0) {
         exist_tCassandra = true;
     }
+    boolean exist_tHBase = false;
+    List<INode> hbaseComponentsList = (List<INode>)process.getNodesOfType("tHBaseConnection");
+    if (hbaseComponentsList.size() > 0) {
+        exist_tHBase = true;
+    }
 
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
@@ -723,6 +728,10 @@ if (execStat) {
 <% if (exist_tCassandra) { %>
     closeCassandraConnections();
 <% } %>
+<% if (exist_tHBase) { %>
+    closeHBaseConnections();
+<% } %>
+
     }
 
 <%
@@ -814,6 +823,37 @@ if (execStat) {
 <%   }//End if
 %>
 		
+<%  if(exist_tHBase) { %>
+    private void closeHBaseConnections() {
+        try {
+<%  java.util.List<String> supportNewHbaseApiVersionList = java.util.Arrays.<String>asList(
+	"HDP_2_0","HDP_2_1","HDP_2_2","PIVOTAL_HD_2_0","Cloudera_CDH5","Cloudera_CDH5_1","Cloudera_CDH5_4","Cloudera_CDH5_1_MR1", "MAPR410"
+);  
+	for (INode hbaseComponent : hbaseComponentsList) {
+
+	    String hbaseVersion = ElementParameterParser.getValue(hbaseComponent, "__HBASE_VERSION__");
+		boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(hbaseComponent, "__DISTRIBUTION__"));
+	    boolean isHadoop2 = "HADOOP_2".equals(ElementParameterParser.getValue(hbaseComponent, "__HADOOP_CUSTOM_VERSION__"));%>
+   			org.apache.hadoop.conf.Configuration conn_<%=hbaseComponent.getUniqueName()%> =(org.apache.hadoop.conf.Configuration)globalMap.get("conn_<%=hbaseComponent.getUniqueName()%>");
+			if(conn_<%=hbaseComponent.getUniqueName()%> != null )
+	        {
+			<%
+				if((isCustom && isHadoop2) || (!isCustom && hbaseVersion!=null && supportNewHbaseApiVersionList.contains(hbaseVersion))) {%>
+		        org.apache.hadoop.hbase.client.HConnection hConnection_<%=hbaseComponent.getUniqueName() %> = org.apache.hadoop.hbase.client.HConnectionManager.getConnection(conn_<%=hbaseComponent.getUniqueName() %>);
+		        if ((hConnection_<%=hbaseComponent.getUniqueName() %> != null) && (!hConnection_<%=hbaseComponent.getUniqueName() %>.isClosed())) {
+				    hConnection_<%=hbaseComponent.getUniqueName() %>.close();
+			}
+			<%} else {%>
+				org.apache.hadoop.hbase.client.HConnectionManager.deleteConnection(conn_<%=hbaseComponent.getUniqueName() %>,true);
+			<%}%>
+			}
+      globalMap.remove("conn_<%=hbaseComponent.getUniqueName() %>");
+	<%}%>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%  } %>
+
 
 
     private java.util.Map<String, Object> getSharedConnections4REST() {
@@ -851,6 +891,15 @@ if (execStat) {
 <%          }
         }
 %>
+
+<%
+        for (INode hbaseNode : hbaseComponentsList) {
+%>
+            connections.put("conn_<%=hbaseNode.getUniqueName() %>", globalMap.get("conn_<%=hbaseNode.getUniqueName() %>"));
+<%
+        }
+%>
+
         return connections;
     }
 
