@@ -100,6 +100,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
@@ -124,6 +125,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
@@ -1208,6 +1210,26 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String[] addVMArguments(String[] strings, boolean exportingJob) {
         String[] vmargs = getJVMArgs(); //$NON-NLS-1$
+        
+        RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
+        if (config != null && config.getCommandlineServerConfig() == null) {
+        	if (config.isRemote()) {
+        		if (config.isUseJMX()) {
+        			String[] jmxArg = new String[]{
+        					"-Dcom.sun.management.jmxremote",
+        					"-Dcom.sun.management.jmxremote.port=" + config.getRemotePort(),
+        					"-Dcom.sun.management.jmxremote.ssl=false",
+        					"-Dcom.sun.management.jmxremote.authenticate=false "
+        			};
+        			String[] _vmargs = new String[vmargs.length + jmxArg.length];
+        			System.arraycopy(vmargs, 0, _vmargs, 0, vmargs.length);
+        			System.arraycopy(jmxArg, 0, _vmargs, vmargs.length, jmxArg.length);
+        			vmargs = _vmargs;
+        		}
+        	}
+        }
+        
         if (vmargs != null && vmargs.length > 0) {
             String[] lines = new String[strings.length + vmargs.length];
             System.arraycopy(strings, 0, lines, 0, 1);

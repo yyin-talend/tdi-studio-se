@@ -154,6 +154,16 @@ public class JvmModel {
     }
 
     /**
+     * Method for connecting to JobServer.
+     * @param remoteHost
+     * @throws JvmCoreException
+     */
+    public IActiveJvm addRemoteHostAndJvm(String remoteHost, int remotePort) throws JvmCoreException {
+    	String url = "service:jmx:rmi:///jndi/rmi://" + remoteHost + ":" + remotePort + "/jmxrmi";
+    	return addHostAndJvm(url, null, null, 1000);
+    }
+    
+    /**
      * Adds the host and JVM. If the host corresponding to the given JMX URL already exists, only JVM will be added to
      * model.
      * 
