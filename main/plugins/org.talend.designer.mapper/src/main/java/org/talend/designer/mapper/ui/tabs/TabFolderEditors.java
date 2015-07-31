@@ -117,7 +117,7 @@ public class TabFolderEditors extends CTabFolder {
         addListenersToInputButtons();
 
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        inputMetaEditor.setMetadataTalendTypeFilter(NodeUtil.createMetadataTalendTypeFilter(mapperManager
+        outputMetaEditor.setMetadataTalendTypeFilter(NodeUtil.createMetadataTalendTypeFilter(mapperManager
                 .getAbstractMapComponent()));
         outputMetaEditor.initGraphicComponents();
         outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
