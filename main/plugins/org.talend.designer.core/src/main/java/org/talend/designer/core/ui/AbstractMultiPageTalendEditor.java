@@ -76,7 +76,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
@@ -89,11 +88,11 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.IImage;
@@ -250,8 +249,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected AbstractDecoratedTextEditor codeEditor;
 
-    // protected IProcess2 process;
-
     protected IProcessor processor;
 
     protected String oldJobName;
@@ -261,6 +258,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected JobEditorInput processEditorInput;
 
     protected AbstractTalendEditor designerEditor;
+
+    private AbstractDecoratedTextEditor jobletEditor;
 
     protected List propertyInformation;
 
@@ -336,6 +335,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     private ServiceRegistration lockService;
 
     private IPropertyListener propertyListener = null;
+
+    // only convert process and jobscript when select between designer and jboscript page.
+    private int oldPageIndex = 0;
 
     /**
      * DOC hcw Comment method "restorePropertyInformation".
@@ -574,9 +576,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
     }
 
-    // only convert process and jobscript when select between designer and jboscript page.
-    int oldPageIndex = -1;
-
     private void changeContextsViewStatus(boolean flag) {
         IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (workbenchPage != null) {
@@ -617,88 +616,83 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             codeSync();
             updateCodeEditorContent();
             changeContextsViewStatus(true);
-        } else if (newPageIndex == 0 && oldPageIndex == 2) {
+        } else if (newPageIndex == 0 && (jobletEditor == getEditor(oldPageIndex))) {
             covertJobscriptOnPageChange();
             changeContextsViewStatus(true);
+        } else if (jobletEditor == getEditor(newPageIndex)) {
+            ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
 
-        } else if (newPageIndex == 2) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
-                ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
+            try {
+                final String scriptValue = convertJobtoScriptService.convertJobtoScript(getProcess().saveXmlFile());
+                IFile file = (IFile) jobletEditor.getEditorInput().getAdapter(IResource.class);
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
+                if (file.exists()) {
+                    jobletEditor.getDocumentProvider()
+                            .getDocument(jobletEditor.getEditorInput()).set(scriptValue);
+                    boolean isReadjob = ((JobEditorInput) getEditor(0).getEditorInput()).checkReadOnly();
 
-                String scriptValue;
-                try {
-                    scriptValue = convertJobtoScriptService.convertJobtoScript(getProcess().saveXmlFile());
-                    IFile file = (IFile) getEditor(2).getEditorInput().getAdapter(IResource.class);
-                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
-                    if (file.exists()) {
-                        ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider()
-                                .getDocument(getEditor(2).getEditorInput()).set(scriptValue);
-                        boolean isReadjob = ((JobEditorInput) getEditor(0).getEditorInput()).checkReadOnly();
+                    IProxyRepositoryFactory rFactory = ProxyRepositoryFactory.getInstance();
+                    if (isReadjob || rFactory.isUserReadOnlyOnCurrentProject()) {
+                        IDocumentProvider provider = jobletEditor.getDocumentProvider();
+                        Class p = provider.getClass();
+                        Class[] type = new Class[1];
+                        type[0] = Boolean.TYPE;
+                        Object[] para = new Object[1];
+                        para[0] = Boolean.TRUE;
+                        Method method = p.getMethod("setReadOnly", type);
+                        method.invoke(provider, para);
+                    }
 
-                        IProxyRepositoryFactory rFactory = ProxyRepositoryFactory.getInstance();
-                        if (isReadjob || rFactory.isUserReadOnlyOnCurrentProject()) {
-                            IDocumentProvider provider = ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider();
-                            Class p = provider.getClass();
-                            Class[] type = new Class[1];
-                            type[0] = Boolean.TYPE;
-                            Object[] para = new Object[1];
-                            para[0] = Boolean.TRUE;
-                            Method method = p.getMethod("setReadOnly", type);
-                            method.invoke(provider, para);
+                    IAction action = jobletEditor.getAction("FoldingRestore"); //$NON-NLS-1$
+                    action.run();
+                    jobletEditor.doSave(null);
+                } else {
+                    file.create(byteArrayInputStream, true, null);
+                }
+                if (propertyListener == null) {
+                    propertyListener = new IPropertyListener() {
+
+                        @Override
+                        public void propertyChanged(Object source, int propId) {
+                            if (source instanceof IEditorPart && ((IEditorPart) source).isDirty()) {
+                                getProcess().setProcessModified(true);
+                                getProcess().setNeedRegenerateCode(true);
+                            }
                         }
 
-                        IAction action = ((AbstractDecoratedTextEditor) getEditor(2)).getAction("FoldingRestore"); //$NON-NLS-1$
-                        action.run();
-                        getEditor(2).doSave(null);
-                    } else {
-                        file.create(byteArrayInputStream, true, null);
-                    }
-                    if (propertyListener == null) {
-                        propertyListener = new IPropertyListener() {
-
-                            @Override
-                            public void propertyChanged(Object source, int propId) {
-                                if (source instanceof IEditorPart && ((IEditorPart) source).isDirty()) {
-                                    getProcess().setProcessModified(true);
-                                    getProcess().setNeedRegenerateCode(true);
-                                }
-                            }
-
-                        };
-                        getEditor(2).addPropertyListener(propertyListener);
-                    }
-
-                } catch (PartInitException e) {
-                    ExceptionHandler.process(e);
-                } catch (CoreException e) {
-                    ExceptionHandler.process(e);
-                } catch (IOException e) {
-                    ExceptionHandler.process(e);
-                } catch (SecurityException e) {
-                    ExceptionHandler.process(e);
-                } catch (NoSuchMethodException e) {
-                    ExceptionHandler.process(e);
-                } catch (IllegalArgumentException e) {
-                    ExceptionHandler.process(e);
-                } catch (IllegalAccessException e) {
-                    ExceptionHandler.process(e);
-                } catch (InvocationTargetException e) {
-                    ExceptionHandler.process(e);
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
+                    };
+                    jobletEditor.addPropertyListener(propertyListener);
                 }
-                changeContextsViewStatus(false);
+
+            } catch (PartInitException e) {
+                ExceptionHandler.process(e);
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            } catch (SecurityException e) {
+                ExceptionHandler.process(e);
+            } catch (NoSuchMethodException e) {
+                ExceptionHandler.process(e);
+            } catch (IllegalArgumentException e) {
+                ExceptionHandler.process(e);
+            } catch (IllegalAccessException e) {
+                ExceptionHandler.process(e);
+            } catch (InvocationTargetException e) {
+                ExceptionHandler.process(e);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
             }
+            changeContextsViewStatus(false);
         }
         oldPageIndex = getActivePage();
-
     }
 
     private void covertJobscriptOnPageChange() {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
             try {
-                boolean isDirty = getEditor(2).isDirty();
-                getEditor(2).doSave(null);
+                boolean isDirty = jobletEditor.isDirty();
+                jobletEditor.doSave(null);
                 IProcess2 oldProcess = getProcess();
 
                 ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
@@ -706,11 +700,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 ProcessType processType = null;
                 if (item instanceof ProcessItem) {
                     processType = n.convertDesignerEditorInput(
-                            ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                            ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
                             oldProcess.getProperty());
                 } else if (item instanceof JobletProcessItem) {
                     processType = n.convertJobletDesignerEditorInput(
-                            ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                            ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
                             oldProcess.getProperty());
                 }
                 if (item instanceof ProcessItem) {
@@ -921,10 +915,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
 
             if (confElem != null) {
-                TextEditor editor = (TextEditor) confElem.createExecutableExtension("class");
+                jobletEditor = (AbstractDecoratedTextEditor) confElem.createExecutableExtension("class");
 
-                if (editor != null) {
-                    int index = addPage(editor, editorInput);
+                if (jobletEditor != null) {
+                    int index = addPage(jobletEditor, editorInput);
                     setPageText(index, "Jobscript");
                 }
             }
@@ -1021,16 +1015,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (getActivePage() == 0 || getActivePage() == 1) {
             refreshPropertyDirtyStatus();
             getEditor(0).doSave(monitor);
-        } else if (getActivePage() == 2) {
-            boolean isDirty = getEditor(2).isDirty();
+        } else if (jobletEditor == getActiveEditor()) {
+            boolean isDirty = jobletEditor.isDirty();
             refreshPropertyDirtyStatus();
-            getEditor(2).doSave(monitor);
+            jobletEditor.doSave(monitor);
             try {
                 IProcess2 oldProcess = getProcess();
 
                 ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
                 ProcessType processType = n.convertDesignerEditorInput(
-                        ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                        ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
                         oldProcess.getProperty());
 
                 IProcess2 newProcess = null;
@@ -1279,7 +1273,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // added for routines code generated switch editor 0 to 3.
         ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
 
-        if (oldPageIndex == 2) {
+        if (jobletEditor == getEditor(oldPageIndex)) {
             covertJobscriptOnPageChange();
             ParametersType parameters = processItem.getProcess().getParameters();
             if (parameters != null && parameters.getRoutinesParameter() != null && parameters.getRoutinesParameter().size() == 0) {
@@ -1651,11 +1645,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public void beforeDispose() {
-        if (!GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
-            return;
-        }
-        if (this.getPageCount() > 2) {
-            IColumnSupport cs = (IColumnSupport) ((AbstractDecoratedTextEditor) getEditor(2)).getAdapter(IColumnSupport.class);
+        if (null != jobletEditor) {
+            IColumnSupport cs = (IColumnSupport) jobletEditor.getAdapter(IColumnSupport.class);
             cs.dispose();
         }
     }
