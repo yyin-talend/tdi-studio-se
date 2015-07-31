@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.UpdateManagerHelper;
 import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
@@ -29,6 +30,7 @@ import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteViewer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -99,6 +101,7 @@ public class CreateNodeContainerCommand extends CreateCommand {
             process.checkStartNodes();
 
             nodeContainer.getNode().checkAndRefreshNode();
+            refreshRelatedNodes();
             // update joblet context.
             // AbstractProcessProvider provider =
             // AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
@@ -120,6 +123,21 @@ public class CreateNodeContainerCommand extends CreateCommand {
                     MessageDialog.OK, new String[] { "OK" }, 0);
             warningMessageDialog.open();
 
+        }
+    }
+
+    private void refreshRelatedNodes() {
+        Node node = nodeContainer.getNode();
+        for (INode inode : this.process.getGraphicalNodes()) {
+            if (inode.getUniqueName().equals(node.getUniqueName())) {
+                continue;
+            }
+            if (inode.getElementParameter("CONNECTION") != null) {
+                IElementParameter para = inode.getElementParameter("CONNECTION");
+                if (para.getFilter() != null && para.getFilter().equals(node.getComponent().getName())) {
+                    ((Node) inode).checkAndRefreshNode();
+                }
+            }
         }
     }
 
