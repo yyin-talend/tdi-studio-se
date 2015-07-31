@@ -131,7 +131,6 @@
     }
 
 %>
-<%@ include file="@{org.talend.designer.components.bigdata}/components/tCassandraConnection/API_selector.javajet"%>
     public String resuming_logs_dir_path = null;
     public String resuming_checkpoint_path = null;
     public String parent_part_launcher = null;
@@ -744,7 +743,6 @@ if (execStat) {
 <% if (exist_tHBase) { %>
     closeHBaseConnections();
 <% } %>
-
 <% if (exist_tFtp) { %>
     closeFtpConnections();
 <% } %>
@@ -818,25 +816,13 @@ if (execStat) {
 <% if (exist_tCassandra) { %>
     private void closeCassandraConnections() {
         try {
-            Object obj_cluster;
             Object obj_conn;
-<%  for (INode cassandraDbNode : cassandraComponentsList) { 
-        if((new API_selector()).useDatastax(cassandraDbNode)) { %>
-            obj_cluster = globalMap.remove("cluster_<%=cassandraDbNode.getUniqueName()%>");
-            obj_conn = globalMap.remove("connection_<%=cassandraDbNode.getUniqueName()%>");
-            if(obj_conn != null) {
-                ((com.datastax.driver.core.Session) obj_conn).close();
-            }
-            if(obj_cluster != null) {
-                ((com.datastax.driver.core.Cluster) obj_cluster).close();
-            }
-<%      } else { %>
+<%  for (INode cassandraDbNode : cassandraComponentsList) { %>
             obj_conn = globalMap.remove("cluster_<%=cassandraDbNode.getUniqueName()%>");
             if(obj_conn!=null) {
                 ((me.prettyprint.hector.api.Cluster) obj_conn).getConnectionManager().shutdown();
             }
-<%      }
-    }%>
+<%  }%>
         } catch (java.lang.Exception e) {
         }
     }
@@ -947,12 +933,9 @@ if (execStat) {
 <%
         
         for (INode cassandraDbNode : cassandraComponentsList) {
-            if((new API_selector()).useDatastax(cassandraDbNode)) { %>
-            connections.put("connection_<%=cassandraDbNode.getUniqueName() %>", globalMap.get("connection_<%=cassandraDbNode.getUniqueName() %>"));
-            connections.put("cluster_<%=cassandraDbNode.getUniqueName() %>", globalMap.get("cluster_<%=cassandraDbNode.getUniqueName() %>"));
-<%          } else { %>
+%>
             connections.put("cluster_<%=cassandraDbNode.getUniqueName() %>", globalMap.get("cluster_<%=cassandraDbNode.getUniqueName()%>"));
-<%          }
+<%
         }
 %>
 
