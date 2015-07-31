@@ -1204,23 +1204,25 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String[] vmargs = getJVMArgs(); //$NON-NLS-1$
         
         RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
-        ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
-        if (config != null && config.getCommandlineServerConfig() == null) {
-        	if (config.isRemote()) {
-        		if (config.isUseJMX()) {
-        			String[] jmxArg = new String[]{
-        					"-Dcom.sun.management.jmxremote",
-        					"-Dcom.sun.management.jmxremote.port=" + config.getRemotePort(),
-        					"-Dcom.sun.management.jmxremote.ssl=false",
-        					"-Dcom.sun.management.jmxremote.authenticate=false "
-        			};
-        			String[] _vmargs = new String[vmargs.length + jmxArg.length];
-        			System.arraycopy(vmargs, 0, _vmargs, 0, vmargs.length);
-        			System.arraycopy(jmxArg, 0, _vmargs, vmargs.length, jmxArg.length);
-        			vmargs = _vmargs;
+        if (runProcessContext != null) {
+        	ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
+        	if (config != null && config.getCommandlineServerConfig() == null) {
+        		if (config.isRemote()) {
+        			if (config.isUseJMX()) {
+        				String[] jmxArg = new String[]{
+        						"-Dcom.sun.management.jmxremote",
+        						"-Dcom.sun.management.jmxremote.port=" + config.getRemotePort(),
+        						"-Dcom.sun.management.jmxremote.ssl=false",
+        						"-Dcom.sun.management.jmxremote.authenticate=false "
+        				};
+        				String[] _vmargs = new String[vmargs.length + jmxArg.length];
+        				System.arraycopy(vmargs, 0, _vmargs, 0, vmargs.length);
+        				System.arraycopy(jmxArg, 0, _vmargs, vmargs.length, jmxArg.length);
+        				vmargs = _vmargs;
+        			}
         		}
         	}
-        }
+		}
         
         if (vmargs != null && vmargs.length > 0) {
             String[] lines = new String[strings.length + vmargs.length];
