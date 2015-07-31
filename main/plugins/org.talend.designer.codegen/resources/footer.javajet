@@ -102,6 +102,12 @@
         exist_tHBase = true;
     }
 
+    boolean exist_tFtp = false;
+    List<INode> ftpComponentsList = (List<INode>)process.getNodesOfType("tFTPConnection");
+    if (ftpComponentsList.size() > 0) {
+        exist_tFtp = true;
+    }
+    
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -731,7 +737,9 @@ if (execStat) {
 <% if (exist_tHBase) { %>
     closeHBaseConnections();
 <% } %>
-
+<% if (exist_tFtp) { %>
+    closeFtpConnections();
+<% } %>
     }
 
 <%
@@ -855,6 +863,34 @@ if (execStat) {
 <%  } %>
 
 
+<% if (exist_tFtp) { %>
+    private void closeFtpConnections() {
+        try {
+            Object obj_conn;
+<%  for (INode ftpNode : ftpComponentsList) { %>
+            obj_conn = globalMap.remove("conn_<%=ftpNode.getUniqueName() %>");
+            if (obj_conn != null) {
+<%          String type;
+            if (("true").equals(ElementParameterParser.getValue(ftpNode, "__SFTP__"))) {
+                type = "sftp";
+            } else if (("true").equals(ElementParameterParser.getValue(ftpNode, "__FTPS__"))) {
+                type = "ftps";
+            } else {
+                type = "ftp";
+            }
+            if ("ftp".equals(type)) { %>
+                ((com.enterprisedt.net.ftp.FTPClient) obj_conn).quit();
+        <%} else if ("sftp".equals(type)) { %>
+                ((com.jcraft.jsch.ChannelSftp) obj_conn).quit();
+        <%} else { %>
+                ((it.sauronsoftware.ftp4j.FTPClient) obj_conn).disconnect(true);
+        <%}%>
+            }
+<%  } %>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%}%>
 
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
@@ -899,6 +935,10 @@ if (execStat) {
 <%
         }
 %>
+
+<%      for (INode ftpNode : ftpComponentsList) { %>
+            connections.put("conn_<%=ftpNode.getUniqueName() %>", globalMap.get("conn_<%=ftpNode.getUniqueName() %>"));
+<%      } %>
 
         return connections;
     }
