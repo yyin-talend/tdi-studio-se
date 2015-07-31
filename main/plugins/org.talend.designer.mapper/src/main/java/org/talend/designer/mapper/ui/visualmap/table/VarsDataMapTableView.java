@@ -46,7 +46,6 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
-import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
@@ -177,8 +176,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             String[] arrayTalendTypes = new String[0];
             try {
                 arrayTalendTypes = MetadataTalendType.getTalendTypesLabels();
-                arrayTalendTypes = NodeUtil.createMetadataTalendTypeFilter(mapperManager.getAbstractMapComponent()).filter(
-                        arrayTalendTypes);
+                arrayTalendTypes = this.talendTypeFilter.filter(arrayTalendTypes);
             } catch (NoClassDefFoundError e) {
                 // shouln't be happend
                 // e.printStackTrace();
@@ -202,7 +200,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             };
 
             CellEditorValueAdapter comboValueAdapter = new JavaTypeComboValueAdapter(JavaTypesManager.getDefaultJavaType(),
-                    nullableAccessors);
+                    nullableAccessors, this.talendTypeFilter);
 
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
             column.setTitle(Messages.getString("VarsDataMapTableView.columnTitle.type")); //$NON-NLS-1$
