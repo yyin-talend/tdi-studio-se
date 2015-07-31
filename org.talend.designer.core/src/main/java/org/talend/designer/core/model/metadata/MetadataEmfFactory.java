@@ -70,9 +70,9 @@ public class MetadataEmfFactory {
                 colType.setComment(metaCol.getComment());
                 colType.setKey(metaCol.isKey());
                 colType.setNullable(metaCol.isNullable());
-                if (metaCol.getLength() == null) {
-                    // colType.setLength(-1);
-                    colType.unsetLength();
+                if (metaCol.getLength() == null || metaCol.getLength().intValue() < 0) {
+                    colType.setLength(-1);
+                    // colType.unsetLength();
                 } else {
                     colType.setLength(metaCol.getLength());
                 }
@@ -87,9 +87,9 @@ public class MetadataEmfFactory {
                 }
 
                 colType.setName(metaCol.getLabel());
-                if (metaCol.getPrecision() == null) {
-                    // colType.setPrecision(-1);
-                    colType.unsetPrecision();
+                if (metaCol.getPrecision() == null || metaCol.getPrecision().intValue() < 0) {
+                    colType.setPrecision(-1);
+                    // colType.unsetPrecision();
                 } else {
                     colType.setPrecision(metaCol.getPrecision());
                 }
@@ -137,12 +137,8 @@ public class MetadataEmfFactory {
             metaCol.setComment(colType.getComment());
             metaCol.setKey(colType.isKey());
             metaCol.setNullable(colType.isNullable());
-            if (colType.isSetLength()) {
-                if (colType.getLength() >= 0) {
-                    metaCol.setLength(new Integer(colType.getLength()));
-                } else {
-                    metaCol.setLength(null);
-                }
+            if (colType.getLength() >= 0) {
+                metaCol.setLength(new Integer(colType.getLength()));
             } else {
                 metaCol.setLength(null);
             }
@@ -161,12 +157,8 @@ public class MetadataEmfFactory {
                 }
             }
             metaCol.setLabel(colType.getName());
-            if (colType.isSetPrecision()) {
-                if (colType.getPrecision() >= 0) {
-                    metaCol.setPrecision(new Integer(colType.getPrecision()));
-                } else {
-                    metaCol.setPrecision(null);
-                }
+            if (colType.getPrecision() >= 0) {
+                metaCol.setPrecision(new Integer(colType.getPrecision()));
             } else {
                 metaCol.setPrecision(null);
             }
