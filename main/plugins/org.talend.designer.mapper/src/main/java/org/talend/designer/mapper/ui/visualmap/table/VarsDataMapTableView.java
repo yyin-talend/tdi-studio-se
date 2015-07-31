@@ -46,6 +46,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
@@ -87,6 +88,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         createTableForColumns();
     }
 
+    @Override
     protected void createMapSettingTable() {
     }
 
@@ -175,6 +177,8 @@ public class VarsDataMapTableView extends DataMapTableView {
             String[] arrayTalendTypes = new String[0];
             try {
                 arrayTalendTypes = MetadataTalendType.getTalendTypesLabels();
+                arrayTalendTypes = NodeUtil.createMetadataTalendTypeFilter(mapperManager.getAbstractMapComponent()).filter(
+                        arrayTalendTypes);
             } catch (NoClassDefFoundError e) {
                 // shouln't be happend
                 // e.printStackTrace();
@@ -239,9 +243,9 @@ public class VarsDataMapTableView extends DataMapTableView {
             column.setResizable(false);
             CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
             String nullable = Messages.getString("VarsDataMapTableView.nullable"); //$NON-NLS-1$
-            checkboxTableEditorContent.setToolTipText(nullable); //$NON-NLS-1$
+            checkboxTableEditorContent.setToolTipText(nullable);
             column.setTableEditorContent(checkboxTableEditorContent);
-            column.setToolTipHeader(nullable); //$NON-NLS-1$
+            column.setToolTipHeader(nullable);
 
         }
 
@@ -387,7 +391,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     type = PerlTypesManager.STRING;
                 }
 
-                mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert, type); //$NON-NLS-1$
+                mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert, type);
                 tableViewerCreatorForColumns.getTableViewer().refresh();
                 if (canBeResizedAtPreferedSize()) {
                     VarsDataMapTableView.this.changeSize(VarsDataMapTableView.this.getPreferredSize(true, true, false), true,
