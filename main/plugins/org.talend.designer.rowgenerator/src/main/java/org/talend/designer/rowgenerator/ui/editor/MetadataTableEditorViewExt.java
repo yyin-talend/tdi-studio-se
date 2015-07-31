@@ -97,7 +97,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         super(parentComposite, mainCompositeStyle, extendedTableModel, readOnly, toolbarVisible, true, false);
         this.rGcomponent = rGcomponent;
         this.functionManager = functionManager;
-        setMapreduce(NodeUtil.isBigDataFrameworkNode(rGcomponent));
+        setMetadataTalendTypeFilter(NodeUtil.createMetadataTalendTypeFilter(rGcomponent));
         initGraphicComponents();
     }
 
