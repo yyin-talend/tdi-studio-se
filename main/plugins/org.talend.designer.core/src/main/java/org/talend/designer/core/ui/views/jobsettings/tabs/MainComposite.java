@@ -241,7 +241,7 @@ public class MainComposite extends AbstractTabComposite {
             versionText.setLayoutData(data);
             String version = repositoryObject.getVersion();
             versionText.setText(version != null ? version : ""); //$NON-NLS-1$
-            versionText.setEnabled(allowEnableControl);
+            versionText.setEditable(false);
 
             CLabel versionLabel = widgetFactory.createCLabel(composite,
                     Messages.getString("MainComposite.VersionAuthorSection.versionLabel")); //$NON-NLS-1$
