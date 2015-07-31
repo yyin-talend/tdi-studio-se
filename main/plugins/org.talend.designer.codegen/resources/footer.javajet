@@ -124,6 +124,12 @@
         exist_tFtp = true;
     }
     
+    boolean exist_tS3 = false;
+    List<INode> s3ComponentsList = (List<INode>)process.getNodesOfType("tS3Connection");
+    if (s3ComponentsList.size() > 0) {
+        exist_tS3 = true;
+    }
+
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -808,6 +814,10 @@ if (execStat) {
 <% if (exist_tFtp) { %>
     closeFtpConnections();
 <% } %>
+<% if (exist_tS3) { %>
+    closeS3Connections();
+<% } %>
+
     }
 
 <%
@@ -959,6 +969,21 @@ if (execStat) {
     }
 <%}%>
 
+<%  if(exist_tS3) { %>
+    private void closeS3Connections() {
+        try {
+<%    for (INode s3Component : s3ComponentsList) { %>
+    	com.amazonaws.services.s3.AmazonS3Client conn_<%=s3Component.getUniqueName() %> = (com.amazonaws.services.s3.AmazonS3Client)globalMap.get("conn_<%=s3Component.getUniqueName() %>");
+	    if(conn_<%=s3Component.getUniqueName() %> !=null){
+			conn_<%=s3Component.getUniqueName() %>.shutdown();	
+		}
+<%    } %>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%  } %>
+
+
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
 <%
@@ -1006,6 +1031,14 @@ if (execStat) {
 <%      for (INode ftpNode : ftpComponentsList) { %>
             connections.put("conn_<%=ftpNode.getUniqueName() %>", globalMap.get("conn_<%=ftpNode.getUniqueName() %>"));
 <%      } %>
+<%
+        for (INode s3Node : s3ComponentsList) {
+%>
+            connections.put("conn_<%=s3Node.getUniqueName() %>", globalMap.get("conn_<%=s3Node.getUniqueName() %>"));
+<%
+        }
+%>
+
         return connections;
     }
 
