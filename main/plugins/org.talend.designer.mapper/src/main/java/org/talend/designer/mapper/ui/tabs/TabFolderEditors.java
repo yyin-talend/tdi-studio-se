@@ -107,18 +107,18 @@ public class TabFolderEditors extends CTabFolder {
         item.setControl(inOutMetaEditorContainer);
 
         CommandStack commandStack = mapperManager.getCommandStack();
-        // check component use from mapreduce/spark/storm/spark streaming
-        boolean isMapreduce = NodeUtil.isBigDataFrameworkNode(mapperManager.getAbstractMapComponent());
 
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        inputMetaEditor.setMapreduce(isMapreduce);
+        inputMetaEditor.setMetadataTalendTypeFilter(NodeUtil.createMetadataTalendTypeFilter(mapperManager
+                .getAbstractMapComponent()));
         inputMetaEditor.initGraphicComponents();
         inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
         addListenersToInputButtons();
 
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        outputMetaEditor.setMapreduce(isMapreduce);
+        inputMetaEditor.setMetadataTalendTypeFilter(NodeUtil.createMetadataTalendTypeFilter(mapperManager
+                .getAbstractMapComponent()));
         outputMetaEditor.initGraphicComponents();
         outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
