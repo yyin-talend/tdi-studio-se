@@ -130,6 +130,12 @@
         exist_tS3 = true;
     }
 
+	boolean exist_tLDAP = false;
+    List<INode> ldapComponentsList = (List<INode>)process.getNodesOfType("tLDAPConnection");
+    if (ldapComponentsList.size() > 0) {
+        exist_tLDAP = true;
+    }
+
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -822,7 +828,9 @@ if (execStat) {
 <% if (exist_tS3) { %>
     closeS3Connections();
 <% } %>
-
+<% if (exist_tLDAP) { %>
+    closeLDAPConnections();
+<% } %>
     }
 
 <%
@@ -988,6 +996,20 @@ if (execStat) {
     }
 <%  } %>
 
+<% if (exist_tLDAP) { %>
+    private void closeLDAPConnections() {
+        try {
+            Object obj_conn;
+<%  for (INode ldapNode : ldapComponentsList) { %>
+            obj_conn = globalMap.remove("conn_<%=ldapNode.getUniqueName() %>");
+            if (obj_conn != null) {
+                ((javax.naming.ldap.InitialLdapContext) obj_conn).close();
+            }
+<%  } %>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%}%>
 
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
@@ -1043,7 +1065,10 @@ if (execStat) {
 <%
         }
 %>
-
+<%      for (INode ldapNode : ldapComponentsList) { %>
+            connections.put("conn_<%=ldapNode.getUniqueName() %>", globalMap.get("conn_<%=ldapNode.getUniqueName() %>"));
+            connections.put("connBaseDN_<%=ldapNode.getUniqueName() %>", globalMap.get("connBaseDN_<%=ldapNode.getUniqueName() %>"));
+<%      } %>
         return connections;
     }
 
