@@ -689,62 +689,60 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     private void covertJobscriptOnPageChange() {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
-            try {
-                boolean isDirty = jobletEditor.isDirty();
-                jobletEditor.doSave(null);
-                IProcess2 oldProcess = getProcess();
+        try {
+            boolean isDirty = jobletEditor.isDirty();
+            jobletEditor.doSave(null);
+            IProcess2 oldProcess = getProcess();
 
-                ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
-                Item item = oldProcess.getProperty().getItem();
-                ProcessType processType = null;
-                if (item instanceof ProcessItem) {
-                    processType = n.convertDesignerEditorInput(
-                            ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                            oldProcess.getProperty());
-                } else if (item instanceof JobletProcessItem) {
-                    processType = n.convertJobletDesignerEditorInput(
-                            ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                            oldProcess.getProperty());
-                }
-                if (item instanceof ProcessItem) {
+            ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
+            Item item = oldProcess.getProperty().getItem();
+            ProcessType processType = null;
+            if (item instanceof ProcessItem) {
+                processType = n.convertDesignerEditorInput(
+                        ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                        oldProcess.getProperty());
+            } else if (item instanceof JobletProcessItem) {
+                processType = n.convertJobletDesignerEditorInput(
+                        ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                        oldProcess.getProperty());
+            }
+            if (item instanceof ProcessItem) {
 
-                    ((Process) oldProcess).updateProcess(processType);
-                } else if (item instanceof JobletProcessItem) {
-                    ((Process) oldProcess).updateProcess(processType);
+                ((Process) oldProcess).updateProcess(processType);
+            } else if (item instanceof JobletProcessItem) {
+                ((Process) oldProcess).updateProcess(processType);
+            }
+            oldProcess.getUpdateManager().updateAll();
+            designerEditor.setDirty(isDirty);
+            List<Node> nodes = (List<Node>) oldProcess.getGraphicalNodes();
+            List<Node> newNodes = new ArrayList<Node>();
+            newNodes.addAll(nodes);
+            for (Node node : newNodes) {
+                node.getProcess().checkStartNodes();
+                node.checkAndRefreshNode();
+                IElementParameter ep = node.getElementParameter("ACTIVATE");
+                if (ep != null && ep.getValue().equals(Boolean.FALSE)) {
+                    node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+                    node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+                } else if (ep != null && ep.getValue().equals(Boolean.TRUE)) {
+                    node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+                    node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
                 }
-                oldProcess.getUpdateManager().updateAll();
-                designerEditor.setDirty(isDirty);
-                List<Node> nodes = (List<Node>) oldProcess.getGraphicalNodes();
-                List<Node> newNodes = new ArrayList<Node>();
-                newNodes.addAll(nodes);
-                for (Node node : newNodes) {
-                    node.getProcess().checkStartNodes();
-                    node.checkAndRefreshNode();
-                    IElementParameter ep = node.getElementParameter("ACTIVATE");
-                    if (ep != null && ep.getValue().equals(Boolean.FALSE)) {
-                        node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
-                        node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
-                    } else if (ep != null && ep.getValue().equals(Boolean.TRUE)) {
-                        node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
-                        node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
-                    }
-                    for (IElementParameter param : node.getElementParameters()) {
-                        if (!param.getChildParameters().isEmpty()) {
-                            if (param.getValue() != null && param.getValue() instanceof String
-                                    && ((String) param.getValue()).contains(":")) {
-                                String splited[] = ((String) param.getValue()).split(":");
-                                String childNameNeeded = splited[0].trim();
-                                String valueChild = TalendQuoteUtils.removeQuotes(splited[1].trim());
-                                if (param.getChildParameters().containsKey(childNameNeeded)) {
-                                    param.getChildParameters().get(childNameNeeded).setValue(valueChild);
-                                }
+                for (IElementParameter param : node.getElementParameters()) {
+                    if (!param.getChildParameters().isEmpty()) {
+                        if (param.getValue() != null && param.getValue() instanceof String
+                                && ((String) param.getValue()).contains(":")) {
+                            String splited[] = ((String) param.getValue()).split(":");
+                            String childNameNeeded = splited[0].trim();
+                            String valueChild = TalendQuoteUtils.removeQuotes(splited[1].trim());
+                            if (param.getChildParameters().containsKey(childNameNeeded)) {
+                                param.getChildParameters().get(childNameNeeded).setValue(valueChild);
                             }
                         }
                     }
                 }
-            } catch (PersistenceException e) {
             }
+        } catch (PersistenceException e) {
         }
     }
 
@@ -1012,10 +1010,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         designerEditor.getProcess().getProperty().eAdapters().remove(dirtyListener);
         repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
 
-        if (getActivePage() == 0 || getActivePage() == 1) {
-            refreshPropertyDirtyStatus();
-            getEditor(0).doSave(monitor);
-        } else if (jobletEditor == getActiveEditor()) {
+        if (jobletEditor == getActiveEditor()) {
             boolean isDirty = jobletEditor.isDirty();
             refreshPropertyDirtyStatus();
             jobletEditor.doSave(monitor);
@@ -1057,6 +1052,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
+        } else {
+            refreshPropertyDirtyStatus();
+            getEditor(0).doSave(monitor);
         }
         /*
          * refresh should be executed before add the listener,or it will has eProxy on the property,it will cause a
@@ -1270,10 +1268,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
             return;
         }
-        // added for routines code generated switch editor 0 to 3.
-        ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
 
         if (jobletEditor == getEditor(oldPageIndex)) {
+            // added for routines code generated switch editor 0 to 3.
+            ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
             covertJobscriptOnPageChange();
             ParametersType parameters = processItem.getProcess().getParameters();
             if (parameters != null && parameters.getRoutinesParameter() != null && parameters.getRoutinesParameter().size() == 0) {
