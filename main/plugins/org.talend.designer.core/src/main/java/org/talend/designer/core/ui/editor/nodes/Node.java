@@ -2782,6 +2782,7 @@ public class Node extends Element implements IGraphicalNode {
                                 }
                                 if (nodeList.size() == 0 || nodeList.isEmpty()) {
                                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                    break;
                                 }
                                 boolean foundValue = false;
                                 for (INode datanode : nodeList) {
@@ -2795,7 +2796,9 @@ public class Node extends Element implements IGraphicalNode {
                                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                                     PropertyChangeCommand changeCommand = new PropertyChangeCommand(this, param.getName(),
                                             nodeList.get(0).getUniqueName());
-                                    this.getCommandStack().execute(changeCommand);
+                                    if (this.getCommandStack() != null) {
+                                        this.getCommandStack().execute(changeCommand);
+                                    }
                                 }
                             }
                         }
