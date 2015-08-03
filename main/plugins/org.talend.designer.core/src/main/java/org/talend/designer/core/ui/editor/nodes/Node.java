@@ -107,6 +107,7 @@ import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -2780,6 +2781,20 @@ public class Node extends Element implements IGraphicalNode {
                                 }
                                 if (nodeList.size() == 0 || nodeList.isEmpty()) {
                                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                }
+                                boolean foundValue = false;
+                                for (INode datanode : nodeList) {
+                                    if (datanode.getUniqueName().equals(param.getValue())) {
+                                        foundValue = true;
+                                        break;
+                                    }
+                                }
+                                errorMessage = Messages.getString("Node.parameterWrong", param.getDisplayName()); //$NON-NLS-1$
+                                if (!foundValue) {
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                    PropertyChangeCommand changeCommand = new PropertyChangeCommand(this, param.getName(),
+                                            nodeList.get(0).getUniqueName());
+                                    this.getCommandStack().execute(changeCommand);
                                 }
                             }
                         }
