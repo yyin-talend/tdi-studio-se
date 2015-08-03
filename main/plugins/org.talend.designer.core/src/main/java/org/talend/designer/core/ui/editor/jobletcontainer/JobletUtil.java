@@ -245,7 +245,6 @@ public class JobletUtil {
         }
 
         nodePart.setModel(cloneNode);
-        cloneNode.setLabel(node.getLabel());
         // if (lock == null) {
         // cloneNode.setReadOnly(true);
         // } else {
@@ -380,6 +379,7 @@ public class JobletUtil {
                 }
             }
         }
+        cloneNode.setLabel(node.getLabel());
 
         return cloneNode;
     }
