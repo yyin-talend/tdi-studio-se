@@ -572,6 +572,9 @@ public class ProcessView extends ViewPart {
 
     private void runningProcessChanged() {
         refresh();
+        if(dc != null && dc instanceof MemoryRuntimeComposite) {
+        	((MemoryRuntimeComposite)dc).refreshMonitorComposite();
+        }
     }
 
     String oldJobType = null;
