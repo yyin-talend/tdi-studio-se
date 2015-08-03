@@ -86,6 +86,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.service.IMRProcessService;
+import org.talend.core.service.IStormProcessService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IJobletProviderService;
@@ -3962,13 +3963,21 @@ public class Node extends Element implements IGraphicalNode {
         return isReference;
     }
 
+    /**
+     * This methods adds a {@link org.talend.core.model.process.Problem} to the tRunJob if the box
+     * "Use an indenpendent process" is not checked for a target Big Data job. DOC rdubois Comment method
+     * "checkTRunjobwithMRProcess".
+     */
     private void checkTRunjobwithMRProcess() {
         // check tRunJob
         if (getComponent() != null && "tRunJob".equals(getComponent().getName())) { //$NON-NLS-1$;
+            boolean targetIsBigdata = false;
+            String bigDataType = "Batch"; //$NON-NLS-1$
             try {
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
-                    IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
-                            IMRProcessService.class);
+                boolean isStormServiceRegistered = GlobalServiceRegister.getDefault().isServiceRegistered(
+                        IStormProcessService.class);
+                boolean isMRServiceRegistered = GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class);
+                if (isStormServiceRegistered || isMRServiceRegistered) {
                     IElementParameter elementParameter = getElementParameter("PROCESS:PROCESS_TYPE_PROCESS"); //$NON-NLS-1$;
                     if (elementParameter != null) {
                         Object value = elementParameter.getValue();
@@ -3976,29 +3985,39 @@ public class Node extends Element implements IGraphicalNode {
                             IRepositoryViewObject lastVersion;
                             lastVersion = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
                                     .getLastVersion(value.toString());
-
                             if (lastVersion != null) {
-                                boolean hasMrSubProcess = mrService.isMapReduceItem(lastVersion.getProperty().getItem());
-                                if (hasMrSubProcess) {
-                                    IElementParameter indepedentElement = getElementParameter("USE_INDEPENDENT_PROCESS"); //$NON-NLS-1$;
-                                    if (indepedentElement != null) {
-                                        if (!indepedentElement.isShow(getElementParameters())
-                                                || !Boolean.valueOf(String.valueOf(indepedentElement.getValue()))) {
-                                            String message = Messages.getString(
-                                                    "Node.checkTRunjobwithMRProcess", indepedentElement.getDisplayName()); //$NON-NLS-1$;
-                                            Problems.add(ProblemStatus.ERROR, this, message);
-                                        }
+                                if (isMRServiceRegistered) {
+                                    if (((IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                                            IMRProcessService.class)).isMapReduceItem(lastVersion.getProperty().getItem())) {
+                                        targetIsBigdata = true;
+                                        bigDataType = "Batch"; //$NON-NLS-1$
                                     }
                                 }
-
+                                if (isStormServiceRegistered) {
+                                    if (((IStormProcessService) GlobalServiceRegister.getDefault().getService(
+                                            IStormProcessService.class)).isStormItem(lastVersion.getProperty().getItem())) {
+                                        targetIsBigdata = true;
+                                        bigDataType = "Streaming"; //$NON-NLS-1$
+                                    }
+                                }
                             }
-
                         }
                     }
                 }
-
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
+            }
+
+            if (targetIsBigdata) {
+                IElementParameter indepedentElement = getElementParameter("USE_INDEPENDENT_PROCESS"); //$NON-NLS-1$;
+                if (indepedentElement != null) {
+                    if (!indepedentElement.isShow(getElementParameters())
+                            || !Boolean.valueOf(String.valueOf(indepedentElement.getValue()))) {
+                        String message = Messages.getString(
+                                "Node.checkTRunjobwithMRProcess", indepedentElement.getDisplayName(), bigDataType); //$NON-NLS-1$;
+                        Problems.add(ProblemStatus.ERROR, this, message);
+                    }
+                }
             }
         }
     }
