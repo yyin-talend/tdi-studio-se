@@ -136,6 +136,12 @@
         exist_tLDAP = true;
     }
 
+    boolean exist_tMDM = false;
+    List<INode> mdmComponentsList = (List<INode>)process.getNodesOfType("tMDMConnection");
+    if (mdmComponentsList.size() > 0) {
+        exist_tMDM = true;
+    }
+
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -831,6 +837,10 @@ if (execStat) {
 <% if (exist_tLDAP) { %>
     closeLDAPConnections();
 <% } %>
+<% if (exist_tMDM) { %>
+    closeMDMConnections();
+<% } %>
+
     }
 
 <%
@@ -1011,6 +1021,21 @@ if (execStat) {
     }
 <%}%>
 
+<%  if(exist_tMDM) { %>
+    private void closeMDMConnections() {
+        try {
+<%    for (INode mdmComponent : mdmComponentsList) { %>
+		org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=mdmComponent.getUniqueName() %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("TMDMService_<%=mdmComponent.getUniqueName() %>");
+		if(tmdmWS_<%=mdmComponent.getUniqueName() %> != null)
+		{
+			tmdmWS_<%=mdmComponent.getUniqueName() %>.logout(new org.talend.mdm.webservice.WSLogout());
+		}
+<%    } %>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%  } %>
+
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
 <%
@@ -1069,6 +1094,14 @@ if (execStat) {
             connections.put("conn_<%=ldapNode.getUniqueName() %>", globalMap.get("conn_<%=ldapNode.getUniqueName() %>"));
             connections.put("connBaseDN_<%=ldapNode.getUniqueName() %>", globalMap.get("connBaseDN_<%=ldapNode.getUniqueName() %>"));
 <%      } %>
+
+<%        for (INode mdmNode : mdmComponentsList) {%>
+            connections.put("TMDMService_<%=mdmNode.getUniqueName() %>", globalMap.get("TMDMService_<%=mdmNode.getUniqueName() %>"));
+<%          if( "false".equals(ElementParameterParser.getValue(mdmNode, "__AUTO_COMMIT__"))) {%>
+	            connections.put("mdmTransaction_<%=mdmNode.getUniqueName() %>", globalMap.get("mdmTransaction_<%=mdmNode.getUniqueName() %>"));
+<%            }
+        } %>
+
         return connections;
     }
 
