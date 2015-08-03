@@ -549,7 +549,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         }
     }
 
-    private void refreshMonitorComposite() {
+    public void refreshMonitorComposite() {
         if (monitorComposite != null && !monitorComposite.isDisposed()) {
             monitorComposite.dispose();
         }
