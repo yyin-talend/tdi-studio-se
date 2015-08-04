@@ -1701,6 +1701,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
                                     @Override
                                     public void run() {
+                                        if (branchesViewer == null || branchesViewer.getControl() == null
+                                                || branchesViewer.getControl().isDisposed()) {
+                                            return;
+                                        }
                                         branchesViewer.setInput(projectBranches);
                                         branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
                                         // svnBranchCombo.getCombo().setFont(originalFont);
