@@ -120,6 +120,11 @@
         exist_tLDAP = true;
     }
     
+    boolean exist_tPalo = false;
+    List<INode> paloComponentsList = (List<INode>)process.getNodesOfType("tPaloConnection");
+    if (paloComponentsList.size() > 0) {
+        exist_tPalo = true;
+    }
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -757,6 +762,10 @@ if (execStat) {
 <% if (exist_tLDAP) { %>
     closeLDAPConnections();
 <% } %>
+<% if (exist_tPalo) { %>
+    closePaloConnections();
+<% } %>
+
     }
 
 <%
@@ -926,6 +935,21 @@ if (execStat) {
     }
 <%}%>
 
+<%  if(exist_tPalo) { %>
+    private void closePaloConnections() {
+        try {
+<%    for (INode paloComponent : paloComponentsList) { %>
+    	org.talend.jpalo.paloconnection pConn_<%=paloComponent.getUniqueName()%> = (org.talend.jpalo.paloconnection)globalMap.get("pConn_<%=paloComponent.getUniqueName()%>");
+	    if(pConn_<%=paloComponent.getUniqueName()%> !=null){
+					pConn_<%=paloComponent.getUniqueName() %>.logout();
+	
+		}
+<%    } %>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%  } %>
+
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
 <%
@@ -981,6 +1005,12 @@ if (execStat) {
             connections.put("conn_<%=ldapNode.getUniqueName() %>", globalMap.get("conn_<%=ldapNode.getUniqueName() %>"));
             connections.put("connBaseDN_<%=ldapNode.getUniqueName() %>", globalMap.get("connBaseDN_<%=ldapNode.getUniqueName() %>"));
 <%      } %>
+<%      for (INode paloNode : paloComponentsList) { %>
+            connections.put("p_<%=paloNode.getUniqueName() %>", globalMap.get("p_<%=paloNode.getUniqueName() %>"));
+            connections.put("pConn_<%=paloNode.getUniqueName() %>", globalMap.get("pConn_<%=paloNode.getUniqueName() %>"));
+<%      } %>
+
+
         return connections;
     }
 
