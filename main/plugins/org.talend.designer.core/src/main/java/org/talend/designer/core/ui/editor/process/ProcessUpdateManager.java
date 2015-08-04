@@ -570,8 +570,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         List<UpdateResult> mainResults = new ArrayList<UpdateResult>();
         switch (type) {
         case JOB_PROPERTY_MAPREDUCE:
-            mainResults.addAll(checkJobSettingsParameters(EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP, type,
-                    onlySimpleShow));
+            if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(getProcess().getComponentsType())) {
+                mainResults.addAll(checkJobSettingsParameters(EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP, type,
+                        onlySimpleShow));
+            } else if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(getProcess().getComponentsType())) {
+                mainResults.addAll(checkJobSettingsParameters(EComponentCategory.SPARK_JOB_CONFIG, type, onlySimpleShow));
+            }
             break;
         case JOB_PROPERTY_EXTRA:
             mainResults.addAll(checkJobSettingsParameters(EComponentCategory.EXTRA, type, onlySimpleShow));
