@@ -76,7 +76,9 @@ public class JobErrorsChecker {
                 }
                 // get source file
                 IFile sourceFile = synchronizer.getFile(item);
-
+                if (sourceFile == null) {
+                    continue;
+                }
                 jobIds.add(item.getProperty().getId());
 
                 // Property property = process.getProperty();
@@ -121,6 +123,9 @@ public class JobErrorsChecker {
                             }
                         }
                         IFile sourceFile = synchronizer.getFile(item);
+                        if (sourceFile == null) {
+                            return false;
+                        }
                         // check the item has compile error when export job
                         boolean ret = false;
                         IMarker[] markers = sourceFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
@@ -246,6 +251,9 @@ public class JobErrorsChecker {
                 }
 
                 IFile file = synchronizer.getFile(item);
+                if (file == null) {
+                    return;
+                }
                 IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
                 for (IMarker marker : markers) {
                     Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);

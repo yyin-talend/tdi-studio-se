@@ -69,7 +69,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         this.contextName = contextName;
         this.exportChoice = exportChoiceMap;
         IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
-        talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
+        this.talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
     }
 
     protected boolean isOptionChoosed(Object key) {
@@ -159,6 +159,9 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
 
     @Override
     public IFile getJobTargetFile() {
+        if (talendProcessJavaProject == null) {
+            return null;
+        }
         Property jobProperty = processItem.getProperty();
         String jobZipName = JavaResourcesHelper.getJobJarName(jobProperty.getLabel(), jobProperty.getVersion()) + JOB_EXTENSION;
         try {

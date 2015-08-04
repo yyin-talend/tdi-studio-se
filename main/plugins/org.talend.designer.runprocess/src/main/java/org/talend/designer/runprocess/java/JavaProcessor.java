@@ -1073,8 +1073,10 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             libsStr += classPathSeparator + getExportJarsStr();
         } else {
             File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-            String libFolder = new Path(libDir.getAbsolutePath()).toPortableString();
-            libsStr += classPathSeparator + libFolder;
+            if (libDir != null) {
+                String libFolder = new Path(libDir.getAbsolutePath()).toPortableString();
+                libsStr += classPathSeparator + libFolder;
+            }
         }
 
         return libsStr;
@@ -1122,7 +1124,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         final String classPathSeparator = extractClassPathSeparator();
         final String libPrefixPath = getRootWorkingDir(true);
         final File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-
+        if (libDir == null) {
+            return ""; //$NON-NLS-1$
+        }
         Set<ModuleNeeded> neededModules = getNeededModules();
         JavaProcessorUtilities.checkJavaProjectLib(neededModules);
         Set<String> neededLibraries = new HashSet<String>();
@@ -1187,7 +1191,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String getLibFolderInWorkingDir() {
-        return JavaProcessorUtilities.getJavaProjectLibFolder().getAbsolutePath();
+        File libFolder = JavaProcessorUtilities.getJavaProjectLibFolder();
+        if (libFolder == null) {
+            return ""; //$NON-NLS-1$
+        }
+        return libFolder.getAbsolutePath();
     }
 
     protected String extractClassPathSeparator() {

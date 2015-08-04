@@ -111,10 +111,10 @@ public class JavaCompilationParticipant extends CompilationParticipant {
         IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
         try {
             ITalendProcessJavaProject talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
-            IProject javaProject = talendProcessJavaProject.getProject();
             if (talendProcessJavaProject == null) {
                 return;
             }
+            IProject javaProject = talendProcessJavaProject.getProject();
             IFile file = javaProject.getFile(filePath);
             String fileName = file.getName();
 
@@ -130,7 +130,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
                     }
                 }
                 IFile currentFile = synchronizer.getFile(item);
-                if (fileName.equals(currentFile.getName()) && currentFile.exists()) {
+                if (currentFile != null && fileName.equals(currentFile.getName()) && currentFile.exists()) {
                     Problems.addRoutineFile(currentFile, property);
                     break;
                 }

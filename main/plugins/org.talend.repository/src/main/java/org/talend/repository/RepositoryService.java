@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -747,8 +748,11 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
             rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(IRulesProviderService.class);
             try {
                 rulesService.syncRule(currentRepositoryItem);
-                String path = rulesService.getRuleFile(currentRepositoryItem, FileConstants.XLS_FILE_SUFFIX).getLocation()
-                        .toOSString();
+                IFile ruleFile = rulesService.getRuleFile(currentRepositoryItem, FileConstants.XLS_FILE_SUFFIX);
+                if (ruleFile == null) {
+                    return null;
+                }
+                String path = ruleFile.getLocation().toOSString();
                 return path;
             } catch (SystemException e) {
                 // added by SeB, log it at least butthe devlopper should have a look at this

@@ -48,6 +48,9 @@ public class TalendDefaultJavaEditor extends CompilationUnitEditor {
                         IRunProcessService.class);
                 // I think runProcessService can't be null, and should throw exception if it is null
                 ITalendProcessJavaProject talendJavaProject = runProcessService.getTalendProcessJavaProject();
+                if (talendJavaProject == null) {
+                    return;
+                }
                 final String pathSeperator = "/"; //$NON-NLS-1$
                 String routinesFolderName = ERepositoryObjectType.ROUTINES.getFolder().split(pathSeperator)[1];
                 String talendSrcFolderPath = talendJavaProject.getSrcFolder().getLocation().toString() + pathSeperator;

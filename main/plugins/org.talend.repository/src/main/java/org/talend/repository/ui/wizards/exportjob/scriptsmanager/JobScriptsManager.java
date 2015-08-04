@@ -762,7 +762,7 @@ public abstract class JobScriptsManager {
         ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
                 .getTalendProcessJavaProject();
         if (talendProcessJavaProject == null) {
-            return null;
+            return new Path(""); //$NON-NLS-1$
         }
         project = talendProcessJavaProject.getProject();
         IPath root = project.getParent().getLocation().append(getCorrespondingProjectName(item).toUpperCase());
@@ -828,7 +828,7 @@ public abstract class JobScriptsManager {
                         FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                 // export simple file
-                if (item.getProperty() instanceof FakePropertyImpl) {
+                if (projectRootPath != null && item.getProperty() instanceof FakePropertyImpl) {
                     String basePath = relativePath + PATH_SEPARATOR + typeFolderPath.toString();
                     FakePropertyImpl fakeProperty = (FakePropertyImpl) item.getProperty();
                     IPath relativeItemPath = fakeProperty.getItemPath();

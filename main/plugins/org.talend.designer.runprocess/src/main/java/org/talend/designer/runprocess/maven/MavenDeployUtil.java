@@ -79,7 +79,9 @@ public class MavenDeployUtil {
                 if (!unavailableMvnUrls.isEmpty() && !CommonsPlugin.isHeadless()) {
                     // for studio, popup the install modules dialog to install
                     File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-                    libService.retrieve(unavailableMvnUrls, libDir.getAbsolutePath());
+                    if (libDir != null) {
+                        libService.retrieve(unavailableMvnUrls, libDir.getAbsolutePath());
+                    }
                 }
             }
         }

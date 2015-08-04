@@ -141,8 +141,12 @@ public class ExportProcessorHelper {
             return;
         }
         File file = new File(url.getFile());
-        File target = new File(JavaProcessorUtilities.getJavaProjectLibFolder().getAbsolutePath() + property.getLabel() + "_"
-                + property.getVersion() + "_" + file.getName());
+        File libFolder = JavaProcessorUtilities.getJavaProjectLibFolder();
+        if (libFolder == null) {
+            return;
+        }
+        File target = new File(libFolder.getAbsolutePath() + property.getLabel() + "_" + property.getVersion() + "_"
+                + file.getName());
         try {
             FilesUtils.copyFile(file, target);
         } catch (IOException e) {

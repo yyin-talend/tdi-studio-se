@@ -115,7 +115,7 @@ public class BuildJobManager {
                 buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale));
                 buildJobHandler.build(new SubProgressMonitor(pMonitor, scale));
                 IFile jobTargetFile = buildJobHandler.getJobTargetFile();
-                if (jobTargetFile.exists()) {
+                if (jobTargetFile != null && jobTargetFile.exists()) {
                     // TODO check error , need to change the way to check error latter
                     if (CorePlugin.getDefault().getRunProcessService()
                             .checkExportProcess(new StructuredSelection(nodes.get(i)), true)) {
@@ -165,7 +165,7 @@ public class BuildJobManager {
         pMonitor.setTaskName(Messages.getString("BuildJobManager.building", label));//$NON-NLS-1$
         buildJobHandler.build(new SubProgressMonitor(pMonitor, scale));
         IFile jobTargetFile = buildJobHandler.getJobTargetFile();
-        if (jobTargetFile.exists()) {
+        if (jobTargetFile != null && jobTargetFile.exists()) {
             String zipPath = jobTargetFile.getLocation().toPortableString();
 
             if (needClasspathJar(exportChoiceMap)) {

@@ -73,7 +73,9 @@ public class JavaSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
         FileOutputStream fos = null;
         try {
             IFile file = getSQLPatternFile(routineItem);
-
+            if (file == null) {
+                return;
+            }
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
                 File f = file.getLocation().toFile();

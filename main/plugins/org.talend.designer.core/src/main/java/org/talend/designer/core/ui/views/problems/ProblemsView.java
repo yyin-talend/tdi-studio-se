@@ -82,8 +82,6 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
     private static final String ID = "org.talend.designer.core.ui.views.ProblemsView"; //$NON-NLS-1$
 
-    private RoutineItemsCheck routineItemsCheck;
-
     private Composite parent;
 
     public static boolean isVisible() {
@@ -172,8 +170,6 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
     }
 
     public void resetContent() {
-        routineItemsCheck = new RoutineItemsCheck();
-        routineItemsCheck.addAllRoutineProblem();
         viewer.setInput(Problems.getRoot());
 
     }
@@ -473,6 +469,9 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
             try {
                 routineSynchronizer.syncRoutine(item, true);
                 IFile file = routineSynchronizer.getFile(item);
+                if (file == null) {
+                    return;
+                }
                 file.refreshLocal(IResource.DEPTH_ONE, null);
                 Problems.addRoutineFile(file, item.getProperty());
             } catch (SystemException e) {

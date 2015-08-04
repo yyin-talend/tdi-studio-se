@@ -74,7 +74,11 @@ public class MapReduceJobJavaScriptsManager extends JobJavaScriptsManager {
 
             File jarFile = new File(getTmpFolder() + File.separatorChar + jobFolderName + FileConstants.JAR_FILE_SUFFIX);
             // Exports the jar file
-            JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
+            File classRootFileLocation = getClassRootFileLocation();
+            if (classRootFileLocation == null) {
+                return Collections.emptyList();
+            }
+            JarBuilder jarbuilder = new JarBuilder(classRootFileLocation, jarFile);
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             // add the job

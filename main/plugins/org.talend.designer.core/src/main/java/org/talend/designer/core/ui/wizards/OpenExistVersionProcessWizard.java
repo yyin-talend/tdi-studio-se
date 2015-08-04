@@ -286,12 +286,18 @@ public class OpenExistVersionProcessWizard extends Wizard {
                     } else {
                         file = routineSynchronizer.getRoutinesFile(routineItem);
                     }
+                    if (file == null) {
+                        return;
+                    }
                     fileEditorInput = new RoutineEditorInput(file, routineItem);
                 } else if (item instanceof SQLPatternItem) {
                     SQLPatternItem patternItem = (SQLPatternItem) item;
                     ISQLPatternSynchronizer SQLPatternSynchronizer = codeGenService.getSQLPatternSynchronizer();
                     SQLPatternSynchronizer.syncSQLPattern(patternItem, true);
                     IFile file = SQLPatternSynchronizer.getSQLPatternFile(patternItem);
+                    if (file == null) {
+                        return;
+                    }
                     fileEditorInput = new RepositoryEditorInput(file, patternItem);
                 }
                 if (fileEditorInput != null) {

@@ -74,7 +74,9 @@ public class SaveAsRoutineAction extends Action {
                 default:
                 }
                 IFile file = routineSynchronizer.getFile(routineItem);
-
+                if (file == null) {
+                    return;
+                }
                 // Set readonly to false since created job will always be editable.
                 RoutineEditorInput routineEditorInput = new RoutineEditorInput(file, routineItem);
 
