@@ -54,7 +54,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                 } else {
                     org.talend.core.model.properties.Item item = job.getModelItem();
                     if (item != null) {
-                        image = CoreImageProvider.getIcon(job.getModelItem());
+                        image = CoreImageProvider.getIcon(item);
                     } else {
                         if (job.isMR()) {
                             for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
@@ -63,7 +63,8 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                                     image = CoreImageProvider.getIcon(type);
                                 }
                             }
-                            image = CoreImageProvider.getIcon(job.getModelItem());
+                        } else {
+                            image = ECoreImage.PROCESS_ICON;
                         }
                     }
                 }

@@ -16,19 +16,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Priority;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.IMRProcessService;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * ggu class global comment. Detailled comment
@@ -104,16 +109,19 @@ public class UpdateContentProvider implements ITreeContentProvider {
                         }
 
                     } else {
-                        Object updateObject = result.getUpdateObject();
-                        if (updateObject instanceof Node) {
-                            IProcess process = ((Node) updateObject).getProcess();
-                            if (process instanceof IProcess2) {
-                                IProcess2 process2 = (IProcess2) process;
-                                Property property = process2.getProperty();
-                                if (property != null) {
-                                    org.talend.core.model.properties.Item processItem = property.getItem();
-                                    job.setModelItem(processItem);
+                        String itemId = result.getObjectId();
+                        if (itemId != null) {
+                            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                            try {
+                                IRepositoryViewObject repoViewObject = factory.getLastVersion(itemId);
+                                if (repoViewObject != null) {
+                                    Property property = repoViewObject.getProperty();
+                                    if (property != null) {
+                                        job.setModelItem(property.getItem());
+                                    }
                                 }
+                            } catch (PersistenceException e) {
+                                CommonExceptionHandler.process(e, Priority.WARN);
                             }
                         }
                         job.setJoblet(result.isJoblet());
