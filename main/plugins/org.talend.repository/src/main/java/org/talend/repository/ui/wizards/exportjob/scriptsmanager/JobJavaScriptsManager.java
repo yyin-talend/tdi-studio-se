@@ -1446,7 +1446,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         try {
             File jarFile = new File(getTmpFolder() + File.separatorChar + jobFolderName + FileConstants.JAR_FILE_SUFFIX);
             // Exports the jar file
-            JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
+            File classRootFileLocation = getClassRootFileLocation();
+            if (classRootFileLocation == null) {
+                return Collections.emptyList();
+            }
+            JarBuilder jarbuilder = new JarBuilder(classRootFileLocation, jarFile);
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             // add the job
@@ -1497,7 +1501,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     protected String getClassRootLocation() throws Exception {
-        return getClassRootFileLocation().toURI().toURL().getPath();
+        File classRootFileLocation = getClassRootFileLocation();
+        if (classRootFileLocation == null) {
+            return ""; //$NON-NLS-1$
+        }
+        return classRootFileLocation.toURI().toURL().getPath();
     }
 
     protected File getClassRootFileLocation() throws CoreException {
@@ -1520,7 +1528,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
                 .getTalendProcessJavaProject();
         if (talendProcessJavaProject == null) {
-            return null;
+            return new Path(""); //$NON-NLS-1$
         }
         IProject project = talendProcessJavaProject.getProject();
         IJavaProject javaProject = talendProcessJavaProject.getJavaProject();
@@ -1555,7 +1563,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File jarFile = new File(getTmpFolder() + File.separatorChar + SYSTEMROUTINE_JAR);
 
             // make a jar file of system routine classes
-            JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
+            File classRootFileLocation = getClassRootFileLocation();
+            if (classRootFileLocation == null) {
+                return Collections.emptyList();
+            }
+            JarBuilder jarbuilder = new JarBuilder(classRootFileLocation, jarFile);
             jarbuilder.setIncludeDir(include);
             jarbuilder.setIncludeRoutines(getRoutineDependince(process, true, USER_ROUTINES_PATH));
             jarbuilder.buildJar();
@@ -1597,7 +1609,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File jarFile = new File(getTmpFolder() + File.separatorChar + jar);
 
             // make a jar file of user routine or bean classes
-            JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
+            File classRootFileLocation = getClassRootFileLocation();
+            if (classRootFileLocation == null) {
+                return Collections.emptyList();
+            }
+            JarBuilder jarbuilder = new JarBuilder(classRootFileLocation, jarFile);
             jarbuilder.setIncludeDir(Collections.singleton(includePath));
             jarbuilder.setIncludeRoutines(getRoutineDependince(process, false, includePath));
             jarbuilder.setExcludeDir(Arrays.asList(SYSTEM_ROUTINES_PATH, USER_ROUTINES_PATH, // remove all
@@ -1622,7 +1638,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
                     File jarFile = new File(getSystemTempFolder().getAbsolutePath() + File.separatorChar + USERPIGUDF_JAR);
 
-                    JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
+                    File classRootFileLocation = getClassRootFileLocation();
+                    if (classRootFileLocation == null) {
+                        return Collections.emptyList();
+                    }
+                    JarBuilder jarbuilder = new JarBuilder(classRootFileLocation, jarFile);
 
                     jarbuilder.setIncludeDir(Collections.singleton(USER_PIGUDF_PATH));
                     jarbuilder.setIncludeRoutines(routineDependince);
@@ -1642,7 +1662,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     private Collection<File> getRoutineDependince(ExportFileResource[] process, boolean system, String type) {
         Collection<File> userRoutines = null;
         try {
-            userRoutines = getAllFiles(getClassRootFileLocation(), type);
+            File classRootFileLocation = getClassRootFileLocation();
+            if (classRootFileLocation == null) {
+                return Collections.emptyList();
+            }
+            userRoutines = getAllFiles(classRootFileLocation, type);
 
             Collection<IRepositoryViewObject> collectRoutines = collectRoutines(process, system, type);
 
@@ -1920,8 +1944,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                                                 RulesItem rulesItem = (RulesItem) factory.getLastVersion(id).getProperty()
                                                         .getItem();
                                                 file = rulesService.getFinalRuleFile(rulesItem, processLabelAndVersion);
-                                                URL url = file.getLocationURI().toURL();
-                                                urlList.add(url);
+                                                if (file != null) {
+                                                    URL url = file.getLocationURI().toURL();
+                                                    urlList.add(url);
+                                                }
                                             }
                                         }
                                     }

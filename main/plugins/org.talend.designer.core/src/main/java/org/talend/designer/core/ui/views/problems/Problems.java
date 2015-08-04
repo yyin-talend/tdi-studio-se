@@ -520,6 +520,9 @@ public class Problems {
     }
 
     public static List<Information> addRoutineFile(IFile file, final Property property, boolean... fromJob) {
+        if (file == null) {
+            return Collections.emptyList();
+        }
         String routineFileName = null;
         String version = null;
         if (property == null) {

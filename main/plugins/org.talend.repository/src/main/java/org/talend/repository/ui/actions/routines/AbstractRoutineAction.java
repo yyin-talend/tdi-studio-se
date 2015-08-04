@@ -111,6 +111,9 @@ public abstract class AbstractRoutineAction extends AContextualAction {
                     file = routineSynchronizer.getRoutinesFile(routineItem);
                 }
             }
+            if (file == null) {
+                return null;
+            }
             RepositoryEditorInput input = new RoutineEditorInput(file, routineItem);
             input.setReadOnly(readOnly);
             talendEditor = page.openEditor(input, talendEditorID); //$NON-NLS-1$            

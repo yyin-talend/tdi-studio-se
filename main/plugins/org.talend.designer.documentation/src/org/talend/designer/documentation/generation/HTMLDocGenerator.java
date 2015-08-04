@@ -762,6 +762,9 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             // StringBuffer componentsCode = new StringBuffer();
             try {
                 IFile codeFile = synchronizer.getFile(item);
+                if (codeFile == null) {
+                    return;
+                }
                 String tempStr = ""; //$NON-NLS-1$
                 InputStream in = codeFile.getContents();
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(in));

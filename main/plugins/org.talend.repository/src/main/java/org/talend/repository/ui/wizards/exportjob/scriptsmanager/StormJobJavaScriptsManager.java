@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +68,11 @@ public class StormJobJavaScriptsManager extends JobJavaScriptsManager {
 
             File jarFile = new File(getTmpFolder() + File.separatorChar + jobFolderName + FileConstants.JAR_FILE_SUFFIX);
             // Exports the jar file
-            JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
+            File classRootFileLocation = getClassRootFileLocation();
+            if (classRootFileLocation == null) {
+                return Collections.emptyList();
+            }
+            JarBuilder jarbuilder = new JarBuilder(classRootFileLocation, jarFile);
 
             // Unjar many of the dependencies.
             // ZipFileUtils.unZip(jarFile, jobFolderName)

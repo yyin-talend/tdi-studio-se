@@ -64,7 +64,9 @@ public class SaveAsSQLPatternAction extends Action {
                 // only for talend java version
                 ISQLPatternSynchronizer sqlPatternSynchronizer = service.getSQLPatternSynchronizer();
                 IFile file = sqlPatternSynchronizer.getSQLPatternFile(sqlpatternItem);
-
+                if (file == null) {
+                    return;
+                }
                 // Set readonly to false since created job will always be editable.
                 RepositoryEditorInput repositoryEditorInput = new RepositoryEditorInput(file, sqlpatternItem);
 

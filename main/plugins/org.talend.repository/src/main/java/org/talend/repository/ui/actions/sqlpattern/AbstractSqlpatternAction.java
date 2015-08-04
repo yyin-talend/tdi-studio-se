@@ -86,7 +86,9 @@ public abstract class AbstractSqlpatternAction extends AContextualAction {
         if (!found) {
             routineSynchronizer.syncSQLPattern(item, true);
             IFile file = routineSynchronizer.getSQLPatternFile(item);
-
+            if (file == null) {
+                return null;
+            }
             RepositoryEditorInput input = new RepositoryEditorInput(file, item);
             input.setReadOnly(readOnly);
             talendEditor = page.openEditor(input, talendEditorID); //$NON-NLS-1$            

@@ -1075,8 +1075,10 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             libsStr += classPathSeparator + getExportJarsStr();
         } else {
             File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-            String libFolder = new Path(libDir.getAbsolutePath()).toPortableString();
-            libsStr += classPathSeparator + libFolder;
+            if (libDir != null) {
+                String libFolder = new Path(libDir.getAbsolutePath()).toPortableString();
+                libsStr += classPathSeparator + libFolder;
+            }
         }
 
         return libsStr;
@@ -1124,7 +1126,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         final String classPathSeparator = extractClassPathSeparator();
         final String libPrefixPath = getRootWorkingDir(true);
         final File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-
+        if (libDir == null) {
+            return ""; //$NON-NLS-1$
+        }
         Set<ModuleNeeded> neededModules = getNeededModules();
         JavaProcessorUtilities.checkJavaProjectLib(neededModules);
         Set<String> neededLibraries = new HashSet<String>();
@@ -1189,7 +1193,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String getLibFolderInWorkingDir() {
-        return JavaProcessorUtilities.getJavaProjectLibFolder().getAbsolutePath();
+        File libFolder = JavaProcessorUtilities.getJavaProjectLibFolder();
+        if (libFolder == null) {
+            return ""; //$NON-NLS-1$
+        }
+        return libFolder.getAbsolutePath();
     }
 
     protected String extractClassPathSeparator() {
@@ -1202,28 +1210,25 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String[] addVMArguments(String[] strings, boolean exportingJob) {
         String[] vmargs = getJVMArgs(); //$NON-NLS-1$
-        
+
         RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         if (runProcessContext != null) {
-        	ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
-        	if (config != null && config.getCommandlineServerConfig() == null) {
-        		if (config.isRemote()) {
-        			if (config.isUseJMX()) {
-        				String[] jmxArg = new String[]{
-        						"-Dcom.sun.management.jmxremote",
-        						"-Dcom.sun.management.jmxremote.port=" + config.getRemotePort(),
-        						"-Dcom.sun.management.jmxremote.ssl=false",
-        						"-Dcom.sun.management.jmxremote.authenticate=false "
-        				};
-        				String[] _vmargs = new String[vmargs.length + jmxArg.length];
-        				System.arraycopy(vmargs, 0, _vmargs, 0, vmargs.length);
-        				System.arraycopy(jmxArg, 0, _vmargs, vmargs.length, jmxArg.length);
-        				vmargs = _vmargs;
-        			}
-        		}
-        	}
-		}
-        
+            ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
+            if (config != null && config.getCommandlineServerConfig() == null) {
+                if (config.isRemote()) {
+                    if (config.isUseJMX()) {
+                        String[] jmxArg = new String[] { "-Dcom.sun.management.jmxremote",
+                                "-Dcom.sun.management.jmxremote.port=" + config.getRemotePort(),
+                                "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false " };
+                        String[] _vmargs = new String[vmargs.length + jmxArg.length];
+                        System.arraycopy(vmargs, 0, _vmargs, 0, vmargs.length);
+                        System.arraycopy(jmxArg, 0, _vmargs, vmargs.length, jmxArg.length);
+                        vmargs = _vmargs;
+                    }
+                }
+            }
+        }
+
         if (vmargs != null && vmargs.length > 0) {
             String[] lines = new String[strings.length + vmargs.length];
             System.arraycopy(strings, 0, lines, 0, 1);
