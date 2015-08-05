@@ -6,7 +6,7 @@
 			
 			public GetJarsToRegister_<%=cid%>() {
 				try {
-					this.isOozieRuntime = setJarsToRegister("../../job.xml");
+					this.isOozieRuntime = setJarsToRegister();
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 					<%if(isLog4jEnabled) {%>
@@ -15,9 +15,14 @@
 				}
 			}
 		
-			public boolean setJarsToRegister(String filename) throws IOException, org.dom4j.DocumentException {
-				String jobXmlPath = new java.io.File(filename).getCanonicalPath();
-				if(isNeedAddLibsPath(jobXmlPath)) {
+			private boolean setJarsToRegister() throws IOException, org.dom4j.DocumentException {
+				String jobXmlPath = new java.io.File("../../job.xml").getCanonicalPath();
+				boolean isOozieExecution = isNeedAddLibsPath(jobXmlPath);
+				if(!isOozieExecution) {
+				    jobXmlPath = new java.io.File("./job.xml").getCanonicalPath();
+				    isOozieExecution = isNeedAddLibsPath(jobXmlPath);
+				}
+				if(isOozieExecution) {
 					
 					org.dom4j.io.SAXReader reader_oozie = new org.dom4j.io.SAXReader();
 					org.dom4j.Document document_oozie = reader_oozie.read(jobXmlPath);
@@ -25,7 +30,7 @@
 					for (java.util.Iterator iter_oozie = list_oozie.iterator(); iter_oozie.hasNext();) {
 						org.dom4j.Element element_oozie = (org.dom4j.Element) iter_oozie.next();
 						String name_oozie = element_oozie.elementText("name");
-						if(name_oozie.equals("mapred.cache.localFiles")) {
+						if(name_oozie.equals("mapred.cache.localFiles") || name_oozie.equals("mapreduce.job.cache.local.files")) {
 							this.oozieClasspathLine = element_oozie.elementText("value");
 							return true;
 						}
