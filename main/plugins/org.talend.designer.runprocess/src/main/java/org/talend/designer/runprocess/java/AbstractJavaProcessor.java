@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
@@ -57,6 +58,8 @@ import org.talend.utils.io.FilesUtils;
 public abstract class AbstractJavaProcessor extends Processor implements IJavaProcessor {
 
     private final static String FILEPATH_PREFIX = "job_export"; //$NON-NLS-1$
+
+    private static Logger log = Logger.getLogger(AbstractJavaProcessor.class);
 
     /** main class of job */
     protected String mainClass;
@@ -162,6 +165,7 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
         return new ArrayList<String>();
     }
 
+    @Override
     public Process run(String[] optionsParam, int statisticsPort, int tracePort, IProgressMonitor monitor,
             IProcessMessageManager processMessageManager) throws ProcessorException {
         if (isStandardJob()) {
@@ -277,7 +281,7 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
     protected String unzipProcess(IProcess process, String archiveZipFileStr) {
         String jobName = process.getName();
         String tempFolder = null;
-        if (archiveZipFileStr != null && !"".equals(archiveZipFileStr)) {
+        if (archiveZipFileStr != null && !"".equals(archiveZipFileStr)) { //$NON-NLS-1$
             File file = new File(archiveZipFileStr);
             File tempWorkFolder = new File(file.getParentFile(), jobName);
             tempFolder = tempWorkFolder.getAbsolutePath();
@@ -334,14 +338,22 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
 
     @Override
     public void cleanWorkingDirectory() throws SecurityException {
+        log.debug("Job archive to clean: " + archive); //$NON-NLS-1$
         if (archive != null) {
             File archiveFile = new File(archive);
             if (archiveFile != null && archiveFile.exists()) {
-                archiveFile.delete();
+                boolean success = archiveFile.delete();
+                if (success) {
+                    log.debug("The job archive '" + archive + "' has been deleted successfully"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
         }
+        log.debug("Job folder to clean: " + unzipFolder); //$NON-NLS-1$
         if (unzipFolder != null) {
-            FilesUtils.removeFolder(unzipFolder, true);
+            boolean success = FilesUtils.removeFolder(unzipFolder, true);
+            if (success) {
+                log.debug("The job folder '" + unzipFolder + "' has been deleted successfully"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
     }
 }
