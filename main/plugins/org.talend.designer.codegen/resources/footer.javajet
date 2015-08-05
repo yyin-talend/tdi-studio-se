@@ -125,6 +125,19 @@
     if (paloComponentsList.size() > 0) {
         exist_tPalo = true;
     }
+
+    boolean exist_tEXist= false;
+    List<INode> existComponentsList = (List<INode>)process.getNodesOfType("tEXistConnection");
+    if (existComponentsList.size() > 0) {
+        exist_tEXist = true;
+    }
+
+    boolean exist_tSalesforce= false;
+    List<INode> salesforceComponentsList = (List<INode>)process.getNodesOfType("tSalesforceConnection");
+    if (salesforceComponentsList.size() > 0) {
+        exist_tSalesforce = true;
+    }
+
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -765,6 +778,9 @@ if (execStat) {
 <% if (exist_tPalo) { %>
     closePaloConnections();
 <% } %>
+<% if (exist_tEXist) { %>
+    closeEXistConnections();
+<% } %>
 
     }
 
@@ -950,6 +966,21 @@ if (execStat) {
     }
 <%  } %>
 
+<%  if(exist_tEXist) { %>
+    private void closeEXistConnections() {
+        try {
+<%    for (INode existComponent : existComponentsList) { %>
+		org.xmldb.api.base.Collection col_<%=existComponent.getUniqueName()%> = (org.xmldb.api.base.Collection)globalMap.get("col_<%=existComponent.getUniqueName()%>");
+	    if(col_<%=existComponent.getUniqueName()%> !=null){
+					col_<%=existComponent.getUniqueName()%>.close();
+	
+		}
+<%    } %>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%  } %>
+
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
 <%
@@ -1009,7 +1040,13 @@ if (execStat) {
             connections.put("p_<%=paloNode.getUniqueName() %>", globalMap.get("p_<%=paloNode.getUniqueName() %>"));
             connections.put("pConn_<%=paloNode.getUniqueName() %>", globalMap.get("pConn_<%=paloNode.getUniqueName() %>"));
 <%      } %>
+<%      for (INode existNode : existComponentsList) { %>
+            connections.put("col_<%=existNode.getUniqueName()%>", globalMap.get("col_<%=existNode.getUniqueName()%>"));
+<%      } %>
 
+<%      for (INode salesforceNode : salesforceComponentsList) { %>
+            connections.put("conn_<%=salesforceNode.getUniqueName()%>", globalMap.get("conn_<%=salesforceNode.getUniqueName()%>"));
+<%      } %>
 
         return connections;
     }
