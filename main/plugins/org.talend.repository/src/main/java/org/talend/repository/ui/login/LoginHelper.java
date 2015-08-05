@@ -467,24 +467,7 @@ public class LoginHelper {
                 }
             }
 
-            try {
-                IRunnableWithProgress op = new IRunnableWithProgress() {
-
-                    @Override
-                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                        try {
-                            ProxyRepositoryFactory.getInstance().initialize();
-                        } catch (PersistenceException e) {
-                            throw new InvocationTargetException(e);
-                        }
-                    }
-                };
-                new ProgressMonitorDialog(getUsableShell()).run(true, false, op);
-            } catch (InvocationTargetException e) {
-                throw (Exception) e.getTargetException();
-            } catch (InterruptedException e) {
-                //
-            }
+            repositoryFactory.initialize();
 
             initialized = true;
         } catch (Exception e) {
