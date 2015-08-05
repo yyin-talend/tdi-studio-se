@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Level;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -106,8 +105,8 @@ public class JavaProcessorUtilities {
                             }
                         }
                     } catch (Exception e) {
-                        // create failure?
-                        ExceptionHandler.process(e, Level.FATAL);
+                        // create failure, only log it?
+                        ExceptionHandler.process(e);
                     }
                 }
             }
