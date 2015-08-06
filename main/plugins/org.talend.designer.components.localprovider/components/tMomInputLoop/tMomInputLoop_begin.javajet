@@ -103,7 +103,7 @@ imports="
 		
 		isCommit = isCommit && !isBrowse;
 		isBrowse = isBrowse && !isRollback && !isCommit;
-		isAutoBackout = isAutoBackout && !isBrowse && !isRollback && !isCommit && (!("true").equals(kListen));
+		isAutoBackout = isAutoBackout && !isBrowse && !isRollback && !isCommit;
 		
 		if(isAutoBackout){
 %>
@@ -571,7 +571,7 @@ imports="
 			
 			isCommit = isCommit && !isBrowse;
 			isBrowse = isBrowse && !isRollback && !isCommit;
-			isAutoBackout = isAutoBackout && !isBrowse && !isRollback && !isCommit && (!("true").equals(kListen));
+			isAutoBackout = isAutoBackout && !isBrowse && !isRollback && !isCommit;
 			
 			if(("true").equals(useMsgId)){
 			%>
