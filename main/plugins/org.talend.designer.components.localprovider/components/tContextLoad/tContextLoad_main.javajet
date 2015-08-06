@@ -1,7 +1,7 @@
 <%@ jet
 	imports="
 		org.talend.core.model.process.INode
-		org.talend.core.model.process.ElementParameterParser  
+		org.talend.core.model.process.ElementParameterParser
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
@@ -33,23 +33,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    		
-    		    %>    		
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    		    %>
     		    <%
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
     			for (int i = 0; (sizeColumns >= 2)&&(i < 2); i++) {
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 					%>
-					String <%=i==0?"key":"value" %>_<%=cid %> = null;	
+					String <%=i==0?"key":"value" %>_<%=cid %> = null;
 <%
-                    // allow to add comment line start with '#' or '!'                                      
+                    // allow to add comment line start with '#' or '!'
 					if (i == 0){
-%>                
+%>
                       if (<%=conn.getName() %>.<%=column.getLabel() %> != null){
-                          tmp_key_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>.trim();                        
+                          tmp_key_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>.trim();
                         if ((tmp_key_<%=cid%>.startsWith("#") || tmp_key_<%=cid%>.startsWith("!") )){
                           tmp_key_<%=cid%> = null;
                         } else {
@@ -59,7 +59,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
                     }
 					if(!isPrimitive) {
-					    %>   				
+					    %>
 					    if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
 				        <%
 					}
@@ -69,15 +69,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             		String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
             		if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
             		    %>
-            		    FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);					
+            		    FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
             		    <%
 					} else if(javaType == JavaTypesManager.STRING) {
 					    %>
-					    <%=conn.getName() %>.<%=column.getLabel() %>;					
+					    <%=conn.getName() %>.<%=column.getLabel() %>;
 					    <%
 					} else {
 					    %>
-					    String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);					
+					    String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
 					    <%
             		}
             		if(!isPrimitive) {
@@ -87,7 +87,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             		}
             	}//here end the last for, the List "columns"
     			%>
-    			
+
 <%
                 if(node.getElementParameter("PRINT_OPERATIONS").isContextMode()) {
 %>
@@ -113,21 +113,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 {
                    typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
                 }
-        %>  
+        %>
         if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>))
-        {                
+        {
            <% if(typeToGenerate.equals("java.util.Date"))
-            {%>            
+            {%>
                 String context_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
                 if(context_<%=ctxParam.getName()%>_value==null)
                 	context_<%=ctxParam.getName()%>_value = "";
 				int context_<%=ctxParam.getName()%>_pos = context_<%=ctxParam.getName()%>_value.indexOf(";");
 				String context_<%=ctxParam.getName()%>_pattern =  "yyyy-MM-dd HH:mm:ss";
 				if(context_<%=ctxParam.getName()%>_pos > -1){
-					context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);					
+					context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);
 				}
 			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(value_<%=cid %>));
-			    
+
             <%}else if(typeToGenerate.equals("Integer")){%>
 
                 context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
@@ -143,21 +143,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
                context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
 
-           <%}%>             
+           <%}%>
         }
-       
-         <%               
+
+         <%
              }
-        %>	
-        
+        %>
+
     	if (context.getProperty(key_<%=cid %>)!=null)
-    	{    	
+    	{
     		assignList_<%=cid %>.add(key_<%=cid %>);
-    	}else  {    		
+    	}else  {
     		newPropertyList_<%=cid %>.add(key_<%=cid %>);
     	}
-	    context.setProperty(key_<%=cid %>,value_<%=cid %>);
-    }catch(java.lang.Exception e){    	
+        if(value_<%=cid %> == null){
+            context.setProperty(key_<%=cid %>, "");
+        }else{
+            context.setProperty(key_<%=cid %>,value_<%=cid %>);
+        }
+    }catch(java.lang.Exception e){
     	<%if(isLog4jEnabled){%>
     		log.error("<%=cid%> - Setting a value for the key \"" + key_<%=cid %> + "\" has failed. Error message: " + e.getMessage());
     	<%}%>
@@ -168,9 +172,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         	}
         }//here end the first for, the List "conns"
-%>    	
+%>
     	//////////////////////////
 <%
 	}
-}  
+}
 %>
