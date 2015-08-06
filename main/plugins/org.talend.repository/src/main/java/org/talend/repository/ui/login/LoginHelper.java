@@ -72,6 +72,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.ui.dialog.OverTimePopupDialogTask;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 
 /**
@@ -467,10 +468,19 @@ public class LoginHelper {
                 }
             }
 
-            repositoryFactory.initialize();
+            OverTimePopupDialogTask<Boolean> overTimePopupDialogTask = new OverTimePopupDialogTask<Boolean>() {
+
+                @Override
+                public Boolean run() throws Throwable {
+                    ProxyRepositoryFactory.getInstance().initialize();
+                    return null;
+                }
+            };
+            overTimePopupDialogTask.setNeedWaitingProgressJob(false);
+            overTimePopupDialogTask.runTask();
 
             initialized = true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             projects = new Project[0];
             final Shell shell = new Shell(DisplayUtils.getDisplay(), SWT.ON_TOP | SWT.TOP);
             MessageDialog.openError(shell, Messages.getString("LoginComposite.warningTitle"), //$NON-NLS-1$
