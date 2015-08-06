@@ -432,7 +432,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     }else{
 %>						
 						if(cell_<%=cid%>.getType().equals(jxl.CellType.NUMBER)){
-							temp_row_<%= cid %>[i] = (String.valueOf(((jxl.NumberCell) cell_<%=cid%>).getValue()));
+							temp_row_<%= cid %>[i] = (String.valueOf(df_<%=cid %>.format(((jxl.NumberCell) cell_<%=cid%>).getValue())));
 						}else{
 							temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
 						}
