@@ -221,7 +221,7 @@
     </PARAMETER>
     
     <PARAMETER NAME="AUTO_BACKOUT" FIELD="CHECK" REQUIRED="true" NUM_ROW="95"
-        SHOW_IF="(((USE_CONNECTION == 'true') and (#LINK@NODE.CONNECTION.SERVER== 'WEBSPHERE')) OR ((USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE'))) AND (KEEPLISTENING == 'false') AND (COMMIT == 'false') AND (BROWSE == 'false') AND (ROLLBACK == 'false')">
+        SHOW_IF="(((USE_CONNECTION == 'true') and (#LINK@NODE.CONNECTION.SERVER== 'WEBSPHERE')) OR ((USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE'))) AND (COMMIT == 'false') AND (BROWSE == 'false') AND (ROLLBACK == 'false')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
