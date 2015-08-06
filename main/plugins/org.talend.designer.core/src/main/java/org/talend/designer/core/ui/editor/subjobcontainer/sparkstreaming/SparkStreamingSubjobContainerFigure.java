@@ -257,4 +257,12 @@ public class SparkStreamingSubjobContainerFigure extends SubjobContainerFigure {
         text += "<b>Last total delay</b>: " + ((SparkStreamingSubjobContainer) subjobContainer).getLastTotalDelay() + "<br>"; //$NON-NLS-1$ //$NON-NLS-2$
         statsFigureText.setText(text);
     }
+
+    public SubjobContainer getSubjobContainer() {
+        return this.subjobContainer;
+    }
+
+    public SimpleHtmlFigure getStatsFigure() {
+        return this.statsFigureText;
+    }
 }
