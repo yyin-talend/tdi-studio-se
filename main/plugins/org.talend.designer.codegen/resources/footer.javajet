@@ -160,6 +160,12 @@
         exist_tSalesforce = true;
     }
 
+    boolean exist_tSAP= false;
+    List<INode> sapComponentsList = (List<INode>)process.getNodesOfType("tSAPConnection");
+    if (sapComponentsList.size() > 0) {
+        exist_tSAP = true;
+    }
+
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -1167,6 +1173,9 @@ if (execStat) {
 
 <%      for (INode salesforceNode : salesforceComponentsList) { %>
             connections.put("conn_<%=salesforceNode.getUniqueName()%>", globalMap.get("conn_<%=salesforceNode.getUniqueName()%>"));
+<%      } %>
+<%      for (INode sapNode : sapComponentsList) { %>
+            connections.put("conn_<%=sapNode.getUniqueName()%>", globalMap.get("conn_<%=sapNode.getUniqueName()%>"));
 <%      } %>
 
 
