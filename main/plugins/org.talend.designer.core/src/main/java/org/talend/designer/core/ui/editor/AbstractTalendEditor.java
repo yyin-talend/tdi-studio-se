@@ -127,6 +127,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils;
@@ -147,12 +148,15 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.node.MapperExternalNode;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.job.IJobResourceProtection;
 import org.talend.core.model.repository.job.JobResource;
 import org.talend.core.model.repository.job.JobResourceManager;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.service.IMRProcessService;
+import org.talend.core.service.IStormProcessService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
@@ -523,10 +527,41 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         savePreviewPictures();
 
         // generate the MR infor parameter.
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
-            IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
-                    IMRProcessService.class);
-            mrService.generateMRInfosParameter(getProcess());
+        try {
+            boolean isStormServiceRegistered = GlobalServiceRegister.getDefault().isServiceRegistered(IStormProcessService.class);
+            boolean isMRServiceRegistered = GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class);
+            if (isStormServiceRegistered || isMRServiceRegistered) {
+                IProcess2 process = getProcess();
+                if (process != null) {
+                    IRepositoryViewObject repoObjectView = DesignerPlugin.getDefault().getRepositoryService()
+                            .getProxyRepositoryFactory().getLastVersion(process.getId());
+                    if (repoObjectView != null && repoObjectView.getProperty() != null) {
+                        Item currentItem = repoObjectView.getProperty().getItem();
+                        if (isMRServiceRegistered) {
+                            IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                                    IMRProcessService.class);
+
+                            if (mrService.isMapReduceItem(currentItem)) {
+                                // We make sure that the current item is a Batch item before generating the M/R
+                                // information parameters.
+                                mrService.generateMRInfosParameter(process);
+                            }
+                        }
+                        if (isStormServiceRegistered) {
+                            IStormProcessService stormService = (IStormProcessService) GlobalServiceRegister.getDefault()
+                                    .getService(IStormProcessService.class);
+
+                            if (stormService.isStormItem(currentItem)) {
+                                // We make sure that the current item is a Streaming item before generating the Spark
+                                // Streaming information parameters.
+                                stormService.generateSparkStreamingInfosParameter(process);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            e.printStackTrace();
         }
 
         try {
