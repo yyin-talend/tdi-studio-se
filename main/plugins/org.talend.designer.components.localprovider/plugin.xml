@@ -692,7 +692,92 @@
          	name="high-scale-lib-1.1.1.jar" mvn_uri="mvn:org.talend.libraries/high-scale-lib-1.1.1/6.0.0" 
          	uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.2/lib/high-scale-lib-1.1.1.jar">
     	</libraryNeeded>
-    	
+
+        <!-- EMR 4.0.0 libraries -->
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-common-emr400-latest"           
+            name="hadoop-common-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-common-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-hdfs-emr400-latest"           
+            name="hadoop-hdfs-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-hdfs-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-auth-emr400-latest"           
+            name="hadoop-auth-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-auth-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
+            id="avro-emr400-latest"       
+            name="avro-1.7.4.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/avro-1.7.4.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-mapreduce-client-common-emr400-latest"           
+            name="hadoop-mapreduce-client-common-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-mapreduce-client-common-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-mapreduce-client-core-emr400-latest"           
+            name="hadoop-mapreduce-client-core-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-mapreduce-client-core-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-mapreduce-client-jobclient-emr400-latest"           
+            name="hadoop-mapreduce-client-jobclient-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-mapreduce-client-jobclient-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-yarn-api-emr400-latest"           
+            name="hadoop-yarn-api-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-yarn-api-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-yarn-client-emr400-latest"           
+            name="hadoop-yarn-client-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-yarn-client-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hadoop-yarn-common-emr400-latest"           
+            name="hadoop-yarn-common-2.6.0-amzn-0.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-yarn-common-2.6.0-amzn-0.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="jetty-util-emr400-latest"           
+            name="jetty-util-6.1.26-emr.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/jetty-util-6.1.26-emr.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="emr-metrics-client-emr400-latest"           
+            name="emr-metrics-client-2.0.0.jar">
+        </libraryNeeded>        
+
     	<!-- MAPR 40X libraries-->
     	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
@@ -1242,13 +1327,28 @@
          	uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.1/lib/htrace-core-2.04.jar">
     	</libraryNeeded>
     	
-    	<libraryNeeded
-	   		context="plugin:org.talend.libraries.hadoop.hdp.2.2"
-        	id="htrace-core-3.0.4.jar"       
-         	name="htrace-core-3.0.4.jar" mvn_uri="mvn:org.talend.libraries/htrace-core-3.0.4/6.0.0" 
-         	uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.2/lib/htrace-core-3.0.4.jar">
-    	</libraryNeeded>
-    	
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.hdp.2.2"
+            id="htrace-core-3.0.4.jar"       
+            name="htrace-core-3.0.4.jar"
+            mvn_uri="mvn:org.talend.libraries/htrace-core-3.0.4/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.2/lib/htrace-core-3.0.4.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="httpclient-4.3.4.jar"       
+            name="httpclient-4.3.4.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/httpclient-4.3.4.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="httpcore-4.3.2.jar"       
+            name="httpcore-4.3.2.jar"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/httpcore-4.3.2.jar">
+        </libraryNeeded>
+
     	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hadoop.cloudera.cdh5.4"
         	id="htrace-core-3.1.0-incubating.jar"       
@@ -2351,6 +2451,75 @@
 	             id="htrace-core-3.0.4.jar">
 	         </library>
 	    </libraryNeededGroup>
+
+        <libraryNeededGroup
+                description="The latest HDFS libraries for EMR 4.0.0"
+                id="HDFS-LIB-EMR_4_0_0_LATEST"
+                name="HDFS-LIB-EMR_4_0_0_LATEST"  >
+             <library
+                id="hadoop-common-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-hdfs-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-auth-emr400-latest">
+             </library>
+             <library
+                 id="avro-emr400-latest">
+             </library>
+             <library
+                 id="commons-configuration-1.6.jar">
+             </library>
+             <library
+                 id="commons-lang-2.6.jar">
+             </library>
+             <library
+                 id="commons-logging-1.1.3.jar">
+             </library>
+             <library
+                 id="commons-cli-1.2.jar">
+             </library>
+             <library
+                 id="commons-collections-3.2.1.jar">
+             </library>
+             <library
+                 id="commons-io-2.4.jar">
+             </library>
+             <library
+                 id="httpcore-4.3.2.jar">
+             </library>
+             <library
+                 id="httpclient-4.3.4.jar">
+             </library>
+             <library
+                 id="guava-11.0.2.jar">
+             </library>
+             <library
+                 id="protobuf-java-2.5.0.jar">
+             </library>
+             <library
+                 id="slf4j-api-1.7.5.jar">
+             </library>
+             <library
+                 id="slf4j-log4j12-1.7.5.jar">
+             </library>
+             <library
+                 id="log4j-1.2.17.jar">
+             </library>
+             <library
+                 id="jersey-core-1.9.jar">
+             </library>
+             <library
+                 id="jetty-util-emr400-latest">
+             </library>
+             <library
+                 id="emr-metrics-client-emr400-latest">
+             </library>             
+             <library
+                 id="htrace-core-3.0.4.jar">
+             </library>
+        </libraryNeededGroup>
 	    
 		<libraryNeededGroup
 	            description="The lastest HDFS libraries of MAPR40X"
@@ -2662,73 +2831,73 @@
 	         </library>
 	    </libraryNeededGroup>
 	    
-	    <libraryNeededGroup
-	            description="The lastest Map Reduce libraries of HDP 2.2"
-	            id="MAPREDUCE-LIB-HDP_2_2_LASTEST"
-	            name="MAPREDUCE-LIB-HDP_2_2_LASTEST" >
-	         <library
-	            id="hadoop-common-hdp2.2-lastest">
-	         </library>
-	         <library
-	             id="hadoop-hdfs-hdp2.2-lastest">
-	         </library>
-	         <library
-	             id="hadoop-auth-hdp2.2-lastest">
-	         </library>
-	         <library
-	            id="hadoop-mapreduce-client-common-hdp2.2-lastest">
-	         </library>
-	         <library
-	             id="hadoop-mapreduce-client-core-hdp2.2-lastest">
-	         </library>
-	         <library
-	             id="hadoop-mapreduce-client-jobclient-hdp2.2-lastest">
-	         </library>
-	         <library
-	            id="hadoop-yarn-api-hdp2.2-lastest">
-	         </library>
-	         <library
-	             id="hadoop-yarn-client-hdp2.2-lastest">
-	         </library>
-	         <library
-	             id="hadoop-yarn-common-hdp2.2-lastest">
-	         </library>
-	         <library
-	             id="avro-1.5.4.jar">
-	         </library>
-	         <library
-	             id="commons-configuration-1.6.jar">
-	         </library>
-	         <library
-	             id="commons-lang-2.6.jar">
-	         </library>
-	         <library
-	             id="commons-logging-1.1.3.jar">
-	         </library>
-	         <library
-	             id="commons-cli-1.2.jar">
-	         </library>
-	         <library
-	             id="commons-codec-1.4.jar">
-	         </library>
-	         <library
-	             id="commons-collections-3.2.1.jar">
-	         </library>
-	         <library
-	             id="guava-11.0.2.jar">
-	         </library>
-	         <library
-	             id="protobuf-java-2.5.0.jar">
-	         </library>
-	         <library
-	             id="slf4j-api-1.7.5.jar">
-	         </library>
-	         <library
-	             id="slf4j-log4j12-1.7.5.jar">
-	         </library>
-	         <library
-	             id="jackson-mapper-asl-1.9.13.jar">
-	         </library>
+        <libraryNeededGroup
+                description="The lastest Map Reduce libraries of HDP 2.2"
+                id="MAPREDUCE-LIB-HDP_2_2_LASTEST"
+                name="MAPREDUCE-LIB-HDP_2_2_LASTEST">
+             <library
+                id="hadoop-common-hdp2.2-lastest">
+             </library>
+             <library
+                 id="hadoop-hdfs-hdp2.2-lastest">
+             </library>
+             <library
+                 id="hadoop-auth-hdp2.2-lastest">
+             </library>
+             <library
+                id="hadoop-mapreduce-client-common-hdp2.2-lastest">
+             </library>
+             <library
+                 id="hadoop-mapreduce-client-core-hdp2.2-lastest">
+             </library>
+             <library
+                 id="hadoop-mapreduce-client-jobclient-hdp2.2-lastest">
+             </library>
+             <library
+                id="hadoop-yarn-api-hdp2.2-lastest">
+             </library>
+             <library
+                 id="hadoop-yarn-client-hdp2.2-lastest">
+             </library>
+             <library
+                 id="hadoop-yarn-common-hdp2.2-lastest">
+             </library>
+             <library
+                 id="avro-1.5.4.jar">
+             </library>
+             <library
+                 id="commons-configuration-1.6.jar">
+             </library>
+             <library
+                 id="commons-lang-2.6.jar">
+             </library>
+             <library
+                 id="commons-logging-1.1.3.jar">
+             </library>
+             <library
+                 id="commons-cli-1.2.jar">
+             </library>
+             <library
+                 id="commons-codec-1.4.jar">
+             </library>
+             <library
+                 id="commons-collections-3.2.1.jar">
+             </library>
+             <library
+                 id="guava-11.0.2.jar">
+             </library>
+             <library
+                 id="protobuf-java-2.5.0.jar">
+             </library>
+             <library
+                 id="slf4j-api-1.7.5.jar">
+             </library>
+             <library
+                 id="slf4j-log4j12-1.7.5.jar">
+             </library>
+             <library
+                 id="jackson-mapper-asl-1.9.13.jar">
+             </library>
              <library
                  id="jackson-core-asl-1.9.13.jar">
              </library>
@@ -2744,13 +2913,115 @@
              <library
                  id="jersey-core-1.9.jar">
              </library>
-	         <library
-	             id="log4j-1.2.17.jar">
-	         </library>
-	         <library
-	             id="htrace-core-3.0.4.jar">
-	         </library>
-	    </libraryNeededGroup>
+             <library
+                 id="log4j-1.2.17.jar">
+             </library>
+             <library
+                 id="htrace-core-3.0.4.jar">
+             </library>
+        </libraryNeededGroup>
+
+        <libraryNeededGroup
+                description="The latest Map Reduce libraries of EMR 4.0.0"
+                id="MAPREDUCE-LIB-EMR_4_0_0_LATEST"
+                name="MAPREDUCE-LIB-EMR_4_0_0_LATEST">
+             <library
+                id="hadoop-common-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-hdfs-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-auth-emr400-latest">
+             </library>
+             <library
+                id="hadoop-mapreduce-client-common-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-mapreduce-client-core-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-mapreduce-client-jobclient-emr400-latest">
+             </library>
+             <library
+                id="hadoop-yarn-api-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-yarn-client-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-yarn-common-emr400-latest">
+             </library>
+             <library
+                 id="avro-emr400-latest">
+             </library>
+             <library
+                 id="commons-configuration-1.6.jar">
+             </library>
+             <library
+                 id="commons-lang-2.6.jar">
+             </library>
+             <library
+                 id="commons-logging-1.1.3.jar">
+             </library>
+             <library
+                 id="commons-cli-1.2.jar">
+             </library>
+             <library
+                 id="commons-codec-1.4.jar">
+             </library>
+             <library
+                 id="commons-collections-3.2.1.jar">
+             </library>
+             <library
+                 id="httpcore-4.3.2.jar">
+             </library>
+             <library
+                 id="httpclient-4.3.4.jar">
+             </library>             
+             <library
+                 id="guava-11.0.2.jar">
+             </library>
+             <library
+                 id="protobuf-java-2.5.0.jar">
+             </library>
+             <library
+                 id="slf4j-api-1.7.5.jar">
+             </library>
+             <library
+                 id="slf4j-log4j12-1.7.5.jar">
+             </library>
+             <library
+                 id="jackson-mapper-asl-1.9.13.jar">
+             </library>
+             <library
+                 id="jackson-core-asl-1.9.13.jar">
+             </library>
+             <library
+                 id="jackson-jaxrs-1.9.13.jar">
+             </library>
+             <library
+                 id="jackson-xc-1.9.13.jar">
+             </library>    
+             <library
+                 id="jersey-client-1.9.jar">
+             </library>
+             <library
+                 id="jersey-core-1.9.jar">
+             </library>
+             <library
+                 id="log4j-1.2.17.jar">
+             </library>
+             <library
+                 id="jetty-util-emr400-latest">
+             </library>
+             <library
+                 id="emr-metrics-client-emr400-latest">
+             </library>                           
+             <library
+                 id="htrace-core-3.0.4.jar">
+             </library>
+        </libraryNeededGroup>
 	    
 		<libraryNeededGroup
 	            description="The lastest Map Reduce libraries of MAPR40X"
