@@ -499,7 +499,7 @@
                 }else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")||typeToGenerate.equals("java.lang.String") )
                 {
                 %>
-                context.<%=ctxParam.getName()%>=replaceEscapeChars((<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>"));
+                context.<%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
                 <%
                 }else if(typeToGenerate.equals("Character")&&ctxParam.getName()!=null)
                 {
