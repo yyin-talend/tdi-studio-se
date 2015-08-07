@@ -2470,6 +2470,15 @@
         <projecttask
               beforeLogon="false"
               breaks="6.0.0"
+              class="org.talend.repository.model.migration.CheckIncludeSeparatorOnTFileOutputPositional"
+              id="org.talend.repository.model.migration.CheckIncludeSeparatorOnTFileOutputPositional"
+              description="Keep using separator if exists within file headers written by tFileOutputPositional (MR, Spark, Spark Streaming)"
+              name="CheckIncludeSeparatorOnTFileOutputPositional"
+              version="6.0.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
               class="org.talend.repository.model.migration.ChangeDefaultSparkSerializer"
               id="org.talend.repository.model.migration.ChangeDefaultSparkSerializer"
               description="Change the default Spark serializer from Java to Kryo."
