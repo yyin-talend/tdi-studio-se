@@ -215,7 +215,9 @@ if("ORACLE_RAC".equals("<%=connectionType%>")||dbschema_<%=cid%> == null || dbsc
 if(("UPDATE").equals(data_action)) {
     %>
     String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-    tableName_<%=cid%> = "t_<%=cid.replaceFirst("tOracleOutputBulkExec","OOBE").replaceFirst("tOracleBulkExec","OBE").replaceFirst("_tOBE","")%>" + "_" + pid + Thread.currentThread().getId();  
+    
+    String uniqueTableName_<%=cid%> = "t" + java.util.UUID.randomUUID().toString().replace("-","").substring(0,28);
+    tableName_<%=cid%> = uniqueTableName_<%=cid%>;
     <%
 }
 %>
