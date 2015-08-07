@@ -698,84 +698,84 @@
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-common-emr400-latest"           
-            name="hadoop-common-2.6.0-amzn-0.jar"
+            name="hadoop-common-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-common-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-common-2.6.0-amzn-0.jar">
         </libraryNeeded>
         
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-hdfs-emr400-latest"           
-            name="hadoop-hdfs-2.6.0-amzn-0.jar"
+            name="hadoop-hdfs-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-hdfs-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-hdfs-2.6.0-amzn-0.jar">
         </libraryNeeded>
         
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-auth-emr400-latest"           
-            name="hadoop-auth-2.6.0-amzn-0.jar"
+            name="hadoop-auth-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-auth-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-auth-2.6.0-amzn-0.jar">
         </libraryNeeded>
         
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.mapr.4.0.1"
             id="avro-emr400-latest"       
-            name="avro-1.7.4.jar"
+            name="avro-1.7.4.jar" mvn_uri="mvn:org.talend.libraries/avro-1.7.4/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.0.1/lib/avro-1.7.4.jar">
         </libraryNeeded>
 
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-mapreduce-client-common-emr400-latest"           
-            name="hadoop-mapreduce-client-common-2.6.0-amzn-0.jar"
+            name="hadoop-mapreduce-client-common-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-mapreduce-client-common-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-mapreduce-client-common-2.6.0-amzn-0.jar">
         </libraryNeeded>
         
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-mapreduce-client-core-emr400-latest"           
-            name="hadoop-mapreduce-client-core-2.6.0-amzn-0.jar"
+            name="hadoop-mapreduce-client-core-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-mapreduce-client-core-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-mapreduce-client-core-2.6.0-amzn-0.jar">
         </libraryNeeded>
         
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-mapreduce-client-jobclient-emr400-latest"           
-            name="hadoop-mapreduce-client-jobclient-2.6.0-amzn-0.jar"
+            name="hadoop-mapreduce-client-jobclient-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-mapreduce-client-jobclient-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-mapreduce-client-jobclient-2.6.0-amzn-0.jar">
         </libraryNeeded>
 
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-yarn-api-emr400-latest"           
-            name="hadoop-yarn-api-2.6.0-amzn-0.jar"
+            name="hadoop-yarn-api-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-yarn-api-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-yarn-api-2.6.0-amzn-0.jar">
         </libraryNeeded>
         
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-yarn-client-emr400-latest"           
-            name="hadoop-yarn-client-2.6.0-amzn-0.jar"
+            name="hadoop-yarn-client-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-yarn-client-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-yarn-client-2.6.0-amzn-0.jar">
         </libraryNeeded>
         
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="hadoop-yarn-common-emr400-latest"           
-            name="hadoop-yarn-common-2.6.0-amzn-0.jar"
+            name="hadoop-yarn-common-2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hadoop-yarn-common-2.6.0-amzn-0/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hadoop-yarn-common-2.6.0-amzn-0.jar">
         </libraryNeeded>
 
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="jetty-util-emr400-latest"           
-            name="jetty-util-6.1.26-emr.jar"
+            name="jetty-util-6.1.26-emr.jar" mvn_uri="mvn:org.talend.libraries/jetty-util-6.1.26-emr/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/jetty-util-6.1.26-emr.jar">
         </libraryNeeded>
 
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="emr-metrics-client-emr400-latest"           
-            name="emr-metrics-client-2.0.0.jar">
+            name="emr-metrics-client-2.0.0.jar" mvn_uri="mvn:org.talend.libraries/emr-metrics-client-2.0.0/6.0.0">
         </libraryNeeded>        
 
     	<!-- MAPR 40X libraries-->
@@ -1338,14 +1338,14 @@
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="httpclient-4.3.4.jar"       
-            name="httpclient-4.3.4.jar"
+            name="httpclient-4.3.4.jar" mvn_uri="mvn:org.talend.libraries/httpclient-4.3.4/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/httpclient-4.3.4.jar">
         </libraryNeeded>
         
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="httpcore-4.3.2.jar"       
-            name="httpcore-4.3.2.jar"
+            name="httpcore-4.3.2.jar" mvn_uri="mvn:org.talend.libraries/httpcore-4.3.2/6.0.0"
             uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/httpcore-4.3.2.jar">
         </libraryNeeded>
 
