@@ -686,11 +686,13 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                                 SAPFunctionUnit function = (SAPFunctionUnit) obj;
                                 String functionName = (String) functionParam.getValue();
                                 if (function.getName().equals(functionName.substring(1, functionName.length() - 1))) {
-                                    String document = ModelElementHelper.getFirstDocument(function).getReference();
-                                    if (document != null && !"".equals(document)) { //$NON-NLS-1$
+                                    if (!function.getDocument().isEmpty()) {
+                                        String document = ModelElementHelper.getFirstDocument(function).getReference();
+                                        if (document != null && !"".equals(document)) { //$NON-NLS-1$
 
-                                        internalNodeHTMLMap.put(node.getUniqueName(),
-                                                document.substring(document.indexOf("<font"), document.indexOf("</body>"))); //$NON-NLS-1$ //$NON-NLS-2$
+                                            internalNodeHTMLMap.put(node.getUniqueName(),
+                                                    document.substring(document.indexOf("<font"), document.indexOf("</body>"))); //$NON-NLS-1$ //$NON-NLS-2$
+                                        }
                                     }
                                 }
 
