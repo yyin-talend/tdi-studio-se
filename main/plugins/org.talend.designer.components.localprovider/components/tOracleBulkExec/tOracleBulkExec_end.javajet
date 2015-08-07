@@ -28,7 +28,7 @@ if(("UPDATE").equals(dataAction)) {
         Manager manager = getManager(dbmsId, cid);
         %>
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
-        tmpTableName_<%=cid%> = "t_<%=cid.replaceFirst("tOracleOutputBulkExec","OOBE").replaceFirst("tOracleBulkExec","OBE").replaceFirst("_tOBE","")%>" + "_" + pid + Thread.currentThread().getId();
+        tmpTableName_<%=cid%> = uniqueTableName_<%=cid%>;
         java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
         <%if(isLog4jEnabled){%>
             log.info("<%=cid%> - Updating <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> from <%=manager.getLProtectedChar()%>"+tmpTableName_<%=cid%>+"<%=manager.getRProtectedChar()%>.");
@@ -37,7 +37,7 @@ if(("UPDATE").equals(dataAction)) {
         <%log4jCodeGenerateUtil.logInfo(node,"info",cid+" - Update has finished.");%>
         stmtUpdateBulk_<%=cid%>.close();
     }finally{
-        tableName_<%=cid%> = "t_<%=cid.replaceFirst("tOracleOutputBulkExec","OOBE").replaceFirst("tOracleBulkExec","OBE").replaceFirst("_tOBE","")%>" + "_" + pid + Thread.currentThread().getId();
+        tableName_<%=cid%> = uniqueTableName_<%=cid%>;
         java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
         <%if(isLog4jEnabled){%>
             log.info("<%=cid%> - Droping table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>.");
