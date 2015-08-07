@@ -6120,6 +6120,9 @@
 	            description="The lastest Impala libraries of CDH 5.4"
 	            id="IMPALA-LIB-CDH_5_4_LASTEST"
 	            name="IMPALA-LIB-CDH_5_4_LASTEST">
+             <library
+                id="hive-exec-cdh5.4-lastest">
+             </library>
 	         <library
 	            id="hive-metastore-cdh5.4-lastest">
 	         </library>
