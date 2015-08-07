@@ -40,6 +40,7 @@ public class CheckIncludeSeparatorOnTFileOutputPositional extends AbstractJobMig
         toReturn.add(ERepositoryObjectType.PROCESS_SPARK);
         toReturn.add(ERepositoryObjectType.PROCESS_SPARKSTREAMING);
         toReturn.add(ERepositoryObjectType.PROCESS_MR);
+        toReturn.add(ERepositoryObjectType.PROCESS_STORM);
         return toReturn;
     }
 
