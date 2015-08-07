@@ -161,8 +161,9 @@ public class PostgresGenerationManager extends DbGenerationManager {
             tempExp.append(REG_SPACE + columnLabel + REG_SPACE);
             sub.append(REG_REPLACE + i++ + getHandledField(columnLabel, true) + REG_REPLACE + i++);
         }
-        String exp = tempExp.toString().substring(0, tempExp.lastIndexOf(REG_SPACE));
-        exp = exp + "(?!\\w)(\\s*)";
+        String exp = tempExp.toString().substring(REG_SPACE.length());
+        exp = exp.toString().substring(0, exp.lastIndexOf(REG_SPACE));
+        exp = "\\b" + exp + "\\b"; //$NON-NLS-1$ //$NON-NLS-2$
 
         return new String[] { exp, sub.toString() };
     }
