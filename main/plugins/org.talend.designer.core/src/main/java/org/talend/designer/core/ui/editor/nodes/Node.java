@@ -3998,6 +3998,18 @@ public class Node extends Element implements IGraphicalNode {
         } else {
             parallelEnable = (Boolean) enableParallelizeParameter.getValue();
             if (parallelEnable) {
+            	
+            	// for bug TDI-33344.
+				for (IConnection connection : getOutgoingConnections()) {
+					if (connection.getLineStyle().hasConnectionCategory(
+							IConnectionCategory.FLOW)) {
+						Problems.add(
+								ProblemStatus.ERROR,
+								this,
+								Messages.getString("ParallelExecutionAction.noOutputLink")); //$NON-NLS-1$
+					}
+				}
+				
                 removeStatus(Process.PARALLEL_STATUS);
                 addStatus(Process.PARALLEL_STATUS);
             } else {
