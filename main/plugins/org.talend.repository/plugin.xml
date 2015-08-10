@@ -2552,6 +2552,15 @@
               name="RemoveProjectLibsFolder"
               version="6.0.1">
         </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.DisableUseBatchWhenRejectLineExists"
+              description="Disable use batch when reject line exists"
+              id="org.talend.repository.model.migration.DisableUseBatchWhenRejectLineExists"
+              name="DisableUseBatchWhenRejectLineExists"
+              version="6.0.1">
+        </projecttask>
    </extension>
 
    <extension
@@ -2766,5 +2775,3 @@
    </extension>
 
 </plugin>
-
-
