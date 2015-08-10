@@ -22,8 +22,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IElementParameter;
@@ -299,17 +301,21 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
         Map<ExportChoice, Object> exportChoiceMap = JobScriptsManagerFactory.getDefaultExportChoiceMap();
         exportChoiceMap.put(ExportChoice.needLauncher, false);
         exportChoiceMap.put(ExportChoice.needJobItem, false);
-        exportChoiceMap.put(ExportChoice.needJobScript, true);
-        exportChoiceMap.put(ExportChoice.needSourceCode, false);
+        // exportChoiceMap.put(ExportChoice.needJobScript, true); //?? for old build? no need
+        if (CommonsPlugin.isDebugMode()) {
+            exportChoiceMap.put(ExportChoice.needSourceCode, true);
+        } else {
+            exportChoiceMap.put(ExportChoice.needSourceCode, false);
+        }
         exportChoiceMap.put(ExportChoice.binaries, true);
         exportChoiceMap.put(ExportChoice.includeLibs, true);
 
         if (progressMonitor.isCanceled()) {
             throw new ProcessorException(new InterruptedException());
         }
-        final String archiveFilePath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore()
-                .getString(ITalendCorePrefConstants.FILE_PATH_TEMP))
-                + "/" + getFilePathPrefix() + "_" + process.getName() + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final String archiveFilePath = Path
+                .fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.FILE_PATH_TEMP))
+                .append(getFilePathPrefix() + '_' + process.getName() + FileExtensions.ZIP_FILE_SUFFIX).toString();
 
         try {
             exportChoiceMap.put(ExportChoice.needContext, true);
@@ -320,9 +326,9 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
                     JobExportType.POJO, progressMonitor);
         } catch (Exception e) {
             throw new ProcessorException(e);
+        } finally {
+            ProcessorUtilities.resetExportConfig();
         }
-
-        ProcessorUtilities.resetExportConfig();
         return archiveFilePath;
     }
 
@@ -341,7 +347,7 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
         log.debug("Job archive to clean: " + archive); //$NON-NLS-1$
         if (archive != null) {
             File archiveFile = new File(archive);
-            if (archiveFile != null && archiveFile.exists()) {
+            if (archiveFile != null && archiveFile.exists() && !CommonsPlugin.isDebugMode()) {
                 boolean success = archiveFile.delete();
                 if (success) {
                     log.debug("The job archive '" + archive + "' has been deleted successfully"); //$NON-NLS-1$ //$NON-NLS-2$

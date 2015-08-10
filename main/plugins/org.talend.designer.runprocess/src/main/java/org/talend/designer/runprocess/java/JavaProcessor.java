@@ -1173,9 +1173,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (jarFiles != null && jarFiles.length > 0) {
             for (File jarFile : jarFiles) {
                 if (jarFile.isFile() && neededLibraries.contains(jarFile.getName())) {
-                    libPath.append(libPrefixPath);
                     String singleLibPath = new Path(jarFile.getAbsolutePath()).toPortableString();
                     if (exportingJob) {
+                        libPath.append(libPrefixPath); // only for export.
                         singleLibPath = singleLibPath.replace(new Path(libDir.getAbsolutePath()).toPortableString(),
                                 getBaseLibPath());
                     }
