@@ -25,6 +25,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.service.IMRProcessService;
+import org.talend.core.service.IStormProcessService;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -88,9 +89,14 @@ public class UpdateContentProvider implements ITreeContentProvider {
                                         .getService(IMRProcessService.class);
                                 boolean isMR = mrProcessService.isMapReduceItem(processItem);
                                 job.setMR(isMR);
+                            } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IStormProcessService.class)) {
+                                IStormProcessService streamingService = (IStormProcessService) GlobalServiceRegister.getDefault()
+                                        .getService(IStormProcessService.class);
+                                job.setStreaming(streamingService.isStormItem(processItem));
                             } else if (processItem instanceof ProcessItem) {
                                 job.setJoblet(false);
                                 job.setMR(false);
+                                job.setStreaming(false);
                             } else if (processItem instanceof JobletProcessItem) {
                                 job.setJoblet(true);
                             }
@@ -99,6 +105,7 @@ public class UpdateContentProvider implements ITreeContentProvider {
                     } else {
                         job.setJoblet(result.isJoblet());
                         job.setMR(result.isMR());
+                        job.setStreaming(result.isStreaming());
                     }
                     jobs.add(job);
                 }
