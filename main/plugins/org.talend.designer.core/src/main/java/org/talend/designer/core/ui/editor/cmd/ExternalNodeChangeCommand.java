@@ -40,6 +40,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.service.IDQComponentService;
+import org.talend.core.service.ISparkMapService;
 import org.talend.core.service.IXmlMapService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -390,6 +391,14 @@ public class ExternalNodeChangeCommand extends Command {
                                 final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
                                         IXmlMapService.class);
                                 if (service.isXmlMapComponent(target.getExternalNode())) {
+                                    IODataComponent output = new IODataComponent(connection, dataComponent.getTable());
+                                    target.metadataInputChanged(output, connection.getUniqueName());
+                                }
+                            }
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(ISparkMapService.class)) {
+                                final ISparkMapService service = (ISparkMapService) GlobalServiceRegister.getDefault()
+                                        .getService(ISparkMapService.class);
+                                if (service.isSparkMapComponent(target.getExternalNode())) {
                                     IODataComponent output = new IODataComponent(connection, dataComponent.getTable());
                                     target.metadataInputChanged(output, connection.getUniqueName());
                                 }

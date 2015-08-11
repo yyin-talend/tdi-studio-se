@@ -41,6 +41,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.service.IDbMapService;
+import org.talend.core.service.ISparkMapService;
 import org.talend.core.service.IXmlMapService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -495,8 +496,14 @@ public class ChangeMetadataCommand extends Command {
                             final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
                                     IXmlMapService.class);
                             if (service.isXmlMapComponent(target.getExternalNode())) {
-                                // IODataComponent output = new IODataComponent(outgoingConnection,
-                                // relativeNewOutputMetadata);
+                                output.setColumnNameChanged(columnNameChanges);
+                                target.metadataInputChanged(output, outgoingConnection.getName());
+                            }
+                        }
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(ISparkMapService.class)) {
+                            final ISparkMapService service = (ISparkMapService) GlobalServiceRegister.getDefault().getService(
+                                    ISparkMapService.class);
+                            if (service.isSparkMapComponent(target.getExternalNode())) {
                                 output.setColumnNameChanged(columnNameChanges);
                                 target.metadataInputChanged(output, outgoingConnection.getName());
                             }

@@ -74,6 +74,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.ISparkMapService;
 import org.talend.core.service.IXmlMapService;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -3016,6 +3017,14 @@ public class DataProcess implements IGeneratingProcess {
                 final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
                         IXmlMapService.class);
                 if (service != null && service.isXmlMapComponent(graphicalNode.getExternalNode())) {
+                    newGraphicalNode.getExternalNode().setExternalEmfData(service.externalEmfDataClone(externalEmfData));
+                    alreadySet = true;
+                }
+            }
+            if (isOriginalNode && GlobalServiceRegister.getDefault().isServiceRegistered(ISparkMapService.class)) {
+                final ISparkMapService service = (ISparkMapService) GlobalServiceRegister.getDefault().getService(
+                        ISparkMapService.class);
+                if (service != null && service.isSparkMapComponent(graphicalNode.getExternalNode())) {
                     newGraphicalNode.getExternalNode().setExternalEmfData(service.externalEmfDataClone(externalEmfData));
                     alreadySet = true;
                 }
