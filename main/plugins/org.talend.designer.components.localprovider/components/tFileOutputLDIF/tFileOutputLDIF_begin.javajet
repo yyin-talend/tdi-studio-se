@@ -159,8 +159,22 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                     return !isSafeUTF8String(distinguishedName) || !consistOfSafeCharacters(bytArr);
                 }
 
+                public boolean asciiCharactersOnly(String str){
+                       char[] charArr = str.toCharArray();
+                       for(char x: charArr){
+                                if(x < 0 || x > 127){
+                                    return false;
+                                }
+                            }
+                       return true;
+                }
+
                 //Reference: http://www.ietf.org/rfc/rfc2253.txt
                 public boolean needBase64ForDN(String dn){
+                    if(!asciiCharactersOnly(dn)){
+                        return true;
+                    }
+
                     String[] splitByComma = dn.replace("\\,", "").split(",");
                     for(String str: splitByComma){
                         String[] splitByPlus = str.replace("\\+", "").split("\\+");
