@@ -815,8 +815,36 @@
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="talend-spark-assembly-emr400-latest"       
-            name="talend-spark-assembly-1.4.1-hadoop2.6.0-amzn-0.jar">
-        </libraryNeeded>                          
+            name="talend-spark-assembly-1.4.1-hadoop2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/talend-spark-assembly-1.4.1-hadoop2.6.0-amzn-0/6.0.0">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hive-metastore-emr400-latest"       
+            name="hive-metastore-1.0.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hive-metastore-1.0.0-amzn-0/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hive-metastore-1.0.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hive-jdbc-emr400-latest"       
+            name="hive-jdbc-1.0.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hive-jdbc-1.0.0-amzn-0/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hive-jdbc-1.0.0-amzn-0.jar">
+        </libraryNeeded>
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
+            id="hive-service-emr400-latest"       
+            name="hive-service-1.0.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/hive-service-1.0.0-amzn-0/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.emr.4.0.0/lib/hive-service-1.0.0-amzn-0.jar">
+        </libraryNeeded>                                        
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.zookeeper"
+            id="zookeeper-emr400-latest"       
+            name="zookeeper-3.4.5.jar" mvn_uri="mvn:org.talend.libraries/zookeeper-3.4.5/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.zookeeper/lib/zookeeper-3.4.5.jar">
+        </libraryNeeded>                                  
 
     	<!-- MAPR 40X libraries-->
     	<libraryNeeded
@@ -2491,6 +2519,15 @@
 	             id="htrace-core-3.0.4.jar">
 	         </library>
 	    </libraryNeededGroup>
+	    
+	    <libraryNeededGroup
+                description="The latest Avro libraries for EMR 4.0.0"
+                id="AVRO-LIB-EMR_4_0_0_LATEST"
+                name="AVRO-LIB-EMR_4_0_0_LATEST"  >
+             <library
+                id="avro-emr400-latest">
+             </library>
+        </libraryNeededGroup>
 
         <libraryNeededGroup
                 description="The latest HDFS libraries for EMR 4.0.0"
@@ -5738,38 +5775,170 @@
              </library>
              <library
                  id="jersey-core-1.9.jar">
-             </library>	      
-	         <library
-	             id="log4j-1.2.17.jar">
-	         </library>
-	         <library
-	             id="commons-io-2.4.jar">
-	         </library>
-	         <library
-	             id="antlr-runtime-3.4.jar">
-	         </library>
-	         <library
-	             id="datanucleus-api-jdo-3.2.1.jar">
-	         </library>
-	         <library
-	             id="datanucleus-core-3.2.2.jar">
-	         </library>
-	         <library
-	             id="datanucleus-rdbms-3.2.1.jar">
-	         </library>
-	         <library
-	             id="derby-10.4.2.0.jar">
-	         </library>
-	         <library
-	             id="zookeeper-hdp2.2-lastest">
-	         </library>
-	         <library
-	             id="curator-framework-2.6.0.jar">
-	         </library>
-	         <library
-	             id="curator-client-2.6.0.jar">
-	         </library>
-	    </libraryNeededGroup>
+             </library>       
+             <library
+                 id="log4j-1.2.17.jar">
+             </library>
+             <library
+                 id="commons-io-2.4.jar">
+             </library>
+             <library
+                 id="antlr-runtime-3.4.jar">
+             </library>
+             <library
+                 id="datanucleus-api-jdo-3.2.1.jar">
+             </library>
+             <library
+                 id="datanucleus-core-3.2.2.jar">
+             </library>
+             <library
+                 id="datanucleus-rdbms-3.2.1.jar">
+             </library>
+             <library
+                 id="derby-10.4.2.0.jar">
+             </library>
+             <library
+                 id="zookeeper-hdp2.2-lastest">
+             </library>
+             <library
+                 id="curator-framework-2.6.0.jar">
+             </library>
+             <library
+                 id="curator-client-2.6.0.jar">
+             </library>
+        </libraryNeededGroup>
+        
+        <libraryNeededGroup
+                description="The latest Hive libraries for EMR 4.0.0"
+                id="HIVE-LIB-EMR_4_0_0_LATEST"
+                name="HIVE-LIB-EMR_4_0_0_LATEST">
+             <library
+                id="hive-metastore-emr400-latest">
+             </library>
+             <library
+                id="hive-exec-emr400-latest">
+             </library>
+             <library
+                id="hive-jdbc-emr400-latest">
+             </library>
+             <library
+                id="hive-service-emr400-latest">
+             </library>
+             <library
+                id="hive-serde-emr400-latest">
+             </library>
+             <library
+                 id="jdo-api-3.0.1.jar">
+             </library>
+             <library
+                 id="libthrift-0.9.0.jar">
+             </library>
+             <library
+                 id="libfb303-0.9.0.jar">
+             </library>
+             <library
+                 id="guava-11.0.2.jar">
+             </library>
+             <library
+                id="hadoop-common-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-hdfs-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-auth-emr400-latest">
+             </library>
+             <library
+                id="hadoop-mapreduce-client-common-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-mapreduce-client-core-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-mapreduce-client-jobclient-emr400-latest">
+             </library>
+             <library
+                id="hadoop-yarn-api-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-yarn-client-emr400-latest">
+             </library>
+             <library
+                 id="hadoop-yarn-common-emr400-latest">
+             </library>
+             <library
+                 id="avro-emr400-latest">
+             </library>
+             <library
+                 id="commons-configuration-1.6.jar">
+             </library>
+             <library
+                 id="commons-httpclient-3.0.1.jar">
+             </library>
+             <library
+                 id="httpcore-4.2.5.jar">
+             </library>
+             <library
+                 id="httpclient-4.2.5.jar">
+             </library>
+             <library
+                 id="commons-lang-2.6.jar">
+             </library>
+             <library
+                 id="commons-logging-1.1.3.jar">
+             </library>
+             <library
+                 id="commons-cli-1.2.jar">
+             </library>
+             <library
+                 id="commons-codec-1.4.jar">
+             </library>
+             <library
+                 id="commons-collections-3.2.1.jar">
+             </library>
+             <library
+                 id="slf4j-api-1.7.5.jar">
+             </library>
+             <library
+                 id="slf4j-log4j12-1.7.5.jar">
+             </library>
+             <library
+                 id="log4j-1.2.17.jar">
+             </library>
+             <library
+                 id="commons-io-2.4.jar">
+             </library>
+             <library
+                 id="antlr-runtime-3.4.jar">
+             </library>
+             <library
+                 id="datanucleus-api-jdo-3.2.6.jar">
+             </library>
+             <library
+                 id="datanucleus-core-3.2.10.jar">
+             </library>
+             <library
+                 id="datanucleus-rdbms-3.2.9.jar">
+             </library>
+             <library
+                 id="derby-10.11.1.1.jar">
+             </library>
+             <library
+                 id="zookeeper-emr400-latest">
+             </library>
+             <library
+                 id="curator-framework-2.6.0.jar">
+             </library>
+             <library
+                 id="curator-client-2.6.0.jar">
+             </library>
+             <library
+                 id="emr-metrics-client-emr400-latest">
+             </library>
+             <library
+                 id="htrace-core-3.0.4.jar">
+             </library>
+        </libraryNeededGroup>        
 	    
 	    <libraryNeededGroup
 	            description="The lastest Hive libraries of MAPR40X"
