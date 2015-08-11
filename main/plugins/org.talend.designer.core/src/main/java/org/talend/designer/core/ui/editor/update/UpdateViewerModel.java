@@ -40,6 +40,8 @@ class Job {
 
     private boolean isMR = true;
 
+    private boolean isStreaming = true;
+
     private boolean readOnlyProcess = false;
 
     private org.talend.core.model.properties.Item modelItem;
@@ -98,6 +100,14 @@ class Job {
 
     public void setMR(boolean isMR) {
         this.isMR = isMR;
+    }
+
+    public boolean isStreaming() {
+        return this.isStreaming;
+    }
+
+    public void setStreaming(boolean isStreaming) {
+        this.isStreaming = isStreaming;
     }
 
     /**
