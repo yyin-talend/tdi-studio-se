@@ -520,6 +520,12 @@ public class LoginHelper {
                         brancesList.addAll(Arrays.asList(branchList));
                     }
 
+                }else if(!p.isLocal() && !svnProviderService.isSVNProject(p)) {
+                    brancesList.add(GITConstant.NAME_TRUNK);
+                    String[] branchList = svnProviderService.getBranchList(p);
+                    if (branchList != null) {
+                        brancesList.addAll(Arrays.asList(branchList));
+                    }
                 }
             } catch (PersistenceException e) {
                 CommonExceptionHandler.process(e);
