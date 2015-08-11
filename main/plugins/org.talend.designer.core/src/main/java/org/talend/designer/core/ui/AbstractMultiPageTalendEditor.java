@@ -627,8 +627,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 IFile file = (IFile) jobletEditor.getEditorInput().getAdapter(IResource.class);
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
                 if (file.exists()) {
-                    jobletEditor.getDocumentProvider()
-                            .getDocument(jobletEditor.getEditorInput()).set(scriptValue);
+                    jobletEditor.getDocumentProvider().getDocument(jobletEditor.getEditorInput()).set(scriptValue);
                     boolean isReadjob = ((JobEditorInput) getEditor(0).getEditorInput()).checkReadOnly();
 
                     IProxyRepositoryFactory rFactory = ProxyRepositoryFactory.getInstance();
@@ -698,9 +697,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             Item item = oldProcess.getProperty().getItem();
             ProcessType processType = null;
             if (item instanceof ProcessItem) {
-                processType = n.convertDesignerEditorInput(
-                        ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                        oldProcess.getProperty());
+                processType = n.convertDesignerEditorInput(((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class))
+                        .getLocation().toOSString(), oldProcess.getProperty());
             } else if (item instanceof JobletProcessItem) {
                 processType = n.convertJobletDesignerEditorInput(
                         ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
@@ -1398,6 +1396,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             isVirtualNode = CorePlugin.getDefault().getMapperService().isVirtualComponent(node);
         } else if (node.getUniqueName().startsWith("tXMLMap")) { //$NON-NLS-1$
             isVirtualNode = CorePlugin.getDefault().getXMLMapperService().isVirtualComponent(node);
+        } else if (node.getUniqueName().startsWith("tAvroMap")) { //$NON-NLS-1$
+            isVirtualNode = CorePlugin.getDefault().getSparkMapperService().isVirtualComponent(node);
         } else {
             List<IMultipleComponentManager> multipleComponentManagers = node.getComponent().getMultipleComponentManagers();
             for (IMultipleComponentManager mcm : multipleComponentManagers) {
