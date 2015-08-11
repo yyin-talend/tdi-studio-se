@@ -173,7 +173,7 @@
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 
 					%>					
-						if(value<%=cid %>[<%=valueN%>].length() > 0) {
+						if(value<%=cid %>[<%=valueN%>]!=null && value<%=cid %>[<%=valueN%>].length() > 0) {
 							<%
 							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 								/** end **/
