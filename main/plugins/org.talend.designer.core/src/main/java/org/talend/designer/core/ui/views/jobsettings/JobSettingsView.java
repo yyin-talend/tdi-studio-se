@@ -45,6 +45,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -451,6 +452,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             if (this.element != null && this.element instanceof IProcess) {
                 if (((IProcess2) this.element).disableRunJobView()) { // ?? joblet
                     icon = ImageProvider.getImage(ECoreImage.JOBLET_ICON);
+                } else if (ProcessUtils.isTestContainer(process)) {
+                    icon = ImageProvider.getImage(ECoreImage.TEST_CONTAINER);
                 } else if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
                     icon = ImageProvider.getImage(EJobSettingImage.PROCESS_MR_ICON_X16);
                 } else if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())) {
