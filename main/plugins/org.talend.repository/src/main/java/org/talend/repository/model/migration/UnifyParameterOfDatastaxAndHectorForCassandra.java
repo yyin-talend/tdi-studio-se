@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -66,14 +66,18 @@ public class UnifyParameterOfDatastaxAndHectorForCassandra extends AbstractAllJo
 
                 ElementParameterType cf = ComponentUtilities.getNodeProperty(node, "TABLE"); //$NON-NLS-1$
                 if (cf != null) {
-                    ComponentUtilities.addNodeProperty(node, "COLUMN_FAMILY", "TEXT"); //$NON-NLS-1$ //$NON-NLS-2$
-                    ComponentUtilities.setNodeValue(node, "COLUMN_FAMILY", cf.getValue()); //$NON-NLS-1$ 
+                    if (ComponentUtilities.getNodeProperty(node, "COLUMN_FAMILY") == null) { //$NON-NLS-1$
+                        ComponentUtilities.addNodeProperty(node, "COLUMN_FAMILY", "TEXT"); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                    ComponentUtilities.getNodeProperty(node, "COLUMN_FAMILY").setValue(cf.getValue()); //$NON-NLS-1$ 
                 }
 
                 ElementParameterType actionForCF = ComponentUtilities.getNodeProperty(node, "TABLE_ACTION"); //$NON-NLS-1$
                 if (actionForCF != null) {
-                    ComponentUtilities.addNodeProperty(node, "ACTION_ON_COLUMN_FAMILY", "TEXT"); //$NON-NLS-1$ //$NON-NLS-2$
-                    ComponentUtilities.setNodeValue(node, "ACTION_ON_COLUMN_FAMILY", actionForCF.getValue()); //$NON-NLS-1$ 
+                    if (ComponentUtilities.getNodeProperty(node, "ACTION_ON_COLUMN_FAMILY") == null) { //$NON-NLS-1$
+                        ComponentUtilities.addNodeProperty(node, "ACTION_ON_COLUMN_FAMILY", "TEXT"); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                    ComponentUtilities.getNodeProperty(node, "ACTION_ON_COLUMN_FAMILY").setValue(actionForCF.getValue()); //$NON-NLS-1$ 
                 }
 
             }

@@ -681,6 +681,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             case LOOKUP_COLUMN_LIST:
                             case PREV_COLUMN_LIST:
                             case DBTYPE_LIST:
+                                // case OPENED_LIST:
                                 if (hideValue) {
                                     return "";//$NON-NLS-1$
                                 }
@@ -704,6 +705,35 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                     return namesSet[(Integer) value];
                                 }
                                 return null;
+                            case OPENED_LIST:
+                                if (hideValue) {
+                                    return "";//$NON-NLS-1$
+                                }
+                                String[] listItemsValue = tmpParam.getListItemsDisplayName();
+                                if (listItemsValue.length == 0) {
+                                    return tmpParam.getDefaultClosedListValue();
+                                }
+                                if (value instanceof String) {
+                                    boolean found = false;
+                                    int index = -1;
+                                    Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+                                    for (int j = 0; j < items.length && !found; j++) {
+                                        if (items[j].equals(value)) {
+                                            found = true;
+                                            index = j;
+                                        }
+                                    }
+                                    Integer count = new Integer(index);
+                                    if (count != null && count >= 0) {
+                                        return listItemsValue[count];
+                                    } else if (count != null && count < 0) {
+                                        return value;
+                                    }
+                                    if (value != null && ((Integer) value) >= 0) {
+                                        return listItemsValue[(Integer) value];
+                                    }
+                                    return value;
+                                }
                             case CHECK:
                                 if (hideValue) {
                                     return false;
@@ -793,6 +823,25 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 }
                                 if (value != null && (index >= 0)) {
                                     finalValue = itemValues[new Integer(index)];
+                                }
+                            }
+                            break;
+                        case OPENED_LIST:
+                            if (value instanceof String) {
+                                Object[] itemNames = ((IElementParameter) itemsValue[curCol]).getListItemsDisplayName();
+                                Object[] itemValues = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+                                boolean found = false;
+                                int index = -1;
+                                for (int j = 0; j < itemNames.length && !found; j++) {
+                                    if (itemNames[j].equals(value)) {
+                                        found = true;
+                                        index = j;
+                                    }
+                                }
+                                if (value != null && (index >= 0)) {
+                                    finalValue = itemValues[new Integer(index)];
+                                } else if (value != null && (index < 0)) {
+                                    finalValue = value;
                                 }
                             }
                             break;

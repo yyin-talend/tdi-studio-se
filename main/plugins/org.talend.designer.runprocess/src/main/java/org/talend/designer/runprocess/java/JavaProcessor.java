@@ -16,6 +16,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -555,6 +556,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
             // format the code before save the file.
             final String toFormat = processCode;
+            writeToFile(toFormat, "1-beforeFormat");
             // fix for 21320
             final Job job = new Job("t") { //$NON-NLS-1$
 
@@ -562,6 +564,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 protected IStatus run(IProgressMonitor monitor) {
                     monitor.beginTask("Format code", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     formatedCode = formatCode(toFormat);
+                    writeToFile(formatedCode, "2-afterFormat");
                     monitor.done();
                     return Status.OK_STATUS;
                 }
@@ -641,33 +644,53 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
+    private void writeToFile(String contents, String fileBaseName) {
+        File dir = new File(System.getProperty("user.dir"), "--Format"); //$NON-NLS-1$
+        dir.mkdirs();
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(new File(dir, this.getProcess().getName() + '_' + fileBaseName));
+            fw.write(contents);
+            fw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                    //
+                }
+            }
+        }
+    }
+
     /**
      * DOC nrousseau Comment method "formatCode".
+     * 
+     * from SourceViewer.doOperation for FORMAT.
      * 
      * @param processCode
      * @return
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     private String formatCode(String processCode) {
-        IDocument document = new Document(processCode);
-
         // we cannot make calls to Ui in headless mode
         if (CommonsPlugin.isHeadless()) {
-            return document.get();
+            return processCode; // nothing to do
         }
+        final IDocument document = new Document(processCode);
 
         JavaTextTools tools = JavaPlugin.getDefault().getJavaTextTools();
         tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
 
         IFormattingContext context = null;
         DocumentRewriteSession rewriteSession = null;
-
-        IDocumentExtension4 extension = (IDocumentExtension4) document;
-        DocumentRewriteSessionType type = DocumentRewriteSessionType.SEQUENTIAL;
-        rewriteSession = extension.startRewriteSession(type);
+        if (document instanceof IDocumentExtension4) {
+            rewriteSession = ((IDocumentExtension4) document).startRewriteSession(DocumentRewriteSessionType.SEQUENTIAL);
+        }
 
         try {
-
             final String rememberedContents = document.get();
 
             try {
@@ -684,8 +707,15 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
                 context = new FormattingContext();
                 context.setProperty(FormattingContextProperties.CONTEXT_DOCUMENT, Boolean.TRUE);
-                Map map = new HashMap(JavaCore.getOptions());
-                context.setProperty(FormattingContextProperties.CONTEXT_PREFERENCES, map);
+
+                Map<String, String> preferences;
+                if (this.getTalendJavaProject() == null) {
+                    preferences = new HashMap<String, String>(JavaCore.getOptions());
+                } else { // use project options
+                    preferences = new HashMap<String, String>(this.getTalendJavaProject().getJavaProject().getOptions(true));
+                }
+                context.setProperty(FormattingContextProperties.CONTEXT_PREFERENCES, preferences);
+
                 formatter.format(document, context);
             } catch (RuntimeException x) {
                 // fire wall for
@@ -697,7 +727,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
 
         } finally {
-            extension.stopRewriteSession(rewriteSession);
+            if (rewriteSession != null && document instanceof IDocumentExtension4) {
+                ((IDocumentExtension4) document).stopRewriteSession(rewriteSession);
+            }
             if (context != null) {
                 context.dispose();
             }

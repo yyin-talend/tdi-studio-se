@@ -100,6 +100,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
+import org.talend.repository.ui.dialog.OverTimePopupDialogTask;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.login.sandboxProject.CreateSandboxProjectDialog;
@@ -1312,7 +1313,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     protected void validateUpdate() throws JSONException {
-        ConnectionBean currentBean = getConnection();
+        final ConnectionBean currentBean = getConnection();
         String repositoryId = null;
         // at 1st time open the studio there are no bean at all,so need avoid NPE
         if (currentBean != null) {
@@ -1326,7 +1327,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     errorManager.setErrMessage(Messages.getString("LoginProjectPage.archivaFinish")); //$NON-NLS-1$
                     changeFinishButtonAction(FINISH_ACTION_RESTART);
                 } else {
-                    boolean needUpdate = LoginHelper.isStudioNeedUpdate(currentBean);
+                    OverTimePopupDialogTask<Boolean> overTimePopupDialogTask = new OverTimePopupDialogTask<Boolean>() {
+
+                        @Override
+                        public Boolean run() throws Throwable {
+                            return LoginHelper.isStudioNeedUpdate(currentBean);
+                        }
+                    };
+                    overTimePopupDialogTask.setNeedWaitingProgressJob(false);
+                    boolean needUpdate = overTimePopupDialogTask.runTask();
+
                     if (needUpdate && isWorkSpaceSame()) {
                         refreshProjectOperationAreaEnable(false);
                         errorManager.setErrMessage(Messages.getString("LoginProjectPage.updateArchiva")); //$NON-NLS-1$
@@ -1338,6 +1348,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             CommonExceptionHandler.process(e);
         } catch (SystemException e) {
             updateArchivaErrorButton();
+        } catch (Throwable e) {
+            CommonExceptionHandler.process(e);
         }
     }
 

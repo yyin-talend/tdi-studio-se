@@ -432,7 +432,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     }else{
 %>						
 						if(cell_<%=cid%>.getType().equals(jxl.CellType.NUMBER)){
-							temp_row_<%= cid %>[i] = (String.valueOf(((jxl.NumberCell) cell_<%=cid%>).getValue()));
+							temp_row_<%= cid %>[i] = (String.valueOf(df_<%=cid %>.format(((jxl.NumberCell) cell_<%=cid%>).getValue())));
 						}else{
 							temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
 						}
@@ -1354,11 +1354,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if(current_<%=cid%> <= actual_end_column_<%= cid %>){
 				if(current_<%=cid%> < row_<%=cid%>.size()){
 					String column_<%=cid%> = row_<%=cid%>.get(current_<%=cid%>);
+				<%
+				if(hasDynamic){
+				%>
 					if(column_<%=cid%>.matches(datePatternExp)){
 						SimpleDateFormat baseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 						SimpleDateFormat dateFormat = new SimpleDateFormat(<%= datePattern %>);
 						column_<%=cid%> = dateFormat.format(baseDateFormat.parse(column_<%=cid%>));
 					}
+				<%
+				}
+				%>
 					if(column_<%=cid%>!=null) {
 						temp_row_<%= cid %>[i_<%=cid%>] = column_<%=cid%>;
 					} else {

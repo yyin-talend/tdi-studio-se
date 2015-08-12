@@ -56,7 +56,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     if (item != null) {
                         image = CoreImageProvider.getIcon(item);
                     } else {
-                        if (job.isMR()) {
+                        if (job.isMR() || job.isStreaming()) {
                             for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
                                 String alias = type.getAlias();
                                 if (alias != null && alias.equals("HC")) {
@@ -99,6 +99,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                         case MAP_PATH:
                             image = getImageFromNode(category.getNode());
                             break;
+                        case JOB_PROPERTY_STORM:
                         case JOB_PROPERTY_MAPREDUCE:
                             for (ERepositoryObjectType etype : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
                                 String alias = etype.getAlias();
@@ -131,6 +132,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     case NODE_VALIDATION_RULE:
                     case JOB_PROPERTY_EXTRA:
                     case JOB_PROPERTY_STATS_LOGS:
+                    case JOB_PROPERTY_STORM:
                     case JOB_PROPERTY_MAPREDUCE:
                         ERepositoryObjectType type = RepositoryUpdateManager.getTypeFromSource(item.getRemark());
                         if (type != null) {
@@ -190,8 +192,8 @@ public class UpdateLabelProvider implements ITableLabelProvider {
             } else if (isCategory) {
                 return ((Category) element).getName();
             } else if (element instanceof Item) {
-                if (((Item) element).getResultObject().isMR()) {
-                    return "Hadoop Configuration";//$NON-NLS-1$
+                if (((Item) element).getResultObject().isMR() || ((Item) element).getResultObject().isStreaming()) {
+                    return "Configuration";//$NON-NLS-1$
                 }
                 return ((Item) element).getProperty();
             }

@@ -484,7 +484,17 @@ public class LoginHelper {
 
         if (initialized) {
             try {
-                projects = repositoryFactory.readProject();
+
+                OverTimePopupDialogTask<Project[]> overTimePopupDialogTask = new OverTimePopupDialogTask<Project[]>() {
+
+                    @Override
+                    public Project[] run() throws Throwable {
+                        return ProxyRepositoryFactory.getInstance().readProject();
+                    }
+                };
+                overTimePopupDialogTask.setNeedWaitingProgressJob(false);
+                projects = overTimePopupDialogTask.runTask();
+
                 Arrays.sort(projects, new Comparator<Project>() {
 
                     @Override
@@ -499,6 +509,11 @@ public class LoginHelper {
                 MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
                         Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
             } catch (BusinessException e) {
+                projects = new Project[0];
+
+                MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+            } catch (Throwable e) {
                 projects = new Project[0];
 
                 MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$

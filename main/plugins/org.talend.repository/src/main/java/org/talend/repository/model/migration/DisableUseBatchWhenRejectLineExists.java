@@ -15,73 +15,77 @@ package org.talend.repository.model.migration;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
-import org.talend.core.model.migration.AbstractAllJobMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.Item;
+import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
-/**
- * created by bchen on Jul 20, 2015 Detailled comment
- *
- */
-public class ChangeDefaultValueForCassandraAPIVersion extends AbstractAllJobMigrationTask {
+
+public class DisableUseBatchWhenRejectLineExists extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.migration.IMigrationTask#getOrder()
      */
     @Override
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2015, 6, 20, 12, 0, 0);
-        return gc.getTime();
+        return new GregorianCalendar(2015, 8, 10, 12, 0, 0).getTime();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.migration.AbstractItemMigrationTask#execute(org.talend.core.model.properties.Item)
      */
     @Override
     public ExecutionResult execute(Item item) {
-        final ProcessType processType = getProcessType(item);
-        String[] compNames = { "tCassandraConnection", "tCassandraInput", "tCassandraOutput", "tCassandraRow" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+        ProcessType processType = getProcessType(item);
 
-        IComponentConversion conversion = new IComponentConversion() {
+        if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
+            return ExecutionResult.NOTHING_TO_DO;
+        }
 
-            @Override
+        List<String> filterList = Arrays.asList("tFirebirdOutput", "tGreenplumOutput", "tIngresOutput", "tInterbaseOutput", "tParAccelOutput", "tPostgresPlusOutput", "tSQLiteOutput");
+
+        IComponentConversion disableUseBatchWhenRejectLineExists = new IComponentConversion() {
             public void transform(NodeType node) {
-                if (node == null) {
-                    return;
-                }
-
-                ElementParameterType parameter = ComponentUtilities.getNodeProperty(node, "API_TYPE"); //$NON-NLS-1$
-
-                if (parameter == null) {
-                    ComponentUtilities.addNodeProperty(node, "API_TYPE", "CLOSED_LIST"); //$NON-NLS-1$ //$NON-NLS-2$
-                    ComponentUtilities.setNodeValue(node, "API_TYPE", "HECTOR"); //$NON-NLS-1$ //$NON-NLS-2$
+                ElementParameterType useBatch = ComponentUtilities.getNodeProperty(node, "USE_BATCH");
+                List<ConnectionType> list = ComponentUtilities.getNodeOutputConnections(node);
+                for(ConnectionType connType : list){
+                    EConnectionType eConnType = EConnectionType.getTypeFromId(
+                                                  connType.getLineStyle()
+                                                 );
+                    if(eConnType == EConnectionType.FLOW_MAIN && connType.getConnectorName().equals("REJECT")){
+                        if(useBatch ==  null){
+                             ComponentUtilities.addNodeProperty(node, "USE_BATCH", "CHECK");
+                        }
+                             ComponentUtilities.getNodeProperty(node, "USE_BATCH").setValue("false");
+                        break;
+                    }
                 }
             }
-
         };
 
-        for (String name : compNames) {
-            IComponentFilter filter = new NameComponentFilter(name);
-
+        for (String componentName : filterList) {
+            IComponentFilter filter = new NameComponentFilter(componentName);
             try {
                 ModifyComponentsAction.searchAndModify(item, processType, filter,
-                        Arrays.<IComponentConversion> asList(conversion));
+                        Arrays.<IComponentConversion> asList(disableUseBatchWhenRejectLineExists));
             } catch (PersistenceException e) {
-                // TODO Auto-generated catch block
                 ExceptionHandler.process(e);
                 return ExecutionResult.FAILURE;
             }
@@ -89,5 +93,4 @@ public class ChangeDefaultValueForCassandraAPIVersion extends AbstractAllJobMigr
 
         return ExecutionResult.SUCCESS_NO_ALERT;
     }
-
 }

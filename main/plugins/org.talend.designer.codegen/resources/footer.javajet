@@ -160,6 +160,18 @@
         exist_tSalesforce = true;
     }
 
+    boolean exist_tSAP= false;
+    List<INode> sapComponentsList = (List<INode>)process.getNodesOfType("tSAPConnection");
+    if (sapComponentsList.size() > 0) {
+        exist_tSAP = true;
+    }
+
+    boolean exist_tGS= false;
+    List<INode> gsComponentsList = (List<INode>)process.getNodesOfType("tGSConnection");
+    if (gsComponentsList.size() > 0) {
+        exist_tGS = true;
+    }
+
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -493,7 +505,7 @@
                 }else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")||typeToGenerate.equals("java.lang.String") )
                 {
                 %>
-                context.<%=ctxParam.getName()%>=replaceEscapeChars((<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>"));
+                context.<%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
                 <%
                 }else if(typeToGenerate.equals("Character")&&ctxParam.getName()!=null)
                 {
@@ -864,6 +876,9 @@ if (execStat) {
 <% if (exist_tEXist) { %>
     closeEXistConnections();
 <% } %>
+<% if (exist_tGS) { %>
+    closeGSConnections();
+<% } %>
 
 
     }
@@ -1092,6 +1107,22 @@ if (execStat) {
     }
 <%  } %>
 
+<%  if(exist_tGS) { %>
+    private void closeGSConnections() {
+        try {
+<%    for (INode gsComponent : gsComponentsList) { %>
+		org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=gsComponent.getUniqueName()%> = 
+				(org.jets3t.service.impl.rest.httpclient.GoogleStorageService)globalMap.get("service_<%=gsComponent.getUniqueName()%>");
+		if(service_<%=gsComponent.getUniqueName()%> !=null){
+				service_<%=gsComponent.getUniqueName()%>.shutdown();
+	    }
+
+<%    } %>
+        } catch (java.lang.Exception e) {
+        }
+    }
+<%  } %>
+
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
 <%
@@ -1167,6 +1198,12 @@ if (execStat) {
 
 <%      for (INode salesforceNode : salesforceComponentsList) { %>
             connections.put("conn_<%=salesforceNode.getUniqueName()%>", globalMap.get("conn_<%=salesforceNode.getUniqueName()%>"));
+<%      } %>
+<%      for (INode sapNode : sapComponentsList) { %>
+            connections.put("conn_<%=sapNode.getUniqueName()%>", globalMap.get("conn_<%=sapNode.getUniqueName()%>"));
+<%      } %>
+<%      for (INode gsNode : gsComponentsList) { %>
+            connections.put("service_<%=gsNode.getUniqueName()%>", globalMap.get("service_<%=gsNode.getUniqueName()%>"));
 <%      } %>
 
 
