@@ -891,6 +891,9 @@ if (execStat) {
             Object obj_conn;
 <%
             for (INode momNode : momComponentsList) {
+            // fix for TESB-16026
+            if (!(Boolean.valueOf(ElementParameterParser.getValue(momNode, "__USE_CONNECTION__")) || Boolean.valueOf(ElementParameterParser.getValue(momNode, "__USE_SHARED_CONNECTION__")))) {
+            // end fix for TESB-16026            
 %>
             obj_conn = globalMap.remove("connection_<%=momNode.getUniqueName() %>");
             if (null != obj_conn) {
@@ -898,6 +901,9 @@ if (execStat) {
             }
 <%
             }
+            // fix for TESB-16026
+            }
+            // end fix for TESB-16026            
 %>
         } catch (java.lang.Exception e) {
         }
