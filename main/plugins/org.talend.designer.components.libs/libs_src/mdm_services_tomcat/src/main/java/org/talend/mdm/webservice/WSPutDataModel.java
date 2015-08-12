@@ -1,120 +1,76 @@
-/**
- * WSPutDataModel.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSPutDataModel  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSDataModel wsDataModel;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
+
+/**
+ * <p>Java class for WSPutDataModel complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSPutDataModel"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="wsDataModel" type="{http://www.talend.com/mdm}WSDataModel" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSPutDataModel", propOrder = {
+    "wsDataModel"
+})
+public class WSPutDataModel {
+
+    protected WSDataModel wsDataModel;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSPutDataModel() {
+        super();
     }
-
-    public WSPutDataModel(
-           org.talend.mdm.webservice.WSDataModel wsDataModel) {
-           this.wsDataModel = wsDataModel;
-    }
-
 
     /**
-     * Gets the wsDataModel value for this WSPutDataModel.
+     * Fully-initialising value constructor
      * 
-     * @return wsDataModel
      */
-    public org.talend.mdm.webservice.WSDataModel getWsDataModel() {
-        return wsDataModel;
-    }
-
-
-    /**
-     * Sets the wsDataModel value for this WSPutDataModel.
-     * 
-     * @param wsDataModel
-     */
-    public void setWsDataModel(org.talend.mdm.webservice.WSDataModel wsDataModel) {
+    public WSPutDataModel(final WSDataModel wsDataModel) {
         this.wsDataModel = wsDataModel;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSPutDataModel)) return false;
-        WSPutDataModel other = (WSPutDataModel) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.wsDataModel==null && other.getWsDataModel()==null) || 
-             (this.wsDataModel!=null &&
-              this.wsDataModel.equals(other.getWsDataModel())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getWsDataModel() != null) {
-            _hashCode += getWsDataModel().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSPutDataModel.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSPutDataModel"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataModel");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataModel"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataModel"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the wsDataModel property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSDataModel }
+     *     
+     */
+    public WSDataModel getWsDataModel() {
+        return wsDataModel;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the wsDataModel property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSDataModel }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataModel(WSDataModel value) {
+        this.wsDataModel = value;
     }
 
 }

@@ -1,174 +1,113 @@
-/**
- * WSKey.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSKey  implements java.io.Serializable {
-    private java.lang.String[] fieldpath;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String selectorpath;
 
+/**
+ * <p>Java class for WSKey complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSKey"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="fieldpath" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="selectorpath" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSKey", propOrder = {
+    "fieldpath",
+    "selectorpath"
+})
+public class WSKey {
+
+    @XmlElement(nillable = true)
+    protected List<String> fieldpath;
+    protected String selectorpath;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSKey() {
+        super();
     }
-
-    public WSKey(
-           java.lang.String[] fieldpath,
-           java.lang.String selectorpath) {
-           this.fieldpath = fieldpath;
-           this.selectorpath = selectorpath;
-    }
-
 
     /**
-     * Gets the fieldpath value for this WSKey.
+     * Fully-initialising value constructor
      * 
-     * @return fieldpath
      */
-    public java.lang.String[] getFieldpath() {
-        return fieldpath;
-    }
-
-
-    /**
-     * Sets the fieldpath value for this WSKey.
-     * 
-     * @param fieldpath
-     */
-    public void setFieldpath(java.lang.String[] fieldpath) {
+    public WSKey(final List<String> fieldpath, final String selectorpath) {
         this.fieldpath = fieldpath;
-    }
-
-    public java.lang.String getFieldpath(int i) {
-        return this.fieldpath[i];
-    }
-
-    public void setFieldpath(int i, java.lang.String _value) {
-        this.fieldpath[i] = _value;
-    }
-
-
-    /**
-     * Gets the selectorpath value for this WSKey.
-     * 
-     * @return selectorpath
-     */
-    public java.lang.String getSelectorpath() {
-        return selectorpath;
-    }
-
-
-    /**
-     * Sets the selectorpath value for this WSKey.
-     * 
-     * @param selectorpath
-     */
-    public void setSelectorpath(java.lang.String selectorpath) {
         this.selectorpath = selectorpath;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSKey)) return false;
-        WSKey other = (WSKey) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
+    /**
+     * Gets the value of the fieldpath property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the fieldpath property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getFieldpath().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link String }
+     * 
+     * 
+     */
+    public List<String> getFieldpath() {
+        if (fieldpath == null) {
+            fieldpath = new ArrayList<String>();
         }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.fieldpath==null && other.getFieldpath()==null) || 
-             (this.fieldpath!=null &&
-              java.util.Arrays.equals(this.fieldpath, other.getFieldpath()))) &&
-            ((this.selectorpath==null && other.getSelectorpath()==null) || 
-             (this.selectorpath!=null &&
-              this.selectorpath.equals(other.getSelectorpath())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getFieldpath() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getFieldpath());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getFieldpath(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getSelectorpath() != null) {
-            _hashCode += getSelectorpath().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSKey.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSKey"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("fieldpath");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "fieldpath"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("selectorpath");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "selectorpath"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+        return this.fieldpath;
     }
 
     /**
-     * Return type metadata object
+     * Gets the value of the selectorpath property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public String getSelectorpath() {
+        return selectorpath;
     }
 
     /**
-     * Get Custom Serializer
+     * Sets the value of the selectorpath property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setSelectorpath(String value) {
+        this.selectorpath = value;
     }
 
 }

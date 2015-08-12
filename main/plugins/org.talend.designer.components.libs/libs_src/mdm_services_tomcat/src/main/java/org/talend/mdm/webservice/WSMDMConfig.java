@@ -1,379 +1,272 @@
-/**
- * WSMDMConfig.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSMDMConfig  implements java.io.Serializable {
-    private java.lang.String isupurl;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String password;
 
-    private java.lang.String serverName;
+/**
+ * <p>Java class for WSMDMConfig complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSMDMConfig"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="isupurl" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="serverName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="serverPort" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="userName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="xdbDriver" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="xdbID" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="xdbUrl" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSMDMConfig", propOrder = {
+    "isupurl",
+    "password",
+    "serverName",
+    "serverPort",
+    "userName",
+    "xdbDriver",
+    "xdbID",
+    "xdbUrl"
+})
+public class WSMDMConfig {
 
-    private java.lang.String serverPort;
+    protected String isupurl;
+    protected String password;
+    protected String serverName;
+    protected String serverPort;
+    protected String userName;
+    protected String xdbDriver;
+    protected String xdbID;
+    protected String xdbUrl;
 
-    private java.lang.String userName;
-
-    private java.lang.String xdbDriver;
-
-    private java.lang.String xdbID;
-
-    private java.lang.String xdbUrl;
-
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSMDMConfig() {
+        super();
     }
-
-    public WSMDMConfig(
-           java.lang.String isupurl,
-           java.lang.String password,
-           java.lang.String serverName,
-           java.lang.String serverPort,
-           java.lang.String userName,
-           java.lang.String xdbDriver,
-           java.lang.String xdbID,
-           java.lang.String xdbUrl) {
-           this.isupurl = isupurl;
-           this.password = password;
-           this.serverName = serverName;
-           this.serverPort = serverPort;
-           this.userName = userName;
-           this.xdbDriver = xdbDriver;
-           this.xdbID = xdbID;
-           this.xdbUrl = xdbUrl;
-    }
-
 
     /**
-     * Gets the isupurl value for this WSMDMConfig.
+     * Fully-initialising value constructor
      * 
-     * @return isupurl
      */
-    public java.lang.String getIsupurl() {
-        return isupurl;
-    }
-
-
-    /**
-     * Sets the isupurl value for this WSMDMConfig.
-     * 
-     * @param isupurl
-     */
-    public void setIsupurl(java.lang.String isupurl) {
+    public WSMDMConfig(final String isupurl, final String password, final String serverName, final String serverPort, final String userName, final String xdbDriver, final String xdbID, final String xdbUrl) {
         this.isupurl = isupurl;
-    }
-
-
-    /**
-     * Gets the password value for this WSMDMConfig.
-     * 
-     * @return password
-     */
-    public java.lang.String getPassword() {
-        return password;
-    }
-
-
-    /**
-     * Sets the password value for this WSMDMConfig.
-     * 
-     * @param password
-     */
-    public void setPassword(java.lang.String password) {
         this.password = password;
-    }
-
-
-    /**
-     * Gets the serverName value for this WSMDMConfig.
-     * 
-     * @return serverName
-     */
-    public java.lang.String getServerName() {
-        return serverName;
-    }
-
-
-    /**
-     * Sets the serverName value for this WSMDMConfig.
-     * 
-     * @param serverName
-     */
-    public void setServerName(java.lang.String serverName) {
         this.serverName = serverName;
-    }
-
-
-    /**
-     * Gets the serverPort value for this WSMDMConfig.
-     * 
-     * @return serverPort
-     */
-    public java.lang.String getServerPort() {
-        return serverPort;
-    }
-
-
-    /**
-     * Sets the serverPort value for this WSMDMConfig.
-     * 
-     * @param serverPort
-     */
-    public void setServerPort(java.lang.String serverPort) {
         this.serverPort = serverPort;
-    }
-
-
-    /**
-     * Gets the userName value for this WSMDMConfig.
-     * 
-     * @return userName
-     */
-    public java.lang.String getUserName() {
-        return userName;
-    }
-
-
-    /**
-     * Sets the userName value for this WSMDMConfig.
-     * 
-     * @param userName
-     */
-    public void setUserName(java.lang.String userName) {
         this.userName = userName;
-    }
-
-
-    /**
-     * Gets the xdbDriver value for this WSMDMConfig.
-     * 
-     * @return xdbDriver
-     */
-    public java.lang.String getXdbDriver() {
-        return xdbDriver;
-    }
-
-
-    /**
-     * Sets the xdbDriver value for this WSMDMConfig.
-     * 
-     * @param xdbDriver
-     */
-    public void setXdbDriver(java.lang.String xdbDriver) {
         this.xdbDriver = xdbDriver;
-    }
-
-
-    /**
-     * Gets the xdbID value for this WSMDMConfig.
-     * 
-     * @return xdbID
-     */
-    public java.lang.String getXdbID() {
-        return xdbID;
-    }
-
-
-    /**
-     * Sets the xdbID value for this WSMDMConfig.
-     * 
-     * @param xdbID
-     */
-    public void setXdbID(java.lang.String xdbID) {
         this.xdbID = xdbID;
-    }
-
-
-    /**
-     * Gets the xdbUrl value for this WSMDMConfig.
-     * 
-     * @return xdbUrl
-     */
-    public java.lang.String getXdbUrl() {
-        return xdbUrl;
-    }
-
-
-    /**
-     * Sets the xdbUrl value for this WSMDMConfig.
-     * 
-     * @param xdbUrl
-     */
-    public void setXdbUrl(java.lang.String xdbUrl) {
         this.xdbUrl = xdbUrl;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSMDMConfig)) return false;
-        WSMDMConfig other = (WSMDMConfig) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.isupurl==null && other.getIsupurl()==null) || 
-             (this.isupurl!=null &&
-              this.isupurl.equals(other.getIsupurl()))) &&
-            ((this.password==null && other.getPassword()==null) || 
-             (this.password!=null &&
-              this.password.equals(other.getPassword()))) &&
-            ((this.serverName==null && other.getServerName()==null) || 
-             (this.serverName!=null &&
-              this.serverName.equals(other.getServerName()))) &&
-            ((this.serverPort==null && other.getServerPort()==null) || 
-             (this.serverPort!=null &&
-              this.serverPort.equals(other.getServerPort()))) &&
-            ((this.userName==null && other.getUserName()==null) || 
-             (this.userName!=null &&
-              this.userName.equals(other.getUserName()))) &&
-            ((this.xdbDriver==null && other.getXdbDriver()==null) || 
-             (this.xdbDriver!=null &&
-              this.xdbDriver.equals(other.getXdbDriver()))) &&
-            ((this.xdbID==null && other.getXdbID()==null) || 
-             (this.xdbID!=null &&
-              this.xdbID.equals(other.getXdbID()))) &&
-            ((this.xdbUrl==null && other.getXdbUrl()==null) || 
-             (this.xdbUrl!=null &&
-              this.xdbUrl.equals(other.getXdbUrl())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getIsupurl() != null) {
-            _hashCode += getIsupurl().hashCode();
-        }
-        if (getPassword() != null) {
-            _hashCode += getPassword().hashCode();
-        }
-        if (getServerName() != null) {
-            _hashCode += getServerName().hashCode();
-        }
-        if (getServerPort() != null) {
-            _hashCode += getServerPort().hashCode();
-        }
-        if (getUserName() != null) {
-            _hashCode += getUserName().hashCode();
-        }
-        if (getXdbDriver() != null) {
-            _hashCode += getXdbDriver().hashCode();
-        }
-        if (getXdbID() != null) {
-            _hashCode += getXdbID().hashCode();
-        }
-        if (getXdbUrl() != null) {
-            _hashCode += getXdbUrl().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSMDMConfig.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSMDMConfig"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("isupurl");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "isupurl"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("password");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "password"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("serverName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "serverName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("serverPort");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "serverPort"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("userName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "userName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xdbDriver");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xdbDriver"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xdbID");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xdbID"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xdbUrl");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xdbUrl"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the isupurl property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getIsupurl() {
+        return isupurl;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the isupurl property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setIsupurl(String value) {
+        this.isupurl = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the password property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getPassword() {
+        return password;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the password property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setPassword(String value) {
+        this.password = value;
+    }
+
+    /**
+     * Gets the value of the serverName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getServerName() {
+        return serverName;
+    }
+
+    /**
+     * Sets the value of the serverName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setServerName(String value) {
+        this.serverName = value;
+    }
+
+    /**
+     * Gets the value of the serverPort property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getServerPort() {
+        return serverPort;
+    }
+
+    /**
+     * Sets the value of the serverPort property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setServerPort(String value) {
+        this.serverPort = value;
+    }
+
+    /**
+     * Gets the value of the userName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * Sets the value of the userName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setUserName(String value) {
+        this.userName = value;
+    }
+
+    /**
+     * Gets the value of the xdbDriver property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getXdbDriver() {
+        return xdbDriver;
+    }
+
+    /**
+     * Sets the value of the xdbDriver property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setXdbDriver(String value) {
+        this.xdbDriver = value;
+    }
+
+    /**
+     * Gets the value of the xdbID property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getXdbID() {
+        return xdbID;
+    }
+
+    /**
+     * Sets the value of the xdbID property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setXdbID(String value) {
+        this.xdbID = value;
+    }
+
+    /**
+     * Gets the value of the xdbUrl property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getXdbUrl() {
+        return xdbUrl;
+    }
+
+    /**
+     * Sets the value of the xdbUrl property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setXdbUrl(String value) {
+        this.xdbUrl = value;
     }
 
 }

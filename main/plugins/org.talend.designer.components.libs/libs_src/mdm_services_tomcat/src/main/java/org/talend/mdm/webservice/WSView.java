@@ -1,393 +1,265 @@
-/**
- * WSView.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSView  implements java.io.Serializable {
-    private java.lang.String description;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSBoolean isTransformerActive;
 
-    private java.lang.String name;
+/**
+ * <p>Java class for WSView complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSView"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="isTransformerActive" type="{http://www.talend.com/mdm}WSBoolean" minOccurs="0"/&gt;
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="searchableBusinessElements" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="transformerPK" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="viewableBusinessElements" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="whereConditions" type="{http://www.talend.com/mdm}WSWhereCondition" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSView", propOrder = {
+    "description",
+    "isTransformerActive",
+    "name",
+    "searchableBusinessElements",
+    "transformerPK",
+    "viewableBusinessElements",
+    "whereConditions"
+})
+public class WSView {
 
-    private java.lang.String[] searchableBusinessElements;
+    protected String description;
+    protected WSBoolean isTransformerActive;
+    protected String name;
+    @XmlElement(nillable = true)
+    protected List<String> searchableBusinessElements;
+    protected String transformerPK;
+    @XmlElement(nillable = true)
+    protected List<String> viewableBusinessElements;
+    @XmlElement(nillable = true)
+    protected List<WSWhereCondition> whereConditions;
 
-    private java.lang.String transformerPK;
-
-    private java.lang.String[] viewableBusinessElements;
-
-    private org.talend.mdm.webservice.WSWhereCondition[] whereConditions;
-
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSView() {
+        super();
     }
-
-    public WSView(
-           java.lang.String description,
-           org.talend.mdm.webservice.WSBoolean isTransformerActive,
-           java.lang.String name,
-           java.lang.String[] searchableBusinessElements,
-           java.lang.String transformerPK,
-           java.lang.String[] viewableBusinessElements,
-           org.talend.mdm.webservice.WSWhereCondition[] whereConditions) {
-           this.description = description;
-           this.isTransformerActive = isTransformerActive;
-           this.name = name;
-           this.searchableBusinessElements = searchableBusinessElements;
-           this.transformerPK = transformerPK;
-           this.viewableBusinessElements = viewableBusinessElements;
-           this.whereConditions = whereConditions;
-    }
-
 
     /**
-     * Gets the description value for this WSView.
+     * Fully-initialising value constructor
      * 
-     * @return description
      */
-    public java.lang.String getDescription() {
-        return description;
-    }
-
-
-    /**
-     * Sets the description value for this WSView.
-     * 
-     * @param description
-     */
-    public void setDescription(java.lang.String description) {
+    public WSView(final String description, final WSBoolean isTransformerActive, final String name, final List<String> searchableBusinessElements, final String transformerPK, final List<String> viewableBusinessElements, final List<WSWhereCondition> whereConditions) {
         this.description = description;
-    }
-
-
-    /**
-     * Gets the isTransformerActive value for this WSView.
-     * 
-     * @return isTransformerActive
-     */
-    public org.talend.mdm.webservice.WSBoolean getIsTransformerActive() {
-        return isTransformerActive;
-    }
-
-
-    /**
-     * Sets the isTransformerActive value for this WSView.
-     * 
-     * @param isTransformerActive
-     */
-    public void setIsTransformerActive(org.talend.mdm.webservice.WSBoolean isTransformerActive) {
         this.isTransformerActive = isTransformerActive;
-    }
-
-
-    /**
-     * Gets the name value for this WSView.
-     * 
-     * @return name
-     */
-    public java.lang.String getName() {
-        return name;
-    }
-
-
-    /**
-     * Sets the name value for this WSView.
-     * 
-     * @param name
-     */
-    public void setName(java.lang.String name) {
         this.name = name;
-    }
-
-
-    /**
-     * Gets the searchableBusinessElements value for this WSView.
-     * 
-     * @return searchableBusinessElements
-     */
-    public java.lang.String[] getSearchableBusinessElements() {
-        return searchableBusinessElements;
-    }
-
-
-    /**
-     * Sets the searchableBusinessElements value for this WSView.
-     * 
-     * @param searchableBusinessElements
-     */
-    public void setSearchableBusinessElements(java.lang.String[] searchableBusinessElements) {
         this.searchableBusinessElements = searchableBusinessElements;
-    }
-
-    public java.lang.String getSearchableBusinessElements(int i) {
-        return this.searchableBusinessElements[i];
-    }
-
-    public void setSearchableBusinessElements(int i, java.lang.String _value) {
-        this.searchableBusinessElements[i] = _value;
-    }
-
-
-    /**
-     * Gets the transformerPK value for this WSView.
-     * 
-     * @return transformerPK
-     */
-    public java.lang.String getTransformerPK() {
-        return transformerPK;
-    }
-
-
-    /**
-     * Sets the transformerPK value for this WSView.
-     * 
-     * @param transformerPK
-     */
-    public void setTransformerPK(java.lang.String transformerPK) {
         this.transformerPK = transformerPK;
-    }
-
-
-    /**
-     * Gets the viewableBusinessElements value for this WSView.
-     * 
-     * @return viewableBusinessElements
-     */
-    public java.lang.String[] getViewableBusinessElements() {
-        return viewableBusinessElements;
-    }
-
-
-    /**
-     * Sets the viewableBusinessElements value for this WSView.
-     * 
-     * @param viewableBusinessElements
-     */
-    public void setViewableBusinessElements(java.lang.String[] viewableBusinessElements) {
         this.viewableBusinessElements = viewableBusinessElements;
-    }
-
-    public java.lang.String getViewableBusinessElements(int i) {
-        return this.viewableBusinessElements[i];
-    }
-
-    public void setViewableBusinessElements(int i, java.lang.String _value) {
-        this.viewableBusinessElements[i] = _value;
-    }
-
-
-    /**
-     * Gets the whereConditions value for this WSView.
-     * 
-     * @return whereConditions
-     */
-    public org.talend.mdm.webservice.WSWhereCondition[] getWhereConditions() {
-        return whereConditions;
-    }
-
-
-    /**
-     * Sets the whereConditions value for this WSView.
-     * 
-     * @param whereConditions
-     */
-    public void setWhereConditions(org.talend.mdm.webservice.WSWhereCondition[] whereConditions) {
         this.whereConditions = whereConditions;
     }
 
-    public org.talend.mdm.webservice.WSWhereCondition getWhereConditions(int i) {
-        return this.whereConditions[i];
-    }
-
-    public void setWhereConditions(int i, org.talend.mdm.webservice.WSWhereCondition _value) {
-        this.whereConditions[i] = _value;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSView)) return false;
-        WSView other = (WSView) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            ((this.isTransformerActive==null && other.getIsTransformerActive()==null) || 
-             (this.isTransformerActive!=null &&
-              this.isTransformerActive.equals(other.getIsTransformerActive()))) &&
-            ((this.name==null && other.getName()==null) || 
-             (this.name!=null &&
-              this.name.equals(other.getName()))) &&
-            ((this.searchableBusinessElements==null && other.getSearchableBusinessElements()==null) || 
-             (this.searchableBusinessElements!=null &&
-              java.util.Arrays.equals(this.searchableBusinessElements, other.getSearchableBusinessElements()))) &&
-            ((this.transformerPK==null && other.getTransformerPK()==null) || 
-             (this.transformerPK!=null &&
-              this.transformerPK.equals(other.getTransformerPK()))) &&
-            ((this.viewableBusinessElements==null && other.getViewableBusinessElements()==null) || 
-             (this.viewableBusinessElements!=null &&
-              java.util.Arrays.equals(this.viewableBusinessElements, other.getViewableBusinessElements()))) &&
-            ((this.whereConditions==null && other.getWhereConditions()==null) || 
-             (this.whereConditions!=null &&
-              java.util.Arrays.equals(this.whereConditions, other.getWhereConditions())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        if (getIsTransformerActive() != null) {
-            _hashCode += getIsTransformerActive().hashCode();
-        }
-        if (getName() != null) {
-            _hashCode += getName().hashCode();
-        }
-        if (getSearchableBusinessElements() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getSearchableBusinessElements());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getSearchableBusinessElements(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getTransformerPK() != null) {
-            _hashCode += getTransformerPK().hashCode();
-        }
-        if (getViewableBusinessElements() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getViewableBusinessElements());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getViewableBusinessElements(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getWhereConditions() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getWhereConditions());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getWhereConditions(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSView.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSView"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("isTransformerActive");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "isTransformerActive"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSBoolean"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("name");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("searchableBusinessElements");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "searchableBusinessElements"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("transformerPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "transformerPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("viewableBusinessElements");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "viewableBusinessElements"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("whereConditions");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "whereConditions"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSWhereCondition"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the isTransformerActive property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSBoolean }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public WSBoolean getIsTransformerActive() {
+        return isTransformerActive;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the isTransformerActive property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSBoolean }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setIsTransformerActive(WSBoolean value) {
+        this.isTransformerActive = value;
+    }
+
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Gets the value of the searchableBusinessElements property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the searchableBusinessElements property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getSearchableBusinessElements().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link String }
+     * 
+     * 
+     */
+    public List<String> getSearchableBusinessElements() {
+        if (searchableBusinessElements == null) {
+            searchableBusinessElements = new ArrayList<String>();
+        }
+        return this.searchableBusinessElements;
+    }
+
+    /**
+     * Gets the value of the transformerPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getTransformerPK() {
+        return transformerPK;
+    }
+
+    /**
+     * Sets the value of the transformerPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTransformerPK(String value) {
+        this.transformerPK = value;
+    }
+
+    /**
+     * Gets the value of the viewableBusinessElements property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the viewableBusinessElements property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getViewableBusinessElements().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link String }
+     * 
+     * 
+     */
+    public List<String> getViewableBusinessElements() {
+        if (viewableBusinessElements == null) {
+            viewableBusinessElements = new ArrayList<String>();
+        }
+        return this.viewableBusinessElements;
+    }
+
+    /**
+     * Gets the value of the whereConditions property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the whereConditions property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getWhereConditions().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link WSWhereCondition }
+     * 
+     * 
+     */
+    public List<WSWhereCondition> getWhereConditions() {
+        if (whereConditions == null) {
+            whereConditions = new ArrayList<WSWhereCondition>();
+        }
+        return this.whereConditions;
     }
 
 }

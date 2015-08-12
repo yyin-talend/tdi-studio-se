@@ -39,7 +39,7 @@ String pivot = ElementParameterParser.getValue(node,"__PIVOT__");
 boolean overwrite = ("true").equals(ElementParameterParser.getValue(node,"__OVERWRITE__"));
 String key = ElementParameterParser.getValue(node,"__KEY__");
 String position = ElementParameterParser.getValue(node,"__POSITION__");
-String dataModule = ElementParameterParser.getValue(node, "__DATAMODEL__");
+String dataModel = ElementParameterParser.getValue(node, "__DATAMODEL__");
 String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
 
 String doc = ElementParameterParser.getValue(node, "__DOCUMENT__");
@@ -134,15 +134,15 @@ if (metadatas != null && metadatas.size()>0) {
     try {
 		<%if(usePartialUpdate){ // partial%>
 <%
-			String stagingString = "";
+			String dataclusterString = "";
     		if(isStaging){
-    			stagingString = dataCluster + " + \"#STAGING\"";
+    			dataclusterString = dataCluster + " + \"#STAGING\"";
     		} else {
-    			stagingString = dataCluster;
+    			dataclusterString = dataCluster;
     		}
 %>
-			org.talend.mdm.webservice.WSPartialPutItem wsPartialPutItem_<%=cid%> = new org.talend.mdm.webservice.WSPartialPutItem(<%=stagingString %>,<%=dataModule %>,<%=key.equals("")?null:key%>, <%=overwrite%>, <%=pivot%>,<%= true==isStaging?false:withReport%>, <%=sourceName%>,<%=position.equals("")?null:position%>, input_<%=cid %>);
-			wspk_<%=cid %> = tmdmWS_<%=cid %>.partialPutItem(wsPartialPutItem_<%=cid%>);
+			org.talend.mdm.webservice.WSPartialPutItem wsPartialPutItem_<%=cid%> = new org.talend.mdm.webservice.WSPartialPutItem(<%=dataclusterString %>,<%=dataModel %>,<%=key.equals("")?null:key%>, <%=overwrite%>, <%=pivot%>,<%= true==isStaging?false:withReport%>, <%=sourceName%>,<%=position.equals("")?null:position%>, input_<%=cid %>);
+			wspk_<%=cid %> = service_<%=cid %>.partialPutItem(wsPartialPutItem_<%=cid%>);
 			
             <%
 	        if (outConnName !=null && !isMassInsert && keysReturn.size() > 0) {
@@ -169,14 +169,15 @@ if (metadatas != null && metadatas.size()>0) {
 		          miList_<%=cid %>.add(itemReport_<%=cid %>);
 		
 		          if (miList_<%=cid %>.size() >= <%=numMassInsert %>) {
-		            wspks_<%=cid %> = tmdmWS_<%=cid %>.putItemWithReportArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItemWithReport[<%=numMassInsert %>]));
+		            org.talend.mdm.webservice.WSPutItemWithReportArray putItemWithReportArray = new org.talend.mdm.webservice.WSPutItemWithReportArray(miList_<%=cid %>);
+		            wspks_<%=cid %> = service_<%=cid %>.putItemWithReportArray(putItemWithReportArray);
 		            miList_<%=cid %>.clear();
 		            <%if(addTaskID){%>
 		            
 		            	int i2_<%=cid %> = 0;
 					    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
 					    	wspk2_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
-					    	tmdmWS_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
+					    	service_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
 					    	i2_<%=cid %>++;
 					    }
 					    
@@ -184,9 +185,9 @@ if (metadatas != null && metadatas.size()>0) {
 		            <%}%>
 		          }
 		        <%} else {%>
-		          wspk_<%=cid %> = tmdmWS_<%=cid %>.putItemWithReport(itemReport_<%=cid %>);
+		          wspk_<%=cid %> = service_<%=cid %>.putItemWithReport(itemReport_<%=cid %>);
 		          	<%if(addTaskID){%>
-		            	tmdmWS_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=isCustom?taskID:inputConnName + "." + prevColumn%>,wspk_<%=cid %>));
+		            	service_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=isCustom?taskID:inputConnName + "." + prevColumn%>,wspk_<%=cid %>));
 		            <%}%>
 		        <%
 		        }
@@ -210,14 +211,15 @@ if (metadatas != null && metadatas.size()>0) {
 		          miList_<%=cid %>.add(item_<%=cid %>);
 		
 		          if (miList_<%=cid %>.size() >= <%=numMassInsert %>) {
-		            wspks_<%=cid %> = tmdmWS_<%=cid %>.putItemArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItem[<%=numMassInsert %>]));
+		            org.talend.mdm.webservice.WSPutItemArray putItemArray = new org.talend.mdm.webservice.WSPutItemArray(miList_<%=cid %>);
+		            wspks_<%=cid %> = service_<%=cid %>.putItemArray(putItemArray);
 		            miList_<%=cid %>.clear();
 		            <%if(addTaskID){%>
 		            	
 		            	int i2_<%=cid %> = 0;
 					    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
 					    	wspk2_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
-					    	tmdmWS_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
+					    	service_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
 					    	i2_<%=cid %>++;
 					    }
 		            	
@@ -226,9 +228,9 @@ if (metadatas != null && metadatas.size()>0) {
 		          }
 		        <%
 		        } else {%>
-		          wspk_<%=cid %> = tmdmWS_<%=cid %>.putItem(item_<%=cid %>);
+		          wspk_<%=cid %> = service_<%=cid %>.putItem(item_<%=cid %>);
 					<%if(addTaskID){%>
-		            	tmdmWS_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=isCustom?taskID:inputConnName + "." + prevColumn%>,wspk_<%=cid %>)); 
+		            	service_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(<%=isCustom?taskID:inputConnName + "." + prevColumn%>,wspk_<%=cid %>)); 
 		            <%}%>
 		          <%
 		          if (outConnName !=null && !isMassInsert && keysReturn.size() > 0) {

@@ -1,120 +1,78 @@
-/**
- * WSRoutingEngineV2Action.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSRoutingEngineV2Action  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSRoutingEngineV2ActionCode wsAction;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
+
+/**
+ * <p>Java class for WSRoutingEngineV2Action complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSRoutingEngineV2Action"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="wsAction" type="{http://www.talend.com/mdm}WSRoutingEngineV2ActionCode" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSRoutingEngineV2Action", propOrder = {
+    "wsAction"
+})
+public class WSRoutingEngineV2Action {
+
+    @XmlSchemaType(name = "string")
+    protected WSRoutingEngineV2ActionCode wsAction;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSRoutingEngineV2Action() {
+        super();
     }
-
-    public WSRoutingEngineV2Action(
-           org.talend.mdm.webservice.WSRoutingEngineV2ActionCode wsAction) {
-           this.wsAction = wsAction;
-    }
-
 
     /**
-     * Gets the wsAction value for this WSRoutingEngineV2Action.
+     * Fully-initialising value constructor
      * 
-     * @return wsAction
      */
-    public org.talend.mdm.webservice.WSRoutingEngineV2ActionCode getWsAction() {
-        return wsAction;
-    }
-
-
-    /**
-     * Sets the wsAction value for this WSRoutingEngineV2Action.
-     * 
-     * @param wsAction
-     */
-    public void setWsAction(org.talend.mdm.webservice.WSRoutingEngineV2ActionCode wsAction) {
+    public WSRoutingEngineV2Action(final WSRoutingEngineV2ActionCode wsAction) {
         this.wsAction = wsAction;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSRoutingEngineV2Action)) return false;
-        WSRoutingEngineV2Action other = (WSRoutingEngineV2Action) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.wsAction==null && other.getWsAction()==null) || 
-             (this.wsAction!=null &&
-              this.wsAction.equals(other.getWsAction())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getWsAction() != null) {
-            _hashCode += getWsAction().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSRoutingEngineV2Action.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRoutingEngineV2Action"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsAction");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsAction"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRoutingEngineV2ActionCode"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the wsAction property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSRoutingEngineV2ActionCode }
+     *     
+     */
+    public WSRoutingEngineV2ActionCode getWsAction() {
+        return wsAction;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the wsAction property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSRoutingEngineV2ActionCode }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsAction(WSRoutingEngineV2ActionCode value) {
+        this.wsAction = value;
     }
 
 }

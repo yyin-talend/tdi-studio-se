@@ -1,635 +1,434 @@
-/**
- * WSRoutingOrderV2SearchCriteria.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSRoutingOrderV2SearchCriteria  implements java.io.Serializable {
-    private java.lang.String anyFieldContains;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String itemPKConceptContains;
 
-    private java.lang.String itemPKIDFieldsContain;
+/**
+ * <p>Java class for WSRoutingOrderV2SearchCriteria complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSRoutingOrderV2SearchCriteria"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="anyFieldContains" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="itemPKConceptContains" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="itemPKIDFieldsContain" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="messageContain" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="nameContains" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="serviceJNDIContains" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="serviceParametersContain" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="status" type="{http://www.talend.com/mdm}WSRoutingOrderV2Status" minOccurs="0"/&gt;
+ *         &lt;element name="timeCreatedMax" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="timeCreatedMin" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="timeLastRunCompletedMax" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="timeLastRunCompletedMin" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="timeLastRunStartedMax" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="timeLastRunStartedMin" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="timeScheduledMax" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="timeScheduledMin" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSRoutingOrderV2SearchCriteria", propOrder = {
+    "anyFieldContains",
+    "itemPKConceptContains",
+    "itemPKIDFieldsContain",
+    "messageContain",
+    "nameContains",
+    "serviceJNDIContains",
+    "serviceParametersContain",
+    "status",
+    "timeCreatedMax",
+    "timeCreatedMin",
+    "timeLastRunCompletedMax",
+    "timeLastRunCompletedMin",
+    "timeLastRunStartedMax",
+    "timeLastRunStartedMin",
+    "timeScheduledMax",
+    "timeScheduledMin"
+})
+public class WSRoutingOrderV2SearchCriteria {
 
-    private java.lang.String messageContain;
-
-    private java.lang.String nameContains;
-
-    private java.lang.String serviceJNDIContains;
-
-    private java.lang.String serviceParametersContain;
-
-    private org.talend.mdm.webservice.WSRoutingOrderV2Status status;
-
-    private long timeCreatedMax;
-
-    private long timeCreatedMin;
-
-    private long timeLastRunCompletedMax;
-
-    private long timeLastRunCompletedMin;
-
-    private long timeLastRunStartedMax;
-
-    private long timeLastRunStartedMin;
-
-    private long timeScheduledMax;
-
-    private long timeScheduledMin;
-
-    public WSRoutingOrderV2SearchCriteria() {
-    }
-
-    public WSRoutingOrderV2SearchCriteria(
-           java.lang.String anyFieldContains,
-           java.lang.String itemPKConceptContains,
-           java.lang.String itemPKIDFieldsContain,
-           java.lang.String messageContain,
-           java.lang.String nameContains,
-           java.lang.String serviceJNDIContains,
-           java.lang.String serviceParametersContain,
-           org.talend.mdm.webservice.WSRoutingOrderV2Status status,
-           long timeCreatedMax,
-           long timeCreatedMin,
-           long timeLastRunCompletedMax,
-           long timeLastRunCompletedMin,
-           long timeLastRunStartedMax,
-           long timeLastRunStartedMin,
-           long timeScheduledMax,
-           long timeScheduledMin) {
-           this.anyFieldContains = anyFieldContains;
-           this.itemPKConceptContains = itemPKConceptContains;
-           this.itemPKIDFieldsContain = itemPKIDFieldsContain;
-           this.messageContain = messageContain;
-           this.nameContains = nameContains;
-           this.serviceJNDIContains = serviceJNDIContains;
-           this.serviceParametersContain = serviceParametersContain;
-           this.status = status;
-           this.timeCreatedMax = timeCreatedMax;
-           this.timeCreatedMin = timeCreatedMin;
-           this.timeLastRunCompletedMax = timeLastRunCompletedMax;
-           this.timeLastRunCompletedMin = timeLastRunCompletedMin;
-           this.timeLastRunStartedMax = timeLastRunStartedMax;
-           this.timeLastRunStartedMin = timeLastRunStartedMin;
-           this.timeScheduledMax = timeScheduledMax;
-           this.timeScheduledMin = timeScheduledMin;
-    }
-
+    protected String anyFieldContains;
+    protected String itemPKConceptContains;
+    protected String itemPKIDFieldsContain;
+    protected String messageContain;
+    protected String nameContains;
+    protected String serviceJNDIContains;
+    protected String serviceParametersContain;
+    @XmlSchemaType(name = "string")
+    protected WSRoutingOrderV2Status status;
+    protected long timeCreatedMax;
+    protected long timeCreatedMin;
+    protected long timeLastRunCompletedMax;
+    protected long timeLastRunCompletedMin;
+    protected long timeLastRunStartedMax;
+    protected long timeLastRunStartedMin;
+    protected long timeScheduledMax;
+    protected long timeScheduledMin;
 
     /**
-     * Gets the anyFieldContains value for this WSRoutingOrderV2SearchCriteria.
+     * Default no-arg constructor
      * 
-     * @return anyFieldContains
      */
-    public java.lang.String getAnyFieldContains() {
+    public WSRoutingOrderV2SearchCriteria() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSRoutingOrderV2SearchCriteria(final String anyFieldContains, final String itemPKConceptContains, final String itemPKIDFieldsContain, final String messageContain, final String nameContains, final String serviceJNDIContains, final String serviceParametersContain, final WSRoutingOrderV2Status status, final long timeCreatedMax, final long timeCreatedMin, final long timeLastRunCompletedMax, final long timeLastRunCompletedMin, final long timeLastRunStartedMax, final long timeLastRunStartedMin, final long timeScheduledMax, final long timeScheduledMin) {
+        this.anyFieldContains = anyFieldContains;
+        this.itemPKConceptContains = itemPKConceptContains;
+        this.itemPKIDFieldsContain = itemPKIDFieldsContain;
+        this.messageContain = messageContain;
+        this.nameContains = nameContains;
+        this.serviceJNDIContains = serviceJNDIContains;
+        this.serviceParametersContain = serviceParametersContain;
+        this.status = status;
+        this.timeCreatedMax = timeCreatedMax;
+        this.timeCreatedMin = timeCreatedMin;
+        this.timeLastRunCompletedMax = timeLastRunCompletedMax;
+        this.timeLastRunCompletedMin = timeLastRunCompletedMin;
+        this.timeLastRunStartedMax = timeLastRunStartedMax;
+        this.timeLastRunStartedMin = timeLastRunStartedMin;
+        this.timeScheduledMax = timeScheduledMax;
+        this.timeScheduledMin = timeScheduledMin;
+    }
+
+    /**
+     * Gets the value of the anyFieldContains property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getAnyFieldContains() {
         return anyFieldContains;
     }
 
-
     /**
-     * Sets the anyFieldContains value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the anyFieldContains property.
      * 
-     * @param anyFieldContains
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setAnyFieldContains(java.lang.String anyFieldContains) {
-        this.anyFieldContains = anyFieldContains;
+    public void setAnyFieldContains(String value) {
+        this.anyFieldContains = value;
     }
 
-
     /**
-     * Gets the itemPKConceptContains value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the itemPKConceptContains property.
      * 
-     * @return itemPKConceptContains
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getItemPKConceptContains() {
+    public String getItemPKConceptContains() {
         return itemPKConceptContains;
     }
 
-
     /**
-     * Sets the itemPKConceptContains value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the itemPKConceptContains property.
      * 
-     * @param itemPKConceptContains
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setItemPKConceptContains(java.lang.String itemPKConceptContains) {
-        this.itemPKConceptContains = itemPKConceptContains;
+    public void setItemPKConceptContains(String value) {
+        this.itemPKConceptContains = value;
     }
 
-
     /**
-     * Gets the itemPKIDFieldsContain value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the itemPKIDFieldsContain property.
      * 
-     * @return itemPKIDFieldsContain
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getItemPKIDFieldsContain() {
+    public String getItemPKIDFieldsContain() {
         return itemPKIDFieldsContain;
     }
 
-
     /**
-     * Sets the itemPKIDFieldsContain value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the itemPKIDFieldsContain property.
      * 
-     * @param itemPKIDFieldsContain
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setItemPKIDFieldsContain(java.lang.String itemPKIDFieldsContain) {
-        this.itemPKIDFieldsContain = itemPKIDFieldsContain;
+    public void setItemPKIDFieldsContain(String value) {
+        this.itemPKIDFieldsContain = value;
     }
 
-
     /**
-     * Gets the messageContain value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the messageContain property.
      * 
-     * @return messageContain
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getMessageContain() {
+    public String getMessageContain() {
         return messageContain;
     }
 
-
     /**
-     * Sets the messageContain value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the messageContain property.
      * 
-     * @param messageContain
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setMessageContain(java.lang.String messageContain) {
-        this.messageContain = messageContain;
+    public void setMessageContain(String value) {
+        this.messageContain = value;
     }
 
-
     /**
-     * Gets the nameContains value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the nameContains property.
      * 
-     * @return nameContains
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getNameContains() {
+    public String getNameContains() {
         return nameContains;
     }
 
-
     /**
-     * Sets the nameContains value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the nameContains property.
      * 
-     * @param nameContains
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setNameContains(java.lang.String nameContains) {
-        this.nameContains = nameContains;
+    public void setNameContains(String value) {
+        this.nameContains = value;
     }
 
-
     /**
-     * Gets the serviceJNDIContains value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the serviceJNDIContains property.
      * 
-     * @return serviceJNDIContains
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getServiceJNDIContains() {
+    public String getServiceJNDIContains() {
         return serviceJNDIContains;
     }
 
-
     /**
-     * Sets the serviceJNDIContains value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the serviceJNDIContains property.
      * 
-     * @param serviceJNDIContains
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setServiceJNDIContains(java.lang.String serviceJNDIContains) {
-        this.serviceJNDIContains = serviceJNDIContains;
+    public void setServiceJNDIContains(String value) {
+        this.serviceJNDIContains = value;
     }
 
-
     /**
-     * Gets the serviceParametersContain value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the serviceParametersContain property.
      * 
-     * @return serviceParametersContain
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getServiceParametersContain() {
+    public String getServiceParametersContain() {
         return serviceParametersContain;
     }
 
-
     /**
-     * Sets the serviceParametersContain value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the serviceParametersContain property.
      * 
-     * @param serviceParametersContain
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setServiceParametersContain(java.lang.String serviceParametersContain) {
-        this.serviceParametersContain = serviceParametersContain;
+    public void setServiceParametersContain(String value) {
+        this.serviceParametersContain = value;
     }
 
-
     /**
-     * Gets the status value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the status property.
      * 
-     * @return status
+     * @return
+     *     possible object is
+     *     {@link WSRoutingOrderV2Status }
+     *     
      */
-    public org.talend.mdm.webservice.WSRoutingOrderV2Status getStatus() {
+    public WSRoutingOrderV2Status getStatus() {
         return status;
     }
 
-
     /**
-     * Sets the status value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the status property.
      * 
-     * @param status
+     * @param value
+     *     allowed object is
+     *     {@link WSRoutingOrderV2Status }
+     *     
      */
-    public void setStatus(org.talend.mdm.webservice.WSRoutingOrderV2Status status) {
-        this.status = status;
+    public void setStatus(WSRoutingOrderV2Status value) {
+        this.status = value;
     }
 
-
     /**
-     * Gets the timeCreatedMax value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the timeCreatedMax property.
      * 
-     * @return timeCreatedMax
      */
     public long getTimeCreatedMax() {
         return timeCreatedMax;
     }
 
-
     /**
-     * Sets the timeCreatedMax value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the timeCreatedMax property.
      * 
-     * @param timeCreatedMax
      */
-    public void setTimeCreatedMax(long timeCreatedMax) {
-        this.timeCreatedMax = timeCreatedMax;
+    public void setTimeCreatedMax(long value) {
+        this.timeCreatedMax = value;
     }
 
-
     /**
-     * Gets the timeCreatedMin value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the timeCreatedMin property.
      * 
-     * @return timeCreatedMin
      */
     public long getTimeCreatedMin() {
         return timeCreatedMin;
     }
 
-
     /**
-     * Sets the timeCreatedMin value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the timeCreatedMin property.
      * 
-     * @param timeCreatedMin
      */
-    public void setTimeCreatedMin(long timeCreatedMin) {
-        this.timeCreatedMin = timeCreatedMin;
+    public void setTimeCreatedMin(long value) {
+        this.timeCreatedMin = value;
     }
 
-
     /**
-     * Gets the timeLastRunCompletedMax value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the timeLastRunCompletedMax property.
      * 
-     * @return timeLastRunCompletedMax
      */
     public long getTimeLastRunCompletedMax() {
         return timeLastRunCompletedMax;
     }
 
-
     /**
-     * Sets the timeLastRunCompletedMax value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the timeLastRunCompletedMax property.
      * 
-     * @param timeLastRunCompletedMax
      */
-    public void setTimeLastRunCompletedMax(long timeLastRunCompletedMax) {
-        this.timeLastRunCompletedMax = timeLastRunCompletedMax;
+    public void setTimeLastRunCompletedMax(long value) {
+        this.timeLastRunCompletedMax = value;
     }
 
-
     /**
-     * Gets the timeLastRunCompletedMin value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the timeLastRunCompletedMin property.
      * 
-     * @return timeLastRunCompletedMin
      */
     public long getTimeLastRunCompletedMin() {
         return timeLastRunCompletedMin;
     }
 
-
     /**
-     * Sets the timeLastRunCompletedMin value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the timeLastRunCompletedMin property.
      * 
-     * @param timeLastRunCompletedMin
      */
-    public void setTimeLastRunCompletedMin(long timeLastRunCompletedMin) {
-        this.timeLastRunCompletedMin = timeLastRunCompletedMin;
+    public void setTimeLastRunCompletedMin(long value) {
+        this.timeLastRunCompletedMin = value;
     }
 
-
     /**
-     * Gets the timeLastRunStartedMax value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the timeLastRunStartedMax property.
      * 
-     * @return timeLastRunStartedMax
      */
     public long getTimeLastRunStartedMax() {
         return timeLastRunStartedMax;
     }
 
-
     /**
-     * Sets the timeLastRunStartedMax value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the timeLastRunStartedMax property.
      * 
-     * @param timeLastRunStartedMax
      */
-    public void setTimeLastRunStartedMax(long timeLastRunStartedMax) {
-        this.timeLastRunStartedMax = timeLastRunStartedMax;
+    public void setTimeLastRunStartedMax(long value) {
+        this.timeLastRunStartedMax = value;
     }
 
-
     /**
-     * Gets the timeLastRunStartedMin value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the timeLastRunStartedMin property.
      * 
-     * @return timeLastRunStartedMin
      */
     public long getTimeLastRunStartedMin() {
         return timeLastRunStartedMin;
     }
 
-
     /**
-     * Sets the timeLastRunStartedMin value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the timeLastRunStartedMin property.
      * 
-     * @param timeLastRunStartedMin
      */
-    public void setTimeLastRunStartedMin(long timeLastRunStartedMin) {
-        this.timeLastRunStartedMin = timeLastRunStartedMin;
+    public void setTimeLastRunStartedMin(long value) {
+        this.timeLastRunStartedMin = value;
     }
 
-
     /**
-     * Gets the timeScheduledMax value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the timeScheduledMax property.
      * 
-     * @return timeScheduledMax
      */
     public long getTimeScheduledMax() {
         return timeScheduledMax;
     }
 
-
     /**
-     * Sets the timeScheduledMax value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the timeScheduledMax property.
      * 
-     * @param timeScheduledMax
      */
-    public void setTimeScheduledMax(long timeScheduledMax) {
-        this.timeScheduledMax = timeScheduledMax;
+    public void setTimeScheduledMax(long value) {
+        this.timeScheduledMax = value;
     }
 
-
     /**
-     * Gets the timeScheduledMin value for this WSRoutingOrderV2SearchCriteria.
+     * Gets the value of the timeScheduledMin property.
      * 
-     * @return timeScheduledMin
      */
     public long getTimeScheduledMin() {
         return timeScheduledMin;
     }
 
-
     /**
-     * Sets the timeScheduledMin value for this WSRoutingOrderV2SearchCriteria.
+     * Sets the value of the timeScheduledMin property.
      * 
-     * @param timeScheduledMin
      */
-    public void setTimeScheduledMin(long timeScheduledMin) {
-        this.timeScheduledMin = timeScheduledMin;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSRoutingOrderV2SearchCriteria)) return false;
-        WSRoutingOrderV2SearchCriteria other = (WSRoutingOrderV2SearchCriteria) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.anyFieldContains==null && other.getAnyFieldContains()==null) || 
-             (this.anyFieldContains!=null &&
-              this.anyFieldContains.equals(other.getAnyFieldContains()))) &&
-            ((this.itemPKConceptContains==null && other.getItemPKConceptContains()==null) || 
-             (this.itemPKConceptContains!=null &&
-              this.itemPKConceptContains.equals(other.getItemPKConceptContains()))) &&
-            ((this.itemPKIDFieldsContain==null && other.getItemPKIDFieldsContain()==null) || 
-             (this.itemPKIDFieldsContain!=null &&
-              this.itemPKIDFieldsContain.equals(other.getItemPKIDFieldsContain()))) &&
-            ((this.messageContain==null && other.getMessageContain()==null) || 
-             (this.messageContain!=null &&
-              this.messageContain.equals(other.getMessageContain()))) &&
-            ((this.nameContains==null && other.getNameContains()==null) || 
-             (this.nameContains!=null &&
-              this.nameContains.equals(other.getNameContains()))) &&
-            ((this.serviceJNDIContains==null && other.getServiceJNDIContains()==null) || 
-             (this.serviceJNDIContains!=null &&
-              this.serviceJNDIContains.equals(other.getServiceJNDIContains()))) &&
-            ((this.serviceParametersContain==null && other.getServiceParametersContain()==null) || 
-             (this.serviceParametersContain!=null &&
-              this.serviceParametersContain.equals(other.getServiceParametersContain()))) &&
-            ((this.status==null && other.getStatus()==null) || 
-             (this.status!=null &&
-              this.status.equals(other.getStatus()))) &&
-            this.timeCreatedMax == other.getTimeCreatedMax() &&
-            this.timeCreatedMin == other.getTimeCreatedMin() &&
-            this.timeLastRunCompletedMax == other.getTimeLastRunCompletedMax() &&
-            this.timeLastRunCompletedMin == other.getTimeLastRunCompletedMin() &&
-            this.timeLastRunStartedMax == other.getTimeLastRunStartedMax() &&
-            this.timeLastRunStartedMin == other.getTimeLastRunStartedMin() &&
-            this.timeScheduledMax == other.getTimeScheduledMax() &&
-            this.timeScheduledMin == other.getTimeScheduledMin();
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getAnyFieldContains() != null) {
-            _hashCode += getAnyFieldContains().hashCode();
-        }
-        if (getItemPKConceptContains() != null) {
-            _hashCode += getItemPKConceptContains().hashCode();
-        }
-        if (getItemPKIDFieldsContain() != null) {
-            _hashCode += getItemPKIDFieldsContain().hashCode();
-        }
-        if (getMessageContain() != null) {
-            _hashCode += getMessageContain().hashCode();
-        }
-        if (getNameContains() != null) {
-            _hashCode += getNameContains().hashCode();
-        }
-        if (getServiceJNDIContains() != null) {
-            _hashCode += getServiceJNDIContains().hashCode();
-        }
-        if (getServiceParametersContain() != null) {
-            _hashCode += getServiceParametersContain().hashCode();
-        }
-        if (getStatus() != null) {
-            _hashCode += getStatus().hashCode();
-        }
-        _hashCode += new Long(getTimeCreatedMax()).hashCode();
-        _hashCode += new Long(getTimeCreatedMin()).hashCode();
-        _hashCode += new Long(getTimeLastRunCompletedMax()).hashCode();
-        _hashCode += new Long(getTimeLastRunCompletedMin()).hashCode();
-        _hashCode += new Long(getTimeLastRunStartedMax()).hashCode();
-        _hashCode += new Long(getTimeLastRunStartedMin()).hashCode();
-        _hashCode += new Long(getTimeScheduledMax()).hashCode();
-        _hashCode += new Long(getTimeScheduledMin()).hashCode();
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSRoutingOrderV2SearchCriteria.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRoutingOrderV2SearchCriteria"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("anyFieldContains");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "anyFieldContains"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("itemPKConceptContains");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "itemPKConceptContains"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("itemPKIDFieldsContain");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "itemPKIDFieldsContain"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("messageContain");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "messageContain"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("nameContains");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "nameContains"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("serviceJNDIContains");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "serviceJNDIContains"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("serviceParametersContain");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "serviceParametersContain"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("status");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "status"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRoutingOrderV2Status"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeCreatedMax");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeCreatedMax"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeCreatedMin");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeCreatedMin"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeLastRunCompletedMax");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeLastRunCompletedMax"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeLastRunCompletedMin");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeLastRunCompletedMin"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeLastRunStartedMax");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeLastRunStartedMax"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeLastRunStartedMin");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeLastRunStartedMin"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeScheduledMax");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeScheduledMax"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeScheduledMin");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeScheduledMin"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setTimeScheduledMin(long value) {
+        this.timeScheduledMin = value;
     }
 
 }

@@ -1,354 +1,245 @@
-/**
- * WSItem.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSItem  implements java.io.Serializable {
-    private java.lang.String conceptName;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String content;
 
-    private java.lang.String dataModelName;
+/**
+ * <p>Java class for WSItem complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSItem"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="conceptName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="content" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="dataModelName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="ids" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="insertionTime" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="taskId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSItem", propOrder = {
+    "conceptName",
+    "content",
+    "dataModelName",
+    "ids",
+    "insertionTime",
+    "taskId",
+    "wsDataClusterPK"
+})
+public class WSItem {
 
-    private java.lang.String[] ids;
-
-    private long insertionTime;
-
-    private java.lang.String taskId;
-
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
-
-    public WSItem() {
-    }
-
-    public WSItem(
-           java.lang.String conceptName,
-           java.lang.String content,
-           java.lang.String dataModelName,
-           java.lang.String[] ids,
-           long insertionTime,
-           java.lang.String taskId,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-           this.conceptName = conceptName;
-           this.content = content;
-           this.dataModelName = dataModelName;
-           this.ids = ids;
-           this.insertionTime = insertionTime;
-           this.taskId = taskId;
-           this.wsDataClusterPK = wsDataClusterPK;
-    }
-
+    protected String conceptName;
+    protected String content;
+    protected String dataModelName;
+    @XmlElement(nillable = true)
+    protected List<String> ids;
+    protected long insertionTime;
+    protected String taskId;
+    protected WSDataClusterPK wsDataClusterPK;
 
     /**
-     * Gets the conceptName value for this WSItem.
+     * Default no-arg constructor
      * 
-     * @return conceptName
      */
-    public java.lang.String getConceptName() {
+    public WSItem() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSItem(final String conceptName, final String content, final String dataModelName, final List<String> ids, final long insertionTime, final String taskId, final WSDataClusterPK wsDataClusterPK) {
+        this.conceptName = conceptName;
+        this.content = content;
+        this.dataModelName = dataModelName;
+        this.ids = ids;
+        this.insertionTime = insertionTime;
+        this.taskId = taskId;
+        this.wsDataClusterPK = wsDataClusterPK;
+    }
+
+    /**
+     * Gets the value of the conceptName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getConceptName() {
         return conceptName;
     }
 
-
     /**
-     * Sets the conceptName value for this WSItem.
+     * Sets the value of the conceptName property.
      * 
-     * @param conceptName
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setConceptName(java.lang.String conceptName) {
-        this.conceptName = conceptName;
+    public void setConceptName(String value) {
+        this.conceptName = value;
     }
 
-
     /**
-     * Gets the content value for this WSItem.
+     * Gets the value of the content property.
      * 
-     * @return content
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getContent() {
+    public String getContent() {
         return content;
     }
 
-
     /**
-     * Sets the content value for this WSItem.
+     * Sets the value of the content property.
      * 
-     * @param content
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setContent(java.lang.String content) {
-        this.content = content;
+    public void setContent(String value) {
+        this.content = value;
     }
 
-
     /**
-     * Gets the dataModelName value for this WSItem.
+     * Gets the value of the dataModelName property.
      * 
-     * @return dataModelName
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getDataModelName() {
+    public String getDataModelName() {
         return dataModelName;
     }
 
-
     /**
-     * Sets the dataModelName value for this WSItem.
+     * Sets the value of the dataModelName property.
      * 
-     * @param dataModelName
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDataModelName(java.lang.String dataModelName) {
-        this.dataModelName = dataModelName;
+    public void setDataModelName(String value) {
+        this.dataModelName = value;
     }
 
-
     /**
-     * Gets the ids value for this WSItem.
+     * Gets the value of the ids property.
      * 
-     * @return ids
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the ids property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getIds().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link String }
+     * 
+     * 
      */
-    public java.lang.String[] getIds() {
-        return ids;
+    public List<String> getIds() {
+        if (ids == null) {
+            ids = new ArrayList<String>();
+        }
+        return this.ids;
     }
-
 
     /**
-     * Sets the ids value for this WSItem.
+     * Gets the value of the insertionTime property.
      * 
-     * @param ids
-     */
-    public void setIds(java.lang.String[] ids) {
-        this.ids = ids;
-    }
-
-    public java.lang.String getIds(int i) {
-        return this.ids[i];
-    }
-
-    public void setIds(int i, java.lang.String _value) {
-        this.ids[i] = _value;
-    }
-
-
-    /**
-     * Gets the insertionTime value for this WSItem.
-     * 
-     * @return insertionTime
      */
     public long getInsertionTime() {
         return insertionTime;
     }
 
-
     /**
-     * Sets the insertionTime value for this WSItem.
+     * Sets the value of the insertionTime property.
      * 
-     * @param insertionTime
      */
-    public void setInsertionTime(long insertionTime) {
-        this.insertionTime = insertionTime;
+    public void setInsertionTime(long value) {
+        this.insertionTime = value;
     }
 
-
     /**
-     * Gets the taskId value for this WSItem.
+     * Gets the value of the taskId property.
      * 
-     * @return taskId
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getTaskId() {
+    public String getTaskId() {
         return taskId;
     }
 
-
     /**
-     * Sets the taskId value for this WSItem.
+     * Sets the value of the taskId property.
      * 
-     * @param taskId
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setTaskId(java.lang.String taskId) {
-        this.taskId = taskId;
+    public void setTaskId(String value) {
+        this.taskId = value;
     }
 
-
     /**
-     * Gets the wsDataClusterPK value for this WSItem.
+     * Gets the value of the wsDataClusterPK property.
      * 
-     * @return wsDataClusterPK
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
+    public WSDataClusterPK getWsDataClusterPK() {
         return wsDataClusterPK;
     }
 
-
     /**
-     * Sets the wsDataClusterPK value for this WSItem.
+     * Sets the value of the wsDataClusterPK property.
      * 
-     * @param wsDataClusterPK
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-        this.wsDataClusterPK = wsDataClusterPK;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSItem)) return false;
-        WSItem other = (WSItem) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.conceptName==null && other.getConceptName()==null) || 
-             (this.conceptName!=null &&
-              this.conceptName.equals(other.getConceptName()))) &&
-            ((this.content==null && other.getContent()==null) || 
-             (this.content!=null &&
-              this.content.equals(other.getContent()))) &&
-            ((this.dataModelName==null && other.getDataModelName()==null) || 
-             (this.dataModelName!=null &&
-              this.dataModelName.equals(other.getDataModelName()))) &&
-            ((this.ids==null && other.getIds()==null) || 
-             (this.ids!=null &&
-              java.util.Arrays.equals(this.ids, other.getIds()))) &&
-            this.insertionTime == other.getInsertionTime() &&
-            ((this.taskId==null && other.getTaskId()==null) || 
-             (this.taskId!=null &&
-              this.taskId.equals(other.getTaskId()))) &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getConceptName() != null) {
-            _hashCode += getConceptName().hashCode();
-        }
-        if (getContent() != null) {
-            _hashCode += getContent().hashCode();
-        }
-        if (getDataModelName() != null) {
-            _hashCode += getDataModelName().hashCode();
-        }
-        if (getIds() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getIds());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getIds(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        _hashCode += new Long(getInsertionTime()).hashCode();
-        if (getTaskId() != null) {
-            _hashCode += getTaskId().hashCode();
-        }
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSItem.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSItem"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("conceptName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "conceptName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("content");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "content"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("dataModelName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "dataModelName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("ids");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "ids"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("insertionTime");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "insertionTime"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("taskId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "taskId"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
 }

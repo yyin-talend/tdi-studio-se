@@ -3,6 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
 " 
 %>
 	
@@ -18,22 +19,29 @@ String version = ElementParameterParser.getValue(node, "__SERVERVERSION__");
 boolean useTransaction = "false".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
 boolean useClientTranId = "true".equals(ElementParameterParser.getValue(node, "__GEN_TRANSACTION_ID__"));
 %>
-
-    org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
-    tmdmService_<%=cid %>.setTMDMPortEndpointAddress(<%=mdmUrl %>);
-    org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = tmdmService_<%=cid %>.getTMDMPort();    
-    org.talend.mdm.webservice.TMDMServiceSoapBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>;
+    java.net.URL url = null;
+    try {
+        url = new java.net.URL(<%=mdmUrl %>);
+    }catch(Exception e){
+        log.error(e.getMessage(),e);
+        throw e;
+    }
     
-    // Authentification
-    stub_<%=cid %>.setUsername(<%=username %>);
-
+    org.talend.mdm.webservice.TMDMService_Service service_service_<%=cid %> = new org.talend.mdm.webservice.TMDMService_Service(url);
+    org.talend.mdm.webservice.TMDMService service_<%=cid %> = service_service_<%=cid %>.getTMDMPort();
+    javax.xml.ws.BindingProvider stub_<%=cid %> = (javax.xml.ws.BindingProvider) service_<%=cid %>;
+    stub_<%=cid %>.getRequestContext().put(javax.xml.ws.BindingProvider.SESSION_MAINTAIN_PROPERTY, false);
+    
+    java.util.Map<String, Object> context_<%=cid %> = stub_<%=cid %>.getRequestContext();
+    context_<%=cid %>.put(javax.xml.ws.BindingProvider.USERNAME_PROPERTY, <%=username %>);
+    
 <%
 String passwordFieldName = "__PASSWORD__";
 %>
 
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 
-stub_<%=cid %>.setPassword(decryptedPassword_<%=cid%>);
+context_<%=cid %>.put(javax.xml.ws.BindingProvider.PASSWORD_PROPERTY, decryptedPassword_<%=cid%>);
 
 <%if(useTransaction) {%>
 	String turl_<%=cid%> = com.talend.mdm.transaction.client.MDMTransactionClient.getMDMTransactionURL(<%=mdmUrl %>, true);
@@ -54,10 +62,15 @@ if(useClientTranId){
 <%
 }
 %>
-stub_<%=cid %>.setHeader(new org.apache.axis.message.SOAPHeaderElement("http://www.talend.com/mdm", "transaction-id", mdmTransaction_<%=cid%>.getId()));
+
+List<org.apache.cxf.headers.Header> headers = new java.util.ArrayList<org.apache.cxf.headers.Header>();
+org.apache.cxf.headers.Header dummyHeader = new org.apache.cxf.headers.Header(new javax.xml.namespace.QName("http://www.talend.com/mdm", "transaction-id"), mdmTransaction_<%=cid%>.getId());
+headers.add(dummyHeader);
+context_<%=cid %>.put(org.apache.cxf.headers.Header.HEADER_LIST, headers);
+
 globalMap.put("mdmTransaction_<%=cid %>", mdmTransaction_<%=cid%>);
 <%}%>
 
-    stub_<%=cid %>.ping(new org.talend.mdm.webservice.WSPing());<%//For TDI-26109%>
+    service_<%=cid %>.ping(new org.talend.mdm.webservice.WSPing());<%//For TDI-26109%>
     
-    globalMap.put("TMDMService_<%=cid %>", tmdmWS_<%=cid %>);
+    globalMap.put("TMDMService_<%=cid %>", service_<%=cid %>);

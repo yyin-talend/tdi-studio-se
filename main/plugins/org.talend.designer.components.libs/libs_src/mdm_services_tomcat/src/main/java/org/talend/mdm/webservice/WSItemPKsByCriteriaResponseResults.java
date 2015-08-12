@@ -1,189 +1,124 @@
-/**
- * WSItemPKsByCriteriaResponseResults.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSItemPKsByCriteriaResponseResults  implements java.io.Serializable {
-    private long date;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String taskId;
 
-    private org.talend.mdm.webservice.WSItemPK wsItemPK;
+/**
+ * <p>Java class for WSItemPKsByCriteriaResponseResults complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSItemPKsByCriteriaResponseResults"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="date" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="taskId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="wsItemPK" type="{http://www.talend.com/mdm}WSItemPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSItemPKsByCriteriaResponseResults", propOrder = {
+    "date",
+    "taskId",
+    "wsItemPK"
+})
+public class WSItemPKsByCriteriaResponseResults {
 
-    public WSItemPKsByCriteriaResponseResults() {
-    }
-
-    public WSItemPKsByCriteriaResponseResults(
-           long date,
-           java.lang.String taskId,
-           org.talend.mdm.webservice.WSItemPK wsItemPK) {
-           this.date = date;
-           this.taskId = taskId;
-           this.wsItemPK = wsItemPK;
-    }
-
+    protected long date;
+    protected String taskId;
+    protected WSItemPK wsItemPK;
 
     /**
-     * Gets the date value for this WSItemPKsByCriteriaResponseResults.
+     * Default no-arg constructor
      * 
-     * @return date
+     */
+    public WSItemPKsByCriteriaResponseResults() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSItemPKsByCriteriaResponseResults(final long date, final String taskId, final WSItemPK wsItemPK) {
+        this.date = date;
+        this.taskId = taskId;
+        this.wsItemPK = wsItemPK;
+    }
+
+    /**
+     * Gets the value of the date property.
+     * 
      */
     public long getDate() {
         return date;
     }
 
-
     /**
-     * Sets the date value for this WSItemPKsByCriteriaResponseResults.
+     * Sets the value of the date property.
      * 
-     * @param date
      */
-    public void setDate(long date) {
-        this.date = date;
+    public void setDate(long value) {
+        this.date = value;
     }
 
-
     /**
-     * Gets the taskId value for this WSItemPKsByCriteriaResponseResults.
+     * Gets the value of the taskId property.
      * 
-     * @return taskId
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getTaskId() {
+    public String getTaskId() {
         return taskId;
     }
 
-
     /**
-     * Sets the taskId value for this WSItemPKsByCriteriaResponseResults.
+     * Sets the value of the taskId property.
      * 
-     * @param taskId
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setTaskId(java.lang.String taskId) {
-        this.taskId = taskId;
+    public void setTaskId(String value) {
+        this.taskId = value;
     }
 
-
     /**
-     * Gets the wsItemPK value for this WSItemPKsByCriteriaResponseResults.
+     * Gets the value of the wsItemPK property.
      * 
-     * @return wsItemPK
+     * @return
+     *     possible object is
+     *     {@link WSItemPK }
+     *     
      */
-    public org.talend.mdm.webservice.WSItemPK getWsItemPK() {
+    public WSItemPK getWsItemPK() {
         return wsItemPK;
     }
 
-
     /**
-     * Sets the wsItemPK value for this WSItemPKsByCriteriaResponseResults.
+     * Sets the value of the wsItemPK property.
      * 
-     * @param wsItemPK
+     * @param value
+     *     allowed object is
+     *     {@link WSItemPK }
+     *     
      */
-    public void setWsItemPK(org.talend.mdm.webservice.WSItemPK wsItemPK) {
-        this.wsItemPK = wsItemPK;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSItemPKsByCriteriaResponseResults)) return false;
-        WSItemPKsByCriteriaResponseResults other = (WSItemPKsByCriteriaResponseResults) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            this.date == other.getDate() &&
-            ((this.taskId==null && other.getTaskId()==null) || 
-             (this.taskId!=null &&
-              this.taskId.equals(other.getTaskId()))) &&
-            ((this.wsItemPK==null && other.getWsItemPK()==null) || 
-             (this.wsItemPK!=null &&
-              this.wsItemPK.equals(other.getWsItemPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        _hashCode += new Long(getDate()).hashCode();
-        if (getTaskId() != null) {
-            _hashCode += getTaskId().hashCode();
-        }
-        if (getWsItemPK() != null) {
-            _hashCode += getWsItemPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSItemPKsByCriteriaResponseResults.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSItemPKsByCriteriaResponseResults"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("date");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "date"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("taskId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "taskId"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsItemPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsItemPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSItemPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsItemPK(WSItemPK value) {
+        this.wsItemPK = value;
     }
 
 }

@@ -1,411 +1,320 @@
-/**
- * WSPartialPutItem.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSPartialPutItem  implements java.io.Serializable {
-    private java.lang.String datacluster;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String datamodel;
 
-    private java.lang.String keyXPath;
+/**
+ * <p>Java class for WSPartialPutItem complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSPartialPutItem"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="datacluster" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="datamodel" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="delete" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="keyXPath" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="overwrite" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="pivot" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="report" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="source" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="startingPosition" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="xml" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSPartialPutItem", propOrder = {
+    "datacluster",
+    "datamodel",
+    "delete",
+    "keyXPath",
+    "overwrite",
+    "pivot",
+    "report",
+    "source",
+    "startingPosition",
+    "xml"
+})
+public class WSPartialPutItem {
 
-    private java.lang.Boolean overwrite;
-
-    private java.lang.String pivot;
-
-    private boolean report;
-
-    private java.lang.String source;
-
-    private java.lang.Integer startingPosition;
-
-    private java.lang.String xml;
-
-    public WSPartialPutItem() {
-    }
-
-    public WSPartialPutItem(
-           java.lang.String datacluster,
-           java.lang.String datamodel,
-           java.lang.String keyXPath,
-           java.lang.Boolean overwrite,
-           java.lang.String pivot,
-           boolean report,
-           java.lang.String source,
-           java.lang.Integer startingPosition,
-           java.lang.String xml) {
-           this.datacluster = datacluster;
-           this.datamodel = datamodel;
-           this.keyXPath = keyXPath;
-           this.overwrite = overwrite;
-           this.pivot = pivot;
-           this.report = report;
-           this.source = source;
-           this.startingPosition = startingPosition;
-           this.xml = xml;
-    }
-
+    protected String datacluster;
+    protected String datamodel;
+    protected Boolean delete;
+    protected String keyXPath;
+    protected Boolean overwrite;
+    protected String pivot;
+    protected boolean report;
+    protected String source;
+    protected Integer startingPosition;
+    protected String xml;
 
     /**
-     * Gets the datacluster value for this WSPartialPutItem.
+     * Default no-arg constructor
      * 
-     * @return datacluster
      */
-    public java.lang.String getDatacluster() {
+    public WSPartialPutItem() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSPartialPutItem(final String datacluster, final String datamodel, final Boolean delete, final String keyXPath, final Boolean overwrite, final String pivot, final boolean report, final String source, final Integer startingPosition, final String xml) {
+        this.datacluster = datacluster;
+        this.datamodel = datamodel;
+        this.delete = delete;
+        this.keyXPath = keyXPath;
+        this.overwrite = overwrite;
+        this.pivot = pivot;
+        this.report = report;
+        this.source = source;
+        this.startingPosition = startingPosition;
+        this.xml = xml;
+    }
+
+    /**
+     * Gets the value of the datacluster property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDatacluster() {
         return datacluster;
     }
 
-
     /**
-     * Sets the datacluster value for this WSPartialPutItem.
+     * Sets the value of the datacluster property.
      * 
-     * @param datacluster
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDatacluster(java.lang.String datacluster) {
-        this.datacluster = datacluster;
+    public void setDatacluster(String value) {
+        this.datacluster = value;
     }
 
-
     /**
-     * Gets the datamodel value for this WSPartialPutItem.
+     * Gets the value of the datamodel property.
      * 
-     * @return datamodel
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getDatamodel() {
+    public String getDatamodel() {
         return datamodel;
     }
 
-
     /**
-     * Sets the datamodel value for this WSPartialPutItem.
+     * Sets the value of the datamodel property.
      * 
-     * @param datamodel
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDatamodel(java.lang.String datamodel) {
-        this.datamodel = datamodel;
+    public void setDatamodel(String value) {
+        this.datamodel = value;
     }
 
+    /**
+     * Gets the value of the delete property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean isDelete() {
+        return delete;
+    }
 
     /**
-     * Gets the keyXPath value for this WSPartialPutItem.
+     * Sets the value of the delete property.
      * 
-     * @return keyXPath
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
      */
-    public java.lang.String getKeyXPath() {
+    public void setDelete(Boolean value) {
+        this.delete = value;
+    }
+
+    /**
+     * Gets the value of the keyXPath property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getKeyXPath() {
         return keyXPath;
     }
 
-
     /**
-     * Sets the keyXPath value for this WSPartialPutItem.
+     * Sets the value of the keyXPath property.
      * 
-     * @param keyXPath
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setKeyXPath(java.lang.String keyXPath) {
-        this.keyXPath = keyXPath;
+    public void setKeyXPath(String value) {
+        this.keyXPath = value;
     }
 
-
     /**
-     * Gets the overwrite value for this WSPartialPutItem.
+     * Gets the value of the overwrite property.
      * 
-     * @return overwrite
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
      */
-    public java.lang.Boolean getOverwrite() {
+    public Boolean isOverwrite() {
         return overwrite;
     }
 
-
     /**
-     * Sets the overwrite value for this WSPartialPutItem.
+     * Sets the value of the overwrite property.
      * 
-     * @param overwrite
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
      */
-    public void setOverwrite(java.lang.Boolean overwrite) {
-        this.overwrite = overwrite;
+    public void setOverwrite(Boolean value) {
+        this.overwrite = value;
     }
 
-
     /**
-     * Gets the pivot value for this WSPartialPutItem.
+     * Gets the value of the pivot property.
      * 
-     * @return pivot
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getPivot() {
+    public String getPivot() {
         return pivot;
     }
 
-
     /**
-     * Sets the pivot value for this WSPartialPutItem.
+     * Sets the value of the pivot property.
      * 
-     * @param pivot
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setPivot(java.lang.String pivot) {
-        this.pivot = pivot;
+    public void setPivot(String value) {
+        this.pivot = value;
     }
 
-
     /**
-     * Gets the report value for this WSPartialPutItem.
+     * Gets the value of the report property.
      * 
-     * @return report
      */
     public boolean isReport() {
         return report;
     }
 
-
     /**
-     * Sets the report value for this WSPartialPutItem.
+     * Sets the value of the report property.
      * 
-     * @param report
      */
-    public void setReport(boolean report) {
-        this.report = report;
+    public void setReport(boolean value) {
+        this.report = value;
     }
 
-
     /**
-     * Gets the source value for this WSPartialPutItem.
+     * Gets the value of the source property.
      * 
-     * @return source
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getSource() {
+    public String getSource() {
         return source;
     }
 
-
     /**
-     * Sets the source value for this WSPartialPutItem.
+     * Sets the value of the source property.
      * 
-     * @param source
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setSource(java.lang.String source) {
-        this.source = source;
+    public void setSource(String value) {
+        this.source = value;
     }
 
-
     /**
-     * Gets the startingPosition value for this WSPartialPutItem.
+     * Gets the value of the startingPosition property.
      * 
-     * @return startingPosition
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
      */
-    public java.lang.Integer getStartingPosition() {
+    public Integer getStartingPosition() {
         return startingPosition;
     }
 
-
     /**
-     * Sets the startingPosition value for this WSPartialPutItem.
+     * Sets the value of the startingPosition property.
      * 
-     * @param startingPosition
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
      */
-    public void setStartingPosition(java.lang.Integer startingPosition) {
-        this.startingPosition = startingPosition;
+    public void setStartingPosition(Integer value) {
+        this.startingPosition = value;
     }
 
-
     /**
-     * Gets the xml value for this WSPartialPutItem.
+     * Gets the value of the xml property.
      * 
-     * @return xml
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getXml() {
+    public String getXml() {
         return xml;
     }
 
-
     /**
-     * Sets the xml value for this WSPartialPutItem.
+     * Sets the value of the xml property.
      * 
-     * @param xml
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setXml(java.lang.String xml) {
-        this.xml = xml;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSPartialPutItem)) return false;
-        WSPartialPutItem other = (WSPartialPutItem) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.datacluster==null && other.getDatacluster()==null) || 
-             (this.datacluster!=null &&
-              this.datacluster.equals(other.getDatacluster()))) &&
-            ((this.datamodel==null && other.getDatamodel()==null) || 
-             (this.datamodel!=null &&
-              this.datamodel.equals(other.getDatamodel()))) &&
-            ((this.keyXPath==null && other.getKeyXPath()==null) || 
-             (this.keyXPath!=null &&
-              this.keyXPath.equals(other.getKeyXPath()))) &&
-            ((this.overwrite==null && other.getOverwrite()==null) || 
-             (this.overwrite!=null &&
-              this.overwrite.equals(other.getOverwrite()))) &&
-            ((this.pivot==null && other.getPivot()==null) || 
-             (this.pivot!=null &&
-              this.pivot.equals(other.getPivot()))) &&
-            this.report == other.isReport() &&
-            ((this.source==null && other.getSource()==null) || 
-             (this.source!=null &&
-              this.source.equals(other.getSource()))) &&
-            ((this.startingPosition==null && other.getStartingPosition()==null) || 
-             (this.startingPosition!=null &&
-              this.startingPosition.equals(other.getStartingPosition()))) &&
-            ((this.xml==null && other.getXml()==null) || 
-             (this.xml!=null &&
-              this.xml.equals(other.getXml())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDatacluster() != null) {
-            _hashCode += getDatacluster().hashCode();
-        }
-        if (getDatamodel() != null) {
-            _hashCode += getDatamodel().hashCode();
-        }
-        if (getKeyXPath() != null) {
-            _hashCode += getKeyXPath().hashCode();
-        }
-        if (getOverwrite() != null) {
-            _hashCode += getOverwrite().hashCode();
-        }
-        if (getPivot() != null) {
-            _hashCode += getPivot().hashCode();
-        }
-        _hashCode += (isReport() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        if (getSource() != null) {
-            _hashCode += getSource().hashCode();
-        }
-        if (getStartingPosition() != null) {
-            _hashCode += getStartingPosition().hashCode();
-        }
-        if (getXml() != null) {
-            _hashCode += getXml().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSPartialPutItem.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSPartialPutItem"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("datacluster");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "datacluster"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("datamodel");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "datamodel"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("keyXPath");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "keyXPath"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("overwrite");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "overwrite"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("pivot");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "pivot"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("report");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "report"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("source");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "source"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("startingPosition");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "startingPosition"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xml");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xml"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setXml(String value) {
+        this.xml = value;
     }
 
 }

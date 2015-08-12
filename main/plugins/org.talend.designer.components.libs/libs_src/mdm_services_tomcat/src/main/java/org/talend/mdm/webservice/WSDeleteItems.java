@@ -1,263 +1,180 @@
-/**
- * WSDeleteItems.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSDeleteItems  implements java.io.Serializable {
-    private java.lang.String conceptName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.Boolean override;
 
-    private int spellTreshold;
+/**
+ * <p>Java class for WSDeleteItems complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSDeleteItems"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="conceptName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="override" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="spellTreshold" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *         &lt;element name="wsWhereItem" type="{http://www.talend.com/mdm}WSWhereItem" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSDeleteItems", propOrder = {
+    "conceptName",
+    "override",
+    "spellTreshold",
+    "wsDataClusterPK",
+    "wsWhereItem"
+})
+public class WSDeleteItems {
 
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
-
-    private org.talend.mdm.webservice.WSWhereItem wsWhereItem;
-
-    public WSDeleteItems() {
-    }
-
-    public WSDeleteItems(
-           java.lang.String conceptName,
-           java.lang.Boolean override,
-           int spellTreshold,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK,
-           org.talend.mdm.webservice.WSWhereItem wsWhereItem) {
-           this.conceptName = conceptName;
-           this.override = override;
-           this.spellTreshold = spellTreshold;
-           this.wsDataClusterPK = wsDataClusterPK;
-           this.wsWhereItem = wsWhereItem;
-    }
-
+    protected String conceptName;
+    protected Boolean override;
+    protected int spellTreshold;
+    protected WSDataClusterPK wsDataClusterPK;
+    protected WSWhereItem wsWhereItem;
 
     /**
-     * Gets the conceptName value for this WSDeleteItems.
+     * Default no-arg constructor
      * 
-     * @return conceptName
      */
-    public java.lang.String getConceptName() {
+    public WSDeleteItems() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSDeleteItems(final String conceptName, final Boolean override, final int spellTreshold, final WSDataClusterPK wsDataClusterPK, final WSWhereItem wsWhereItem) {
+        this.conceptName = conceptName;
+        this.override = override;
+        this.spellTreshold = spellTreshold;
+        this.wsDataClusterPK = wsDataClusterPK;
+        this.wsWhereItem = wsWhereItem;
+    }
+
+    /**
+     * Gets the value of the conceptName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getConceptName() {
         return conceptName;
     }
 
-
     /**
-     * Sets the conceptName value for this WSDeleteItems.
+     * Sets the value of the conceptName property.
      * 
-     * @param conceptName
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setConceptName(java.lang.String conceptName) {
-        this.conceptName = conceptName;
+    public void setConceptName(String value) {
+        this.conceptName = value;
     }
 
-
     /**
-     * Gets the override value for this WSDeleteItems.
+     * Gets the value of the override property.
      * 
-     * @return override
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
      */
-    public java.lang.Boolean getOverride() {
+    public Boolean isOverride() {
         return override;
     }
 
-
     /**
-     * Sets the override value for this WSDeleteItems.
+     * Sets the value of the override property.
      * 
-     * @param override
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
      */
-    public void setOverride(java.lang.Boolean override) {
-        this.override = override;
+    public void setOverride(Boolean value) {
+        this.override = value;
     }
 
-
     /**
-     * Gets the spellTreshold value for this WSDeleteItems.
+     * Gets the value of the spellTreshold property.
      * 
-     * @return spellTreshold
      */
     public int getSpellTreshold() {
         return spellTreshold;
     }
 
-
     /**
-     * Sets the spellTreshold value for this WSDeleteItems.
+     * Sets the value of the spellTreshold property.
      * 
-     * @param spellTreshold
      */
-    public void setSpellTreshold(int spellTreshold) {
-        this.spellTreshold = spellTreshold;
+    public void setSpellTreshold(int value) {
+        this.spellTreshold = value;
     }
 
-
     /**
-     * Gets the wsDataClusterPK value for this WSDeleteItems.
+     * Gets the value of the wsDataClusterPK property.
      * 
-     * @return wsDataClusterPK
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
+    public WSDataClusterPK getWsDataClusterPK() {
         return wsDataClusterPK;
     }
 
-
     /**
-     * Sets the wsDataClusterPK value for this WSDeleteItems.
+     * Sets the value of the wsDataClusterPK property.
      * 
-     * @param wsDataClusterPK
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-        this.wsDataClusterPK = wsDataClusterPK;
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
-
     /**
-     * Gets the wsWhereItem value for this WSDeleteItems.
+     * Gets the value of the wsWhereItem property.
      * 
-     * @return wsWhereItem
+     * @return
+     *     possible object is
+     *     {@link WSWhereItem }
+     *     
      */
-    public org.talend.mdm.webservice.WSWhereItem getWsWhereItem() {
+    public WSWhereItem getWsWhereItem() {
         return wsWhereItem;
     }
 
-
     /**
-     * Sets the wsWhereItem value for this WSDeleteItems.
+     * Sets the value of the wsWhereItem property.
      * 
-     * @param wsWhereItem
+     * @param value
+     *     allowed object is
+     *     {@link WSWhereItem }
+     *     
      */
-    public void setWsWhereItem(org.talend.mdm.webservice.WSWhereItem wsWhereItem) {
-        this.wsWhereItem = wsWhereItem;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSDeleteItems)) return false;
-        WSDeleteItems other = (WSDeleteItems) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.conceptName==null && other.getConceptName()==null) || 
-             (this.conceptName!=null &&
-              this.conceptName.equals(other.getConceptName()))) &&
-            ((this.override==null && other.getOverride()==null) || 
-             (this.override!=null &&
-              this.override.equals(other.getOverride()))) &&
-            this.spellTreshold == other.getSpellTreshold() &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK()))) &&
-            ((this.wsWhereItem==null && other.getWsWhereItem()==null) || 
-             (this.wsWhereItem!=null &&
-              this.wsWhereItem.equals(other.getWsWhereItem())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getConceptName() != null) {
-            _hashCode += getConceptName().hashCode();
-        }
-        if (getOverride() != null) {
-            _hashCode += getOverride().hashCode();
-        }
-        _hashCode += getSpellTreshold();
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        if (getWsWhereItem() != null) {
-            _hashCode += getWsWhereItem().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSDeleteItems.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDeleteItems"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("conceptName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "conceptName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("override");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "override"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("spellTreshold");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "spellTreshold"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsWhereItem");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsWhereItem"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSWhereItem"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsWhereItem(WSWhereItem value) {
+        this.wsWhereItem = value;
     }
 
 }

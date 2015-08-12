@@ -1,240 +1,160 @@
-/**
- * WSProcessBytesUsingTransformer.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSProcessBytesUsingTransformer  implements java.io.Serializable {
-    private java.lang.String contentType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSByteArray wsBytes;
 
-    private org.talend.mdm.webservice.WSProcessBytesUsingTransformerWsOutputDecisionTableDecisions[] wsOutputDecisionTable;
+/**
+ * <p>Java class for WSProcessBytesUsingTransformer complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSProcessBytesUsingTransformer"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="contentType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="wsBytes" type="{http://www.talend.com/mdm}WSByteArray" minOccurs="0"/&gt;
+ *         &lt;element name="wsOutputDecisionTable" type="{http://www.talend.com/mdm}WSOutputDecisionTable" minOccurs="0"/&gt;
+ *         &lt;element name="wsTransformerPK" type="{http://www.talend.com/mdm}WSTransformerPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSProcessBytesUsingTransformer", propOrder = {
+    "contentType",
+    "wsBytes",
+    "wsOutputDecisionTable",
+    "wsTransformerPK"
+})
+public class WSProcessBytesUsingTransformer {
 
-    private org.talend.mdm.webservice.WSTransformerPK wsTransformerPK;
+    protected String contentType;
+    protected WSByteArray wsBytes;
+    protected WSOutputDecisionTable wsOutputDecisionTable;
+    protected WSTransformerPK wsTransformerPK;
 
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSProcessBytesUsingTransformer() {
+        super();
     }
-
-    public WSProcessBytesUsingTransformer(
-           java.lang.String contentType,
-           org.talend.mdm.webservice.WSByteArray wsBytes,
-           org.talend.mdm.webservice.WSProcessBytesUsingTransformerWsOutputDecisionTableDecisions[] wsOutputDecisionTable,
-           org.talend.mdm.webservice.WSTransformerPK wsTransformerPK) {
-           this.contentType = contentType;
-           this.wsBytes = wsBytes;
-           this.wsOutputDecisionTable = wsOutputDecisionTable;
-           this.wsTransformerPK = wsTransformerPK;
-    }
-
 
     /**
-     * Gets the contentType value for this WSProcessBytesUsingTransformer.
+     * Fully-initialising value constructor
      * 
-     * @return contentType
      */
-    public java.lang.String getContentType() {
-        return contentType;
-    }
-
-
-    /**
-     * Sets the contentType value for this WSProcessBytesUsingTransformer.
-     * 
-     * @param contentType
-     */
-    public void setContentType(java.lang.String contentType) {
+    public WSProcessBytesUsingTransformer(final String contentType, final WSByteArray wsBytes, final WSOutputDecisionTable wsOutputDecisionTable, final WSTransformerPK wsTransformerPK) {
         this.contentType = contentType;
-    }
-
-
-    /**
-     * Gets the wsBytes value for this WSProcessBytesUsingTransformer.
-     * 
-     * @return wsBytes
-     */
-    public org.talend.mdm.webservice.WSByteArray getWsBytes() {
-        return wsBytes;
-    }
-
-
-    /**
-     * Sets the wsBytes value for this WSProcessBytesUsingTransformer.
-     * 
-     * @param wsBytes
-     */
-    public void setWsBytes(org.talend.mdm.webservice.WSByteArray wsBytes) {
         this.wsBytes = wsBytes;
-    }
-
-
-    /**
-     * Gets the wsOutputDecisionTable value for this WSProcessBytesUsingTransformer.
-     * 
-     * @return wsOutputDecisionTable
-     */
-    public org.talend.mdm.webservice.WSProcessBytesUsingTransformerWsOutputDecisionTableDecisions[] getWsOutputDecisionTable() {
-        return wsOutputDecisionTable;
-    }
-
-
-    /**
-     * Sets the wsOutputDecisionTable value for this WSProcessBytesUsingTransformer.
-     * 
-     * @param wsOutputDecisionTable
-     */
-    public void setWsOutputDecisionTable(org.talend.mdm.webservice.WSProcessBytesUsingTransformerWsOutputDecisionTableDecisions[] wsOutputDecisionTable) {
         this.wsOutputDecisionTable = wsOutputDecisionTable;
-    }
-
-
-    /**
-     * Gets the wsTransformerPK value for this WSProcessBytesUsingTransformer.
-     * 
-     * @return wsTransformerPK
-     */
-    public org.talend.mdm.webservice.WSTransformerPK getWsTransformerPK() {
-        return wsTransformerPK;
-    }
-
-
-    /**
-     * Sets the wsTransformerPK value for this WSProcessBytesUsingTransformer.
-     * 
-     * @param wsTransformerPK
-     */
-    public void setWsTransformerPK(org.talend.mdm.webservice.WSTransformerPK wsTransformerPK) {
         this.wsTransformerPK = wsTransformerPK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSProcessBytesUsingTransformer)) return false;
-        WSProcessBytesUsingTransformer other = (WSProcessBytesUsingTransformer) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.contentType==null && other.getContentType()==null) || 
-             (this.contentType!=null &&
-              this.contentType.equals(other.getContentType()))) &&
-            ((this.wsBytes==null && other.getWsBytes()==null) || 
-             (this.wsBytes!=null &&
-              this.wsBytes.equals(other.getWsBytes()))) &&
-            ((this.wsOutputDecisionTable==null && other.getWsOutputDecisionTable()==null) || 
-             (this.wsOutputDecisionTable!=null &&
-              java.util.Arrays.equals(this.wsOutputDecisionTable, other.getWsOutputDecisionTable()))) &&
-            ((this.wsTransformerPK==null && other.getWsTransformerPK()==null) || 
-             (this.wsTransformerPK!=null &&
-              this.wsTransformerPK.equals(other.getWsTransformerPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getContentType() != null) {
-            _hashCode += getContentType().hashCode();
-        }
-        if (getWsBytes() != null) {
-            _hashCode += getWsBytes().hashCode();
-        }
-        if (getWsOutputDecisionTable() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getWsOutputDecisionTable());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getWsOutputDecisionTable(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getWsTransformerPK() != null) {
-            _hashCode += getWsTransformerPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSProcessBytesUsingTransformer.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSProcessBytesUsingTransformer"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("contentType");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "contentType"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsBytes");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsBytes"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSByteArray"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsOutputDecisionTable");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsOutputDecisionTable"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSProcessBytesUsingTransformerWsOutputDecisionTableDecisions"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        elemField.setItemQName(new javax.xml.namespace.QName("", "decisions"));
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsTransformerPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsTransformerPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the contentType property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getContentType() {
+        return contentType;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the contentType property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setContentType(String value) {
+        this.contentType = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the wsBytes property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSByteArray }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public WSByteArray getWsBytes() {
+        return wsBytes;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the wsBytes property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSByteArray }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsBytes(WSByteArray value) {
+        this.wsBytes = value;
+    }
+
+    /**
+     * Gets the value of the wsOutputDecisionTable property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSOutputDecisionTable }
+     *     
+     */
+    public WSOutputDecisionTable getWsOutputDecisionTable() {
+        return wsOutputDecisionTable;
+    }
+
+    /**
+     * Sets the value of the wsOutputDecisionTable property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSOutputDecisionTable }
+     *     
+     */
+    public void setWsOutputDecisionTable(WSOutputDecisionTable value) {
+        this.wsOutputDecisionTable = value;
+    }
+
+    /**
+     * Gets the value of the wsTransformerPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSTransformerPK }
+     *     
+     */
+    public WSTransformerPK getWsTransformerPK() {
+        return wsTransformerPK;
+    }
+
+    /**
+     * Sets the value of the wsTransformerPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSTransformerPK }
+     *     
+     */
+    public void setWsTransformerPK(WSTransformerPK value) {
+        this.wsTransformerPK = value;
     }
 
 }

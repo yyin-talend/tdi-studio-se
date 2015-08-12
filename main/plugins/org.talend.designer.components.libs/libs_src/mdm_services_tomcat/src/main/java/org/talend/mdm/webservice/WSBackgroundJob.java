@@ -1,396 +1,272 @@
-/**
- * WSBackgroundJob.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSBackgroundJob  implements java.io.Serializable {
-    private java.lang.String description;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String id;
 
-    private java.lang.String message;
+/**
+ * <p>Java class for WSBackgroundJob complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSBackgroundJob"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="percentage" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="pipeline" type="{http://www.talend.com/mdm}WSPipeline" minOccurs="0"/&gt;
+ *         &lt;element name="serializedObject" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/&gt;
+ *         &lt;element name="status" type="{http://www.talend.com/mdm}BackgroundJobStatusType" minOccurs="0"/&gt;
+ *         &lt;element name="timestamp" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSBackgroundJob", propOrder = {
+    "description",
+    "id",
+    "message",
+    "percentage",
+    "pipeline",
+    "serializedObject",
+    "status",
+    "timestamp"
+})
+public class WSBackgroundJob {
 
-    private java.lang.Integer percentage;
-
-    private org.talend.mdm.webservice.WSPipelineTypedContentEntry[] pipeline;
-
-    private byte[] serializedObject;
-
-    private org.talend.mdm.webservice.BackgroundJobStatusType status;
-
-    private java.lang.String timestamp;
-
-    public WSBackgroundJob() {
-    }
-
-    public WSBackgroundJob(
-           java.lang.String description,
-           java.lang.String id,
-           java.lang.String message,
-           java.lang.Integer percentage,
-           org.talend.mdm.webservice.WSPipelineTypedContentEntry[] pipeline,
-           byte[] serializedObject,
-           org.talend.mdm.webservice.BackgroundJobStatusType status,
-           java.lang.String timestamp) {
-           this.description = description;
-           this.id = id;
-           this.message = message;
-           this.percentage = percentage;
-           this.pipeline = pipeline;
-           this.serializedObject = serializedObject;
-           this.status = status;
-           this.timestamp = timestamp;
-    }
-
+    protected String description;
+    protected String id;
+    protected String message;
+    protected Integer percentage;
+    protected WSPipeline pipeline;
+    protected byte[] serializedObject;
+    @XmlSchemaType(name = "string")
+    protected BackgroundJobStatusType status;
+    protected String timestamp;
 
     /**
-     * Gets the description value for this WSBackgroundJob.
+     * Default no-arg constructor
      * 
-     * @return description
      */
-    public java.lang.String getDescription() {
+    public WSBackgroundJob() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSBackgroundJob(final String description, final String id, final String message, final Integer percentage, final WSPipeline pipeline, final byte[] serializedObject, final BackgroundJobStatusType status, final String timestamp) {
+        this.description = description;
+        this.id = id;
+        this.message = message;
+        this.percentage = percentage;
+        this.pipeline = pipeline;
+        this.serializedObject = serializedObject;
+        this.status = status;
+        this.timestamp = timestamp;
+    }
+
+    /**
+     * Gets the value of the description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescription() {
         return description;
     }
 
-
     /**
-     * Sets the description value for this WSBackgroundJob.
+     * Sets the value of the description property.
      * 
-     * @param description
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDescription(java.lang.String description) {
-        this.description = description;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
-
     /**
-     * Gets the id value for this WSBackgroundJob.
+     * Gets the value of the id property.
      * 
-     * @return id
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getId() {
+    public String getId() {
         return id;
     }
 
-
     /**
-     * Sets the id value for this WSBackgroundJob.
+     * Sets the value of the id property.
      * 
-     * @param id
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setId(java.lang.String id) {
-        this.id = id;
+    public void setId(String value) {
+        this.id = value;
     }
 
-
     /**
-     * Gets the message value for this WSBackgroundJob.
+     * Gets the value of the message property.
      * 
-     * @return message
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getMessage() {
+    public String getMessage() {
         return message;
     }
 
-
     /**
-     * Sets the message value for this WSBackgroundJob.
+     * Sets the value of the message property.
      * 
-     * @param message
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setMessage(java.lang.String message) {
-        this.message = message;
+    public void setMessage(String value) {
+        this.message = value;
     }
 
-
     /**
-     * Gets the percentage value for this WSBackgroundJob.
+     * Gets the value of the percentage property.
      * 
-     * @return percentage
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
      */
-    public java.lang.Integer getPercentage() {
+    public Integer getPercentage() {
         return percentage;
     }
 
-
     /**
-     * Sets the percentage value for this WSBackgroundJob.
+     * Sets the value of the percentage property.
      * 
-     * @param percentage
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
      */
-    public void setPercentage(java.lang.Integer percentage) {
-        this.percentage = percentage;
+    public void setPercentage(Integer value) {
+        this.percentage = value;
     }
 
-
     /**
-     * Gets the pipeline value for this WSBackgroundJob.
+     * Gets the value of the pipeline property.
      * 
-     * @return pipeline
+     * @return
+     *     possible object is
+     *     {@link WSPipeline }
+     *     
      */
-    public org.talend.mdm.webservice.WSPipelineTypedContentEntry[] getPipeline() {
+    public WSPipeline getPipeline() {
         return pipeline;
     }
 
-
     /**
-     * Sets the pipeline value for this WSBackgroundJob.
+     * Sets the value of the pipeline property.
      * 
-     * @param pipeline
+     * @param value
+     *     allowed object is
+     *     {@link WSPipeline }
+     *     
      */
-    public void setPipeline(org.talend.mdm.webservice.WSPipelineTypedContentEntry[] pipeline) {
-        this.pipeline = pipeline;
+    public void setPipeline(WSPipeline value) {
+        this.pipeline = value;
     }
 
-
     /**
-     * Gets the serializedObject value for this WSBackgroundJob.
+     * Gets the value of the serializedObject property.
      * 
-     * @return serializedObject
+     * @return
+     *     possible object is
+     *     byte[]
      */
     public byte[] getSerializedObject() {
         return serializedObject;
     }
 
-
     /**
-     * Sets the serializedObject value for this WSBackgroundJob.
+     * Sets the value of the serializedObject property.
      * 
-     * @param serializedObject
+     * @param value
+     *     allowed object is
+     *     byte[]
      */
-    public void setSerializedObject(byte[] serializedObject) {
-        this.serializedObject = serializedObject;
+    public void setSerializedObject(byte[] value) {
+        this.serializedObject = value;
     }
 
-
     /**
-     * Gets the status value for this WSBackgroundJob.
+     * Gets the value of the status property.
      * 
-     * @return status
+     * @return
+     *     possible object is
+     *     {@link BackgroundJobStatusType }
+     *     
      */
-    public org.talend.mdm.webservice.BackgroundJobStatusType getStatus() {
+    public BackgroundJobStatusType getStatus() {
         return status;
     }
 
-
     /**
-     * Sets the status value for this WSBackgroundJob.
+     * Sets the value of the status property.
      * 
-     * @param status
+     * @param value
+     *     allowed object is
+     *     {@link BackgroundJobStatusType }
+     *     
      */
-    public void setStatus(org.talend.mdm.webservice.BackgroundJobStatusType status) {
-        this.status = status;
+    public void setStatus(BackgroundJobStatusType value) {
+        this.status = value;
     }
 
-
     /**
-     * Gets the timestamp value for this WSBackgroundJob.
+     * Gets the value of the timestamp property.
      * 
-     * @return timestamp
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-
     /**
-     * Sets the timestamp value for this WSBackgroundJob.
+     * Sets the value of the timestamp property.
      * 
-     * @param timestamp
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setTimestamp(java.lang.String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSBackgroundJob)) return false;
-        WSBackgroundJob other = (WSBackgroundJob) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            ((this.id==null && other.getId()==null) || 
-             (this.id!=null &&
-              this.id.equals(other.getId()))) &&
-            ((this.message==null && other.getMessage()==null) || 
-             (this.message!=null &&
-              this.message.equals(other.getMessage()))) &&
-            ((this.percentage==null && other.getPercentage()==null) || 
-             (this.percentage!=null &&
-              this.percentage.equals(other.getPercentage()))) &&
-            ((this.pipeline==null && other.getPipeline()==null) || 
-             (this.pipeline!=null &&
-              java.util.Arrays.equals(this.pipeline, other.getPipeline()))) &&
-            ((this.serializedObject==null && other.getSerializedObject()==null) || 
-             (this.serializedObject!=null &&
-              java.util.Arrays.equals(this.serializedObject, other.getSerializedObject()))) &&
-            ((this.status==null && other.getStatus()==null) || 
-             (this.status!=null &&
-              this.status.equals(other.getStatus()))) &&
-            ((this.timestamp==null && other.getTimestamp()==null) || 
-             (this.timestamp!=null &&
-              this.timestamp.equals(other.getTimestamp())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        if (getId() != null) {
-            _hashCode += getId().hashCode();
-        }
-        if (getMessage() != null) {
-            _hashCode += getMessage().hashCode();
-        }
-        if (getPercentage() != null) {
-            _hashCode += getPercentage().hashCode();
-        }
-        if (getPipeline() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getPipeline());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getPipeline(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getSerializedObject() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getSerializedObject());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getSerializedObject(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getStatus() != null) {
-            _hashCode += getStatus().hashCode();
-        }
-        if (getTimestamp() != null) {
-            _hashCode += getTimestamp().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSBackgroundJob.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSBackgroundJob"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("message");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "message"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("percentage");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "percentage"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("pipeline");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "pipeline"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSPipelineTypedContentEntry"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        elemField.setItemQName(new javax.xml.namespace.QName("", "typedContentEntry"));
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("serializedObject");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "serializedObject"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "base64Binary"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("status");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "status"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "BackgroundJobStatusType"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timestamp");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timestamp"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setTimestamp(String value) {
+        this.timestamp = value;
     }
 
 }

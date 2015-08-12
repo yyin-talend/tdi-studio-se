@@ -1,211 +1,141 @@
-/**
- * WSRunQuery.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSRunQuery  implements java.io.Serializable {
-    private java.lang.String[] parameters;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String query;
 
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
+/**
+ * <p>Java class for WSRunQuery complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSRunQuery"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="parameters" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="query" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSRunQuery", propOrder = {
+    "parameters",
+    "query",
+    "wsDataClusterPK"
+})
+public class WSRunQuery {
 
+    @XmlElement(nillable = true)
+    protected List<String> parameters;
+    protected String query;
+    protected WSDataClusterPK wsDataClusterPK;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSRunQuery() {
+        super();
     }
-
-    public WSRunQuery(
-           java.lang.String[] parameters,
-           java.lang.String query,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-           this.parameters = parameters;
-           this.query = query;
-           this.wsDataClusterPK = wsDataClusterPK;
-    }
-
 
     /**
-     * Gets the parameters value for this WSRunQuery.
+     * Fully-initialising value constructor
      * 
-     * @return parameters
      */
-    public java.lang.String[] getParameters() {
-        return parameters;
-    }
-
-
-    /**
-     * Sets the parameters value for this WSRunQuery.
-     * 
-     * @param parameters
-     */
-    public void setParameters(java.lang.String[] parameters) {
+    public WSRunQuery(final List<String> parameters, final String query, final WSDataClusterPK wsDataClusterPK) {
         this.parameters = parameters;
-    }
-
-    public java.lang.String getParameters(int i) {
-        return this.parameters[i];
-    }
-
-    public void setParameters(int i, java.lang.String _value) {
-        this.parameters[i] = _value;
-    }
-
-
-    /**
-     * Gets the query value for this WSRunQuery.
-     * 
-     * @return query
-     */
-    public java.lang.String getQuery() {
-        return query;
-    }
-
-
-    /**
-     * Sets the query value for this WSRunQuery.
-     * 
-     * @param query
-     */
-    public void setQuery(java.lang.String query) {
         this.query = query;
-    }
-
-
-    /**
-     * Gets the wsDataClusterPK value for this WSRunQuery.
-     * 
-     * @return wsDataClusterPK
-     */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
-        return wsDataClusterPK;
-    }
-
-
-    /**
-     * Sets the wsDataClusterPK value for this WSRunQuery.
-     * 
-     * @param wsDataClusterPK
-     */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
         this.wsDataClusterPK = wsDataClusterPK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSRunQuery)) return false;
-        WSRunQuery other = (WSRunQuery) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
+    /**
+     * Gets the value of the parameters property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the parameters property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getParameters().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link String }
+     * 
+     * 
+     */
+    public List<String> getParameters() {
+        if (parameters == null) {
+            parameters = new ArrayList<String>();
         }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.parameters==null && other.getParameters()==null) || 
-             (this.parameters!=null &&
-              java.util.Arrays.equals(this.parameters, other.getParameters()))) &&
-            ((this.query==null && other.getQuery()==null) || 
-             (this.query!=null &&
-              this.query.equals(other.getQuery()))) &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getParameters() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getParameters());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getParameters(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getQuery() != null) {
-            _hashCode += getQuery().hashCode();
-        }
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSRunQuery.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRunQuery"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("parameters");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "parameters"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("query");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "query"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+        return this.parameters;
     }
 
     /**
-     * Return type metadata object
+     * Gets the value of the query property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public String getQuery() {
+        return query;
     }
 
     /**
-     * Get Custom Serializer
+     * Sets the value of the query property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public void setQuery(String value) {
+        this.query = value;
     }
 
     /**
-     * Get Custom Deserializer
+     * Gets the value of the wsDataClusterPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public WSDataClusterPK getWsDataClusterPK() {
+        return wsDataClusterPK;
+    }
+
+    /**
+     * Sets the value of the wsDataClusterPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
+     */
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
 }

@@ -1,189 +1,124 @@
-/**
- * WSDigest.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSDigest  implements java.io.Serializable {
-    private java.lang.String digestValue;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private long timeStamp;
 
-    private org.talend.mdm.webservice.WSDigestKey wsDigestKey;
+/**
+ * <p>Java class for WSDigest complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSDigest"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="digestValue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="timeStamp" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="wsDigestKey" type="{http://www.talend.com/mdm}WSDigestKey" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSDigest", propOrder = {
+    "digestValue",
+    "timeStamp",
+    "wsDigestKey"
+})
+public class WSDigest {
 
-    public WSDigest() {
-    }
-
-    public WSDigest(
-           java.lang.String digestValue,
-           long timeStamp,
-           org.talend.mdm.webservice.WSDigestKey wsDigestKey) {
-           this.digestValue = digestValue;
-           this.timeStamp = timeStamp;
-           this.wsDigestKey = wsDigestKey;
-    }
-
+    protected String digestValue;
+    protected long timeStamp;
+    protected WSDigestKey wsDigestKey;
 
     /**
-     * Gets the digestValue value for this WSDigest.
+     * Default no-arg constructor
      * 
-     * @return digestValue
      */
-    public java.lang.String getDigestValue() {
+    public WSDigest() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSDigest(final String digestValue, final long timeStamp, final WSDigestKey wsDigestKey) {
+        this.digestValue = digestValue;
+        this.timeStamp = timeStamp;
+        this.wsDigestKey = wsDigestKey;
+    }
+
+    /**
+     * Gets the value of the digestValue property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDigestValue() {
         return digestValue;
     }
 
-
     /**
-     * Sets the digestValue value for this WSDigest.
+     * Sets the value of the digestValue property.
      * 
-     * @param digestValue
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDigestValue(java.lang.String digestValue) {
-        this.digestValue = digestValue;
+    public void setDigestValue(String value) {
+        this.digestValue = value;
     }
 
-
     /**
-     * Gets the timeStamp value for this WSDigest.
+     * Gets the value of the timeStamp property.
      * 
-     * @return timeStamp
      */
     public long getTimeStamp() {
         return timeStamp;
     }
 
-
     /**
-     * Sets the timeStamp value for this WSDigest.
+     * Sets the value of the timeStamp property.
      * 
-     * @param timeStamp
      */
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setTimeStamp(long value) {
+        this.timeStamp = value;
     }
 
-
     /**
-     * Gets the wsDigestKey value for this WSDigest.
+     * Gets the value of the wsDigestKey property.
      * 
-     * @return wsDigestKey
+     * @return
+     *     possible object is
+     *     {@link WSDigestKey }
+     *     
      */
-    public org.talend.mdm.webservice.WSDigestKey getWsDigestKey() {
+    public WSDigestKey getWsDigestKey() {
         return wsDigestKey;
     }
 
-
     /**
-     * Sets the wsDigestKey value for this WSDigest.
+     * Sets the value of the wsDigestKey property.
      * 
-     * @param wsDigestKey
+     * @param value
+     *     allowed object is
+     *     {@link WSDigestKey }
+     *     
      */
-    public void setWsDigestKey(org.talend.mdm.webservice.WSDigestKey wsDigestKey) {
-        this.wsDigestKey = wsDigestKey;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSDigest)) return false;
-        WSDigest other = (WSDigest) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.digestValue==null && other.getDigestValue()==null) || 
-             (this.digestValue!=null &&
-              this.digestValue.equals(other.getDigestValue()))) &&
-            this.timeStamp == other.getTimeStamp() &&
-            ((this.wsDigestKey==null && other.getWsDigestKey()==null) || 
-             (this.wsDigestKey!=null &&
-              this.wsDigestKey.equals(other.getWsDigestKey())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDigestValue() != null) {
-            _hashCode += getDigestValue().hashCode();
-        }
-        _hashCode += new Long(getTimeStamp()).hashCode();
-        if (getWsDigestKey() != null) {
-            _hashCode += getWsDigestKey().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSDigest.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDigest"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("digestValue");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "digestValue"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("timeStamp");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "timeStamp"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDigestKey");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDigestKey"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDigestKey"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDigestKey(WSDigestKey value) {
+        this.wsDigestKey = value;
     }
 
 }

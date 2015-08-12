@@ -1,263 +1,183 @@
-/**
- * WSWhereCondition.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSWhereCondition  implements java.io.Serializable {
-    private java.lang.String leftPath;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSWhereOperator operator;
 
-    private java.lang.String rightValueOrPath;
+/**
+ * <p>Java class for WSWhereCondition complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSWhereCondition"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="leftPath" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="operator" type="{http://www.talend.com/mdm}WSWhereOperator" minOccurs="0"/&gt;
+ *         &lt;element name="rightValueOrPath" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="spellCheck" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="stringPredicate" type="{http://www.talend.com/mdm}WSStringPredicate" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSWhereCondition", propOrder = {
+    "leftPath",
+    "operator",
+    "rightValueOrPath",
+    "spellCheck",
+    "stringPredicate"
+})
+public class WSWhereCondition {
 
-    private boolean spellCheck;
-
-    private org.talend.mdm.webservice.WSStringPredicate stringPredicate;
-
-    public WSWhereCondition() {
-    }
-
-    public WSWhereCondition(
-           java.lang.String leftPath,
-           org.talend.mdm.webservice.WSWhereOperator operator,
-           java.lang.String rightValueOrPath,
-           boolean spellCheck,
-           org.talend.mdm.webservice.WSStringPredicate stringPredicate) {
-           this.leftPath = leftPath;
-           this.operator = operator;
-           this.rightValueOrPath = rightValueOrPath;
-           this.spellCheck = spellCheck;
-           this.stringPredicate = stringPredicate;
-    }
-
+    protected String leftPath;
+    @XmlSchemaType(name = "string")
+    protected WSWhereOperator operator;
+    protected String rightValueOrPath;
+    protected boolean spellCheck;
+    @XmlSchemaType(name = "string")
+    protected WSStringPredicate stringPredicate;
 
     /**
-     * Gets the leftPath value for this WSWhereCondition.
+     * Default no-arg constructor
      * 
-     * @return leftPath
      */
-    public java.lang.String getLeftPath() {
+    public WSWhereCondition() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSWhereCondition(final String leftPath, final WSWhereOperator operator, final String rightValueOrPath, final boolean spellCheck, final WSStringPredicate stringPredicate) {
+        this.leftPath = leftPath;
+        this.operator = operator;
+        this.rightValueOrPath = rightValueOrPath;
+        this.spellCheck = spellCheck;
+        this.stringPredicate = stringPredicate;
+    }
+
+    /**
+     * Gets the value of the leftPath property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getLeftPath() {
         return leftPath;
     }
 
-
     /**
-     * Sets the leftPath value for this WSWhereCondition.
+     * Sets the value of the leftPath property.
      * 
-     * @param leftPath
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setLeftPath(java.lang.String leftPath) {
-        this.leftPath = leftPath;
+    public void setLeftPath(String value) {
+        this.leftPath = value;
     }
 
-
     /**
-     * Gets the operator value for this WSWhereCondition.
+     * Gets the value of the operator property.
      * 
-     * @return operator
+     * @return
+     *     possible object is
+     *     {@link WSWhereOperator }
+     *     
      */
-    public org.talend.mdm.webservice.WSWhereOperator getOperator() {
+    public WSWhereOperator getOperator() {
         return operator;
     }
 
-
     /**
-     * Sets the operator value for this WSWhereCondition.
+     * Sets the value of the operator property.
      * 
-     * @param operator
+     * @param value
+     *     allowed object is
+     *     {@link WSWhereOperator }
+     *     
      */
-    public void setOperator(org.talend.mdm.webservice.WSWhereOperator operator) {
-        this.operator = operator;
+    public void setOperator(WSWhereOperator value) {
+        this.operator = value;
     }
 
-
     /**
-     * Gets the rightValueOrPath value for this WSWhereCondition.
+     * Gets the value of the rightValueOrPath property.
      * 
-     * @return rightValueOrPath
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getRightValueOrPath() {
+    public String getRightValueOrPath() {
         return rightValueOrPath;
     }
 
-
     /**
-     * Sets the rightValueOrPath value for this WSWhereCondition.
+     * Sets the value of the rightValueOrPath property.
      * 
-     * @param rightValueOrPath
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setRightValueOrPath(java.lang.String rightValueOrPath) {
-        this.rightValueOrPath = rightValueOrPath;
+    public void setRightValueOrPath(String value) {
+        this.rightValueOrPath = value;
     }
 
-
     /**
-     * Gets the spellCheck value for this WSWhereCondition.
+     * Gets the value of the spellCheck property.
      * 
-     * @return spellCheck
      */
     public boolean isSpellCheck() {
         return spellCheck;
     }
 
-
     /**
-     * Sets the spellCheck value for this WSWhereCondition.
+     * Sets the value of the spellCheck property.
      * 
-     * @param spellCheck
      */
-    public void setSpellCheck(boolean spellCheck) {
-        this.spellCheck = spellCheck;
+    public void setSpellCheck(boolean value) {
+        this.spellCheck = value;
     }
 
-
     /**
-     * Gets the stringPredicate value for this WSWhereCondition.
+     * Gets the value of the stringPredicate property.
      * 
-     * @return stringPredicate
+     * @return
+     *     possible object is
+     *     {@link WSStringPredicate }
+     *     
      */
-    public org.talend.mdm.webservice.WSStringPredicate getStringPredicate() {
+    public WSStringPredicate getStringPredicate() {
         return stringPredicate;
     }
 
-
     /**
-     * Sets the stringPredicate value for this WSWhereCondition.
+     * Sets the value of the stringPredicate property.
      * 
-     * @param stringPredicate
+     * @param value
+     *     allowed object is
+     *     {@link WSStringPredicate }
+     *     
      */
-    public void setStringPredicate(org.talend.mdm.webservice.WSStringPredicate stringPredicate) {
-        this.stringPredicate = stringPredicate;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSWhereCondition)) return false;
-        WSWhereCondition other = (WSWhereCondition) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.leftPath==null && other.getLeftPath()==null) || 
-             (this.leftPath!=null &&
-              this.leftPath.equals(other.getLeftPath()))) &&
-            ((this.operator==null && other.getOperator()==null) || 
-             (this.operator!=null &&
-              this.operator.equals(other.getOperator()))) &&
-            ((this.rightValueOrPath==null && other.getRightValueOrPath()==null) || 
-             (this.rightValueOrPath!=null &&
-              this.rightValueOrPath.equals(other.getRightValueOrPath()))) &&
-            this.spellCheck == other.isSpellCheck() &&
-            ((this.stringPredicate==null && other.getStringPredicate()==null) || 
-             (this.stringPredicate!=null &&
-              this.stringPredicate.equals(other.getStringPredicate())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getLeftPath() != null) {
-            _hashCode += getLeftPath().hashCode();
-        }
-        if (getOperator() != null) {
-            _hashCode += getOperator().hashCode();
-        }
-        if (getRightValueOrPath() != null) {
-            _hashCode += getRightValueOrPath().hashCode();
-        }
-        _hashCode += (isSpellCheck() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        if (getStringPredicate() != null) {
-            _hashCode += getStringPredicate().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSWhereCondition.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSWhereCondition"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("leftPath");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "leftPath"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("operator");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "operator"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSWhereOperator"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("rightValueOrPath");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "rightValueOrPath"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("spellCheck");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "spellCheck"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("stringPredicate");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "stringPredicate"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSStringPredicate"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setStringPredicate(WSStringPredicate value) {
+        this.stringPredicate = value;
     }
 
 }

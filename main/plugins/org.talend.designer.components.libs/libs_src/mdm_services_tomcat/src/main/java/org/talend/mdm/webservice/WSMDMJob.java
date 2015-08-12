@@ -1,194 +1,132 @@
-/**
- * WSMDMJob.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSMDMJob  implements java.io.Serializable {
-    private java.lang.String jobName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String jobVersion;
 
-    private java.lang.String suffix;
+/**
+ * <p>Java class for WSMDMJob complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSMDMJob"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="jobName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="jobVersion" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="suffix" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSMDMJob", propOrder = {
+    "jobName",
+    "jobVersion",
+    "suffix"
+})
+public class WSMDMJob {
 
+    protected String jobName;
+    protected String jobVersion;
+    protected String suffix;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSMDMJob() {
+        super();
     }
-
-    public WSMDMJob(
-           java.lang.String jobName,
-           java.lang.String jobVersion,
-           java.lang.String suffix) {
-           this.jobName = jobName;
-           this.jobVersion = jobVersion;
-           this.suffix = suffix;
-    }
-
 
     /**
-     * Gets the jobName value for this WSMDMJob.
+     * Fully-initialising value constructor
      * 
-     * @return jobName
      */
-    public java.lang.String getJobName() {
-        return jobName;
-    }
-
-
-    /**
-     * Sets the jobName value for this WSMDMJob.
-     * 
-     * @param jobName
-     */
-    public void setJobName(java.lang.String jobName) {
+    public WSMDMJob(final String jobName, final String jobVersion, final String suffix) {
         this.jobName = jobName;
-    }
-
-
-    /**
-     * Gets the jobVersion value for this WSMDMJob.
-     * 
-     * @return jobVersion
-     */
-    public java.lang.String getJobVersion() {
-        return jobVersion;
-    }
-
-
-    /**
-     * Sets the jobVersion value for this WSMDMJob.
-     * 
-     * @param jobVersion
-     */
-    public void setJobVersion(java.lang.String jobVersion) {
         this.jobVersion = jobVersion;
-    }
-
-
-    /**
-     * Gets the suffix value for this WSMDMJob.
-     * 
-     * @return suffix
-     */
-    public java.lang.String getSuffix() {
-        return suffix;
-    }
-
-
-    /**
-     * Sets the suffix value for this WSMDMJob.
-     * 
-     * @param suffix
-     */
-    public void setSuffix(java.lang.String suffix) {
         this.suffix = suffix;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSMDMJob)) return false;
-        WSMDMJob other = (WSMDMJob) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.jobName==null && other.getJobName()==null) || 
-             (this.jobName!=null &&
-              this.jobName.equals(other.getJobName()))) &&
-            ((this.jobVersion==null && other.getJobVersion()==null) || 
-             (this.jobVersion!=null &&
-              this.jobVersion.equals(other.getJobVersion()))) &&
-            ((this.suffix==null && other.getSuffix()==null) || 
-             (this.suffix!=null &&
-              this.suffix.equals(other.getSuffix())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getJobName() != null) {
-            _hashCode += getJobName().hashCode();
-        }
-        if (getJobVersion() != null) {
-            _hashCode += getJobVersion().hashCode();
-        }
-        if (getSuffix() != null) {
-            _hashCode += getSuffix().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSMDMJob.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSMDMJob"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("jobName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "jobName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("jobVersion");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "jobVersion"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("suffix");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "suffix"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the jobName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getJobName() {
+        return jobName;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the jobName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setJobName(String value) {
+        this.jobName = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the jobVersion property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getJobVersion() {
+        return jobVersion;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the jobVersion property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setJobVersion(String value) {
+        this.jobVersion = value;
+    }
+
+    /**
+     * Gets the value of the suffix property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSuffix() {
+        return suffix;
+    }
+
+    /**
+     * Sets the value of the suffix property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSuffix(String value) {
+        this.suffix = value;
     }
 
 }

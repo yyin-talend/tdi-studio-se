@@ -1,401 +1,276 @@
-/**
- * WSGetItemsSort.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetItemsSort  implements java.io.Serializable {
-    private java.lang.String conceptName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String dir;
 
-    private int maxItems;
+/**
+ * <p>Java class for WSGetItemsSort complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetItemsSort"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="conceptName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="dir" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="maxItems" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="skip" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="sort" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="spellTreshold" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="totalCountOnFirstResult" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="whereItem" type="{http://www.talend.com/mdm}WSWhereItem" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetItemsSort", propOrder = {
+    "conceptName",
+    "dir",
+    "maxItems",
+    "skip",
+    "sort",
+    "spellTreshold",
+    "totalCountOnFirstResult",
+    "whereItem",
+    "wsDataClusterPK"
+})
+public class WSGetItemsSort {
 
-    private int skip;
-
-    private java.lang.String sort;
-
-    private int spellTreshold;
-
-    private java.lang.Boolean totalCountOnFirstResult;
-
-    private org.talend.mdm.webservice.WSWhereItem whereItem;
-
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
-
-    public WSGetItemsSort() {
-    }
-
-    public WSGetItemsSort(
-           java.lang.String conceptName,
-           java.lang.String dir,
-           int maxItems,
-           int skip,
-           java.lang.String sort,
-           int spellTreshold,
-           java.lang.Boolean totalCountOnFirstResult,
-           org.talend.mdm.webservice.WSWhereItem whereItem,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-           this.conceptName = conceptName;
-           this.dir = dir;
-           this.maxItems = maxItems;
-           this.skip = skip;
-           this.sort = sort;
-           this.spellTreshold = spellTreshold;
-           this.totalCountOnFirstResult = totalCountOnFirstResult;
-           this.whereItem = whereItem;
-           this.wsDataClusterPK = wsDataClusterPK;
-    }
-
+    protected String conceptName;
+    protected String dir;
+    protected int maxItems;
+    protected int skip;
+    protected String sort;
+    protected int spellTreshold;
+    protected Boolean totalCountOnFirstResult;
+    protected WSWhereItem whereItem;
+    protected WSDataClusterPK wsDataClusterPK;
 
     /**
-     * Gets the conceptName value for this WSGetItemsSort.
+     * Default no-arg constructor
      * 
-     * @return conceptName
      */
-    public java.lang.String getConceptName() {
+    public WSGetItemsSort() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSGetItemsSort(final String conceptName, final String dir, final int maxItems, final int skip, final String sort, final int spellTreshold, final Boolean totalCountOnFirstResult, final WSWhereItem whereItem, final WSDataClusterPK wsDataClusterPK) {
+        this.conceptName = conceptName;
+        this.dir = dir;
+        this.maxItems = maxItems;
+        this.skip = skip;
+        this.sort = sort;
+        this.spellTreshold = spellTreshold;
+        this.totalCountOnFirstResult = totalCountOnFirstResult;
+        this.whereItem = whereItem;
+        this.wsDataClusterPK = wsDataClusterPK;
+    }
+
+    /**
+     * Gets the value of the conceptName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getConceptName() {
         return conceptName;
     }
 
-
     /**
-     * Sets the conceptName value for this WSGetItemsSort.
+     * Sets the value of the conceptName property.
      * 
-     * @param conceptName
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setConceptName(java.lang.String conceptName) {
-        this.conceptName = conceptName;
+    public void setConceptName(String value) {
+        this.conceptName = value;
     }
 
-
     /**
-     * Gets the dir value for this WSGetItemsSort.
+     * Gets the value of the dir property.
      * 
-     * @return dir
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getDir() {
+    public String getDir() {
         return dir;
     }
 
-
     /**
-     * Sets the dir value for this WSGetItemsSort.
+     * Sets the value of the dir property.
      * 
-     * @param dir
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDir(java.lang.String dir) {
-        this.dir = dir;
+    public void setDir(String value) {
+        this.dir = value;
     }
 
-
     /**
-     * Gets the maxItems value for this WSGetItemsSort.
+     * Gets the value of the maxItems property.
      * 
-     * @return maxItems
      */
     public int getMaxItems() {
         return maxItems;
     }
 
-
     /**
-     * Sets the maxItems value for this WSGetItemsSort.
+     * Sets the value of the maxItems property.
      * 
-     * @param maxItems
      */
-    public void setMaxItems(int maxItems) {
-        this.maxItems = maxItems;
+    public void setMaxItems(int value) {
+        this.maxItems = value;
     }
 
-
     /**
-     * Gets the skip value for this WSGetItemsSort.
+     * Gets the value of the skip property.
      * 
-     * @return skip
      */
     public int getSkip() {
         return skip;
     }
 
-
     /**
-     * Sets the skip value for this WSGetItemsSort.
+     * Sets the value of the skip property.
      * 
-     * @param skip
      */
-    public void setSkip(int skip) {
-        this.skip = skip;
+    public void setSkip(int value) {
+        this.skip = value;
     }
 
-
     /**
-     * Gets the sort value for this WSGetItemsSort.
+     * Gets the value of the sort property.
      * 
-     * @return sort
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getSort() {
+    public String getSort() {
         return sort;
     }
 
-
     /**
-     * Sets the sort value for this WSGetItemsSort.
+     * Sets the value of the sort property.
      * 
-     * @param sort
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setSort(java.lang.String sort) {
-        this.sort = sort;
+    public void setSort(String value) {
+        this.sort = value;
     }
 
-
     /**
-     * Gets the spellTreshold value for this WSGetItemsSort.
+     * Gets the value of the spellTreshold property.
      * 
-     * @return spellTreshold
      */
     public int getSpellTreshold() {
         return spellTreshold;
     }
 
-
     /**
-     * Sets the spellTreshold value for this WSGetItemsSort.
+     * Sets the value of the spellTreshold property.
      * 
-     * @param spellTreshold
      */
-    public void setSpellTreshold(int spellTreshold) {
-        this.spellTreshold = spellTreshold;
+    public void setSpellTreshold(int value) {
+        this.spellTreshold = value;
     }
 
-
     /**
-     * Gets the totalCountOnFirstResult value for this WSGetItemsSort.
+     * Gets the value of the totalCountOnFirstResult property.
      * 
-     * @return totalCountOnFirstResult
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
      */
-    public java.lang.Boolean getTotalCountOnFirstResult() {
+    public Boolean isTotalCountOnFirstResult() {
         return totalCountOnFirstResult;
     }
 
-
     /**
-     * Sets the totalCountOnFirstResult value for this WSGetItemsSort.
+     * Sets the value of the totalCountOnFirstResult property.
      * 
-     * @param totalCountOnFirstResult
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
      */
-    public void setTotalCountOnFirstResult(java.lang.Boolean totalCountOnFirstResult) {
-        this.totalCountOnFirstResult = totalCountOnFirstResult;
+    public void setTotalCountOnFirstResult(Boolean value) {
+        this.totalCountOnFirstResult = value;
     }
 
-
     /**
-     * Gets the whereItem value for this WSGetItemsSort.
+     * Gets the value of the whereItem property.
      * 
-     * @return whereItem
+     * @return
+     *     possible object is
+     *     {@link WSWhereItem }
+     *     
      */
-    public org.talend.mdm.webservice.WSWhereItem getWhereItem() {
+    public WSWhereItem getWhereItem() {
         return whereItem;
     }
 
-
     /**
-     * Sets the whereItem value for this WSGetItemsSort.
+     * Sets the value of the whereItem property.
      * 
-     * @param whereItem
+     * @param value
+     *     allowed object is
+     *     {@link WSWhereItem }
+     *     
      */
-    public void setWhereItem(org.talend.mdm.webservice.WSWhereItem whereItem) {
-        this.whereItem = whereItem;
+    public void setWhereItem(WSWhereItem value) {
+        this.whereItem = value;
     }
 
-
     /**
-     * Gets the wsDataClusterPK value for this WSGetItemsSort.
+     * Gets the value of the wsDataClusterPK property.
      * 
-     * @return wsDataClusterPK
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
+    public WSDataClusterPK getWsDataClusterPK() {
         return wsDataClusterPK;
     }
 
-
     /**
-     * Sets the wsDataClusterPK value for this WSGetItemsSort.
+     * Sets the value of the wsDataClusterPK property.
      * 
-     * @param wsDataClusterPK
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-        this.wsDataClusterPK = wsDataClusterPK;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetItemsSort)) return false;
-        WSGetItemsSort other = (WSGetItemsSort) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.conceptName==null && other.getConceptName()==null) || 
-             (this.conceptName!=null &&
-              this.conceptName.equals(other.getConceptName()))) &&
-            ((this.dir==null && other.getDir()==null) || 
-             (this.dir!=null &&
-              this.dir.equals(other.getDir()))) &&
-            this.maxItems == other.getMaxItems() &&
-            this.skip == other.getSkip() &&
-            ((this.sort==null && other.getSort()==null) || 
-             (this.sort!=null &&
-              this.sort.equals(other.getSort()))) &&
-            this.spellTreshold == other.getSpellTreshold() &&
-            ((this.totalCountOnFirstResult==null && other.getTotalCountOnFirstResult()==null) || 
-             (this.totalCountOnFirstResult!=null &&
-              this.totalCountOnFirstResult.equals(other.getTotalCountOnFirstResult()))) &&
-            ((this.whereItem==null && other.getWhereItem()==null) || 
-             (this.whereItem!=null &&
-              this.whereItem.equals(other.getWhereItem()))) &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getConceptName() != null) {
-            _hashCode += getConceptName().hashCode();
-        }
-        if (getDir() != null) {
-            _hashCode += getDir().hashCode();
-        }
-        _hashCode += getMaxItems();
-        _hashCode += getSkip();
-        if (getSort() != null) {
-            _hashCode += getSort().hashCode();
-        }
-        _hashCode += getSpellTreshold();
-        if (getTotalCountOnFirstResult() != null) {
-            _hashCode += getTotalCountOnFirstResult().hashCode();
-        }
-        if (getWhereItem() != null) {
-            _hashCode += getWhereItem().hashCode();
-        }
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetItemsSort.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetItemsSort"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("conceptName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "conceptName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("dir");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "dir"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("maxItems");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "maxItems"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("skip");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "skip"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("sort");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "sort"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("spellTreshold");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "spellTreshold"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("totalCountOnFirstResult");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "totalCountOnFirstResult"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("whereItem");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "whereItem"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSWhereItem"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
 }

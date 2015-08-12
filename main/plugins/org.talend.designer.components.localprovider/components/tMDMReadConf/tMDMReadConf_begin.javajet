@@ -38,8 +38,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { //4
 	
 				boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+				
 				String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 				String conn = "TMDMService_" + connection;
+				
 				String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
 				String username = ElementParameterParser.getValue(node, "__USERNAME__");
 
@@ -65,47 +67,64 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 				if(limit==null || ("").equals(limit)){
 					limit = "0";
 				}
-				%>       
+				%>
+				
 				int nb_line_<%=cid %> = 0;
 				<%if(!useExistingConn){%>
-					org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
-					tmdmService_<%=cid %>.setTMDMPortEndpointAddress(<%=mdmUrl %>);
-					org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = tmdmService_<%=cid %>.getTMDMPort();    
-					org.talend.mdm.webservice.TMDMServiceSoapBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>;
-	
-					// Authentification
-					stub_<%=cid %>.setUsername(<%=username %>);
-					
+                    java.net.URL url = null;
+                    try {
+                        url = new java.net.URL(<%=mdmUrl %>);
+                    }catch(Exception e){
+                        log.error(e.getMessage(),e);
+                        throw e;
+                    }
+                    
+				    org.talend.mdm.webservice.TMDMService_Service service_service_<%=cid %> = new org.talend.mdm.webservice.TMDMService_Service(url);
+				    org.talend.mdm.webservice.TMDMService service_<%=cid %> = service_service_<%=cid %>.getTMDMPort();
+				    javax.xml.ws.BindingProvider stub_<%=cid %> = (javax.xml.ws.BindingProvider) service_<%=cid %>;
+                    stub_<%=cid %>.getRequestContext().put(javax.xml.ws.BindingProvider.SESSION_MAINTAIN_PROPERTY, false);
+
+                    java.util.Map<String, Object> context_<%=cid %> = stub_<%=cid %>.getRequestContext();
+
+                    context_<%=cid %>.put(javax.xml.ws.BindingProvider.USERNAME_PROPERTY, <%=username %>);
+				
                     <%
                     String passwordFieldName = "__PASSWORD__";
                     %>
                     
                     <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-					
-					stub_<%=cid %>.setPassword(decryptedPassword_<%=cid%>);
+                    
+                    context_<%=cid %>.put(javax.xml.ws.BindingProvider.PASSWORD_PROPERTY, decryptedPassword_<%=cid%>);
+                    
 				<%}else{%>
-					org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("<%=conn%>");
+					org.talend.mdm.webservice.TMDMService service_<%=cid %> = (org.talend.mdm.webservice.TMDMService)globalMap.get("<%=conn%>");
 				<%}%>
 				
-				org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %> + "<%=isStaging?"#STAGING":""%>");
-
+				String suffix = "";
+				if(true ==<%=isStaging %>) {
+				    suffix = "#STAGING";
+				}
+				org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %> + suffix);
+				
 				<%if(!isSingle){//item%>
-					String[] ids_<%=cid %> = {
-						<%
-						for(int i=0; i<ids.size(); i++){
-							Map<String, String> map = ids.get(i);
-							String idValue = map.get("IDVALUE");
-							%>
-							<%=(i==0? "":",")%><%=idValue %>
-						<%
-						}
-						%>
-					};
+					List<String> ids_<%=cid %> = new java.util.ArrayList<String>(); 
+					
+					<%
+					for(int i=0; i<ids.size(); i++){//for
+						Map<String, String> map = ids.get(i);
+						String idValue = map.get("IDVALUE");
+					%>
+					ids_<%=cid %>.add(<%=idValue %>);
+					<%
+					}//for
+					%>
+					
 					org.talend.mdm.webservice.WSGetItem wsitem_<%=cid %> = 
 					new org.talend.mdm.webservice.WSGetItem(new org.talend.mdm.webservice.WSItemPK(<%=concept %>,ids_<%=cid %>, dataCluster_<%=cid %>));
 					String <%=outgoingConn.getName() %>_xml = "";
 					try {
-						org.talend.mdm.webservice.WSItem item_<%=cid %>=tmdmWS_<%=cid %>.getItem(wsitem_<%=cid %>);
+						org.talend.mdm.webservice.WSItem item_<%=cid %>=service_<%=cid %>.getItem(wsitem_<%=cid %>);
+						
 						<%=outgoingConn.getName() %>_xml = item_<%=cid %>.getContent();
 					} catch(java.lang.Exception e) {
 						<%if(dieOnError) {%>
@@ -146,16 +165,19 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 					<%
 					}//for
 					%>
+					
 					org.talend.mdm.webservice.WSWhereItem wsItem_<%=cid %> = null;
 					if(conditions_<%=cid %>.size() > 0){
 					<%
 					if(!isOnlyOrPredicate){
 					%>
-						wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(conditions_<%=cid %>.toArray(new org.talend.mdm.webservice.WSWhereItem[conditions_<%=cid %>.size()]),null,null);
+					    org.talend.mdm.webservice.WSWhereAnd whereAnd_<%=cid %> = new org.talend.mdm.webservice.WSWhereAnd(conditions_<%=cid %>); 
+						wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(whereAnd_<%=cid %>,null,null);
 					<%
 					}else{
 					%>
-						wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(null,null,conditions_<%=cid %>.toArray(new org.talend.mdm.webservice.WSWhereItem[conditions_<%=cid %>.size()]));
+					    org.talend.mdm.webservice.WSWhereOr whereOr_<%=cid %> = new org.talend.mdm.webservice.WSWhereOr(conditions_<%=cid %>); 
+						wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(null,null,whereOr_<%=cid %>);
 					<%
 					}
 					%>
@@ -196,7 +218,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 
 						String[] items_<%=cid%> = {};
 						try {
-							items_<%=cid%> = tmdmWS_<%=cid%>.getItems(getitems_<%=cid%>);
+							items_<%=cid%> = service_<%=cid %>.getItems(getitems_<%=cid%>).getStrings().toArray(new String[0]);
+							
 							if(totalCount_<%=cid%> < 0){ 
 								totalCount_<%=cid%> = Integer.valueOf(items_<%=cid%>[0].replaceAll("<totalCount>", "").replaceAll("</totalCount>", ""));
 							}

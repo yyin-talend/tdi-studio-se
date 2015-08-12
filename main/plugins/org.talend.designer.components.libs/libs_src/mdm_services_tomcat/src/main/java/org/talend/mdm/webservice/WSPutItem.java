@@ -1,231 +1,160 @@
-/**
- * WSPutItem.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSPutItem  implements java.io.Serializable {
-    private java.lang.Boolean isUpdate;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
 
-    private org.talend.mdm.webservice.WSDataModelPK wsDataModelPK;
+/**
+ * <p>Java class for WSPutItem complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSPutItem"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="isUpdate" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataModelPK" type="{http://www.talend.com/mdm}WSDataModelPK" minOccurs="0"/&gt;
+ *         &lt;element name="xmlString" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSPutItem", propOrder = {
+    "isUpdate",
+    "wsDataClusterPK",
+    "wsDataModelPK",
+    "xmlString"
+})
+public class WSPutItem {
 
-    private java.lang.String xmlString;
+    protected Boolean isUpdate;
+    protected WSDataClusterPK wsDataClusterPK;
+    protected WSDataModelPK wsDataModelPK;
+    protected String xmlString;
 
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSPutItem() {
+        super();
     }
-
-    public WSPutItem(
-           java.lang.Boolean isUpdate,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK,
-           org.talend.mdm.webservice.WSDataModelPK wsDataModelPK,
-           java.lang.String xmlString) {
-           this.isUpdate = isUpdate;
-           this.wsDataClusterPK = wsDataClusterPK;
-           this.wsDataModelPK = wsDataModelPK;
-           this.xmlString = xmlString;
-    }
-
 
     /**
-     * Gets the isUpdate value for this WSPutItem.
+     * Fully-initialising value constructor
      * 
-     * @return isUpdate
      */
-    public java.lang.Boolean getIsUpdate() {
-        return isUpdate;
-    }
-
-
-    /**
-     * Sets the isUpdate value for this WSPutItem.
-     * 
-     * @param isUpdate
-     */
-    public void setIsUpdate(java.lang.Boolean isUpdate) {
+    public WSPutItem(final Boolean isUpdate, final WSDataClusterPK wsDataClusterPK, final WSDataModelPK wsDataModelPK, final String xmlString) {
         this.isUpdate = isUpdate;
-    }
-
-
-    /**
-     * Gets the wsDataClusterPK value for this WSPutItem.
-     * 
-     * @return wsDataClusterPK
-     */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
-        return wsDataClusterPK;
-    }
-
-
-    /**
-     * Sets the wsDataClusterPK value for this WSPutItem.
-     * 
-     * @param wsDataClusterPK
-     */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
         this.wsDataClusterPK = wsDataClusterPK;
-    }
-
-
-    /**
-     * Gets the wsDataModelPK value for this WSPutItem.
-     * 
-     * @return wsDataModelPK
-     */
-    public org.talend.mdm.webservice.WSDataModelPK getWsDataModelPK() {
-        return wsDataModelPK;
-    }
-
-
-    /**
-     * Sets the wsDataModelPK value for this WSPutItem.
-     * 
-     * @param wsDataModelPK
-     */
-    public void setWsDataModelPK(org.talend.mdm.webservice.WSDataModelPK wsDataModelPK) {
         this.wsDataModelPK = wsDataModelPK;
-    }
-
-
-    /**
-     * Gets the xmlString value for this WSPutItem.
-     * 
-     * @return xmlString
-     */
-    public java.lang.String getXmlString() {
-        return xmlString;
-    }
-
-
-    /**
-     * Sets the xmlString value for this WSPutItem.
-     * 
-     * @param xmlString
-     */
-    public void setXmlString(java.lang.String xmlString) {
         this.xmlString = xmlString;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSPutItem)) return false;
-        WSPutItem other = (WSPutItem) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.isUpdate==null && other.getIsUpdate()==null) || 
-             (this.isUpdate!=null &&
-              this.isUpdate.equals(other.getIsUpdate()))) &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK()))) &&
-            ((this.wsDataModelPK==null && other.getWsDataModelPK()==null) || 
-             (this.wsDataModelPK!=null &&
-              this.wsDataModelPK.equals(other.getWsDataModelPK()))) &&
-            ((this.xmlString==null && other.getXmlString()==null) || 
-             (this.xmlString!=null &&
-              this.xmlString.equals(other.getXmlString())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getIsUpdate() != null) {
-            _hashCode += getIsUpdate().hashCode();
-        }
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        if (getWsDataModelPK() != null) {
-            _hashCode += getWsDataModelPK().hashCode();
-        }
-        if (getXmlString() != null) {
-            _hashCode += getXmlString().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSPutItem.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSPutItem"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("isUpdate");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "isUpdate"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataModelPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataModelPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataModelPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xmlString");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xmlString"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the isUpdate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean isIsUpdate() {
+        return isUpdate;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the isUpdate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setIsUpdate(Boolean value) {
+        this.isUpdate = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the wsDataClusterPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public WSDataClusterPK getWsDataClusterPK() {
+        return wsDataClusterPK;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the wsDataClusterPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
+    }
+
+    /**
+     * Gets the value of the wsDataModelPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSDataModelPK }
+     *     
+     */
+    public WSDataModelPK getWsDataModelPK() {
+        return wsDataModelPK;
+    }
+
+    /**
+     * Sets the value of the wsDataModelPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSDataModelPK }
+     *     
+     */
+    public void setWsDataModelPK(WSDataModelPK value) {
+        this.wsDataModelPK = value;
+    }
+
+    /**
+     * Gets the value of the xmlString property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getXmlString() {
+        return xmlString;
+    }
+
+    /**
+     * Sets the value of the xmlString property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setXmlString(String value) {
+        this.xmlString = value;
     }
 
 }

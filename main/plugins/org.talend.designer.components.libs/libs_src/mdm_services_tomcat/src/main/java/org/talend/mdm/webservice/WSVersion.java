@@ -1,290 +1,192 @@
-/**
- * WSVersion.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSVersion  implements java.io.Serializable {
-    private java.lang.String build;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String date;
 
-    private java.lang.String description;
+/**
+ * <p>Java class for WSVersion complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSVersion"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="build" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="date" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="major" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="minor" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="revision" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSVersion", propOrder = {
+    "build",
+    "date",
+    "description",
+    "major",
+    "minor",
+    "revision"
+})
+public class WSVersion {
 
-    private int major;
-
-    private int minor;
-
-    private int revision;
-
-    public WSVersion() {
-    }
-
-    public WSVersion(
-           java.lang.String build,
-           java.lang.String date,
-           java.lang.String description,
-           int major,
-           int minor,
-           int revision) {
-           this.build = build;
-           this.date = date;
-           this.description = description;
-           this.major = major;
-           this.minor = minor;
-           this.revision = revision;
-    }
-
+    protected String build;
+    protected String date;
+    protected String description;
+    protected int major;
+    protected int minor;
+    protected int revision;
 
     /**
-     * Gets the build value for this WSVersion.
+     * Default no-arg constructor
      * 
-     * @return build
      */
-    public java.lang.String getBuild() {
+    public WSVersion() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSVersion(final String build, final String date, final String description, final int major, final int minor, final int revision) {
+        this.build = build;
+        this.date = date;
+        this.description = description;
+        this.major = major;
+        this.minor = minor;
+        this.revision = revision;
+    }
+
+    /**
+     * Gets the value of the build property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getBuild() {
         return build;
     }
 
-
     /**
-     * Sets the build value for this WSVersion.
+     * Sets the value of the build property.
      * 
-     * @param build
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setBuild(java.lang.String build) {
-        this.build = build;
+    public void setBuild(String value) {
+        this.build = value;
     }
 
-
     /**
-     * Gets the date value for this WSVersion.
+     * Gets the value of the date property.
      * 
-     * @return date
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getDate() {
+    public String getDate() {
         return date;
     }
 
-
     /**
-     * Sets the date value for this WSVersion.
+     * Sets the value of the date property.
      * 
-     * @param date
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDate(java.lang.String date) {
-        this.date = date;
+    public void setDate(String value) {
+        this.date = value;
     }
 
-
     /**
-     * Gets the description value for this WSVersion.
+     * Gets the value of the description property.
      * 
-     * @return description
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-
     /**
-     * Sets the description value for this WSVersion.
+     * Sets the value of the description property.
      * 
-     * @param description
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDescription(java.lang.String description) {
-        this.description = description;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
-
     /**
-     * Gets the major value for this WSVersion.
+     * Gets the value of the major property.
      * 
-     * @return major
      */
     public int getMajor() {
         return major;
     }
 
-
     /**
-     * Sets the major value for this WSVersion.
+     * Sets the value of the major property.
      * 
-     * @param major
      */
-    public void setMajor(int major) {
-        this.major = major;
+    public void setMajor(int value) {
+        this.major = value;
     }
 
-
     /**
-     * Gets the minor value for this WSVersion.
+     * Gets the value of the minor property.
      * 
-     * @return minor
      */
     public int getMinor() {
         return minor;
     }
 
-
     /**
-     * Sets the minor value for this WSVersion.
+     * Sets the value of the minor property.
      * 
-     * @param minor
      */
-    public void setMinor(int minor) {
-        this.minor = minor;
+    public void setMinor(int value) {
+        this.minor = value;
     }
 
-
     /**
-     * Gets the revision value for this WSVersion.
+     * Gets the value of the revision property.
      * 
-     * @return revision
      */
     public int getRevision() {
         return revision;
     }
 
-
     /**
-     * Sets the revision value for this WSVersion.
+     * Sets the value of the revision property.
      * 
-     * @param revision
      */
-    public void setRevision(int revision) {
-        this.revision = revision;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSVersion)) return false;
-        WSVersion other = (WSVersion) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.build==null && other.getBuild()==null) || 
-             (this.build!=null &&
-              this.build.equals(other.getBuild()))) &&
-            ((this.date==null && other.getDate()==null) || 
-             (this.date!=null &&
-              this.date.equals(other.getDate()))) &&
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            this.major == other.getMajor() &&
-            this.minor == other.getMinor() &&
-            this.revision == other.getRevision();
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getBuild() != null) {
-            _hashCode += getBuild().hashCode();
-        }
-        if (getDate() != null) {
-            _hashCode += getDate().hashCode();
-        }
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        _hashCode += getMajor();
-        _hashCode += getMinor();
-        _hashCode += getRevision();
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSVersion.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSVersion"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("build");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "build"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("date");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "date"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("major");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "major"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("minor");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "minor"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("revision");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "revision"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setRevision(int value) {
+        this.revision = value;
     }
 
 }

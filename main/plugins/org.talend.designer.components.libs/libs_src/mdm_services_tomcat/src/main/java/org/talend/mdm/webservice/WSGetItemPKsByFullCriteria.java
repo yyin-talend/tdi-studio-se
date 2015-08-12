@@ -1,152 +1,96 @@
-/**
- * WSGetItemPKsByFullCriteria.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetItemPKsByFullCriteria  implements java.io.Serializable {
-    private boolean useFTSearch;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSGetItemPKsByCriteria wsGetItemPKsByCriteria;
 
-    public WSGetItemPKsByFullCriteria() {
-    }
+/**
+ * <p>Java class for WSGetItemPKsByFullCriteria complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetItemPKsByFullCriteria"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="useFTSearch" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="wsGetItemPKsByCriteria" type="{http://www.talend.com/mdm}WSGetItemPKsByCriteria" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetItemPKsByFullCriteria", propOrder = {
+    "useFTSearch",
+    "wsGetItemPKsByCriteria"
+})
+public class WSGetItemPKsByFullCriteria {
 
-    public WSGetItemPKsByFullCriteria(
-           boolean useFTSearch,
-           org.talend.mdm.webservice.WSGetItemPKsByCriteria wsGetItemPKsByCriteria) {
-           this.useFTSearch = useFTSearch;
-           this.wsGetItemPKsByCriteria = wsGetItemPKsByCriteria;
-    }
-
+    protected boolean useFTSearch;
+    protected WSGetItemPKsByCriteria wsGetItemPKsByCriteria;
 
     /**
-     * Gets the useFTSearch value for this WSGetItemPKsByFullCriteria.
+     * Default no-arg constructor
      * 
-     * @return useFTSearch
+     */
+    public WSGetItemPKsByFullCriteria() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSGetItemPKsByFullCriteria(final boolean useFTSearch, final WSGetItemPKsByCriteria wsGetItemPKsByCriteria) {
+        this.useFTSearch = useFTSearch;
+        this.wsGetItemPKsByCriteria = wsGetItemPKsByCriteria;
+    }
+
+    /**
+     * Gets the value of the useFTSearch property.
+     * 
      */
     public boolean isUseFTSearch() {
         return useFTSearch;
     }
 
-
     /**
-     * Sets the useFTSearch value for this WSGetItemPKsByFullCriteria.
+     * Sets the value of the useFTSearch property.
      * 
-     * @param useFTSearch
      */
-    public void setUseFTSearch(boolean useFTSearch) {
-        this.useFTSearch = useFTSearch;
+    public void setUseFTSearch(boolean value) {
+        this.useFTSearch = value;
     }
 
-
     /**
-     * Gets the wsGetItemPKsByCriteria value for this WSGetItemPKsByFullCriteria.
+     * Gets the value of the wsGetItemPKsByCriteria property.
      * 
-     * @return wsGetItemPKsByCriteria
+     * @return
+     *     possible object is
+     *     {@link WSGetItemPKsByCriteria }
+     *     
      */
-    public org.talend.mdm.webservice.WSGetItemPKsByCriteria getWsGetItemPKsByCriteria() {
+    public WSGetItemPKsByCriteria getWsGetItemPKsByCriteria() {
         return wsGetItemPKsByCriteria;
     }
 
-
     /**
-     * Sets the wsGetItemPKsByCriteria value for this WSGetItemPKsByFullCriteria.
+     * Sets the value of the wsGetItemPKsByCriteria property.
      * 
-     * @param wsGetItemPKsByCriteria
+     * @param value
+     *     allowed object is
+     *     {@link WSGetItemPKsByCriteria }
+     *     
      */
-    public void setWsGetItemPKsByCriteria(org.talend.mdm.webservice.WSGetItemPKsByCriteria wsGetItemPKsByCriteria) {
-        this.wsGetItemPKsByCriteria = wsGetItemPKsByCriteria;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetItemPKsByFullCriteria)) return false;
-        WSGetItemPKsByFullCriteria other = (WSGetItemPKsByFullCriteria) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            this.useFTSearch == other.isUseFTSearch() &&
-            ((this.wsGetItemPKsByCriteria==null && other.getWsGetItemPKsByCriteria()==null) || 
-             (this.wsGetItemPKsByCriteria!=null &&
-              this.wsGetItemPKsByCriteria.equals(other.getWsGetItemPKsByCriteria())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        _hashCode += (isUseFTSearch() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        if (getWsGetItemPKsByCriteria() != null) {
-            _hashCode += getWsGetItemPKsByCriteria().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetItemPKsByFullCriteria.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetItemPKsByFullCriteria"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("useFTSearch");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "useFTSearch"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsGetItemPKsByCriteria");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsGetItemPKsByCriteria"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetItemPKsByCriteria"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsGetItemPKsByCriteria(WSGetItemPKsByCriteria value) {
+        this.wsGetItemPKsByCriteria = value;
     }
 
 }

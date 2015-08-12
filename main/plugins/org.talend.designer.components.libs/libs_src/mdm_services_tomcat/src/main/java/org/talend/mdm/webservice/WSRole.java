@@ -1,211 +1,141 @@
-/**
- * WSRole.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSRole  implements java.io.Serializable {
-    private java.lang.String description;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String name;
 
-    private org.talend.mdm.webservice.WSRoleSpecification[] specification;
+/**
+ * <p>Java class for WSRole complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSRole"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="specification" type="{http://www.talend.com/mdm}WSRoleSpecification" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSRole", propOrder = {
+    "description",
+    "name",
+    "specification"
+})
+public class WSRole {
 
+    protected String description;
+    protected String name;
+    @XmlElement(nillable = true)
+    protected List<WSRoleSpecification> specification;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSRole() {
+        super();
     }
-
-    public WSRole(
-           java.lang.String description,
-           java.lang.String name,
-           org.talend.mdm.webservice.WSRoleSpecification[] specification) {
-           this.description = description;
-           this.name = name;
-           this.specification = specification;
-    }
-
 
     /**
-     * Gets the description value for this WSRole.
+     * Fully-initialising value constructor
      * 
-     * @return description
      */
-    public java.lang.String getDescription() {
-        return description;
-    }
-
-
-    /**
-     * Sets the description value for this WSRole.
-     * 
-     * @param description
-     */
-    public void setDescription(java.lang.String description) {
+    public WSRole(final String description, final String name, final List<WSRoleSpecification> specification) {
         this.description = description;
-    }
-
-
-    /**
-     * Gets the name value for this WSRole.
-     * 
-     * @return name
-     */
-    public java.lang.String getName() {
-        return name;
-    }
-
-
-    /**
-     * Sets the name value for this WSRole.
-     * 
-     * @param name
-     */
-    public void setName(java.lang.String name) {
         this.name = name;
-    }
-
-
-    /**
-     * Gets the specification value for this WSRole.
-     * 
-     * @return specification
-     */
-    public org.talend.mdm.webservice.WSRoleSpecification[] getSpecification() {
-        return specification;
-    }
-
-
-    /**
-     * Sets the specification value for this WSRole.
-     * 
-     * @param specification
-     */
-    public void setSpecification(org.talend.mdm.webservice.WSRoleSpecification[] specification) {
         this.specification = specification;
     }
 
-    public org.talend.mdm.webservice.WSRoleSpecification getSpecification(int i) {
-        return this.specification[i];
-    }
-
-    public void setSpecification(int i, org.talend.mdm.webservice.WSRoleSpecification _value) {
-        this.specification[i] = _value;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSRole)) return false;
-        WSRole other = (WSRole) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            ((this.name==null && other.getName()==null) || 
-             (this.name!=null &&
-              this.name.equals(other.getName()))) &&
-            ((this.specification==null && other.getSpecification()==null) || 
-             (this.specification!=null &&
-              java.util.Arrays.equals(this.specification, other.getSpecification())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        if (getName() != null) {
-            _hashCode += getName().hashCode();
-        }
-        if (getSpecification() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getSpecification());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getSpecification(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSRole.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRole"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("name");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("specification");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "specification"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRoleSpecification"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getName() {
+        return name;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Gets the value of the specification property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the specification property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getSpecification().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link WSRoleSpecification }
+     * 
+     * 
+     */
+    public List<WSRoleSpecification> getSpecification() {
+        if (specification == null) {
+            specification = new ArrayList<WSRoleSpecification>();
+        }
+        return this.specification;
     }
 
 }

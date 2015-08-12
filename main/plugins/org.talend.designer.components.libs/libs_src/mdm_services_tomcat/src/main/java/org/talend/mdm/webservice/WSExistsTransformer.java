@@ -1,120 +1,76 @@
-/**
- * WSExistsTransformer.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSExistsTransformer  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSTransformerPK wsTransformerPK;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
+
+/**
+ * <p>Java class for WSExistsTransformer complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSExistsTransformer"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="wsTransformerPK" type="{http://www.talend.com/mdm}WSTransformerPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSExistsTransformer", propOrder = {
+    "wsTransformerPK"
+})
+public class WSExistsTransformer {
+
+    protected WSTransformerPK wsTransformerPK;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSExistsTransformer() {
+        super();
     }
-
-    public WSExistsTransformer(
-           org.talend.mdm.webservice.WSTransformerPK wsTransformerPK) {
-           this.wsTransformerPK = wsTransformerPK;
-    }
-
 
     /**
-     * Gets the wsTransformerPK value for this WSExistsTransformer.
+     * Fully-initialising value constructor
      * 
-     * @return wsTransformerPK
      */
-    public org.talend.mdm.webservice.WSTransformerPK getWsTransformerPK() {
-        return wsTransformerPK;
-    }
-
-
-    /**
-     * Sets the wsTransformerPK value for this WSExistsTransformer.
-     * 
-     * @param wsTransformerPK
-     */
-    public void setWsTransformerPK(org.talend.mdm.webservice.WSTransformerPK wsTransformerPK) {
+    public WSExistsTransformer(final WSTransformerPK wsTransformerPK) {
         this.wsTransformerPK = wsTransformerPK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSExistsTransformer)) return false;
-        WSExistsTransformer other = (WSExistsTransformer) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.wsTransformerPK==null && other.getWsTransformerPK()==null) || 
-             (this.wsTransformerPK!=null &&
-              this.wsTransformerPK.equals(other.getWsTransformerPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getWsTransformerPK() != null) {
-            _hashCode += getWsTransformerPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSExistsTransformer.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSExistsTransformer"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsTransformerPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsTransformerPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the wsTransformerPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSTransformerPK }
+     *     
+     */
+    public WSTransformerPK getWsTransformerPK() {
+        return wsTransformerPK;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the wsTransformerPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSTransformerPK }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsTransformerPK(WSTransformerPK value) {
+        this.wsTransformerPK = value;
     }
 
 }

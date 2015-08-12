@@ -1,157 +1,104 @@
-/**
- * WSGetBusinessConceptValue.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetBusinessConceptValue  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSBusinessConceptPK wsBusinessConceptPK;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
 
+/**
+ * <p>Java class for WSGetBusinessConceptValue complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetBusinessConceptValue"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="wsBusinessConceptPK" type="{http://www.talend.com/mdm}WSBusinessConceptPK" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetBusinessConceptValue", propOrder = {
+    "wsBusinessConceptPK",
+    "wsDataClusterPK"
+})
+public class WSGetBusinessConceptValue {
+
+    protected WSBusinessConceptPK wsBusinessConceptPK;
+    protected WSDataClusterPK wsDataClusterPK;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSGetBusinessConceptValue() {
+        super();
     }
-
-    public WSGetBusinessConceptValue(
-           org.talend.mdm.webservice.WSBusinessConceptPK wsBusinessConceptPK,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-           this.wsBusinessConceptPK = wsBusinessConceptPK;
-           this.wsDataClusterPK = wsDataClusterPK;
-    }
-
 
     /**
-     * Gets the wsBusinessConceptPK value for this WSGetBusinessConceptValue.
+     * Fully-initialising value constructor
      * 
-     * @return wsBusinessConceptPK
      */
-    public org.talend.mdm.webservice.WSBusinessConceptPK getWsBusinessConceptPK() {
-        return wsBusinessConceptPK;
-    }
-
-
-    /**
-     * Sets the wsBusinessConceptPK value for this WSGetBusinessConceptValue.
-     * 
-     * @param wsBusinessConceptPK
-     */
-    public void setWsBusinessConceptPK(org.talend.mdm.webservice.WSBusinessConceptPK wsBusinessConceptPK) {
+    public WSGetBusinessConceptValue(final WSBusinessConceptPK wsBusinessConceptPK, final WSDataClusterPK wsDataClusterPK) {
         this.wsBusinessConceptPK = wsBusinessConceptPK;
-    }
-
-
-    /**
-     * Gets the wsDataClusterPK value for this WSGetBusinessConceptValue.
-     * 
-     * @return wsDataClusterPK
-     */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
-        return wsDataClusterPK;
-    }
-
-
-    /**
-     * Sets the wsDataClusterPK value for this WSGetBusinessConceptValue.
-     * 
-     * @param wsDataClusterPK
-     */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
         this.wsDataClusterPK = wsDataClusterPK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetBusinessConceptValue)) return false;
-        WSGetBusinessConceptValue other = (WSGetBusinessConceptValue) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.wsBusinessConceptPK==null && other.getWsBusinessConceptPK()==null) || 
-             (this.wsBusinessConceptPK!=null &&
-              this.wsBusinessConceptPK.equals(other.getWsBusinessConceptPK()))) &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getWsBusinessConceptPK() != null) {
-            _hashCode += getWsBusinessConceptPK().hashCode();
-        }
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetBusinessConceptValue.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetBusinessConceptValue"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsBusinessConceptPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsBusinessConceptPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSBusinessConceptPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the wsBusinessConceptPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSBusinessConceptPK }
+     *     
+     */
+    public WSBusinessConceptPK getWsBusinessConceptPK() {
+        return wsBusinessConceptPK;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the wsBusinessConceptPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSBusinessConceptPK }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setWsBusinessConceptPK(WSBusinessConceptPK value) {
+        this.wsBusinessConceptPK = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the wsDataClusterPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public WSDataClusterPK getWsDataClusterPK() {
+        return wsDataClusterPK;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the wsDataClusterPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
 }

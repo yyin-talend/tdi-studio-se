@@ -1,339 +1,231 @@
-/**
- * WSTransformerProcessStep.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSTransformerProcessStep  implements java.io.Serializable {
-    private java.lang.String description;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.Boolean disabled;
 
-    private org.talend.mdm.webservice.WSTransformerVariablesMapping[] inputMappings;
+/**
+ * <p>Java class for WSTransformerProcessStep complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSTransformerProcessStep"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="disabled" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="inputMappings" type="{http://www.talend.com/mdm}WSTransformerVariablesMapping" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="outputMappings" type="{http://www.talend.com/mdm}WSTransformerVariablesMapping" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="parameters" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="pluginJNDI" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSTransformerProcessStep", propOrder = {
+    "description",
+    "disabled",
+    "inputMappings",
+    "outputMappings",
+    "parameters",
+    "pluginJNDI"
+})
+public class WSTransformerProcessStep {
 
-    private org.talend.mdm.webservice.WSTransformerVariablesMapping[] outputMappings;
+    protected String description;
+    protected Boolean disabled;
+    @XmlElement(nillable = true)
+    protected List<WSTransformerVariablesMapping> inputMappings;
+    @XmlElement(nillable = true)
+    protected List<WSTransformerVariablesMapping> outputMappings;
+    protected String parameters;
+    protected String pluginJNDI;
 
-    private java.lang.String parameters;
-
-    private java.lang.String pluginJNDI;
-
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSTransformerProcessStep() {
+        super();
     }
-
-    public WSTransformerProcessStep(
-           java.lang.String description,
-           java.lang.Boolean disabled,
-           org.talend.mdm.webservice.WSTransformerVariablesMapping[] inputMappings,
-           org.talend.mdm.webservice.WSTransformerVariablesMapping[] outputMappings,
-           java.lang.String parameters,
-           java.lang.String pluginJNDI) {
-           this.description = description;
-           this.disabled = disabled;
-           this.inputMappings = inputMappings;
-           this.outputMappings = outputMappings;
-           this.parameters = parameters;
-           this.pluginJNDI = pluginJNDI;
-    }
-
 
     /**
-     * Gets the description value for this WSTransformerProcessStep.
+     * Fully-initialising value constructor
      * 
-     * @return description
      */
-    public java.lang.String getDescription() {
-        return description;
-    }
-
-
-    /**
-     * Sets the description value for this WSTransformerProcessStep.
-     * 
-     * @param description
-     */
-    public void setDescription(java.lang.String description) {
+    public WSTransformerProcessStep(final String description, final Boolean disabled, final List<WSTransformerVariablesMapping> inputMappings, final List<WSTransformerVariablesMapping> outputMappings, final String parameters, final String pluginJNDI) {
         this.description = description;
-    }
-
-
-    /**
-     * Gets the disabled value for this WSTransformerProcessStep.
-     * 
-     * @return disabled
-     */
-    public java.lang.Boolean getDisabled() {
-        return disabled;
-    }
-
-
-    /**
-     * Sets the disabled value for this WSTransformerProcessStep.
-     * 
-     * @param disabled
-     */
-    public void setDisabled(java.lang.Boolean disabled) {
         this.disabled = disabled;
-    }
-
-
-    /**
-     * Gets the inputMappings value for this WSTransformerProcessStep.
-     * 
-     * @return inputMappings
-     */
-    public org.talend.mdm.webservice.WSTransformerVariablesMapping[] getInputMappings() {
-        return inputMappings;
-    }
-
-
-    /**
-     * Sets the inputMappings value for this WSTransformerProcessStep.
-     * 
-     * @param inputMappings
-     */
-    public void setInputMappings(org.talend.mdm.webservice.WSTransformerVariablesMapping[] inputMappings) {
         this.inputMappings = inputMappings;
-    }
-
-    public org.talend.mdm.webservice.WSTransformerVariablesMapping getInputMappings(int i) {
-        return this.inputMappings[i];
-    }
-
-    public void setInputMappings(int i, org.talend.mdm.webservice.WSTransformerVariablesMapping _value) {
-        this.inputMappings[i] = _value;
-    }
-
-
-    /**
-     * Gets the outputMappings value for this WSTransformerProcessStep.
-     * 
-     * @return outputMappings
-     */
-    public org.talend.mdm.webservice.WSTransformerVariablesMapping[] getOutputMappings() {
-        return outputMappings;
-    }
-
-
-    /**
-     * Sets the outputMappings value for this WSTransformerProcessStep.
-     * 
-     * @param outputMappings
-     */
-    public void setOutputMappings(org.talend.mdm.webservice.WSTransformerVariablesMapping[] outputMappings) {
         this.outputMappings = outputMappings;
-    }
-
-    public org.talend.mdm.webservice.WSTransformerVariablesMapping getOutputMappings(int i) {
-        return this.outputMappings[i];
-    }
-
-    public void setOutputMappings(int i, org.talend.mdm.webservice.WSTransformerVariablesMapping _value) {
-        this.outputMappings[i] = _value;
-    }
-
-
-    /**
-     * Gets the parameters value for this WSTransformerProcessStep.
-     * 
-     * @return parameters
-     */
-    public java.lang.String getParameters() {
-        return parameters;
-    }
-
-
-    /**
-     * Sets the parameters value for this WSTransformerProcessStep.
-     * 
-     * @param parameters
-     */
-    public void setParameters(java.lang.String parameters) {
         this.parameters = parameters;
-    }
-
-
-    /**
-     * Gets the pluginJNDI value for this WSTransformerProcessStep.
-     * 
-     * @return pluginJNDI
-     */
-    public java.lang.String getPluginJNDI() {
-        return pluginJNDI;
-    }
-
-
-    /**
-     * Sets the pluginJNDI value for this WSTransformerProcessStep.
-     * 
-     * @param pluginJNDI
-     */
-    public void setPluginJNDI(java.lang.String pluginJNDI) {
         this.pluginJNDI = pluginJNDI;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSTransformerProcessStep)) return false;
-        WSTransformerProcessStep other = (WSTransformerProcessStep) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            ((this.disabled==null && other.getDisabled()==null) || 
-             (this.disabled!=null &&
-              this.disabled.equals(other.getDisabled()))) &&
-            ((this.inputMappings==null && other.getInputMappings()==null) || 
-             (this.inputMappings!=null &&
-              java.util.Arrays.equals(this.inputMappings, other.getInputMappings()))) &&
-            ((this.outputMappings==null && other.getOutputMappings()==null) || 
-             (this.outputMappings!=null &&
-              java.util.Arrays.equals(this.outputMappings, other.getOutputMappings()))) &&
-            ((this.parameters==null && other.getParameters()==null) || 
-             (this.parameters!=null &&
-              this.parameters.equals(other.getParameters()))) &&
-            ((this.pluginJNDI==null && other.getPluginJNDI()==null) || 
-             (this.pluginJNDI!=null &&
-              this.pluginJNDI.equals(other.getPluginJNDI())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        if (getDisabled() != null) {
-            _hashCode += getDisabled().hashCode();
-        }
-        if (getInputMappings() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getInputMappings());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getInputMappings(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getOutputMappings() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getOutputMappings());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getOutputMappings(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getParameters() != null) {
-            _hashCode += getParameters().hashCode();
-        }
-        if (getPluginJNDI() != null) {
-            _hashCode += getPluginJNDI().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSTransformerProcessStep.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerProcessStep"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("disabled");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "disabled"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("inputMappings");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "inputMappings"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerVariablesMapping"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("outputMappings");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "outputMappings"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerVariablesMapping"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("parameters");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "parameters"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("pluginJNDI");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "pluginJNDI"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the disabled property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public Boolean isDisabled() {
+        return disabled;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the disabled property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setDisabled(Boolean value) {
+        this.disabled = value;
+    }
+
+    /**
+     * Gets the value of the inputMappings property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the inputMappings property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getInputMappings().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link WSTransformerVariablesMapping }
+     * 
+     * 
+     */
+    public List<WSTransformerVariablesMapping> getInputMappings() {
+        if (inputMappings == null) {
+            inputMappings = new ArrayList<WSTransformerVariablesMapping>();
+        }
+        return this.inputMappings;
+    }
+
+    /**
+     * Gets the value of the outputMappings property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the outputMappings property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getOutputMappings().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link WSTransformerVariablesMapping }
+     * 
+     * 
+     */
+    public List<WSTransformerVariablesMapping> getOutputMappings() {
+        if (outputMappings == null) {
+            outputMappings = new ArrayList<WSTransformerVariablesMapping>();
+        }
+        return this.outputMappings;
+    }
+
+    /**
+     * Gets the value of the parameters property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Sets the value of the parameters property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setParameters(String value) {
+        this.parameters = value;
+    }
+
+    /**
+     * Gets the value of the pluginJNDI property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPluginJNDI() {
+        return pluginJNDI;
+    }
+
+    /**
+     * Sets the value of the pluginJNDI property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPluginJNDI(String value) {
+        this.pluginJNDI = value;
     }
 
 }

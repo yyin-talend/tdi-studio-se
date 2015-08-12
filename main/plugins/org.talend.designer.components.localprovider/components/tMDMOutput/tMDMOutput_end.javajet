@@ -31,7 +31,8 @@ if(!usePartialUpdate){
 		if(!isStaging && withReport){
 %> 
 	if(miList_<%=cid %>.size() > 0){
-		wspks_<%=cid %> = tmdmWS_<%=cid %>.putItemWithReportArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItemWithReport[miList_<%=cid %>.size()]));
+	    org.talend.mdm.webservice.WSPutItemWithReportArray putItemWithReportArray = new org.talend.mdm.webservice.WSPutItemWithReportArray(miList_<%=cid %>);
+		wspks_<%=cid %> = service_<%=cid %>.putItemWithReportArray(putItemWithReportArray);
 		miList_<%=cid %>.clear();
 		miList_<%=cid %> = null;
 		<%if(addTaskID){%>
@@ -39,7 +40,7 @@ if(!usePartialUpdate){
 			int i2_<%=cid %> = 0;
 		    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
 		    	wspk2_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
-		    	tmdmWS_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
+		    	service_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
 		    	i2_<%=cid %>++;
 		    }
 		    
@@ -49,7 +50,7 @@ if(!usePartialUpdate){
 <%
 		}else{%>
 	if(miList_<%=cid %>.size() > 0){
-		wspks_<%=cid %> = tmdmWS_<%=cid %>.putItemArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItem[miList_<%=cid %>.size()]));
+		wspks_<%=cid %> = service_<%=cid %>.putItemArray(miList_<%=cid %>);
 		miList_<%=cid %>.clear();
 		miList_<%=cid %> = null;
 		<%if(addTaskID){%>
@@ -57,7 +58,7 @@ if(!usePartialUpdate){
         	int i2_<%=cid %> = 0;
 		    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
 		    	wspk2_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
-		    	tmdmWS_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
+		    	service_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
 		    	i2_<%=cid %>++;
 		    }
 		    
@@ -69,7 +70,7 @@ if(!usePartialUpdate){
 	}
 }%>
  	<%if(!useExistingConn){%>
- 		stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
+ 		service_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
  	<%}%>
  	
  	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);             

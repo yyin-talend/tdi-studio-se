@@ -1,268 +1,188 @@
-/**
- * WSTransformerPluginSpec.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSTransformerPluginSpec  implements java.io.Serializable {
-    private java.lang.String description;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String input;
 
-    private java.lang.String output;
+/**
+ * <p>Java class for WSTransformerPluginSpec complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSTransformerPluginSpec"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="input" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="output" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="parameters" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="pluginJNDI" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSTransformerPluginSpec", propOrder = {
+    "description",
+    "input",
+    "output",
+    "parameters",
+    "pluginJNDI"
+})
+public class WSTransformerPluginSpec {
 
-    private java.lang.String parameters;
+    protected String description;
+    protected String input;
+    protected String output;
+    protected String parameters;
+    protected String pluginJNDI;
 
-    private java.lang.String pluginJNDI;
-
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSTransformerPluginSpec() {
+        super();
     }
-
-    public WSTransformerPluginSpec(
-           java.lang.String description,
-           java.lang.String input,
-           java.lang.String output,
-           java.lang.String parameters,
-           java.lang.String pluginJNDI) {
-           this.description = description;
-           this.input = input;
-           this.output = output;
-           this.parameters = parameters;
-           this.pluginJNDI = pluginJNDI;
-    }
-
 
     /**
-     * Gets the description value for this WSTransformerPluginSpec.
+     * Fully-initialising value constructor
      * 
-     * @return description
      */
-    public java.lang.String getDescription() {
-        return description;
-    }
-
-
-    /**
-     * Sets the description value for this WSTransformerPluginSpec.
-     * 
-     * @param description
-     */
-    public void setDescription(java.lang.String description) {
+    public WSTransformerPluginSpec(final String description, final String input, final String output, final String parameters, final String pluginJNDI) {
         this.description = description;
-    }
-
-
-    /**
-     * Gets the input value for this WSTransformerPluginSpec.
-     * 
-     * @return input
-     */
-    public java.lang.String getInput() {
-        return input;
-    }
-
-
-    /**
-     * Sets the input value for this WSTransformerPluginSpec.
-     * 
-     * @param input
-     */
-    public void setInput(java.lang.String input) {
         this.input = input;
-    }
-
-
-    /**
-     * Gets the output value for this WSTransformerPluginSpec.
-     * 
-     * @return output
-     */
-    public java.lang.String getOutput() {
-        return output;
-    }
-
-
-    /**
-     * Sets the output value for this WSTransformerPluginSpec.
-     * 
-     * @param output
-     */
-    public void setOutput(java.lang.String output) {
         this.output = output;
-    }
-
-
-    /**
-     * Gets the parameters value for this WSTransformerPluginSpec.
-     * 
-     * @return parameters
-     */
-    public java.lang.String getParameters() {
-        return parameters;
-    }
-
-
-    /**
-     * Sets the parameters value for this WSTransformerPluginSpec.
-     * 
-     * @param parameters
-     */
-    public void setParameters(java.lang.String parameters) {
         this.parameters = parameters;
-    }
-
-
-    /**
-     * Gets the pluginJNDI value for this WSTransformerPluginSpec.
-     * 
-     * @return pluginJNDI
-     */
-    public java.lang.String getPluginJNDI() {
-        return pluginJNDI;
-    }
-
-
-    /**
-     * Sets the pluginJNDI value for this WSTransformerPluginSpec.
-     * 
-     * @param pluginJNDI
-     */
-    public void setPluginJNDI(java.lang.String pluginJNDI) {
         this.pluginJNDI = pluginJNDI;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSTransformerPluginSpec)) return false;
-        WSTransformerPluginSpec other = (WSTransformerPluginSpec) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            ((this.input==null && other.getInput()==null) || 
-             (this.input!=null &&
-              this.input.equals(other.getInput()))) &&
-            ((this.output==null && other.getOutput()==null) || 
-             (this.output!=null &&
-              this.output.equals(other.getOutput()))) &&
-            ((this.parameters==null && other.getParameters()==null) || 
-             (this.parameters!=null &&
-              this.parameters.equals(other.getParameters()))) &&
-            ((this.pluginJNDI==null && other.getPluginJNDI()==null) || 
-             (this.pluginJNDI!=null &&
-              this.pluginJNDI.equals(other.getPluginJNDI())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        if (getInput() != null) {
-            _hashCode += getInput().hashCode();
-        }
-        if (getOutput() != null) {
-            _hashCode += getOutput().hashCode();
-        }
-        if (getParameters() != null) {
-            _hashCode += getParameters().hashCode();
-        }
-        if (getPluginJNDI() != null) {
-            _hashCode += getPluginJNDI().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSTransformerPluginSpec.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerPluginSpec"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("input");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "input"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("output");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "output"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("parameters");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "parameters"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("pluginJNDI");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "pluginJNDI"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the input property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getInput() {
+        return input;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the input property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setInput(String value) {
+        this.input = value;
+    }
+
+    /**
+     * Gets the value of the output property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getOutput() {
+        return output;
+    }
+
+    /**
+     * Sets the value of the output property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setOutput(String value) {
+        this.output = value;
+    }
+
+    /**
+     * Gets the value of the parameters property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Sets the value of the parameters property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setParameters(String value) {
+        this.parameters = value;
+    }
+
+    /**
+     * Gets the value of the pluginJNDI property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPluginJNDI() {
+        return pluginJNDI;
+    }
+
+    /**
+     * Sets the value of the pluginJNDI property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPluginJNDI(String value) {
+        this.pluginJNDI = value;
     }
 
 }

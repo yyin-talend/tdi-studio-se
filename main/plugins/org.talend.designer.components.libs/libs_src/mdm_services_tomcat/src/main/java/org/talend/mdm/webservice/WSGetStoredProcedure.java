@@ -1,120 +1,76 @@
-/**
- * WSGetStoredProcedure.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetStoredProcedure  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSStoredProcedurePK wsStoredProcedurePK;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
+
+/**
+ * <p>Java class for WSGetStoredProcedure complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetStoredProcedure"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="wsStoredProcedurePK" type="{http://www.talend.com/mdm}WSStoredProcedurePK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetStoredProcedure", propOrder = {
+    "wsStoredProcedurePK"
+})
+public class WSGetStoredProcedure {
+
+    protected WSStoredProcedurePK wsStoredProcedurePK;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSGetStoredProcedure() {
+        super();
     }
-
-    public WSGetStoredProcedure(
-           org.talend.mdm.webservice.WSStoredProcedurePK wsStoredProcedurePK) {
-           this.wsStoredProcedurePK = wsStoredProcedurePK;
-    }
-
 
     /**
-     * Gets the wsStoredProcedurePK value for this WSGetStoredProcedure.
+     * Fully-initialising value constructor
      * 
-     * @return wsStoredProcedurePK
      */
-    public org.talend.mdm.webservice.WSStoredProcedurePK getWsStoredProcedurePK() {
-        return wsStoredProcedurePK;
-    }
-
-
-    /**
-     * Sets the wsStoredProcedurePK value for this WSGetStoredProcedure.
-     * 
-     * @param wsStoredProcedurePK
-     */
-    public void setWsStoredProcedurePK(org.talend.mdm.webservice.WSStoredProcedurePK wsStoredProcedurePK) {
+    public WSGetStoredProcedure(final WSStoredProcedurePK wsStoredProcedurePK) {
         this.wsStoredProcedurePK = wsStoredProcedurePK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetStoredProcedure)) return false;
-        WSGetStoredProcedure other = (WSGetStoredProcedure) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.wsStoredProcedurePK==null && other.getWsStoredProcedurePK()==null) || 
-             (this.wsStoredProcedurePK!=null &&
-              this.wsStoredProcedurePK.equals(other.getWsStoredProcedurePK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getWsStoredProcedurePK() != null) {
-            _hashCode += getWsStoredProcedurePK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetStoredProcedure.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetStoredProcedure"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsStoredProcedurePK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsStoredProcedurePK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSStoredProcedurePK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the wsStoredProcedurePK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSStoredProcedurePK }
+     *     
+     */
+    public WSStoredProcedurePK getWsStoredProcedurePK() {
+        return wsStoredProcedurePK;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the wsStoredProcedurePK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSStoredProcedurePK }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsStoredProcedurePK(WSStoredProcedurePK value) {
+        this.wsStoredProcedurePK = value;
     }
 
 }

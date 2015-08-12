@@ -1,157 +1,106 @@
-/**
- * WSGetComponentVersion.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetComponentVersion  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSComponent component;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String id;
 
+/**
+ * <p>Java class for WSGetComponentVersion complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetComponentVersion"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="component" type="{http://www.talend.com/mdm}WSComponent" minOccurs="0"/&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetComponentVersion", propOrder = {
+    "component",
+    "id"
+})
+public class WSGetComponentVersion {
+
+    @XmlSchemaType(name = "string")
+    protected WSComponent component;
+    protected String id;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSGetComponentVersion() {
+        super();
     }
-
-    public WSGetComponentVersion(
-           org.talend.mdm.webservice.WSComponent component,
-           java.lang.String id) {
-           this.component = component;
-           this.id = id;
-    }
-
 
     /**
-     * Gets the component value for this WSGetComponentVersion.
+     * Fully-initialising value constructor
      * 
-     * @return component
      */
-    public org.talend.mdm.webservice.WSComponent getComponent() {
-        return component;
-    }
-
-
-    /**
-     * Sets the component value for this WSGetComponentVersion.
-     * 
-     * @param component
-     */
-    public void setComponent(org.talend.mdm.webservice.WSComponent component) {
+    public WSGetComponentVersion(final WSComponent component, final String id) {
         this.component = component;
-    }
-
-
-    /**
-     * Gets the id value for this WSGetComponentVersion.
-     * 
-     * @return id
-     */
-    public java.lang.String getId() {
-        return id;
-    }
-
-
-    /**
-     * Sets the id value for this WSGetComponentVersion.
-     * 
-     * @param id
-     */
-    public void setId(java.lang.String id) {
         this.id = id;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetComponentVersion)) return false;
-        WSGetComponentVersion other = (WSGetComponentVersion) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.component==null && other.getComponent()==null) || 
-             (this.component!=null &&
-              this.component.equals(other.getComponent()))) &&
-            ((this.id==null && other.getId()==null) || 
-             (this.id!=null &&
-              this.id.equals(other.getId())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getComponent() != null) {
-            _hashCode += getComponent().hashCode();
-        }
-        if (getId() != null) {
-            _hashCode += getId().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetComponentVersion.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetComponentVersion"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("component");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "component"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSComponent"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the component property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSComponent }
+     *     
+     */
+    public WSComponent getComponent() {
+        return component;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the component property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSComponent }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setComponent(WSComponent value) {
+        this.component = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the id property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getId() {
+        return id;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setId(String value) {
+        this.id = value;
     }
 
 }

@@ -1,120 +1,76 @@
-/**
- * WSPutTransformer.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSPutTransformer  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSTransformer wsTransformer;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
+
+/**
+ * <p>Java class for WSPutTransformer complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSPutTransformer"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="wsTransformer" type="{http://www.talend.com/mdm}WSTransformer" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSPutTransformer", propOrder = {
+    "wsTransformer"
+})
+public class WSPutTransformer {
+
+    protected WSTransformer wsTransformer;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSPutTransformer() {
+        super();
     }
-
-    public WSPutTransformer(
-           org.talend.mdm.webservice.WSTransformer wsTransformer) {
-           this.wsTransformer = wsTransformer;
-    }
-
 
     /**
-     * Gets the wsTransformer value for this WSPutTransformer.
+     * Fully-initialising value constructor
      * 
-     * @return wsTransformer
      */
-    public org.talend.mdm.webservice.WSTransformer getWsTransformer() {
-        return wsTransformer;
-    }
-
-
-    /**
-     * Sets the wsTransformer value for this WSPutTransformer.
-     * 
-     * @param wsTransformer
-     */
-    public void setWsTransformer(org.talend.mdm.webservice.WSTransformer wsTransformer) {
+    public WSPutTransformer(final WSTransformer wsTransformer) {
         this.wsTransformer = wsTransformer;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSPutTransformer)) return false;
-        WSPutTransformer other = (WSPutTransformer) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.wsTransformer==null && other.getWsTransformer()==null) || 
-             (this.wsTransformer!=null &&
-              this.wsTransformer.equals(other.getWsTransformer())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getWsTransformer() != null) {
-            _hashCode += getWsTransformer().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSPutTransformer.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSPutTransformer"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsTransformer");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsTransformer"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformer"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the wsTransformer property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSTransformer }
+     *     
+     */
+    public WSTransformer getWsTransformer() {
+        return wsTransformer;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the wsTransformer property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSTransformer }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsTransformer(WSTransformer value) {
+        this.wsTransformer = value;
     }
 
 }

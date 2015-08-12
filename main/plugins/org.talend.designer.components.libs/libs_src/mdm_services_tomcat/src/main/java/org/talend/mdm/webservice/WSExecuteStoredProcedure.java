@@ -1,211 +1,141 @@
-/**
- * WSExecuteStoredProcedure.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSExecuteStoredProcedure  implements java.io.Serializable {
-    private java.lang.String[] parameters;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
 
-    private org.talend.mdm.webservice.WSStoredProcedurePK wsStoredProcedurePK;
+/**
+ * <p>Java class for WSExecuteStoredProcedure complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSExecuteStoredProcedure"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="parameters" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *         &lt;element name="wsStoredProcedurePK" type="{http://www.talend.com/mdm}WSStoredProcedurePK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSExecuteStoredProcedure", propOrder = {
+    "parameters",
+    "wsDataClusterPK",
+    "wsStoredProcedurePK"
+})
+public class WSExecuteStoredProcedure {
 
+    @XmlElement(nillable = true)
+    protected List<String> parameters;
+    protected WSDataClusterPK wsDataClusterPK;
+    protected WSStoredProcedurePK wsStoredProcedurePK;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSExecuteStoredProcedure() {
+        super();
     }
-
-    public WSExecuteStoredProcedure(
-           java.lang.String[] parameters,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK,
-           org.talend.mdm.webservice.WSStoredProcedurePK wsStoredProcedurePK) {
-           this.parameters = parameters;
-           this.wsDataClusterPK = wsDataClusterPK;
-           this.wsStoredProcedurePK = wsStoredProcedurePK;
-    }
-
 
     /**
-     * Gets the parameters value for this WSExecuteStoredProcedure.
+     * Fully-initialising value constructor
      * 
-     * @return parameters
      */
-    public java.lang.String[] getParameters() {
-        return parameters;
-    }
-
-
-    /**
-     * Sets the parameters value for this WSExecuteStoredProcedure.
-     * 
-     * @param parameters
-     */
-    public void setParameters(java.lang.String[] parameters) {
+    public WSExecuteStoredProcedure(final List<String> parameters, final WSDataClusterPK wsDataClusterPK, final WSStoredProcedurePK wsStoredProcedurePK) {
         this.parameters = parameters;
-    }
-
-    public java.lang.String getParameters(int i) {
-        return this.parameters[i];
-    }
-
-    public void setParameters(int i, java.lang.String _value) {
-        this.parameters[i] = _value;
-    }
-
-
-    /**
-     * Gets the wsDataClusterPK value for this WSExecuteStoredProcedure.
-     * 
-     * @return wsDataClusterPK
-     */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
-        return wsDataClusterPK;
-    }
-
-
-    /**
-     * Sets the wsDataClusterPK value for this WSExecuteStoredProcedure.
-     * 
-     * @param wsDataClusterPK
-     */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
         this.wsDataClusterPK = wsDataClusterPK;
-    }
-
-
-    /**
-     * Gets the wsStoredProcedurePK value for this WSExecuteStoredProcedure.
-     * 
-     * @return wsStoredProcedurePK
-     */
-    public org.talend.mdm.webservice.WSStoredProcedurePK getWsStoredProcedurePK() {
-        return wsStoredProcedurePK;
-    }
-
-
-    /**
-     * Sets the wsStoredProcedurePK value for this WSExecuteStoredProcedure.
-     * 
-     * @param wsStoredProcedurePK
-     */
-    public void setWsStoredProcedurePK(org.talend.mdm.webservice.WSStoredProcedurePK wsStoredProcedurePK) {
         this.wsStoredProcedurePK = wsStoredProcedurePK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSExecuteStoredProcedure)) return false;
-        WSExecuteStoredProcedure other = (WSExecuteStoredProcedure) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
+    /**
+     * Gets the value of the parameters property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the parameters property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getParameters().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link String }
+     * 
+     * 
+     */
+    public List<String> getParameters() {
+        if (parameters == null) {
+            parameters = new ArrayList<String>();
         }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.parameters==null && other.getParameters()==null) || 
-             (this.parameters!=null &&
-              java.util.Arrays.equals(this.parameters, other.getParameters()))) &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK()))) &&
-            ((this.wsStoredProcedurePK==null && other.getWsStoredProcedurePK()==null) || 
-             (this.wsStoredProcedurePK!=null &&
-              this.wsStoredProcedurePK.equals(other.getWsStoredProcedurePK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getParameters() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getParameters());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getParameters(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        if (getWsStoredProcedurePK() != null) {
-            _hashCode += getWsStoredProcedurePK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSExecuteStoredProcedure.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSExecuteStoredProcedure"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("parameters");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "parameters"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsStoredProcedurePK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsStoredProcedurePK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSStoredProcedurePK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+        return this.parameters;
     }
 
     /**
-     * Return type metadata object
+     * Gets the value of the wsDataClusterPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public WSDataClusterPK getWsDataClusterPK() {
+        return wsDataClusterPK;
     }
 
     /**
-     * Get Custom Serializer
+     * Sets the value of the wsDataClusterPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
     /**
-     * Get Custom Deserializer
+     * Gets the value of the wsStoredProcedurePK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSStoredProcedurePK }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public WSStoredProcedurePK getWsStoredProcedurePK() {
+        return wsStoredProcedurePK;
+    }
+
+    /**
+     * Sets the value of the wsStoredProcedurePK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSStoredProcedurePK }
+     *     
+     */
+    public void setWsStoredProcedurePK(WSStoredProcedurePK value) {
+        this.wsStoredProcedurePK = value;
     }
 
 }
