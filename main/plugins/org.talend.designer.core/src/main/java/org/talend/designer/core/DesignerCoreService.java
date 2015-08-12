@@ -256,7 +256,9 @@ public class DesignerCoreService implements IDesignerCoreService {
         for (IEditorPart editor : ProcessorUtilities.getOpenedEditors()) {
             AbstractTalendEditor abstractTalendEditor = ((AbstractTalendEditor) editor);
             IProcess2 process = abstractTalendEditor.getProcess();
-            process.getUpdateManager().addNodesPropertyChanger(evt);
+            if (process != null && process.getUpdateManager() != null) {
+                process.getUpdateManager().addNodesPropertyChanger(evt);
+            }
         }
     }
 
