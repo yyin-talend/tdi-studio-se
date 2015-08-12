@@ -3817,7 +3817,7 @@ public class Node extends Element implements IGraphicalNode {
             } else {
 
                 outputMeta = getMetadataList().get(0);
-                for (IConnection connection : inputs) {
+                for (IConnection connection : getIncomingConnections()) {
                     if (connection.isActivate()
                             && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
                                     || connection.getLineStyle().equals(EConnectionType.TABLE) || connection.getLineStyle()
@@ -3829,11 +3829,55 @@ public class Node extends Element implements IGraphicalNode {
 
                 if (inputMeta != null && outputMeta != null) {
                     INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
-                    if (connector != null && connector.getMaxLinkInput() != 0) {
-                        if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)) {
+                    if (connector != null
+                            && connector.getMaxLinkInput() != 0
+                            && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
+                        if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
+                                && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
                             String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
                                     inputConnecion.getName());
                             Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                        } else {
+                            boolean errorStatus = false;
+                            out: for (IMetadataColumn outColumn : outputMeta.getListColumns()) {
+                                boolean foundInInputMeta = false;
+                                for (IMetadataColumn inColumn : inputMeta.getListColumns()) {
+                                    if (inColumn.sameMetacolumnAs(outColumn, IMetadataColumn.OPTIONS_IGNORE_LENGTH
+                                            | IMetadataColumn.OPTIONS_IGNORE_KEY | IMetadataColumn.OPTIONS_IGNORE_NULLABLE
+                                            | IMetadataColumn.OPTIONS_IGNORE_COMMENT | IMetadataColumn.OPTIONS_IGNORE_PATTERN
+                                            | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME | IMetadataColumn.OPTIONS_IGNORE_DBTYPE
+                                            | IMetadataColumn.OPTIONS_IGNORE_PRECISION | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                            | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE)) {
+                                        foundInInputMeta = true;
+                                        break;
+                                    }
+                                }
+                                if (!foundInInputMeta) {
+                                    errorStatus = true;
+                                    break;
+                                }
+                            }
+                            if (errorStatus) {
+                                schemaSynchronized = false;
+                                String errorMessage = Messages.getString(
+                                        "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            } else {
+                                schemaSynchronized = false;
+                                String errorMessage = Messages.getString(
+                                        "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                            }
+                        }
+                    } else if (connector != null && connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() == 0) {
+                        if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)) {
+                            schemaSynchronized = false;
+                            String errorMessage = Messages.getString("Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.WARNING, this, errorMessage);
                         }
                     }
                 }
@@ -4034,18 +4078,14 @@ public class Node extends Element implements IGraphicalNode {
         } else {
             parallelEnable = (Boolean) enableParallelizeParameter.getValue();
             if (parallelEnable) {
-            	
-            	// for bug TDI-33344.
-				for (IConnection connection : getOutgoingConnections()) {
-					if (connection.getLineStyle().hasConnectionCategory(
-							IConnectionCategory.FLOW)) {
-						Problems.add(
-								ProblemStatus.ERROR,
-								this,
-								Messages.getString("ParallelExecutionAction.noOutputLink")); //$NON-NLS-1$
-					}
-				}
-				
+
+                // for bug TDI-33344.
+                for (IConnection connection : getOutgoingConnections()) {
+                    if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                        Problems.add(ProblemStatus.ERROR, this, Messages.getString("ParallelExecutionAction.noOutputLink")); //$NON-NLS-1$
+                    }
+                }
+
                 removeStatus(Process.PARALLEL_STATUS);
                 addStatus(Process.PARALLEL_STATUS);
             } else {
