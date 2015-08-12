@@ -1,157 +1,104 @@
-/**
- * WSGetTransformerPluginV2Details.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetTransformerPluginV2Details  implements java.io.Serializable {
-    private java.lang.String jndiName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String language;
 
+/**
+ * <p>Java class for WSGetTransformerPluginV2Details complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetTransformerPluginV2Details"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="jndiName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="language" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetTransformerPluginV2Details", propOrder = {
+    "jndiName",
+    "language"
+})
+public class WSGetTransformerPluginV2Details {
+
+    protected String jndiName;
+    protected String language;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSGetTransformerPluginV2Details() {
+        super();
     }
-
-    public WSGetTransformerPluginV2Details(
-           java.lang.String jndiName,
-           java.lang.String language) {
-           this.jndiName = jndiName;
-           this.language = language;
-    }
-
 
     /**
-     * Gets the jndiName value for this WSGetTransformerPluginV2Details.
+     * Fully-initialising value constructor
      * 
-     * @return jndiName
      */
-    public java.lang.String getJndiName() {
-        return jndiName;
-    }
-
-
-    /**
-     * Sets the jndiName value for this WSGetTransformerPluginV2Details.
-     * 
-     * @param jndiName
-     */
-    public void setJndiName(java.lang.String jndiName) {
+    public WSGetTransformerPluginV2Details(final String jndiName, final String language) {
         this.jndiName = jndiName;
-    }
-
-
-    /**
-     * Gets the language value for this WSGetTransformerPluginV2Details.
-     * 
-     * @return language
-     */
-    public java.lang.String getLanguage() {
-        return language;
-    }
-
-
-    /**
-     * Sets the language value for this WSGetTransformerPluginV2Details.
-     * 
-     * @param language
-     */
-    public void setLanguage(java.lang.String language) {
         this.language = language;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetTransformerPluginV2Details)) return false;
-        WSGetTransformerPluginV2Details other = (WSGetTransformerPluginV2Details) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.jndiName==null && other.getJndiName()==null) || 
-             (this.jndiName!=null &&
-              this.jndiName.equals(other.getJndiName()))) &&
-            ((this.language==null && other.getLanguage()==null) || 
-             (this.language!=null &&
-              this.language.equals(other.getLanguage())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getJndiName() != null) {
-            _hashCode += getJndiName().hashCode();
-        }
-        if (getLanguage() != null) {
-            _hashCode += getLanguage().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetTransformerPluginV2Details.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetTransformerPluginV2Details"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("jndiName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "jndiName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("language");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "language"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the jndiName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getJndiName() {
+        return jndiName;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the jndiName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setJndiName(String value) {
+        this.jndiName = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the language property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getLanguage() {
+        return language;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the language property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setLanguage(String value) {
+        this.language = value;
     }
 
 }

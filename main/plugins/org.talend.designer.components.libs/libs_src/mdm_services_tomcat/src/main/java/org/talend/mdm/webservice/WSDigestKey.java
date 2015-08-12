@@ -1,157 +1,104 @@
-/**
- * WSDigestKey.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSDigestKey  implements java.io.Serializable {
-    private java.lang.String objectName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String type;
 
+/**
+ * <p>Java class for WSDigestKey complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSDigestKey"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="objectName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSDigestKey", propOrder = {
+    "objectName",
+    "type"
+})
+public class WSDigestKey {
+
+    protected String objectName;
+    protected String type;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSDigestKey() {
+        super();
     }
-
-    public WSDigestKey(
-           java.lang.String objectName,
-           java.lang.String type) {
-           this.objectName = objectName;
-           this.type = type;
-    }
-
 
     /**
-     * Gets the objectName value for this WSDigestKey.
+     * Fully-initialising value constructor
      * 
-     * @return objectName
      */
-    public java.lang.String getObjectName() {
-        return objectName;
-    }
-
-
-    /**
-     * Sets the objectName value for this WSDigestKey.
-     * 
-     * @param objectName
-     */
-    public void setObjectName(java.lang.String objectName) {
+    public WSDigestKey(final String objectName, final String type) {
         this.objectName = objectName;
-    }
-
-
-    /**
-     * Gets the type value for this WSDigestKey.
-     * 
-     * @return type
-     */
-    public java.lang.String getType() {
-        return type;
-    }
-
-
-    /**
-     * Sets the type value for this WSDigestKey.
-     * 
-     * @param type
-     */
-    public void setType(java.lang.String type) {
         this.type = type;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSDigestKey)) return false;
-        WSDigestKey other = (WSDigestKey) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.objectName==null && other.getObjectName()==null) || 
-             (this.objectName!=null &&
-              this.objectName.equals(other.getObjectName()))) &&
-            ((this.type==null && other.getType()==null) || 
-             (this.type!=null &&
-              this.type.equals(other.getType())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getObjectName() != null) {
-            _hashCode += getObjectName().hashCode();
-        }
-        if (getType() != null) {
-            _hashCode += getType().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSDigestKey.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDigestKey"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("objectName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "objectName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("type");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "type"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the objectName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getObjectName() {
+        return objectName;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the objectName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setObjectName(String value) {
+        this.objectName = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the type property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getType() {
+        return type;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setType(String value) {
+        this.type = value;
     }
 
 }

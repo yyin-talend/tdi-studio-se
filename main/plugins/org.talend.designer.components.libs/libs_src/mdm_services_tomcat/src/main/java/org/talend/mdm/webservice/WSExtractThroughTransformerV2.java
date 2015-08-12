@@ -1,157 +1,104 @@
-/**
- * WSExtractThroughTransformerV2.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSExtractThroughTransformerV2  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSItemPK wsItemPK;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSTransformerV2PK wsTransformerV2PK;
 
+/**
+ * <p>Java class for WSExtractThroughTransformerV2 complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSExtractThroughTransformerV2"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="wsItemPK" type="{http://www.talend.com/mdm}WSItemPK" minOccurs="0"/&gt;
+ *         &lt;element name="wsTransformerV2PK" type="{http://www.talend.com/mdm}WSTransformerV2PK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSExtractThroughTransformerV2", propOrder = {
+    "wsItemPK",
+    "wsTransformerV2PK"
+})
+public class WSExtractThroughTransformerV2 {
+
+    protected WSItemPK wsItemPK;
+    protected WSTransformerV2PK wsTransformerV2PK;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSExtractThroughTransformerV2() {
+        super();
     }
-
-    public WSExtractThroughTransformerV2(
-           org.talend.mdm.webservice.WSItemPK wsItemPK,
-           org.talend.mdm.webservice.WSTransformerV2PK wsTransformerV2PK) {
-           this.wsItemPK = wsItemPK;
-           this.wsTransformerV2PK = wsTransformerV2PK;
-    }
-
 
     /**
-     * Gets the wsItemPK value for this WSExtractThroughTransformerV2.
+     * Fully-initialising value constructor
      * 
-     * @return wsItemPK
      */
-    public org.talend.mdm.webservice.WSItemPK getWsItemPK() {
-        return wsItemPK;
-    }
-
-
-    /**
-     * Sets the wsItemPK value for this WSExtractThroughTransformerV2.
-     * 
-     * @param wsItemPK
-     */
-    public void setWsItemPK(org.talend.mdm.webservice.WSItemPK wsItemPK) {
+    public WSExtractThroughTransformerV2(final WSItemPK wsItemPK, final WSTransformerV2PK wsTransformerV2PK) {
         this.wsItemPK = wsItemPK;
-    }
-
-
-    /**
-     * Gets the wsTransformerV2PK value for this WSExtractThroughTransformerV2.
-     * 
-     * @return wsTransformerV2PK
-     */
-    public org.talend.mdm.webservice.WSTransformerV2PK getWsTransformerV2PK() {
-        return wsTransformerV2PK;
-    }
-
-
-    /**
-     * Sets the wsTransformerV2PK value for this WSExtractThroughTransformerV2.
-     * 
-     * @param wsTransformerV2PK
-     */
-    public void setWsTransformerV2PK(org.talend.mdm.webservice.WSTransformerV2PK wsTransformerV2PK) {
         this.wsTransformerV2PK = wsTransformerV2PK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSExtractThroughTransformerV2)) return false;
-        WSExtractThroughTransformerV2 other = (WSExtractThroughTransformerV2) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.wsItemPK==null && other.getWsItemPK()==null) || 
-             (this.wsItemPK!=null &&
-              this.wsItemPK.equals(other.getWsItemPK()))) &&
-            ((this.wsTransformerV2PK==null && other.getWsTransformerV2PK()==null) || 
-             (this.wsTransformerV2PK!=null &&
-              this.wsTransformerV2PK.equals(other.getWsTransformerV2PK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getWsItemPK() != null) {
-            _hashCode += getWsItemPK().hashCode();
-        }
-        if (getWsTransformerV2PK() != null) {
-            _hashCode += getWsTransformerV2PK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSExtractThroughTransformerV2.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSExtractThroughTransformerV2"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsItemPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsItemPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSItemPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsTransformerV2PK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsTransformerV2PK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerV2PK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the wsItemPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSItemPK }
+     *     
+     */
+    public WSItemPK getWsItemPK() {
+        return wsItemPK;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the wsItemPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSItemPK }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setWsItemPK(WSItemPK value) {
+        this.wsItemPK = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the wsTransformerV2PK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSTransformerV2PK }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public WSTransformerV2PK getWsTransformerV2PK() {
+        return wsTransformerV2PK;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the wsTransformerV2PK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSTransformerV2PK }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsTransformerV2PK(WSTransformerV2PK value) {
+        this.wsTransformerV2PK = value;
     }
 
 }

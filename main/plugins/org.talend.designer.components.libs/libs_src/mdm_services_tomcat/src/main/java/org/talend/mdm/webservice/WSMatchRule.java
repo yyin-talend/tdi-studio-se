@@ -1,157 +1,106 @@
-/**
- * WSMatchRule.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSMatchRule  implements java.io.Serializable {
-    private java.lang.String configurationXmlContent;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSMatchRulePK PK;
 
-    public WSMatchRule() {
-    }
+/**
+ * <p>Java class for WSMatchRule complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSMatchRule"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="configurationXmlContent" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="PK" type="{http://www.talend.com/mdm}WSMatchRulePK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSMatchRule", propOrder = {
+    "configurationXmlContent",
+    "pk"
+})
+public class WSMatchRule {
 
-    public WSMatchRule(
-           java.lang.String configurationXmlContent,
-           org.talend.mdm.webservice.WSMatchRulePK PK) {
-           this.configurationXmlContent = configurationXmlContent;
-           this.PK = PK;
-    }
-
+    protected String configurationXmlContent;
+    @XmlElement(name = "PK")
+    protected WSMatchRulePK pk;
 
     /**
-     * Gets the configurationXmlContent value for this WSMatchRule.
+     * Default no-arg constructor
      * 
-     * @return configurationXmlContent
      */
-    public java.lang.String getConfigurationXmlContent() {
+    public WSMatchRule() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSMatchRule(final String configurationXmlContent, final WSMatchRulePK pk) {
+        this.configurationXmlContent = configurationXmlContent;
+        this.pk = pk;
+    }
+
+    /**
+     * Gets the value of the configurationXmlContent property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getConfigurationXmlContent() {
         return configurationXmlContent;
     }
 
-
     /**
-     * Sets the configurationXmlContent value for this WSMatchRule.
+     * Sets the value of the configurationXmlContent property.
      * 
-     * @param configurationXmlContent
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setConfigurationXmlContent(java.lang.String configurationXmlContent) {
-        this.configurationXmlContent = configurationXmlContent;
+    public void setConfigurationXmlContent(String value) {
+        this.configurationXmlContent = value;
     }
 
-
     /**
-     * Gets the PK value for this WSMatchRule.
+     * Gets the value of the pk property.
      * 
-     * @return PK
+     * @return
+     *     possible object is
+     *     {@link WSMatchRulePK }
+     *     
      */
-    public org.talend.mdm.webservice.WSMatchRulePK getPK() {
-        return PK;
+    public WSMatchRulePK getPK() {
+        return pk;
     }
 
-
     /**
-     * Sets the PK value for this WSMatchRule.
+     * Sets the value of the pk property.
      * 
-     * @param PK
+     * @param value
+     *     allowed object is
+     *     {@link WSMatchRulePK }
+     *     
      */
-    public void setPK(org.talend.mdm.webservice.WSMatchRulePK PK) {
-        this.PK = PK;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSMatchRule)) return false;
-        WSMatchRule other = (WSMatchRule) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.configurationXmlContent==null && other.getConfigurationXmlContent()==null) || 
-             (this.configurationXmlContent!=null &&
-              this.configurationXmlContent.equals(other.getConfigurationXmlContent()))) &&
-            ((this.PK==null && other.getPK()==null) || 
-             (this.PK!=null &&
-              this.PK.equals(other.getPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getConfigurationXmlContent() != null) {
-            _hashCode += getConfigurationXmlContent().hashCode();
-        }
-        if (getPK() != null) {
-            _hashCode += getPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSMatchRule.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSMatchRule"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("configurationXmlContent");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "configurationXmlContent"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("PK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "PK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSMatchRulePK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setPK(WSMatchRulePK value) {
+        this.pk = value;
     }
 
 }

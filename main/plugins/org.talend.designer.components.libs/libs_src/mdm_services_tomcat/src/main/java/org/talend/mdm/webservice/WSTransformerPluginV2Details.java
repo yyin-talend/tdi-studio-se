@@ -1,302 +1,203 @@
-/**
- * WSTransformerPluginV2Details.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSTransformerPluginV2Details  implements java.io.Serializable {
-    private java.lang.String description;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String documentation;
 
-    private org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor[] inputVariableDescriptors;
+/**
+ * <p>Java class for WSTransformerPluginV2Details complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSTransformerPluginV2Details"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="documentation" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="inputVariableDescriptors" type="{http://www.talend.com/mdm}WSTransformerPluginV2VariableDescriptor" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="outputVariableDescriptors" type="{http://www.talend.com/mdm}WSTransformerPluginV2VariableDescriptor" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="parametersSchema" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSTransformerPluginV2Details", propOrder = {
+    "description",
+    "documentation",
+    "inputVariableDescriptors",
+    "outputVariableDescriptors",
+    "parametersSchema"
+})
+public class WSTransformerPluginV2Details {
 
-    private org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor[] outputVariableDescriptors;
+    protected String description;
+    protected String documentation;
+    @XmlElement(nillable = true)
+    protected List<WSTransformerPluginV2VariableDescriptor> inputVariableDescriptors;
+    @XmlElement(nillable = true)
+    protected List<WSTransformerPluginV2VariableDescriptor> outputVariableDescriptors;
+    protected String parametersSchema;
 
-    private java.lang.String parametersSchema;
-
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSTransformerPluginV2Details() {
+        super();
     }
-
-    public WSTransformerPluginV2Details(
-           java.lang.String description,
-           java.lang.String documentation,
-           org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor[] inputVariableDescriptors,
-           org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor[] outputVariableDescriptors,
-           java.lang.String parametersSchema) {
-           this.description = description;
-           this.documentation = documentation;
-           this.inputVariableDescriptors = inputVariableDescriptors;
-           this.outputVariableDescriptors = outputVariableDescriptors;
-           this.parametersSchema = parametersSchema;
-    }
-
 
     /**
-     * Gets the description value for this WSTransformerPluginV2Details.
+     * Fully-initialising value constructor
      * 
-     * @return description
      */
-    public java.lang.String getDescription() {
-        return description;
-    }
-
-
-    /**
-     * Sets the description value for this WSTransformerPluginV2Details.
-     * 
-     * @param description
-     */
-    public void setDescription(java.lang.String description) {
+    public WSTransformerPluginV2Details(final String description, final String documentation, final List<WSTransformerPluginV2VariableDescriptor> inputVariableDescriptors, final List<WSTransformerPluginV2VariableDescriptor> outputVariableDescriptors, final String parametersSchema) {
         this.description = description;
-    }
-
-
-    /**
-     * Gets the documentation value for this WSTransformerPluginV2Details.
-     * 
-     * @return documentation
-     */
-    public java.lang.String getDocumentation() {
-        return documentation;
-    }
-
-
-    /**
-     * Sets the documentation value for this WSTransformerPluginV2Details.
-     * 
-     * @param documentation
-     */
-    public void setDocumentation(java.lang.String documentation) {
         this.documentation = documentation;
-    }
-
-
-    /**
-     * Gets the inputVariableDescriptors value for this WSTransformerPluginV2Details.
-     * 
-     * @return inputVariableDescriptors
-     */
-    public org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor[] getInputVariableDescriptors() {
-        return inputVariableDescriptors;
-    }
-
-
-    /**
-     * Sets the inputVariableDescriptors value for this WSTransformerPluginV2Details.
-     * 
-     * @param inputVariableDescriptors
-     */
-    public void setInputVariableDescriptors(org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor[] inputVariableDescriptors) {
         this.inputVariableDescriptors = inputVariableDescriptors;
-    }
-
-    public org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor getInputVariableDescriptors(int i) {
-        return this.inputVariableDescriptors[i];
-    }
-
-    public void setInputVariableDescriptors(int i, org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor _value) {
-        this.inputVariableDescriptors[i] = _value;
-    }
-
-
-    /**
-     * Gets the outputVariableDescriptors value for this WSTransformerPluginV2Details.
-     * 
-     * @return outputVariableDescriptors
-     */
-    public org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor[] getOutputVariableDescriptors() {
-        return outputVariableDescriptors;
-    }
-
-
-    /**
-     * Sets the outputVariableDescriptors value for this WSTransformerPluginV2Details.
-     * 
-     * @param outputVariableDescriptors
-     */
-    public void setOutputVariableDescriptors(org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor[] outputVariableDescriptors) {
         this.outputVariableDescriptors = outputVariableDescriptors;
-    }
-
-    public org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor getOutputVariableDescriptors(int i) {
-        return this.outputVariableDescriptors[i];
-    }
-
-    public void setOutputVariableDescriptors(int i, org.talend.mdm.webservice.WSTransformerPluginV2VariableDescriptor _value) {
-        this.outputVariableDescriptors[i] = _value;
-    }
-
-
-    /**
-     * Gets the parametersSchema value for this WSTransformerPluginV2Details.
-     * 
-     * @return parametersSchema
-     */
-    public java.lang.String getParametersSchema() {
-        return parametersSchema;
-    }
-
-
-    /**
-     * Sets the parametersSchema value for this WSTransformerPluginV2Details.
-     * 
-     * @param parametersSchema
-     */
-    public void setParametersSchema(java.lang.String parametersSchema) {
         this.parametersSchema = parametersSchema;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSTransformerPluginV2Details)) return false;
-        WSTransformerPluginV2Details other = (WSTransformerPluginV2Details) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            ((this.documentation==null && other.getDocumentation()==null) || 
-             (this.documentation!=null &&
-              this.documentation.equals(other.getDocumentation()))) &&
-            ((this.inputVariableDescriptors==null && other.getInputVariableDescriptors()==null) || 
-             (this.inputVariableDescriptors!=null &&
-              java.util.Arrays.equals(this.inputVariableDescriptors, other.getInputVariableDescriptors()))) &&
-            ((this.outputVariableDescriptors==null && other.getOutputVariableDescriptors()==null) || 
-             (this.outputVariableDescriptors!=null &&
-              java.util.Arrays.equals(this.outputVariableDescriptors, other.getOutputVariableDescriptors()))) &&
-            ((this.parametersSchema==null && other.getParametersSchema()==null) || 
-             (this.parametersSchema!=null &&
-              this.parametersSchema.equals(other.getParametersSchema())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        if (getDocumentation() != null) {
-            _hashCode += getDocumentation().hashCode();
-        }
-        if (getInputVariableDescriptors() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getInputVariableDescriptors());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getInputVariableDescriptors(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getOutputVariableDescriptors() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getOutputVariableDescriptors());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getOutputVariableDescriptors(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getParametersSchema() != null) {
-            _hashCode += getParametersSchema().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSTransformerPluginV2Details.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerPluginV2Details"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("documentation");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "documentation"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("inputVariableDescriptors");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "inputVariableDescriptors"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerPluginV2VariableDescriptor"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("outputVariableDescriptors");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "outputVariableDescriptors"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerPluginV2VariableDescriptor"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("parametersSchema");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "parametersSchema"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the documentation property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getDocumentation() {
+        return documentation;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the documentation property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setDocumentation(String value) {
+        this.documentation = value;
+    }
+
+    /**
+     * Gets the value of the inputVariableDescriptors property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the inputVariableDescriptors property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getInputVariableDescriptors().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link WSTransformerPluginV2VariableDescriptor }
+     * 
+     * 
+     */
+    public List<WSTransformerPluginV2VariableDescriptor> getInputVariableDescriptors() {
+        if (inputVariableDescriptors == null) {
+            inputVariableDescriptors = new ArrayList<WSTransformerPluginV2VariableDescriptor>();
+        }
+        return this.inputVariableDescriptors;
+    }
+
+    /**
+     * Gets the value of the outputVariableDescriptors property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the outputVariableDescriptors property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getOutputVariableDescriptors().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link WSTransformerPluginV2VariableDescriptor }
+     * 
+     * 
+     */
+    public List<WSTransformerPluginV2VariableDescriptor> getOutputVariableDescriptors() {
+        if (outputVariableDescriptors == null) {
+            outputVariableDescriptors = new ArrayList<WSTransformerPluginV2VariableDescriptor>();
+        }
+        return this.outputVariableDescriptors;
+    }
+
+    /**
+     * Gets the value of the parametersSchema property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getParametersSchema() {
+        return parametersSchema;
+    }
+
+    /**
+     * Sets the value of the parametersSchema property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setParametersSchema(String value) {
+        this.parametersSchema = value;
     }
 
 }

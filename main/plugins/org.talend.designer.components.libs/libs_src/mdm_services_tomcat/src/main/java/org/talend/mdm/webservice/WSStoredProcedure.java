@@ -1,231 +1,160 @@
-/**
- * WSStoredProcedure.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSStoredProcedure  implements java.io.Serializable {
-    private java.lang.String description;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String name;
 
-    private java.lang.String procedure;
+/**
+ * <p>Java class for WSStoredProcedure complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSStoredProcedure"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="procedure" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="refreshCache" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSStoredProcedure", propOrder = {
+    "description",
+    "name",
+    "procedure",
+    "refreshCache"
+})
+public class WSStoredProcedure {
 
-    private java.lang.Boolean refreshCache;
+    protected String description;
+    protected String name;
+    protected String procedure;
+    protected Boolean refreshCache;
 
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSStoredProcedure() {
+        super();
     }
-
-    public WSStoredProcedure(
-           java.lang.String description,
-           java.lang.String name,
-           java.lang.String procedure,
-           java.lang.Boolean refreshCache) {
-           this.description = description;
-           this.name = name;
-           this.procedure = procedure;
-           this.refreshCache = refreshCache;
-    }
-
 
     /**
-     * Gets the description value for this WSStoredProcedure.
+     * Fully-initialising value constructor
      * 
-     * @return description
      */
-    public java.lang.String getDescription() {
-        return description;
-    }
-
-
-    /**
-     * Sets the description value for this WSStoredProcedure.
-     * 
-     * @param description
-     */
-    public void setDescription(java.lang.String description) {
+    public WSStoredProcedure(final String description, final String name, final String procedure, final Boolean refreshCache) {
         this.description = description;
-    }
-
-
-    /**
-     * Gets the name value for this WSStoredProcedure.
-     * 
-     * @return name
-     */
-    public java.lang.String getName() {
-        return name;
-    }
-
-
-    /**
-     * Sets the name value for this WSStoredProcedure.
-     * 
-     * @param name
-     */
-    public void setName(java.lang.String name) {
         this.name = name;
-    }
-
-
-    /**
-     * Gets the procedure value for this WSStoredProcedure.
-     * 
-     * @return procedure
-     */
-    public java.lang.String getProcedure() {
-        return procedure;
-    }
-
-
-    /**
-     * Sets the procedure value for this WSStoredProcedure.
-     * 
-     * @param procedure
-     */
-    public void setProcedure(java.lang.String procedure) {
         this.procedure = procedure;
-    }
-
-
-    /**
-     * Gets the refreshCache value for this WSStoredProcedure.
-     * 
-     * @return refreshCache
-     */
-    public java.lang.Boolean getRefreshCache() {
-        return refreshCache;
-    }
-
-
-    /**
-     * Sets the refreshCache value for this WSStoredProcedure.
-     * 
-     * @param refreshCache
-     */
-    public void setRefreshCache(java.lang.Boolean refreshCache) {
         this.refreshCache = refreshCache;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSStoredProcedure)) return false;
-        WSStoredProcedure other = (WSStoredProcedure) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            ((this.name==null && other.getName()==null) || 
-             (this.name!=null &&
-              this.name.equals(other.getName()))) &&
-            ((this.procedure==null && other.getProcedure()==null) || 
-             (this.procedure!=null &&
-              this.procedure.equals(other.getProcedure()))) &&
-            ((this.refreshCache==null && other.getRefreshCache()==null) || 
-             (this.refreshCache!=null &&
-              this.refreshCache.equals(other.getRefreshCache())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        if (getName() != null) {
-            _hashCode += getName().hashCode();
-        }
-        if (getProcedure() != null) {
-            _hashCode += getProcedure().hashCode();
-        }
-        if (getRefreshCache() != null) {
-            _hashCode += getRefreshCache().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSStoredProcedure.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSStoredProcedure"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("name");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("procedure");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "procedure"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("refreshCache");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "refreshCache"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getName() {
+        return name;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Gets the value of the procedure property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getProcedure() {
+        return procedure;
+    }
+
+    /**
+     * Sets the value of the procedure property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setProcedure(String value) {
+        this.procedure = value;
+    }
+
+    /**
+     * Gets the value of the refreshCache property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean isRefreshCache() {
+        return refreshCache;
+    }
+
+    /**
+     * Sets the value of the refreshCache property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setRefreshCache(Boolean value) {
+        this.refreshCache = value;
     }
 
 }

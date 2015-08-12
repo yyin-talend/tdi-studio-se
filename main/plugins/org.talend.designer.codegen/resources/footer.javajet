@@ -1065,10 +1065,10 @@ if (execStat) {
     private void closeMDMConnections() {
         try {
 <%    for (INode mdmComponent : mdmComponentsList) { %>
-		org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=mdmComponent.getUniqueName() %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("TMDMService_<%=mdmComponent.getUniqueName() %>");
-		if(tmdmWS_<%=mdmComponent.getUniqueName() %> != null)
+        org.talend.mdm.webservice.TMDMService service_<%=mdmComponent.getUniqueName() %> = (org.talend.mdm.webservice.TMDMService)globalMap.get("TMDMService_<%=mdmComponent.getUniqueName() %>");
+		if(service_<%=mdmComponent.getUniqueName() %> != null)
 		{
-			tmdmWS_<%=mdmComponent.getUniqueName() %>.logout(new org.talend.mdm.webservice.WSLogout());
+			service_<%=mdmComponent.getUniqueName() %>.logout(new org.talend.mdm.webservice.WSLogout());
 		}
 <%    } %>
         } catch (java.lang.Exception e) {

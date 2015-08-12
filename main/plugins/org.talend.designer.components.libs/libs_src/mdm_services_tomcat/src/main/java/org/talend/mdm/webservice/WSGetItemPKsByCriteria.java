@@ -1,406 +1,284 @@
-/**
- * WSGetItemPKsByCriteria.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetItemPKsByCriteria  implements java.io.Serializable {
-    private java.lang.String conceptName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String contentKeywords;
 
-    private java.lang.Long fromDate;
+/**
+ * <p>Java class for WSGetItemPKsByCriteria complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetItemPKsByCriteria"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="conceptName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="contentKeywords" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="fromDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="keys" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="keysKeywords" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="maxItems" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="skip" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="toDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetItemPKsByCriteria", propOrder = {
+    "conceptName",
+    "contentKeywords",
+    "fromDate",
+    "keys",
+    "keysKeywords",
+    "maxItems",
+    "skip",
+    "toDate",
+    "wsDataClusterPK"
+})
+public class WSGetItemPKsByCriteria {
 
-    private java.lang.String keys;
-
-    private java.lang.String keysKeywords;
-
-    private int maxItems;
-
-    private int skip;
-
-    private java.lang.Long toDate;
-
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
-
-    public WSGetItemPKsByCriteria() {
-    }
-
-    public WSGetItemPKsByCriteria(
-           java.lang.String conceptName,
-           java.lang.String contentKeywords,
-           java.lang.Long fromDate,
-           java.lang.String keys,
-           java.lang.String keysKeywords,
-           int maxItems,
-           int skip,
-           java.lang.Long toDate,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-           this.conceptName = conceptName;
-           this.contentKeywords = contentKeywords;
-           this.fromDate = fromDate;
-           this.keys = keys;
-           this.keysKeywords = keysKeywords;
-           this.maxItems = maxItems;
-           this.skip = skip;
-           this.toDate = toDate;
-           this.wsDataClusterPK = wsDataClusterPK;
-    }
-
+    protected String conceptName;
+    protected String contentKeywords;
+    protected Long fromDate;
+    protected String keys;
+    protected String keysKeywords;
+    protected int maxItems;
+    protected int skip;
+    protected Long toDate;
+    protected WSDataClusterPK wsDataClusterPK;
 
     /**
-     * Gets the conceptName value for this WSGetItemPKsByCriteria.
+     * Default no-arg constructor
      * 
-     * @return conceptName
      */
-    public java.lang.String getConceptName() {
+    public WSGetItemPKsByCriteria() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSGetItemPKsByCriteria(final String conceptName, final String contentKeywords, final Long fromDate, final String keys, final String keysKeywords, final int maxItems, final int skip, final Long toDate, final WSDataClusterPK wsDataClusterPK) {
+        this.conceptName = conceptName;
+        this.contentKeywords = contentKeywords;
+        this.fromDate = fromDate;
+        this.keys = keys;
+        this.keysKeywords = keysKeywords;
+        this.maxItems = maxItems;
+        this.skip = skip;
+        this.toDate = toDate;
+        this.wsDataClusterPK = wsDataClusterPK;
+    }
+
+    /**
+     * Gets the value of the conceptName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getConceptName() {
         return conceptName;
     }
 
-
     /**
-     * Sets the conceptName value for this WSGetItemPKsByCriteria.
+     * Sets the value of the conceptName property.
      * 
-     * @param conceptName
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setConceptName(java.lang.String conceptName) {
-        this.conceptName = conceptName;
+    public void setConceptName(String value) {
+        this.conceptName = value;
     }
 
-
     /**
-     * Gets the contentKeywords value for this WSGetItemPKsByCriteria.
+     * Gets the value of the contentKeywords property.
      * 
-     * @return contentKeywords
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getContentKeywords() {
+    public String getContentKeywords() {
         return contentKeywords;
     }
 
-
     /**
-     * Sets the contentKeywords value for this WSGetItemPKsByCriteria.
+     * Sets the value of the contentKeywords property.
      * 
-     * @param contentKeywords
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setContentKeywords(java.lang.String contentKeywords) {
-        this.contentKeywords = contentKeywords;
+    public void setContentKeywords(String value) {
+        this.contentKeywords = value;
     }
 
-
     /**
-     * Gets the fromDate value for this WSGetItemPKsByCriteria.
+     * Gets the value of the fromDate property.
      * 
-     * @return fromDate
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
      */
-    public java.lang.Long getFromDate() {
+    public Long getFromDate() {
         return fromDate;
     }
 
-
     /**
-     * Sets the fromDate value for this WSGetItemPKsByCriteria.
+     * Sets the value of the fromDate property.
      * 
-     * @param fromDate
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
      */
-    public void setFromDate(java.lang.Long fromDate) {
-        this.fromDate = fromDate;
+    public void setFromDate(Long value) {
+        this.fromDate = value;
     }
 
-
     /**
-     * Gets the keys value for this WSGetItemPKsByCriteria.
+     * Gets the value of the keys property.
      * 
-     * @return keys
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getKeys() {
+    public String getKeys() {
         return keys;
     }
 
-
     /**
-     * Sets the keys value for this WSGetItemPKsByCriteria.
+     * Sets the value of the keys property.
      * 
-     * @param keys
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setKeys(java.lang.String keys) {
-        this.keys = keys;
+    public void setKeys(String value) {
+        this.keys = value;
     }
 
-
     /**
-     * Gets the keysKeywords value for this WSGetItemPKsByCriteria.
+     * Gets the value of the keysKeywords property.
      * 
-     * @return keysKeywords
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getKeysKeywords() {
+    public String getKeysKeywords() {
         return keysKeywords;
     }
 
-
     /**
-     * Sets the keysKeywords value for this WSGetItemPKsByCriteria.
+     * Sets the value of the keysKeywords property.
      * 
-     * @param keysKeywords
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setKeysKeywords(java.lang.String keysKeywords) {
-        this.keysKeywords = keysKeywords;
+    public void setKeysKeywords(String value) {
+        this.keysKeywords = value;
     }
 
-
     /**
-     * Gets the maxItems value for this WSGetItemPKsByCriteria.
+     * Gets the value of the maxItems property.
      * 
-     * @return maxItems
      */
     public int getMaxItems() {
         return maxItems;
     }
 
-
     /**
-     * Sets the maxItems value for this WSGetItemPKsByCriteria.
+     * Sets the value of the maxItems property.
      * 
-     * @param maxItems
      */
-    public void setMaxItems(int maxItems) {
-        this.maxItems = maxItems;
+    public void setMaxItems(int value) {
+        this.maxItems = value;
     }
 
-
     /**
-     * Gets the skip value for this WSGetItemPKsByCriteria.
+     * Gets the value of the skip property.
      * 
-     * @return skip
      */
     public int getSkip() {
         return skip;
     }
 
-
     /**
-     * Sets the skip value for this WSGetItemPKsByCriteria.
+     * Sets the value of the skip property.
      * 
-     * @param skip
      */
-    public void setSkip(int skip) {
-        this.skip = skip;
+    public void setSkip(int value) {
+        this.skip = value;
     }
 
-
     /**
-     * Gets the toDate value for this WSGetItemPKsByCriteria.
+     * Gets the value of the toDate property.
      * 
-     * @return toDate
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
      */
-    public java.lang.Long getToDate() {
+    public Long getToDate() {
         return toDate;
     }
 
-
     /**
-     * Sets the toDate value for this WSGetItemPKsByCriteria.
+     * Sets the value of the toDate property.
      * 
-     * @param toDate
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
      */
-    public void setToDate(java.lang.Long toDate) {
-        this.toDate = toDate;
+    public void setToDate(Long value) {
+        this.toDate = value;
     }
 
-
     /**
-     * Gets the wsDataClusterPK value for this WSGetItemPKsByCriteria.
+     * Gets the value of the wsDataClusterPK property.
      * 
-     * @return wsDataClusterPK
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
+    public WSDataClusterPK getWsDataClusterPK() {
         return wsDataClusterPK;
     }
 
-
     /**
-     * Sets the wsDataClusterPK value for this WSGetItemPKsByCriteria.
+     * Sets the value of the wsDataClusterPK property.
      * 
-     * @param wsDataClusterPK
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-        this.wsDataClusterPK = wsDataClusterPK;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetItemPKsByCriteria)) return false;
-        WSGetItemPKsByCriteria other = (WSGetItemPKsByCriteria) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.conceptName==null && other.getConceptName()==null) || 
-             (this.conceptName!=null &&
-              this.conceptName.equals(other.getConceptName()))) &&
-            ((this.contentKeywords==null && other.getContentKeywords()==null) || 
-             (this.contentKeywords!=null &&
-              this.contentKeywords.equals(other.getContentKeywords()))) &&
-            ((this.fromDate==null && other.getFromDate()==null) || 
-             (this.fromDate!=null &&
-              this.fromDate.equals(other.getFromDate()))) &&
-            ((this.keys==null && other.getKeys()==null) || 
-             (this.keys!=null &&
-              this.keys.equals(other.getKeys()))) &&
-            ((this.keysKeywords==null && other.getKeysKeywords()==null) || 
-             (this.keysKeywords!=null &&
-              this.keysKeywords.equals(other.getKeysKeywords()))) &&
-            this.maxItems == other.getMaxItems() &&
-            this.skip == other.getSkip() &&
-            ((this.toDate==null && other.getToDate()==null) || 
-             (this.toDate!=null &&
-              this.toDate.equals(other.getToDate()))) &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getConceptName() != null) {
-            _hashCode += getConceptName().hashCode();
-        }
-        if (getContentKeywords() != null) {
-            _hashCode += getContentKeywords().hashCode();
-        }
-        if (getFromDate() != null) {
-            _hashCode += getFromDate().hashCode();
-        }
-        if (getKeys() != null) {
-            _hashCode += getKeys().hashCode();
-        }
-        if (getKeysKeywords() != null) {
-            _hashCode += getKeysKeywords().hashCode();
-        }
-        _hashCode += getMaxItems();
-        _hashCode += getSkip();
-        if (getToDate() != null) {
-            _hashCode += getToDate().hashCode();
-        }
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetItemPKsByCriteria.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetItemPKsByCriteria"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("conceptName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "conceptName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("contentKeywords");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "contentKeywords"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("fromDate");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "fromDate"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("keys");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "keys"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("keysKeywords");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "keysKeywords"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("maxItems");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "maxItems"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("skip");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "skip"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("toDate");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "toDate"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
 }

@@ -1,396 +1,268 @@
-/**
- * WSQuickSearch.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSQuickSearch  implements java.io.Serializable {
-    private java.lang.String direction;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private boolean matchAllWords;
 
-    private int maxItems;
+/**
+ * <p>Java class for WSQuickSearch complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSQuickSearch"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="direction" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="matchAllWords" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="maxItems" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="orderBy" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="searchedValue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="skip" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="spellTreshold" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *         &lt;element name="wsViewPK" type="{http://www.talend.com/mdm}WSViewPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSQuickSearch", propOrder = {
+    "direction",
+    "matchAllWords",
+    "maxItems",
+    "orderBy",
+    "searchedValue",
+    "skip",
+    "spellTreshold",
+    "wsDataClusterPK",
+    "wsViewPK"
+})
+public class WSQuickSearch {
 
-    private java.lang.String orderBy;
-
-    private java.lang.String searchedValue;
-
-    private int skip;
-
-    private int spellTreshold;
-
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
-
-    private org.talend.mdm.webservice.WSViewPK wsViewPK;
-
-    public WSQuickSearch() {
-    }
-
-    public WSQuickSearch(
-           java.lang.String direction,
-           boolean matchAllWords,
-           int maxItems,
-           java.lang.String orderBy,
-           java.lang.String searchedValue,
-           int skip,
-           int spellTreshold,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK,
-           org.talend.mdm.webservice.WSViewPK wsViewPK) {
-           this.direction = direction;
-           this.matchAllWords = matchAllWords;
-           this.maxItems = maxItems;
-           this.orderBy = orderBy;
-           this.searchedValue = searchedValue;
-           this.skip = skip;
-           this.spellTreshold = spellTreshold;
-           this.wsDataClusterPK = wsDataClusterPK;
-           this.wsViewPK = wsViewPK;
-    }
-
+    protected String direction;
+    protected boolean matchAllWords;
+    protected int maxItems;
+    protected String orderBy;
+    protected String searchedValue;
+    protected int skip;
+    protected int spellTreshold;
+    protected WSDataClusterPK wsDataClusterPK;
+    protected WSViewPK wsViewPK;
 
     /**
-     * Gets the direction value for this WSQuickSearch.
+     * Default no-arg constructor
      * 
-     * @return direction
      */
-    public java.lang.String getDirection() {
+    public WSQuickSearch() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSQuickSearch(final String direction, final boolean matchAllWords, final int maxItems, final String orderBy, final String searchedValue, final int skip, final int spellTreshold, final WSDataClusterPK wsDataClusterPK, final WSViewPK wsViewPK) {
+        this.direction = direction;
+        this.matchAllWords = matchAllWords;
+        this.maxItems = maxItems;
+        this.orderBy = orderBy;
+        this.searchedValue = searchedValue;
+        this.skip = skip;
+        this.spellTreshold = spellTreshold;
+        this.wsDataClusterPK = wsDataClusterPK;
+        this.wsViewPK = wsViewPK;
+    }
+
+    /**
+     * Gets the value of the direction property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDirection() {
         return direction;
     }
 
-
     /**
-     * Sets the direction value for this WSQuickSearch.
+     * Sets the value of the direction property.
      * 
-     * @param direction
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDirection(java.lang.String direction) {
-        this.direction = direction;
+    public void setDirection(String value) {
+        this.direction = value;
     }
 
-
     /**
-     * Gets the matchAllWords value for this WSQuickSearch.
+     * Gets the value of the matchAllWords property.
      * 
-     * @return matchAllWords
      */
     public boolean isMatchAllWords() {
         return matchAllWords;
     }
 
-
     /**
-     * Sets the matchAllWords value for this WSQuickSearch.
+     * Sets the value of the matchAllWords property.
      * 
-     * @param matchAllWords
      */
-    public void setMatchAllWords(boolean matchAllWords) {
-        this.matchAllWords = matchAllWords;
+    public void setMatchAllWords(boolean value) {
+        this.matchAllWords = value;
     }
 
-
     /**
-     * Gets the maxItems value for this WSQuickSearch.
+     * Gets the value of the maxItems property.
      * 
-     * @return maxItems
      */
     public int getMaxItems() {
         return maxItems;
     }
 
-
     /**
-     * Sets the maxItems value for this WSQuickSearch.
+     * Sets the value of the maxItems property.
      * 
-     * @param maxItems
      */
-    public void setMaxItems(int maxItems) {
-        this.maxItems = maxItems;
+    public void setMaxItems(int value) {
+        this.maxItems = value;
     }
 
-
     /**
-     * Gets the orderBy value for this WSQuickSearch.
+     * Gets the value of the orderBy property.
      * 
-     * @return orderBy
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getOrderBy() {
+    public String getOrderBy() {
         return orderBy;
     }
 
-
     /**
-     * Sets the orderBy value for this WSQuickSearch.
+     * Sets the value of the orderBy property.
      * 
-     * @param orderBy
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setOrderBy(java.lang.String orderBy) {
-        this.orderBy = orderBy;
+    public void setOrderBy(String value) {
+        this.orderBy = value;
     }
 
-
     /**
-     * Gets the searchedValue value for this WSQuickSearch.
+     * Gets the value of the searchedValue property.
      * 
-     * @return searchedValue
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getSearchedValue() {
+    public String getSearchedValue() {
         return searchedValue;
     }
 
-
     /**
-     * Sets the searchedValue value for this WSQuickSearch.
+     * Sets the value of the searchedValue property.
      * 
-     * @param searchedValue
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setSearchedValue(java.lang.String searchedValue) {
-        this.searchedValue = searchedValue;
+    public void setSearchedValue(String value) {
+        this.searchedValue = value;
     }
 
-
     /**
-     * Gets the skip value for this WSQuickSearch.
+     * Gets the value of the skip property.
      * 
-     * @return skip
      */
     public int getSkip() {
         return skip;
     }
 
-
     /**
-     * Sets the skip value for this WSQuickSearch.
+     * Sets the value of the skip property.
      * 
-     * @param skip
      */
-    public void setSkip(int skip) {
-        this.skip = skip;
+    public void setSkip(int value) {
+        this.skip = value;
     }
 
-
     /**
-     * Gets the spellTreshold value for this WSQuickSearch.
+     * Gets the value of the spellTreshold property.
      * 
-     * @return spellTreshold
      */
     public int getSpellTreshold() {
         return spellTreshold;
     }
 
-
     /**
-     * Sets the spellTreshold value for this WSQuickSearch.
+     * Sets the value of the spellTreshold property.
      * 
-     * @param spellTreshold
      */
-    public void setSpellTreshold(int spellTreshold) {
-        this.spellTreshold = spellTreshold;
+    public void setSpellTreshold(int value) {
+        this.spellTreshold = value;
     }
 
-
     /**
-     * Gets the wsDataClusterPK value for this WSQuickSearch.
+     * Gets the value of the wsDataClusterPK property.
      * 
-     * @return wsDataClusterPK
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
+    public WSDataClusterPK getWsDataClusterPK() {
         return wsDataClusterPK;
     }
 
-
     /**
-     * Sets the wsDataClusterPK value for this WSQuickSearch.
+     * Sets the value of the wsDataClusterPK property.
      * 
-     * @param wsDataClusterPK
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-        this.wsDataClusterPK = wsDataClusterPK;
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
-
     /**
-     * Gets the wsViewPK value for this WSQuickSearch.
+     * Gets the value of the wsViewPK property.
      * 
-     * @return wsViewPK
+     * @return
+     *     possible object is
+     *     {@link WSViewPK }
+     *     
      */
-    public org.talend.mdm.webservice.WSViewPK getWsViewPK() {
+    public WSViewPK getWsViewPK() {
         return wsViewPK;
     }
 
-
     /**
-     * Sets the wsViewPK value for this WSQuickSearch.
+     * Sets the value of the wsViewPK property.
      * 
-     * @param wsViewPK
+     * @param value
+     *     allowed object is
+     *     {@link WSViewPK }
+     *     
      */
-    public void setWsViewPK(org.talend.mdm.webservice.WSViewPK wsViewPK) {
-        this.wsViewPK = wsViewPK;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSQuickSearch)) return false;
-        WSQuickSearch other = (WSQuickSearch) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.direction==null && other.getDirection()==null) || 
-             (this.direction!=null &&
-              this.direction.equals(other.getDirection()))) &&
-            this.matchAllWords == other.isMatchAllWords() &&
-            this.maxItems == other.getMaxItems() &&
-            ((this.orderBy==null && other.getOrderBy()==null) || 
-             (this.orderBy!=null &&
-              this.orderBy.equals(other.getOrderBy()))) &&
-            ((this.searchedValue==null && other.getSearchedValue()==null) || 
-             (this.searchedValue!=null &&
-              this.searchedValue.equals(other.getSearchedValue()))) &&
-            this.skip == other.getSkip() &&
-            this.spellTreshold == other.getSpellTreshold() &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK()))) &&
-            ((this.wsViewPK==null && other.getWsViewPK()==null) || 
-             (this.wsViewPK!=null &&
-              this.wsViewPK.equals(other.getWsViewPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDirection() != null) {
-            _hashCode += getDirection().hashCode();
-        }
-        _hashCode += (isMatchAllWords() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += getMaxItems();
-        if (getOrderBy() != null) {
-            _hashCode += getOrderBy().hashCode();
-        }
-        if (getSearchedValue() != null) {
-            _hashCode += getSearchedValue().hashCode();
-        }
-        _hashCode += getSkip();
-        _hashCode += getSpellTreshold();
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        if (getWsViewPK() != null) {
-            _hashCode += getWsViewPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSQuickSearch.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSQuickSearch"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("direction");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "direction"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("matchAllWords");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "matchAllWords"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("maxItems");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "maxItems"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderBy");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "orderBy"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("searchedValue");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "searchedValue"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("skip");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "skip"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("spellTreshold");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "spellTreshold"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsViewPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsViewPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSViewPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsViewPK(WSViewPK value) {
+        this.wsViewPK = value;
     }
 
 }

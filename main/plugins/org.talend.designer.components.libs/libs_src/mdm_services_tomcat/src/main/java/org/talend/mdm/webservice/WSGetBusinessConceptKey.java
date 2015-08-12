@@ -1,157 +1,104 @@
-/**
- * WSGetBusinessConceptKey.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetBusinessConceptKey  implements java.io.Serializable {
-    private java.lang.String concept;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSDataModelPK wsDataModelPK;
 
+/**
+ * <p>Java class for WSGetBusinessConceptKey complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetBusinessConceptKey"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="concept" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataModelPK" type="{http://www.talend.com/mdm}WSDataModelPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetBusinessConceptKey", propOrder = {
+    "concept",
+    "wsDataModelPK"
+})
+public class WSGetBusinessConceptKey {
+
+    protected String concept;
+    protected WSDataModelPK wsDataModelPK;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSGetBusinessConceptKey() {
+        super();
     }
-
-    public WSGetBusinessConceptKey(
-           java.lang.String concept,
-           org.talend.mdm.webservice.WSDataModelPK wsDataModelPK) {
-           this.concept = concept;
-           this.wsDataModelPK = wsDataModelPK;
-    }
-
 
     /**
-     * Gets the concept value for this WSGetBusinessConceptKey.
+     * Fully-initialising value constructor
      * 
-     * @return concept
      */
-    public java.lang.String getConcept() {
-        return concept;
-    }
-
-
-    /**
-     * Sets the concept value for this WSGetBusinessConceptKey.
-     * 
-     * @param concept
-     */
-    public void setConcept(java.lang.String concept) {
+    public WSGetBusinessConceptKey(final String concept, final WSDataModelPK wsDataModelPK) {
         this.concept = concept;
-    }
-
-
-    /**
-     * Gets the wsDataModelPK value for this WSGetBusinessConceptKey.
-     * 
-     * @return wsDataModelPK
-     */
-    public org.talend.mdm.webservice.WSDataModelPK getWsDataModelPK() {
-        return wsDataModelPK;
-    }
-
-
-    /**
-     * Sets the wsDataModelPK value for this WSGetBusinessConceptKey.
-     * 
-     * @param wsDataModelPK
-     */
-    public void setWsDataModelPK(org.talend.mdm.webservice.WSDataModelPK wsDataModelPK) {
         this.wsDataModelPK = wsDataModelPK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetBusinessConceptKey)) return false;
-        WSGetBusinessConceptKey other = (WSGetBusinessConceptKey) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.concept==null && other.getConcept()==null) || 
-             (this.concept!=null &&
-              this.concept.equals(other.getConcept()))) &&
-            ((this.wsDataModelPK==null && other.getWsDataModelPK()==null) || 
-             (this.wsDataModelPK!=null &&
-              this.wsDataModelPK.equals(other.getWsDataModelPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getConcept() != null) {
-            _hashCode += getConcept().hashCode();
-        }
-        if (getWsDataModelPK() != null) {
-            _hashCode += getWsDataModelPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetBusinessConceptKey.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetBusinessConceptKey"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("concept");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "concept"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataModelPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataModelPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataModelPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the concept property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getConcept() {
+        return concept;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the concept property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setConcept(String value) {
+        this.concept = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the wsDataModelPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSDataModelPK }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public WSDataModelPK getWsDataModelPK() {
+        return wsDataModelPK;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the wsDataModelPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSDataModelPK }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataModelPK(WSDataModelPK value) {
+        this.wsDataModelPK = value;
     }
 
 }

@@ -1,447 +1,304 @@
-/**
- * WSGetItemsByCustomFKFilters.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetItemsByCustomFKFilters  implements java.io.Serializable {
-    private java.lang.String conceptName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String direction;
 
-    private java.lang.String injectedXpath;
+/**
+ * <p>Java class for WSGetItemsByCustomFKFilters complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetItemsByCustomFKFilters"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="conceptName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="direction" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="injectedXpath" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="maxItems" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="orderBy" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="returnCount" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="skip" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="viewablePaths" type="{http://www.talend.com/mdm}WSStringArray" minOccurs="0"/&gt;
+ *         &lt;element name="whereItem" type="{http://www.talend.com/mdm}WSWhereItem" minOccurs="0"/&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetItemsByCustomFKFilters", propOrder = {
+    "conceptName",
+    "direction",
+    "injectedXpath",
+    "maxItems",
+    "orderBy",
+    "returnCount",
+    "skip",
+    "viewablePaths",
+    "whereItem",
+    "wsDataClusterPK"
+})
+public class WSGetItemsByCustomFKFilters {
 
-    private int maxItems;
-
-    private java.lang.String orderBy;
-
-    private boolean returnCount;
-
-    private int skip;
-
-    private java.lang.String[] viewablePaths;
-
-    private org.talend.mdm.webservice.WSWhereItem whereItem;
-
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
-
-    public WSGetItemsByCustomFKFilters() {
-    }
-
-    public WSGetItemsByCustomFKFilters(
-           java.lang.String conceptName,
-           java.lang.String direction,
-           java.lang.String injectedXpath,
-           int maxItems,
-           java.lang.String orderBy,
-           boolean returnCount,
-           int skip,
-           java.lang.String[] viewablePaths,
-           org.talend.mdm.webservice.WSWhereItem whereItem,
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-           this.conceptName = conceptName;
-           this.direction = direction;
-           this.injectedXpath = injectedXpath;
-           this.maxItems = maxItems;
-           this.orderBy = orderBy;
-           this.returnCount = returnCount;
-           this.skip = skip;
-           this.viewablePaths = viewablePaths;
-           this.whereItem = whereItem;
-           this.wsDataClusterPK = wsDataClusterPK;
-    }
-
+    protected String conceptName;
+    protected String direction;
+    protected String injectedXpath;
+    protected int maxItems;
+    protected String orderBy;
+    protected boolean returnCount;
+    protected int skip;
+    protected WSStringArray viewablePaths;
+    protected WSWhereItem whereItem;
+    protected WSDataClusterPK wsDataClusterPK;
 
     /**
-     * Gets the conceptName value for this WSGetItemsByCustomFKFilters.
+     * Default no-arg constructor
      * 
-     * @return conceptName
      */
-    public java.lang.String getConceptName() {
+    public WSGetItemsByCustomFKFilters() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSGetItemsByCustomFKFilters(final String conceptName, final String direction, final String injectedXpath, final int maxItems, final String orderBy, final boolean returnCount, final int skip, final WSStringArray viewablePaths, final WSWhereItem whereItem, final WSDataClusterPK wsDataClusterPK) {
+        this.conceptName = conceptName;
+        this.direction = direction;
+        this.injectedXpath = injectedXpath;
+        this.maxItems = maxItems;
+        this.orderBy = orderBy;
+        this.returnCount = returnCount;
+        this.skip = skip;
+        this.viewablePaths = viewablePaths;
+        this.whereItem = whereItem;
+        this.wsDataClusterPK = wsDataClusterPK;
+    }
+
+    /**
+     * Gets the value of the conceptName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getConceptName() {
         return conceptName;
     }
 
-
     /**
-     * Sets the conceptName value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the conceptName property.
      * 
-     * @param conceptName
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setConceptName(java.lang.String conceptName) {
-        this.conceptName = conceptName;
+    public void setConceptName(String value) {
+        this.conceptName = value;
     }
 
-
     /**
-     * Gets the direction value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the direction property.
      * 
-     * @return direction
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getDirection() {
+    public String getDirection() {
         return direction;
     }
 
-
     /**
-     * Sets the direction value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the direction property.
      * 
-     * @param direction
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setDirection(java.lang.String direction) {
-        this.direction = direction;
+    public void setDirection(String value) {
+        this.direction = value;
     }
 
-
     /**
-     * Gets the injectedXpath value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the injectedXpath property.
      * 
-     * @return injectedXpath
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getInjectedXpath() {
+    public String getInjectedXpath() {
         return injectedXpath;
     }
 
-
     /**
-     * Sets the injectedXpath value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the injectedXpath property.
      * 
-     * @param injectedXpath
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setInjectedXpath(java.lang.String injectedXpath) {
-        this.injectedXpath = injectedXpath;
+    public void setInjectedXpath(String value) {
+        this.injectedXpath = value;
     }
 
-
     /**
-     * Gets the maxItems value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the maxItems property.
      * 
-     * @return maxItems
      */
     public int getMaxItems() {
         return maxItems;
     }
 
-
     /**
-     * Sets the maxItems value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the maxItems property.
      * 
-     * @param maxItems
      */
-    public void setMaxItems(int maxItems) {
-        this.maxItems = maxItems;
+    public void setMaxItems(int value) {
+        this.maxItems = value;
     }
 
-
     /**
-     * Gets the orderBy value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the orderBy property.
      * 
-     * @return orderBy
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public java.lang.String getOrderBy() {
+    public String getOrderBy() {
         return orderBy;
     }
 
-
     /**
-     * Sets the orderBy value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the orderBy property.
      * 
-     * @param orderBy
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setOrderBy(java.lang.String orderBy) {
-        this.orderBy = orderBy;
+    public void setOrderBy(String value) {
+        this.orderBy = value;
     }
 
-
     /**
-     * Gets the returnCount value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the returnCount property.
      * 
-     * @return returnCount
      */
     public boolean isReturnCount() {
         return returnCount;
     }
 
-
     /**
-     * Sets the returnCount value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the returnCount property.
      * 
-     * @param returnCount
      */
-    public void setReturnCount(boolean returnCount) {
-        this.returnCount = returnCount;
+    public void setReturnCount(boolean value) {
+        this.returnCount = value;
     }
 
-
     /**
-     * Gets the skip value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the skip property.
      * 
-     * @return skip
      */
     public int getSkip() {
         return skip;
     }
 
-
     /**
-     * Sets the skip value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the skip property.
      * 
-     * @param skip
      */
-    public void setSkip(int skip) {
-        this.skip = skip;
+    public void setSkip(int value) {
+        this.skip = value;
     }
 
-
     /**
-     * Gets the viewablePaths value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the viewablePaths property.
      * 
-     * @return viewablePaths
+     * @return
+     *     possible object is
+     *     {@link WSStringArray }
+     *     
      */
-    public java.lang.String[] getViewablePaths() {
+    public WSStringArray getViewablePaths() {
         return viewablePaths;
     }
 
-
     /**
-     * Sets the viewablePaths value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the viewablePaths property.
      * 
-     * @param viewablePaths
+     * @param value
+     *     allowed object is
+     *     {@link WSStringArray }
+     *     
      */
-    public void setViewablePaths(java.lang.String[] viewablePaths) {
-        this.viewablePaths = viewablePaths;
+    public void setViewablePaths(WSStringArray value) {
+        this.viewablePaths = value;
     }
 
-
     /**
-     * Gets the whereItem value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the whereItem property.
      * 
-     * @return whereItem
+     * @return
+     *     possible object is
+     *     {@link WSWhereItem }
+     *     
      */
-    public org.talend.mdm.webservice.WSWhereItem getWhereItem() {
+    public WSWhereItem getWhereItem() {
         return whereItem;
     }
 
-
     /**
-     * Sets the whereItem value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the whereItem property.
      * 
-     * @param whereItem
+     * @param value
+     *     allowed object is
+     *     {@link WSWhereItem }
+     *     
      */
-    public void setWhereItem(org.talend.mdm.webservice.WSWhereItem whereItem) {
-        this.whereItem = whereItem;
+    public void setWhereItem(WSWhereItem value) {
+        this.whereItem = value;
     }
 
-
     /**
-     * Gets the wsDataClusterPK value for this WSGetItemsByCustomFKFilters.
+     * Gets the value of the wsDataClusterPK property.
      * 
-     * @return wsDataClusterPK
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
+    public WSDataClusterPK getWsDataClusterPK() {
         return wsDataClusterPK;
     }
 
-
     /**
-     * Sets the wsDataClusterPK value for this WSGetItemsByCustomFKFilters.
+     * Sets the value of the wsDataClusterPK property.
      * 
-     * @param wsDataClusterPK
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-        this.wsDataClusterPK = wsDataClusterPK;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetItemsByCustomFKFilters)) return false;
-        WSGetItemsByCustomFKFilters other = (WSGetItemsByCustomFKFilters) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.conceptName==null && other.getConceptName()==null) || 
-             (this.conceptName!=null &&
-              this.conceptName.equals(other.getConceptName()))) &&
-            ((this.direction==null && other.getDirection()==null) || 
-             (this.direction!=null &&
-              this.direction.equals(other.getDirection()))) &&
-            ((this.injectedXpath==null && other.getInjectedXpath()==null) || 
-             (this.injectedXpath!=null &&
-              this.injectedXpath.equals(other.getInjectedXpath()))) &&
-            this.maxItems == other.getMaxItems() &&
-            ((this.orderBy==null && other.getOrderBy()==null) || 
-             (this.orderBy!=null &&
-              this.orderBy.equals(other.getOrderBy()))) &&
-            this.returnCount == other.isReturnCount() &&
-            this.skip == other.getSkip() &&
-            ((this.viewablePaths==null && other.getViewablePaths()==null) || 
-             (this.viewablePaths!=null &&
-              java.util.Arrays.equals(this.viewablePaths, other.getViewablePaths()))) &&
-            ((this.whereItem==null && other.getWhereItem()==null) || 
-             (this.whereItem!=null &&
-              this.whereItem.equals(other.getWhereItem()))) &&
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getConceptName() != null) {
-            _hashCode += getConceptName().hashCode();
-        }
-        if (getDirection() != null) {
-            _hashCode += getDirection().hashCode();
-        }
-        if (getInjectedXpath() != null) {
-            _hashCode += getInjectedXpath().hashCode();
-        }
-        _hashCode += getMaxItems();
-        if (getOrderBy() != null) {
-            _hashCode += getOrderBy().hashCode();
-        }
-        _hashCode += (isReturnCount() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += getSkip();
-        if (getViewablePaths() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getViewablePaths());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getViewablePaths(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        if (getWhereItem() != null) {
-            _hashCode += getWhereItem().hashCode();
-        }
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetItemsByCustomFKFilters.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetItemsByCustomFKFilters"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("conceptName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "conceptName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("direction");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "direction"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("injectedXpath");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "injectedXpath"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("maxItems");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "maxItems"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderBy");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "orderBy"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("returnCount");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "returnCount"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("skip");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "skip"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("viewablePaths");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "viewablePaths"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        elemField.setItemQName(new javax.xml.namespace.QName("", "strings"));
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("whereItem");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "whereItem"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSWhereItem"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
 }

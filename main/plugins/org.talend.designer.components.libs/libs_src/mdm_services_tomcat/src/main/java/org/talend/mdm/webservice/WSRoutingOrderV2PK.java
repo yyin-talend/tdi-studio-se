@@ -1,157 +1,106 @@
-/**
- * WSRoutingOrderV2PK.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSRoutingOrderV2PK  implements java.io.Serializable {
-    private java.lang.String name;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSRoutingOrderV2Status status;
 
+/**
+ * <p>Java class for WSRoutingOrderV2PK complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSRoutingOrderV2PK"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="status" type="{http://www.talend.com/mdm}WSRoutingOrderV2Status" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSRoutingOrderV2PK", propOrder = {
+    "name",
+    "status"
+})
+public class WSRoutingOrderV2PK {
+
+    protected String name;
+    @XmlSchemaType(name = "string")
+    protected WSRoutingOrderV2Status status;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSRoutingOrderV2PK() {
+        super();
     }
-
-    public WSRoutingOrderV2PK(
-           java.lang.String name,
-           org.talend.mdm.webservice.WSRoutingOrderV2Status status) {
-           this.name = name;
-           this.status = status;
-    }
-
 
     /**
-     * Gets the name value for this WSRoutingOrderV2PK.
+     * Fully-initialising value constructor
      * 
-     * @return name
      */
-    public java.lang.String getName() {
-        return name;
-    }
-
-
-    /**
-     * Sets the name value for this WSRoutingOrderV2PK.
-     * 
-     * @param name
-     */
-    public void setName(java.lang.String name) {
+    public WSRoutingOrderV2PK(final String name, final WSRoutingOrderV2Status status) {
         this.name = name;
-    }
-
-
-    /**
-     * Gets the status value for this WSRoutingOrderV2PK.
-     * 
-     * @return status
-     */
-    public org.talend.mdm.webservice.WSRoutingOrderV2Status getStatus() {
-        return status;
-    }
-
-
-    /**
-     * Sets the status value for this WSRoutingOrderV2PK.
-     * 
-     * @param status
-     */
-    public void setStatus(org.talend.mdm.webservice.WSRoutingOrderV2Status status) {
         this.status = status;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSRoutingOrderV2PK)) return false;
-        WSRoutingOrderV2PK other = (WSRoutingOrderV2PK) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.name==null && other.getName()==null) || 
-             (this.name!=null &&
-              this.name.equals(other.getName()))) &&
-            ((this.status==null && other.getStatus()==null) || 
-             (this.status!=null &&
-              this.status.equals(other.getStatus())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getName() != null) {
-            _hashCode += getName().hashCode();
-        }
-        if (getStatus() != null) {
-            _hashCode += getStatus().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSRoutingOrderV2PK.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRoutingOrderV2PK"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("name");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("status");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "status"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSRoutingOrderV2Status"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the status property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSRoutingOrderV2Status }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public WSRoutingOrderV2Status getStatus() {
+        return status;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the status property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSRoutingOrderV2Status }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setStatus(WSRoutingOrderV2Status value) {
+        this.status = value;
     }
 
 }

@@ -1,157 +1,106 @@
-/**
- * WSI18NString.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSI18NString  implements java.io.Serializable {
-    private java.lang.String label;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-    private org.talend.mdm.webservice.WSLanguage language;
 
+/**
+ * <p>Java class for WSI18NString complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSI18NString"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="label" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="language" type="{http://www.talend.com/mdm}WSLanguage" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSI18NString", propOrder = {
+    "label",
+    "language"
+})
+public class WSI18NString {
+
+    protected String label;
+    @XmlSchemaType(name = "string")
+    protected WSLanguage language;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSI18NString() {
+        super();
     }
-
-    public WSI18NString(
-           java.lang.String label,
-           org.talend.mdm.webservice.WSLanguage language) {
-           this.label = label;
-           this.language = language;
-    }
-
 
     /**
-     * Gets the label value for this WSI18NString.
+     * Fully-initialising value constructor
      * 
-     * @return label
      */
-    public java.lang.String getLabel() {
-        return label;
-    }
-
-
-    /**
-     * Sets the label value for this WSI18NString.
-     * 
-     * @param label
-     */
-    public void setLabel(java.lang.String label) {
+    public WSI18NString(final String label, final WSLanguage language) {
         this.label = label;
-    }
-
-
-    /**
-     * Gets the language value for this WSI18NString.
-     * 
-     * @return language
-     */
-    public org.talend.mdm.webservice.WSLanguage getLanguage() {
-        return language;
-    }
-
-
-    /**
-     * Sets the language value for this WSI18NString.
-     * 
-     * @param language
-     */
-    public void setLanguage(org.talend.mdm.webservice.WSLanguage language) {
         this.language = language;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSI18NString)) return false;
-        WSI18NString other = (WSI18NString) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.label==null && other.getLabel()==null) || 
-             (this.label!=null &&
-              this.label.equals(other.getLabel()))) &&
-            ((this.language==null && other.getLanguage()==null) || 
-             (this.language!=null &&
-              this.language.equals(other.getLanguage())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getLabel() != null) {
-            _hashCode += getLabel().hashCode();
-        }
-        if (getLanguage() != null) {
-            _hashCode += getLanguage().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSI18NString.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSI18NString"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("label");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "label"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("language");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "language"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSLanguage"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the label property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getLabel() {
+        return label;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the label property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setLabel(String value) {
+        this.label = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the language property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSLanguage }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public WSLanguage getLanguage() {
+        return language;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the language property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSLanguage }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setLanguage(WSLanguage value) {
+        this.language = value;
     }
 
 }

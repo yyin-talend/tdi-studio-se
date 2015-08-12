@@ -1,115 +1,68 @@
-/**
- * WSWorkflowGetTaskList.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSWorkflowGetTaskList  implements java.io.Serializable {
-    private long processInstanceId;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    public WSWorkflowGetTaskList() {
-    }
 
-    public WSWorkflowGetTaskList(
-           long processInstanceId) {
-           this.processInstanceId = processInstanceId;
-    }
+/**
+ * <p>Java class for WSWorkflowGetTaskList complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSWorkflowGetTaskList"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="processInstanceId" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSWorkflowGetTaskList", propOrder = {
+    "processInstanceId"
+})
+public class WSWorkflowGetTaskList {
 
+    protected long processInstanceId;
 
     /**
-     * Gets the processInstanceId value for this WSWorkflowGetTaskList.
+     * Default no-arg constructor
      * 
-     * @return processInstanceId
+     */
+    public WSWorkflowGetTaskList() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSWorkflowGetTaskList(final long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    /**
+     * Gets the value of the processInstanceId property.
+     * 
      */
     public long getProcessInstanceId() {
         return processInstanceId;
     }
 
-
     /**
-     * Sets the processInstanceId value for this WSWorkflowGetTaskList.
+     * Sets the value of the processInstanceId property.
      * 
-     * @param processInstanceId
      */
-    public void setProcessInstanceId(long processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSWorkflowGetTaskList)) return false;
-        WSWorkflowGetTaskList other = (WSWorkflowGetTaskList) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            this.processInstanceId == other.getProcessInstanceId();
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        _hashCode += new Long(getProcessInstanceId()).hashCode();
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSWorkflowGetTaskList.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSWorkflowGetTaskList"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("processInstanceId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "processInstanceId"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setProcessInstanceId(long value) {
+        this.processInstanceId = value;
     }
 
 }

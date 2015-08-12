@@ -1,268 +1,188 @@
-/**
- * WSCustomForm.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSCustomForm  implements java.io.Serializable {
-    private java.lang.String datamodel;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String entity;
 
-    private java.lang.String name;
+/**
+ * <p>Java class for WSCustomForm complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSCustomForm"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="datamodel" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="entity" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="role" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="xml" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSCustomForm", propOrder = {
+    "datamodel",
+    "entity",
+    "name",
+    "role",
+    "xml"
+})
+public class WSCustomForm {
 
-    private java.lang.String role;
+    protected String datamodel;
+    protected String entity;
+    protected String name;
+    protected String role;
+    protected String xml;
 
-    private java.lang.String xml;
-
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSCustomForm() {
+        super();
     }
-
-    public WSCustomForm(
-           java.lang.String datamodel,
-           java.lang.String entity,
-           java.lang.String name,
-           java.lang.String role,
-           java.lang.String xml) {
-           this.datamodel = datamodel;
-           this.entity = entity;
-           this.name = name;
-           this.role = role;
-           this.xml = xml;
-    }
-
 
     /**
-     * Gets the datamodel value for this WSCustomForm.
+     * Fully-initialising value constructor
      * 
-     * @return datamodel
      */
-    public java.lang.String getDatamodel() {
-        return datamodel;
-    }
-
-
-    /**
-     * Sets the datamodel value for this WSCustomForm.
-     * 
-     * @param datamodel
-     */
-    public void setDatamodel(java.lang.String datamodel) {
+    public WSCustomForm(final String datamodel, final String entity, final String name, final String role, final String xml) {
         this.datamodel = datamodel;
-    }
-
-
-    /**
-     * Gets the entity value for this WSCustomForm.
-     * 
-     * @return entity
-     */
-    public java.lang.String getEntity() {
-        return entity;
-    }
-
-
-    /**
-     * Sets the entity value for this WSCustomForm.
-     * 
-     * @param entity
-     */
-    public void setEntity(java.lang.String entity) {
         this.entity = entity;
-    }
-
-
-    /**
-     * Gets the name value for this WSCustomForm.
-     * 
-     * @return name
-     */
-    public java.lang.String getName() {
-        return name;
-    }
-
-
-    /**
-     * Sets the name value for this WSCustomForm.
-     * 
-     * @param name
-     */
-    public void setName(java.lang.String name) {
         this.name = name;
-    }
-
-
-    /**
-     * Gets the role value for this WSCustomForm.
-     * 
-     * @return role
-     */
-    public java.lang.String getRole() {
-        return role;
-    }
-
-
-    /**
-     * Sets the role value for this WSCustomForm.
-     * 
-     * @param role
-     */
-    public void setRole(java.lang.String role) {
         this.role = role;
-    }
-
-
-    /**
-     * Gets the xml value for this WSCustomForm.
-     * 
-     * @return xml
-     */
-    public java.lang.String getXml() {
-        return xml;
-    }
-
-
-    /**
-     * Sets the xml value for this WSCustomForm.
-     * 
-     * @param xml
-     */
-    public void setXml(java.lang.String xml) {
         this.xml = xml;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSCustomForm)) return false;
-        WSCustomForm other = (WSCustomForm) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.datamodel==null && other.getDatamodel()==null) || 
-             (this.datamodel!=null &&
-              this.datamodel.equals(other.getDatamodel()))) &&
-            ((this.entity==null && other.getEntity()==null) || 
-             (this.entity!=null &&
-              this.entity.equals(other.getEntity()))) &&
-            ((this.name==null && other.getName()==null) || 
-             (this.name!=null &&
-              this.name.equals(other.getName()))) &&
-            ((this.role==null && other.getRole()==null) || 
-             (this.role!=null &&
-              this.role.equals(other.getRole()))) &&
-            ((this.xml==null && other.getXml()==null) || 
-             (this.xml!=null &&
-              this.xml.equals(other.getXml())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDatamodel() != null) {
-            _hashCode += getDatamodel().hashCode();
-        }
-        if (getEntity() != null) {
-            _hashCode += getEntity().hashCode();
-        }
-        if (getName() != null) {
-            _hashCode += getName().hashCode();
-        }
-        if (getRole() != null) {
-            _hashCode += getRole().hashCode();
-        }
-        if (getXml() != null) {
-            _hashCode += getXml().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSCustomForm.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSCustomForm"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("datamodel");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "datamodel"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("entity");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "entity"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("name");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("role");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "role"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xml");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xml"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the datamodel property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDatamodel() {
+        return datamodel;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the datamodel property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setDatamodel(String value) {
+        this.datamodel = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the entity property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getEntity() {
+        return entity;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the entity property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setEntity(String value) {
+        this.entity = value;
+    }
+
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Gets the value of the role property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * Sets the value of the role property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setRole(String value) {
+        this.role = value;
+    }
+
+    /**
+     * Gets the value of the xml property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getXml() {
+        return xml;
+    }
+
+    /**
+     * Sets the value of the xml property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setXml(String value) {
+        this.xml = value;
     }
 
 }

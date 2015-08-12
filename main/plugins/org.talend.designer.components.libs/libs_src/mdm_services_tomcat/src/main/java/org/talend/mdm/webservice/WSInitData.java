@@ -1,152 +1,96 @@
-/**
- * WSInitData.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSInitData  implements java.io.Serializable {
-    private java.lang.String xmlSchema;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private boolean zap;
 
-    public WSInitData() {
-    }
+/**
+ * <p>Java class for WSInitData complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSInitData"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="xmlSchema" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="zap" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSInitData", propOrder = {
+    "xmlSchema",
+    "zap"
+})
+public class WSInitData {
 
-    public WSInitData(
-           java.lang.String xmlSchema,
-           boolean zap) {
-           this.xmlSchema = xmlSchema;
-           this.zap = zap;
-    }
-
+    protected String xmlSchema;
+    protected boolean zap;
 
     /**
-     * Gets the xmlSchema value for this WSInitData.
+     * Default no-arg constructor
      * 
-     * @return xmlSchema
      */
-    public java.lang.String getXmlSchema() {
+    public WSInitData() {
+        super();
+    }
+
+    /**
+     * Fully-initialising value constructor
+     * 
+     */
+    public WSInitData(final String xmlSchema, final boolean zap) {
+        this.xmlSchema = xmlSchema;
+        this.zap = zap;
+    }
+
+    /**
+     * Gets the value of the xmlSchema property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getXmlSchema() {
         return xmlSchema;
     }
 
-
     /**
-     * Sets the xmlSchema value for this WSInitData.
+     * Sets the value of the xmlSchema property.
      * 
-     * @param xmlSchema
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setXmlSchema(java.lang.String xmlSchema) {
-        this.xmlSchema = xmlSchema;
+    public void setXmlSchema(String value) {
+        this.xmlSchema = value;
     }
 
-
     /**
-     * Gets the zap value for this WSInitData.
+     * Gets the value of the zap property.
      * 
-     * @return zap
      */
     public boolean isZap() {
         return zap;
     }
 
-
     /**
-     * Sets the zap value for this WSInitData.
+     * Sets the value of the zap property.
      * 
-     * @param zap
      */
-    public void setZap(boolean zap) {
-        this.zap = zap;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSInitData)) return false;
-        WSInitData other = (WSInitData) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.xmlSchema==null && other.getXmlSchema()==null) || 
-             (this.xmlSchema!=null &&
-              this.xmlSchema.equals(other.getXmlSchema()))) &&
-            this.zap == other.isZap();
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getXmlSchema() != null) {
-            _hashCode += getXmlSchema().hashCode();
-        }
-        _hashCode += (isZap() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSInitData.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSInitData"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xmlSchema");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xmlSchema"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("zap");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "zap"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setZap(boolean value) {
+        this.zap = value;
     }
 
 }

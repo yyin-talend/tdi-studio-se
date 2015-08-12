@@ -1,157 +1,104 @@
-/**
- * WSTransformerPluginV2GetConfiguration.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSTransformerPluginV2GetConfiguration  implements java.io.Serializable {
-    private java.lang.String jndiName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private java.lang.String optionalParameter;
 
+/**
+ * <p>Java class for WSTransformerPluginV2GetConfiguration complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSTransformerPluginV2GetConfiguration"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="jndiName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="optionalParameter" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSTransformerPluginV2GetConfiguration", propOrder = {
+    "jndiName",
+    "optionalParameter"
+})
+public class WSTransformerPluginV2GetConfiguration {
+
+    protected String jndiName;
+    protected String optionalParameter;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSTransformerPluginV2GetConfiguration() {
+        super();
     }
-
-    public WSTransformerPluginV2GetConfiguration(
-           java.lang.String jndiName,
-           java.lang.String optionalParameter) {
-           this.jndiName = jndiName;
-           this.optionalParameter = optionalParameter;
-    }
-
 
     /**
-     * Gets the jndiName value for this WSTransformerPluginV2GetConfiguration.
+     * Fully-initialising value constructor
      * 
-     * @return jndiName
      */
-    public java.lang.String getJndiName() {
-        return jndiName;
-    }
-
-
-    /**
-     * Sets the jndiName value for this WSTransformerPluginV2GetConfiguration.
-     * 
-     * @param jndiName
-     */
-    public void setJndiName(java.lang.String jndiName) {
+    public WSTransformerPluginV2GetConfiguration(final String jndiName, final String optionalParameter) {
         this.jndiName = jndiName;
-    }
-
-
-    /**
-     * Gets the optionalParameter value for this WSTransformerPluginV2GetConfiguration.
-     * 
-     * @return optionalParameter
-     */
-    public java.lang.String getOptionalParameter() {
-        return optionalParameter;
-    }
-
-
-    /**
-     * Sets the optionalParameter value for this WSTransformerPluginV2GetConfiguration.
-     * 
-     * @param optionalParameter
-     */
-    public void setOptionalParameter(java.lang.String optionalParameter) {
         this.optionalParameter = optionalParameter;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSTransformerPluginV2GetConfiguration)) return false;
-        WSTransformerPluginV2GetConfiguration other = (WSTransformerPluginV2GetConfiguration) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.jndiName==null && other.getJndiName()==null) || 
-             (this.jndiName!=null &&
-              this.jndiName.equals(other.getJndiName()))) &&
-            ((this.optionalParameter==null && other.getOptionalParameter()==null) || 
-             (this.optionalParameter!=null &&
-              this.optionalParameter.equals(other.getOptionalParameter())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getJndiName() != null) {
-            _hashCode += getJndiName().hashCode();
-        }
-        if (getOptionalParameter() != null) {
-            _hashCode += getOptionalParameter().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSTransformerPluginV2GetConfiguration.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSTransformerPluginV2GetConfiguration"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("jndiName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "jndiName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("optionalParameter");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "optionalParameter"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the jndiName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getJndiName() {
+        return jndiName;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the jndiName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setJndiName(String value) {
+        this.jndiName = value;
     }
 
     /**
-     * Get Custom Serializer
+     * Gets the value of the optionalParameter property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public String getOptionalParameter() {
+        return optionalParameter;
     }
 
     /**
-     * Get Custom Deserializer
+     * Sets the value of the optionalParameter property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setOptionalParameter(String value) {
+        this.optionalParameter = value;
     }
 
 }

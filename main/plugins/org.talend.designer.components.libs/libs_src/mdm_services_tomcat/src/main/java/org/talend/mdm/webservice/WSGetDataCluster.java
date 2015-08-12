@@ -1,120 +1,76 @@
-/**
- * WSGetDataCluster.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package org.talend.mdm.webservice;
 
-public class WSGetDataCluster  implements java.io.Serializable {
-    private org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
+
+/**
+ * <p>Java class for WSGetDataCluster complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="WSGetDataCluster"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="wsDataClusterPK" type="{http://www.talend.com/mdm}WSDataClusterPK" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WSGetDataCluster", propOrder = {
+    "wsDataClusterPK"
+})
+public class WSGetDataCluster {
+
+    protected WSDataClusterPK wsDataClusterPK;
+
+    /**
+     * Default no-arg constructor
+     * 
+     */
     public WSGetDataCluster() {
+        super();
     }
-
-    public WSGetDataCluster(
-           org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
-           this.wsDataClusterPK = wsDataClusterPK;
-    }
-
 
     /**
-     * Gets the wsDataClusterPK value for this WSGetDataCluster.
+     * Fully-initialising value constructor
      * 
-     * @return wsDataClusterPK
      */
-    public org.talend.mdm.webservice.WSDataClusterPK getWsDataClusterPK() {
-        return wsDataClusterPK;
-    }
-
-
-    /**
-     * Sets the wsDataClusterPK value for this WSGetDataCluster.
-     * 
-     * @param wsDataClusterPK
-     */
-    public void setWsDataClusterPK(org.talend.mdm.webservice.WSDataClusterPK wsDataClusterPK) {
+    public WSGetDataCluster(final WSDataClusterPK wsDataClusterPK) {
         this.wsDataClusterPK = wsDataClusterPK;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WSGetDataCluster)) return false;
-        WSGetDataCluster other = (WSGetDataCluster) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.wsDataClusterPK==null && other.getWsDataClusterPK()==null) || 
-             (this.wsDataClusterPK!=null &&
-              this.wsDataClusterPK.equals(other.getWsDataClusterPK())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getWsDataClusterPK() != null) {
-            _hashCode += getWsDataClusterPK().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WSGetDataCluster.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSGetDataCluster"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("wsDataClusterPK");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "wsDataClusterPK"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.talend.com/mdm", "WSDataClusterPK"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    /**
+     * Gets the value of the wsDataClusterPK property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WSDataClusterPK }
+     *     
+     */
+    public WSDataClusterPK getWsDataClusterPK() {
+        return wsDataClusterPK;
     }
 
     /**
-     * Return type metadata object
+     * Sets the value of the wsDataClusterPK property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WSDataClusterPK }
+     *     
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setWsDataClusterPK(WSDataClusterPK value) {
+        this.wsDataClusterPK = value;
     }
 
 }
