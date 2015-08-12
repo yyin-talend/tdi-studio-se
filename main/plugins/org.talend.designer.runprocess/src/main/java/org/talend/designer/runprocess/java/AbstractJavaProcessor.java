@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -44,6 +45,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.runprocess.Processor;
 import org.talend.designer.runprocess.IProcessMessageManager;
+import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -70,6 +72,8 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
 
     protected String archive;
 
+    private Boolean runAsExport;
+
     /**
      * DOC marvin AbstractJavaProcessor constructor comment.
      * 
@@ -84,6 +88,21 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
      */
     protected boolean isStandardJob() {
         return true;
+    }
+
+    /**
+     * 
+     * Should be more like ProcessorUtilities.isExportConfig() is true.
+     */
+    protected boolean isRunAsExport() {
+        if (this.runAsExport == null) {
+            this.runAsExport = shouldRunAsExport();
+        }
+        return this.runAsExport;
+    }
+
+    protected boolean isExportConfig() {
+        return ProcessorUtilities.isExportConfig();
     }
 
     /**
@@ -172,7 +191,7 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
             IProcessMessageManager processMessageManager) throws ProcessorException {
         if (isStandardJob()) {
             Property property = this.getProperty();
-            if (shouldRunAsExport() && property != null) {
+            if (isRunAsExport() && property != null) {
                 // use the same function with ExportModelJavaProcessor, but will do for maven
                 ProcessItem processItem = (ProcessItem) property.getItem();
                 // Step 1: Export job
@@ -180,12 +199,56 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
                 // Step 2: Deploy in local(Maybe just unpack)
                 unzipFolder = unzipAndDeploy(process, archive);
                 // Step 3: Run job from given folder.
-                return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort,
-                        tracePort, optionsParam);
-
+                return execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort,
+                        optionsParam);
             }
         }
         return super.run(optionsParam, statisticsPort, tracePort, monitor, processMessageManager);
+    }
+
+    protected Process execFrom(String path, Level level, int statOption, int traceOption, String... codeOptions)
+            throws ProcessorException {
+        String[] cmds = getCommandLine(true, isRunAsExport(), statOption, traceOption, codeOptions);
+
+        checkExecutingCommands(path, cmds);
+
+        logCommandLine(cmds, level);
+
+        return exec(cmds, path);
+    }
+
+    /**
+     * 
+     * If need, will correct the path for commands.
+     */
+    protected String[] checkExecutingCommands(String path, String[] cmds) {
+        // for classpath
+        return checkExecutingCommandsForRootPath(path, cmds, ProcessorConstants.CMD_KEY_WORD_CP);
+    }
+
+    protected String[] checkExecutingCommandsForRootPath(String path, String[] cmds, String argName) {
+        if (isRunAsExport()) {
+            // replace the variables like $ROOT_PATH
+            int cpIndex = ArrayUtils.indexOf(cmds, argName);
+            if (cpIndex > -1 && cmds.length > cpIndex + 1) { // found
+                String cpStr = cmds[cpIndex + 1];
+
+                Path runDir = null;
+                // current path by default
+                String userDir = System.getProperty("user.dir");
+                if (userDir != null) {
+                    runDir = new Path(userDir); //$NON-NLS-1$
+                }
+                if (path != null && new File(path).exists()) {
+                    runDir = new Path(path); // unify via Path
+                }
+                if (runDir != null) {
+                    cpStr = cpStr.replace(ProcessorConstants.CMD_KEY_WORD_ROOTPATH, runDir.toString());
+                    cmds[cpIndex + 1] = cpStr; // set back
+                }
+            }
+        }
+        return cmds;
     }
 
     protected abstract String getRootWorkingDir(boolean withSep);

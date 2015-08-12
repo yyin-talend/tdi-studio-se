@@ -310,4 +310,11 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         }
     }
 
+    @Override
+    protected String[] checkExecutingCommands(String path, String[] cmds) {
+        String[] checkedcmds = super.checkExecutingCommands(path, cmds);
+        // also, need check the "-libjars" for BD jobs.
+        return checkExecutingCommandsForRootPath(path, checkedcmds, ProcessorConstants.CMD_KEY_WORD_LIBJAR);
+    }
+
 }
