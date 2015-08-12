@@ -572,7 +572,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             // selected = true;
             // }
             // }
-            ConnectionBean selectedConnBean = loginHelper.getFirstConnBean();
+            ConnectionBean selectedConnBean = loginHelper.getCurrentSelectedConnBean();
             if (selectedConnBean != null) {
                 connectionsViewer.setSelection(new StructuredSelection(new Object[] { selectedConnBean }));
                 IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
@@ -632,6 +632,11 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     // if (beforeConnBean != null && connection.equals(beforeConnBean)) {
                     // return;
                     // }
+                    if (connection == loginHelper.getCurrentSelectedConnBean()) {
+                        return;
+                    } else {
+                        loginHelper.setCurrentSelectedConnBean(connection);
+                    }
                     errorManager.clearAllMessages();
                     // beforeConnBean = connection;
                     updateServerFields();

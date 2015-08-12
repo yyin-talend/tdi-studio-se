@@ -95,9 +95,20 @@ public class LoginHelper {
 
     protected List<ConnectionBean> storedConnections = null;
 
+    /**
+     * the connectionbean name of last time startup used
+     */
     protected String lastConnection = null;
 
+    /**
+     * the first selected connectionbean when studio startup
+     */
     protected ConnectionBean firstConnBean;
+
+    /**
+     * the current selected connectionbean
+     */
+    protected ConnectionBean currentSelectedConnBean;
 
     protected Shell usableShell;
 
@@ -151,14 +162,18 @@ public class LoginHelper {
     }
 
     protected void recordFirstConnection() {
-        if (storedConnections != null) {
-            for (ConnectionBean connectionBean : storedConnections) {
-                if (connectionBean.getName().equals(lastConnection)) {
-                    firstConnBean = connectionBean;
-                    break;
+        firstConnBean = getConnectionBeanByName(storedConnections, lastConnection);
+    }
+
+    public static ConnectionBean getConnectionBeanByName(List<ConnectionBean> beanList, String connectionName) {
+        if (beanList != null && connectionName != null) {
+            for (ConnectionBean connectionBean : beanList) {
+                if (connectionName.equals(connectionBean.getName())) {
+                    return connectionBean;
                 }
             }
         }
+        return null;
     }
 
     public static boolean isWorkspaceSame(ConnectionBean connectionBean) {
@@ -193,10 +208,27 @@ public class LoginHelper {
 
     public void saveConnections(List<ConnectionBean> connectionsBeans) {
         perReader.saveConnections(connectionsBeans);
+        if (connectionsBeans != storedConnections) {
+            setStoredConnections(connectionsBeans);
+        }
     }
 
     public void saveLastConnectionBean(ConnectionBean connBean) {
         perReader.saveLastConnectionBean(connBean);
+        if (connBean != null) {
+            lastConnection = connBean.getName();
+        }
+    }
+
+    public ConnectionBean getCurrentSelectedConnBean() {
+        if (currentSelectedConnBean == null) {
+            currentSelectedConnBean = firstConnBean;
+        }
+        return currentSelectedConnBean;
+    }
+
+    public void setCurrentSelectedConnBean(ConnectionBean connBean) {
+        this.currentSelectedConnBean = connBean;
     }
 
     protected static ConnectionBean getConnection() {
@@ -674,6 +706,12 @@ public class LoginHelper {
 
     public void setStoredConnections(List<ConnectionBean> storedConnections) {
         this.storedConnections = storedConnections;
+        if (currentSelectedConnBean != null) {
+            currentSelectedConnBean = getConnectionBeanByName(this.storedConnections, currentSelectedConnBean.getName());
+            if (currentSelectedConnBean == null) {
+                currentSelectedConnBean = getConnectionBeanByName(this.storedConnections, lastConnection);
+            }
+        }
     }
 
     public String getLastConnection() {
