@@ -340,25 +340,24 @@ public abstract class Processor implements IProcessor, IEclipseProcessor, Talend
      * @throws ProcessorException
      */
     protected Process exec(Level level, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
-
-        String[] cmd = getCommandLine(true, false, statOption, traceOption, codeOptions);
-
-        logCommandLine(cmd, level);
-        try {
-            return Runtime.getRuntime().exec(cmd);
-        } catch (IOException ioe) {
-            throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
-        }
+        return execFrom(null, level, statOption, traceOption, codeOptions);
     }
 
     protected Process execFrom(String path, Level level, int statOption, int traceOption, String... codeOptions)
             throws ProcessorException {
 
         String[] cmd = getCommandLine(true, false, statOption, traceOption, codeOptions);
-
         logCommandLine(cmd, level);
+        return exec(cmd, path);
+    }
+
+    protected Process exec(String[] cmd, String path) throws ProcessorException {
         try {
-            return Runtime.getRuntime().exec(cmd, null, new File(path));
+            if (path == null || !new File(path).exists()) {
+                return Runtime.getRuntime().exec(cmd);
+            } else {
+                return Runtime.getRuntime().exec(cmd, null, new File(path));
+            }
         } catch (IOException ioe) {
             throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
         }

@@ -1043,11 +1043,10 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             tmpParams.addAll(Arrays.asList(additionCommandStrings));
         }
 
-        boolean exportingJob = ProcessorUtilities.isExportConfig();
         // vm args
-        String[] cmd2 = addVMArguments(tmpParams.toArray(new String[0]), exportingJob);
+        String[] cmd2 = addVMArguments(tmpParams.toArray(new String[0]));
 
-        if (exportingJob) {
+        if (isExportConfig()) { // only for export
             // add bat/sh header lines.
             List<String> list = extractAheadCommandSegments();
             list.addAll(Arrays.asList(cmd2));
@@ -1059,7 +1058,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     public List<String> extractAheadCommandSegments() {
         List<String> aheadSegments = new ArrayList<String>();
-        if (ProcessorUtilities.isExportConfig()) {
+        if (isExportConfig()) {
             if (isWinTargetPlatform()) {
                 aheadSegments.add("%~d0\r\n"); //$NON-NLS-1$
                 aheadSegments.add("cd %~dp0\r\n"); //$NON-NLS-1$
@@ -1074,17 +1073,20 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String getCommand() {
         // init java interpreter
+        if (isExportConfig() || isRunAsExport()) {
+            return JavaUtils.JAVA_APP_NAME;
+        }
         String command;
         try {
             command = getInterpreter();
         } catch (ProcessorException e1) {
-            command = "java"; //$NON-NLS-1$
+            command = JavaUtils.JAVA_APP_NAME;
         }
         return new Path(command).toPortableString();
     }
 
     protected String getRootWorkingDir(boolean withSep) {
-        if (!isWinTargetPlatform() && (ProcessorUtilities.isExportConfig() || isExternalUse())) {
+        if (!isWinTargetPlatform() && (isExportConfig() || isRunAsExport())) {
             // "$ROOT_PATH/";
             if (withSep) {
                 return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + JavaUtils.PATH_SEPARATOR;
@@ -1096,14 +1098,13 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String getLibsClasspath() throws ProcessorException {
-        final boolean exportingJob = ProcessorUtilities.isExportConfig();
         final String classPathSeparator = extractClassPathSeparator();
 
         final String basePathClasspath = getBasePathClasspath();
         // for -cp libs str
         final String neededModulesJarStr = getNeededModulesJarStr();
         String libsStr = basePathClasspath + classPathSeparator + neededModulesJarStr.toString();
-        if (exportingJob) {
+        if (isExportConfig() || isRunAsExport()) {
             libsStr += classPathSeparator + getExportJarsStr();
         } else {
             File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
@@ -1117,72 +1118,99 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String getBasePathClasspath() throws ProcessorException {
-        final boolean exportingJob = ProcessorUtilities.isExportConfig();
         final String classPathSeparator = extractClassPathSeparator();
+        final String rootWorkingDir = getRootWorkingDir(false);
 
-        String outputPath;
-        if (exportingJob) {
-            outputPath = getCodeLocation(); // it have contained current path "."
-            if (outputPath != null) {
-                outputPath = outputPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
-                if (outputPath.endsWith(classPathSeparator)) { // remove the seperator
-                    outputPath = outputPath.substring(0, outputPath.length() - 1);
+        StringBuffer basePath = new StringBuffer(50);
+        if (isExportConfig() || isRunAsExport()) {
+            // current path.
+            basePath.append('.');
+            basePath.append(classPathSeparator);
+
+            if (rootWorkingDir.length() > 0) {
+                // $ROOT_PATH
+                basePath.append(rootWorkingDir);
+                basePath.append(classPathSeparator);
+            }
+            if (isExternalUse()) { // for tRunJob with independent option and init pom for classpath
+                if (rootWorkingDir.length() > 0) {
+                    basePath.append(rootWorkingDir);
+                    basePath.append(JavaUtils.PATH_SEPARATOR);
                 }
-
-                if (!Platform.OS_WIN32.equals(getTargetPlatform())) {
-                    // add current path
-                    outputPath = getRootWorkingDir(false) + classPathSeparator + outputPath;
-
-                    String libraryPath = ProcessorUtilities.getLibraryPath();
-                    if (libraryPath != null) {
-                        String unixRootPath = getRootWorkingDir(true);
-                        outputPath = outputPath.replace(libraryPath, unixRootPath + libraryPath);
+                basePath.append(getBaseLibPath());
+                basePath.append(JavaUtils.PATH_SEPARATOR);
+                // routines.jar
+                basePath.append(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
+            } else {
+                String outputPath = getCodeLocation();
+                if (outputPath != null) {
+                    outputPath = outputPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
+                    if (outputPath.endsWith(classPathSeparator)) { // remove the seperator
+                        outputPath = outputPath.substring(0, outputPath.length() - 1);
                     }
-                } else {
-                    // add current path
-                    outputPath = '.' + classPathSeparator + outputPath;
+
+                    if (!Platform.OS_WIN32.equals(getTargetPlatform())) {
+                        String libraryPath = ProcessorUtilities.getLibraryPath();
+                        if (libraryPath != null) {
+                            String unixRootPath = getRootWorkingDir(true);
+                            outputPath = outputPath.replace(libraryPath, unixRootPath + libraryPath);
+                        }
+                    }
                 }
+                basePath.append(outputPath);
             }
         } else {
             ITalendProcessJavaProject tProcessJvaProject = this.getTalendJavaProject();
             IFolder classesFolder = tProcessJvaProject.getOutputFolder();
-            outputPath = classesFolder.getLocation().toPortableString();
+            String outputPath = classesFolder.getLocation().toPortableString();
             outputPath += classPathSeparator + '.'; // add current path
+            basePath.append(outputPath);
         }
 
-        return outputPath;
+        return basePath.toString();
     }
 
     protected String getNeededModulesJarStr() {
-        final boolean exportingJob = ProcessorUtilities.isExportConfig();
         final String classPathSeparator = extractClassPathSeparator();
         final String libPrefixPath = getRootWorkingDir(true);
-        final File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-        if (libDir == null) {
-            return ""; //$NON-NLS-1$
-        }
+
         Set<ModuleNeeded> neededModules = getNeededModules();
         JavaProcessorUtilities.checkJavaProjectLib(neededModules);
-        Set<String> neededLibraries = new HashSet<String>();
-        for (ModuleNeeded neededModule : neededModules) {
-            neededLibraries.add(neededModule.getModuleName());
-        }
-        File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
 
         StringBuffer libPath = new StringBuffer();
-        if (jarFiles != null && jarFiles.length > 0) {
-            for (File jarFile : jarFiles) {
-                if (jarFile.isFile() && neededLibraries.contains(jarFile.getName())) {
-                    String singleLibPath = new Path(jarFile.getAbsolutePath()).toPortableString();
-                    if (exportingJob) {
-                        libPath.append(libPrefixPath); // only for export.
-                        singleLibPath = singleLibPath.replace(new Path(libDir.getAbsolutePath()).toPortableString(),
-                                getBaseLibPath());
+        if (isExportConfig() || isRunAsExport()) {
+            boolean hasLibPrefix = libPrefixPath.length() > 0;
+            for (ModuleNeeded neededModule : neededModules) {
+                if (hasLibPrefix) {
+                    libPath.append(libPrefixPath);
+                }
+                libPath.append(getBaseLibPath());
+                libPath.append(JavaUtils.PATH_SEPARATOR);
+                libPath.append(neededModule.getModuleName());
+                libPath.append(classPathSeparator);
+            }
+        } else {
+            Set<String> neededLibraries = new HashSet<String>();
+            for (ModuleNeeded neededModule : neededModules) {
+                neededLibraries.add(neededModule.getModuleName());
+            }
+
+            final File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
+            if (libDir == null) {
+                return ""; //$NON-NLS-1$
+            }
+            File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
+
+            if (jarFiles != null && jarFiles.length > 0) {
+                for (File jarFile : jarFiles) {
+                    if (jarFile.isFile() && neededLibraries.contains(jarFile.getName())) {
+                        String singleLibPath = new Path(jarFile.getAbsolutePath()).toPortableString();
+                        libPath.append(singleLibPath).append(classPathSeparator);
                     }
-                    libPath.append(singleLibPath).append(classPathSeparator);
                 }
             }
         }
+
         final int lastSep = libPath.length() - 1;
         if (libPath.length() != 0 && classPathSeparator.equals(String.valueOf(libPath.charAt(lastSep)))) {
             libPath.deleteCharAt(lastSep);
@@ -1240,7 +1268,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
-    protected String[] addVMArguments(String[] strings, boolean exportingJob) {
+    protected String[] addVMArguments(String[] strings) {
         String[] vmargs = getJVMArgs(); //$NON-NLS-1$
         
         RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
@@ -1277,7 +1305,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     public String[] getJVMArgs() {
         String[] vmargs = getSettingsJVMArguments();
         /* check parameter won't happened on exportingJob */
-        if (!ProcessorUtilities.isExportConfig()) {
+        if (!isExportConfig() && !isRunAsExport()) {
             String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-1$
             String encodingFromIni = "-Dfile.encoding=" + fileEncoding; //$NON-NLS-1$
             List<String> asList = convertArgsToList(vmargs);
