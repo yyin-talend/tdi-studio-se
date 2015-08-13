@@ -37,6 +37,7 @@ String taskID = ElementParameterParser.getValue(node,"__TASKID__");
 String prevColumn = ElementParameterParser.getValue(node, "__PREV_COLUMN_TASK_ID__");
 
 boolean usePartialUpdate = ("true").equals(ElementParameterParser.getValue(node,"__USE_PARTIAL_UPDATE__"));
+boolean usePartialDelete = ("true").equals(ElementParameterParser.getValue(node,"__PARTIAL_DELETE__"));
 String pivot = ElementParameterParser.getValue(node,"__PIVOT__");
 boolean overwrite = ("true").equals(ElementParameterParser.getValue(node,"__OVERWRITE__"));
 String key = ElementParameterParser.getValue(node,"__KEY__");
@@ -167,7 +168,11 @@ if (metadatas != null && metadatas.size()>0) {
     			dataclusterString = dataCluster;
     		}
 %>
-			org.talend.mdm.webservice.WSPartialPutItem wsPartialPutItem_<%=cid%> = new org.talend.mdm.webservice.WSPartialPutItem(<%=dataclusterString %>,<%=dataModel %>,<%=key.equals("")?null:key%>, <%=overwrite%>, <%=pivot%>,<%= true==isStaging?false:withReport%>, <%=sourceName%>,<%=position.equals("")?null:position%>, input_<%=cid %>);
+            Integer pos = null;
+            if(!<%=usePartialDelete %>) {
+                pos = <%=position.equals("")?null:position%>;
+            }
+			org.talend.mdm.webservice.WSPartialPutItem wsPartialPutItem_<%=cid%> = new org.talend.mdm.webservice.WSPartialPutItem(<%=dataclusterString %>,<%=dataModel %>,<%=usePartialDelete %>, <%=key.equals("")?null:key%>, <%=overwrite%>, <%=pivot%>,<%= true==isStaging?false:withReport%>, <%=sourceName%>,pos, input_<%=cid %>);
 			wspk_<%=cid %> = service_<%=cid %>.partialPutItem(wsPartialPutItem_<%=cid%>);
 			
             <%

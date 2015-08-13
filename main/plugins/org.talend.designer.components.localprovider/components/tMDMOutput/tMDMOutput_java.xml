@@ -194,12 +194,16 @@
 		<PARAMETER NAME="USE_PARTIAL_UPDATE" FIELD="CHECK" REQUIRED="true" GROUP="PARTIAL_UPDATE" NUM_ROW="90">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-
+		
 		<PARAMETER NAME="PIVOT" FIELD="TEXT" NUM_ROW="100" REQUIRED="true" GROUP="PARTIAL_UPDATE" SHOW_IF="USE_PARTIAL_UPDATE=='true'">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="OVERWRITE" FIELD="CHECK" REQUIRED="true" GROUP="PARTIAL_UPDATE" NUM_ROW="110" SHOW_IF="USE_PARTIAL_UPDATE=='true'">
+		<PARAMETER NAME="OVERWRITE" FIELD="CHECK" REQUIRED="true" GROUP="PARTIAL_UPDATE" NUM_ROW="110" SHOW_IF="(USE_PARTIAL_UPDATE=='true') and (PARTIAL_DELETE=='false')">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER NAME="PARTIAL_DELETE" FIELD="CHECK" REQUIRED="true" GROUP="PARTIAL_UPDATE" NUM_ROW="110" SHOW_IF="(USE_PARTIAL_UPDATE=='true') and (OVERWRITE=='false')">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
@@ -207,7 +211,7 @@
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="POSITION" FIELD="TEXT" NUM_ROW="130" GROUP="PARTIAL_UPDATE" SHOW_IF="USE_PARTIAL_UPDATE=='true'">
+		<PARAMETER NAME="POSITION" FIELD="TEXT" NUM_ROW="130" GROUP="PARTIAL_UPDATE" SHOW_IF="(USE_PARTIAL_UPDATE=='true') and (PARTIAL_DELETE=='false')">
 			<DEFAULT></DEFAULT>
 		</PARAMETER>
 
@@ -350,6 +354,7 @@
 
 
 			<TEMPLATE_PARAM SOURCE="self.USE_PARTIAL_UPDATE" TARGET="In.USE_PARTIAL_UPDATE"/>
+			<TEMPLATE_PARAM SOURCE="self.PARTIAL_DELETE" TARGET="In.PARTIAL_DELETE"/>
 			<TEMPLATE_PARAM SOURCE="self.PIVOT" TARGET="In.PIVOT"/>
 			<TEMPLATE_PARAM SOURCE="self.OVERWRITE" TARGET="In.OVERWRITE"/>
 			<TEMPLATE_PARAM SOURCE="self.KEY" TARGET="In.KEY"/>
@@ -385,7 +390,7 @@
 
 		</TEMPLATES>
 		<IMPORTS>
-			<IMPORT NAME="MDM-WEBSERVICE-TOMCAT" MODULE="mdm_webservice_tomcat.jar" MVN="mvn:org.talend.libraries/mdm_webservice_tomcat/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice_tomcat.jar" REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
+			<IMPORT NAME="MDM-WEBSERVICE-TOMCAT" MODULE="mdm_webservice_tomcat.jar" MVN="mvn:org.talend.libraries/mdm_webservice_tomcat/6.1.0"  UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice_tomcat.jar" REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
 			
 			<IMPORT NAME="log4j-1.2.15.jar" MODULE="log4j-1.2.15.jar" MVN="mvn:org.talend.libraries/log4j-1.2.15/6.0.0"  UrlPath="platform:/base/plugins/org.apache.log4j_1.2.15.v201012070815.jar" BundleID="" REQUIRED_IF="IS_VIRTUAL_COMPONENT == 'false'" />
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" MVN="mvn:org.talend.libraries/jaxrpc/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar" BundleID="" REQUIRED_IF="IS_VIRTUAL_COMPONENT == 'false'" />
