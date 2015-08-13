@@ -573,11 +573,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             mainResults.addAll(checkJobSettingsParameters(EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP, type,
                     onlySimpleShow));
             break;
-        case JOB_PROPERTY_STORM:
-            if (ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(getProcess().getComponentsType())) {
-                mainResults.addAll(checkJobSettingsParameters(EComponentCategory.SPARK_JOB_CONFIG, type, onlySimpleShow));
-            }
-            break;
         case JOB_PROPERTY_EXTRA:
             mainResults.addAll(checkJobSettingsParameters(EComponentCategory.EXTRA, type, onlySimpleShow));
             break;
@@ -2394,7 +2389,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             case JOB_PROPERTY_EXTRA:
             case JOB_PROPERTY_STATS_LOGS:
             case JOB_PROPERTY_HEADERFOOTER:
-            case JOB_PROPERTY_STORM:
             case JOB_PROPERTY_MAPREDUCE:
                 tmpResults = checkMainParameters(type, onlySimpleShow);
                 break;

@@ -75,11 +75,6 @@ public class UpdateMainParameterCommand extends Command {
                 case JOB_PROPERTY_HEADERFOOTER:
                     category = EComponentCategory.HEADERFOOTER;
                     break;
-                case JOB_PROPERTY_STORM:
-                    if (ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
-                        category = EComponentCategory.SPARK_JOB_CONFIG;
-                    }
-                    break;
                 case JOB_PROPERTY_MAPREDUCE:
                     category = EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP;
                     break;
