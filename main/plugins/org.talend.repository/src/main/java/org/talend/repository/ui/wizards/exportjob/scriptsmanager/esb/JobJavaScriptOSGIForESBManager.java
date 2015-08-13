@@ -879,7 +879,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             Map<String, String> bundleDependences = dependenciesService.getBundleDependences(processItem);
             // process external libs
             String externalLibs = bundleDependences.get(IOsgiDependenciesService.BUNDLE_CLASSPATH);
-            String[] libs = externalLibs.split(IOsgiDependenciesService.ITEM_SEPARATOR);
+            String[] libs = externalLibs.split(Character.toString(IOsgiDependenciesService.ITEM_SEPARATOR));
             Set<URL> list = new HashSet<URL>();
             for (String s : libs) {
                 if (s.isEmpty()) {

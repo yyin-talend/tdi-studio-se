@@ -536,7 +536,7 @@
 							<td class="FONTSTYLE" align="left">
 								<pre>
 									<xsl:call-template name="TransferLF2BR">
-										<xsl:with-param name="input" select="$job/RouteManifest/Import-package/text()"/>
+										<xsl:with-param name="input" select="$job/RouteManifest/Import-Package/text()"/>
 									</xsl:call-template>
 								</pre>
 							</td>
@@ -548,7 +548,7 @@
 							<td class="FONTSTYLE" align="left">
 								<pre>
 									<xsl:call-template name="TransferLF2BR">
-										<xsl:with-param name="input" select="$job/RouteManifest/Export-package/text()"/>
+										<xsl:with-param name="input" select="$job/RouteManifest/Export-Package/text()"/>
 									</xsl:call-template>
 								</pre>
 							</td>
@@ -560,7 +560,7 @@
 							<td class="FONTSTYLE" align="left">
 								<pre>
 									<xsl:call-template name="TransferLF2BR">
-										<xsl:with-param name="input" select="$job/RouteManifest/Required-bundle/text()"/>
+										<xsl:with-param name="input" select="$job/RouteManifest/Require-Bundle/text()"/>
 									</xsl:call-template>
 								</pre>
 							</td>
@@ -572,7 +572,7 @@
 							<td class="FONTSTYLE" align="left">
 								<pre>
 									<xsl:call-template name="TransferLF2BR">
-										<xsl:with-param name="input" select="$job/RouteManifest/Bundle-classpath/text()"/>
+										<xsl:with-param name="input" select="$job/RouteManifest/Bundle-ClassPath/text()"/>
 									</xsl:call-template>
 								</pre>
 							</td>

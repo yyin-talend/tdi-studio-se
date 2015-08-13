@@ -120,7 +120,7 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
         if (bundleClasspath == null) {
             return; //
         }
-        String[] classpathes = bundleClasspath.split(IOsgiDependenciesService.ITEM_SEPARATOR);
+        String[] classpathes = bundleClasspath.split(Character.toString(IOsgiDependenciesService.ITEM_SEPARATOR));
         StringBuffer sb = new StringBuffer(200);
         for (int i = 0; i < classpathes.length; i++) {
             String path = classpathes[i];
