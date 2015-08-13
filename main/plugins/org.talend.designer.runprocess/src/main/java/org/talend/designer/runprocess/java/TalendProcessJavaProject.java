@@ -151,6 +151,11 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     }
 
     @Override
+    public IFolder getTempFolder() {
+        return createFolder(MavenSystemFolders.TEMP.getPath());
+    }
+
+    @Override
     public IFolder getSrcSubFolder(IProgressMonitor monitor, String path) {
         return createSubFolder(monitor, getSrcFolder(), path);
     }
@@ -288,9 +293,9 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             MavenPomCommandLauncher mavenLauncher = null;
             // by default is compile
             if (goals == null || goals.trim().length() == 0 || goals.equals(TalendMavenConstants.GOAL_COMPILE)) {
-                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, TalendMavenConstants.GOAL_REFRESH);
-                 mavenLauncher.setArgumentsMap(argumentsMap);
-                 mavenLauncher.execute(monitor);
+                mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, TalendMavenConstants.GOAL_REFRESH);
+                mavenLauncher.setArgumentsMap(argumentsMap);
+                mavenLauncher.execute(monitor);
             } else {
                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, goals);
                 mavenLauncher.setArgumentsMap(argumentsMap);
