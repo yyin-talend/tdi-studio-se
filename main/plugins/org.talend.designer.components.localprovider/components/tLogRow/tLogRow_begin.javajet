@@ -35,6 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     boolean titlePrint = ("true").equals(ElementParameterParser.getValue(node,"__PRINT_LABEL__"));
     boolean uniqueTitlePrint = ("true").equals(ElementParameterParser.getValue(node,"__PRINT_UNIQUE_LABEL__"));
     boolean basic = !(tablePrint||vertical);
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 
 	List<IMetadataColumn> columns = metadata.getListColumns();
@@ -213,7 +214,13 @@ if (("true").equals(printHeader)) {
                     	consoleOut_<%=cid%> = new java.io.PrintStream(new java.io.BufferedOutputStream(System.out));
                     	globalMap.put("tLogRow_CONSOLE",consoleOut_<%=cid%>);
                     }
-                    
+                    <%
+                    if(isLog4jEnabled){
+                    %>
+                    	log.info("<%=cid%> - Header names: " + sbHeader_<%=cid%>.toString());
+                    <%
+                    }
+                    %>
                     consoleOut_<%=cid%>.println(sbHeader_<%=cid%>.toString());
                     consoleOut_<%=cid%>.flush();
                     
