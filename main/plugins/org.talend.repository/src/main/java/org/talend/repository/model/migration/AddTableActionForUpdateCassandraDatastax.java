@@ -66,7 +66,7 @@ public class AddTableActionForUpdateCassandraDatastax extends AbstractAllJobMigr
 
                 ElementParameterType dataAction = ComponentUtilities.getNodeProperty(node, "DATA_ACTION"); //$NON-NLS-1$
 
-                if ("UPDATA".equals(dataAction.getValue())) { //$NON-NLS-1$
+                if (dataAction != null && "UPDATA".equals(dataAction.getValue())) { //$NON-NLS-1$
                     ComponentUtilities.setNodeValue(node, "TABLE_ACTION", "NONE"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
