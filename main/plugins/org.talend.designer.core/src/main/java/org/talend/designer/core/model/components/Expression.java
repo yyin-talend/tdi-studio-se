@@ -264,34 +264,8 @@ public final class Expression {
             return evaluateInExpression(simpleExpression, listParam);
         }
 
-        if ((simpleExpression.startsWith("DISTRIB["))) { //$NON-NLS-1$
-            String args = (simpleExpression.split("\\[")[1]).split("\\]")[0]; //$NON-NLS-1$ //$NON-NLS-2$
-            String distributionParam = args.split(",")[0].trim(); //$NON-NLS-1$
-            String distribution = ""; //$NON-NLS-1$
-            String versionParam = args.split(",")[1].trim(); //$NON-NLS-1$
-            String version = ""; //$NON-NLS-1$
-            for (IElementParameter param : listParam) {
-                if (distributionParam != null && distributionParam.equals(param.getName())) {
-                    distribution = (String) param.getValue();
-                }
-                if (versionParam != null && versionParam.equals(param.getName())) {
-                    version = (String) param.getValue();
-                }
-            }
-            String methodArg = simpleExpression.split("\\.")[1]; //$NON-NLS-1$
-            String methodName = methodArg.split("\\[")[0]; //$NON-NLS-1$
-            org.talend.core.hadoop.api.components.HadoopComponent distrib = org.talend.core.hadoop.api.DistributionFactory
-                    .buildDistribution(distribution, version);
-            try {
-                java.lang.reflect.Method m = distrib.getClass().getMethod(methodName, new Class<?>[0]);
-                try {
-                    return (Boolean) m.invoke(distrib, new Object[0]);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            } catch (NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-            }
+        if ((simpleExpression.contains("DISTRIB["))) { //$NON-NLS-1$
+            return evaluateDistrib(simpleExpression, listParam);
         }
 
         List<String> paraNames = getParaNamesFromIsShowFunc(simpleExpression);
@@ -681,6 +655,44 @@ public final class Expression {
             }
         }
         return showParameter;
+    }
+
+    private static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam) {
+        String hadoopComponent = (simpleExpression.split("\\[")[0]); //$NON-NLS-1$
+        boolean not = hadoopComponent.trim().startsWith("!"); //$NON-NLS-1$
+        String args = (simpleExpression.split("\\[")[1]).split("\\]")[0]; //$NON-NLS-1$ //$NON-NLS-2$
+        String distributionParam = args.split(",")[0].trim(); //$NON-NLS-1$
+        String distribution = ""; //$NON-NLS-1$
+        String versionParam = args.split(",")[1].trim(); //$NON-NLS-1$
+        String version = ""; //$NON-NLS-1$
+        for (IElementParameter param : listParam) {
+            if (distributionParam != null && distributionParam.equals(param.getName())) {
+                distribution = (String) param.getValue();
+            }
+            if (versionParam != null && versionParam.equals(param.getName())) {
+                version = (String) param.getValue();
+            }
+        }
+        String methodArg = simpleExpression.split("\\.")[1]; //$NON-NLS-1$
+        String methodName = methodArg.split("\\[")[0]; //$NON-NLS-1$
+        try {
+            org.talend.core.hadoop.api.components.HadoopComponent distrib = org.talend.core.hadoop.api.DistributionFactory
+                    .buildDistribution(distribution, version);
+            try {
+                java.lang.reflect.Method m = distrib.getClass().getMethod(methodName, new Class<?>[0]);
+                try {
+                    boolean ret = (Boolean) m.invoke(distrib, new Object[0]);
+                    return not ? !ret : ret;
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    org.talend.commons.exception.ExceptionHandler.process(e);
+                }
+            } catch (NoSuchMethodException | SecurityException e) {
+                org.talend.commons.exception.ExceptionHandler.process(e);
+            }
+        } catch (Exception e) {
+            org.talend.commons.exception.ExceptionHandler.process(e);
+        }
+        return false;
     }
 
     private static List<String> getParaNamesFromIsShowFunc(String expr) {
