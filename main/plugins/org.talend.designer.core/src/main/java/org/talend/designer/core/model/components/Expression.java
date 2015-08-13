@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -263,6 +264,36 @@ public final class Expression {
             return evaluateInExpression(simpleExpression, listParam);
         }
 
+        if ((simpleExpression.startsWith("DISTRIB["))) { //$NON-NLS-1$
+            String args = (simpleExpression.split("\\[")[1]).split("\\]")[0]; //$NON-NLS-1$ //$NON-NLS-2$
+            String distributionParam = args.split(",")[0].trim(); //$NON-NLS-1$
+            String distribution = ""; //$NON-NLS-1$
+            String versionParam = args.split(",")[1].trim(); //$NON-NLS-1$
+            String version = ""; //$NON-NLS-1$
+            for (IElementParameter param : listParam) {
+                if (distributionParam != null && distributionParam.equals(param.getName())) {
+                    distribution = (String) param.getValue();
+                }
+                if (versionParam != null && versionParam.equals(param.getName())) {
+                    version = (String) param.getValue();
+                }
+            }
+            String methodArg = simpleExpression.split("\\.")[1]; //$NON-NLS-1$
+            String methodName = methodArg.split("\\[")[0]; //$NON-NLS-1$
+            org.talend.core.hadoop.api.components.HadoopComponent distrib = org.talend.core.hadoop.api.DistributionFactory
+                    .buildDistribution(distribution, version);
+            try {
+                java.lang.reflect.Method m = distrib.getClass().getMethod(methodName, new Class<?>[0]);
+                try {
+                    return (Boolean) m.invoke(distrib, new Object[0]);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            } catch (NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+
         List<String> paraNames = getParaNamesFromIsShowFunc(simpleExpression);
         if (paraNames.size() > 0) {
             // Here only be one isShow() function since it has been already split.
@@ -317,9 +348,9 @@ public final class Expression {
         /*
          * this only used to check is EE version or not
          */
-        if ("IS_STUDIO_EE_VERSION".equals(variableName)) {
+        if ("IS_STUDIO_EE_VERSION".equals(variableName)) { //$NON-NLS-1$
             boolean isTIS = PluginChecker.isTIS();
-            if ("true".equals(variableValue)) {
+            if ("true".equals(variableValue)) { //$NON-NLS-1$
                 return isTIS;
             } else {
                 return !isTIS;
@@ -368,7 +399,7 @@ public final class Expression {
             /*
              * TESB-6240 GangLiu Test the connection configuration.
              */
-            else if ("#LINK@CONNECTOR".equals(varNames[0])) {
+            else if ("#LINK@CONNECTOR".equals(varNames[0])) { //$NON-NLS-1$
                 if (listParam != null && listParam.size() > 0) {
                     IElement element = listParam.get(0).getElement();
                     if (element != null && element instanceof INode) {
@@ -376,15 +407,15 @@ public final class Expression {
                         if (varNames.length > 2 && varNames[1] != null && varNames[2] != null) {
                             // read in/out connection type accounts
                             List<? extends IConnection> connections = new ArrayList<IConnection>();
-                            if ("IN".equals(varNames[1]) || "OUT".equals(varNames[1])) {
-                                if ("IN".equals(varNames[1])) {
-                                    if ("ANY".equals(varNames[2])) {
+                            if ("IN".equals(varNames[1]) || "OUT".equals(varNames[1])) { //$NON-NLS-1$ //$NON-NLS-2$
+                                if ("IN".equals(varNames[1])) { //$NON-NLS-1$
+                                    if ("ANY".equals(varNames[2])) { //$NON-NLS-1$
                                         connections = node.getIncomingConnections();
                                     } else {
                                         connections = node.getIncomingConnections(EConnectionType.valueOf(varNames[2]));
                                     }
                                 } else {
-                                    if ("ANY".equals(varNames[2])) {
+                                    if ("ANY".equals(varNames[2])) { //$NON-NLS-1$
                                         connections = node.getOutgoingConnections();
                                     } else {
                                         connections = node.getOutgoingConnections(EConnectionType.valueOf(varNames[2]));
@@ -419,7 +450,7 @@ public final class Expression {
                 }
                 return false;
             }// End of TESB-6240
-            else if ("#NODE@IN".equals(varNames[0])) {
+            else if ("#NODE@IN".equals(varNames[0])) { //$NON-NLS-1$
                 if (listParam != null && listParam.size() > 0) {
                     IElement element = listParam.get(0).getElement();
                     if (element != null && element instanceof IConnection) {
@@ -430,7 +461,7 @@ public final class Expression {
                         return evaluate(simpleExpression, sourceNode.getElementParameters());
                     }
                 }
-            } else if ("#NODE@OUT".equals(varNames[0])) {
+            } else if ("#NODE@OUT".equals(varNames[0])) { //$NON-NLS-1$
                 if (listParam != null && listParam.size() > 0) {
                     IElement element = listParam.get(0).getElement();
                     if (element != null && element instanceof IConnection) {
@@ -659,7 +690,7 @@ public final class Expression {
         }
         Matcher matcher = isShowFuncPattern.matcher(expr);
         while (matcher.find()) {
-            String paraName = matcher.group(1) + (matcher.group(2) == null ? "" : matcher.group(2));
+            String paraName = matcher.group(1) + (matcher.group(2) == null ? "" : matcher.group(2)); //$NON-NLS-1$
             if (!paraNames.contains(paraName)) {
                 paraNames.add(paraName);
             }
@@ -684,12 +715,12 @@ public final class Expression {
 
         if (paraNames.contains(testParamName)) {
             if (currentParam != null) {
-                throw new Exception("Expression \"" + expression + "\" of parameter \"" + currentParam.getName()
-                        + "\" bring an endless loop by parameter \"" + testParamName + "\" in the element \""
-                        + currentParam.getElement().getElementName() + "\". Please check and amend it!");
+                throw new Exception("Expression \"" + expression + "\" of parameter \"" + currentParam.getName() //$NON-NLS-1$ //$NON-NLS-2$
+                        + "\" bring an endless loop by parameter \"" + testParamName + "\" in the element \"" //$NON-NLS-1$ //$NON-NLS-2$
+                        + currentParam.getElement().getElementName() + "\". Please check and amend it!"); //$NON-NLS-1$
             } else {
-                throw new Exception("Expression \"" + expression + "\" bring an endless loop by parameter \"" + testParamName
-                        + "\". Please check and amend it!");
+                throw new Exception("Expression \"" + expression + "\" bring an endless loop by parameter \"" + testParamName //$NON-NLS-1$ //$NON-NLS-2$
+                        + "\". Please check and amend it!"); //$NON-NLS-1$
             }
         } else {
             paraNames.add(testParamName);
