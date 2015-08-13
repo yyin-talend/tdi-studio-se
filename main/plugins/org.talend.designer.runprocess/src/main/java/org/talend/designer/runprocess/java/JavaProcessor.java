@@ -556,7 +556,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
             // format the code before save the file.
             final String toFormat = processCode;
-            writeToFile(toFormat, "1-beforeFormat");
+            writeCodesToFile(toFormat, "1-beforeFormat");//$NON-NLS-1$
             // fix for 21320
             final Job job = new Job("t") { //$NON-NLS-1$
 
@@ -564,7 +564,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 protected IStatus run(IProgressMonitor monitor) {
                     monitor.beginTask("Format code", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     formatedCode = formatCode(toFormat);
-                    writeToFile(formatedCode, "2-afterFormat");
+                    writeCodesToFile(formatedCode, "2-afterFormat");//$NON-NLS-1$
                     monitor.done();
                     return Status.OK_STATUS;
                 }
@@ -644,16 +644,24 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
-    private void writeToFile(String contents, String fileBaseName) {
-        File dir = new File(System.getProperty("user.dir"), "--Format"); //$NON-NLS-1$
-        dir.mkdirs();
+    /**
+     * 
+     * Test the formating source codes,only when talend debug mode
+     */
+    private void writeCodesToFile(String contents, String fileBaseName) {
+        if (!CommonsPlugin.isDebugMode()) {
+            return;
+        }
+        IFolder folder = this.getTalendJavaProject().getTempFolder().getFolder("--CodesFormat");//$NON-NLS-1$
+        File codesDir = folder.getLocation().toFile();
+        codesDir.mkdirs();
         FileWriter fw = null;
         try {
-            fw = new FileWriter(new File(dir, this.getProcess().getName() + '_' + fileBaseName));
+            fw = new FileWriter(new File(codesDir, this.getProcess().getName() + '_' + fileBaseName));
             fw.write(contents);
             fw.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         } finally {
             if (fw != null) {
                 try {

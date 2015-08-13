@@ -27,7 +27,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 
 /**
@@ -93,14 +92,20 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 // emptyContexts(moniter,testResourcesFolder,talendJavaProject); //seems only contexts, so clean all.
                 talendJavaProject.cleanFolder(monitor, testResourcesFolder);
 
+                // empty temp
+                IFolder tempFolder = talendJavaProject.getTempFolder();
+                talendJavaProject.cleanFolder(monitor, tempFolder);
+
                 // empty lib/...
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
-                    ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
-                            ILibrariesService.class);
-                    if (libService != null) {
-                        libService.cleanLibs();
-                    }
-                }
+                IFolder libFolder = talendJavaProject.getLibFolder();
+                talendJavaProject.cleanFolder(monitor, libFolder);
+                // if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
+                // ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
+                // ILibrariesService.class);
+                // if (libService != null) {
+                // libService.cleanLibs();
+                // }
+                // }
 
                 // rules
                 IFolder rulesResFolder = talendJavaProject.getResourceSubFolder(monitor, JavaUtils.JAVA_RULES_DIRECTORY);
@@ -110,10 +115,6 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 IFolder sqlTemplateResFolder = talendJavaProject.getResourceSubFolder(monitor,
                         JavaUtils.JAVA_SQLPATTERNS_DIRECTORY);
                 talendJavaProject.cleanFolder(monitor, sqlTemplateResFolder);
-
-                // temp folder sometimes ?
-                IFolder tempFolder = talendJavaProject.getProject().getFolder("temp"); //$NON-NLS-1$
-                talendJavaProject.cleanFolder(monitor, tempFolder);
 
                 // anything else to do? esb?
 
