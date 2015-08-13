@@ -35,8 +35,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.GlobalServiceRegister;
@@ -57,6 +60,7 @@ import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.model.bridge.ReponsitoryContextBridge;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.RepositoryConstants;
@@ -319,11 +323,15 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
             @Override
-            public void run(IProgressMonitor monitor) {
+            public void run(IProgressMonitor monitor) throws CoreException {
                 try {
                     buildDelegate(monitor);
                 } catch (Exception e) {
-                    ExceptionHandler.process(e);
+                    if (CommonsPlugin.isHeadless()) {
+                        throw new CoreException(new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, e.getMessage()));
+                    } else {
+                        ExceptionHandler.process(e);
+                    }
                 }
             }
         };
