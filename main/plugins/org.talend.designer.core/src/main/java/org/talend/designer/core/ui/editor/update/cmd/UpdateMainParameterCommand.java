@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
@@ -82,11 +81,7 @@ public class UpdateMainParameterCommand extends Command {
                     }
                     break;
                 case JOB_PROPERTY_MAPREDUCE:
-                    if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
-                        category = EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP;
-                    } else if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())) {
-                        category = EComponentCategory.SPARK_JOB_CONFIG;
-                    }
+                    category = EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP;
                     break;
                 default:
                 }
