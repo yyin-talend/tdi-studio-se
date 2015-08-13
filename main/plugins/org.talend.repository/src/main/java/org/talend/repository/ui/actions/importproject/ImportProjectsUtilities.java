@@ -36,6 +36,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -81,6 +83,16 @@ public class ImportProjectsUtilities {
         AfterImportProjectUtil.runAfterImportProjectActions(new org.talend.core.model.general.Project(project));
     }
 
+    public static void importProject(String path)
+            throws CoreException {
+    	IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(new Path(path+File.separator+".project"));
+    	IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
+    	project.create(description, null);
+    	project.open(null);
+    	project.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+    }
+    
     /**
      * DOC smallet Comment method "afterImportAs".
      * 
