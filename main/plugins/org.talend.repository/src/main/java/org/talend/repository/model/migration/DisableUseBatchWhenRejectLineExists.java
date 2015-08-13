@@ -59,7 +59,7 @@ public class DisableUseBatchWhenRejectLineExists extends AbstractJobMigrationTas
             return ExecutionResult.NOTHING_TO_DO;
         }
 
-        List<String> filterList = Arrays.asList("tFirebirdOutput", "tGreenplumOutput", "tIngresOutput", "tInterbaseOutput", "tParAccelOutput", "tPostgresPlusOutput", "tSQLiteOutput");
+        List<String> filterList = Arrays.asList("tFirebirdOutput", "tGreenplumOutput", "tIngresOutput", "tInterbaseOutput", "tParAccelOutput", "tPostgresPlusOutput", "tSQLiteOutput", "tRedshiftOutput");
 
         IComponentConversion disableUseBatchWhenRejectLineExists = new IComponentConversion() {
             public void transform(NodeType node) {
