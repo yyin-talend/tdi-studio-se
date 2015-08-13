@@ -205,7 +205,6 @@ imports="
 				int maxMsg_<%=cid %> = <%=maxiumMessages %>;
 				System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
 				for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
-
 				<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
 		        	try {   // For rollback
 		
@@ -213,17 +212,19 @@ imports="
 				}
 				%>
 				/*npruss start: changes for static discovery and custom connection parameters and timeout in max message operation*/
-			        javax.jms.Message message_<%=cid%> = null;
+			        	javax.jms.Message message_<%=cid%> = null;
 					<%if(useMaxTimeout){%>
 						message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000);
 						if(message_<%=cid%> == null){
 							break;
 						}else{
 							i_<%=cid %>++;
+						}
 					<%}else{%>
 						message_<%=cid%> = consumer_<%=cid %>.receive();
 						if(message_<%=cid%> != null) {
 							i_<%=cid %>++;
+						}
 					<%}%>
 				/*npruss end: changes for static discovery and custom connection parameters and timeout in max message operation*/
 				
@@ -485,14 +486,27 @@ imports="
 					int maxMsg_<%=cid %> = <%=maxiumMessages %>;
 					System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
 					for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
-	
 					<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
 			        	try {   // For rollback
 			
 					<%
 					}
 					%>
-				        javax.jms.Message message_<%=cid%> = consumer_<%=cid %>.receive();
+				        	javax.jms.Message message_<%=cid%> = null;
+				        <%if(useMaxTimeout){%>
+							message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000);
+							if(message_<%=cid%> == null){
+								break;
+							}else{
+								i_<%=cid %>++;
+							}
+						<%}else{%>
+							message_<%=cid%> = consumer_<%=cid %>.receive();
+							if(message_<%=cid%> != null) {
+								i_<%=cid %>++;
+							}
+						<%}%>
+					
 				        if (message_<%=cid%> != null) {
 			            	i_<%=cid %>++;
 				<%
