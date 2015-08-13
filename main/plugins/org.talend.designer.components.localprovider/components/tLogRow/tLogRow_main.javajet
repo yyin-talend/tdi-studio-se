@@ -32,6 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         String printColumnNames = ElementParameterParser.getValue(node,"__PRINT_COLNAMES__");
         String useFixedLength = ElementParameterParser.getValue(node,"__USE_FIXED_LENGTH__");
         List<Map<String, String>> lengths = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__LENGTHS__");
+        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {//3
@@ -202,7 +203,13 @@ if (basic) {
                     	consoleOut_<%=cid%> = new java.io.PrintStream(new java.io.BufferedOutputStream(System.out));
                     	globalMap.put("tLogRow_CONSOLE",consoleOut_<%=cid%>);
                     }
-                    
+                    <%
+                    if(isLog4jEnabled){
+                    %>
+                    	log.info("<%=cid%> - Content of row "+(nb_line_<%=cid %>+1)+": " + strBuffer_<%=cid%>.toString());
+                    <%
+                    }
+                    %>
                     consoleOut_<%=cid%>.println(strBuffer_<%=cid%>.toString());
                     consoleOut_<%=cid%>.flush();
                     nb_line_<%=cid %>++;
@@ -285,6 +292,11 @@ if (basic) {
                 consoleOut_<%=cid%>.flush();
 <%
 				}
+                if(isLog4jEnabled){
+                %>
+                	log.info("<%=cid%> - Content of row "+nb_line_<%=cid %>+": " + TalendString.unionString("|",row_<%=cid%>));
+                <%
+                }
 	}//***
 %>
 //////
