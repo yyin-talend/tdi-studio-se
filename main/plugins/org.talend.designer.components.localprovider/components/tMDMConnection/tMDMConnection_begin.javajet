@@ -53,8 +53,8 @@ if(useClientTranId){
 	mdmTransaction_<%=cid%>.setUrl(turl_<%=cid%>);
 	String clientTranId_<%=cid%> = "<%=cid%>"+java.util.UUID.randomUUID()+Thread.currentThread().getId();
 	mdmTransaction_<%=cid%>.setId(clientTranId_<%=cid%>);
-	mdmTransaction_<%=cid%>.setUsername(stub_<%=cid %>.getUsername());
-	mdmTransaction_<%=cid%>.setPassword(stub_<%=cid %>.getPassword());
+	mdmTransaction_<%=cid%>.setUsername(<%=username %>);
+	mdmTransaction_<%=cid%>.setPassword(decryptedPassword_<%=cid%>);
 <%
 }else{
 %>

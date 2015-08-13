@@ -104,6 +104,7 @@
                     MODULE="cxf-core-3.1.1.jar"
                     MVN="mvn:org.talend.libraries/cxf-core-3.1.1/6.0.0"
                     UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.1.1.jar"
+                    REQUIRED="true"
                     />
                 <IMPORT
                     NAME="cxf-rt-bindings-soap-3.1.1"
