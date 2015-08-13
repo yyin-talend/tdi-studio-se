@@ -385,7 +385,7 @@
 
 		</TEMPLATES>
 		<IMPORTS>
-			<IMPORT NAME="MDM-WEBSERVICE-TOMCAT" MODULE="mdm_webservice_tomcat.jar" MVN="mvn:org.talend.libraries/mdm_webservice_tomcat/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice_tomcat.jar" REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
+			<IMPORT NAME="MDM-WEBSERVICE-TOMCAT" MODULE="mdm_webservice_tomcat.jar" MVN="mvn:org.talend.libraries/mdm_webservice_tomcat/6.1.0"  UrlPath="platform:/plugin/org.talend.libraries.mdm/lib/mdm_webservice_tomcat.jar" REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
 			
 			<IMPORT NAME="log4j-1.2.15.jar" MODULE="log4j-1.2.15.jar" MVN="mvn:org.talend.libraries/log4j-1.2.15/6.0.0"  UrlPath="platform:/base/plugins/org.apache.log4j_1.2.15.v201012070815.jar" BundleID="" REQUIRED_IF="IS_VIRTUAL_COMPONENT == 'false'" />
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" MVN="mvn:org.talend.libraries/jaxrpc/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar" BundleID="" REQUIRED_IF="IS_VIRTUAL_COMPONENT == 'false'" />
