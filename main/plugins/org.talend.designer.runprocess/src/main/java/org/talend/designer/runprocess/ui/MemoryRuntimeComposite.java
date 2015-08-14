@@ -59,7 +59,6 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.process.IServerConfiguration;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.properties.ConnectionItem;
@@ -234,7 +233,8 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         periodData.top = new FormAttachment(0,3);
         periodData.height = 25;
         periodCombo.setLayoutData(periodData);
-        periodCombo.setItems(new String[] { "Select", "30 sec", "60 sec", "120 sec" });
+		periodCombo.setItems(new String[] {
+				"Select", "30 sec", "60 sec", "120 sec" });	//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         periodCombo.setEnabled(isGCSelected);
         if(isGCSelected){
         	periodCombo.select(periodComboSelectionIndex);
@@ -294,7 +294,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
             try {
                 currentJvm.connect(1000);
             } catch (JvmCoreException e) {
-                Activator.log(NLS.bind("Jvm failed", currentJvm.getPid()), e);
+                Activator.log(NLS.bind("Jvm failed", currentJvm.getPid()), e);	//$NON-NLS-1$
             }
         }
     }
@@ -341,55 +341,51 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
             	
             	getRemoteStatus();
             	
-            	if (lock && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))) {
-            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.anotherJobMonitoring"));
+            	if (lock && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))) { //$NON-NLS-1$
+            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.anotherJobMonitoring"));	//$NON-NLS-1$ //$NON-NLS-2$
             		return;
             	}
             	
             	if (isCommandlineRun) {
-            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.commandlineForbidden"));
+            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.commandlineForbidden"));	//$NON-NLS-1$ //$NON-NLS-2$
             		return;
 				}
             	
             	if (isRemoteRun && !isRemoteMonitoring) {
-            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.remoteMonitoringUnavailable"));
+            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.remoteMonitoringUnavailable"));	//$NON-NLS-1$ //$NON-NLS-2$
             		return;
 				}
             	
-            	if (processContext != null && !processContext.isRunning() && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))){
+            	if (processContext != null && !processContext.isRunning() && runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))){	//$NON-NLS-1$
             		runtimeButton.setEnabled(false);
             		exec();
             	}
             	if (processContext != null && processContext.isRunning()) {
-            		if(runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))){
+            		if(runtimeButton.getText().equals(Messages.getString("ProcessComposite.exec"))){//$NON-NLS-1$
 						if (!acquireJVM()) {
 							runtimeButton.setEnabled(true);
-							MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.noJobRunning"));
+							MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.noJobRunning"));	//$NON-NLS-1$ //$NON-NLS-2$
 							return;
 						}
             			initMonitoringModel();
             			refreshMonitorComposite();
             			processContext.setMonitoring(true);
+            			AbstractRuntimeGraphcsComposite.setMonitoring(true);
             			setRuntimeButtonByStatus(false);
             			
             			if(periodCombo.isEnabled() && periodCombo.getSelectionIndex()!=0){
             				startCustomerGCSchedule();
             			}
-            			String content = getExecutionInfo("Start");
+            			String content = getExecutionInfo("Start");	//$NON-NLS-1$
             			messageManager.setStartMessage(content, getDisplay().getSystemColor(SWT.COLOR_BLUE), getDisplay().getSystemColor(SWT.COLOR_WHITE));
             			((RuntimeGraphcsComposite)chartComposite).displayReportField();
             			lock = true;
             			
-            		}else if(runtimeButton.getText().equals(Messages.getString("ProcessComposite.kill"))){
+            		}else if(runtimeButton.getText().equals(Messages.getString("ProcessComposite.kill"))){	//$NON-NLS-1$
             			processContext.kill();
-            			disconnectJVM();
-            			processContext.setMonitoring(false);
-            			setRuntimeButtonByStatus(!processContext.isMonitoring());
-            			lock = false;
             		}
-//                    runtimeButton.setEnabled(!processContext.isMonitoring());
             	} else {
-            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.noJobRunning")); //$NON-NLS-1$//$NON-NLS-2$
+            		MessageDialog.openWarning(getShell(), "Warning", Messages.getString("ProcessView.noJobRunning")); //$NON-NLS-1$	//$NON-NLS-2$
             	}
             	runtimeButton.setEnabled(true);
             }
@@ -404,7 +400,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 				if(!isGCSelected){
 					periodCombo.select(0);
 					if(processContext!=null && processContext.isRunning()){
-//						cancel GC timer task during job running.
+						// cancel GC timer task during job running.
 						doScheduledGc(0);
 					}
 				}
@@ -435,8 +431,8 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
     	if(processContext != null && processContext.isRunning()){
     		String item = periodCombo.getItem(periodComboSelectionIndex);
     		if(periodComboSelectionIndex != 0){
-    			int interval = Integer.valueOf(item.split(" ")[0]);
-    			System.out.println("set new interval: " + interval);
+    			int interval = Integer.valueOf(item.split(" ")[0]); //$NON-NLS-1$
+    			System.out.println("set new interval: " + interval); //$NON-NLS-1$
     			doScheduledGc(interval);
     		}
     	}
@@ -456,14 +452,14 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 					if(currentJvm != null){
 						try {
 							currentJvm.getMBeanServer().runGarbageCollector();
-							System.out.println("GC executed at " + TalendDate.getDate("HH:mm:ss"));
+							System.out.println("GC executed at " + TalendDate.getDate("HH:mm:ss")); //$NON-NLS-1$ //$NON-NLS-2$
 						} catch (JvmCoreException e) {
 							//do nothing.
 						}
 					}
 				}else{
 					timer.cancel();
-					System.out.println("timer cancelled at " + TalendDate.getDate("HH:mm:ss"));
+					System.out.println("timer cancelled at " + TalendDate.getDate("HH:mm:ss")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}; 
@@ -478,7 +474,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
 			if(processContext != null && !processContext.isRunning()) {
        			return false;
        	 }
-			System.out.println("background thread searching...");
+			System.out.println("background thread searching..."); //$NON-NLS-1$
 			if(initCurrentActiveJobJvm()){
 				return true;
 			}
@@ -526,7 +522,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
     		List<IActiveJvm> activateJvms = jvmModel.getHost(IHost.LOCALHOST).getActiveJvms();
     		for (IActiveJvm jvm : activateJvms) {
     			String activeJvmClassName = jvm.getMainClass();
-    			System.out.println("target:[" + jobClassName+ "],loop item["+ activeJvmClassName +"]");
+    			System.out.println("target:[" + jobClassName+ "],loop item["+ activeJvmClassName +"]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     			if (activeJvmClassName != null) {
     				activeJvmClassName = activeJvmClassName.trim();
 				}
@@ -558,7 +554,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
     }
     
     private String getExecutionInfo(String prefix){
-    	return prefix + " time : "+ TalendDate.getDate("hh:mm:ss a MM/dd/YYYY") + System.getProperty("line.separator");
+    	return prefix + " time : "+ TalendDate.getDate("hh:mm:ss a MM/dd/YYYY") + System.getProperty("line.separator"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private void runProcessContextChanged(final PropertyChangeEvent evt) {
@@ -577,19 +573,20 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
                     }
                     boolean monitoring = ((Boolean) evt.getNewValue()).booleanValue();
                     if (runtimeButton != null && !runtimeButton.isDisposed()) {
-//                        runtimeButton.setEnabled(!(processContext != null && processContext.isRunning()));
-//                        runtimeButton.setEnabled(processContext != null && processContext.isRunning());
                     	setRuntimeButtonByStatus(processContext != null && processContext.isRunning());
-                    	if(processContext == null){
+                    	if (processContext == null) {
                     		setRuntimeButtonByStatus(false);
-                    	}else if(processContext.isRunning()){
+                    	} else if(processContext.isRunning()) {
                     		setRuntimeButtonByStatus(false);
-                    	}else{
+                    	} else {
                     		disconnectJVM();
                     		setRuntimeButtonByStatus(true);
                     		processContext.setMonitoring(false);
-                    		String content = getExecutionInfo("End");
-                			messageManager.setEndMessage(content, getDisplay().getSystemColor(SWT.COLOR_BLUE), getDisplay().getSystemColor(SWT.COLOR_WHITE));
+                    		if (AbstractRuntimeGraphcsComposite.isMonitoring()) {
+                    			AbstractRuntimeGraphcsComposite.setMonitoring(false);
+                    			String content = getExecutionInfo("End"); //$NON-NLS-1$
+                    			messageManager.setEndMessage(content, getDisplay().getSystemColor(SWT.COLOR_BLUE), getDisplay().getSystemColor(SWT.COLOR_WHITE));
+                    		}
                     		((RuntimeGraphcsComposite)chartComposite).displayReportField();
                     		lock = false;
                     	}
@@ -823,7 +820,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
     
     private void disconnectJVM () {
     	
-    	final Job disconnectJVM = new Job("disconnect JVM") {
+    	final Job disconnectJVM = new Job("disconnect JVM") { //$NON-NLS-1$
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {

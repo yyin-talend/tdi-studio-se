@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -43,7 +44,9 @@ public abstract class AbstractRuntimeGraphcsComposite extends Composite implemen
 
     private boolean suspendRefresh;
 
-    protected boolean isSectionActivated;
+    protected boolean isSectionActivated;    
+    
+    protected static boolean isMonitoring = false;
 
     /* the current activate job */
     private ISelection selection;
@@ -198,6 +201,14 @@ public abstract class AbstractRuntimeGraphcsComposite extends Composite implemen
             }
         }
     }
+    
+    public static boolean isMonitoring() {
+		return isMonitoring;
+	}
+
+	public static void setMonitoring(boolean isMonitoring) {
+		AbstractRuntimeGraphcsComposite.isMonitoring = isMonitoring;
+	}
 
     /**
      * Adds the tool bar actions.
