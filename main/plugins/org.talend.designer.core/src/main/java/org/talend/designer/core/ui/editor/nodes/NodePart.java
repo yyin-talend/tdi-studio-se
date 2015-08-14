@@ -71,6 +71,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.editor.IJobEditorHandler;
 import org.talend.core.ui.editor.JobEditorHandlerManager;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -545,6 +546,18 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
             IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
             if (externalNode != null && (part instanceof AbstractMultiPageTalendEditor)) {
+                boolean isOriginalNode = false;
+                ITestContainerProviderService testContainerService = null;
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+                    testContainerService = (ITestContainerProviderService) GlobalServiceRegister.getDefault().getService(
+                            ITestContainerProviderService.class);
+                    if (testContainerService != null) {
+                        isOriginalNode = testContainerService.isOriginalNode(node);
+                        if (isOriginalNode) {
+                            testContainerService.renameConnection(node, true);
+                        }
+                    }
+                }
                 int returnValue = externalNode.open(getViewer().getControl().getShell());
                 if (!node.isReadOnly()) {
                     if (returnValue == SWT.OK) {
@@ -554,6 +567,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     } else {
                         externalNode.setExternalData(oldExternalData);
                     }
+                }
+                if (isOriginalNode && (testContainerService != null)) {
+                    testContainerService.renameConnection(node, false);
                 }
             } else {
                 // add for feature 13361
