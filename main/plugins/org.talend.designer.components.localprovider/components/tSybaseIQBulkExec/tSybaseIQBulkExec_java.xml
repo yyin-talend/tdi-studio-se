@@ -35,14 +35,14 @@
 
   <PARAMETERS>
 
-	<PARAMETER
-		NAME="NOTE"
-		FIELD="LABEL"
-		NUM_ROW="1"
-		SHOW_IF="DB_VERSION == 'SYBSEIQ_15'"
-		>
-		<DEFAULT>(To use this component, you need first to add jodbc.jar in the Modules view)</DEFAULT>
-	</PARAMETER>
+    <PARAMETER
+        NAME="NOTE"
+        FIELD="LABEL"
+        NUM_ROW="1"
+        SHOW_IF="DB_VERSION == 'SYBSEIQ_15'"
+        >
+        <DEFAULT>(To use this component, you need first to add jodbc.jar in the Modules view)</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="PROPERTY"
@@ -52,7 +52,6 @@
       REPOSITORY_VALUE="DATABASE:SYBASE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-
 
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
@@ -81,22 +80,22 @@
     >
       <DEFAULT>SybaseASE</DEFAULT>
     </PARAMETER>
-    
-	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="23"
-		 SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
-		<ITEMS DEFAULT="SYBSEIQ_12">
-			<ITEM NAME="SYBSEIQ_12" VALUE="jconn3.jar" />
-			<ITEM NAME="SYBSEIQ_15" VALUE="jodbc.jar" />
-		</ITEMS>
-	</PARAMETER>
 
-	<PARAMETER NAME="DATA_SOURCE" FIELD="CLOSED_LIST" NUM_ROW="25"
-		REPOSITORY_VALUE="DATA_SOURCE" SHOW_IF="(DB_VERSION == 'SYBSEIQ_15')">
-		<ITEMS DEFAULT="DATA_SOURCE_NAME">
-			<ITEM NAME="DATA_SOURCE_NAME" VALUE="DSN" />
-			<ITEM NAME="FILE_DATA_SOURCE_NAME" VALUE="FILEDSN" />
-		</ITEMS>
-	</PARAMETER>
+    <PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="23"
+         SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
+        <ITEMS DEFAULT="SYBSEIQ_12">
+            <ITEM NAME="SYBSEIQ_12" VALUE="jconn3.jar" />
+            <ITEM NAME="SYBSEIQ_15" VALUE="jodbc.jar" />
+        </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER NAME="DATA_SOURCE" FIELD="CLOSED_LIST" NUM_ROW="25"
+        REPOSITORY_VALUE="DATA_SOURCE" SHOW_IF="(DB_VERSION == 'SYBSEIQ_15')">
+        <ITEMS DEFAULT="DATA_SOURCE_NAME">
+            <ITEM NAME="DATA_SOURCE_NAME" VALUE="DSN" />
+            <ITEM NAME="FILE_DATA_SOURCE_NAME" VALUE="FILEDSN" />
+        </ITEMS>
+    </PARAMETER>
     <PARAMETER
       NAME="DATA_SOURCE_NAME"
       FIELD="TEXT"
@@ -144,7 +143,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="DB_SCHEMA"
       FIELD="TEXT"
       NUM_ROW="40"
@@ -155,7 +154,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="50"
@@ -207,6 +206,7 @@
       FIELD="FILE"
       NUM_ROW="70"
       REQUIRED="true"
+      SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'false'"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/sybaseIQ_bulk.txt"</DEFAULT>
     </PARAMETER>
@@ -228,24 +228,106 @@
       <DEFAULT>sybase_id</DEFAULT>
     </PARAMETER>
 
-   </PARAMETERS>
+    <!-- SybaseIQLocation Config -->
+    <PARAMETER
+        NAME="USE_INSERT_LOCATION_SYNTAX"
+        FIELD="CHECK"
+        NUM_ROW="155"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
+    <PARAMETER
+        NAME="SOURCE_SERVER_NAME"
+        FIELD="TEXT"
+        NUM_ROW="175"
+        GROUP="SOURCE_CONFIG"
+        SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'true'"
+    >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+        NAME="SOURCE_DATABASE"
+        FIELD="TEXT"
+        NUM_ROW="175"
+        GROUP="SOURCE_CONFIG"
+        SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'true'"
+    >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+        NAME="SOURCE_TABLE_SCHEMA"
+        FIELD="TEXT"
+        NUM_ROW="175"
+        GROUP="SOURCE_CONFIG"
+        SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'true'"
+    >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+        NAME="SOURCE_TABLE"
+        FIELD="TEXT"
+        NUM_ROW="175"
+        GROUP="SOURCE_CONFIG"
+        SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'true'"
+    >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="USE_FILTER"
+       FIELD="CHECK"
+       NUM_ROW="185"
+       GROUP="SOURCE_CONFIG"
+       SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'true'"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="WHERE_CLAUSE"
+       FIELD="TEXT"
+       NUM_ROW="185"
+       GROUP="SOURCE_CONFIG"
+       SHOW_IF="(USE_INSERT_LOCATION_SYNTAX == 'true') AND (USE_FILTER == 'true')"
+    >
+        <DEFAULT>"where "</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="MAPPING_INPUT"
+       FIELD="TABLE"
+       NUM_ROW="190"
+       NB_LINES="6"
+       GROUP="SOURCE_CONFIG"
+       SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'true'"
+    >
+        <ITEMS BASED_ON_SCHEMA="true">
+            <ITEM NAME="PARAMETER_NAME" FIELD="String" VALUE='""'/>
+        </ITEMS>
+    </PARAMETER>
+   </PARAMETERS>
    <ADVANCED_PARAMETERS>
 
    <PARAMETER
-		NAME="PROPERTIES"
-		FIELD="TEXT"
-		NUM_ROW="10"
-		REPOSITORY_VALUE="PROPERTIES_STRING"
-		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
+        NAME="PROPERTIES"
+        FIELD="TEXT"
+        NUM_ROW="10"
+        REPOSITORY_VALUE="PROPERTIES_STRING"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+   >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="LINES_TERMINATED_BY"
       FIELD="TEXT"
       NUM_ROW="70"
       REQUIRED="true"
+      SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'false'"
     >
       <DEFAULT>"\n"</DEFAULT>
     </PARAMETER>
@@ -255,7 +337,7 @@
       FIELD="TEXT"
       NUM_ROW="70"
       REQUIRED="true"
-      SHOW_IF="FIXED_LENGTH=='false'"
+      SHOW_IF="(FIXED_LENGTH=='false') AND (USE_INSERT_LOCATION_SYNTAX == 'false')"
     >
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
@@ -265,22 +347,289 @@
       FIELD="CHECK"
       NUM_ROW="70"
       REQUIRED="true"
-      SHOW_IF="FIXED_LENGTH=='false'"
+      SHOW_IF="(FIXED_LENGTH=='false') AND (USE_INSERT_LOCATION_SYNTAX == 'false')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
-    	NAME="FIXED_LENGTH"
-    	FIELD="CHECK"
-    	NUM_ROW="80"
-    	REQUIRED="false"
+        NAME="FIXED_LENGTH"
+        FIELD="CHECK"
+        NUM_ROW="80"
+        REQUIRED="false"
+        SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'false'"
     >
-    	<DEFAULT>false</DEFAULT>
+        <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER NAME="INCLUDEHEADER" FIELD="CHECK" NUM_ROW="90">
+    <PARAMETER NAME="INCLUDEHEADER" FIELD="CHECK" NUM_ROW="90"
+        SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'false'"
+    >
       <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="LOCATION_OPTIONS"
+       FIELD="CHECK"
+       NUM_ROW="110"
+       SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'true'"
+       GROUP="GROUP_LOCATION_OPTIONS"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="ENCRYPTED_PASSWORD"
+       FIELD="CHECK"
+       NUM_ROW="112"
+       GROUP="GROUP_LOCATION_OPTIONS"
+       SHOW_IF="(LOCATION_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="USE_TDS_PACKET_SIZE"
+       FIELD="CHECK"
+       NUM_ROW="115"
+       GROUP="GROUP_LOCATION_OPTIONS"
+       SHOW_IF="(LOCATION_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="PACKET_SIZE"
+       FIELD="TEXT"
+       NUM_ROW="115"
+       GROUP="GROUP_LOCATION_OPTIONS"
+       SHOW_IF="(USE_TDS_PACKET_SIZE == 'true') AND (LOCATION_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT>512</DEFAULT>
+    </PARAMETER>
+
+
+    <PARAMETER
+       NAME="QUOTED_IDENTIFIER"
+       FIELD="CHECK"
+       NUM_ROW="116"
+       GROUP="GROUP_LOCATION_OPTIONS"
+       SHOW_IF="(LOCATION_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="QUOTED_IDENTIFIER_STATUS"
+       FIELD="CLOSED_LIST"
+       NUM_ROW="116"
+       GROUP="GROUP_LOCATION_OPTIONS"
+       SHOW_IF="(LOCATION_OPTIONS == 'true') AND (QUOTED_IDENTIFIER == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+       <ITEMS DEFAULT="ON">
+            <ITEM NAME="ON" VALUE="on" />
+            <ITEM NAME="OFF" VALUE="off" />
+        </ITEMS>
+    </PARAMETER>
+
+
+    <PARAMETER
+       NAME="SET_ISOLATION_LEVEL"
+       FIELD="CHECK"
+       NUM_ROW="117"
+       GROUP="GROUP_LOCATION_OPTIONS"
+       SHOW_IF="(LOCATION_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="ISOLATION_LEVEL"
+       FIELD="CLOSED_LIST"
+       NUM_ROW="117"
+       GROUP="GROUP_LOCATION_OPTIONS"
+       SHOW_IF="(SET_ISOLATION_LEVEL == 'true') AND (LOCATION_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+       <ITEMS DEFAULT="READ_COMMITTED">
+            <ITEM NAME="READ_UNCOMMITTED" VALUE="read uncommitted" />
+            <ITEM NAME="READ_COMMITTED" VALUE="read committed" />
+            <ITEM NAME="SERIALIZABLE" VALUE="serializable" />
+        </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="INSERT_LOAD_OPTIONS"
+       FIELD="CHECK"
+       NUM_ROW="119"
+       SHOW_IF="(USE_INSERT_LOCATION_SYNTAX == 'true')"
+       GROUP="GROUP_INSERT_LOAD_OPTIONS"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="LIMIT"
+       FIELD="TEXT"
+       NUM_ROW="120"
+       GROUP="GROUP_INSERT_LOAD_OPTIONS"
+       SHOW_IF="(INSERT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="NOTIFY"
+       FIELD="TEXT"
+       NUM_ROW="120"
+       GROUP="GROUP_INSERT_LOAD_OPTIONS"
+       SHOW_IF="(INSERT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="SKIP"
+       FIELD="TEXT"
+       NUM_ROW="120"
+       GROUP="GROUP_INSERT_LOAD_OPTIONS"
+       SHOW_IF="(INSERT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="START_ROW_ID"
+       FIELD="TEXT"
+       NUM_ROW="120"
+       GROUP="GROUP_INSERT_LOAD_OPTIONS"
+       SHOW_IF="(INSERT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="INSERT_SELECT_LOAD_OPTIONS"
+       FIELD="CHECK"
+       NUM_ROW="125"
+       SHOW_IF="USE_INSERT_LOCATION_SYNTAX == 'true'"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="WORD_SKIP_NUMBER"
+       FIELD="TEXT"
+       NUM_ROW="130"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+       SHOW_IF="(INSERT_SELECT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="IGNORE_CONSTRAINT"
+       FIELD="CHECK"
+       NUM_ROW="135"
+       SHOW_IF="(INSERT_SELECT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="CONSTRAINT_TYPE"
+       FIELD="CLOSED_LIST"
+       NUM_ROW="135"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+       SHOW_IF="(IGNORE_CONSTRAINT == 'true') AND (INSERT_SELECT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+       <ITEMS DEFAULT="NULL">
+            <ITEM NAME="CHECK" VALUE="check" />
+            <ITEM NAME="UNIQUE" VALUE="unique" />
+            <ITEM NAME="NULL" VALUE="null" />
+            <ITEM NAME="FOREIGN_KEY" VALUE="foreign key" />
+            <ITEM NAME="DATA_VALUE" VALUE="data value" />
+            <ITEM NAME="ALL" VALUE="all" />
+        </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="IGNORE_CONSTRAINT_NUMBER"
+       FIELD="TEXT"
+       NUM_ROW="135"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+       SHOW_IF="(IGNORE_CONSTRAINT == 'true') AND (INSERT_SELECT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+        <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="LOG_IN_FILE"
+       FIELD="CHECK"
+       NUM_ROW="145"
+       SHOW_IF="(INSERT_SELECT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="MESSAGE_LOG"
+       FIELD="TEXT"
+       NUM_ROW="148"
+       SHOW_IF="(INSERT_SELECT_LOAD_OPTIONS == 'true') AND (LOG_IN_FILE == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+    >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="ROW_LOG"
+       FIELD="TEXT"
+       NUM_ROW="148"
+       SHOW_IF="(INSERT_SELECT_LOAD_OPTIONS == 'true') AND (LOG_IN_FILE == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+    >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="LOG_DELIMITED_BY"
+       FIELD="TEXT"
+       NUM_ROW="148"
+       SHOW_IF="(INSERT_SELECT_LOAD_OPTIONS == 'true') AND (LOG_IN_FILE == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+    >
+        <DEFAULT>";"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="ONLY_LOG"
+       FIELD="CHECK"
+       NUM_ROW="158"
+       SHOW_IF="(INSERT_SELECT_LOAD_OPTIONS == 'true') AND (LOG_IN_FILE == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="ONLY_LOG_TYPE"
+       FIELD="CLOSED_LIST"
+       NUM_ROW="158"
+       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+       SHOW_IF="(INSERT_SELECT_LOAD_OPTIONS == 'true') AND (LOG_IN_FILE == 'true') AND (ONLY_LOG == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+    >
+       <ITEMS DEFAULT="UNIQUE">
+            <ITEM NAME="CHECK" VALUE="check" />
+            <ITEM NAME="UNIQUE" VALUE="unique" />
+            <ITEM NAME="NULL" VALUE="null" />
+            <ITEM NAME="FOREIGN_KEY" VALUE="foreign key" />
+            <ITEM NAME="DATA_VALUE" VALUE="data value" />
+            <ITEM NAME="ALL" VALUE="all" />
+            <ITEM NAME="WORD" VALUE="word" />
+        </ITEMS>
     </PARAMETER>
    </ADVANCED_PARAMETERS>
 
