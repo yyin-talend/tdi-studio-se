@@ -265,7 +265,7 @@ public final class Expression {
         }
 
         if ((simpleExpression.contains("DISTRIB["))) { //$NON-NLS-1$
-            return evaluateDistrib(simpleExpression, listParam);
+            return evaluateDistrib(simpleExpression, listParam, currentParam);
         }
 
         List<String> paraNames = getParaNamesFromIsShowFunc(simpleExpression);
@@ -657,7 +657,8 @@ public final class Expression {
         return showParameter;
     }
 
-    private static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam) {
+    private static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
         String hadoopComponent = (simpleExpression.split("\\[")[0]); //$NON-NLS-1$
         boolean not = hadoopComponent.trim().startsWith("!"); //$NON-NLS-1$
         String args = (simpleExpression.split("\\[")[1]).split("\\]")[0]; //$NON-NLS-1$ //$NON-NLS-2$
@@ -665,15 +666,56 @@ public final class Expression {
         String distribution = ""; //$NON-NLS-1$
         String versionParam = args.split(",")[1].trim(); //$NON-NLS-1$
         String version = ""; //$NON-NLS-1$
-        for (IElementParameter param : listParam) {
-            if (distributionParam != null && distributionParam.equals(param.getName())) {
-                distribution = (String) param.getValue();
+
+        // Handle the #LINK@NODE
+        if (distributionParam.startsWith("#LINK@NODE") && versionParam.startsWith("#LINK@NODE")) { //$NON-NLS-1$ //$NON-NLS-2$
+            INode node = null;
+            if (currentParam != null && currentParam.getElement() instanceof INode) {
+                node = (INode) currentParam.getElement();
+            } else if (currentParam == null) {
+                if (listParam != null && listParam.size() > 0) {
+                    IElement element = listParam.get(0).getElement();
+                    if (element instanceof INode) {
+                        node = (INode) element;
+                    }
+                }
             }
-            if (versionParam != null && versionParam.equals(param.getName())) {
-                version = (String) param.getValue();
+
+            if (node != null) {
+                String relatedNodeName = ElementParameterParser.getValue(node, "__" + distributionParam.split("\\.")[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                // if relatedNodeName is empty, maybe means this property have not been setted
+                if (relatedNodeName != null && !relatedNodeName.trim().isEmpty()) {
+                    List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
+                    for (INode aNode : generatingNodes) {
+                        if (aNode.getUniqueName().equals(relatedNodeName)) {
+                            String newDistributionParam = distributionParam.replace(
+                                    distributionParam.split("\\.")[0] + "." + distributionParam.split("\\.")[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                            String newVersionParam = versionParam.replace(
+                                    versionParam.split("\\.")[0] + "." + versionParam.split("\\.")[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                            List<? extends IElementParameter> elementParameters = aNode.getElementParameters();
+                            for (IElementParameter param : elementParameters) {
+                                if (newDistributionParam != null && newDistributionParam.equals(param.getName())) {
+                                    distribution = (String) param.getValue();
+                                }
+                                if (newVersionParam != null && newVersionParam.equals(param.getName())) {
+                                    version = (String) param.getValue();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (IElementParameter param : listParam) {
+                if (distributionParam != null && distributionParam.equals(param.getName())) {
+                    distribution = (String) param.getValue();
+                }
+                if (versionParam != null && versionParam.equals(param.getName())) {
+                    version = (String) param.getValue();
+                }
             }
         }
-        String methodArg = simpleExpression.split("\\.")[1]; //$NON-NLS-1$
+        String methodArg = simpleExpression.split("\\].")[1]; //$NON-NLS-1$
         String methodName = methodArg.split("\\[")[0]; //$NON-NLS-1$
         try {
             org.talend.core.hadoop.api.components.HadoopComponent distrib = org.talend.core.hadoop.api.DistributionFactory
