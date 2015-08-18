@@ -704,6 +704,32 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                     return namesSet[(Integer) value];
                                 }
                                 return null;
+                            case OPENED_LIST:
+                                if (hideValue) {
+                                    return "";//$NON-NLS-1$
+                                }
+                                String[] listItemsValue = tmpParam.getListItemsDisplayName();
+                                if (listItemsValue.length == 0) {
+                                    return value;
+                                }
+                                int index = -1;
+                                if (value instanceof String) {
+                                    boolean found = false;
+                                    Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+                                    for (int j = 0; j < items.length && !found; j++) {
+                                        if (items[j].equals(value)) {
+                                            found = true;
+                                            index = j;
+                                        }
+                                    }
+                                }
+                                Integer count = new Integer(index);
+                                if (count >= 0) {
+                                    return listItemsValue[count];
+                                } else if (count < 0) {
+                                    return value;
+                                }
+                                return value;
                             case CHECK:
                                 if (hideValue) {
                                     return false;
@@ -793,6 +819,25 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 }
                                 if (value != null && (index >= 0)) {
                                     finalValue = itemValues[new Integer(index)];
+                                }
+                            }
+                            break;
+                        case OPENED_LIST:
+                            if (value instanceof String) {
+                                Object[] itemNames = ((IElementParameter) itemsValue[curCol]).getListItemsDisplayName();
+                                Object[] itemValues = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+                                boolean found = false;
+                                int index = -1;
+                                for (int j = 0; j < itemNames.length && !found; j++) {
+                                    if (itemNames[j].equals(value)) {
+                                        found = true;
+                                        index = j;
+                                    }
+                                }
+                                if (value != null && (index >= 0)) {
+                                    finalValue = itemValues[new Integer(index)];
+                                } else if (value != null && (index < 0)) {
+                                    finalValue = value;
                                 }
                             }
                             break;
