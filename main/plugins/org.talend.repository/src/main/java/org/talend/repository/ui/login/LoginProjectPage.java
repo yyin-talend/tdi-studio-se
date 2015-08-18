@@ -68,6 +68,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -1014,8 +1015,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         MessageDialog.WARNING, buttons, 0);
                 archivaDialog.open();
             }
-        } catch (Exception e1) {
+        } catch (Throwable e1) {
             CommonExceptionHandler.process(e1);
+            ExceptionMessageDialog.openError(getShell(), Messages.getString("LoginProjectPage.update.error.title"), //$NON-NLS-1$
+                    Messages.getString("LoginProjectPage.update.error.message"), e1); //$NON-NLS-1$
         }
     }
 
