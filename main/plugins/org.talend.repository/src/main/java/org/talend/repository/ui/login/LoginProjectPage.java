@@ -72,6 +72,7 @@ import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.system.EclipseCommandLine;
+import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -236,6 +237,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // Existing Project Area
         selectExistingProject = new Button(projectOperationArea, SWT.RADIO);
         selectExistingProject.setFont(LoginDialogV2.fixedFont);
+        selectExistingProject.setBackground(backgroundColor);
         selectExistingProject.setText(Messages.getString("LoginProjectPage.selectProject")); //$NON-NLS-1$
         projectListArea = new Composite(projectOperationArea, SWT.NONE);
         projectViewer = new ListViewer(projectListArea, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -259,9 +261,11 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // Create New Project
         createNewProject = new Button(projectOperationArea, SWT.RADIO);
         createNewProject.setFont(LoginDialogV2.fixedFont);
+        createNewProject.setBackground(backgroundColor);
         createNewProject.setText(Messages.getString("LoginProjectPage.createNewProject")); //$NON-NLS-1$
         newProjectName = new Text(projectOperationArea, SWT.BORDER);
         newProjectName.setFont(LoginDialogV2.fixedFont);
+        newProjectName.setBackground(backgroundColor);
         executeCreateNewProject = new Button(projectOperationArea, SWT.NONE);
         executeCreateNewProject.setFont(LoginDialogV2.fixedFont);
         executeCreateNewProject.setText(Messages.getString("LoginProjectPage.create")); //$NON-NLS-1$
@@ -269,6 +273,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // Import Demo Project
         importDemoProject = new Button(projectOperationArea, SWT.RADIO);
         importDemoProject.setFont(LoginDialogV2.fixedFont);
+        importDemoProject.setBackground(backgroundColor);
         importDemoProject.setText(Messages.getString("LoginProjectPage.importDemoProject")); //$NON-NLS-1$
         executeImportDemoProject = new Button(projectOperationArea, SWT.NONE);
         executeImportDemoProject.setFont(LoginDialogV2.fixedFont);
@@ -278,6 +283,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // Import Local Project
         importLocalProject = new Button(projectOperationArea, SWT.RADIO);
         importLocalProject.setFont(LoginDialogV2.fixedFont);
+        importLocalProject.setBackground(backgroundColor);
         importLocalProject.setText(Messages.getString("LoginProjectPage.importLocalProject")); //$NON-NLS-1$
         executeImportLocalProject = new Button(projectOperationArea, SWT.NONE);
         executeImportLocalProject.setFont(LoginDialogV2.fixedFont);
@@ -287,6 +293,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // Create SandBox Project
         createSandBoxProject = new Button(projectOperationArea, SWT.RADIO);
         createSandBoxProject.setFont(LoginDialogV2.fixedFont);
+        createSandBoxProject.setBackground(backgroundColor);
         createSandBoxProject.setText(Messages.getString("LoginProjectPage.createSandBoxProject.title")); //$NON-NLS-1$
         executeCreateSandBoxProject = new Button(projectOperationArea, SWT.NONE);
         executeCreateSandBoxProject.setFont(LoginDialogV2.fixedFont);
@@ -462,8 +469,13 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
         formData = new FormData();
         formData.right = new FormAttachment(100, 0);
-        formData.top = new FormAttachment(svnBranchComboControl, 0, SWT.CENTER);
-        formData.bottom = new FormAttachment(svnBranchComboControl, 0, SWT.CENTER);
+        if (EnvironmentUtils.isWindowsSystem()) {
+            formData.top = new FormAttachment(svnBranchComboControl, -1, SWT.TOP);
+            formData.bottom = new FormAttachment(svnBranchComboControl, 1, SWT.BOTTOM);
+        } else {
+            formData.top = new FormAttachment(svnBranchComboControl, 0, SWT.CENTER);
+            formData.bottom = new FormAttachment(svnBranchComboControl, 0, SWT.CENTER);
+        }
         refreshProjectButton.setLayoutData(formData);
 
         formData = new FormData();
