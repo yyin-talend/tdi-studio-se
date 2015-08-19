@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -98,9 +99,14 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_APPLY_CONTEXT_TO_CHILDREN,
                 isOptionChoosed(ExportChoice.applyToChildren));
         //
-        argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_STATISTICS, isOptionChoosed(ExportChoice.addStatistics));
-        argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_TRAC, false); // disable trac
-
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_STATS, isOptionChoosed(ExportChoice.addStatistics));
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_TRACS, isOptionChoosed(ExportChoice.addTracs));
+        Properties prop = (Properties) exportChoice.get(ExportChoice.properties);
+        if (prop != null) {
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_PORT_STATS,
+                    prop.get(TalendProcessArgumentConstant.ARG_PORT_STATS));
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_PORT_TRACS, prop.get(TalendProcessArgumentConstant.ARG_PORT_TRACS));
+        }
         // context
         boolean needContext = isOptionChoosed(ExportChoice.needContext);
         if (needContext) {

@@ -206,6 +206,7 @@ public abstract class JobScriptsManager {
         needLog4jLevel,
         log4jLevel,
         addStatistics, // for feature 11031
+        addTracs,
         doNotCompileCode,
         needDependencies,
         needParameterValues,
@@ -216,7 +217,8 @@ public abstract class JobScriptsManager {
         esbQueueMessageName,
         esbServiceName,
         esbCategory,
-        esbExportType
+        esbExportType,
+        properties
     }
 
     /**
