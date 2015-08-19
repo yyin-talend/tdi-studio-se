@@ -663,9 +663,9 @@ public final class Expression {
         boolean not = hadoopComponent.trim().startsWith("!"); //$NON-NLS-1$
         String args = (simpleExpression.split("\\[")[1]).split("\\]")[0]; //$NON-NLS-1$ //$NON-NLS-2$
         String distributionParam = args.split(",")[0].trim(); //$NON-NLS-1$
-        String distribution = ""; //$NON-NLS-1$
+        String distribution = null;
         String versionParam = args.split(",")[1].trim(); //$NON-NLS-1$
-        String version = ""; //$NON-NLS-1$
+        String version = null;
 
         // Handle the #LINK@NODE
         if (distributionParam.startsWith("#LINK@NODE") && versionParam.startsWith("#LINK@NODE")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -703,6 +703,8 @@ public final class Expression {
                             }
                         }
                     }
+                } else {
+                    return false;
                 }
             }
         } else {
@@ -714,6 +716,9 @@ public final class Expression {
                     version = (String) param.getValue();
                 }
             }
+        }
+        if (distribution == null && version == null) {
+            return false;
         }
         String methodArg = simpleExpression.split("\\].")[1]; //$NON-NLS-1$
         String methodName = methodArg.split("\\[")[0]; //$NON-NLS-1$
