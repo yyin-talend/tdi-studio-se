@@ -198,6 +198,7 @@ imports="
                               customConfig_<%= cid %>.put("fieldsEnclosedBy",<%= fieldsEnclosedBy %>);
                               customConfig_<%= cid %>.put("linesTerminatedBy",<%= linesTerminatedBy %>);
                               customConfig_<%= cid %>.put("numericFormat",<%= numericFormat %>);
+                              customConfig_<%= cid %>.put("encoding",<%= encoding %>);
                     <%
                        if(generateJsonInFile){
                           %>
