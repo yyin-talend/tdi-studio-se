@@ -243,7 +243,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         projectListArea = new Composite(projectOperationArea, SWT.NONE);
         projectViewer = new ListViewer(projectListArea, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         projectViewer.getControl().setFont(LoginDialogV2.fixedFont);
-        projectViewer.setContentProvider(new ArrayContentProvider());
+        projectViewer.setContentProvider(ArrayContentProvider.getInstance());
         projectViewer.setLabelProvider(new ProjectLabelProvider());
         projectViewer.setSorter(new ViewerSorter());
         // Branch Area
@@ -253,7 +253,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         branchLabel.setText(Messages.getString("LoginProjectPage.svnBranch")); //$NON-NLS-1$
         branchesViewer = new ComboViewer(branchArea, SWT.READ_ONLY);
         branchesViewer.getControl().setFont(LoginDialogV2.fixedFont);
-        branchesViewer.setContentProvider(new ArrayContentProvider());
+        branchesViewer.setContentProvider(ArrayContentProvider.getInstance());
         branchesViewer.setLabelProvider(new LabelProvider());
         refreshProjectButton = new Button(branchArea, SWT.NONE);
         refreshProjectButton.setFont(LoginDialogV2.fixedFont);
@@ -355,7 +355,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // connectionsViewer.getControl().setLayoutData(formData);
         gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
         connectionsViewer.getControl().setLayoutData(gridData);
-        connectionsViewer.setContentProvider(new ArrayContentProvider());
+        connectionsViewer.setContentProvider(ArrayContentProvider.getInstance());
         connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
 
         /**

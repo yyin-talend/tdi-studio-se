@@ -250,7 +250,7 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         contextComboData.top = new FormAttachment(0,3);
         contextComboData.height = 25;
         contextCombo.getCombo().setLayoutData(contextComboData);
-        contextCombo.setContentProvider(new ArrayContentProvider());
+        contextCombo.setContentProvider(ArrayContentProvider.getInstance());
         contextCombo.setLabelProvider(new ContextNameLabelProvider());
         initContextInput();
 
