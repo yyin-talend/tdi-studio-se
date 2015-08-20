@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.PluginChecker;
+import org.talend.core.hadoop.api.DistributionFactory;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -43,9 +43,9 @@ import org.talend.core.model.process.INode;
  * ((VAR1 == 'value1' and VAR2 == 'value2') or (VAR3 != 'value3')) or (VAR4 == 'value4') <br>
  * With VAR1, VAR2, VAR3 & VAR4 as the name of differents parameters and 'value1'.. the values to test. (values must be
  * between quotes)<br>
- * 
+ *
  * $Id$
- * 
+ *
  */
 public final class Expression {
 
@@ -156,10 +156,10 @@ public final class Expression {
 
     /**
      * Only works for any check in the schema actually, and only for DB_TYPE. Syntax should be like:
-     * 
+     *
      * SCHEMA.DB_TYPE IN ['BLOB','CLOB']
-     * 
-     * 
+     *
+     *
      * @param simpleExpression
      * @return
      */
@@ -259,7 +259,7 @@ public final class Expression {
         } else if (simpleExpression.contains(LESS_THAN)) {
             test = LESS_THAN;
         }
-        if ((simpleExpression.contains(" IN [") || //$NON-NLS-1$ 
+        if ((simpleExpression.contains(" IN [") || //$NON-NLS-1$
                 simpleExpression.contains(" IN[")) && simpleExpression.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
             return evaluateInExpression(simpleExpression, listParam);
         }
@@ -431,7 +431,7 @@ public final class Expression {
                         INode sourceNode = ((IConnection) element).getSource();
                         // change from: #NODE@IN.SUBTREE_START == 'false'
                         // to: SUBTREE_START == 'false'
-                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$                       
+                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         return evaluate(simpleExpression, sourceNode.getElementParameters());
                     }
                 }
@@ -442,7 +442,7 @@ public final class Expression {
                         INode sourceNode = ((IConnection) element).getTarget();
                         // change from: #NODE@OUT.END_OF_FLOW == 'false'
                         // to: END_OF_FLOW == 'false'
-                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$                       
+                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         return evaluate(simpleExpression, sourceNode.getElementParameters());
                     }
                 }
@@ -657,88 +657,107 @@ public final class Expression {
         return showParameter;
     }
 
-    private static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam,
+    private static INode retrieveNodeElementFromParameter(ElementParameter currentParam,
+            List<? extends IElementParameter> listParam) {
+        if (currentParam != null && currentParam.getElement() instanceof INode) {
+            return (INode) currentParam.getElement();
+        } else if (currentParam == null) {
+            if (listParam != null && listParam.size() > 0) {
+                IElement element = listParam.get(0).getElement();
+                if (element instanceof INode) {
+                    return (INode) element;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static String retrieveLinkedParamName(String parameter) {
+        return parameter.replace(parameter.split("\\.")[0] + "." + parameter.split("\\.")[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    }
+
+    private static List<? extends IElementParameter> retrieveLinkedParameters(ElementParameter currentParam,
+            List<? extends IElementParameter> listParam, String distributionParam) {
+        INode node = retrieveNodeElementFromParameter(currentParam, listParam);
+
+        if (node != null) {
+            String relatedNodeName = ElementParameterParser.getValue(node, "__" + distributionParam.split("\\.")[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            // if relatedNodeName is empty, maybe means this property have not been setted
+            if (relatedNodeName != null && !relatedNodeName.trim().isEmpty()) {
+                for (INode aNode : node.getProcess().getGeneratingNodes()) {
+                    if (aNode.getUniqueName().equals(relatedNodeName)) {
+                        return aNode.getElementParameters();
+                    }
+                }
+            }
+        }
+        return listParam;
+    }
+
+    // should be private, but need to unitary tested
+    public static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam,
             ElementParameter currentParam) {
-        String hadoopComponent = (simpleExpression.split("\\[")[0]); //$NON-NLS-1$
-        boolean not = hadoopComponent.trim().startsWith("!"); //$NON-NLS-1$
+        boolean positiveAssertion = !simpleExpression.trim().startsWith("!"); //$NON-NLS-1$
         String args = (simpleExpression.split("\\[")[1]).split("\\]")[0]; //$NON-NLS-1$ //$NON-NLS-2$
         String distributionParam = args.split(",")[0].trim(); //$NON-NLS-1$
-        String distribution = null;
         String versionParam = args.split(",")[1].trim(); //$NON-NLS-1$
-        String version = null;
 
-        // Handle the #LINK@NODE
+        // both distributionParam and versionParam are simple or both are link. Everything else is an error.
+        if (distributionParam.startsWith("#LINK@NODE") != versionParam.startsWith("#LINK@NODE")) { //$NON-NLS-1$ //$NON-NLS-2$
+            return false;
+        }
+
+        List<? extends IElementParameter> effectiveListParam = listParam;
         if (distributionParam.startsWith("#LINK@NODE") && versionParam.startsWith("#LINK@NODE")) { //$NON-NLS-1$ //$NON-NLS-2$
-            INode node = null;
-            if (currentParam != null && currentParam.getElement() instanceof INode) {
-                node = (INode) currentParam.getElement();
-            } else if (currentParam == null) {
-                if (listParam != null && listParam.size() > 0) {
-                    IElement element = listParam.get(0).getElement();
-                    if (element instanceof INode) {
-                        node = (INode) element;
-                    }
-                }
-            }
+            // Handle the #LINK@NODE
+            effectiveListParam = retrieveLinkedParameters(currentParam, listParam, distributionParam);
+            distributionParam = retrieveLinkedParamName(distributionParam);
+            versionParam = retrieveLinkedParamName(versionParam);
 
-            if (node != null) {
-                String relatedNodeName = ElementParameterParser.getValue(node, "__" + distributionParam.split("\\.")[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                // if relatedNodeName is empty, maybe means this property have not been setted
-                if (relatedNodeName != null && !relatedNodeName.trim().isEmpty()) {
-                    List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
-                    for (INode aNode : generatingNodes) {
-                        if (aNode.getUniqueName().equals(relatedNodeName)) {
-                            String newDistributionParam = distributionParam.replace(
-                                    distributionParam.split("\\.")[0] + "." + distributionParam.split("\\.")[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                            String newVersionParam = versionParam.replace(
-                                    versionParam.split("\\.")[0] + "." + versionParam.split("\\.")[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                            List<? extends IElementParameter> elementParameters = aNode.getElementParameters();
-                            for (IElementParameter param : elementParameters) {
-                                if (newDistributionParam != null && newDistributionParam.equals(param.getName())) {
-                                    distribution = (String) param.getValue();
-                                }
-                                if (newVersionParam != null && newVersionParam.equals(param.getName())) {
-                                    version = (String) param.getValue();
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            for (IElementParameter param : listParam) {
-                if (distributionParam != null && distributionParam.equals(param.getName())) {
+        }
+
+        // distributionParam and versionParam should not be null, but I prefer to be sure
+        String distribution = null;
+        String version = null;
+        if ((distributionParam != null) && (versionParam != null)) {
+            // Handle the normal case
+            for (IElementParameter param : effectiveListParam) {
+                if (distributionParam.equals(param.getName())) {
                     distribution = (String) param.getValue();
                 }
-                if (versionParam != null && versionParam.equals(param.getName())) {
+                if (versionParam.equals(param.getName())) {
                     version = (String) param.getValue();
                 }
             }
         }
-        if (distribution == null && version == null) {
+
+        // No distribution found => error case
+        if (distribution == null) {
             return false;
         }
-        String methodArg = simpleExpression.split("\\].")[1]; //$NON-NLS-1$
-        String methodName = methodArg.split("\\[")[0]; //$NON-NLS-1$
+
+        String methodName = simpleExpression.split("\\].")[1].split("\\[")[0]; //$NON-NLS-1$ //$NON-NLS-2$
+        return executeBooleanMethod(methodName, distribution, version, positiveAssertion);
+    }
+
+    /**
+     * Execute a methode for a given distribution and version. This function must return a booelan
+     *
+     * @param methodName the name of the method
+     * @param distribution the name of the distribution
+     * @param version the name of the version
+     * @positiveAssertion if we are on a positive assertion. A negative one will inverse the return of the method,
+     * except on an error case.
+     * @return
+     */
+    private static boolean executeBooleanMethod(String methodName, String distribution, String version, boolean positiveAssertion) {
         try {
-            org.talend.core.hadoop.api.components.HadoopComponent distrib = org.talend.core.hadoop.api.DistributionFactory
-                    .buildDistribution(distribution, version);
-            try {
-                java.lang.reflect.Method m = distrib.getClass().getMethod(methodName, new Class<?>[0]);
-                try {
-                    boolean ret = (Boolean) m.invoke(distrib, new Object[0]);
-                    return not ? !ret : ret;
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    org.talend.commons.exception.ExceptionHandler.process(e);
-                }
-            } catch (NoSuchMethodException | SecurityException e) {
-                org.talend.commons.exception.ExceptionHandler.process(e);
-            }
+            boolean ret = DistributionFactory.executeBooleanMethod(methodName, distribution, version);
+            return positiveAssertion ? ret : !ret;
         } catch (Exception e) {
             org.talend.commons.exception.ExceptionHandler.process(e);
         }
+        // return false on error case, even when we are and a negative assertion
         return false;
     }
 
