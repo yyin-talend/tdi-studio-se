@@ -211,6 +211,12 @@
 		<profile>
 			<id>include-log4j</id>
 			<properties>
+				<log4j.resources.dir>${basedir}/src/main/resources/</log4j.resources.dir>
+			</properties>
+		</profile>
+		<profile>
+			<id>include-running-log4j</id>
+			<properties>
 				<log4j.running.dir>${basedir}/src/main/resources/</log4j.running.dir>
 			</properties>
 		</profile>

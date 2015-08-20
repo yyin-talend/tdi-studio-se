@@ -65,6 +65,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.utils.io.FilesUtils;
 
@@ -103,9 +104,10 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_TRACS, isOptionChoosed(ExportChoice.addTracs));
         Properties prop = (Properties) exportChoice.get(ExportChoice.properties);
         if (prop != null) {
-            argumentsMap.put(TalendProcessArgumentConstant.ARG_PORT_STATS,
-                    prop.get(TalendProcessArgumentConstant.ARG_PORT_STATS));
-            argumentsMap.put(TalendProcessArgumentConstant.ARG_PORT_TRACS, prop.get(TalendProcessArgumentConstant.ARG_PORT_TRACS));
+            argumentsMap
+                    .put(TalendProcessArgumentConstant.ARG_PORT_STATS, prop.get(TalendProcessArgumentConstant.ARG_PORT_STATS));
+            argumentsMap
+                    .put(TalendProcessArgumentConstant.ARG_PORT_TRACS, prop.get(TalendProcessArgumentConstant.ARG_PORT_TRACS));
         }
         // context
         boolean needContext = isOptionChoosed(ExportChoice.needContext);
@@ -123,10 +125,14 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                     this.exportChoice.get(ExportChoice.parameterValuesList));
         }
         // log4j
-        boolean needLog4jLevel = isOptionChoosed(ExportChoice.needLog4jLevel);
-        if (needLog4jLevel) {
-            argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_LOG4J_LEVEL, needLog4jLevel);
-            argumentsMap.put(TalendProcessArgumentConstant.ARG_LOG4J_LEVEL, this.exportChoice.get(ExportChoice.log4jLevel));
+        boolean log4jEnable = Log4jPrefsSettingManager.getInstance().isLog4jEnable();
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_LOG4J, log4jEnable);
+        if (log4jEnable) {
+            boolean needLog4jLevel = isOptionChoosed(ExportChoice.needLog4jLevel);
+            if (needLog4jLevel) {
+                argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_LOG4J_LEVEL, needLog4jLevel);
+                argumentsMap.put(TalendProcessArgumentConstant.ARG_LOG4J_LEVEL, this.exportChoice.get(ExportChoice.log4jLevel));
+            }
         }
         // generation option
         int generationOption = (isOptionChoosed(ExportChoice.includeTestSource) || isOptionChoosed(ExportChoice.executeTests)) ? ProcessorUtilities.GENERATE_ALL_CHILDS

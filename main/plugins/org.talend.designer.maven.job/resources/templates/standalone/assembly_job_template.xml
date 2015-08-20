@@ -49,7 +49,6 @@
 				<include>xmlMappings/**</include>
 				<include>sqltemplates/**</include>
 				<include>rules/**</include>
-				<include>log4j.xml</include>
 			</includes>
 		</fileSet>
 		<fileSet><!-- assembly.xml -->
@@ -121,7 +120,15 @@
 				<include>${talend.job.path}/**</include>
 			</includes>
 		</fileSet>
-		<fileSet><!-- add the log4j.xml for running --> 
+		<fileSet><!-- log4j resources -->
+			<directory>${log4j.resources.dir}</directory>
+			<outputDirectory>${talend.job.name}/src/main/resources/
+			</outputDirectory>
+			<includes>
+				<include>log4j.xml</include>
+			</includes>
+		</fileSet>
+		<fileSet><!-- log4j.xml for running -->
 			<directory>${log4j.running.dir}</directory>
 			<outputDirectory>${talend.job.name}</outputDirectory>
 			<includes>
