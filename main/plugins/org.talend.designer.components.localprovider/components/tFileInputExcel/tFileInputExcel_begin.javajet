@@ -426,16 +426,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 temp_row_<%=cid%>[i] = df_<%=cid %>.format(doubleCell_<%=cid%>);
                             }
                         } else{
-							temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
+                            temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
                         }
 <%
                     }else{
-%>						
-						if(cell_<%=cid%>.getType().equals(jxl.CellType.NUMBER)){
-							temp_row_<%= cid %>[i] = (String.valueOf(df_<%=cid %>.format(((jxl.NumberCell) cell_<%=cid%>).getValue())));
-						}else{
-							temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
-						}
+%>
+                        temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
 <%
                     }
 %>
