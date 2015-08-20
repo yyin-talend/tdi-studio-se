@@ -1665,61 +1665,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     /*
-     * (non-Javadoc) generate spring file for RouteBuilder ADDED for TESB-7887 by GangLiu
-     */
-    @Override
-    public void generateSpringContent() throws ProcessorException {
-        try {
-            ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
-            ICodeGenerator codeGen = service.createCodeGenerator(process, false, false);
-
-            if (codeGen == null) {
-                return;
-            }
-            String content = codeGen.generateSpringContent();
-            if (content == null) {
-                return;
-            }
-            IProject processorProject = getCodeProject();
-            ITalendProcessJavaProject tProcessJvaProject = getTalendJavaProject();
-            if (processorProject == null && tProcessJvaProject != null) {
-                processorProject = tProcessJvaProject.getProject();
-            }
-            if (processorProject == null || tProcessJvaProject == null) {
-                return;
-            }
-            processorProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-            IFolder srcFolder = tProcessJvaProject.getSrcFolder();
-            if (!srcFolder.exists()) {
-                srcFolder.create(true, true, null);
-            }
-            IFolder metainfFolder = srcFolder.getFolder("META-INF"); //$NON-NLS-1$
-            if (!metainfFolder.exists()) {
-                metainfFolder.create(true, true, null);
-            }
-            IFolder springFolder = metainfFolder.getFolder("spring"); //$NON-NLS-1$
-            if (!springFolder.exists()) {
-                springFolder.create(true, true, null);
-            }
-            IFile springFile = springFolder.getFile(process.getName().toLowerCase() + ".xml"); //$NON-NLS-1$
-            InputStream is = new ByteArrayInputStream(content.getBytes());
-
-            if (!springFile.exists()) {
-                springFile.create(is, true, null);
-            } else {
-                springFile.setContents(is, true, false, null);
-            }
-            is.close();
-        } catch (SystemException e) {
-            throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
-        } catch (CoreException e1) {
-            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#addingBreakpoint(org
