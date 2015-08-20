@@ -481,23 +481,6 @@ public class CodeGenerator implements ICodeGenerator {
         return ""; //$NON-NLS-1$
     }
 
-    /*
-     * ADDED for TESB-7887 By GangLiu(non-Javadoc)
-     * 
-     * @see org.talend.designer.codegen.ICodeGenerator#generateSpringContent()
-     */
-    @Override
-    public String generateSpringContent() throws CodeGeneratorException {
-        if (process == null || !(process instanceof IProcess2)) {
-            return null;
-        }
-        IProcess2 process2 = (IProcess2) process;
-        if (!process2.needsSpring() || process2.getSpringContent() == null) {
-            return null;
-        }
-        return process2.getSpringContent();
-    }
-
     /**
      * Generate Code for a given Component.
      * 

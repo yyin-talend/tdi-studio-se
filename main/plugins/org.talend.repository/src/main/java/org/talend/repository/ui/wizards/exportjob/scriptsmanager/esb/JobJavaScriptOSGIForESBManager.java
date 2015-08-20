@@ -320,7 +320,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     IRunProcessService.class);
             ITalendProcessJavaProject talendProcessJavaProject = processService.getTalendProcessJavaProject();
             if (talendProcessJavaProject != null) {
-                srcFolder = talendProcessJavaProject.getSrcFolder();
+                srcFolder = talendProcessJavaProject.getResourcesFolder();
             }
         }
         if (srcFolder == null) {
@@ -333,8 +333,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 ICamelDesignerCoreService.class);
         if (camelService != null) {
-            List<IPath> paths = camelService.synchronizeRouteResource(processItem);
-            for (IPath path : paths) {
+            for (IPath path : camelService.synchronizeRouteResource(processItem)) {
                 osgiResource.addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(), path.toFile().toURI()
                         .toURL());
             }
