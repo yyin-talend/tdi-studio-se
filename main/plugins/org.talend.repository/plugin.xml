@@ -2561,6 +2561,15 @@
               name="DisableUseBatchWhenRejectLineExists"
               version="6.0.1">
         </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.ChangeDefaultValue4tLogRow"
+              description="Change the default value of PRINT_CONTENT_WITH_LOG4J"
+              id="org.talend.repository.model.migration.ChangeDefaultValue4tLogRow"
+              name="ChangeDefaultValue4tLogRow"
+              version="6.0.1">
+        </projecttask>
    </extension>
 
    <extension
