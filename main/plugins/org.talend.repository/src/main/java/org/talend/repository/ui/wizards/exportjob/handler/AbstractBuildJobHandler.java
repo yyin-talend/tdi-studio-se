@@ -120,8 +120,13 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.includeLibs), TalendMavenConstants.PROFILE_INCLUDE_LIBS);
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
         // the log4j is only useful, when binaries
-        addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries)
-                && Log4jPrefsSettingManager.getInstance().isLog4jEnable(), TalendMavenConstants.PROFILE_INCLUDE_LOG4J);
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+            // add log4j to running.
+            addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries),
+                    TalendMavenConstants.PROFILE_INCLUDE_RUNNING_LOG4J);
+            // add log4j for resources.
+            addArg(profileBuffer, false, !isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_LOG4J);
+        }
         // the running context is only useful, when binaries
         addArg(profileBuffer, false, isOptionChoosed(ExportChoice.binaries) && isOptionChoosed(ExportChoice.needContext),
                 TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
