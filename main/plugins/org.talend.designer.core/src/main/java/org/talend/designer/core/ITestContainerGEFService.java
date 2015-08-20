@@ -48,6 +48,6 @@ public interface ITestContainerGEFService extends IService {
 
     public Map<SubjobContainer, List<Node>> caculateJunitGroup(List<NodePart> nodeParts);
 
-    public IProcess2 getAbstractTestContainer(Item item);
+    public IProcess2 getTestContainerProcess(Item item);
 
 }
