@@ -49,7 +49,6 @@ import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
-import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.BuildJobManager;
@@ -104,10 +103,6 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
 
     protected boolean isExportConfig() {
         return ProcessorUtilities.isExportConfig();
-    }
-
-    protected boolean isLog4jEnable() {
-        return Log4jPrefsSettingManager.getInstance().isLog4jEnable();
     }
 
     /**
