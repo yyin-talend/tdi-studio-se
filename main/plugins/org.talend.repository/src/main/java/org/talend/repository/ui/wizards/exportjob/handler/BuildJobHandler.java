@@ -65,7 +65,6 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.utils.io.FilesUtils;
 
@@ -125,7 +124,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                     this.exportChoice.get(ExportChoice.parameterValuesList));
         }
         // log4j
-        boolean log4jEnable = Log4jPrefsSettingManager.getInstance().isLog4jEnable();
+        boolean log4jEnable = isLog4jEnable();
         argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_LOG4J, log4jEnable);
         if (log4jEnable) {
             boolean needLog4jLevel = isOptionChoosed(ExportChoice.needLog4jLevel);
@@ -134,6 +133,11 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                 argumentsMap.put(TalendProcessArgumentConstant.ARG_LOG4J_LEVEL, this.exportChoice.get(ExportChoice.log4jLevel));
             }
         }
+        // will set it before code gen in ProcessorUtilities
+        // argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_XMLMAPPINGS, needXmlMappings());
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_RULES, needRules());
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_SQLTEMPLATES, needSQLTemplates());
+
         // generation option
         int generationOption = (isOptionChoosed(ExportChoice.includeTestSource) || isOptionChoosed(ExportChoice.executeTests)) ? ProcessorUtilities.GENERATE_ALL_CHILDS
                 | ProcessorUtilities.GENERATE_TESTS

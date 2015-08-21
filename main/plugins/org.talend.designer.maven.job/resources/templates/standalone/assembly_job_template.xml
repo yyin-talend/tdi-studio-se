@@ -41,14 +41,28 @@
 				<include>**</include>
 			</includes>
 		</fileSet>
-		<fileSet><!-- some resources -->
-			<directory>${resources.dir}</directory>
-			<outputDirectory>${talend.job.name}/src/main/resources/
+		<fileSet><!-- xmlMappings resources -->
+			<directory>${xmlMappings.resources.dir}</directory>
+			<outputDirectory>${output.resources.dir}/xmlMappings/
 			</outputDirectory>
 			<includes>
-				<include>xmlMappings/**</include>
-				<include>sqltemplates/**</include>
-				<include>rules/**</include>
+				<include>**/*.*</include>
+			</includes>
+		</fileSet>
+		<fileSet><!-- rules resources -->
+			<directory>${rules.resources.dir}</directory>
+			<outputDirectory>${output.resources.dir}/rules/
+			</outputDirectory>
+			<includes>
+				<include>**/*.*</include>
+			</includes>
+		</fileSet>
+		<fileSet><!-- sqltemplates resources -->
+			<directory>${sqltemplates.resources.dir}</directory>
+			<outputDirectory>${output.resources.dir}/sqltemplates/
+			</outputDirectory>
+			<includes>
+				<include>**/*.*</include>
 			</includes>
 		</fileSet>
 		<fileSet><!-- assembly.xml -->
@@ -85,7 +99,7 @@
 		</fileSet>
 		<fileSet><!-- add context resources -->
 			<directory>${resources.dir}</directory>
-			<outputDirectory>${talend.job.name}/src/main/resources/
+			<outputDirectory>${output.resources.dir}/
 			</outputDirectory>
 			<includes>
 				<include>${talend.job.path}/**</include>
@@ -122,7 +136,7 @@
 		</fileSet>
 		<fileSet><!-- log4j resources -->
 			<directory>${log4j.resources.dir}</directory>
-			<outputDirectory>${talend.job.name}/src/main/resources/
+			<outputDirectory>${output.resources.dir}/
 			</outputDirectory>
 			<includes>
 				<include>log4j.xml</include>
