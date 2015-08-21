@@ -42,9 +42,9 @@ import org.talend.core.model.process.INode;
  * ((VAR1 == 'value1' and VAR2 == 'value2') or (VAR3 != 'value3')) or (VAR4 == 'value4') <br>
  * With VAR1, VAR2, VAR3 & VAR4 as the name of differents parameters and 'value1'.. the values to test. (values must be
  * between quotes)<br>
- * 
+ *
  * $Id$
- * 
+ *
  */
 public final class Expression {
 
@@ -155,10 +155,10 @@ public final class Expression {
 
     /**
      * Only works for any check in the schema actually, and only for DB_TYPE. Syntax should be like:
-     * 
+     *
      * SCHEMA.DB_TYPE IN ['BLOB','CLOB']
-     * 
-     * 
+     *
+     *
      * @param simpleExpression
      * @return
      */
@@ -258,7 +258,7 @@ public final class Expression {
         } else if (simpleExpression.contains(LESS_THAN)) {
             test = LESS_THAN;
         }
-        if ((simpleExpression.contains(" IN [") || //$NON-NLS-1$ 
+        if ((simpleExpression.contains(" IN [") || //$NON-NLS-1$
                 simpleExpression.contains(" IN[")) && simpleExpression.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
             return evaluateInExpression(simpleExpression, listParam);
         }
@@ -426,7 +426,7 @@ public final class Expression {
                         INode sourceNode = ((IConnection) element).getSource();
                         // change from: #NODE@IN.SUBTREE_START == 'false'
                         // to: SUBTREE_START == 'false'
-                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$                       
+                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         return evaluate(simpleExpression, sourceNode.getElementParameters());
                     }
                 }
@@ -437,7 +437,7 @@ public final class Expression {
                         INode sourceNode = ((IConnection) element).getTarget();
                         // change from: #NODE@OUT.END_OF_FLOW == 'false'
                         // to: END_OF_FLOW == 'false'
-                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$                       
+                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         return evaluate(simpleExpression, sourceNode.getElementParameters());
                     }
                 }
@@ -631,8 +631,7 @@ public final class Expression {
                     break;
                 }
             }
-            if (currentParam != null
-                    && "INCOMING_LINK_TYPE".equals(variableName) && ("FS_DEFAULT_NAME".equals(currentParam.getName()) || "MAPRED_JOB_TRACKER".equals(currentParam.getName()))) {//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            if (currentParam != null && "INCOMING_LINK_TYPE".equals(variableName)) {//$NON-NLS-1$
                 IElement element = currentParam.getElement();
                 if (element != null && element instanceof INode) {
                     INode node = (INode) element;
