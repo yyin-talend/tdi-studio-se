@@ -41,6 +41,21 @@
 				<include>**</include>
 			</includes>
 		</fileSet>
+		<fileSet><!-- log4j resources -->
+			<directory>${log4j.resources.dir}</directory>
+			<outputDirectory>${output.resources.dir}/
+			</outputDirectory>
+			<includes>
+				<include>log4j.xml</include>
+			</includes>
+		</fileSet>
+		<fileSet><!-- log4j.xml for running -->
+			<directory>${log4j.running.dir}</directory>
+			<outputDirectory>${talend.job.name}</outputDirectory>
+			<includes>
+				<include>log4j.xml</include>
+			</includes>
+		</fileSet>
 		<fileSet><!-- xmlMappings resources -->
 			<directory>${xmlMappings.resources.dir}</directory>
 			<outputDirectory>${output.resources.dir}/xmlMappings/
@@ -49,17 +64,17 @@
 				<include>**/*.*</include>
 			</includes>
 		</fileSet>
-		<fileSet><!-- rules resources -->
-			<directory>${rules.resources.dir}</directory>
-			<outputDirectory>${output.resources.dir}/rules/
+		<fileSet><!-- xmlMappings for running -->
+			<directory>${xmlMappings.running.dir}</directory>
+			<outputDirectory>${talend.job.name}/xmlMappings/
 			</outputDirectory>
 			<includes>
 				<include>**/*.*</include>
 			</includes>
 		</fileSet>
-		<fileSet><!-- sqltemplates resources -->
-			<directory>${sqltemplates.resources.dir}</directory>
-			<outputDirectory>${output.resources.dir}/sqltemplates/
+		<fileSet><!-- rules resources -->
+			<directory>${rules.resources.dir}</directory>
+			<outputDirectory>${output.resources.dir}/rules/
 			</outputDirectory>
 			<includes>
 				<include>**/*.*</include>
@@ -132,21 +147,6 @@
 			<outputDirectory>${talend.job.name}</outputDirectory>
 			<includes>
 				<include>${talend.job.path}/**</include>
-			</includes>
-		</fileSet>
-		<fileSet><!-- log4j resources -->
-			<directory>${log4j.resources.dir}</directory>
-			<outputDirectory>${output.resources.dir}/
-			</outputDirectory>
-			<includes>
-				<include>log4j.xml</include>
-			</includes>
-		</fileSet>
-		<fileSet><!-- log4j.xml for running -->
-			<directory>${log4j.running.dir}</directory>
-			<outputDirectory>${talend.job.name}</outputDirectory>
-			<includes>
-				<include>log4j.xml</include>
 			</includes>
 		</fileSet>
 		<!-- If have children jobs, will add here -->

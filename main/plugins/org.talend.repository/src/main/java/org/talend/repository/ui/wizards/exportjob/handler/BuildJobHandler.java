@@ -93,6 +93,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     @Override
     public void generateJobFiles(IProgressMonitor monitor) throws Exception {
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
+        LastGenerationInfo.getInstance().getUseRulesMap().clear();
 
         final Map<String, Object> argumentsMap = new HashMap<String, Object>();
 
@@ -133,10 +134,11 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                 argumentsMap.put(TalendProcessArgumentConstant.ARG_LOG4J_LEVEL, this.exportChoice.get(ExportChoice.log4jLevel));
             }
         }
-        // will set it before code gen in ProcessorUtilities
+        /*
+         * FIXME. Shouldn't set it here, because it not init yet. will set it before code gen in ProcessorUtilities
+         */
         // argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_XMLMAPPINGS, needXmlMappings());
-        argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_RULES, needRules());
-        argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_SQLTEMPLATES, needSQLTemplates());
+        // argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_RULES, needRules());
 
         // generation option
         int generationOption = (isOptionChoosed(ExportChoice.includeTestSource) || isOptionChoosed(ExportChoice.executeTests)) ? ProcessorUtilities.GENERATE_ALL_CHILDS
