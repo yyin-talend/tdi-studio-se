@@ -102,13 +102,11 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
     }
 
     protected boolean needRules() {
-        // TODO
-        return true;
-    }
-
-    protected boolean needSQLTemplates() {
-        // TODO
-        return true;
+        if (this.version == null) {
+            return LastGenerationInfo.getInstance().isUseRules(processItem.getProperty().getId(),
+                    processItem.getProperty().getVersion());
+        }
+        return LastGenerationInfo.getInstance().isUseRules(processItem.getProperty().getId(), this.version);
     }
 
     protected String getProgramArgs() {
@@ -166,10 +164,6 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         // rules
         if (needRules()) {
             addArg(profileBuffer, true, TalendMavenConstants.PROFILE_INCLUDE_RULES);
-        }
-        // SQLTemplates
-        if (needSQLTemplates()) {
-            addArg(profileBuffer, true, TalendMavenConstants.PROFILE_INCLUDE_SQLTEMPLATES);
         }
         return profileBuffer;
     }

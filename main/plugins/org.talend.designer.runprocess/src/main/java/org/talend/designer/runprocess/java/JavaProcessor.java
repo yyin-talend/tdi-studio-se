@@ -523,8 +523,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
             String processCode = ""; //$NON-NLS-1$
             try {
-                processCode = codeGen.generateProcessCode();
-
+                // must before codegen for job to set the rule flag.
                 if (PluginChecker.isRulesPluginLoaded()) {
                     IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
                             IRulesProviderService.class);
@@ -544,9 +543,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                         }
                         if (useGenerateRuleFiles && rulesService != null && currentJavaProject != null) {
                             rulesService.generateFinalRuleFiles(currentJavaProject, this.process);
+                            LastGenerationInfo.getInstance().setUseRules(this.process.getId(), this.process.getVersion(), true);
                         }
                     }
                 }
+
+                processCode = codeGen.generateProcessCode();
 
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$

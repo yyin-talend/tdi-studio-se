@@ -222,20 +222,14 @@
 			<id>include-running-xmlMappings</id>
 			<properties>
 				<xmlMappings.running.dir>
-					${current.resources.dir}/xmlMappings/</
-					<xmlMappings.running.dir>>
+					${current.resources.dir}/xmlMappings/
+				</xmlMappings.running.dir>
 			</properties>
 		</profile>
 		<profile>
 			<id>include-rules</id>
 			<properties>
 				<rules.resources.dir>${current.resources.dir}/rules/</rules.resources.dir>
-			</properties>
-		</profile>
-		<profile>
-			<id>include-sqltemplates</id>
-			<properties>
-				<sqltemplates.resources.dir>${current.resources.dir}/sqltemplates/</sqltemplates.resources.dir>
 			</properties>
 		</profile>
 		<profile>
