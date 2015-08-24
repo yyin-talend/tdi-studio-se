@@ -154,6 +154,13 @@ if(bulkConnection){
 		globalMap.put("callOptions_<%=cid%>", sfMgr_<%=cid%>.getCallOptions());
 	<%
 	}
+	
+	boolean useHttpChunked = "true".equals(ElementParameterParser.getValue(node,"__USE_HTTP_CHUNKED__"));
+	%>
+	
+	((org.talend.salesforce.SforceManagementImpl)sfMgr_<%=cid%>).setHttpChunked(<%=useHttpChunked%>);
+	
+	<%
 	if(useOAuth){
 	%>
 		boolean result_<%=cid%> = sfMgr_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>,<%=timeout%>,<%=needCompression%>);

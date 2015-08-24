@@ -126,6 +126,13 @@ imports="
 				sforceManagement_<%=cid%>.setClientID(<%=clientID%>);
 			<%
 			}
+			
+			boolean useHttpChunked = "true".equals(ElementParameterParser.getValue(node,"__USE_HTTP_CHUNKED__"));
+			%>
+			
+			((org.talend.salesforce.SforceManagementImpl)sforceManagement_<%=cid%>).setHttpChunked(<%=useHttpChunked%>);
+			
+			<%
 			if(useOAuth){
 			%>
 				boolean result_<%=cid%> = sforceManagement_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>,<%=timeout%>,<%=needCompression%>);

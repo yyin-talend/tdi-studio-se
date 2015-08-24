@@ -153,33 +153,40 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				<%if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){%>
 					sfMgr_<%=cid%>.setClientID(<%=clientID%>);
 				<%}
+				
+				boolean useHttpChunked = "true".equals(ElementParameterParser.getValue(node,"__USE_HTTP_CHUNKED__"));
+				%>
+				
+				((org.talend.salesforce.SforceManagementImpl)sfMgr_<%=cid%>).setHttpChunked(<%=useHttpChunked%>);
+				
+				<%
 				if(useOAuth){
+				%>
+					boolean result_<%=cid%> = sfMgr_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>,<%=timeout%>,<%=needCompression%>);
+					if(!result_<%=cid%>){
+						throw new RuntimeException("Login failed!");
+					}
+				<%
+				}else{
+					if(useProxy){
 					%>
-						boolean result_<%=cid%> = sfMgr_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>,<%=timeout%>,<%=needCompression%>);
-						if(!result_<%=cid%>){
-							throw new RuntimeException("Login failed!");
-						}
+					    java.util.Properties props_<%=cid%> = System.getProperties();
+					    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
+					    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
+					    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
+					    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
+					    
 					<%
-					}else{
-						if(useProxy){
-						%>
-						    java.util.Properties props_<%=cid%> = System.getProperties();
-						    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
-						    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
-						    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
-						    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
-						    
-						<%
-						}
-						%>
-						boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
-						if(!result_<%=cid%>){
-							throw new RuntimeException("Login failed! Please check the username,password and endpoint");
-						}
-		        	<%
-		        	}
-		        }
-		        %>
+					}
+					%>
+					boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+					if(!result_<%=cid%>){
+						throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+					}
+	        	<%
+	        	}
+	        }
+	        %>
         	
 			<%
 			java.lang.StringBuilder sb = new java.lang.StringBuilder();

@@ -193,6 +193,23 @@ public class SforceManagementImpl implements SforceManagement {
         this.upsertKeyColumn = "";
     }
 
+    private boolean chunked = true;
+    
+    /**
+     * This is a special method in impl class for customer's patch
+     */
+    public void setHttpChunked(boolean chunked){
+    	this.chunked = chunked;
+    }
+    
+    /**
+     * This is a special method in impl class for customer's patch
+     */
+    private void applyHttpChunked(Options options){
+    	options.setProperty(HTTPConstants.CHUNKED, chunked);
+    }
+    
+    
     private boolean _login(String endpoint, String username, String password, int timeout, boolean needCompression)
             throws Exception {
         if (endpoint == null || endpoint.trim().length() == 0) {
@@ -211,6 +228,7 @@ public class SforceManagementImpl implements SforceManagement {
             needCompression(options);
         }
         setTimeout(options, timeout);
+        applyHttpChunked(options);
         setHttpProxy(options);
 
         Login login = new Login();
@@ -250,6 +268,7 @@ public class SforceManagementImpl implements SforceManagement {
             needCompression(options);
         }
         setTimeout(options, timeout);
+        applyHttpChunked(options);
         setHttpProxy(options);
 
         return true;
