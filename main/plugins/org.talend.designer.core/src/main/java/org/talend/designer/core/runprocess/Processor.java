@@ -511,32 +511,6 @@ public abstract class Processor implements IProcessor, IEclipseProcessor, Talend
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
-     * boolean, boolean)
-     */
-    @Override
-    public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI)
-            throws ProcessorException {
-        if (context == null) {
-            throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
-        }
-        // Remove the synchronization of the routines when generate the code.
-        // This shouldn't be needed anymore.
-
-        // try {
-        // DesignerPlugin.getDefault().getCodeGeneratorService().
-        // createRoutineSynchronizer().syncAllRoutines();
-        // } catch (SystemException e) {
-        // throw new ProcessorException(e);
-        // }
-
-        codeGenerated = true; // set the flag to true to tell the code has been
-        // generated at least once.
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
     @Override

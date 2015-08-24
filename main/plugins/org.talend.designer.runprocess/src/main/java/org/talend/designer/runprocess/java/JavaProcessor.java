@@ -176,8 +176,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected Property property;
 
-    private String exportAsOSGI;
-
     protected Set<JobInfo> buildChildrenJobs;
 
     private final ITalendProcessJavaProject talendJavaProject;
@@ -474,20 +472,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * will be created.
      * 
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
-     * boolean, boolean, boolean)
-     */
-    @Override
-    public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI)
-            throws ProcessorException {
-        this.exportAsOSGI = exportAsOSGI ? Boolean.TRUE.toString() : Boolean.FALSE.toString();
-        generateCode(statistics, trace, javaProperties);
-    }
-
-    /*
-     * Append the generated java code form context into java file wihtin the project. If the file not existed new one
-     * will be created.
-     * 
-     * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
     @Override
@@ -505,7 +489,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 String javaContext = getContextPath().toPortableString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
-                        currentJavaProject, exportAsOSGI);
+                        currentJavaProject);
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }

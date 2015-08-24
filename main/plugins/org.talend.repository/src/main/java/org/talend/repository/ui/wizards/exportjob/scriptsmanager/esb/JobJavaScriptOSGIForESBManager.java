@@ -148,7 +148,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 IProcess iProcess = generateJobFiles(processItem, contextName, jobVersion,
                         statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
-                        isOptionChoosed(ExportChoice.applyToChildren), true /* isExportAsOSGI */, progressMonitor);
+                        isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
                 analysisModules(processId, jobVersion);
 
                 analysisMavenModule(processItem);
