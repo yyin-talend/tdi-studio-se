@@ -1169,6 +1169,15 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 }
                 basePath.append(outputPath);
             }
+
+            // FIXME for old build (JobJavaScriptsManager) temp, when "ProcessorUtilities.setExportConfig(dir,true)"
+            String codeLocation = getCodeLocation();
+            if (codeLocation != null && codeLocation.contains(JavaUtils.SYSTEM_ROUTINE_JAR)
+                    && codeLocation.contains(JavaUtils.USER_ROUTINE_JAR)
+                    && !basePath.toString().contains(JavaUtils.SYSTEM_ROUTINE_JAR)) {
+                codeLocation = codeLocation.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
+                basePath.append(codeLocation);
+            }
         } else {
             ITalendProcessJavaProject tProcessJvaProject = this.getTalendJavaProject();
             IFolder classesFolder = tProcessJvaProject.getOutputFolder();
