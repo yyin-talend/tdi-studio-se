@@ -92,7 +92,7 @@
 ]]#
 #end
 		</jaxrs:properties>
-#if ($endpoint.useAuthorization)
+#if ($endpoint.useAuthorization && $endpoint.authenticationType == "SAML")
 		<jaxrs:inInterceptors>
 			<ref component-id="XACMLInterceptor"/>
 		</jaxrs:inInterceptors>
