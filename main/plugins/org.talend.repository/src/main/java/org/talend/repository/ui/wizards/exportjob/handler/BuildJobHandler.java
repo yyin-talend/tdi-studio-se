@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -103,11 +104,13 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_STATS, isOptionChoosed(ExportChoice.addStatistics));
         argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_TRACS, isOptionChoosed(ExportChoice.addTracs));
         Properties prop = (Properties) exportChoice.get(ExportChoice.properties);
-        if (prop != null) {
-            argumentsMap
-                    .put(TalendProcessArgumentConstant.ARG_PORT_STATS, prop.get(TalendProcessArgumentConstant.ARG_PORT_STATS));
-            argumentsMap
-                    .put(TalendProcessArgumentConstant.ARG_PORT_TRACS, prop.get(TalendProcessArgumentConstant.ARG_PORT_TRACS));
+        if (prop != null) { // add all properties for arugment map.
+            Enumeration<Object> keys = prop.keys();
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement().toString();
+                String value = prop.getProperty(key);
+                argumentsMap.put(key, value);
+            }
         }
         // context
         boolean needContext = isOptionChoosed(ExportChoice.needContext);
