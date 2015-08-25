@@ -32,10 +32,9 @@ class GetFileSystem{
             hdfsDistrib = (org.talend.core.hadoop.api.components.HDFSComponent) org.talend.core.hadoop.api.DistributionFactory.buildDistribution(distribution, hadoopVersion);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
-            return "";
         }
 
-        boolean isCustom = hdfsDistrib instanceof org.talend.core.hadoop.api.distribution.CustomDistribution;
+        isCustom = hdfsDistrib instanceof org.talend.core.hadoop.api.distribution.CustomDistribution;
         
         %>
         org.apache.hadoop.conf.Configuration conf_<%=cid%> = new org.apache.hadoop.conf.Configuration(); 
