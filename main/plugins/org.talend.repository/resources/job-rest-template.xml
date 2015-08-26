@@ -140,7 +140,7 @@
 		</service-properties>
 	</service>
 
-#if ($endpoint.useAuthorization)
+#if ($endpoint.useAuthorization && $endpoint.authenticationType == "SAML")
 #[[
 	<bean id="XACMLInterceptor" class="org.talend.esb.authorization.xacml.rt.pep.CXF403XACMLAuthorizingInterceptor">
 		<property name="pdpAddress" value="$pep{tesb.pdp.address}"/>
