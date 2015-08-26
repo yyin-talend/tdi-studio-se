@@ -142,7 +142,7 @@
 
 #if ($endpoint.useAuthorization)
 #[[
-	<bean id="XACMLInterceptor" class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor">
+	<bean id="XACMLInterceptor" class="org.talend.esb.authorization.xacml.rt.pep.CXF403XACMLAuthorizingInterceptor">
 		<property name="pdpAddress" value="$pep{tesb.pdp.address}"/>
 	</bean>
 ]]#
