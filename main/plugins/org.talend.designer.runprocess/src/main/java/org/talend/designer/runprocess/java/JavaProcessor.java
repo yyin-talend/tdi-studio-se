@@ -1175,6 +1175,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             if (codeLocation != null && codeLocation.contains(JavaUtils.SYSTEM_ROUTINE_JAR)
                     && codeLocation.contains(JavaUtils.USER_ROUTINE_JAR)
                     && !basePath.toString().contains(JavaUtils.SYSTEM_ROUTINE_JAR)) {
+                basePath.append(classPathSeparator);
                 codeLocation = codeLocation.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
                 basePath.append(codeLocation);
             }
