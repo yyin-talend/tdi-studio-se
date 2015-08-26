@@ -82,7 +82,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             		}
             		if(!isPrimitive) {
             		    %>
-            		    }
+            		    }else{
+                        <%
+                           if(i > 0){
+                              %>
+                                 value_<%=cid %> = "";
+                              <%
+                           }
+                         %>
+                        }
             		    <%
             		}
             	}//here end the last for, the List "columns"
