@@ -84,7 +84,18 @@ class PrepareTez{
             }
             //define the location of tez lib    
             %>
-			init_<%=cid%>.execute("SET tez.lib.uris=" + <%=ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__")%> + "/" + tezLibPath_<%=cid%>);
+			StringBuilder script_<%=cid%> = new StringBuilder();
+			String[] tezLibPaths_<%=cid%> = tezLibPath_<%=cid%>.split(",");
+			script_<%=cid%>.append("SET tez.lib.uris=");
+			int tezLibPathCount_<%=cid%> = 1;
+			for(String tezLibPathKey_<%=cid%> : tezLibPaths_<%=cid%>){
+				 script_<%=cid%>.append(<%=ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__")%> + "/" + tezLibPathKey_<%=cid%>);
+				 if(tezLibPathCount_<%=cid%> < tezLibPaths_<%=cid%>.length){
+				 	script_<%=cid%>.append(",");
+				 }
+				 tezLibPathCount_<%=cid%>++;
+			}
+			init_<%=cid%>.execute(script_<%=cid%>.toString());
 		<%
     	}
     }
