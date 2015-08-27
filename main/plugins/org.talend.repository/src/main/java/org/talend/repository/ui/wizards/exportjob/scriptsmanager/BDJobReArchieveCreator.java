@@ -28,6 +28,7 @@ import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -54,6 +55,7 @@ public class BDJobReArchieveCreator {
      */
     public boolean isMRWithHDInsight() {
         if (isMRWithHDInsight == null && processItem != null) {
+            isMRWithHDInsight = false;
             EList<ElementParameterType> parameters = processItem.getProcess().getParameters().getElementParameter();
             for (ElementParameterType pt : parameters) {
                 if (pt.getName().equals("DISTRIBUTION")
@@ -67,8 +69,8 @@ public class BDJobReArchieveCreator {
     }
 
     public boolean isStormJob() {
-        if (isStormJob == null) {
-            // PTODO
+        if (isStormJob == null && processItem != null) {
+            isStormJob = ERepositoryObjectType.getItemType(processItem).equals(ERepositoryObjectType.PROCESS_STORM);
         }
         return isStormJob;
     }
