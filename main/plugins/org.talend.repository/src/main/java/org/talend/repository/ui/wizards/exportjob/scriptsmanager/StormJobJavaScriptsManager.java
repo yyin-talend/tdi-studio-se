@@ -91,8 +91,6 @@ public class StormJobJavaScriptsManager extends JobJavaScriptsManager {
             list.add(jarFile.toURI().toURL());
         } catch (IOException e) {
             CommonExceptionHandler.process(e);
-        } catch (CoreException e) {
-            CommonExceptionHandler.process(e);
         }
 
         return list;
