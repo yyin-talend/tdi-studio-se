@@ -4105,10 +4105,22 @@ public class Node extends Element implements IGraphicalNode {
                                 String sparkVersion = (String) versionParameter.getValue();
 
                                 boolean isCustom = ("LOCAL".equals(sparkMode) && "CUSTOM".equals(sparkLocalVersion)) || ((!"LOCAL".equals(sparkMode)) && "CUSTOM".equals(distribution)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                                boolean isSpark14 = (isCustom && "SPARK_140".equals(sparkCustomVersion)) || "EMR_4_0_0".equals(sparkVersion); //$NON-NLS-1$ //$NON-NLS-2$
-                                if (!isSpark14) {
-                                    String message = Messages.getString("Node.checkSparkTXXXInputDataFrame"); //$NON-NLS-1$;
-                                    Problems.add(ProblemStatus.WARNING, this, message);
+
+                                org.talend.core.hadoop.api.components.SparkStreamingComponent sparkStreamingDistrib = null;
+                                try {
+                                    sparkStreamingDistrib = (org.talend.core.hadoop.api.components.SparkStreamingComponent) org.talend.core.hadoop.api.DistributionFactory
+                                            .buildDistribution(distribution, sparkVersion);
+                                } catch (java.lang.Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (sparkStreamingDistrib != null) {
+                                    boolean isSpark13 = (isCustom && "SPARK_130".equals(sparkCustomVersion)) || !sparkStreamingDistrib.isSpark14(); //$NON-NLS-1$ 
+
+                                    if (isSpark13) {
+                                        String message = Messages.getString("Node.checkSparkTXXXInputDataFrame"); //$NON-NLS-1$;
+                                        Problems.add(ProblemStatus.WARNING, this, message);
+                                    }
                                 }
                             }
                         }
