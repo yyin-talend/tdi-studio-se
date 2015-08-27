@@ -134,7 +134,9 @@ public class MemoryRuntimeComposite extends ScrolledComposite implements IDynami
         super(parent, style);
         this.viewPart = viewPart;
         this.processContext = processContext;
-        getRemoteStatus();
+        if (this.processContext != null) {
+            getRemoteStatus();
+        }
         this.processManager = ProcessManager.getInstance();
         this.messageManager = ReportMessageManager.getInstance();
         init(parent);
