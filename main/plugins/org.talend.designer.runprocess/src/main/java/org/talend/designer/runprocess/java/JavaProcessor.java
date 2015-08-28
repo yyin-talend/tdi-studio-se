@@ -1165,7 +1165,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 basePath.append(getBaseLibPath());
                 basePath.append(JavaUtils.PATH_SEPARATOR);
                 // routines.jar
-                basePath.append(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
+                basePath.append(JavaUtils.ROUTINES_JAR);
             } else {
                 String outputPath = getCodeLocation();
                 if (outputPath != null) {

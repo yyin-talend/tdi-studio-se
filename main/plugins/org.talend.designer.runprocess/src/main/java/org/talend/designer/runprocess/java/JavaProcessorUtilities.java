@@ -13,7 +13,6 @@
 package org.talend.designer.runprocess.java;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,7 +23,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -38,10 +36,8 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
-import org.talend.commons.utils.data.extractor.ModuleNameExtractor;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
@@ -148,7 +144,7 @@ public class JavaProcessorUtilities {
                 libNames.add(itLibs.next().getModuleName());
             }
         }
-        libNames.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
+        libNames.add(JavaUtils.ROUTINES_JAR);
         return libNames;
     }
 
@@ -212,8 +208,8 @@ public class JavaProcessorUtilities {
 
                 ERepositoryObjectType beansType = camelService.getBeansType();
                 try {
-                    for (IRepositoryViewObject object :
-                        CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().getAll(beansType)) {
+                    for (IRepositoryViewObject object : CoreRuntimePlugin.getInstance().getProxyRepositoryFactory()
+                            .getAll(beansType)) {
                         Item item = object.getProperty().getItem();
                         if (item instanceof RoutineItem) {
                             RoutineItem routine = (RoutineItem) item;

@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
-import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -229,7 +228,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         for (ModuleNeeded neededModule : neededModules) {
             libsRequiredByJob.add(neededModule.getModuleName());
         }
-        libsRequiredByJob.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
+        libsRequiredByJob.add(JavaUtils.ROUTINES_JAR);
         return libsRequiredByJob;
     }
 

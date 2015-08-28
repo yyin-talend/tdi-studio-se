@@ -103,8 +103,8 @@ public class MavenJavaProcessor extends JavaProcessor {
         Date oldExportTimestamp = ProcessorUtilities.getExportTimestamp();
         try {
             // FIXME, must make sure the exportConfig is true, and the classpath is same as export.
-            String routinesJarPath = getBaseLibPath() + JavaUtils.PATH_SEPARATOR + JavaUtils.ROUTINE_JAR_NAME
-                    + FileExtensions.JAR_FILE_SUFFIX + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR;
+            String routinesJarPath = getBaseLibPath() + JavaUtils.PATH_SEPARATOR + JavaUtils.ROUTINES_JAR
+                    + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR;
             ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, routinesJarPath, getBaseLibPath());
 
             String contextName = JavaResourcesHelper.getJobContextName(this.context);
