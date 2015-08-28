@@ -17,6 +17,8 @@
 
 	<properties>
 		<talend.routines.package>routines</talend.routines.package>
+		<talend.beans.package>beans</talend.beans.package>
+		<talend.pigudfs.package>pigudf</talend.pigudfs.package>
 	</properties>
 
 	<dependencies>
@@ -39,8 +41,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<includes>
-						<!-- only compile the routines source -->
 						<include>${talend.routines.package}/**/*.java</include>
+						<include>${talend.beans.package}/**/*.java</include>
+						<include>${talend.pigudfs.package}/**/*.java</include>
 					</includes>
 					<testExcludes>
 						<!-- exclude every test -->
@@ -54,6 +57,8 @@
 				<configuration>
 					<includes>
 						<include>${talend.routines.package}/**/*.class</include>
+						<include>${talend.beans.package}/**/*.class</include>
+						<include>${talend.pigudfs.package}/**/*.class</include>
 					</includes>
 				</configuration>
 			</plugin>
