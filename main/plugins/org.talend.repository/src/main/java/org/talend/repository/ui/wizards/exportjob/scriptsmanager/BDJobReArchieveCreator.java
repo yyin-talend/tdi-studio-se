@@ -13,26 +13,34 @@
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
+import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.hadoop.version.EHadoopDistributions;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobExportReArchieveCreator;
 import org.talend.utils.io.FilesUtils;
@@ -41,6 +49,8 @@ import org.talend.utils.io.FilesUtils;
  * DOC ggu class global comment. Detailled comment
  */
 public class BDJobReArchieveCreator {
+
+    private static final String PLUGIN_ID = "org.talend.libraries.apache.storm"; //$NON-NLS-1$
 
     private ProcessItem processItem;
 
@@ -146,24 +156,79 @@ public class BDJobReArchieveCreator {
      */
     public List<File> getLibPath(File zipTmpFolder, boolean isSpecialMR) {
         List<File> neededLibFiles = new ArrayList<File>();
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)
-                && GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
-            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
-                    IRunProcessService.class);
+        File libFolder = new File(zipTmpFolder, JavaUtils.JAVA_LIB_DIRECTORY);
+
+        // like the JobJavaScriptsManager.analysisModules
+
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                processItem.getProperty().getId(), processItem.getProperty().getVersion());
+        if (neededModules.isEmpty() && GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
             IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                     IDesignerCoreService.class);
             IProcess process = designerCoreService.getProcessFromProcessItem(processItem);
-            File libFolder = new File(zipTmpFolder, JavaUtils.JAVA_LIB_DIRECTORY);
-            File[] listFiles = libFolder.listFiles();
-            if (process != null && listFiles != null) {
-                Set<String> libJarsForBD = processService.getLibJarsForBD(process);
-                for (File libFile : listFiles) {
-                    if (libJarsForBD.contains(libFile.getName())) {
-                        neededLibFiles.add(libFile);
+            neededModules = process.getNeededModules(true);
+        }
+
+        Set<String> compiledModulesSet = new HashSet<String>(100);
+        for (ModuleNeeded module : neededModules) {
+            if ((isSpecialMR && module.isMrRequired()) || !isSpecialMR) {
+                compiledModulesSet.add(module.getModuleName());
+            }
+        }
+        compiledModulesSet.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
+
+        Set<String> jarNames = new HashSet<String>();
+        try {
+            // from org.talend.libraries.apache.storm/lib
+            Bundle bundle = Platform.getBundle(PLUGIN_ID);
+            if (bundle != null) {
+                URL stormLibUrl = FileLocator.toFileURL(FileLocator.find(bundle, new Path("lib"), null)); //$NON-NLS-1$
+                if (stormLibUrl != null) {
+                    File file = new File(stormLibUrl.getFile());
+                    File[] jars = file.listFiles();
+                    for (File f : jars) {
+                        jarNames.add(f.getName());
                     }
                 }
             }
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
         }
+        for (String jarName : compiledModulesSet) {
+            File jarFile = new File(libFolder, jarName);
+            if (jarFile.exists()) {
+                if (!isSpecialMR && !jarNames.isEmpty()) {
+                    // for storm not include the jar from libraries.apache.strom
+                    if (!jarNames.contains(jarName)) {
+                        neededLibFiles.add(jarFile);
+                    }
+                } else {
+                    neededLibFiles.add(jarFile);
+                }
+            }
+        }
+
+        // same lib as "-libjars"
+        // if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)
+        // && GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
+        // IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+        // IRunProcessService.class);
+        // IDesignerCoreService designerCoreService = (IDesignerCoreService)
+        // GlobalServiceRegister.getDefault().getService(
+        // IDesignerCoreService.class);
+        //
+        // IProcess process = designerCoreService.getProcessFromProcessItem(processItem);
+        //
+        // File[] listFiles = libFolder.listFiles();
+        // if (process != null && listFiles != null) {
+        // Set<String> libJarsForBD = processService.getLibJarsForBD(process);
+        // for (File libFile : listFiles) {
+        // if (libJarsForBD.contains(libFile.getName())) {
+        // neededLibFiles.add(libFile);
+        // }
+        // }
+        // }
+        // }
         return neededLibFiles;
     }
 
