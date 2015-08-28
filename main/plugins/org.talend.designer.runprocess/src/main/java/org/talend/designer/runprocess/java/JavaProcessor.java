@@ -277,6 +277,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         initCodePath(initContext);
     }
 
+    @Override
     protected boolean isStandardJob() {
         return property != null && property.getItem() != null && process instanceof IProcess2;
     }
@@ -424,6 +425,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         this.doClean = doClean;
     }
 
+    @Override
     public void cleanBeforeGenerate(int options) throws ProcessorException {
         setDoClean(false);
         if (this.getProcess().isNeedRegenerateCode() || this.getProcess() instanceof IProcess2
@@ -436,7 +438,18 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // clean the generated java source codes.
         if (BitwiseOptionUtils.containOption(options, CLEAN_JAVA_CODES)) {
             IFolder javaCodeFolder = getCodeProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
-            cleanFolder(javaCodeFolder);
+            // cleanFolder(javaCodeFolder);
+            try {
+                if (javaCodeFolder != null) {
+                    for (IResource resource : javaCodeFolder.members()) {
+                        if ("java".equals(resource.getFileExtension())) {//$NON-NLS-1$
+                            ((IFile) resource).setContents(new ByteArrayInputStream(new byte[0]), IResource.KEEP_HISTORY, null);
+                        }
+                    }
+                }
+            } catch (CoreException e) {
+                // do nothing
+            }
 
             IFolder classCodeFolder = getCodeProject().getFolder(this.getCompiledCodePath().removeLastSegments(1));
             cleanFolder(classCodeFolder);
@@ -599,7 +612,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 codeFile.create(codeStream, true, null);
             } else {
                 codeFile.setContents(codeStream, true, false, null);
+
             }
+            // codeFile.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 
             processCode = null;
 
@@ -1050,6 +1065,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
+    @Override
     public List<String> extractAheadCommandSegments() {
         List<String> aheadSegments = new ArrayList<String>();
         if (isExportConfig()) {
@@ -1079,6 +1095,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return new Path(command).toPortableString();
     }
 
+    @Override
     protected String getRootWorkingDir(boolean withSep) {
         if (!isWinTargetPlatform() && (isExportConfig() || isRunAsExport())) {
             // "$ROOT_PATH/";
@@ -1273,7 +1290,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String[] addVMArguments(String[] strings) {
-        String[] vmargs = getJVMArgs(); //$NON-NLS-1$
+        String[] vmargs = getJVMArgs();
 
         RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         if (runProcessContext != null) {
@@ -1303,6 +1320,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return strings; // old
     }
 
+    @Override
     public String[] getJVMArgs() {
         String[] vmargs = getSettingsJVMArguments();
         /* check parameter won't happened on exportingJob */
