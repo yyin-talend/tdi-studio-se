@@ -24,7 +24,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.CommonExceptionHandler;
-import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -32,6 +31,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.maven.tools.creator.CreateMavenBundleTemplatePom;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
+import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -228,7 +228,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor {
         for (ModuleNeeded neededModule : neededModules) {
             libsRequiredByJob.add(neededModule.getModuleName());
         }
-        libsRequiredByJob.add(JavaUtils.ROUTINES_JAR);
+        libsRequiredByJob.addAll(PomUtil.getCodesExportJars(this.getProcess()));
         return libsRequiredByJob;
     }
 

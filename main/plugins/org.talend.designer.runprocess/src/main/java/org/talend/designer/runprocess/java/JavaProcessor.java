@@ -122,6 +122,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorConstants;
 import org.talend.designer.runprocess.ProcessorException;
@@ -1150,22 +1151,24 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (isExportConfig() || isRunAsExport()) {
             // current path.
             basePath.append('.');
-            basePath.append(classPathSeparator);
 
             if (rootWorkingDir.length() > 0) {
+                basePath.append(classPathSeparator);
                 // $ROOT_PATH
                 basePath.append(rootWorkingDir);
-                basePath.append(classPathSeparator);
             }
             if (isExternalUse()) { // for tRunJob with independent option and init pom for classpath
-                if (rootWorkingDir.length() > 0) {
-                    basePath.append(rootWorkingDir);
+                List<String> codesJars = PomUtil.getCodesExportJars(this.getProcess());
+                for (String codesJar : codesJars) {
+                    basePath.append(classPathSeparator);
+                    if (rootWorkingDir.length() > 0) {
+                        basePath.append(rootWorkingDir);
+                        basePath.append(JavaUtils.PATH_SEPARATOR);
+                    }
+                    basePath.append(getBaseLibPath());
                     basePath.append(JavaUtils.PATH_SEPARATOR);
+                    basePath.append(codesJar);
                 }
-                basePath.append(getBaseLibPath());
-                basePath.append(JavaUtils.PATH_SEPARATOR);
-                // routines.jar
-                basePath.append(JavaUtils.ROUTINES_JAR);
             } else {
                 String outputPath = getCodeLocation();
                 if (outputPath != null) {
@@ -1182,6 +1185,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                         }
                     }
                 }
+                basePath.append(classPathSeparator);
                 basePath.append(outputPath);
             }
 

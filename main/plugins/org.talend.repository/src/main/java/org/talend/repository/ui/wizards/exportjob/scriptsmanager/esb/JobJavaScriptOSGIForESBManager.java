@@ -28,10 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.Manifest;
 
-import aQute.bnd.osgi.Analyzer;
-import aQute.bnd.osgi.FileResource;
-import aQute.bnd.osgi.Jar;
-
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
@@ -40,7 +36,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IOsgiDependenciesService;
 import org.talend.core.PluginChecker;
@@ -80,6 +75,10 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JarBuilder;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.TemplateProcessor;
+
+import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.FileResource;
+import aQute.bnd.osgi.Jar;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -231,14 +230,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     @Override
     protected void addRoutinesResources(ExportFileResource[] processes, ExportFileResource libResource) {
-//        // Gets system routines
-//        List<URL> systemRoutineList = getSystemRoutine(processes);
-//        libResource.addResources(systemRoutineList);
-//        // Gets user routines
-//        List<URL> userRoutineList = getUserRoutine(processes);
-//        libResource.addResources(userRoutineList);
-//        // pigudf
-//        // libResource.addResource(getPigudf(processes))
+        // // Gets system routines
+        // List<URL> systemRoutineList = getSystemRoutine(processes);
+        // libResource.addResources(systemRoutineList);
+        // // Gets user routines
+        // List<URL> userRoutineList = getUserRoutine(processes);
+        // libResource.addResources(userRoutineList);
+        // // pigudf
+        // // libResource.addResource(getPigudf(processes))
         boolean useBeans = false;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
             ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
@@ -257,7 +256,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         include.add(includePath);
 
-        File jarFile = new File(getTmpFolder() + File.separatorChar + JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
+        File jarFile = new File(getTmpFolder() + File.separatorChar + JavaUtils.ROUTINES_JAR);
 
         // make a jar file of system routine classes
         File classRootFileLocation = getClassRootFileLocation();
@@ -630,25 +629,23 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         contextParams.put("job", collectJobInfo(processItem, process)); //$NON-NLS-1$
 
         TemplateProcessor.processTemplate("REST_JOB_BLUEPRINT_CONFIG", //$NON-NLS-1$
-            contextParams, targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB_REST));
+                contextParams, targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB_REST));
 
         return targetFile.toURI().toURL();
     }
 
     private static final String TEMPLATE_BLUEPRINT_JOB = "/resources/job-template.xml"; //$NON-NLS-1$
 
-    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process)
-        throws IOException {
+    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process) throws IOException {
         TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", //$NON-NLS-1$
-            collectJobInfo(processItem, process), targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB));
+                collectJobInfo(processItem, process), targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB));
     }
 
     private static final String TEMPLATE_BLUEPRINT_ROUTE = "/resources/route-template.xml"; //$NON-NLS-1$
 
-    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process)
-        throws IOException {
+    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process) throws IOException {
         TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", //$NON-NLS-1$
-            collectRouteInfo(processItem, process), targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_ROUTE));
+                collectRouteInfo(processItem, process), targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_ROUTE));
     }
 
     private static Map<String, Object> collectRouteInfo(ProcessItem processItem, IProcess process) {

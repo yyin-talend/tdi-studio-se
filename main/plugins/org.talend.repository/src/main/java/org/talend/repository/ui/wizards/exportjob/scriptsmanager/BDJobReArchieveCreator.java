@@ -42,6 +42,7 @@ import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.maven.utils.PomUtil;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobExportReArchieveCreator;
 import org.talend.utils.io.FilesUtils;
@@ -202,24 +203,25 @@ public class BDJobReArchieveCreator {
         List<File> neededLibFiles = new ArrayList<File>();
         File libFolder = new File(zipTmpFolder, JavaUtils.JAVA_LIB_DIRECTORY);
 
-        // like the JobJavaScriptsManager.analysisModules
+        Set<String> compiledModulesSet = new HashSet<String>(100);
 
         Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                 processItem.getProperty().getId(), processItem.getProperty().getVersion());
-        if (neededModules.isEmpty() && GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
             IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                     IDesignerCoreService.class);
             IProcess process = designerCoreService.getProcessFromProcessItem(processItem);
-            neededModules = process.getNeededModules(true);
+            compiledModulesSet.addAll(PomUtil.getCodesExportJars(process));
+            if (neededModules.isEmpty()) {
+                neededModules = process.getNeededModules(true);
+            }
         }
 
-        Set<String> compiledModulesSet = new HashSet<String>(100);
         for (ModuleNeeded module : neededModules) {
             if (((isSpecialMR || isSparkWithHDInsight) && module.isMrRequired()) || (!isSpecialMR && !isSparkWithHDInsight)) {
                 compiledModulesSet.add(module.getModuleName());
             }
         }
-        compiledModulesSet.add(JavaUtils.ROUTINE_JAR_NAME + FileExtensions.JAR_FILE_SUFFIX);
 
         Set<String> jarNames = new HashSet<String>();
         try {

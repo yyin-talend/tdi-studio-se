@@ -36,7 +36,6 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
-import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -63,6 +62,7 @@ import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.maven.tools.MavenPomSynchronizer;
+import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.maven.utils.TalendCodeProjectUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -144,7 +144,7 @@ public class JavaProcessorUtilities {
                 libNames.add(itLibs.next().getModuleName());
             }
         }
-        libNames.add(JavaUtils.ROUTINES_JAR);
+        libNames.addAll(PomUtil.getCodesExportJars(process));
         return libNames;
     }
 
