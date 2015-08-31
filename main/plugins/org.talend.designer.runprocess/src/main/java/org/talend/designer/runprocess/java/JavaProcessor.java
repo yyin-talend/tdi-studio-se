@@ -279,6 +279,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         initCodePath(initContext);
     }
 
+    @Override
     protected boolean isStandardJob() {
         return property != null && property.getItem() != null && process instanceof IProcess2;
     }
@@ -426,6 +427,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         this.doClean = doClean;
     }
 
+    @Override
     public void cleanBeforeGenerate(int options) throws ProcessorException {
         setDoClean(false);
         if (this.getProcess().isNeedRegenerateCode() || this.getProcess() instanceof IProcess2
@@ -438,12 +440,22 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         // clean the generated java source codes.
         if (BitwiseOptionUtils.containOption(options, CLEAN_JAVA_CODES)) {
             IFolder javaCodeFolder = getCodeProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
-            cleanFolder(javaCodeFolder);
+            // cleanFolder(javaCodeFolder);
+            try {
+                if (javaCodeFolder != null) {
+                    for (IResource resource : javaCodeFolder.members()) {
+                        if ("java".equals(resource.getFileExtension())) {//$NON-NLS-1$
+                            ((IFile) resource).setContents(new ByteArrayInputStream(new byte[0]), IResource.KEEP_HISTORY, null);
+                        }
+                    }
+                }
+            } catch (CoreException e) {
+                // do nothing
+            }
 
             IFolder classCodeFolder = getCodeProject().getFolder(this.getCompiledCodePath().removeLastSegments(1));
             cleanFolder(classCodeFolder);
         }
-
         // clean the context groups. Sometimes, if remove the context group, the context file be kept still.
         if (BitwiseOptionUtils.containOption(options, CLEAN_CONTEXTS)) {
             IFolder srcContextFolder = getCodeProject().getFolder(this.getSrcContextPath().removeLastSegments(1));
@@ -1066,6 +1078,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
+    @Override
     public List<String> extractAheadCommandSegments() {
         List<String> aheadSegments = new ArrayList<String>();
         if (isExportConfig()) {
@@ -1095,6 +1108,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return new Path(command).toPortableString();
     }
 
+    @Override
     protected String getRootWorkingDir(boolean withSep) {
         if (!isWinTargetPlatform() && (isExportConfig() || isRunAsExport())) {
             // "$ROOT_PATH/";
@@ -1289,29 +1303,26 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     }
 
     protected String[] addVMArguments(String[] strings) {
-        String[] vmargs = getJVMArgs(); //$NON-NLS-1$
-        
+        String[] vmargs = getJVMArgs();
+
         RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         if (runProcessContext != null) {
-        	ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
-        	if (config != null && config.getCommandlineServerConfig() == null) {
-        		if (config.isRemote()) {
-        			if (config.isUseJMX()) {
-        				String[] jmxArg = new String[]{
-        						"-Dcom.sun.management.jmxremote",
-        						"-Dcom.sun.management.jmxremote.port=" + config.getRemotePort(),
-        						"-Dcom.sun.management.jmxremote.ssl=false",
-        						"-Dcom.sun.management.jmxremote.authenticate=false "
-        				};
-        				String[] _vmargs = new String[vmargs.length + jmxArg.length];
-        				System.arraycopy(vmargs, 0, _vmargs, 0, vmargs.length);
-        				System.arraycopy(jmxArg, 0, _vmargs, vmargs.length, jmxArg.length);
-        				vmargs = _vmargs;
-        			}
-        		}
-        	}
-		}
-        
+            ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
+            if (config != null && config.getCommandlineServerConfig() == null) {
+                if (config.isRemote()) {
+                    if (config.isUseJMX()) {
+                        String[] jmxArg = new String[] { "-Dcom.sun.management.jmxremote",
+                                "-Dcom.sun.management.jmxremote.port=" + config.getRemotePort(),
+                                "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false " };
+                        String[] _vmargs = new String[vmargs.length + jmxArg.length];
+                        System.arraycopy(vmargs, 0, _vmargs, 0, vmargs.length);
+                        System.arraycopy(jmxArg, 0, _vmargs, vmargs.length, jmxArg.length);
+                        vmargs = _vmargs;
+                    }
+                }
+            }
+        }
+
         if (vmargs != null && vmargs.length > 0) {
             String[] lines = new String[strings.length + vmargs.length];
             System.arraycopy(strings, 0, lines, 0, 1);
@@ -1322,6 +1333,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return strings; // old
     }
 
+    @Override
     public String[] getJVMArgs() {
         String[] vmargs = getSettingsJVMArguments();
         /* check parameter won't happened on exportingJob */
