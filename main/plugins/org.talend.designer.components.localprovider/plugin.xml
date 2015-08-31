@@ -2441,6 +2441,52 @@
             context="plugin:org.talend.libraries.hadoop.hdp.2.2"
             uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.2/lib/tezServer/zookeeper-3.4.6.jar">
         </libraryNeeded>
+
+        <!-- group of spark hive libraries -->
+        <libraryNeededGroup
+                description="The lastest SPARK HIVE libraries of CDH 5.4"
+                id="SPARK-HIVE-LIB-CDH_5_4_LATEST"
+                name="SPARK-HIVE-LIB-CDH_5_4_LATEST"  >
+             <library
+                id="hive-exec-cdh5.4-lastest">
+             </library>
+             <library
+                 id="hive-metastore-cdh5.4-lastest">
+             </library>
+             <library
+                 id="libfb303-0.9.0.jar">
+             </library>
+        </libraryNeededGroup>
+
+        <libraryNeededGroup
+                description="The lastest SPARK HIVE libraries of MAPR410"
+                id="SPARK-HIVE-LIB-MAPR410_LATEST"
+                name="SPARK-HIVE-LIB-MAPR410_LATEST"  >
+             <library
+                id="hive-metastore-mapr-4.1.X-lastest">
+             </library>
+             <library
+                id="hive-exec-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="libthrift-0.9.0.jar">
+             </library>
+        </libraryNeededGroup>
+
+        <libraryNeededGroup
+                description="The lastest SPARK HIVE libraries of EMR400"
+                id="SPARK-HIVE-LIB-EMR400_LATEST"
+                name="SPARK-HIVE-LIB-EMR400_LATEST"  >
+             <library
+                id="hive-metastore-emr400-latest">
+             </library>
+             <library
+                id="hive-exec-emr400-latest">
+             </library>
+             <library
+                 id="libthrift-0.9.0.jar">
+             </library>
+        </libraryNeededGroup>
         
     	<!-- group of hdfs libraries -->
     	<libraryNeededGroup
