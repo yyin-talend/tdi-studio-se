@@ -52,22 +52,19 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.properties.ExchangeUser;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.SVNConstant;
-import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.runtime.CoreRuntimePlugin;
-import org.talend.core.service.IExchangeService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.services.ISVNProviderService;
+import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.registration.wizards.register.TalendForgeDialog;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -117,6 +114,9 @@ public class LoginHelper {
     protected PreferenceManipulator prefManipulator;
 
     public static boolean isRestart;
+
+    private IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+            IBrandingService.class);
 
     public static LoginHelper getInstance() {
         if (instance == null) {
@@ -670,18 +670,30 @@ public class LoginHelper {
         return filePath;
     }
 
-    protected static List<ConnectionBean> filterUsableConnections(List<ConnectionBean> iStoredConnections) {
+    protected List<ConnectionBean> filterUsableConnections(List<ConnectionBean> iStoredConnections) {
         if (iStoredConnections == null) {
             return null;
         }
         List<ConnectionBean> filteredConnections = new ArrayList<ConnectionBean>(iStoredConnections);
-        if (PluginChecker.isSVNProviderPluginLoaded()) {
+        boolean isOnlyRemoteConnection = false;
+        IBrandingConfiguration brandingConfiguration = brandingService.getBrandingConfiguration();
+        if (brandingConfiguration != null) {
+            isOnlyRemoteConnection = brandingConfiguration.isOnlyRemoteConnection();
+        }
+        if (!isOnlyRemoteConnection && PluginChecker.isSVNProviderPluginLoaded()) {
             // if this plugin loaded, then means support remote connections, then no need to filter
             return filteredConnections;
         }
+
+        // can be two case: 1 only local connection, 2 only remote connection
         Iterator<ConnectionBean> connectionBeanIter = filteredConnections.iterator();
         while (connectionBeanIter.hasNext()) {
-            if (LoginHelper.isRemoteConnection(connectionBeanIter.next())) {
+            boolean isRemoteConnection = LoginHelper.isRemoteConnection(connectionBeanIter.next());
+            if (isOnlyRemoteConnection && !isRemoteConnection) {
+                // only remote connection, should remove local
+                connectionBeanIter.remove();
+            } else if (!isOnlyRemoteConnection && isRemoteConnection) {
+                // only local connection, should remove remote
                 connectionBeanIter.remove();
             }
         }
