@@ -441,9 +441,20 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             // cleanFolder(javaCodeFolder);
             try {
                 if (javaCodeFolder != null) {
+                    String processSourceFileName = null;
+                    if (process != null) {
+                        processSourceFileName = process.getName() + ".java"; //$NON-NLS-1$
+                    }
                     for (IResource resource : javaCodeFolder.members()) {
                         if ("java".equals(resource.getFileExtension())) {//$NON-NLS-1$
-                            ((IFile) resource).setContents(new ByteArrayInputStream(new byte[0]), IResource.KEEP_HISTORY, null);
+                            if (processSourceFileName != null && processSourceFileName.equals(resource.getName())) {
+                                ((IFile) resource).setContents(new ByteArrayInputStream(new byte[0]), IResource.KEEP_HISTORY,
+                                        null);
+                            } else {
+                                FilesUtils.deleteFile(resource.getLocation().toFile(), true);
+                            }
+                        } else {
+                            FilesUtils.deleteFile(resource.getLocation().toFile(), true);
                         }
                     }
                 }
