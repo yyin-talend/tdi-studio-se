@@ -97,7 +97,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
         if (storedConnections == null) {
             storedConnections = new ArrayList<ConnectionBean>();
         } else {
-            storedConnections = LoginHelper.filterUsableConnections(storedConnections);
+            storedConnections = loginHelper.filterUsableConnections(storedConnections);
         }
         if (storedConnections.size() == 0) {
             defaultConnectionBean = LoginHelper.createDefaultLocalConnection();

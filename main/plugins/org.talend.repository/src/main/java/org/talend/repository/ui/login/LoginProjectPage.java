@@ -530,7 +530,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected void fillUIContents() {
         boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
         List<ConnectionBean> storedConnections = loginHelper.getStoredConnections();
-        storedConnections = LoginHelper.filterUsableConnections(storedConnections);
+        storedConnections = loginHelper.filterUsableConnections(storedConnections);
         for (ConnectionBean connectionBean : storedConnections) {
             String user2 = connectionBean.getUser();
             String repositoryId2 = connectionBean.getRepositoryId();
@@ -1319,7 +1319,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     errorManager.clearAllMessages();
                 } else {
                     if (LoginHelper.isRemoteConnection(getConnection())) {
-                        errorManager.setErrMessage(Messages.getString("LoginProjectPage.project_need.remote")); //$NON-NLS-1$
+                        errorManager.setErrMessage(Messages.getString("LoginProjectPage.project_need.remote.v1")); //$NON-NLS-1$
                     } else {
                         errorManager.setErrMessage(Messages.getString("LoginComposite.PROJECT_NEED")); //$NON-NLS-1$
                     }
