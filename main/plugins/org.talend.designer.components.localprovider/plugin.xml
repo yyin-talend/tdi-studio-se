@@ -2375,8 +2375,8 @@
         <!-- group of spark hive libraries -->
         <libraryNeededGroup
                 description="The lastest SPARK HIVE libraries of CDH 5.4"
-                id="SPARK-HIVE-LIB-CDH_5_4_LASTEST"
-                name="SPARK-HIVE-LIB-CDH_5_4_LASTEST"  >
+                id="SPARK-HIVE-LIB-CDH_5_4_LATEST"
+                name="SPARK-HIVE-LIB-CDH_5_4_LATEST"  >
              <library
                 id="hive-exec-cdh5.4-lastest">
              </library>
@@ -2390,8 +2390,8 @@
 
         <libraryNeededGroup
                 description="The lastest SPARK HIVE libraries of MAPR410"
-                id="SPARK-HIVE-LIB-MAPR410_LASTEST"
-                name="SPARK-HIVE-LIB-MAPR410_LASTEST"  >
+                id="SPARK-HIVE-LIB-MAPR410_LATEST"
+                name="SPARK-HIVE-LIB-MAPR410_LATEST"  >
              <library
                 id="hive-metastore-mapr-4.1.X-lastest">
              </library>
@@ -2405,8 +2405,8 @@
 
         <libraryNeededGroup
                 description="The lastest SPARK HIVE libraries of EMR400"
-                id="SPARK-HIVE-LIB-EMR400_LASTEST"
-                name="SPARK-HIVE-LIB-EMR400_LASTEST"  >
+                id="SPARK-HIVE-LIB-EMR400_LATEST"
+                name="SPARK-HIVE-LIB-EMR400_LATEST"  >
              <library
                 id="hive-metastore-emr400-latest">
              </library>
