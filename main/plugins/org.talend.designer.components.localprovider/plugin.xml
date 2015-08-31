@@ -2469,7 +2469,7 @@
                 id="hive-exec-mapr-4.1.X-lastest">
              </library>
              <library
-                 id="libthrift-0.9.0.jar">
+                 id="libfb303-0.9.0.jar">
              </library>
         </libraryNeededGroup>
 
@@ -2484,7 +2484,7 @@
                 id="hive-exec-emr400-latest">
              </library>
              <library
-                 id="libthrift-0.9.0.jar">
+                 id="libfb303-0.9.0.jar">
              </library>
         </libraryNeededGroup>
         
