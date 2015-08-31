@@ -20,6 +20,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.PatternMatcherInput;
@@ -182,40 +184,11 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
-    private IFile getRoutineFile(RoutineItem routineItem) throws SystemException {
-        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-        ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
-        if (talendProcessJavaProject == null) {
-            return null;
-        }
-        IFolder routineFolder = talendProcessJavaProject.getSrcSubFolder(null, routineItem.getPackageType());
-        IFile file = routineFolder.getFile(routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
-        return file;
-    }
-
-    private IFile getProcessFile(ProcessItem item) throws SystemException {
-        String projectFolderName = JavaResourcesHelper.getProjectFolderName(item);
-        String jobName = item.getProperty().getLabel();
-        String folderName = JavaResourcesHelper.getJobFolderName(jobName, item.getProperty().getVersion());
-        return getProcessFile(projectFolderName, folderName, jobName);
-    }
-
     private IFile getTestContainerFile(ProcessItem item) throws SystemException {
         String projectFolderName = JavaResourcesHelper.getProjectFolderName(item);
         String jobName = item.getProperty().getLabel();
         String folderName = JavaResourcesHelper.getJobFolderName(jobName, item.getProperty().getVersion());
         return getTestContainerFile(item, projectFolderName, folderName, jobName);
-    }
-
-    private IFile getProcessFile(String projectFolderName, String folderName, String jobName) {
-        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-        ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
-        if (talendProcessJavaProject == null) {
-            return null;
-        }
-        IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
-        IFile file = srcFolder.getFile(projectFolderName + '/' + folderName + '/' + jobName + JavaUtils.JAVA_EXTENSION);
-        return file;
     }
 
     private IFile getTestContainerFile(ProcessItem item, String projectFolderName, String folderName, String jobName) {
@@ -292,12 +265,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
         if (isTestContainer) {
             return getTestContainerFile((ProcessItem) item);
-        } else if (item instanceof RoutineItem) {
-            return getRoutineFile((RoutineItem) item);
-        } else if (item instanceof ProcessItem) {
-            return getProcessFile((ProcessItem) item);
         }
-        return null;
+        return super.getFile(item);
     }
 
     /*
@@ -318,6 +287,11 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         //
         String regexp = "public(\\s)+class(\\s)+\\w+(\\s)+\\{";//$NON-NLS-1$
         routineContent = routineContent.replaceFirst(regexp, "public class " + label + " {");//$NON-NLS-1$//$NON-NLS-2$
+        // constructor
+        Matcher matcher = Pattern.compile("(.*public\\s+)(\\w+)(\\s*\\(.*)", Pattern.DOTALL).matcher(routineContent); //$NON-NLS-1$
+        if (matcher.find()) { 
+            routineContent = matcher.group(1) + label + matcher.group(3);
+        }
         routineItem.getContent().setInnerContent(routineContent.getBytes());
     }
 
@@ -370,19 +344,6 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
 
         pigudfItem.getContent().setInnerContent(routineContent.getBytes());
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * qli modified to fix the bug 5400 and 6185.
-     * 
-     * @seeorg.talend.designer.codegen.AbstractRoutineSynchronizer#renameRoutineClass(org.talend.core.model.properties.
-     * RoutineItem, java.lang.String)
-     */
-    @Override
-    public void renameBeanClass(Item beanItem) {
 
     }
 
