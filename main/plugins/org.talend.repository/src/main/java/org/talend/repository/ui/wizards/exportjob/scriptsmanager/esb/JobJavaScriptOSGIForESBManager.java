@@ -139,7 +139,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     jobVersion = getSelectedJobVersion();
                 }
                 final ERepositoryObjectType type = process.getNode().getObjectType();
-                if (ERepositoryObjectType.PROCESS.equals(type) || ERepositoryObjectType.PROCESS_MR.equals(type)) {
+                if (ERepositoryObjectType.PROCESS == type || ERepositoryObjectType.PROCESS_MR == type) {
                     itemType = JOB;
                 } else {
                     itemType = ROUTE;
