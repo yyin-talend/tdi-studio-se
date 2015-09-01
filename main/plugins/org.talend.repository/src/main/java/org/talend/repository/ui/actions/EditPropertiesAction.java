@@ -47,9 +47,9 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -73,6 +73,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.services.IUIRefresher;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.metadata.managment.ui.wizard.PropertiesWizard;
@@ -188,6 +189,17 @@ public class EditPropertiesAction extends AContextualAction {
         return new PropertiesWizard(object, path, getNeededVersion() == null);
     }
 
+    private static boolean isInstanceofCamelBeans(Item item) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (service != null && service.isInstanceofCamelBeans(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * delete the used routine java file if the routine is renamed. This method is added for solving bug 1321, only
      * supply to talend java version.
@@ -201,8 +213,7 @@ public class EditPropertiesAction extends AContextualAction {
             return;
         }
 
-        if (!(node.getObjectType() == ERepositoryObjectType.ROUTINES || node.getObjectType() == ERepositoryObjectType
-                .valueOf("Beans"))) {
+        if (!(node.getObjectType() == ERepositoryObjectType.ROUTINES || isInstanceofCamelBeans(node.getObject().getProperty().getItem()))) {
             return;
         }
         if (originalName.equals(node.getObject().getProperty().getLabel())) {
@@ -383,7 +394,7 @@ public class EditPropertiesAction extends AContextualAction {
                             canWork = false;
                         }
                     } else {
-                        canWork = false;
+                        canWork = isInstanceofCamelBeans(node.getObject().getProperty().getItem());
                     }
                     break;
                 default:
