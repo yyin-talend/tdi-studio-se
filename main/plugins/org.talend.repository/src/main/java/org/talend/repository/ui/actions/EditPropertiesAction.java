@@ -127,10 +127,12 @@ public class EditPropertiesAction extends AContextualAction {
         }
         IPath path = RepositoryNodeUtilities.getPath(node);
         String originalName = object.getLabel();
-        PropertiesWizard wizard = null;
-        if (ERepositoryObjectType.ROUTINES == object.getRepositoryObjectType()) {
+        final PropertiesWizard wizard;
+        if (ERepositoryObjectType.ROUTINES == object.getRepositoryObjectType()
+            || isInstanceofCamelBeans(object.getRepositoryObjectType())) {
             wizard = new EditRoutinePropertiesWizard(object, path, getNeededVersion() == null);
-        } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()) {
+        } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()
+            || isInstanceofCamelRoutes(object.getRepositoryObjectType())) {
             wizard = new EditProcessPropertiesWizard(object, path, getNeededVersion() == null);
         } else {
             wizard = getPropertiesWizard(object, path);
