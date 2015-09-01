@@ -31,6 +31,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
@@ -66,6 +67,8 @@ public class BDJobReArchieveCreator {
     public boolean isMRWithHDInsight() {
         if (isMRWithHDInsight == null && processItem != null) {
             isMRWithHDInsight = false;
+            // boolean isMRJob = isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR,
+            // HadoopConstants.FRAMEWORK_MAPREDUCE);
             EList<ElementParameterType> parameters = processItem.getProcess().getParameters().getElementParameter();
             for (ElementParameterType pt : parameters) {
                 if (pt.getName().equals("DISTRIBUTION")
@@ -79,10 +82,24 @@ public class BDJobReArchieveCreator {
     }
 
     public boolean isStormJob() {
-        if (isStormJob == null && processItem != null) {
-            isStormJob = ERepositoryObjectType.getItemType(processItem).equals(ERepositoryObjectType.PROCESS_STORM);
+        if (isStormJob == null) {
+            isStormJob = isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_STORM);
         }
         return isStormJob;
+    }
+
+    private boolean isBDJobWithFramework(ERepositoryObjectType objectType, String frameworkName) {
+        if (processItem != null) {
+            // Storm/SparkStreaming(PROCESS_STORM), MR/Spark(PROCESS_MR)
+            if (ERepositoryObjectType.getItemType(processItem).equals(objectType)) { // have same type
+                Property property = processItem.getProperty();
+                if (property != null && property.getAdditionalProperties() != null
+                        && frameworkName.equals(property.getAdditionalProperties().get(HadoopConstants.FRAMEWORK))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void create(File zipFile) {
@@ -112,7 +129,8 @@ public class BDJobReArchieveCreator {
 
             String jobJarName = JavaResourcesHelper.getJobJarName(property.getLabel(), property.getVersion())
                     + FileExtensions.JAR_FILE_SUFFIX;
-            File originalJarFile = new File(zipTmpFolder, label.toLowerCase() + '/' + jobJarName);
+            // same the the job pom assembly for package.
+            File originalJarFile = new File(zipTmpFolder, label + '/' + jobJarName);
             if (!originalJarFile.exists()) { // can't find the job jar.
                 return;
             }
