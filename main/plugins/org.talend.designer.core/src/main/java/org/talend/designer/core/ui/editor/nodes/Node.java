@@ -4106,16 +4106,16 @@ public class Node extends Element implements IGraphicalNode {
 
                                 boolean isCustom = ("LOCAL".equals(sparkMode) && "CUSTOM".equals(sparkLocalVersion)) || ((!"LOCAL".equals(sparkMode)) && "CUSTOM".equals(distribution)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-                                org.talend.core.hadoop.api.components.SparkStreamingComponent sparkStreamingDistrib = null;
+                                org.talend.core.hadoop.api.components.SparkComponent sparkDistrib = null;
                                 try {
-                                    sparkStreamingDistrib = (org.talend.core.hadoop.api.components.SparkStreamingComponent) org.talend.core.hadoop.api.DistributionFactory
+                                    sparkDistrib = (org.talend.core.hadoop.api.components.SparkComponent) org.talend.core.hadoop.api.DistributionFactory
                                             .buildDistribution(distribution, sparkVersion);
                                 } catch (java.lang.Exception e) {
                                     e.printStackTrace();
                                 }
 
-                                if (sparkStreamingDistrib != null) {
-                                    boolean isSpark13 = (isCustom && "SPARK_130".equals(sparkCustomVersion)) || !sparkStreamingDistrib.isSpark14(); //$NON-NLS-1$ 
+                                if (sparkDistrib != null) {
+                                    boolean isSpark13 = (isCustom && "SPARK_130".equals(sparkCustomVersion)) || !sparkDistrib.isSpark14(); //$NON-NLS-1$ 
 
                                     if (isSpark13) {
                                         String message = Messages.getString("Node.checkSparkTXXXInputDataFrame"); //$NON-NLS-1$;
