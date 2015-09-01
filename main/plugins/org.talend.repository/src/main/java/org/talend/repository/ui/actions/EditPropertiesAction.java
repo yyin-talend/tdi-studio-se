@@ -82,8 +82,8 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -108,7 +108,7 @@ public class EditPropertiesAction extends AContextualAction {
     protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
-        RepositoryNode node = (RepositoryNode) obj;
+        IRepositoryNode node = (IRepositoryNode) obj;
         // try {
         // ProxyRepositoryFactory.getInstance().initialize();
         // } catch (PersistenceException e1) {
@@ -189,17 +189,27 @@ public class EditPropertiesAction extends AContextualAction {
         return new PropertiesWizard(object, path, getNeededVersion() == null);
     }
 
-    private static boolean isInstanceofCamelBeans(Item item) {
+    private static boolean isInstanceofCamelBeans(final ERepositoryObjectType type) {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
             ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                     ICamelDesignerCoreService.class);
-            if (service != null && service.isInstanceofCamelBeans(item)) {
-                return true;
+            if (service != null) {
+                return type == service.getBeansType();
             }
         }
         return false;
     }
 
+    private static boolean isInstanceofCamelRoutes(final ERepositoryObjectType type) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (service != null) {
+                return type == service.getRoutes();
+            }
+        }
+        return false;
+    }
     /**
      * delete the used routine java file if the routine is renamed. This method is added for solving bug 1321, only
      * supply to talend java version.
@@ -208,12 +218,12 @@ public class EditPropertiesAction extends AContextualAction {
      * @param node
      * @param originalName
      */
-    protected void processRoutineRenameOperation(String originalName, RepositoryNode node, IPath path) {
+    protected void processRoutineRenameOperation(String originalName, final IRepositoryNode node, final IPath path) {
         if (LanguageManager.getCurrentLanguage() != ECodeLanguage.JAVA) {
             return;
         }
 
-        if (!(node.getObjectType() == ERepositoryObjectType.ROUTINES || isInstanceofCamelBeans(node.getObject().getProperty().getItem()))) {
+        if (!(node.getObjectType() == ERepositoryObjectType.ROUTINES || isInstanceofCamelBeans(node.getObjectType()))) {
             return;
         }
         if (originalName.equals(node.getObject().getProperty().getLabel())) {
@@ -223,7 +233,7 @@ public class EditPropertiesAction extends AContextualAction {
 
     }
 
-    protected void processRename(RepositoryNode node, String originalName) {
+    protected void processRename(IRepositoryNode node, String originalName) {
         try {
             IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
             ITalendProcessJavaProject talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
@@ -324,7 +334,7 @@ public class EditPropertiesAction extends AContextualAction {
         }
     }
 
-    protected IPackageFragment getPackageFragment(IPackageFragmentRoot root, RepositoryNode node) {
+    protected IPackageFragment getPackageFragment(IPackageFragmentRoot root, IRepositoryNode node) {
         String folder = node.getContentType().getFolder();
         String packageName = Path.fromOSString(folder).lastSegment();
         return root.getPackageFragment(packageName);
@@ -336,7 +346,7 @@ public class EditPropertiesAction extends AContextualAction {
      * @param node
      * @return
      */
-    protected IEditorPart getCorrespondingEditor(RepositoryNode node) {
+    protected IEditorPart getCorrespondingEditor(final IRepositoryNode node) {
         IEditorReference[] eidtors = getActivePage().getEditorReferences();
 
         for (IEditorReference eidtor : eidtors) {
@@ -365,8 +375,8 @@ public class EditPropertiesAction extends AContextualAction {
         boolean canWork = selection.size() == 1;
         if (canWork) {
             Object o = selection.getFirstElement();
-            if (o instanceof RepositoryNode) {
-                RepositoryNode node = (RepositoryNode) o;
+            if (o instanceof IRepositoryNode) {
+                IRepositoryNode node = (IRepositoryNode) o;
                 switch (node.getType()) {
                 case REPOSITORY_ELEMENT:
                     if (node.getObjectType() == ERepositoryObjectType.BUSINESS_PROCESS
@@ -394,7 +404,8 @@ public class EditPropertiesAction extends AContextualAction {
                             canWork = false;
                         }
                     } else {
-                        canWork = isInstanceofCamelBeans(node.getObject().getProperty().getItem());
+                        canWork = isInstanceofCamelRoutes(node.getObjectType())
+                            || isInstanceofCamelBeans(node.getObjectType());
                     }
                     break;
                 default:
