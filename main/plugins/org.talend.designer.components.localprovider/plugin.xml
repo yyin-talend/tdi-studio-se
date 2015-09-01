@@ -38,9 +38,9 @@
         <!-- hd insight common libraries -->
         <libraryNeeded
             context="Talend API to execute a job on HD Insight"
-            id="talend-webhcat-launcher-1.0.0.jar"
-            name="talend-webhcat-launcher-1.0.0.jar"
-            mvn_uri="mvn:org.talend.libraries/talend-webhcat-launcher-1.0.0/6.0.0">
+            id="talend-bigdata-launcher-1.0.0-20150901.jar"
+            name="talend-bigdata-launcher-1.0.0-20150901.jar"
+            mvn_uri="mvn:org.talend.libraries/talend-bigdata-launcher-1.0.0-20150901/6.0.0">
         </libraryNeeded>
         <libraryNeeded
             context="plugin:org.talend.libraries.apache.cxf"
@@ -7078,7 +7078,7 @@
                 id="HD_INSIGHT_COMMON_LIBRARIES_LATEST"
                 name="HD_INSIGHT_COMMON_LIBRARIES_LATEST">
             <library
-                id="talend-webhcat-launcher-1.0.0.jar">
+                id="talend-bigdata-launcher-1.0.0-20150901.jar">
             </library>
             <library
                 id="cxf-api-2.7.7.jar">
