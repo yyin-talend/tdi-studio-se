@@ -202,7 +202,7 @@ public class EditPropertiesAction extends AContextualAction {
         return false;
     }
 
-    private static boolean isInstanceofCamelRoutes(final ERepositoryObjectType type) {
+    protected static boolean isInstanceofCamelRoutes(final ERepositoryObjectType type) {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
             ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                     ICamelDesignerCoreService.class);
