@@ -842,6 +842,8 @@ public class MainComposite extends AbstractTabComposite {
         } else if (!btnConfirm.isDisposed()
                 && !descriptionText.getText().equals(StringUtils.trimToEmpty(repositoryObject.getDescription()))) {
             btnConfirm.setEnabled(true);
+        } else if (nameText.getText().equals(repositoryObject.getLabel())) {
+            btnConfirm.setEnabled(false);
         }
     }
 
