@@ -14,14 +14,34 @@ imports="
 "
 %>
 <%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
-
+class StrUtils{
+    public String transform(String content){
+           String result = null;
+           content = content.trim();
+           String[] splitArr = content.split("\\s");
+           int lgth = splitArr.length;
+           if(lgth > 1){// has expr alias
+             result = "src." + splitArr[lgth - 1];
+           }else{
+             int index = content.indexOf(".");
+             if(index != -1){
+                 result = "src" + content.substring(index);
+             }else{
+                 result = content;
+             }
+           }
+           return result;
+    }
+}
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
-
+%>
+   StrUtils strUtil_<%= cid %> = new StrUtils();
+<%
 	String dbtable = null;
 	String uniqueNameConnection = null;
 	INode previousNode = null;
@@ -218,7 +238,13 @@ for(Column colStmt:stmtStructure){
 		}else{
 			insertColName.append(colStmt.getName()+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);
-			updateSetStmt.append(colStmt.getName()+"= src\"+ routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName)[ "+ counterOuter + "].substring(routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName)["+ counterOuter + "].indexOf(\".\"))+\"" +suffix);
+			            updateSetStmt.append(
+                colStmt.getName()
+                + "= \"+ strUtil_"
+                + cid
+                + ".transform(routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName)[" + counterOuter + "]) +\""
+                + suffix
+            );
 		}
 		counterOuter ++;
 }
