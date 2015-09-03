@@ -55,7 +55,7 @@ public class BDJobReArchieveCreator {
 
     private ProcessItem processItem;
 
-    private Boolean isMRWithHDInsight, isStormJob;
+    private Boolean isMRWithHDInsight, isStormJob, isSparkWithHDInsight;
 
     public BDJobReArchieveCreator(ProcessItem processItem) {
         this.processItem = processItem;
@@ -67,25 +67,51 @@ public class BDJobReArchieveCreator {
     public boolean isMRWithHDInsight() {
         if (isMRWithHDInsight == null && processItem != null) {
             isMRWithHDInsight = false;
-            // boolean isMRJob = isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR,
-            // HadoopConstants.FRAMEWORK_MAPREDUCE);
-            EList<ElementParameterType> parameters = processItem.getProcess().getParameters().getElementParameter();
-            for (ElementParameterType pt : parameters) {
-                if (pt.getName().equals("DISTRIBUTION")
-                        && EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName().equals(pt.getValue())) {
-                    isMRWithHDInsight = true;
-                    break;
+            if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_MAPREDUCE)) {
+                EList<ElementParameterType> parameters = processItem.getProcess().getParameters().getElementParameter();
+                for (ElementParameterType pt : parameters) {
+                    if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
+                            && EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName().equals(pt.getValue())) {
+                        isMRWithHDInsight = true;
+                        break;
+                    }
                 }
             }
         }
         return isMRWithHDInsight;
     }
 
-    public boolean isStormJob() {
+    public boolean isFatJar() {
         if (isStormJob == null) {
             isStormJob = isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_STORM);
         }
-        return isStormJob;
+
+        if (isSparkWithHDInsight == null) {
+            isSparkWithHDInsight = false;
+            if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_SPARK)) {
+                EList<ElementParameterType> parameters = processItem.getProcess().getParameters().getElementParameter();
+                boolean modeParameterVisited = false;
+                for (ElementParameterType pt : parameters) {
+                    if (pt.getName().equals("SPARK_MODE")) { //$NON-NLS-1$
+                        modeParameterVisited = true;
+                        if ("LOCAL".equals(pt.getValue())) { //$NON-NLS-1$
+                            isSparkWithHDInsight = false;
+                            break;
+                        }
+                    }
+                    if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
+                            && EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName().equals(pt.getValue())) {
+                        isSparkWithHDInsight = true;
+                        // If the SPARK_MODE parameter already have been processed and if we continue to loop, that
+                        // means we are not in a LOCAL mode context. We can break the loop.
+                        if (modeParameterVisited) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return isStormJob || isSparkWithHDInsight;
     }
 
     private boolean isBDJobWithFramework(ERepositoryObjectType objectType, String frameworkName) {
@@ -108,7 +134,7 @@ public class BDJobReArchieveCreator {
         }
 
         // check
-        if (!isMRWithHDInsight() && !isStormJob()) {
+        if (!isMRWithHDInsight() && !isFatJar()) {
             return;
         }
         Property property = processItem.getProperty();
@@ -119,8 +145,8 @@ public class BDJobReArchieveCreator {
         try {
             // create temp folders.
             creator.deleteTempFiles(); // clean temp folder
-            File zipTmpFolder = new File(creator.getTmpFolder(), "zip-" + label + "_" + version);
-            File jarTmpFolder = new File(creator.getTmpFolder(), "jar-" + label + "_" + version);
+            File zipTmpFolder = new File(creator.getTmpFolder(), "zip-" + label + "_" + version); //$NON-NLS-1$ //$NON-NLS-2$
+            File jarTmpFolder = new File(creator.getTmpFolder(), "jar-" + label + "_" + version); //$NON-NLS-1$ //$NON-NLS-2$
             zipTmpFolder.mkdirs();
             jarTmpFolder.mkdirs();
 
@@ -144,9 +170,9 @@ public class BDJobReArchieveCreator {
             jarbuilder.setExcludeDir(null);
             if (isMRWithHDInsight()) {
                 jarbuilder.setLibPath(getLibPath(zipTmpFolder, true));
-            } else if (isStormJob()) {
+            } else if (isFatJar()) {
                 jarbuilder.setLibPath(getLibPath(zipTmpFolder, false));
-                jarbuilder.setStorm(true);
+                jarbuilder.setFatJar(true);
             }
             jarbuilder.buildJar();
 
@@ -189,7 +215,7 @@ public class BDJobReArchieveCreator {
 
         Set<String> compiledModulesSet = new HashSet<String>(100);
         for (ModuleNeeded module : neededModules) {
-            if ((isSpecialMR && module.isMrRequired()) || !isSpecialMR) {
+            if (((isSpecialMR || isSparkWithHDInsight) && module.isMrRequired()) || (!isSpecialMR && !isSparkWithHDInsight)) {
                 compiledModulesSet.add(module.getModuleName());
             }
         }
@@ -225,28 +251,6 @@ public class BDJobReArchieveCreator {
                 }
             }
         }
-
-        // same lib as "-libjars"
-        // if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)
-        // && GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
-        // IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
-        // IRunProcessService.class);
-        // IDesignerCoreService designerCoreService = (IDesignerCoreService)
-        // GlobalServiceRegister.getDefault().getService(
-        // IDesignerCoreService.class);
-        //
-        // IProcess process = designerCoreService.getProcessFromProcessItem(processItem);
-        //
-        // File[] listFiles = libFolder.listFiles();
-        // if (process != null && listFiles != null) {
-        // Set<String> libJarsForBD = processService.getLibJarsForBD(process);
-        // for (File libFile : listFiles) {
-        // if (libJarsForBD.contains(libFile.getName())) {
-        // neededLibFiles.add(libFile);
-        // }
-        // }
-        // }
-        // }
         return neededLibFiles;
     }
 
