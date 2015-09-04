@@ -12,7 +12,6 @@
            http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <import resource="classpath:META-INF/spring/${name.toLowerCase()}.xml" />
     <osgix:cm-properties id="${name}.properties" persistent-id="${name}" />
 
 #if ($hasCXFSamlProvider)
@@ -108,16 +107,5 @@
     <camel:camelContext id="${name}">
         <camel:routeBuilder ref="route" />
     </camel:camelContext>
-
-	<!--osgi:service ref="route">
-		<osgi:interfaces>
-			<value>routines.system.api.TalendJob</value>
-			<value>routines.system.api.TalendESBRoute</value>
-		</osgi:interfaces>
-		<osgi:service-properties>
-			<entry key="name" value="${name}" />
-			<entry key="type" value="route" />
-		</osgi:service-properties>
-	</osgi:service-->
 
 </beans>
