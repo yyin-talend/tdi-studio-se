@@ -167,7 +167,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME,
                             generateRestJobBlueprintConfig(processItem, iProcess));
                 } else {
-                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateBlueprintConfig(processItem, iProcess));
+                    osgiResource.addResource(
+                        JOB.equals(itemType) ? FileConstants.BLUEPRINT_FOLDER_NAME :FileConstants.META_INF_FOLDER_NAME + "/spring",
+                        generateBlueprintConfig(processItem, iProcess));
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
