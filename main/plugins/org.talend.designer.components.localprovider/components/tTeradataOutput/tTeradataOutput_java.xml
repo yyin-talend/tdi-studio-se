@@ -320,7 +320,7 @@
       NUM_ROW="20"
       SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_EXISTING_CONNECTION == 'true')"
     >
-    <DEFAULT>false</DEFAULT>
+    <DEFAULT>true</DEFAULT>
   </PARAMETER>
 
     <PARAMETER
@@ -335,7 +335,7 @@
         NAME="NOTE"
         FIELD="LABEL"
         NUM_ROW="20"
-        SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_BATCH_SIZE == 'true') "
+        SHOW_IF="isShow[BATCH_SIZE]"
         >
         <DEFAULT>Note : this value must &lt; 16383</DEFAULT>
     </PARAMETER>
