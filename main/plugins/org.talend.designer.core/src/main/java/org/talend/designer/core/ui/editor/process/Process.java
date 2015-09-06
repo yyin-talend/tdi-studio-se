@@ -1081,11 +1081,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         }
                     } else {
                         if (o instanceof String) {
-                            try {
-                                strValue = filterString((String) o);
-                            } catch (MalformedPatternException e) {                         
-                                e.printStackTrace();
-                            }
+                        	strValue = (String) o;
                         } else {
                             if (o instanceof Boolean) {
                                 strValue = ((Boolean) o).toString();
@@ -1141,20 +1137,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         listParamType.add(pType);
     }
 
-    private String filterString(String string) throws MalformedPatternException {
-        Perl5Matcher matcher = new Perl5Matcher();
-        Perl5Compiler compiler = new Perl5Compiler();
-        Pattern pattern = compiler.compile("^[A-Za-z0-9_!@=#$%^\\*():\"\\\\<>/?'{}\\[\\],.\\-\\+\\|~` ]*$");
-        String str="";
-        for(int i=0;i<string.length();i++) {
-            if(matcher.matches(string.charAt(i)+"", pattern)) {
-                str+=string.charAt(i);
-            }
-        }
-        return str;
-        
-    }
-    
     private void loadElementParameters(Element elemParam, EList listParamType) {
         loadElementParameters(elemParam, listParamType, false);
     }
