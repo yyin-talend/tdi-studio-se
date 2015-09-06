@@ -165,6 +165,9 @@
 		</profile>
 		<profile>
 			<id>include-java-sources</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
 				<sourcecodes.dir>${project.build.sourceDirectory}</sourcecodes.dir>
 				<resources.dir>${current.resources.dir}/</resources.dir>
@@ -264,6 +267,19 @@
 			<id>include-test-reports</id>
 			<properties>
 				<test.reports.dir>${project.build.directory}/surefire-reports</test.reports.dir>
+			</properties>
+		</profile>
+		<profile>
+			<id>include-pigudfs-java-sources</id>
+			<properties>
+				<pigudfs.sourcecodes.dir>${project.build.sourceDirectory}</pigudfs.sourcecodes.dir>
+				<pigudfs.poms.dir>${basedir}</pigudfs.poms.dir>
+			</properties>
+		</profile>
+		<profile>
+			<id>include-pigudfs-binaries</id>
+			<properties>
+				<pigudfs.binaries.includes.set>org.talend.pigudf.${talend.project.name.lowercase}:*</pigudfs.binaries.includes.set>
 			</properties>
 		</profile>
 	</profiles>

@@ -109,6 +109,14 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         return LastGenerationInfo.getInstance().isUseRules(processItem.getProperty().getId(), this.version);
     }
 
+    protected boolean needPigUDFs() {
+        if (this.version == null) {
+            return LastGenerationInfo.getInstance().isUsePigUDFs(processItem.getProperty().getId(),
+                    processItem.getProperty().getVersion());
+        }
+        return LastGenerationInfo.getInstance().isUsePigUDFs(processItem.getProperty().getId(), this.version);
+    }
+
     protected String getProgramArgs() {
         StringBuffer programArgs = new StringBuffer();
         StringBuffer profileArgs = getProfileArgs();
@@ -133,22 +141,23 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
 
         addArg(profileBuffer, isOptionChoosed(ExportChoice.needSourceCode), TalendMavenConstants.PROFILE_INCLUDE_JAVA_SOURCES);
         // if not binaries, need add maven resources
-        addArg(profileBuffer, !isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_MAVEN_RESOURCES);
+        boolean isBinaries = isOptionChoosed(ExportChoice.binaries);
+        addArg(profileBuffer, !isBinaries, TalendMavenConstants.PROFILE_INCLUDE_MAVEN_RESOURCES);
         addArg(profileBuffer, isOptionChoosed(ExportChoice.needJobItem), TalendMavenConstants.PROFILE_INCLUDE_ITEMS);
 
         // for binaries
         addArg(profileBuffer, isOptionChoosed(ExportChoice.includeLibs), TalendMavenConstants.PROFILE_INCLUDE_LIBS);
-        addArg(profileBuffer, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
+        addArg(profileBuffer, isBinaries, TalendMavenConstants.PROFILE_INCLUDE_BINARIES);
 
         // the log4j is only useful, when binaries
         if (isLog4jEnable()) {
             // add log4j to running.
-            addArg(profileBuffer, isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_RUNNING_LOG4J);
+            addArg(profileBuffer, isBinaries, TalendMavenConstants.PROFILE_INCLUDE_RUNNING_LOG4J);
             // add log4j for resources.
-            addArg(profileBuffer, !isOptionChoosed(ExportChoice.binaries), TalendMavenConstants.PROFILE_INCLUDE_LOG4J);
+            addArg(profileBuffer, !isBinaries, TalendMavenConstants.PROFILE_INCLUDE_LOG4J);
         }
         // the running context is only useful, when binaries
-        addArg(profileBuffer, isOptionChoosed(ExportChoice.binaries) && isOptionChoosed(ExportChoice.needContext),
+        addArg(profileBuffer, isBinaries && isOptionChoosed(ExportChoice.needContext),
                 TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
 
         // for test
@@ -158,12 +167,16 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         // xmlMappings folders
         if (needXmlMappings()) {
             addArg(profileBuffer, true, TalendMavenConstants.PROFILE_INCLUDE_XMLMAPPINGS);
-            addArg(profileBuffer, isOptionChoosed(ExportChoice.binaries),
-                    TalendMavenConstants.PROFILE_INCLUDE_RUNNING_XMLMAPPINGS);
+            addArg(profileBuffer, isBinaries, TalendMavenConstants.PROFILE_INCLUDE_RUNNING_XMLMAPPINGS);
         }
         // rules
         if (needRules()) {
             addArg(profileBuffer, true, TalendMavenConstants.PROFILE_INCLUDE_RULES);
+        }
+        // pigudfs
+        if (needPigUDFs()) {
+            addArg(profileBuffer, isBinaries, TalendMavenConstants.PROFILE_INCLUDE_PIGUDFS_BINARIES);
+            addArg(profileBuffer, !isBinaries, TalendMavenConstants.PROFILE_INCLUDE_PIGUDFS_JAVA_SOURCES);
         }
         return profileBuffer;
     }

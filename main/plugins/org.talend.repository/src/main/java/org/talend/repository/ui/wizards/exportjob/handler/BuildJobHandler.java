@@ -134,10 +134,12 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             }
         }
         /*
-         * FIXME. Shouldn't set it here, because it not init yet. will set it before code gen in ProcessorUtilities
+         * FIXME. Shouldn't set them here, because it's not init yet. will set it before code gen in
+         * ProcessorUtilities.generateCode
          */
         // argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_XMLMAPPINGS, needXmlMappings());
         // argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_RULES, needRules());
+        // argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_PIGUDFS, needPigUDFs());
 
         // generation option
         int generationOption = (isOptionChoosed(ExportChoice.includeTestSource) || isOptionChoosed(ExportChoice.executeTests)) ? ProcessorUtilities.GENERATE_ALL_CHILDS

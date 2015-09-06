@@ -97,6 +97,13 @@
 				<include>pom_${talend.job.name}.xml</include>
 			</includes>
 		</fileSet>
+		<fileSet><!-- pom_pigudfs.xml -->
+			<directory>${pigudfs.poms.dir}</directory>
+			<outputDirectory>${talend.job.name}</outputDirectory>
+			<includes>
+				<include>pom_pigudfs.xml</include>
+			</includes>
+		</fileSet>
 		<fileSet> <!-- add items -->
 			<directory>${items.dir}</directory>
 			<outputDirectory>${talend.job.name}</outputDirectory>
@@ -110,6 +117,13 @@
 			<includes>
 				<include>routines/**</include>
 				<include>${talend.job.path}/**</include>
+			</includes>
+		</fileSet>
+		<fileSet> <!-- add PigUDFs source codes -->
+			<directory>${pigudfs.sourcecodes.dir}</directory>
+			<outputDirectory>${talend.job.name}/src/main/java/</outputDirectory>
+			<includes>
+				<include>pigudf/**</include>
 			</includes>
 		</fileSet>
 		<fileSet><!-- add context resources -->
@@ -197,6 +211,20 @@
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
 				<include>${routines.binaries.includes.set}</include>
+			</includes>
+			<binaries>
+				<outputDirectory>lib</outputDirectory>
+				<includeDependencies>false</includeDependencies>
+				<unpack>false</unpack>
+				<outputFileNameMapping>${module.artifactId}.${module.extension}
+				</outputFileNameMapping>
+			</binaries>
+		</moduleSet>
+		<moduleSet>
+			<!-- for pigudfs or talend libs -->
+			<useAllReactorProjects>true</useAllReactorProjects>
+			<includes>
+				<include>${pigudfs.binaries.includes.set}</include>
 			</includes>
 			<binaries>
 				<outputDirectory>lib</outputDirectory>
