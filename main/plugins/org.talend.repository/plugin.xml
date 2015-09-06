@@ -2570,6 +2570,15 @@
               name="ChangeDefaultValue4tLogRow"
               version="6.1.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.ChangeBatchParameter4SomeDBComponents"
+              description="Change the USE_BATCH parameter value of some db components"
+              id="org.talend.repository.model.migration.ChangeBatchParameter4SomeDBComponents"
+              name="ChangeBatchParameter4SomeDBComponents"
+              version="6.1.0">
+        </projecttask>
    </extension>
 
    <extension
