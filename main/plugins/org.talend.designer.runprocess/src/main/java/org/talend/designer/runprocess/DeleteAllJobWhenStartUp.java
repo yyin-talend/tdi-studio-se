@@ -16,14 +16,19 @@ import java.io.File;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.ui.IStartup;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -62,66 +67,68 @@ public class DeleteAllJobWhenStartUp implements IStartup {
         if (!GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
             return;
         }
-        IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
-                IRunProcessService.class);
-        ITalendProcessJavaProject talendJavaProject = processService.getTalendProcessJavaProject();
-        if (talendJavaProject != null) {
-            IJavaProject jProject = talendJavaProject.getJavaProject();
-            IProgressMonitor monitor = new NullProgressMonitor();
-            try {
-                if (!jProject.isOpen()) {
-                    jProject.open(monitor);
+        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                        IRunProcessService.class);
+                ITalendProcessJavaProject talendJavaProject = processService.getTalendProcessJavaProject();
+                if (talendJavaProject != null) {
+                    IJavaProject jProject = talendJavaProject.getJavaProject();
+                    if (!jProject.isOpen()) {
+                        jProject.open(monitor);
+                    }
+                    // empty the src/main/java...
+                    IFolder srcFolder = talendJavaProject.getSrcFolder();
+                    talendJavaProject.cleanFolder(monitor, srcFolder);
+                    // contexts
+                    IFolder resourcesFolder = talendJavaProject.getResourcesFolder();
+                    emptyContexts(monitor, resourcesFolder, talendJavaProject);
+
+                    // empty the outputs, target
+                    IFolder targetFolder = talendJavaProject.getTargetFolder();
+                    talendJavaProject.cleanFolder(monitor, targetFolder);
+
+                    // empty the src/test/java
+                    IFolder testSrcFolder = talendJavaProject.getTestSrcFolder();
+                    talendJavaProject.cleanFolder(monitor, testSrcFolder);
+
+                    // empty the src/test/java (main for contexts)
+                    IFolder testResourcesFolder = talendJavaProject.getTestResourcesFolder();
+                    talendJavaProject.cleanFolder(monitor, testResourcesFolder);
+
+                    // empty temp
+                    IFolder tempFolder = talendJavaProject.getTempFolder();
+                    talendJavaProject.cleanFolder(monitor, tempFolder);
+
+                    // empty lib/...
+                    IFolder libFolder = talendJavaProject.getLibFolder();
+                    talendJavaProject.cleanFolder(monitor, libFolder);
+
+                    // rules
+                    IFolder rulesResFolder = talendJavaProject.getResourceSubFolder(monitor, JavaUtils.JAVA_RULES_DIRECTORY);
+                    talendJavaProject.cleanFolder(monitor, rulesResFolder);
+
+                    // sqltempalte
+                    IFolder sqlTemplateResFolder = talendJavaProject.getResourceSubFolder(monitor,
+                            JavaUtils.JAVA_SQLPATTERNS_DIRECTORY);
+                    talendJavaProject.cleanFolder(monitor, sqlTemplateResFolder);
                 }
-                // empty the src/main/java...
-                IFolder srcFolder = talendJavaProject.getSrcFolder();
-                talendJavaProject.cleanFolder(monitor, srcFolder);
-                // contexts
-                IFolder resourcesFolder = talendJavaProject.getResourcesFolder();
-                emptyContexts(monitor, resourcesFolder, talendJavaProject);
+            };
 
-                // empty the outputs, target
-                IFolder targetFolder = talendJavaProject.getTargetFolder();
-                talendJavaProject.cleanFolder(monitor, targetFolder);
-
-                // empty the src/test/java
-                IFolder testSrcFolder = talendJavaProject.getTestSrcFolder();
-                talendJavaProject.cleanFolder(monitor, testSrcFolder);
-
-                // empty the src/test/java (main for contexts)
-                IFolder testResourcesFolder = talendJavaProject.getTestResourcesFolder();
-                // emptyContexts(moniter,testResourcesFolder,talendJavaProject); //seems only contexts, so clean all.
-                talendJavaProject.cleanFolder(monitor, testResourcesFolder);
-
-                // empty temp
-                IFolder tempFolder = talendJavaProject.getTempFolder();
-                talendJavaProject.cleanFolder(monitor, tempFolder);
-
-                // empty lib/...
-                IFolder libFolder = talendJavaProject.getLibFolder();
-                talendJavaProject.cleanFolder(monitor, libFolder);
-                // if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
-                // ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
-                // ILibrariesService.class);
-                // if (libService != null) {
-                // libService.cleanLibs();
-                // }
-                // }
-
-                // rules
-                IFolder rulesResFolder = talendJavaProject.getResourceSubFolder(monitor, JavaUtils.JAVA_RULES_DIRECTORY);
-                talendJavaProject.cleanFolder(monitor, rulesResFolder);
-
-                // sqltempalte
-                IFolder sqlTemplateResFolder = talendJavaProject.getResourceSubFolder(monitor,
-                        JavaUtils.JAVA_SQLPATTERNS_DIRECTORY);
-                talendJavaProject.cleanFolder(monitor, sqlTemplateResFolder);
-
-                // anything else to do? esb?
-
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
+        };
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        try {
+            ISchedulingRule schedulingRule = workspace.getRoot();
+            // the update the project files need to be done in the workspace runnable to avoid all
+            // notification
+            // of changes before the end of the modifications.
+            workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
+        } catch (CoreException e) {
+            ExceptionHandler.process(e.getCause());
         }
+
         executed = true;
 
     }
