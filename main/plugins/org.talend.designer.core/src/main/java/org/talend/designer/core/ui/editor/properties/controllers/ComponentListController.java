@@ -180,7 +180,6 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
         // **********************
         hashCurControls.put(getParameterName(param), combo);
-        refresh(param, false);
 
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
