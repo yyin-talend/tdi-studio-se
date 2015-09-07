@@ -121,6 +121,7 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
                             logonButton.setText(userAccount != null ? Messages
                                     .getString("ExchangePreferencePage.signOutExchangeTitle") : Messages
                                     .getString("ExchangePreferencePage.signInExchangeTitle"));
+                            logonButton.getParent().pack();
                         }
                     } else {
                         logonButton.setText(Messages.getString("ExchangePreferencePage.signInExchangeTitle"));
