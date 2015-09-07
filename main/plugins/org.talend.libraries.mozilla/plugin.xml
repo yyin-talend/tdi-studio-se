@@ -6,7 +6,7 @@
               context="plugin:org.talend.libraries.mozilla"
               language="java"
               message="Needed for LDAP dependencies"
-              name="ldapjdk.jar"
+              name="ldapjdk.jar" mvn_uri="mvn:org.talend.libraries/ldapjdk/6.0.0" 
               required="true">
         </libraryNeeded>
     </extension>
