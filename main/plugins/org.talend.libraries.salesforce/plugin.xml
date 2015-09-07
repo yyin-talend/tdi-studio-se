@@ -6,7 +6,7 @@
               context="plugin:org.talend.libraries.salesforce"
               language="java"
               message="Needed for SALESFORCE wizard"
-              name="servlet-api-3.0.jar"
+              name="servlet-api-3.0.jar" mvn_uri="mvn:org.talend.libraries/servlet-api-3.0/6.0.0" 
               required="true">
         </libraryNeeded>
     </extension>

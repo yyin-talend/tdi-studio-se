@@ -77,14 +77,14 @@
               context="plugin:org.talend.sqlbuilder"
               language="java"
               message="Needed for sql builder"
-              name="sqlexplorer.jar"
+              name="sqlexplorer.jar" mvn_uri="mvn:org.talend.libraries/sqlexplorer/6.0.0" 
               required="true">
       </libraryNeeded>
       <libraryNeeded
               context="plugin:org.talend.sqlbuilder"
               language="java"
               message="Needed for sql builder"
-              name="squirrel.jar"
+              name="squirrel.jar" mvn_uri="mvn:org.talend.libraries/squirrel/6.0.0" 
               required="true">
       </libraryNeeded>
    </extension>
