@@ -241,29 +241,29 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         if (elem instanceof INode) {
             INode currentNode = (INode) elem;
 
-            List<INode> nodeList = null;
-            List<INode> list = null;
+            final List<INode> nodeList;
             IJobletProviderService jobletService = getJobletProviderService(param);
             if (jobletService != null) {
                 nodeList = jobletService.getConnNodesForInputTrigger(currentNode, param);
             } else {
+                List<? extends INode> list = null;
                 if (PluginChecker.isJobLetPluginLoaded()) {
                     IJobletProviderService jobletProviderService = (IJobletProviderService) GlobalServiceRegister.getDefault()
                             .getService(IJobletProviderService.class);
                     INode jobletNode = ((Node) elem).getJobletNode();
                     if (jobletNode != null && jobletProviderService.isJobletComponent(jobletNode)) {
-                        List<INode> jobletNodes = (List<INode>) jobletProviderService.getGraphNodesForJoblet(jobletNode);
+                        List<? extends INode> jobletNodes = jobletProviderService.getGraphNodesForJoblet(jobletNode);
                         for (INode node : jobletNodes) {
                             if (node != null && node.getUniqueName() != null
                                     && node.getUniqueName().equals(currentNode.getUniqueName())) {
-                                list = (List<INode>) node.getProcess().getNodesOfType(param.getFilter());
+                                list = node.getProcess().getNodesOfType(param.getFilter());
                                 break;
                             }
                         }
                     }
                 }
                 if (list == null) {
-                    list = (List<INode>) ((Node) elem).getProcess().getNodesOfType(param.getFilter());
+                    list = ((INode) elem).getProcess().getNodesOfType(param.getFilter());
                 }
                 nodeList = new ArrayList<INode>();
                 if (list != null) {
@@ -276,13 +276,13 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     }
                 }
             }
-            List<String> componentDisplayNames = new ArrayList<String>();
-            List<String> componentUniqueNames = new ArrayList<String>();
+            final List<String> componentDisplayNames = new ArrayList<String>();
+            final List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {
                 if (node.getJobletNode() != null) {
                     node = node.getJobletNode();
                 }
-                String uniqueName = node.getUniqueName();
+                final String uniqueName = node.getUniqueName();
                 if (uniqueName.equals(currentNode.getUniqueName())) {
                     continue;
                 }
@@ -366,7 +366,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         if (combo == null || combo.isDisposed()) {
             return;
         }
-        updateComponentList(elem, param);
+        doUpdateComponentList(elem, param);
 
         String[] curComponentNameList = param.getListItemsDisplayName();
 
@@ -397,6 +397,10 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                 combo.setText(curComponentNameList[numValue]);
             }
         }
+    }
+
+    protected void doUpdateComponentList(IElement elem, IElementParameter param) {
+        updateComponentList(elem, param);
     }
 
     private static IJobletProviderService getJobletProviderService(IElementParameter param) {
