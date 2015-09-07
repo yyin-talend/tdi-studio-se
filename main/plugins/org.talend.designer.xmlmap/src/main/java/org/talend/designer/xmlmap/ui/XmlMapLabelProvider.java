@@ -20,7 +20,9 @@ import org.talend.commons.ui.runtime.swt.tableviewer.behavior.ComboEditorValueAd
 import org.talend.commons.ui.runtime.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.runtime.swt.tableviewer.data.AccessorUtils;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl;
+import org.talend.utils.sql.TalendTypeConvert;
 
 /**
  * created by kongxiaohan on Jul 17, 2015 Detailled comment
@@ -88,6 +90,13 @@ public class XmlMapLabelProvider extends DefaultTableLabelProvider {
                     returnValue = String.valueOf(value);
                 } else {
                     returnValue = ""; //$NON-NLS-1$
+                }
+            }
+            // return the type
+            if (columnIndex == 3) {
+                if (element instanceof TreeNode) {
+                    TreeNode node = (TreeNode) element;
+                    returnValue = TalendTypeConvert.convertToJavaType(node.getType());
                 }
             }
         }
