@@ -327,7 +327,6 @@ public enum EParameterName {
 
     // Route Component Type
     ROUTE_COMPONENT_TYPE("ROUTE_COMPONENT_TYPE"), //$NON-NLS-1$
-    ROUTE_COMPONENT_TYPE_ID("ROUTE_COMPONENT_TYPE_ID"), //$NON-NLS-1$
 
     // Automatic Parlization
     PARTITIONER(Messages.getString("Connection.paral_partitioner")), //$NON-NLS-1$

@@ -1538,29 +1538,6 @@ public class EmfComponent extends AbstractComponent {
             newParam.setRequired(false);
             newParam.setParentParameter(parentParam);
         }
-
-        // Create route component type
-        if (type == EParameterFieldType.ROUTE_COMPONENT_TYPE) {
-            ElementParameter newParam = new ElementParameter(node);
-            newParam.setCategory(EComponentCategory.BASIC);
-            newParam.setName(EParameterName.ROUTE_COMPONENT_TYPE_ID.getName());
-            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
-                newParam.setDisplayName(EParameterName.ROUTE_COMPONENT_TYPE_ID.getDisplayName());
-            } else {
-                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
-            }
-            newParam.setListItemsDisplayName(new String[] {});
-            newParam.setListItemsValue(new String[] {});
-            newParam.setValue(""); //$NON-NLS-1$
-            newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setFieldType(EParameterFieldType.TECHNICAL);
-            if (xmlParam.isSetSHOW()) {
-                newParam.setShow(xmlParam.isSHOW());
-            }
-            newParam.setRequired(false);
-            newParam.setParentParameter(parentParam);
-
-        }
     }
 
     @SuppressWarnings("unchecked")
