@@ -14,9 +14,9 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -43,17 +43,18 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.process.IGraphicalNode;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -67,14 +68,11 @@ public class ComponentListController extends AbstractElementPropertySectionContr
     }
 
     private Command createCommand(SelectionEvent selectionEvent) {
-        Set<String> elementsName;
-        Control ctrl;
-
-        elementsName = hashCurControls.keySet();
+        Collection<String> elementsName = hashCurControls.keySet();
         for (String name : elementsName) {
             Object o = hashCurControls.get(name);
             if (o instanceof Control) {
-                ctrl = (Control) o;
+                Control ctrl = (Control) o;
                 if (ctrl == null) {
                     hashCurControls.remove(name);
                     return null;
@@ -238,7 +236,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
     public static void updateComponentList(IElement elem, IElementParameter param) {
         if (elem instanceof INode) {
-            INode currentNode = (INode) elem;
+            final INode currentNode = (INode) elem;
 
             final List<INode> nodeList;
             IJobletProviderService jobletService = getJobletProviderService(param);
@@ -249,7 +247,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                 if (PluginChecker.isJobLetPluginLoaded()) {
                     IJobletProviderService jobletProviderService = (IJobletProviderService) GlobalServiceRegister.getDefault()
                             .getService(IJobletProviderService.class);
-                    INode jobletNode = ((Node) elem).getJobletNode();
+                    INode jobletNode = currentNode.getJobletNode();
                     if (jobletNode != null && jobletProviderService.isJobletComponent(jobletNode)) {
                         List<? extends INode> jobletNodes = jobletProviderService.getGraphNodesForJoblet(jobletNode);
                         for (INode node : jobletNodes) {
@@ -262,7 +260,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     }
                 }
                 if (list == null) {
-                    list = ((INode) elem).getProcess().getNodesOfType(param.getFilter());
+                    list = currentNode.getProcess().getNodesOfType(param.getFilter());
                 }
                 nodeList = new ArrayList<INode>();
                 if (list != null) {
@@ -275,78 +273,79 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     }
                 }
             }
-            final List<String> componentDisplayNames = new ArrayList<String>();
-            final List<String> componentUniqueNames = new ArrayList<String>();
-            for (INode node : nodeList) {
-                if (node.getJobletNode() != null) {
-                    node = node.getJobletNode();
-                }
-                final String uniqueName = node.getUniqueName();
-                if (uniqueName.equals(currentNode.getUniqueName())) {
-                    continue;
-                }
-                String displayName = (String) node.getElementParameter("LABEL").getValue(); //$NON-NLS-1$
-                if (displayName == null) {
-                    displayName = uniqueName + " - " + displayName; //$NON-NLS-1$
-                }
-                if (displayName.indexOf("__UNIQUE_NAME__") != -1) { //$NON-NLS-1$
-                    displayName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName); //$NON-NLS-1$
-                } else {
-                    displayName = uniqueName + " - " + displayName; //$NON-NLS-1$
-                }
+            updateComponentList(nodeList, currentNode, param);
+        }
+    }
 
-                /*
-                 * if ("tHashOutput".equals(param.getFilter())) { //$NON-NLS-1$ IElementParameter clearDataParam =
-                 * node.getElementParameter("CLEAR_DATA"); //$NON-NLS-1$ // Only allow hashOutput "CLEAR_DATA" is
-                 * enable. if (clearDataParam != null && clearDataParam.getValue() != null && (Boolean)
-                 * clearDataParam.getValue() == true) { componentUniqueNames.add(uniqueName);
-                 * componentDisplayNames.add(displayName); } } else
-                 */
-                {
-                    componentUniqueNames.add(uniqueName);
-                    componentDisplayNames.add(displayName);
-                }
+    protected static void updateComponentList(Collection<INode> nodeList, INode currentNode, IElementParameter param) {
+        final Collection<String> componentDisplayNames = new ArrayList<String>();
+        final Collection<String> componentUniqueNames = new ArrayList<String>();
+        for (INode node : nodeList) {
+            if (node.getJobletNode() != null) {
+                node = node.getJobletNode();
+            }
+            final String uniqueName = node.getUniqueName();
+            if (uniqueName.equals(currentNode.getUniqueName())) {
+                continue;
+            }
+            String displayName = (String) node.getElementParameter("LABEL").getValue(); //$NON-NLS-1$
+            if (displayName == null) {
+                displayName = uniqueName + " - " + displayName; //$NON-NLS-1$
+            }
+            if (displayName.indexOf("__UNIQUE_NAME__") != -1) { //$NON-NLS-1$
+                displayName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName); //$NON-NLS-1$
+            } else {
+                displayName = uniqueName + " - " + displayName; //$NON-NLS-1$
             }
 
-            String[] componentNameList = componentDisplayNames.toArray(new String[0]);
-            String[] componentValueList = componentUniqueNames.toArray(new String[0]);
+            /*
+             * if ("tHashOutput".equals(param.getFilter())) { //$NON-NLS-1$ IElementParameter clearDataParam =
+             * node.getElementParameter("CLEAR_DATA"); //$NON-NLS-1$ // Only allow hashOutput "CLEAR_DATA" is
+             * enable. if (clearDataParam != null && clearDataParam.getValue() != null && (Boolean)
+             * clearDataParam.getValue() == true) { componentUniqueNames.add(uniqueName);
+             * componentDisplayNames.add(displayName); } } else
+             */
+            {
+                componentUniqueNames.add(uniqueName);
+                componentDisplayNames.add(displayName);
+            }
+        }
 
-            param.setListItemsDisplayName(componentNameList);
-            param.setListItemsValue(componentValueList);
+        param.setListItemsDisplayName(componentDisplayNames.toArray(new String[0]));
+        final String[] componentValueList = componentUniqueNames.toArray(new String[0]);
+        param.setListItemsValue(componentValueList);
 
-            Object value = param.getValue();
-            if (!componentUniqueNames.contains(value)) {
-                String newValue = null;
-                if (!param.isDynamicSettings()) {
-                    if ((componentUniqueNames.size() > 0)) {
-                        if (value == null || value.equals("")) { //$NON-NLS-1$
-                            elem.setPropertyValue(getParameterName(param), componentValueList[0]);
-                            if (elem instanceof Node) {
-                                Node node = (Node) elem;
-                                node.checkAndRefreshNode();
-                                ((IProcess2) node.getProcess()).setProcessModified(true);
-                            } else if (elem instanceof Connection) {
-                                ((IProcess2) ((Connection) elem).getSource().getProcess()).setProcessModified(true);
-                            }
-                        } else {
-                            newValue = componentValueList[0];
-
+        Object value = param.getValue();
+        if (!componentUniqueNames.contains(value)) {
+            String newValue = null;
+            if (!param.isDynamicSettings()) {
+                if (!componentUniqueNames.isEmpty()) {
+                    if (value == null || value.equals("")) { //$NON-NLS-1$
+                        currentNode.setPropertyValue(getParameterName(param), componentValueList[0]);
+                        if (currentNode instanceof IGraphicalNode) {
+                            IGraphicalNode node = (IGraphicalNode) currentNode;
+                            node.checkAndRefreshNode();
+                            ((IProcess2) node.getProcess()).setProcessModified(true);
+                        } else if (currentNode instanceof IConnection) {
+                            ((IProcess2) ((IConnection) currentNode).getSource().getProcess()).setProcessModified(true);
                         }
-                    } else { // removed the old value.
-                        newValue = "";//$NON-NLS-1$
-                    }
-                }
+                    } else {
+                        newValue = componentValueList[0];
 
-                if (!("".equals(newValue)) && newValue != null) { //$NON-NLS-1$
-                    IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-                    if (part instanceof AbstractMultiPageTalendEditor) {
-                        AbstractTalendEditor te = ((AbstractMultiPageTalendEditor) part).getTalendEditor();
-                        CommandStack cmdStack = (CommandStack) te.getAdapter(CommandStack.class);
-                        cmdStack.execute(new PropertyChangeCommand(elem, getParameterName(param), ""));
                     }
+                } else { // removed the old value.
+                    newValue = "";//$NON-NLS-1$
                 }
             }
 
+            if (!("".equals(newValue)) && newValue != null) { //$NON-NLS-1$
+                IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+                if (part instanceof AbstractMultiPageTalendEditor) {
+                    AbstractTalendEditor te = ((AbstractMultiPageTalendEditor) part).getTalendEditor();
+                    CommandStack cmdStack = (CommandStack) te.getAdapter(CommandStack.class);
+                    cmdStack.execute(new PropertyChangeCommand(currentNode, getParameterName(param), ""));
+                }
+            }
         }
     }
 
