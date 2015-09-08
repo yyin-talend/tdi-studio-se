@@ -23,7 +23,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractProjectMigrationTask;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
-import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 
 /**
  * created by hwang on Jun 30, 2015 Detailled comment
