@@ -273,11 +273,12 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     }
                 }
             }
-            updateComponentList(nodeList, currentNode, param);
+            updateComponentList(nodeList, currentNode, param, true);
         }
     }
 
-    protected static void updateComponentList(Collection<INode> nodeList, INode currentNode, IElementParameter param) {
+    protected static void updateComponentList(Collection<INode> nodeList, INode currentNode, IElementParameter param,
+        boolean isSelectDefaultItem) {
         final Collection<String> componentDisplayNames = new ArrayList<String>();
         final Collection<String> componentUniqueNames = new ArrayList<String>();
         for (INode node : nodeList) {
@@ -316,7 +317,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         param.setListItemsValue(componentValueList);
 
         Object value = param.getValue();
-        if (!componentUniqueNames.contains(value)) {
+        if (!componentUniqueNames.contains(value) && isSelectDefaultItem) {
             String newValue = null;
             if (!param.isDynamicSettings()) {
                 if (!componentUniqueNames.isEmpty()) {
@@ -367,16 +368,14 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         doUpdateComponentList(elem, param);
 
         String[] curComponentNameList = param.getListItemsDisplayName();
-
         String[] curComponentValueList = (String[]) param.getListItemsValue();
 
         Object value = param.getValue();
-        boolean listContainValue = false;
-        int numValue = 0;
-        for (int i = 0; i < curComponentValueList.length && !listContainValue; i++) {
+        int numValue = -1;
+        for (int i = 0; i < curComponentValueList.length; i++) {
             if (curComponentValueList[i].equals(value)) {
-                listContainValue = true;
                 numValue = i;
+                break;
             }
         }
 
@@ -386,8 +385,8 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             combo.setText((String) value);
         } else {
             combo.setItems(curComponentNameList);
-            if (!listContainValue) {
-                if (curComponentNameList.length > 0) {
+            if (numValue == -1) {
+                if (isSelectDefaultItem() && curComponentNameList.length > 0) {
                     elem.setPropertyValue(getParameterName(param), curComponentValueList[0]);
                     combo.setText(curComponentNameList[0]);
                 }
@@ -399,6 +398,10 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
     protected void doUpdateComponentList(IElement elem, IElementParameter param) {
         updateComponentList(elem, param);
+    }
+
+    protected boolean isSelectDefaultItem() {
+        return true;
     }
 
     private static IJobletProviderService getJobletProviderService(IElementParameter param) {
