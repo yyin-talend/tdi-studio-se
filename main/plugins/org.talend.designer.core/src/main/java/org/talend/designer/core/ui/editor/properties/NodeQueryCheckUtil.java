@@ -122,6 +122,7 @@ public final class NodeQueryCheckUtil {
      * @return
      */
     private static boolean compareNodeTableColumnsWithFunc(Node node, String columns) {
+        String originalColumns = columns;
         if (node.getMetadataList().size() == 0) {
             return true;
         }
@@ -135,6 +136,25 @@ public final class NodeQueryCheckUtil {
         String[] columnArray = columns.split(","); //$NON-NLS-1$
         // columns not match
         if (columnArray.length != originColumnSize) {
+            // if can not match , we should match the columns with function
+            try {
+                PatternCompiler pc = new Perl5Compiler();
+                org.apache.oro.text.regex.Pattern pattern = null;
+                pattern = pc.compile(SQL_FUNC_REGX, REGX_FLAG);
+                PatternMatcher columnMatcher = new Perl5Matcher();
+                if (columnMatcher.matches(originalColumns, pattern)) {
+                    String columnWithFunc = columnMatcher.getMatch().group(4).trim();
+                    if (columnWithFunc != null) {
+                        String[] columnWithFuncArray = columnWithFunc.split(","); //$NON-NLS-1$
+                        if (columnWithFuncArray.length > 1) {
+                            originalColumns = originalColumns.replace(columnWithFunc, "columnWithFunction"); //$NON-NLS-1$
+                            return compareNodeTableColumnsWithFunc(node, originalColumns);
+                        }
+                    }
+                }
+            } catch (MalformedPatternException e) {
+                return false;
+            }
             return false;
         }
         return true;
