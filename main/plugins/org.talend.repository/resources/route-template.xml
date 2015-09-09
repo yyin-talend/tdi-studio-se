@@ -44,7 +44,6 @@
 
 	<bean id="route" class="${className}">
         <!--osgix:managed-properties persistent-id="${name}" update-strategy="bean-managed" update-method="setArguments" /-->
-		<property name="bundleContext" ref="bundleContext" />
 		<property name="arguments" ref="${name}.properties" />
 		<!-- ESB Features For CXF -->
 #if ($useSAM)
