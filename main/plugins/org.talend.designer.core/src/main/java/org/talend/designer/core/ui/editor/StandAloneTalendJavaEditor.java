@@ -170,6 +170,11 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         rEditorInput.getFile().refreshLocal(IResource.DEPTH_ONE, null);
         super.doSetInput(rEditorInput);
         setName();
+        // only for sql template
+        if (item instanceof SQLPatternItem) {
+            Workspace ws = (Workspace) ResourcesPlugin.getWorkspace();
+            ws.broadcastBuildEvent(item, IResourceChangeEvent.POST_CHANGE, 1);
+        }
     }
 
     private void setName() {
