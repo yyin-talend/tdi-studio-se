@@ -31,8 +31,6 @@ import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Util;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
@@ -47,15 +45,12 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PigudfItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.repository.ProjectManager;
-import org.talend.repository.model.RepositoryNodeUtilities;
 
 /**
  * Routine synchronizer of java project.
@@ -347,69 +342,4 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     }
 
-    @Override
-    public void deleteRoutinefile(IRepositoryViewObject objToDelete) {
-        Item item = objToDelete.getProperty().getItem();
-        try {
-            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
-            if (talendProcessJavaProject == null) {
-                return;
-            }
-            IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
-            IFile file = srcFolder.getFile(((RoutineItem) item).getPackageType() + '/' + objToDelete.getLabel()
-                    + JavaUtils.JAVA_EXTENSION);
-            file.delete(true, null);
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
-        }
-    }
-
-    @Override
-    public void deleteBeanfile(IRepositoryViewObject objToDelete) {
-        try {
-            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            ITalendProcessJavaProject talendProcessJavaProject = service.getTalendProcessJavaProject();
-            if (talendProcessJavaProject == null) {
-                return;
-            }
-            IFolder srcFolder = talendProcessJavaProject.getSrcFolder();
-            IFile file = srcFolder.getFile(JavaUtils.JAVA_BEANS_DIRECTORY + '/' + objToDelete.getLabel()
-                    + JavaUtils.JAVA_EXTENSION);
-            file.delete(true, null);
-        } catch (CoreException e) {
-            org.talend.commons.exception.ExceptionHandler.process(e);
-        }
-    }
-
-    @Override
-    public IFile getRoutinesFile(Item item) throws SystemException {
-        try {
-            if (item instanceof RoutineItem) {
-                RoutineItem routineItem = (RoutineItem) item;
-                ProjectManager projectManager = ProjectManager.getInstance();
-                org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
-                IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project.getTechnicalLabel());
-                String repositoryPath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.ROUTINES);
-                if (item instanceof PigudfItem) {
-                    repositoryPath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.PIG_UDF);
-                }
-                String folderPath = RepositoryNodeUtilities.getPath(routineItem.getProperty().getId()).toString();
-                String fileName = routineItem.getProperty().getLabel() + "_" + routineItem.getProperty().getVersion()
-                        + JavaUtils.ITEM_EXTENSION;
-                String path = null;
-                if (folderPath != null && !folderPath.trim().equals("")) {
-                    path = repositoryPath + "/" + folderPath + "/" + fileName;
-                } else {
-                    path = repositoryPath + "/" + fileName;
-                }
-
-                IFile file = iProject.getFile(path);
-                return file;
-            }
-        } catch (Exception e) {
-            throw new SystemException(e);
-        }
-        return null;
-    }
 }
