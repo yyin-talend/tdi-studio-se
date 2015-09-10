@@ -68,7 +68,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
@@ -404,7 +403,22 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         if (element != null && element instanceof INode) {
             INode node = (INode) element;
             if (buttonAdd != null && !buttonAdd.isDisposed()) {
-                buttonAdd.setEnabled(!node.isReadOnly());
+                if (getCurrentOpenedEditors() != null) {
+                    for (IEditorReference editor : getCurrentOpenedEditors()) {
+                        ERepositoryObjectType type = null;
+                        try {
+                            type = getCurrentOpenEditorType(editor);
+                        } catch (PartInitException e) {
+                            e.printStackTrace();
+                        }
+                        if ((type != null && ERepositoryObjectType.SQLPATTERNS.equals(type))
+                                || (type != null && ERepositoryObjectType.ROUTINES.equals(type))) {
+                            buttonAdd.setEnabled(false);
+                        }
+                    }
+                } else {
+                    buttonAdd.setEnabled(!node.isReadOnly());
+                }
             }
             if (buttonRemove != null && !buttonRemove.isDisposed()) {
                 buttonRemove.setEnabled(!node.isReadOnly());
@@ -1170,38 +1184,48 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             needRefresh = true;
             modifySQL = false;
             // if still have sql template editor to be opened.
-            IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-            if (workbenchWindow != null) {
-                IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
-                if (workbenchPage != null) {
-                    IEditorReference[] currentOpenedEditors = workbenchPage.getEditorReferences();
-                    if (currentOpenedEditors != null) {
-                        for (IEditorReference editor : currentOpenedEditors) {
-                            try {
-                                IEditorInput editorInput = editor.getEditorInput();
-                                if (editorInput instanceof RepositoryEditorInput) {
-                                    RepositoryEditorInput repoEditorInput = (RepositoryEditorInput) editorInput;
-                                    Item item = repoEditorInput.getItem();
-                                    ERepositoryObjectType type = ERepositoryObjectType.getItemType(item);
-                                    if (type != null && ERepositoryObjectType.SQLPATTERNS.equals(type)) {
-                                        modifySQL = true;
-                                    }
-                                }
-                            } catch (PartInitException e1) {
-                                CommonExceptionHandler.process(e1);
-                            }
-                        }
+            if (getCurrentOpenedEditors() != null) {
+                for (IEditorReference editor : getCurrentOpenedEditors()) {
+                    ERepositoryObjectType type = null;
+                    try {
+                        type = getCurrentOpenEditorType(editor);
+                    } catch (PartInitException e) {
+                        e.printStackTrace();
+                    }
+                    if (type != null && ERepositoryObjectType.SQLPATTERNS.equals(type)) {
+                        modifySQL = true;
                     }
                 }
             }
         }
-        if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+        if (event.getSource() instanceof SQLPatternItem && event.getType() == IResourceChangeEvent.POST_CHANGE) {
             needRefresh = true;
         }
         if (needRefresh) {
             refreshComboContent(this.tableViewer, modifySQL);
             refresh();
         }
+    }
+
+    public IEditorReference[] getCurrentOpenedEditors() {
+        IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (workbenchWindow != null) {
+            IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+            if (workbenchPage != null) {
+                return workbenchPage.getEditorReferences();
+            }
+        }
+        return null;
+    }
+
+    public ERepositoryObjectType getCurrentOpenEditorType(IEditorReference editor) throws PartInitException {
+        IEditorInput editorInput = editor.getEditorInput();
+        if (editorInput instanceof RepositoryEditorInput) {
+            RepositoryEditorInput repoEditorInput = (RepositoryEditorInput) editorInput;
+            Item item = repoEditorInput.getItem();
+            return ERepositoryObjectType.getItemType(item);
+        }
+        return null;
     }
 
     /**
