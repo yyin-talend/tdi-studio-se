@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Wizard
+Bundle-SymbolicName: org.talend.component.ui.wizard;singleton:=true
+Bundle-Version: 6.1.0.qualifier
+Bundle-Activator: org.talend.component.ui.wizard.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.talend.component.core,
+ org.talend.components.api,
+ org.talend.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: .Talend SA.

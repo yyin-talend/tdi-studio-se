@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Component Core
+Bundle-SymbolicName: org.talend.component.core;singleton:=true
+Bundle-Version: 6.1.0.qualifier
+Bundle-Activator: org.talend.component.core.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.talend.components.api
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: .Talend SA.
+Export-Package: org.talend.component.core.provider,
+ org.talend.component.core.provider.impl
