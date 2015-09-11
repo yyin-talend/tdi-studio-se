@@ -411,8 +411,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                         } catch (PartInitException e) {
                             e.printStackTrace();
                         }
-                        if ((type != null && ERepositoryObjectType.SQLPATTERNS.equals(type))
-                                || (type != null && ERepositoryObjectType.ROUTINES.equals(type))) {
+                        if (type != null && ERepositoryObjectType.SQLPATTERNS.equals(type)) {
                             buttonAdd.setEnabled(false);
                         }
                     }
