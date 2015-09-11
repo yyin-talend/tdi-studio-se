@@ -14,11 +14,9 @@ package org.talend.designer.codegen;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,22 +32,18 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.IService;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PigudfItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.ui.ITestContainerProviderService;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 
 /**
@@ -118,65 +112,6 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             throw new SystemException(e);
         }
 
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend .core.model.properties.RoutineItem)
-     */
-    @Override
-    protected void doSyncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
-        FileOutputStream fos = null;
-        try {
-            IFile file = getRoutineFile(routineItem);
-            if (file == null) {
-                return;
-            }
-            if (routineItem.getProperty().getModificationDate() != null) {
-                long modificationItemDate = routineItem.getProperty().getModificationDate().getTime();
-                long modificationFileDate = file.getModificationStamp();
-                if (modificationItemDate <= modificationFileDate) {
-                    return;
-                }
-            } else {
-                routineItem.getProperty().setModificationDate(new Date());
-            }
-
-            if (copyToTemp) {
-                String routineContent = new String(routineItem.getContent().getInnerContent());
-                // see 14713
-                String version = VersionUtils.getVersion();
-                if (routineContent.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
-                    IService service = GlobalServiceRegister.getDefault().getService(IBrandingService.class);
-                    // if (service instanceof AbstractBrandingService) {
-                    String routineHeader = ((IBrandingService) service).getRoutineLicenseHeader(version);
-                    routineContent = routineContent.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
-                    // }
-                }// end
-                String label = routineItem.getProperty().getLabel();
-                if (!label.equals(ITalendSynchronizer.TEMPLATE) && routineContent != null) {
-                    routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
-                    // routineContent = renameRoutinePackage(routineItem,
-                    // routineContent);
-                    File f = file.getLocation().toFile();
-                    fos = new FileOutputStream(f);
-                    fos.write(routineContent.getBytes());
-                    fos.close();
-                }
-            }
-            file.refreshLocal(1, null);
-        } catch (CoreException e) {
-            throw new SystemException(e);
-        } catch (IOException e) {
-            throw new SystemException(e);
-        } finally {
-            try {
-                fos.close();
-            } catch (Exception e) {
-                // ignore me even if i'm null
-            }
-        }
     }
 
     private IFile getTestContainerFile(ProcessItem item) throws SystemException {
