@@ -28,7 +28,6 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.views.IComponentSettingsView;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 
 /**
@@ -110,16 +109,6 @@ public class CodeGeneratorService implements ICodeGeneratorService {
     @Override
     public ITalendSynchronizer createRoutineSynchronizer() {
         return createJavaRoutineSynchronizer();
-    }
-
-    @Override
-    public ITalendSynchronizer createCamelBeanSynchronizer() {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                    ICamelDesignerCoreService.class);
-            return service.createCamelJavaSynchronizer();
-        }
-        return null;
     }
 
     @Override
