@@ -301,8 +301,38 @@
             String path =  ProcessUtils.getTestDataValue(process, instance, testData);
             if(path!=null&&path.length()>0){
             %>
-            java.net.URL url_<%=testData%> = getClass().getResource("<%=path%>");
-            String instance_<%=testData%>="<%=testData%>=" + url_<%=testData%>.getPath();
+            
+            String instance_<%=testData%>=null;
+            <%
+            if(ProcessUtils.isSpark(process)){
+            String lineSeparator = (String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
+            String fileContentEnCodeStr = "";
+            try {
+                fileContentEnCodeStr = (new sun.misc.BASE64Encoder()).encode(path.getBytes("UTF-8"));
+            } catch (java.io.UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } 
+            StringBuilder result = new StringBuilder();
+            String[] arrayStr = fileContentEnCodeStr.split(lineSeparator);
+            for(String item : arrayStr){
+                result.append(item);
+            }
+            String testDataValue = result.toString();
+            %>
+                try {
+                    instance_<%=testData%> = new String((new sun.misc.BASE64Decoder()).decodeBuffer("<%=testDataValue%>"), utf8Charset);
+                } catch (java.lang.Exception e) {
+                    e.printStackTrace();
+                }
+                
+            <%
+            }else{
+            %>
+                java.net.URL url_<%=testData%> = getClass().getResource("<%=path%>");
+                instance_<%=testData%>="<%=testData%>=" + url_<%=testData%>.getPath();
+            <%
+            }
+            %>
             paraList_<%=instance%>.add("--context_param");
             paraList_<%=instance%>.add(instance_<%=testData%>);
         <%
