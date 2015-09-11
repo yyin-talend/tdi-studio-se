@@ -27,7 +27,6 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
@@ -39,7 +38,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.designer.codegen.ITalendSynchronizer;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
@@ -106,7 +104,7 @@ public class JobErrorsChecker {
 
     public static boolean checkExportErrors(IStructuredSelection selection, boolean isJob) {
         if (!selection.isEmpty()) {
-            ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
+            final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
             Set<String> jobIds = new HashSet<String>();
 
             List<RepositoryNode> nodes = selection.toList();
@@ -115,13 +113,6 @@ public class JobErrorsChecker {
                 for (RepositoryNode node : nodes) {
                     Item item = node.getObject().getProperty().getItem();
                     try {
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                                    .getService(ICamelDesignerCoreService.class);
-                            if (service.isInstanceofCamel(item)) {
-                                synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
-                            }
-                        }
                         IFile sourceFile = synchronizer.getFile(item);
                         if (sourceFile == null) {
                             return false;
@@ -244,15 +235,7 @@ public class JobErrorsChecker {
                     continue;
                 }
 
-                ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                            .getService(ICamelDesignerCoreService.class);
-                    if (camelService.isInstanceofCamel(item)) {
-                        synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
-                    }
-                }
-
+                final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
                 IFile file = synchronizer.getFile(item);
                 if (file == null) {
                     return;

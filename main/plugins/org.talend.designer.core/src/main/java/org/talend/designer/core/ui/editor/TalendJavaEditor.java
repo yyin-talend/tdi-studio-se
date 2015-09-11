@@ -41,7 +41,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.codegen.ITalendSynchronizer;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.views.problems.Problems;
 
@@ -118,18 +117,11 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                     placeCursorToSelection();
                     Property property = process.getProperty();
 
-                    ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
+                    final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
                             .createRoutineSynchronizer();
 
                     try {
                         Item item = property.getItem();
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                                    .getService(ICamelDesignerCoreService.class);
-                            if (service.isInstanceofCamel(item)) {
-                                synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
-                            }
-                        }
                         List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(item), property, true);
                         List<Information> testInformations = null;
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
