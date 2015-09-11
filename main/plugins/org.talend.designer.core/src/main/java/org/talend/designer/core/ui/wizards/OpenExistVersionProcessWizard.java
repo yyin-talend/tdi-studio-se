@@ -38,11 +38,11 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
@@ -258,50 +258,11 @@ public class OpenExistVersionProcessWizard extends Wizard {
     protected void openAnotherVersion(final RepositoryNode node, final boolean readonly) {
         try {
             if (node.getObject() != null) {
-                Item item = node.getObject().getProperty().getItem();
-                IWorkbenchPage page = getActivePage();
-                IEditorPart editorPart = null;
-                RepositoryEditorInput fileEditorInput = null;
-                ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
-                        ICodeGeneratorService.class);
-
-                if (item instanceof ProcessItem) {
-                    ProcessItem processItem = (ProcessItem) item;
-                    fileEditorInput = new ProcessEditorInput(processItem, true, false, readonly);
-
-                } else if (item instanceof BusinessProcessItem) {
-                    BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;
-                    IFile file = CorePlugin.getDefault().getDiagramModelService()
-                            .getDiagramFileAndUpdateResource(page, businessProcessItem);
-                    fileEditorInput = new RepositoryEditorInput(file, businessProcessItem);
-                } else if (item instanceof RoutineItem) {
-                    RoutineItem routineItem = (RoutineItem) item;
-                    ITalendSynchronizer routineSynchronizer = codeGenService.createRoutineSynchronizer();
-                    IFile file = null;
-                    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                    String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
-                    String curVersion = routineItem.getProperty().getVersion();
-                    if (curVersion != null && curVersion.equals(lastVersion)) {
-                        file = routineSynchronizer.getFile(routineItem);
-                    } else {
-                        file = routineSynchronizer.getRoutinesFile(routineItem);
-                    }
-                    if (file == null) {
-                        return;
-                    }
-                    fileEditorInput = new RoutineEditorInput(file, routineItem);
-                } else if (item instanceof SQLPatternItem) {
-                    SQLPatternItem patternItem = (SQLPatternItem) item;
-                    ISQLPatternSynchronizer SQLPatternSynchronizer = codeGenService.getSQLPatternSynchronizer();
-                    SQLPatternSynchronizer.syncSQLPattern(patternItem, true);
-                    IFile file = SQLPatternSynchronizer.getSQLPatternFile(patternItem);
-                    if (file == null) {
-                        return;
-                    }
-                    fileEditorInput = new RepositoryEditorInput(file, patternItem);
-                }
+                final Item item = node.getObject().getProperty().getItem();
+                final IWorkbenchPage page = getActivePage();
+                final RepositoryEditorInput fileEditorInput = getEditorInput(item, readonly, page);
                 if (fileEditorInput != null) {
-                    editorPart = page.findEditor(fileEditorInput);
+                    IEditorPart editorPart = page.findEditor(fileEditorInput);
                     if (editorPart == null) {
                         fileEditorInput.setRepositoryNode(node);
                         if (item instanceof ProcessItem) {
@@ -319,23 +280,58 @@ public class OpenExistVersionProcessWizard extends Wizard {
                     }
                 } else {
                     // TDI-19014:open another version of jobScript
-                    try {
-                        if (item instanceof JobScriptItem) {
-                            IProject fsProject = ResourceUtils.getProject(ProjectManager.getInstance().getCurrentProject());
-                            openXtextEditor(node, fsProject, readonly);
-                        }
-                    } catch (PersistenceException e) {
-                        ExceptionHandler.process(e);
+                    if (item instanceof JobScriptItem) {
+                        IProject fsProject = ResourceUtils.getProject(ProjectManager.getInstance().getCurrentProject());
+                        openXtextEditor(node, fsProject, readonly);
                     }
                 }
             }
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
-        } catch (PersistenceException e) {
-            MessageBoxExceptionHandler.process(e);
         } catch (SystemException e) {
             MessageBoxExceptionHandler.process(e);
         }
+    }
+
+    protected RepositoryEditorInput getEditorInput(final Item item, final boolean readonly, final IWorkbenchPage page)
+        throws SystemException {
+        if (item instanceof ProcessItem) {
+            ProcessItem processItem = (ProcessItem) item;
+            return new ProcessEditorInput(processItem, true, false, readonly);
+        } else if (item instanceof BusinessProcessItem) {
+            BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;
+            IFile file = CorePlugin.getDefault().getDiagramModelService()
+                .getDiagramFileAndUpdateResource(page, businessProcessItem);
+            return new RepositoryEditorInput(file, businessProcessItem);
+        } else if (item instanceof RoutineItem) {
+            final RoutineItem routineItem = (RoutineItem) item;
+            final ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault()
+                .getService(ICodeGeneratorService.class);
+            ITalendSynchronizer routineSynchronizer = codeGenService.createRoutineSynchronizer();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
+            String curVersion = routineItem.getProperty().getVersion();
+            final IFile file;
+            if (curVersion != null && curVersion.equals(lastVersion)) {
+                file = routineSynchronizer.getFile(routineItem);
+            } else {
+                file = routineSynchronizer.getRoutinesFile(routineItem);
+            }
+            if (file != null) {
+                return new RoutineEditorInput(file, routineItem);
+            }
+        } else if (item instanceof SQLPatternItem) {
+            SQLPatternItem patternItem = (SQLPatternItem) item;
+            final ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault()
+                .getService(ICodeGeneratorService.class);
+            ISQLPatternSynchronizer SQLPatternSynchronizer = codeGenService.getSQLPatternSynchronizer();
+            SQLPatternSynchronizer.syncSQLPattern(patternItem, true);
+            IFile file = SQLPatternSynchronizer.getSQLPatternFile(patternItem);
+            if (file != null) {
+                return new RepositoryEditorInput(file, patternItem);
+            }
+        }
+        return null;
     }
 
     private Property getProperty() {
