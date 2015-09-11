@@ -1,11 +1,11 @@
-<%@ jet 
+<%@ jet
 imports="
-    org.talend.core.model.process.INode 
-    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
-" 
+"
 %>
 	<%@ include file="../templates/DB/HelpClass/HelpClass.javajet"%>
 <%
@@ -19,12 +19,12 @@ imports="
 			this.hiveDistrib = hiveDistrib;
 			this.isCustom = hiveDistrib instanceof org.talend.core.hadoop.api.distribution.CustomDistribution;
 		}
-		
+
 		public void createConnection(INode node) {
 			String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
 			String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
 			String hiveServer = ElementParameterParser.getValue(node, "__HIVE_SERVER__");
-			
+
 			boolean useKrb = "true".equals(ElementParameterParser.getValue(node, "__USE_KRB__"));
 
 			boolean securityIsEnabled = useKrb && (isCustom || (this.hiveDistrib.doSupportKerberos() && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer))));
@@ -37,20 +37,20 @@ imports="
 				super.createConnection(node);
 			}
 		}
-	
+
 		public void createURL(INode node) {
 			super.createURL(node);
 			String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
 			String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
 			String fsDefalutName = "fs.default.name";
 			String hiveServer = ElementParameterParser.getValue(node, "__HIVE_SERVER__");
-			
+
 			boolean setMapredJT = "true".equals(ElementParameterParser.getValue(node, "__SET_MAPRED_JT__"));
 			boolean setNamenode = "true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"));
 			List<Map<String, String>> hadoopProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HADOOP_ADVANCED_PROPERTIES__");
-			
+
 			boolean useYarn = "true".equals(ElementParameterParser.getValue(node, "__USE_YARN__"));
-			
+
 			boolean useKrb = "true".equals(ElementParameterParser.getValue(node, "__USE_KRB__"));
 			boolean securityIsEnabled = useKrb && (isCustom || (this.hiveDistrib.doSupportKerberos() && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer))));
 			boolean securedStandaloneHive2 = securityIsEnabled && "HIVE2".equalsIgnoreCase(hiveServer) && "STANDALONE".equalsIgnoreCase(connectionMode);
@@ -69,7 +69,7 @@ imports="
 			} else {
 				hiveServer = "hive";
 			}
-			
+
             if(("hive".equals(hiveServer) && !hiveDistrib.doSupportHive1()) || ("hive2".equals(hiveServer) && !hiveDistrib.doSupportHive2())) {
 %>
                 if(true) {
@@ -93,15 +93,15 @@ imports="
                 }
 <%
           }
-			
+
 			if(hadoopProps.size() > 0){
 				for(Map<String, String> item : hadoopProps){
 %>
 					System.setProperty(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
 <%
-				} 
+				}
 			}
-			
+
 			if(securedEmbedded) {
 				String metastoreUrl = ElementParameterParser.getValue(node, "__METASTORE_JDBC_URL__");
 				String driverClass = ElementParameterParser.getValue(node, "__METASTORE_CLASSNAME__");
@@ -125,17 +125,17 @@ imports="
 			%>
 				System.setProperty("javax.jdo.option.ConnectionURL", <%=metastoreUrl%>);
 				System.setProperty("javax.jdo.option.ConnectionUserName", <%=metastoreUsername%>);
-	        
+
         		<%
         		String passwordFieldName = "__METASTORE_PASSWORD__";
         		%>
-        		
-        		<%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+
+        		<%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%>
             	String decryptedMetastorePassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
        		 	<%} else {%>
-            	String decryptedMetastorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+            	String decryptedMetastorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
     			<%}%>
-        	   	
+
 				System.setProperty("javax.jdo.option.ConnectionPassword", decryptedMetastorePassword_<%=cid%>);
 				System.setProperty("hive.metastore.kerberos.principal", <%=hivePrincipal%>);
 				<%
@@ -153,14 +153,14 @@ imports="
 <%
 				}
 			}
-			
+
 			if(((this.isCustom && !useYarn) || (!this.isCustom && this.hiveDistrib.isHadoop1())) && setMapredJT) {
 				String mapredJT = ElementParameterParser.getValue(node, "__MAPRED_JT__");
 %>
 				System.setProperty("mapred.job.tracker", <%=mapredJT%>);
 <%
 			}
-			
+
 			if(setNamenode) {
 				String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
 %>
@@ -234,7 +234,7 @@ imports="
 <%
 						}else{
 %>
-							String decryptedSslStorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, sslStorepasswordFieldName)%>; 
+							String decryptedSslStorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, sslStorepasswordFieldName)%>;
 <%
 						}
 %>
@@ -259,7 +259,7 @@ imports="
 <%
 			}
 		}
-		
+
 		public void setAutoCommit(INode node) {
 			boolean useTransaction = false;//("true").equals(ElementParameterParser.getValue(node,"__IS_USE_AUTO_COMMIT__"));
 			boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
@@ -269,12 +269,12 @@ imports="
 <%
 			}
 		}
-		
+
 		public String getDirverClassName(INode node){
 			return javaDbDriver;
 		}
 	}//end class
-	
+
 	connUtil = new ConnectionUtil(hiveDistrib);
 %>
 <%//----------------------------component codes-----------------------------------------%>
@@ -288,19 +288,19 @@ imports="
 	String zookeeperQuorumForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_QUORUM__");
 	String zookeeperClientPortForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_CLIENT_PORT__");
 	boolean setZNodeParent = "true".equals(ElementParameterParser.getValue(node, "__SET_ZNODE_PARENT__"));
-	String zNodeParent = ElementParameterParser.getValue(node, "__ZNODE_PARENT__");	
+	String zNodeParent = ElementParameterParser.getValue(node, "__ZNODE_PARENT__");
 	String hbaseMasterPrincipal = ElementParameterParser.getValue(node, "__HBASE_MASTER_PRINCIPAL__");
 	String hbaseRegionServerPrincipal = ElementParameterParser.getValue(node, "__HBASE_REGIONSERVER_PRINCIPAL__");
-	
+
 	String defineRegisterJar = ElementParameterParser.getValue(node, "__DEFINE_REGISTER_JAR__");
 	List<Map<String, String>> registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__REGISTER_JAR__");
 	String hiveServer = ElementParameterParser.getValue(node, "__HIVE_SERVER__");
-	
+
 	boolean useYarn = "true".equals(ElementParameterParser.getValue(node, "__USE_YARN__"));
 	boolean setResourceManager = "true".equals(ElementParameterParser.getValue(node, "__SET_RESOURCE_MANAGER__"));
-	
+
 	String yarnClasspathSeparator = ElementParameterParser.getValue(node, "__CLASSPATH_SEPARATOR__");
-	
+
 	boolean useKrb = "true".equals(ElementParameterParser.getValue(node, "__USE_KRB__"));
 	boolean securityIsEnabled = useKrb && (isCustom || (hiveDistrib.doSupportKerberos() && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer))));
 	boolean securedStandaloneHive2 = securityIsEnabled && "HIVE2".equalsIgnoreCase(hiveServer) && "STANDALONE".equalsIgnoreCase(connectionMode);
@@ -310,11 +310,11 @@ imports="
 	boolean isKerberosAvailableHadoop2 = !isCustom && hiveDistrib.isHadoop2() && hiveDistrib.doSupportKerberos();
 	boolean isHadoop2 = !isCustom && hiveDistrib.isHadoop2();
 	boolean isKerberosAvailableHadoop1 = !isCustom && hiveDistrib.isHadoop1() && hiveDistrib.doSupportKerberos();
-	
+
 %>
 	globalMap.put("current_client_path_separator", System.getProperty("path.separator"));
 	System.setProperty("path.separator", <%=yarnClasspathSeparator%>);
-	
+
 	java.sql.Statement init_<%=cid%> = conn_<%=cid%>.createStatement();
 <%
     if(!isCustom && ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion))) {
@@ -325,7 +325,7 @@ imports="
 	    init_<%=cid%>.execute("SET mapred.job.reduce.memory.mb=" + <%=reduceMemory%>);
 <%
 	}
-	
+
 	if(securedEmbedded) {
 		String namenodePrincipal = ElementParameterParser.getValue(node, "__NAMENODE_PRINCIPAL__");
 %>
@@ -345,7 +345,7 @@ imports="
 		}
 
 	}
-	
+
 	if((isCustom && useYarn) || (!isCustom && isHadoop2)) {
 		if(setResourceManager) {
 			String resourceManager = ElementParameterParser.getValue(node, "__RESOURCE_MANAGER__");
@@ -354,7 +354,7 @@ imports="
     		init_<%=cid%>.execute("SET yarn.resourcemanager.address=" + <%=resourceManager%>);
 <%
 		}
-		
+
 		boolean setJobHistoryAddress = "true".equals(ElementParameterParser.getValue(node, "__SET_JOBHISTORY_ADDRESS__"));
 		if(setJobHistoryAddress) {
 			String jobHistoryAddress = ElementParameterParser.getValue(node,"__JOBHISTORY_ADDRESS__");
@@ -362,13 +362,13 @@ imports="
 			init_<%=cid%>.execute("SET mapreduce.jobhistory.address=" + <%=jobHistoryAddress%>);
 			<%
 		}
-		
+
 		if ("true".equals(ElementParameterParser.getValue(node, "__USE_DATANODE_HOSTNAME__"))) {
 %>
 			init_<%=cid%>.execute("SET dfs.client.use.datanode.hostname=true");
 <%
 		}
-		
+
 		boolean setSchedulerAddress = "true".equals(ElementParameterParser.getValue(node, "__SET_SCHEDULER_ADDRESS__"));
 		if(setSchedulerAddress) {
 			String schedulerAddress = ElementParameterParser.getValue(node,"__RESOURCEMANAGER_SCHEDULER_ADDRESS__");
@@ -376,14 +376,14 @@ imports="
 			init_<%=cid%>.execute("SET yarn.resourcemanager.scheduler.address=" + <%=schedulerAddress%>);
 <%
 		}
-		
+
 		if("true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"))) {
 			String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
 %>
 			init_<%=cid%>.execute("SET fs.default.name=" + <%=namenode%>);
 <%
 		}
-		
+
 		if("EMBEDDED".equals(connectionMode) && (isCustom || hiveDistrib.doSupportEmbeddedMode())) {
 			boolean crossPlatformSubmission = "true".equals(ElementParameterParser.getValue(node, "__CROSS_PLATFORM_SUBMISSION__"));
 			if((isCustom && useYarn && crossPlatformSubmission) || (!isCustom && hiveDistrib.doSupportCrossPlatformSubmission())) {
@@ -398,17 +398,17 @@ imports="
 				init_<%=cid%>.execute("SET mapreduce.job.reduce.shuffle.consumer.plugin.class=org.apache.hadoop.mapreduce.task.reduce.DirectShuffle");
 <%
 			}
-			
-			if(!isCustom && "HDP_2_2".equals(hiveVersion)) {
+
+			if(!isCustom && ("HDP_2_2".equals(hiveVersion) || "HDP_2_3".equals(hiveVersion))) {
 %>
 				init_<%=cid%>.execute("SET mapreduce.application.classpath=$PWD/mr-framework/hadoop/share/hadoop/mapreduce/*:$PWD/mr-framework/hadoop/share/hadoop/mapreduce/lib/*:$PWD/mr-framework/hadoop/share/hadoop/common/*:$PWD/mr-framework/hadoop/share/hadoop/common/lib/*:$PWD/mr-framework/hadoop/share/hadoop/yarn/*:$PWD/mr-framework/hadoop/share/hadoop/yarn/lib/*:$PWD/mr-framework/hadoop/share/hadoop/hdfs/*:$PWD/mr-framework/hadoop/share/hadoop/hdfs/lib/*:/etc/hadoop/conf/secure");
 <%
 			}
 %>
 			init_<%=cid%>.execute("SET yarn.application.classpath=<%=hiveDistrib.getYarnApplicationClasspath()%>");
-<%			
+<%
 		}
-		
+
 		boolean setMemory = "true".equals(ElementParameterParser.getValue(node, "__SET_MEMORY__"));
 		if(setMemory) {
 			String mapMemory = ElementParameterParser.getValue(node,"__MAPREDUCE_MAP_MEMORY_MB__");
@@ -421,7 +421,7 @@ imports="
 <%
 		}
 	}
-	
+
 	List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_PROPERTIES__");
 	if(advProps!=null) {
 		for(Map<String, String> item : advProps){
@@ -436,23 +436,23 @@ imports="
 	<%
 	(new PrepareTez()).invoke(node, cid);
 	%>
-	
+
 	init_<%=cid%>.close();
-	
+
 	<%if("true".equalsIgnoreCase(storeByHBase) && (isCustom || hiveDistrib.doSupportHBaseForHive())) {%>
 		java.sql.Statement statement_<%=cid%> = conn_<%=cid%>.createStatement();
 		<%if(zookeeperQuorumForHBase!=null && !"".equals(zookeeperQuorumForHBase) && !"\"\"".equals(zookeeperQuorumForHBase)) {%>
 			statement_<%=cid%>.execute("SET hbase.zookeeper.quorum="+<%=zookeeperQuorumForHBase%>);
 		<%}%>
-		
+
 		<%if(zookeeperClientPortForHBase!=null && !"".equals(zookeeperClientPortForHBase) && !"\"\"".equals(zookeeperClientPortForHBase)) {%>
 			statement_<%=cid%>.execute("SET hbase.zookeeper.property.clientPort="+<%=zookeeperClientPortForHBase%>);
 		<%}%>
-		
+
 		<%if(setZNodeParent && zNodeParent!=null && !"".equals(zNodeParent) && !"\"\"".equals(zNodeParent)) {%>
 			statement_<%=cid%>.execute("SET zookeeper.znode.parent="+<%=zNodeParent%>);
 		<%}%>
-		
+
 		<%if(useKrb){%>
 			statement_<%=cid%>.execute("SET hbase.security.authentication=kerberos");
 			statement_<%=cid%>.execute("SET hbase.rpc.engine=org.apache.hadoop.hbase.ipc.SecureRpcEngine");
@@ -481,19 +481,19 @@ imports="
 	globalMap.put("conn_<%=cid%>",conn_<%=cid%>);
 
 	globalMap.put("db_<%=cid%>",<%=dbname%>);
-	
+
 	String currentClientPathSeparator_<%=cid%> = (String)globalMap.get("current_client_path_separator");
 	if(currentClientPathSeparator_<%=cid%>!=null) {
 		System.setProperty("path.separator", currentClientPathSeparator_<%=cid%>);
 		globalMap.put("current_client_path_separator", null);
 	}
-	
+
 	String currentClientUsername_<%=cid%> = (String)globalMap.get("current_client_user_name");
 	if(currentClientUsername_<%=cid%>!=null) {
 		System.setProperty("user.name", currentClientUsername_<%=cid%>);
 		globalMap.put("current_client_user_name", null);
 	}
-	
+
 	String originalHadoopUsername_<%=cid%> = (String)globalMap.get("HADOOP_USER_NAME_<%=cid%>");
 	if(originalHadoopUsername_<%=cid%>!=null) {
 		System.setProperty("HADOOP_USER_NAME", originalHadoopUsername_<%=cid%>);
