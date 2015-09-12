@@ -38,28 +38,53 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     	for (IConnection conn : conns) {//3
     	
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
-    			if(isMutiple){
-%>
-					boolean firstList_<%=cid%> = true;
-					String listTypeFlag_<%=cid%>="";
-					String listValueFlag_<%=cid%>="";
-<% 
-				}
-%>
-
-                <%
+    			boolean useSoapAPI = ("true").equals(ElementParameterParser.getValue(node,"__USE_SOAP_API__"));
+				boolean useRestAPI = ("true").equals(ElementParameterParser.getValue(node,"__USE_REST_API__"));
+    			
                 String passwordFieldName = "__SECRET_KEY__";
                 %>
                 
                 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
                 
-				org.talend.marketo.Client client_<%=cid%> = new org.talend.marketo.Client(<%=endpoint%>,decryptedPassword_<%=cid%>,<%=clientAccessID%>);
-				client_<%=cid%>.setTimeout(<%=timeout%>);
-				java.util.List<com.marketo.www.mktows.LeadKey> leadKeyList_<%=cid%> = new java.util.ArrayList<com.marketo.www.mktows.LeadKey>();
-				com.marketo.www.mktows.ResultListOperation resultListOperation_<%=cid%> = null;
-				
-				boolean whetherReject_<%=cid%> = false;
-<% 
+                <%
+                if(useSoapAPI){
+                %>
+					org.talend.marketo.Client client_<%=cid%> = new org.talend.marketo.Client(<%=endpoint%>,decryptedPassword_<%=cid%>,<%=clientAccessID%>);
+					client_<%=cid%>.setTimeout(<%=timeout%>);
+					java.util.List<com.marketo.www.mktows.LeadKey> leadKeyList_<%=cid%> = new java.util.ArrayList<com.marketo.www.mktows.LeadKey>();
+					com.marketo.www.mktows.ResultListOperation resultListOperation_<%=cid%> = null;
+					
+					<%
+					if(isMutiple){
+					%>
+						boolean firstList_<%=cid%> = true;
+						String listTypeFlag_<%=cid%>="";
+						String listValueFlag_<%=cid%>="";
+					<% 
+					}
+					%>
+					boolean whetherReject_<%=cid%> = false;
+				<% 
+				}
+				if(useRestAPI){
+				%>
+					org.talend.marketo.MarketoRestClient client_<%=cid%> = new org.talend.marketo.MarketoRestClient(<%=endpoint%>,decryptedPassword_<%=cid%>,<%=clientAccessID%>);
+					client_<%=cid%>.setTimeOut(<%=timeout%>);
+					client_<%=cid%>.refreshToken();
+					java.util.List<Integer> leadKeyList_<%=cid%> = new java.util.ArrayList<Integer>();
+					org.talend.marketo.response.ResultSync resultListOperation_<%=cid%> = null;
+					
+					<%
+					if(isMutiple){
+					%>
+						boolean firstList_<%=cid%> = true;
+						Integer listIdFlag_<%=cid%>= null;
+					<% 
+					}
+					%>
+					boolean whetherReject_<%=cid%> = false;
+				<% 
+				}
 			}	
 		}
 	}	
