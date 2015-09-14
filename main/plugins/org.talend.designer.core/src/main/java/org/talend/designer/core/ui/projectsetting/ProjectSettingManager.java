@@ -302,7 +302,7 @@ public class ProjectSettingManager extends Utils {
      * 
      * create parameter for ImplicitContextLoad.
      */
-    private static void createImplicitContextLoadParameters(Element elem) {
+    public static void createImplicitContextLoadParameters(Element elem) {
         ElementParameter param;
         List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParameters();
 

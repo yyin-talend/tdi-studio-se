@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
@@ -34,10 +35,12 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.ImplicitContextSettings;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.StatAndLogsSettings;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -60,7 +63,16 @@ import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
  * Helper class to Convert ElementParameter and ParameterType
  */
 public class ElementParameter2ParameterType {
-
+    
+    private static final Element statsAndLogsElement;
+    private static final Element implicitContextLoadElement;
+    static {
+        statsAndLogsElement = new StatsAndLogsElement();
+        StatsAndLogsHelper.createStatsAndLogsParameters(statsAndLogsElement);
+        
+        implicitContextLoadElement = new ImplicitContextLoadElement();
+        ProjectSettingManager.createImplicitContextLoadParameters(implicitContextLoadElement);
+    }
     /**
      * save the EMF Model's parameters to Element
      * 
@@ -70,12 +82,26 @@ public class ElementParameter2ParameterType {
     public static void saveElementParameters(Element elem, ParametersType pType) {
         EList listParamType = pType.getElementParameter();
         listParamType.clear();
+        Element defaultElement = getDefaultElement(pType);
 
-        List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParametersWithChildrens();
+        List<? extends IElementParameter> paramList = elem.getElementParametersWithChildrens();
         for (IElementParameter param : paramList) {
             ElementParameterType type = getElemeterParameterType(param);
-            listParamType.add(type);
+            IElementParameter defalutParam = defaultElement.getElementParameter(type.getName());
+            if (defalutParam != null) {
+                listParamType.add(type);
+            }
         }
+    }
+
+    private static Element getDefaultElement(ParametersType paType) {
+        EObject container = paType.eContainer();
+        if (container instanceof StatAndLogsSettings) {
+            return statsAndLogsElement;
+        } else if (container instanceof ImplicitContextSettings) {
+            return implicitContextLoadElement;
+        }
+        return null;
     }
 
     public static void setParameterValue(Element elem, String paramName, Object value) {
@@ -161,13 +187,18 @@ public class ElementParameter2ParameterType {
         IElementParameter implicitDBType = null;
         IElementParameter statsDBVersion = null;
         IElementParameter implicitDBVersion = null;
-
+        Element defaultElement = getDefaultElement(paType);
+        
         for (int j = 0; j < listParamType.size(); j++) {
             ElementParameterType pType = (ElementParameterType) listParamType.get(j);
             if (pType != null) {
                 String pTypeName = pType.getName();
                 if (pTypeName != null && !"".equals(pTypeName)) {
                     IElementParameter param = elemParam.getElementParameter(pTypeName);
+                    IElementParameter defalutParam = defaultElement.getElementParameter(pTypeName);
+                    if (defalutParam == null) {
+                        continue;
+                    }
                     if (pTypeName.equals("DB_TYPE")) { //$NON-NLS-1$
                         statsDBType = param;
                     } else if (pTypeName.equals("DB_VERSION")) { //$NON-NLS-1$
