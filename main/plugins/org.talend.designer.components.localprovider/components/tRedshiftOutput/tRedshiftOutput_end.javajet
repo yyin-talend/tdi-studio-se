@@ -275,17 +275,17 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	IConnection conn = conns_dynamic.get(0);
                 	if(!("".equals(insertColName.toString()))) {
 %>
-                	insert_<%=cid%> = "INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValue_<%=cid%>.toString();
+                	insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValue_<%=cid%>.toString();
 <%
 					} else {
 %>
-                	insert_<%=cid%> = "INSERT INTO \"" + <%=tableName%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValue_<%=cid%>.toString();
+                	insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValue_<%=cid%>.toString();
 <%
             		}
         		}
         	} else {
 %>
-				insert_<%=cid%> = "INSERT INTO \""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES "+extendInsertValue_<%=cid%>.toString();
+				insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES "+extendInsertValue_<%=cid%>.toString();
 <%
         	}
 %>
