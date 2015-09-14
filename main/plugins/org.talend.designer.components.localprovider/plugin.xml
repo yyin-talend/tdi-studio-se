@@ -5481,6 +5481,9 @@
                  id="maprfs-4.1.X-lastest">
              </library>
              <library
+                 id="libprotodefs-mapr-4.1.X-lastest">
+             </library>
+             <library
                  id="hadoop-hdfs-mapr-4.1.X-lastest">
              </library>
              <library
