@@ -2579,6 +2579,15 @@
               name="ChangeBatchParameter4SomeDBComponents"
               version="6.0.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.SetUseBatch2False4TRedshiftOutput"
+              description="Set Use Batch to false for tRedshiftOutput"
+              id="org.talend.repository.model.migration.SetUseBatch2False4TRedshiftOutput"
+              name="SetUseBatch2False4TRedshiftOutput"
+              version="6.0.2">
+        </projecttask>
           <projecttask
                 beforeLogon="false"
                 breaks="5.6.2"
