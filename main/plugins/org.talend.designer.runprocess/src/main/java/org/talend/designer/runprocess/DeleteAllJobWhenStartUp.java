@@ -126,7 +126,11 @@ public class DeleteAllJobWhenStartUp implements IStartup {
             // of changes before the end of the modifications.
             workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
         } catch (CoreException e) {
-            ExceptionHandler.process(e.getCause());
+            if (e.getCause() != null) {
+                ExceptionHandler.process(e.getCause());
+            } else {
+                ExceptionHandler.process(e);
+            }
         }
 
         executed = true;
