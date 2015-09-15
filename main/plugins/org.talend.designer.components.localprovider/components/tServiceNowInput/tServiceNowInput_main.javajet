@@ -1,0 +1,98 @@
+<%@ jet 
+imports="
+java.util.List
+java.util.Map
+java.text.SimpleDateFormat
+org.talend.core.model.metadata.IMetadataColumn
+org.talend.core.model.metadata.IMetadataTable
+org.talend.core.model.metadata.types.JavaType
+org.talend.core.model.metadata.types.JavaTypesManager
+org.talend.core.model.process.ElementParameterParser
+org.talend.core.model.process.IConnection
+org.talend.core.model.process.IConnectionCategory
+org.talend.core.model.process.INode
+org.talend.designer.codegen.config.CodeGeneratorArgument
+"
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
+boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
+
+log = new LogUtil(node);
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+//get column list
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+  IMetadataTable metadata = metadatas.get(0);
+  if (metadata != null) {
+    List<IMetadataColumn> columnList = metadata.getListColumns();
+    JavaType javaType = null;
+    String pattern = null;
+    int nbSchemaColumns = columnList.size();                        
+    List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+//if output columns are defined
+    if(nbSchemaColumns > 0 && outgoingConns != null && outgoingConns.size() > 0){
+     IConnection outgoingConn = outgoingConns.get(0);
+     %>
+     nb_line_<%=cid%>++;
+     <%=cid%>_result = (org.json.JSONObject) <%=cid%>_resultArray.get(<%=cid%>_i);
+     <%
+     for (int i = 0; i < columnList.size(); i++) {
+      IMetadataColumn column = columnList.get(i);
+      String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
+      javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+      pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+      %>
+//check data type
+      if (<%=cid%>_result.has("<%=column.getLabel()%>")) {
+        String value_<%=cid%> = (<%=cid%>_result.get("<%=column.getLabel()%>") == null) ? null : <%=cid%>_result.get("<%=column.getLabel()%>").toString()<%if(isTrimAll){%>.trim()<%}%>;
+        <%
+        if (javaType == JavaTypesManager.STRING) {
+          %>
+          <%=outgoingConn.getName()%>.<%=column.getLabel()%> = value_<%=cid%>;
+          <%
+        } else {
+          %>
+          if (value_<%=cid%> != null && !value_<%=cid%>.isEmpty()) {
+            <%
+            if(javaType == JavaTypesManager.OBJECT) {
+              %>
+              <%=outgoingConn.getName()%>.<%=column.getLabel()%> = value_<%=cid%>;
+              <%
+            } else if(javaType == JavaTypesManager.DATE) {
+              %>
+              <%=outgoingConn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(value_<%=cid%>, <%=pattern%>);
+              <%
+            } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+              %>
+            <%=outgoingConn.getName()%>.<%=column.getLabel()%> = value_<%=cid%>.getBytes();//use default encoding
+            <%
+          } else {
+            %>
+            <%=outgoingConn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_<%=typeToGenerate%>(value_<%=cid%>);
+            <%
+          }
+          %>
+        } else {
+            //use the default value of java
+        }
+        <%
+      }
+      %>
+    } else {
+      <%
+      if(isLog4jEnabled){
+        %>log.warn("<%=cid%> - Object: '" + "<%=column.getLabel()%>" + "' not found.");<%
+      }
+      %>
+    }
+    <%
+    }// column loop
+  }// connection
+}// column list
+}// metadata
+%>

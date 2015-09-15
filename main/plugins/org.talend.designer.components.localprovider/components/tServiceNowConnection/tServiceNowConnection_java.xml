@@ -1,0 +1,44 @@
+<COMPONENT>
+  <HEADER AUTHOR="Andrey Zaharovs" COMPATIBILITY="ALL" LOG4J_ENABLED="true" PLATEFORM="ALL" RELEASE_DATE="20150830A" SERIAL="" STARTABLE="true" STATUS="BETA" VERSION="0.3">
+    <SIGNATURE/>
+  </HEADER>
+  <FAMILIES>
+    <FAMILY>Business/ServiceNow</FAMILY>
+    <FAMILY>Cloud/ServiceNow</FAMILY>
+  </FAMILIES>
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_INPUT="1" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+  <PARAMETERS>
+    <PARAMETER FIELD="TEXT" NAME="SERVICENOWURL" NUM_ROW="20" REQUIRED="true">
+      <DEFAULT>"https://myinstance.service-now.com/"</DEFAULT>
+    </PARAMETER>
+    <PARAMETER FIELD="TEXT" NAME="USERNAME" NUM_ROW="30" REQUIRED="true">
+      <DEFAULT>"userName"</DEFAULT>
+    </PARAMETER>
+    <PARAMETER FIELD="PASSWORD" NAME="PASSWORD" NUM_ROW="30" REQUIRED="true">
+      <DEFAULT>"password"</DEFAULT>
+    </PARAMETER>
+  </PARAMETERS>
+  <ADVANCED_PARAMETERS/>
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT MODULE="commons-codec-1.6.jar" NAME="commons-codec" MVN="mvn:org.talend.libraries/commons-codec-1.6/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.6.jar" REQUIRED="true"/>
+      <IMPORT MODULE="commons-logging-1.1.3.jar" NAME="commons-logging" MVN="mvn:org.talend.libraries/commons-logging-1.1.3/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.3.jar" REQUIRED="true"/>
+      <IMPORT MODULE="httpclient-4.3.1.jar" NAME="httpclient" MVN="mvn:org.talend.libraries/httpclient-4.3.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpclient-4.3.1.jar" REQUIRED="true"/>
+      <IMPORT MODULE="httpclient-cache-4.3.1.jar" NAME="httpclient-cache" MVN="mvn:org.talend.libraries/httpclient-cache-4.3.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpclient-cache-4.3.1.jar" REQUIRED="true"/>
+      <IMPORT MODULE="httpcore-4.3.1.jar" NAME="httpcore" MVN="mvn:org.talend.libraries/httpcore-4.3.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.3.1.jar" REQUIRED="true"/>
+      <IMPORT MODULE="httpmime-4.3.1.jar" NAME="httpmime" MVN="mvn:org.talend.libraries/httpmime-4.3.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpmime-4.3.1.jar" REQUIRED="true"/>
+    </IMPORTS>
+  </CODEGENERATION>
+  <RETURNS/>
+</COMPONENT>
