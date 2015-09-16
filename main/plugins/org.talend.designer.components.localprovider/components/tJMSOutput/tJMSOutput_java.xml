@@ -25,16 +25,16 @@
 		      NUM_ROW="1"
 		      REQUIRED="true"
 		    >
-	      <DEFAULT></DEFAULT>
+	      <DEFAULT>activemq-all-5.10.0.jar</DEFAULT>
 	    </PARAMETER>
 		<PARAMETER NAME="CONTEXT_PROVIDER" FIELD="TEXT" NUM_ROW="5">
-			<DEFAULT>"com.tibco.tibjms.naming.TibjmsInitialContextFactory"</DEFAULT>
+			<DEFAULT>"org.apache.activemq.jndi.ActiveMQInitialContextFactory"</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="SERVER_URL" FIELD="TEXT" NUM_ROW="10">
-			<DEFAULT>"tibjmsnaming://localhost:7222"</DEFAULT>
+			<DEFAULT>"tcp://localhost:61616"</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="CONN_FACTORY_NAME" FIELD="TEXT" NUM_ROW="15">
-			<DEFAULT>"GenericConnectionFactory"</DEFAULT>
+			<DEFAULT>"ConnectionFactory"</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="USER_IDENTITY" FIELD="CHECK" SHOW="true"
 			NUM_ROW="20">
