@@ -79,7 +79,7 @@ public class ComponentsUtils {
         Set<String> componentNames = service.getAllComponentNames();
         for (String componentName : componentNames) {
             ComponentProperties componentProperty = service.getComponentProperties(componentName);
-            System.out.println("Loading:" + componentName);
+            // System.out.println("Loading:" + componentName);
         }
     }
 }

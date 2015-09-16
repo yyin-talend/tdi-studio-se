@@ -15,32 +15,22 @@ package org.talend.component.core.model;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
-import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.component.core.i18n.Messages;
 import org.talend.components.api.properties.ComponentConnector;
 import org.talend.components.api.properties.ComponentDefinition;
@@ -50,23 +40,12 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.component_cache.ComponentInfo;
-import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
-import org.talend.core.model.components.EReadOnlyComlumnPosition;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
-import org.talend.core.model.general.InstallModule;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataColumn;
-import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.MetadataTalendType;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -79,33 +58,21 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
-import org.talend.core.ui.component.settings.ComponentsSettingsHelper;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.ComponentBundleToPath;
-import org.talend.designer.core.model.components.ComponentFilesNaming;
 import org.talend.designer.core.model.components.ComponentIconLoading;
-import org.talend.designer.core.model.components.ComponentsProviderManager;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.model.components.ElementParameterDefaultValue;
 import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.model.components.NodeReturn;
-import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
-import org.talend.designer.core.model.utils.emf.component.IMPORTType;
-import org.talend.designer.core.model.utils.emf.component.INSTALLType;
 import org.talend.designer.core.model.utils.emf.component.ITEMSType;
 import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
-import org.talend.designer.core.model.utils.emf.component.RETURNType;
-import org.talend.designer.core.model.utils.emf.component.TABLEType;
-import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
@@ -118,85 +85,20 @@ public class Component extends AbstractComponent {
 
     private static Logger log = Logger.getLogger(Component.class);
 
-    private ComponentDefinition componentDefinition;
-
-    private static final String EQUALS = "=="; //$NON-NLS-1$
-
-    private static final String DEFAULT_COLOR = "255;255;255"; //$NON-NLS-1$
-
     private static final long serialVersionUID = 1L;
 
-    private String uriString;
+    private ComponentDefinition componentDefinition;
 
-    private String name;
-
-    private boolean isLoaded = false;
-
-    private Map<String, ImageDescriptor> imageRegistry = new HashMap<String, ImageDescriptor>();
-
-    public static final String BUILTIN = "BUILT_IN"; //$NON-NLS-1$
-
-    public static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
-
-    public static final String TNS_FILE = "USE_TNS_FILE"; //$NON-NLS-1$
-
-    public static final String TEXT_BUILTIN = Messages.getString("Component.builtIn"); //$NON-NLS-1$
-
-    public static final String TEXT_REPOSITORY = Messages.getString("Component.repository"); //$NON-NLS-1$
-
-    public static final String TEXT_TNS_FILE = Messages.getString("Component.tnsfile"); //$NON-NLS-1$
-
-    private static final String TSTATCATCHER_NAME = "tStatCatcher"; //$NON-NLS-1$
-
-    public static final String ENCODING_TYPE_UTF_8 = "UTF-8"; //$NON-NLS-1$
-
-    public static final String ENCODING_TYPE_ISO_8859_15 = "ISO-8859-15"; //$NON-NLS-1$
-
-    public static final String ENCODING_TYPE_CUSTOM = "CUSTOM"; //$NON-NLS-1$
-
-    private static final String STRING_TYPE = "String"; //$NON-NLS-1$
+    private List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
 
     private List<IMultipleComponentManager> multipleComponentManagers;
 
-    private static final boolean ADVANCED_PROPERTY = true;
-
-    private String pathSource;
-
-    private List<ECodePart> codePartListX;
-
-    private Boolean useMerge = null;
-
-    private Boolean visible = null;
-
-    private Boolean technical = null;
-
-    private ComponentInfo info;
-
-    private boolean isAlreadyLoad = false;
-
-    // weak ref used so that memory is not used by a static ComponentResourceFactoryImpl instance
-    private static SoftReference<ComponentResourceFactoryImpl> compResFactorySoftRef;
-
-    // weak ref used so that memory is not used by a static HashMap instance
-    private static SoftReference<Map> optionMapSoftRef;
-
-    private String type;
-
     private ComponentsProvider provider;
-
-    private String bundleName;
 
     public Component(ComponentDefinition componentDefinition) throws BusinessException {
         this.componentDefinition = componentDefinition;
-        // TODO: default init a component load into palette
-        this.name = componentDefinition.getName();
+        // TODO
         this.setPaletteType("DI"); //$NON-NLS-1$
-        this.pathSource = "components"; //$NON-NLS-1$
-        this.bundleName = "org.talend.designer.components.localprovider";//$NON-NLS-1$
-        this.uriString = "/components/tSalesforceInput/tSalesforceInput_java.xml";//$NON-NLS-1$
-        this.isLoaded = true;
-        this.isAlreadyLoad = true;
-        this.visible = true;
     }
 
     /*
@@ -216,7 +118,8 @@ public class Component extends AbstractComponent {
      */
     @Override
     public String getLongName() {
-        return "Asks a Access database to upload a bulk file into the database defined";
+        // TODO
+        return "Asks a Access database to upload a bulk file into the database defined";//$NON-NLS-1$
     }
 
     /*
@@ -233,6 +136,7 @@ public class Component extends AbstractComponent {
                 sb.append("|");//$NON-NLS-1$
             }
             // later no need this
+            // TODO
             sb.append("Service/");//$NON-NLS-1$
             sb.append(familyName);
         }
@@ -254,6 +158,7 @@ public class Component extends AbstractComponent {
                 sb.append("|");//$NON-NLS-1$
             }
             // later no need this
+            // TODO
             sb.append("Service/");//$NON-NLS-1$
             sb.append(familyName);
         }
@@ -261,75 +166,9 @@ public class Component extends AbstractComponent {
         return sb.toString();
     }
 
-    private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source, String cachedPathSource,
-            AbstractComponentsProvider provider) {
-        try {
-            AbstractComponentsProvider currentProvider = provider;
-            if (currentProvider == null) {
-                ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-                Collection<AbstractComponentsProvider> providers = componentsProviderManager.getProviders();
-                for (AbstractComponentsProvider curProvider : providers) {
-                    String path = new Path(curProvider.getInstallationFolder().toString()).toPortableString();
-                    if (source.startsWith(path)) {
-                        // fix for TDI-19889 and TDI-20507 to get the correct component provider
-                        if (cachedPathSource != null) {
-                            if (path.contains(cachedPathSource)) {
-                                currentProvider = curProvider;
-                                break;
-                            }
-                        } else {
-                            currentProvider = curProvider;
-                            break;
-                        }
-                    }
-                }
-            }
-            String installPath = currentProvider.getInstallationFolder().toString();
-            String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(),
-                    installPath.substring(installPath.lastIndexOf(IComponentsFactory.COMPONENTS_INNER_FOLDER)));
-
-            if (currentProvider.isUseLocalProvider()) {
-                // if the component use local provider as storage (for user / ecosystem components)
-                // then get the bundle resource from the current main component provider.
-
-                // note: code here to review later, service like this shouldn't be used...
-                ResourceBundle bundle = null;
-                IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                        IBrandingService.class);
-                if (brandingService.isPoweredOnlyCamel()) {
-                    bundle = currentProvider.getResourceBundle(label);
-                } else {
-                    ITisLocalProviderService service = (ITisLocalProviderService) GlobalServiceRegister.getDefault().getService(
-                            ITisLocalProviderService.class);
-                    bundle = service.getResourceBundle(label);
-                }
-                return bundle;
-            } else {
-                ResourceBundle bundle = ResourceBundle.getBundle(label, Locale.getDefault(), new ResClassLoader(currentProvider
-                        .getClass().getClassLoader()));
-                return bundle;
-            }
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        }
-
-        return null;
-    }
-
-    public static class ResClassLoader extends ClassLoader {
-
-        public ResClassLoader(ClassLoader parent) {
-            super(parent);
-        }
-    }
-
     private String getTranslatedValue(final String nameValue) {
-        return "org.talend.help.tSalesforceInput";
-    }
-
-    @SuppressWarnings("unchecked")
-    private void load() throws BusinessException {
-        //
+        // TODO
+        return "org.talend.help.tSalesforceInput";//$NON-NLS-1$
     }
 
     @Override
@@ -338,7 +177,7 @@ public class Component extends AbstractComponent {
         listParam = new ArrayList<ElementParameter>();
         // TODO
         addMainParameters(listParam, node);
-        // addPropertyParameters(listParam, node, NORMAL_PROPERTY);
+        addPropertyParameters(listParam, node, NORMAL_PROPERTY);
         addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
         initializePropertyParameters(listParam);
         checkSchemaParameter(listParam, node);
@@ -426,8 +265,6 @@ public class Component extends AbstractComponent {
     @Override
     public List<NodeReturn> createReturns() {
         List<NodeReturn> listReturn;
-        RETURNType retType;
-        EList returnList;
         NodeReturn nodeRet;
         listReturn = new ArrayList<NodeReturn>();
         // ****************** add standard returns ******************
@@ -442,12 +279,12 @@ public class Component extends AbstractComponent {
         Property[] propertys = componentDefinition.createProperties().getProperties();
         for (Property property : propertys) {
             nodeRet = new NodeReturn();
-            nodeRet.setAvailability("");
-            nodeRet.setVarName("");
+            nodeRet.setAvailability("");//$NON-NLS-1$
+            nodeRet.setVarName("");//$NON-NLS-1$
             nodeRet.setDisplayName(property.getDisplayName());
             nodeRet.setName(property.getName());
             nodeRet.setType(property.getTypeName());
-            nodeRet.setShowIf("");
+            nodeRet.setShowIf("");//$NON-NLS-1$
             listReturn.add(nodeRet);
         }
         return listReturn;
@@ -607,9 +444,7 @@ public class Component extends AbstractComponent {
                     }
                 }
             }
-
         }
-
         return null;
     }
 
@@ -624,7 +459,7 @@ public class Component extends AbstractComponent {
             }
         }
 
-        // qli modified to fix the bug 7074.
+        // modified to fix the bug 7074.
         String formatId = getNodeFormatIdWithoutFormatType(getName(), getTranslatedFamilyName());
 
         param = new ElementParameter(node);
@@ -692,7 +527,7 @@ public class Component extends AbstractComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
-        param.setValue("");// TODO
+        param.setValue("");// TODO//$NON-NLS-1$
         if (formatId != null) {
             if (localComponentProviderStore != null) {
                 String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
@@ -832,7 +667,7 @@ public class Component extends AbstractComponent {
 
         if (ComponentCategory.CATEGORY_4_DI.getName().equals(this.getPaletteType())) {
             boolean isStatCatcherComponent = false;
-            if (this.name != null && this.name.equals(TSTATCATCHER_NAME)) {
+            if (getName() != null && getName().equals(TSTATCATCHER_NAME)) {
                 isStatCatcherComponent = true;
             }
             /* for bug 0021961,should not show parameter TSTATCATCHER_STATS in UI on component tStatCatcher */
@@ -841,7 +676,7 @@ public class Component extends AbstractComponent {
                         ComponentCategory.CATEGORY_4_DI.getName()) != null;
                 param = new ElementParameter(node);
                 param.setName(EParameterName.TSTATCATCHER_STATS.getName());
-                param.setValue(new Boolean("false"));// TODO
+                param.setValue(new Boolean("false"));// TODO //$NON-NLS-1$
                 param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
                 param.setFieldType(EParameterFieldType.CHECK);
                 param.setCategory(EComponentCategory.ADVANCED);
@@ -916,7 +751,7 @@ public class Component extends AbstractComponent {
 
         param = new ElementParameter(node);
         param.setName(EParameterName.SUBJOB_TITLE_COLOR.getName());
-        param.setValue("");// TODO
+        param.setValue("");// TODO//$NON-NLS-1$
         param.setDisplayName(EParameterName.SUBJOB_TITLE_COLOR.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.ADVANCED);
@@ -928,8 +763,8 @@ public class Component extends AbstractComponent {
 
         // These parameters is only work when TIS is loaded
         // GLiu Added for Task http://jira.talendforge.org/browse/TESB-4279
-        if (PluginChecker.isTeamEdition() && !"CAMEL".equals(getPaletteType())) {
-            boolean defaultParalelize = new Boolean("false");// TODO
+        if (PluginChecker.isTeamEdition() && !"CAMEL".equals(getPaletteType())) {//$NON-NLS-1$
+            boolean defaultParalelize = new Boolean("false");// TODO//$NON-NLS-1$
             param = new ElementParameter(node);
             param.setReadOnly(!defaultParalelize);
             param.setName(EParameterName.PARALLELIZE.getName());
@@ -945,7 +780,7 @@ public class Component extends AbstractComponent {
             param = new ElementParameter(node);
             param.setReadOnly(!defaultParalelize);
             param.setName(EParameterName.PARALLELIZE_NUMBER.getName());
-            param.setValue("");// TODO
+            param.setValue("");// TODO//$NON-NLS-1$
             param.setDisplayName(EParameterName.PARALLELIZE_NUMBER.getDisplayName());
             param.setFieldType(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.ADVANCED);
@@ -980,7 +815,7 @@ public class Component extends AbstractComponent {
                 displayName = EParameterName.PROPERTY_TYPE.getDisplayName();
             }
             newParam.setDisplayName(displayName);
-            if (node.getComponent() != null && node.getComponent().getName().equals("tOracleConnection")) {
+            if (node.getComponent() != null && node.getComponent().getName().equals("tOracleConnection")) {//$NON-NLS-1$
                 newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TEXT_TNS_FILE });
                 newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
                 newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
@@ -1239,9 +1074,9 @@ public class Component extends AbstractComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ROUTE_RESOURCE_TYPE_VERSION.getName());
             newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_VERSION.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { "Latest" });
-            newParam.setListItemsValue(new String[] { "Latest" });
-            newParam.setValue("Latest");
+            newParam.setListItemsDisplayName(new String[] { "Latest" });//$NON-NLS-1$
+            newParam.setListItemsValue(new String[] { "Latest" });//$NON-NLS-1$
+            newParam.setValue("Latest");//$NON-NLS-1$
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.TECHNICAL);
             if (xmlParam.isSetSHOW()) {
@@ -1272,255 +1107,6 @@ public class Component extends AbstractComponent {
                 listParam.add(param);
                 autoSwitchAdded = true;
             }
-        }
-
-        // TODO to remove later, need to find another way to do this (for feature 18686)
-        // adds manually all definitions to avoid to modify the component
-        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleInput".equals(name)) {
-            if (!advanced) {
-                // <PARAMETER NAME="FORCE_CRS" FIELD="CHECK" REQUIRED="true"
-                // NUM_ROW="110">
-                // <DEFAULT>false</DEFAULT>
-                // </PARAMETER>
-                ElementParameter newParam = new ElementParameter(node);
-                newParam.setName("FORCE_CRS"); //$NON-NLS-1$
-                newParam.setDisplayName("Force coordinate reference system"); //$NON-NLS-1$
-                newParam.setFieldType(EParameterFieldType.CHECK);
-                newParam.setRequired(true);
-                newParam.setNumRow(110);
-                newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue(new Boolean(false));
-                listParam.add(newParam);
-
-                // <PARAMETER NAME="CRS" FIELD="TEXT" NUM_ROW="110" REQUIRED="true"
-                // SHOW_IF="FORCE_CRS == 'true'">
-                // <DEFAULT>"EPSG:4326"</DEFAULT>
-                // </PARAMETER>
-                newParam = new ElementParameter(node);
-                newParam.setName("CRS"); //$NON-NLS-1$
-                newParam.setDisplayName("EPSG"); //$NON-NLS-1$
-                newParam.setFieldType(EParameterFieldType.TEXT);
-                newParam.setRequired(true);
-                newParam.setNumRow(110);
-                newParam.setShowIf("FORCE_CRS == 'true'");
-                newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("\"EPSG:4326\"");
-                listParam.add(newParam);
-
-                // <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="2">
-                // <DEFAULT>import org.talend.sdi.geometry.Geometry;</DEFAULT>
-                // </PARAMETER>
-                newParam = new ElementParameter(node);
-                newParam.setName("IMPORT"); //$NON-NLS-1$
-                newParam.setDisplayName("Imports"); //$NON-NLS-1$
-                newParam.setFieldType(EParameterFieldType.MEMO_IMPORT);
-                newParam.setRequired(true);
-                newParam.setNumRow(2);
-                newParam.setShow(false);
-                newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("import org.talend.sdi.geometry.Geometry;");
-                listParam.add(newParam);
-            }
-        }
-
-        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleOutput".equals(name)) {
-            if (!advanced) {
-                // <PARAMETER
-                // NAME="USE_SPATIAL_OPTIONS"
-                // FIELD="CHECK"
-                // NUM_ROW="200"
-                // SHOW_IF="(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or
-                // (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE')"
-                // >
-                // <DEFAULT>false</DEFAULT>
-                // </PARAMETER>
-                ElementParameter newParam = new ElementParameter(node);
-                newParam.setName("USE_SPATIAL_OPTIONS"); //$NON-NLS-1$
-                newParam.setDisplayName("Use spatial options"); //$NON-NLS-1$
-                newParam.setFieldType(EParameterFieldType.CHECK);
-                newParam.setRequired(true);
-                newParam.setShowIf("(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or"
-                        + " (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE')");
-                newParam.setNumRow(200);
-                newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue(new Boolean(false));
-                listParam.add(newParam);
-
-                // <PARAMETER
-                // NAME="SPATIAL_INDEX"
-                // FIELD="CHECK"
-                // SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or
-                // (TABLE_ACTION=='DROP_CREATE') or
-                // (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"
-                // NUM_ROW="200"
-                // >
-                // <DEFAULT>false</DEFAULT>
-                // </PARAMETER>
-                newParam = new ElementParameter(node);
-                newParam.setName("SPATIAL_INDEX"); //$NON-NLS-1$
-                newParam.setDisplayName("Create Spatial index"); //$NON-NLS-1$
-                newParam.setFieldType(EParameterFieldType.CHECK);
-                newParam.setRequired(true);
-                newParam.setShowIf("(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or "
-                        + "(TABLE_ACTION=='DROP_CREATE') or (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or"
-                        + " (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))");
-                newParam.setNumRow(200);
-                newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue(new Boolean(false));
-                listParam.add(newParam);
-
-                // <PARAMETER
-                // NAME="SPATIAL_INDEX_ACCURACY"
-                // FIELD="TEXT"
-                // REQUIRED="true"
-                // SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or
-                // (TABLE_ACTION=='DROP_CREATE') or
-                // (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"
-                // NUM_ROW="201"
-                // >
-                // <DEFAULT>0.001</DEFAULT>
-                // </PARAMETER>
-                newParam = new ElementParameter(node);
-                newParam.setName("SPATIAL_INDEX_ACCURACY"); //$NON-NLS-1$
-                newParam.setDisplayName("Index accuracy"); //$NON-NLS-1$
-                newParam.setFieldType(EParameterFieldType.TEXT);
-                newParam.setRequired(true);
-                newParam.setShowIf("(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or "
-                        + "(TABLE_ACTION=='DROP_CREATE') or (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or"
-                        + " (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))");
-                newParam.setNumRow(201);
-                newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("0.001");
-                listParam.add(newParam);
-
-                // <PARAMETER NAME="SRID" FIELD="TEXT" NUM_ROW="208" REQUIRED="true"
-                // SHOW_IF="USE_SPATIAL_OPTIONS == 'true'">
-                // <DEFAULT>-1</DEFAULT>
-                // </PARAMETER>
-                newParam = new ElementParameter(node);
-                newParam.setName("SRID"); //$NON-NLS-1$
-                newParam.setDisplayName("Oracle Spatial Reference System Identifier"); //$NON-NLS-1$
-                newParam.setFieldType(EParameterFieldType.TEXT);
-                newParam.setRequired(true);
-                newParam.setShowIf("USE_SPATIAL_OPTIONS == 'true'");
-                newParam.setNumRow(208);
-                newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("-1");
-                listParam.add(newParam);
-
-                // <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="2">
-                // <DEFAULT>import org.talend.sdi.geometry.Geometry;</DEFAULT>
-                // </PARAMETER>
-                newParam = new ElementParameter(node);
-                newParam.setName("IMPORT"); //$NON-NLS-1$
-                newParam.setDisplayName("Imports"); //$NON-NLS-1$
-                newParam.setFieldType(EParameterFieldType.MEMO_IMPORT);
-                newParam.setRequired(true);
-                newParam.setNumRow(2);
-                newParam.setShow(false);
-                newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("import org.talend.sdi.geometry.Geometry;");
-                listParam.add(newParam);
-            }
-        }
-    }
-
-    private RGB getColor(ElementParameter param, String color) {
-        if (CommonsPlugin.isHeadless()) {
-            return null;
-        }
-
-        if (color != null && color.contains(";")) { //$NON-NLS-1$
-            String rgb[] = color.split(";"); //$NON-NLS-1$
-            if (rgb.length != 3) {
-                throw new RuntimeException(Messages.getString("EmfComponent.RGBNotCorrect" //$NON-NLS-1$
-                        , param.getDisplayName()));
-            }
-            return ColorUtils.stringToRGB(color);
-        }
-        return null;
-    }
-
-    private String getMappingType() {
-        // TODO
-        return "";
-    }
-
-    private void initializeTableFromXml(PARAMETERType xmlParam, ElementParameter param) {
-        List<TABLEType> tableList = xmlParam.getTABLE();
-        if ((tableList == null) || (tableList.size() == 0)) {
-            return;
-        }
-
-        String mappingType = getMappingType();
-        for (TABLEType tableType : tableList) {
-            IMetadataTable defaultTable = new MetadataTable();
-            EList xmlColumnList = tableType.getCOLUMN();
-            COLUMNType xmlColumn;
-            List<IMetadataColumn> talendColumnList = new ArrayList<IMetadataColumn>();
-            MetadataColumn talendColumn;
-
-            boolean isReadOnly;
-            if (tableType.isSetREADONLY()) {
-                defaultTable.setReadOnly(tableType.isREADONLY());
-                isReadOnly = tableType.isREADONLY();
-            } else {
-                defaultTable.setReadOnly(param.isReadOnly());
-                isReadOnly = param.isReadOnly();
-            }
-
-            String readOnlyColumnPosition = tableType.getREADONLYCOLUMNPOSITION();
-            if (readOnlyColumnPosition == null) {
-                readOnlyColumnPosition = EReadOnlyComlumnPosition.BOTTOM.toString();
-            }
-            defaultTable.setReadOnlyColumnPosition(readOnlyColumnPosition);
-            int nbCustom = 0;
-            for (int i = 0; i < xmlColumnList.size(); i++) {
-                xmlColumn = (COLUMNType) xmlColumnList.get(i);
-
-                talendColumn = new MetadataColumn();
-                talendColumn.setLabel(xmlColumn.getNAME());
-                talendColumn.setOriginalDbColumnName(xmlColumn.getNAME());
-                talendColumn.setTalendType(xmlColumn.getTYPE());
-                talendColumn.setPrecision(new Integer(xmlColumn.getPRECISION()));
-                talendColumn.setLength(new Integer(xmlColumn.getLENGTH()));
-                talendColumn.setNullable(xmlColumn.isNULLABLE());
-                talendColumn.setKey(xmlColumn.isKEY());
-                talendColumn.setPattern(xmlColumn.getPATTERN());
-                talendColumn.setComment(xmlColumn.getCOMMENT());
-                if (xmlColumn.getDBTYPE() != null && !"".equals(xmlColumn.getDBTYPE())) { //$NON-NLS-1$
-                    talendColumn.setType(xmlColumn.getDBTYPE());
-                } else if (mappingType != null) {
-                    String defaultSelectedDbType = MetadataTalendType.getMappingTypeRetriever(mappingType)
-                            .getDefaultSelectedDbType(xmlColumn.getTYPE());
-                    talendColumn.setType(defaultSelectedDbType);
-                }
-                if (xmlColumn.isSetREADONLY()) {
-                    talendColumn.setReadOnly(xmlColumn.isREADONLY());
-                } else if (isReadOnly) {
-                    talendColumn.setReadOnly(isReadOnly);
-                } else {
-                    talendColumn.setReadOnly(xmlParam.isREADONLY());
-                }
-                if (xmlColumn.isSetCUSTOM()) {
-                    talendColumn.setCustom(xmlColumn.isCUSTOM());
-                    talendColumn.setCustomId(nbCustom++);
-                } else {
-                    talendColumn.setCustomId(-1);
-                }
-                talendColumnList.add(talendColumn);
-            }
-
-            defaultTable.setListColumns(talendColumnList);
-
-            // store the default table in default value
-            IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-            defaultValue.setDefaultValue(defaultTable);
-            defaultValue.setIfCondition(tableType.getIF());
-            defaultValue.setNotIfCondition(tableType.getNOTIF());
-            param.getDefaultValues().add(defaultValue);
-
-            // param.setValue(defaultTable);
         }
     }
 
@@ -1569,13 +1155,11 @@ public class Component extends AbstractComponent {
                                     elementParameter.setValue(encodingType);
                                 }
                             }
-
                         }
                     }
                 }
             }
         }
-
         initializePropertyParametersForSchema(listParam);
     }
 
@@ -1663,7 +1247,6 @@ public class Component extends AbstractComponent {
                 nbItems++;
             }
         }
-
         String[] listRepositoryItem = new String[nbItems];
         String[] listItemsDisplayValue = new String[nbItems];
         String[] listItemsDisplayCodeValue = new String[nbItems];
@@ -1782,7 +1365,7 @@ public class Component extends AbstractComponent {
                 case SCHEMA_XPATH_QUERYS:
                     newParam.setValue(""); //$NON-NLS-1$
                     break;
-                case RULE_TYPE: // hywang add for feature 6484
+                case RULE_TYPE:
                     newParam.setFieldType(EParameterFieldType.RULE_TYPE);
                     break;
                 // case VALIDATION_RULE_TYPE:
@@ -1813,7 +1396,6 @@ public class Component extends AbstractComponent {
         param.setListRepositoryItems(listRepositoryItem);
         param.setListItemsShowIf(listItemsShowIf);
         param.setListItemsNotShowIf(listItemsNotShowIf);
-        // hshen 6930
         param.setListItemsNotReadOnlyIf(listNotReadonlyIf);
         param.setListItemsReadOnlyIf(listReadonlyIf);
         if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
@@ -1849,7 +1431,7 @@ public class Component extends AbstractComponent {
     @Override
     public String getShortName() {
         String originalComponentName = getName();
-        String calculatedShortName = "";
+        String calculatedShortName = "";//$NON-NLS-1$
         char[] cars = new char[originalComponentName.length()];
         int nbChars = 0;
 
@@ -1903,6 +1485,10 @@ public class Component extends AbstractComponent {
 
             nodeConnector.setMaxLinkInput(componentConnector.getMaxInput());
             nodeConnector.setMaxLinkOutput(componentConnector.getMaxOutput());
+
+            if (nodeConnector.getName() == null) {
+                nodeConnector.setName(componentConnector.getType().name());
+            }
             listConnector.add(nodeConnector);
         }
 
@@ -1972,15 +1558,14 @@ public class Component extends AbstractComponent {
      */
     @Override
     public boolean isVisible() {
-        return isVisible(null);
+        // TODO
+        return true;
     }
 
     @Override
     public boolean isVisible(String family) {
-        if (visible != null) {
-            return visible;
-        }
-        return ComponentsSettingsHelper.isComponentVisible(this, family);
+        // TODO
+        return true;
     }
 
     @Override
@@ -1992,12 +1577,8 @@ public class Component extends AbstractComponent {
     @Override
     public String getVersion() {
         // TODO
-        return "";
+        return "";//$NON-NLS-1$
     }
-
-    private List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
-
-    private static final String DB_VERSION = "DB_VERSION";
 
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
@@ -2006,7 +1587,7 @@ public class Component extends AbstractComponent {
             return componentImportNeedsList;
         }
         List<String> moduleNames = new ArrayList<String>();
-        List<String> componentList = info.getComponentNames();
+        List<String> componentList = new ArrayList<String>();
         for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
             for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
                 IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
@@ -2025,102 +1606,7 @@ public class Component extends AbstractComponent {
                 }
             }
         }
-
-        // TODO to remove later, need to find another way to do this (for feature 18686)
-        // adds manually all definitions to avoid to modify the component
-        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleInput".equals(name)) {
-            // <IMPORT NAME="oracle-sdoapi" MODULE="sdoapi.jar" REQUIRED="true" />
-            ModuleNeeded componentImportNeeds = new ModuleNeeded("oracle-sdoapi", "sdoapi.jar",
-                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-
-            // <IMPORT NAME="oracle-sdoutil" MODULE="sdoutil.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("oracle-sdoutil", "sdoutil.jar", Messages.getString("modules.required"),
-                    true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-
-            // <IMPORT NAME="jts-1.12" MODULE="jts-1.12.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("jts-1.12", "jts-1.12.jar", Messages.getString("modules.required"), true,
-                    new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-
-            // <IMPORT NAME="org.talend.sdi" MODULE="org.talend.sdi.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("org.talend.sdi", "org.talend.sdi.jar",
-                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-
-            // <IMPORT NAME="Java-DOM4J" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("Java-DOM4J", "dom4j-1.6.1.jar", Messages.getString("modules.required"),
-                    true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-
-            // <IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("Java-JAXEN", "jaxen-1.1.1.jar", Messages.getString("modules.required"),
-                    true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-        }
-
-        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleOutput".equals(name)) {
-            // <IMPORT NAME="oracle-sdoapi" MODULE="sdoapi.jar" REQUIRED="true" />
-            ModuleNeeded componentImportNeeds = new ModuleNeeded("oracle-sdoapi", "sdoapi.jar",
-                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-
-            // <IMPORT NAME="oracle-sdoutil" MODULE="sdoutil.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("oracle-sdoutil", "sdoutil.jar", Messages.getString("modules.required"),
-                    true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-
-            // <IMPORT NAME="Java-DOM4J" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("Java-DOM4J", "dom4j-1.6.1.jar", Messages.getString("modules.required"),
-                    true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-
-            // <IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("Java-JAXEN", "jaxen-1.1.1.jar", Messages.getString("modules.required"),
-                    true, new ArrayList<String>(), null, null);
-            componentImportNeedsList.add(componentImportNeeds);
-        }
-
         return componentImportNeedsList;
-    }
-
-    protected void initBundleID(IMPORTType importType, ModuleNeeded componentImportNeeds) {
-        String bundleID = importType.getBundleID();
-        if (bundleID != null) {
-            String bundleName = null;
-            String bundleVersion = null;
-            if (bundleID.contains(":")) {
-                String[] nameAndVersion = bundleID.split(":");
-                bundleName = nameAndVersion[0];
-                bundleVersion = nameAndVersion[1];
-            } else {
-                bundleName = bundleID;
-            }
-            componentImportNeeds.setBundleName(bundleName);
-            componentImportNeeds.setBundleVersion(bundleVersion);
-        }
-    }
-
-    public List<String> getInstallURL(IMPORTType importType) {
-        List<String> list = new ArrayList<String>();
-        EList emfInstall = importType.getURL();
-        for (int j = 0; j < emfInstall.size(); j++) {
-            String installtype = (String) emfInstall.get(j);
-            list.add(installtype);
-        }
-        return list;
-    }
-
-    public List<InstallModule> getInstallCommand(IMPORTType importType) {
-        List<InstallModule> list = new ArrayList<InstallModule>();
-        EList emfInstall = importType.getINSTALL();
-        for (int j = 0; j < emfInstall.size(); j++) {
-            INSTALLType installtype = (INSTALLType) emfInstall.get(j);
-            InstallModule installModuleNeeds = new InstallModule(installtype.getOS(), installtype.getCOMMAND());
-            list.add(installModuleNeeds);
-        }
-        return list;
     }
 
     @Override
@@ -2144,7 +1630,7 @@ public class Component extends AbstractComponent {
      */
     @Override
     public boolean isLoaded() {
-        return isLoaded;
+        return true;
     }
 
     @Override
@@ -2157,16 +1643,11 @@ public class Component extends AbstractComponent {
         return imageRegistry;
     }
 
-    /**
-     * Getter for icon16.
-     * 
-     * @return the icon16
-     */
     @Override
     public ImageDescriptor getIcon16() {
-        if (!this.imageRegistry.containsKey(getName() + "_16")) {
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
-                    .toPortableString();
+        if (!this.imageRegistry.containsKey(getName() + "_16")) {//$NON-NLS-1$
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName())).append(getPathSource())
+                    .append(getName()).toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
 
             // only call to initialize the icons in the registry
@@ -2174,19 +1655,14 @@ public class Component extends AbstractComponent {
             cil.getImage16();
             cil.getImage24();
         }
-        return this.imageRegistry.get(getName() + "_16");
+        return this.imageRegistry.get(getName() + "_16");//$NON-NLS-1$
     }
 
-    /**
-     * Getter for icon24.
-     * 
-     * @return the icon24
-     */
     @Override
     public ImageDescriptor getIcon24() {
-        if (!this.imageRegistry.containsKey(getName() + "_24")) {
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
-                    .toPortableString();
+        if (!this.imageRegistry.containsKey(getName() + "_24")) {//$NON-NLS-1$
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName())).append(getPathSource())
+                    .append(getName()).toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
 
             // only call to initialize the icons in the registry
@@ -2194,7 +1670,7 @@ public class Component extends AbstractComponent {
             cil.getImage16();
             cil.getImage24();
         }
-        return this.imageRegistry.get(getName() + "_24");
+        return this.imageRegistry.get(getName() + "_24");//$NON-NLS-1$
     }
 
     /**
@@ -2204,9 +1680,9 @@ public class Component extends AbstractComponent {
      */
     @Override
     public ImageDescriptor getIcon32() {
-        if (!this.imageRegistry.containsKey(getName() + "_32")) {
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
-                    .toPortableString();
+        if (!this.imageRegistry.containsKey(getName() + "_32")) {//$NON-NLS-1$
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName())).append(getPathSource())
+                    .append(getName()).toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
 
             // only call to initialize the icons in the registry
@@ -2214,29 +1690,26 @@ public class Component extends AbstractComponent {
             cil.getImage16();
             cil.getImage24();
         }
-        return this.imageRegistry.get(getName() + "_32");
+        return this.imageRegistry.get(getName() + "_32");//$NON-NLS-1$
     }
 
     @Override
     public String getPathSource() {
-        return this.pathSource;
-    }
-
-    public void setPathSource(String pathSource) {
-        this.pathSource = pathSource;
+        return "components";//$NON-NLS-1$
     }
 
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
         String applicationPath;
         try {
-            applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
+            applicationPath = FileLocator.getBundleFile(Platform.getBundle(getBundleName())).getPath();
             applicationPath = (new Path(applicationPath)).toPortableString();
         } catch (IOException e2) {
             ExceptionHandler.process(e2);
             return (ArrayList<ECodePart>) Collections.EMPTY_LIST;
         }
-        File dirChildFile = new File(applicationPath + uriString);
+        // TODO
+        File dirChildFile = new File(applicationPath + "/components/tSalesforceInput/tSalesforceInput_java.xml");//$NON-NLS-1$
         File dirFile = dirChildFile.getParentFile();
         final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
         FilenameFilter fileNameFilter = new FilenameFilter() {
@@ -2280,19 +1753,17 @@ public class Component extends AbstractComponent {
     @Override
     public boolean useMerge() {
         // TODO
-        return useMerge;
+        return false;
     }
 
     public boolean useFlow() {
         // TODO
-        boolean useFlow = false;
-        return useFlow;
+        return false;
     }
 
     public boolean useSchema() {
         // TODO
-        boolean useSchema = false;
-        return useSchema;
+        return false;
     }
 
     @Override
@@ -2415,65 +1886,10 @@ public class Component extends AbstractComponent {
         return false;
     }
 
-    /**
-     * return the common ComponentResourceFactoryImpl to retreive component resource from URI
-     * 
-     * @return factoryImpl
-     */
-    // here we are using soft references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
-    private static ComponentResourceFactoryImpl getComponentResourceFactoryImpl() {
-        ComponentResourceFactoryImpl factoryImpl = compResFactorySoftRef == null ? null : compResFactorySoftRef.get();
-        if (factoryImpl == null) {// if weak ref has not been created or if referenced factory has been GCed then create
-            // a new one
-            factoryImpl = new ComponentResourceFactoryImpl();
-            compResFactorySoftRef = new SoftReference<ComponentResourceFactoryImpl>(factoryImpl);
-        }
-        return factoryImpl;
-    }
-
-    /**
-     * return the common ComponentResourceFactoryImpl to retreive component resource from URI
-     * 
-     * @return factoryImpl
-     */
-    // here we are using soft references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
-    private static Map getLoadingOptionMap() {
-        Map optionMap = (optionMapSoftRef == null ? null : optionMapSoftRef.get());
-        if (optionMap == null) {// if weak ref has not been created or if referenced factory has been GCed then create
-            // a new one
-            optionMap = new HashMap();
-            optionMap.put(XMLResource.OPTION_DEFER_ATTACHMENT, Boolean.TRUE);
-            optionMap.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, Boolean.TRUE);
-            optionMap.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl());
-            optionMap.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap());
-            optionMap.put(XMLResource.OPTION_USE_DEPRECATED_METHODS, Boolean.FALSE);
-            optionMapSoftRef = new SoftReference<Map>(optionMap);
-        }
-        return optionMap;
-    }
-
-    /**
-     * Sets the visible.
-     * 
-     * @param visible the visible to set
-     */
-    public void setVisible(Boolean visible) {
-        this.visible = visible;
-    }
-
-    /**
-     * Sets the technical.
-     * 
-     * @param technical the technical to set
-     */
-    public void setTechnical(Boolean technical) {
-        this.technical = technical;
-    }
-
     @Override
     public String getCombine() {
         // TODO
-        return "";
+        return "";//$NON-NLS-1$
     }
 
     @Override
@@ -2489,7 +1905,7 @@ public class Component extends AbstractComponent {
      */
     @Override
     public String getType() {
-        return "DI";
+        return "DI";//$NON-NLS-1$
     }
 
     /*
@@ -2500,7 +1916,7 @@ public class Component extends AbstractComponent {
     @Override
     public String getInputType() {
         // TODO
-        return "";
+        return "";//$NON-NLS-1$
     }
 
     /*
@@ -2511,7 +1927,7 @@ public class Component extends AbstractComponent {
     @Override
     public String getOutputType() {
         // TODO
-        return "";
+        return "";//$NON-NLS-1$
     }
 
     /**
@@ -2544,9 +1960,6 @@ public class Component extends AbstractComponent {
     @Override
     public void setPaletteType(String paletteType) {
         super.setPaletteType(paletteType);
-        if (info != null) {
-            info.setType(paletteType);
-        }
     }
 
     /*
@@ -2557,7 +1970,7 @@ public class Component extends AbstractComponent {
     @Override
     public String getPartitioning() {
         // TODO
-        return "";
+        return "";//$NON-NLS-1$
     }
 
     /**
@@ -2585,11 +1998,8 @@ public class Component extends AbstractComponent {
     }
 
     public String getBundleName() {
-        return this.bundleName;
-    }
-
-    public void setBundleName(String bundleName) {
-        this.bundleName = bundleName;
+        // TODO
+        return "org.talend.designer.components.localprovider";//$NON-NLS-1$
     }
 
     /*
@@ -2601,7 +2011,7 @@ public class Component extends AbstractComponent {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((this.getPaletteType() == null) ? 0 : this.getPaletteType().hashCode());
         return result;
     }
@@ -2623,11 +2033,11 @@ public class Component extends AbstractComponent {
             return false;
         }
         Component other = (Component) obj;
-        if (this.name == null) {
-            if (other.name != null) {
+        if (getName() == null) {
+            if (other.getName() != null) {
                 return false;
             }
-        } else if (!this.name.equals(other.name)) {
+        } else if (!getName().equals(other.getName())) {
             return false;
         }
         if (this.getPaletteType() == null) {
@@ -2653,7 +2063,7 @@ public class Component extends AbstractComponent {
 
     public String getEquivalent() {
         // TODO
-        return "";
+        return "";//$NON-NLS-1$
     }
 
     /*
@@ -2666,5 +2076,4 @@ public class Component extends AbstractComponent {
         // TODO
         return null;
     }
-
 }
