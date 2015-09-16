@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.model.Component;
 import org.talend.components.api.properties.ComponentDefinition;
@@ -34,6 +37,16 @@ import org.talend.core.ui.component.ComponentsFactoryProvider;
 public class ComponentsUtils {
 
     private static List<IComponent> components = null;
+
+    public static ComponentService getComponentService() {
+        ComponentService compService = null;
+        BundleContext bundleContext = FrameworkUtil.getBundle(ComponentsUtils.class).getBundleContext();
+        ServiceReference<ComponentService> compServiceRef = bundleContext.getServiceReference(ComponentService.class);
+        if (compServiceRef != null) {
+            compService = bundleContext.getService(compServiceRef);
+        }
+        return compService;
+    }
 
     public static void loadComponents(ComponentService service) {
         IComponentsFactory componentsFactory = null;
@@ -62,7 +75,7 @@ public class ComponentsUtils {
                 e.printStackTrace();
             }
         }
-        // Try to get all component properties
+        // TODO Try to get all component properties
         Set<String> componentNames = service.getAllComponentNames();
         for (String componentName : componentNames) {
             ComponentProperties componentProperty = service.getComponentProperties(componentName);

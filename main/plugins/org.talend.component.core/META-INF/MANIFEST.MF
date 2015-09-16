@@ -12,7 +12,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.common,
  org.talend.designer.core,
  org.talend.model,
- org.talend.core.ui
+ org.talend.core.ui,
+ org.talend.commons.ui,
+ org.talend.librariesmanager
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.

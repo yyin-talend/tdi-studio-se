@@ -17,11 +17,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
+import org.talend.component.core.palette.ComponentsPaletteFactory;
 import org.talend.component.core.utils.ComponentsUtils;
-import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -40,20 +37,10 @@ public class ComponentsProvider extends AbstractProcessProvider {
 
     private static Logger log = Logger.getLogger(ComponentsProvider.class);
 
-    public ComponentService getComponentService() {
-        ComponentService compService = null;
-        BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
-        ServiceReference<ComponentService> compServiceRef = bundleContext.getServiceReference(ComponentService.class);
-        if (compServiceRef != null) {
-            compService = bundleContext.getService(compServiceRef);
-        }
-        return compService;
-    }
-
     @Override
     public void loadComponentsFromExtensionPoint() {
         if (ProjectManager.getInstance().getCurrentProject() != null) {
-            ComponentsUtils.loadComponents(getComponentService());
+            ComponentsUtils.loadComponents(ComponentsUtils.getComponentService());
         }
     }
 
@@ -202,8 +189,7 @@ public class ComponentsProvider extends AbstractProcessProvider {
      */
     @Override
     public List<PaletteEntry> addJobletEntry() {
-        // TODO Auto-generated method stub
-        return null;
+        return ComponentsPaletteFactory.createPalette();
     }
 
     /*
