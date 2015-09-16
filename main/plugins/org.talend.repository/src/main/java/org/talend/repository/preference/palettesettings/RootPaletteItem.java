@@ -34,7 +34,7 @@ public class RootPaletteItem extends AbstractPaletteItem implements IPaletteItem
         ImageDescriptor imageDesc;
         switch (category) {
         case CATEGORY_4_CAMEL:
-            type = ERepositoryObjectType.valueOf("ROUTES"); //$NON-NLS-1$
+            type = ERepositoryObjectType.PROCESS_ROUTE;
             imageDesc = ImageProvider.getImageDesc(ECoreImage.ROUTES_ICON);
             break;
         case CATEGORY_4_MAPREDUCE:
