@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.talend.component.ui.wizard/src/main/java"
+    editDirectory="/org.talend.component.ui.wizard.edit/src/main/java" editorDirectory="/org.talend.component.ui.wizard.editor/src/main/java"
+    modelPluginID="org.talend.component.ui.wizard" modelName="GenericMetadata" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    testsDirectory="/org.talend.component.ui.wizard.tests/src/test/java" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="6.0" copyrightFields="false" runtimeVersion="2.6" usedGenPackages="../../org.talend.model/model/Business.genmodel#//business ../../org.talend.model/model/Component.genmodel#//component ../../org.talend.cwm.mip/model/cwm_mip.genmodel#//orgomg ../../org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore ../../org.talend.model/model/joblet.genmodel#//model ../../org.talend.model/model/metadata.genmodel#//connection ../../org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation ../../org.talend.model/model/properties.genmodel#//properties ../../org.talend.model/model/TalendFile.genmodel#//talendfile"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>genericMetadata.ecore</foreignModel>
+  <genPackages prefix="GenericMetadata" basePackage="org.talend.component.ui.model"
+      disposableProviderFactory="true" ecorePackage="genericMetadata.ecore#/">
+    <genClasses ecoreClass="genericMetadata.ecore#//GenericConnection">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute genericMetadata.ecore#//GenericConnection/parameters"/>
+    </genClasses>
+    <genClasses ecoreClass="genericMetadata.ecore#//GenericConnectionItem"/>
+  </genPackages>
+</genmodel:GenModel>

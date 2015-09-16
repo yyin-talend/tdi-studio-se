@@ -10,22 +10,24 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.component.ui.wizard.provider;
+package org.talend.component.ui.wizard.util;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.talend.components.api.wizard.ComponentWizardDefinition;
-import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.component.ui.wizard.service.GenericWizardService;
+import org.talend.core.runtime.services.IGenericWizardService;
 
 /**
- * created by ycbai on 2015年9月10日 Detailled comment
+ * created by ycbai on 2015年9月16日 Detailled comment
  *
  */
-public interface IGenericWizardProvider {
+public class GenericWizardServiceFactory {
 
-    public Map<ERepositoryObjectType, ComponentWizardDefinition> getWizardDefinition(ERepositoryObjectType type);
+    private static IGenericWizardService service = null;
 
-    public Set<ComponentWizardDefinition> getWizardDefinitions();
+    public static IGenericWizardService getGenericWizardService() {
+        if (service == null) {
+            service = new GenericWizardService();
+        }
+        return service;
+    }
 
 }

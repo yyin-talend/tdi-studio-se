@@ -10,16 +10,14 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.component.core.provider;
-
-import org.talend.components.api.service.ComponentService;
+package org.talend.component.ui.wizard.constants;
 
 /**
- * created by ycbai on 2015年9月9日 Detailled comment
+ * created by ycbai on 2015年9月16日 Detailled comment
  *
  */
-public interface IComponentServiceProvider {
+public interface IGenericConstants {
 
-    public ComponentService getComponentService();
+    public static final String PLUGIN_ID = "org.talend.component.ui.wizard"; //$NON-NLS-1$
 
 }
