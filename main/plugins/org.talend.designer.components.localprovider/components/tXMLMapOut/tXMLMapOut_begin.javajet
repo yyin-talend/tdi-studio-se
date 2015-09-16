@@ -653,14 +653,12 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 			if(node.getName()==null || ("").equals(node.getName().trim()) || "(default)".equals(node.getName().trim())) { // it is the default namespace
 				if(node.getDefaultValue()==null || ("").equals(node.getDefaultValue())) { // get the expression
 %>
-        	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),
-        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML(FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>,<%=node.getPattern()%>)))));
+        	routines.system.DocumentHelper.applyNamespace1(<%=currEleName %>,"",FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression()); %>,<%=node.getPattern()%>));
 }//close if 8080
 <%
 				} else { // get the static value as the url
 %>
-        	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),
-        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"))));
+        	routines.system.DocumentHelper.applyNamespace1(<%=currEleName %>,"","<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>");
 <%
 				}
 			}
@@ -669,14 +667,12 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 			if(node.getName().equals(parent.getName().substring(0, index))) { // the prefix of element is the same with the namespace
 				if(node.getDefaultValue()==null || ("").equals(node.getDefaultValue())) { // get the expression
 %>
-        	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName("<%=parent.getName().substring(index+1 ) %>",
-        	org.dom4j.DocumentHelper.createNamespace("<%=node.getName() %>",TalendString.replaceSpecialCharForXML(FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>,<%=node.getPattern()%>)))));
+        	routines.system.DocumentHelper.applyNamespace2(<%=currEleName %>,"<%=parent.getName().substring(index+1 ) %>","<%=node.getName() %>",FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>,<%=node.getPattern()%>));
 }//close if 8080
 <%
 				} else {
 %>
-        	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName("<%=parent.getName().substring(index+1 ) %>",
-        	org.dom4j.DocumentHelper.createNamespace("<%=node.getName() %>",TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"))));
+        	routines.system.DocumentHelper.applyNamespace2(<%=currEleName %>,"<%=parent.getName().substring(index+1 ) %>","<%=node.getName() %>","<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>");
 <%
 				}
 			}
