@@ -118,8 +118,10 @@
 	}
 	GenerateCode generateCode = new GenerateCode();
 	%>
+	
+	final routines.system.RowState rowstate_<%=cid%> = new routines.system.RowState();
+	
 	<%
-
 	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		final String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
@@ -245,42 +247,53 @@
 						if(temp.length() > 0) {
 							<%
 							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-							} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
-							%>
-								<%=targetConnName %>.<%=column.getLabel() %> = temp.getBytes(<%=encoding%>);
-							<%
-							} else if(javaType == JavaTypesManager.LIST){ 
-                            %>
-                                <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(temp, <%= fieldSeparator %>);
-                            <%
-							}else if(javaType == JavaTypesManager.DATE) { 
-								if(checkNum || checkDate){
+								//do nothing
+							} else {
 								%>
-									<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp, <%= patternValue %>, false);
+								try {
 								<%
-								}else{
-								%>
-									<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp, <%= patternValue %>);
-								<%
+    							if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+    							%>
+    								<%=targetConnName %>.<%=column.getLabel() %> = temp.getBytes(<%=encoding%>);
+    							<%
+    							} else if(javaType == JavaTypesManager.LIST){ 
+                                %>
+                                    <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(temp, <%= fieldSeparator %>);
+                                <%
+    							}else if(javaType == JavaTypesManager.DATE) { 
+    								if(checkNum || checkDate){
+    								%>
+    									<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp, <%= patternValue %>, false);
+    								<%
+    								}else{
+    								%>
+    									<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp, <%= patternValue %>);
+    								<%
+    								}
+    							}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+    								if (JavaTypesManager.isNumberIntType(javaType)) {
+    							%>
+    								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>)<%=isEnableDecode?","+isDecodeNumber:""%>);
+    							<%
+    								} else {
+    							%>
+    								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+    							<%
+    								}
+    							} else if (JavaTypesManager.isNumberIntType(javaType)) {
+    							%>
+    								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp<%=isEnableDecode?","+isDecodeNumber:""%>);
+    							<%
+    							} else { 
+    							%>
+    								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp);
+    							<%
+    							}
+    							%>
+    							} catch(java.lang.Exception ex_<%=cid%>) {
+									rowstate_<%=cid%>.setException(ex_<%=cid%>);
 								}
-							}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
-								if (JavaTypesManager.isNumberIntType(javaType)) {
-							%>
-								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>)<%=isEnableDecode?","+isDecodeNumber:""%>);
-							<%
-								} else {
-							%>
-								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>));
-							<%
-								}
-							} else if (JavaTypesManager.isNumberIntType(javaType)) {
-							%>
-								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp<%=isEnableDecode?","+isDecodeNumber:""%>);
-							<%
-							} else { 
-							%>
-								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp);
-							<%
+    							<%
 							}
 							%>
 						} else {						
@@ -289,7 +302,7 @@
 							boolean isJavaPrimitiveType = JavaTypesManager.isJavaPrimitiveType(javaType,column.isNullable());
 							if((isJavaPrimitiveType && (column.getDefault()==null || column.getDefault().length() == 0)) || defaultValue == null) {
 							%>
-								throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=targetConnName %>' connection, value is invalid or this column should be nullable or have a default value.");
+								rowstate_<%=cid%>.setException(new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=targetConnName %>' connection, value is invalid or this column should be nullable or have a default value."));
 							<%
 							} else {
 							%>
@@ -498,6 +511,7 @@
 				    	log.info("<%=cid%> - Retrieving records from the datasource.");
 				    <%}%>
 					while (fid_<%=cid %>!=null && fid_<%=cid %>.nextRecord()) {
+						rowstate_<%=cid%>.reset();
 						<%
 				    	if (conns!=null) {
 				    		if (conns.size()>0 && firstConnName != null && firstConnName.length()>0) {
@@ -525,8 +539,13 @@
 										}else{
 											rowUtil.callValueToConn("fid_"+cid, firstConnName);
 										}
+										%>
 										
-			
+										if(rowstate_<%=cid%>.getException()!=null) {
+											throw rowstate_<%=cid%>.getException();
+										}
+										
+										<%
 										
 										if(rejectConnName.equals(firstConnName)) {
 										%> 
@@ -739,8 +758,8 @@
 							%>
 								<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
 									if(<%=sourceValueName%>[columnIndexWithD_<%=cid%>].length() > 0) {
-								<%}
-								
+										try {
+									<%
 									if(javaType == JavaTypesManager.DATE) {
 										if(checkNum || checkDate){
 										%>
@@ -769,25 +788,7 @@
                                     %>                          
                                         <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(<%=sourceValueName%>[columnIndexWithD_<%=cid%>],String.valueOf(fieldSeparator_<%=cid %>_ListType[0]));
                                     <%
-									}else if("id_Dynamic".equals(column.getTalendType())){
-										this.isBehindDynamic=true;
-										dynamic_index = i;
-									%>
-									    dynamic_column_count_<%=cid%> = <%=dynamicName%>.getColumnCount();
-										if(dynamic_column_count_<%=cid%> > 0) {
-											<%=dynamicName%>.clearColumnValues();
-										}
-										int fieldCount = <%=sourceValueName%>.length;
-										for (int i = 0; i < dynamic_column_count_<%=cid%>; i++) {
-											if ((<%=dynamic_index%>+i) < fieldCount) {
-												<%=dynamicName%>.addColumnValue(<%=sourceValueName%>[<%=dynamic_index%>+i]);
-											} else {
-												<%=dynamicName%>.addColumnValue("");
-											}
-										}
-										<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>;
-									<%
-									} else if (JavaTypesManager.isNumberIntType(javaType)) {
+									}else if (JavaTypesManager.isNumberIntType(javaType)) {
 									%>
 										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=sourceValueName%>[columnIndexWithD_<%=cid%>]<%=isEnableDecode?","+isDecodeNumber:""%>);
 									<%
@@ -796,26 +797,47 @@
 										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=sourceValueName%>[columnIndexWithD_<%=cid%>]);
 									<%
 									}
+									%>
 									
-							if(!"id_Dynamic".equals(column.getTalendType())) {
-								String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-								boolean isJavaPrimitiveType = JavaTypesManager.isJavaPrimitiveType(javaType,column.isNullable());
-								%>				
-								}else{
-									<%
-									if((isJavaPrimitiveType && (column.getDefault()==null || column.getDefault().length() == 0))) {
-									%>
-										throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=targetConnName %>' connection, value is invalid or this column should be nullable or have a default value.");
-									<%
-									} else {
-									%>
-										<%=targetConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
-									<%
+										} catch(java.lang.Exception ex_<%=cid%>) {
+											rowstate_<%=cid%>.setException(ex_<%=cid%>);
+										}
+    								}else{
+    									<%
+    									String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+    									boolean isJavaPrimitiveType = JavaTypesManager.isJavaPrimitiveType(javaType,column.isNullable());
+    									if((isJavaPrimitiveType && (column.getDefault()==null || column.getDefault().length() == 0))) {
+    									%>
+    										rowstate_<%=cid%>.setException(new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=targetConnName %>' connection, value is invalid or this column should be nullable or have a default value."));
+    									<%
+    									} else {
+    									%>
+    										<%=targetConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+    									<%
+    									}
+    									%>
+    								}
+									
+								<%
+								} else {
+									this.isBehindDynamic=true;
+									dynamic_index = i;
+								%>
+								    dynamic_column_count_<%=cid%> = <%=dynamicName%>.getColumnCount();
+									if(dynamic_column_count_<%=cid%> > 0) {
+										<%=dynamicName%>.clearColumnValues();
 									}
-									%>
+									int fieldCount = <%=sourceValueName%>.length;
+									for (int i = 0; i < dynamic_column_count_<%=cid%>; i++) {
+										if ((<%=dynamic_index%>+i) < fieldCount) {
+											<%=dynamicName%>.addColumnValue(<%=sourceValueName%>[<%=dynamic_index%>+i]);
+										} else {
+											<%=dynamicName%>.addColumnValue("");
+										}
+									}
+									<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>;
+								<%
 								}
-							<%}
-							
 							}
 							%>	
 							
@@ -1201,6 +1223,7 @@
 			    	log.info("<%=cid%> - Retrieving records from the datasource.");
 			    <%}%>
 	        	while ( limit<%=cid%> != 0 && csvReader<%=cid %>!=null && csvReader<%=cid %>.readNext() ) { 
+	        		rowstate_<%=cid%>.reset();
 	        
 		        	row<%=cid %>=csvReader<%=cid %>.getValues();
 	        	
@@ -1254,8 +1277,13 @@
 									}else{
 										rowUtil.callValueToConn("row"+cid, firstConnName);
 									}
-										
-	
+									%>
+									
+									if(rowstate_<%=cid%>.getException()!=null) {
+										throw rowstate_<%=cid%>.getException();
+									}
+									
+									<%
 									if(rejectConnName.equals(firstConnName)) {
 									%> 
 										<%=firstConnName %> = null; 
