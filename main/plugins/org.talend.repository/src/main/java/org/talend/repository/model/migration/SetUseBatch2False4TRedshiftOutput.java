@@ -37,7 +37,7 @@ public class SetUseBatch2False4TRedshiftOutput extends AbstractJobMigrationTask 
     @Override
     public ExecutionResult execute(Item item) {
         final ProcessType processType = getProcessType(item);
-        String[] compNames = { "tRedShiftOutput" };
+        String[] compNames = { "tRedshiftOutput" };
 
         IComponentConversion conversion = new IComponentConversion() {
 
