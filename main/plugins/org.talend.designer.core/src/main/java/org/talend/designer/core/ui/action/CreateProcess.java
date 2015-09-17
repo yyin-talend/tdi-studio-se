@@ -33,8 +33,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -44,21 +44,19 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.wizards.NewProcessWizard;
-import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -73,8 +71,6 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
     private static final String CREATE_LABEL = Messages.getString("CreateProcess.createJob"); //$NON-NLS-1$
 
     private static final String CREATE_STANDARD_LABEL = Messages.getString("CreateProcess.action.createStandardJob"); //$NON-NLS-1$
-
-    private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
 
     public CreateProcess() {
         super();
@@ -91,21 +87,12 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
     }
 
     public CreateProcess(boolean isToolbar) {
-        super();
-        if (PluginChecker.isStormPluginLoader() || PluginChecker.isMapReducePluginLoader()) {
-            this.setText(CREATE_STANDARD_LABEL);
-            this.setToolTipText(CREATE_STANDARD_LABEL);
-        } else {
-            this.setText(CREATE_LABEL);
-            this.setToolTipText(CREATE_LABEL);
-        }
+        this();
         setToolbar(isToolbar);
-        Image folderImg = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
-        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
 
-    public IRepositoryNode getProcessNode() {
-        return ProjectRepositoryNode.getInstance().getRootRepositoryNode(ERepositoryObjectType.PROCESS);
+    public ERepositoryObjectType getProcessType() {
+        return ERepositoryObjectType.PROCESS;
     }
 
     /*
@@ -115,8 +102,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
      */
     @Override
     protected void doRun() {
-        IRepositoryNode node = null;
-        NewProcessWizard processWizard = null;
+        final NewProcessWizard processWizard;
         if (isToolbar()) {
             processWizard = new NewProcessWizard(null);
         } else {
@@ -125,11 +111,9 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
                 return;
             }
             Object obj = ((IStructuredSelection) selection).getFirstElement();
-            node = (IRepositoryNode) obj;
-            ItemCacheManager.clearCache();
 
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-            IPath path = service.getRepositoryPath(node);
+            IPath path = service.getRepositoryPath((IRepositoryNode) obj);
             if (RepositoryConstants.isSystemFolder(path.toString())) {
                 // Not allowed to create in system folder.
                 return;
@@ -149,8 +133,8 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
                 // Set readonly to false since created job will always be editable.
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false, true, false);
 
-                IRepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(fileEditorInput.getItem()
-                        .getProperty().getId(), false);
+                IRepositoryNode repositoryNode = RepositorySeekerManager.getInstance().searchRepoViewNode(fileEditorInput.getItem()
+                    .getProperty().getId(), false);
                 fileEditorInput.setRepositoryNode(repositoryNode);
 
                 IWorkbenchPage page = getActivePage();
@@ -159,7 +143,6 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
                 // ProjectSettingManager.defaultUseProjectSetting(fileEditorInput.getLoadedProcess());
             } catch (PartInitException e) {
                 // TODO Auto-generated catch block
-                // e.printStackTrace();
                 ExceptionHandler.process(e);
             } catch (PersistenceException e) {
                 MessageBoxExceptionHandler.process(e);
@@ -181,13 +164,12 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
             canWork = false;
         }
         if (canWork) {
-            Object o = selection.getFirstElement();
-            RepositoryNode node = (RepositoryNode) o;
+            IRepositoryNode node = (IRepositoryNode) selection.getFirstElement();
             switch (node.getType()) {
             case SIMPLE_FOLDER:
             case SYSTEM_FOLDER:
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                if (nodeType != ERepositoryObjectType.PROCESS) {
+                if (nodeType != getProcessType()) {
                     canWork = false;
                 }
                 if (node.getObject() != null && node.getObject().isDeleted()) {
@@ -219,7 +201,11 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
         }
     }
 
-    private void selectRootObject(Properties params) {
+    protected String getPerspectiveId() {
+        return IBrandingConfiguration.PERSPECTIVE_DI_ID;
+    }
+
+    protected final void selectRootObject(Properties params) {
         IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (null == workbenchWindow) {
             return;
@@ -230,10 +216,10 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
         }
 
         IPerspectiveDescriptor currentPerspective = workbenchPage.getPerspective();
-        if (!IBrandingConfiguration.PERSPECTIVE_DI_ID.equals(currentPerspective.getId())) {
+        if (!getPerspectiveId().equals(currentPerspective.getId())) {
             // show di perspective
             try {
-                workbenchWindow.getWorkbench().showPerspective(IBrandingConfiguration.PERSPECTIVE_DI_ID, workbenchWindow);
+                workbenchWindow.getWorkbench().showPerspective(getPerspectiveId(), workbenchWindow);
                 workbenchPage = workbenchWindow.getActivePage();
             } catch (WorkbenchException e) {
                 ExceptionHandler.process(e);
@@ -244,9 +230,9 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
         IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
         if (view != null) {
             Object type = params.get("type");
-            if (ERepositoryObjectType.PROCESS.name().equals(type)) {
+            if (getProcessType().name().equals(type)) {
                 IRepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot())
-                        .getRootRepositoryNode(ERepositoryObjectType.PROCESS);
+                        .getRootRepositoryNode(getProcessType());
                 if (processNode != null) {
                     setWorkbenchPart(view);
                     final StructuredViewer viewer = view.getViewer();
