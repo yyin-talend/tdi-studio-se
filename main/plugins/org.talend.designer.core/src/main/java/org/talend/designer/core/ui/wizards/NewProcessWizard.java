@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
@@ -56,13 +56,13 @@ public class NewProcessWizard extends Wizard {
     private NewProcessWizardPage mainPage;
 
     /** Created project. */
-    private ProcessItem processItem;
+    private final ProcessItem processItem;
 
-    private Property property;
+    private final Property property;
 
-    private IPath path;
+    private final IPath path;
 
-    private IProxyRepositoryFactory repositoryFactory;
+    private final IProxyRepositoryFactory repositoryFactory;
 
     /**
      * Constructs a new NewProjectWizard.
@@ -72,22 +72,7 @@ public class NewProcessWizard extends Wizard {
      * @param password
      */
     public NewProcessWizard(IPath path) {
-        super();
-        this.path = path;
-
-        this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
-        this.property.setVersion(VersionUtils.DEFAULT_VERSION);
-        this.property.setStatusCode(""); //$NON-NLS-1$
-
-        processItem = PropertiesFactory.eINSTANCE.createProcessItem();
-
-        processItem.setProperty(property);
-
-        repositoryFactory = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROCESS_WIZ));
+        this(path, null);
     }
 
     /**
@@ -111,7 +96,7 @@ public class NewProcessWizard extends Wizard {
         this.property.setVersion(VersionUtils.DEFAULT_VERSION);
         this.property.setStatusCode(""); //$NON-NLS-1$
 
-        processItem = PropertiesFactory.eINSTANCE.createProcessItem();
+        processItem = createNewProcessItem();
 
         processItem.setProperty(property);
 
@@ -120,24 +105,31 @@ public class NewProcessWizard extends Wizard {
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROCESS_WIZ));
     }
 
+    protected ProcessItem createNewProcessItem() {
+        return PropertiesFactory.eINSTANCE.createProcessItem();
+    }
+
     /**
      * @see org.eclipse.jface.wizard.Wizard#addPages()
      */
     @Override
     public void addPages() {
-        mainPage = new NewProcessWizardPage(property, path);
+        mainPage = createWizardPage(property, path);
         // TDI-20399
         if (property.getLabel() != null && !"".equals(property.getLabel())) {
             mainPage.setNameModifiedByUser(true);
         }
         addPage(mainPage);
-        setWindowTitle(Messages.getString("NewProcessWizard.windowTitle")); //$NON-NLS-1$
+        setWindowTitle(mainPage.getTitle());
+    }
+
+    protected NewProcessWizardPage createWizardPage(Property property, IPath destinationPath) {
+        return new NewProcessWizardPage(property, destinationPath);
     }
 
     /**
      * @see org.eclipse.jface.wizard.Wizard#performFinish()
      */
-    @SuppressWarnings("unchecked")
     @Override
     public boolean performFinish() {
 
@@ -150,24 +142,7 @@ public class NewProcessWizard extends Wizard {
 
                     @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
-                        try {
-                            property.setId(repositoryFactory.getNextId());
-                            // changed by hqzhang for TDI-19527, label=displayName
-                            property.setLabel(property.getDisplayName());
-
-                            ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
-                            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
-                            // add depended routines.
-                            List<RoutinesParameterType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
-                            parameterType.getRoutinesParameter().addAll(dependenciesInPreference);
-                            process.setParameters(parameterType);
-                            processItem.setProcess(process);
-                            repositoryFactory.create(processItem, mainPage.getDestinationPath());
-                        } catch (PersistenceException e) {
-                            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
-                                    .getString("NewProcessWizard.failureText") + " : " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
-                            ExceptionHandler.process(e);
-                        }
+                        createProcessItem();
                     }
                 };
                 try {
@@ -181,6 +156,28 @@ public class NewProcessWizard extends Wizard {
         repositoryFactory.executeRepositoryWorkUnit(workUnit);
 
         return processItem != null;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void createProcessItem() {
+        try {
+            property.setId(repositoryFactory.getNextId());
+            // changed by hqzhang for TDI-19527, label=displayName
+            property.setLabel(property.getDisplayName());
+
+            ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
+            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+            // add depended routines.
+            List<RoutinesParameterType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
+            parameterType.getRoutinesParameter().addAll(dependenciesInPreference);
+            process.setParameters(parameterType);
+            processItem.setProcess(process);
+            repositoryFactory.create(processItem, mainPage.getDestinationPath());
+        } catch (PersistenceException e) {
+            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
+                    .getString("NewProcessWizard.failureText") + " : " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            ExceptionHandler.process(e);
+        }
     }
 
     /**
