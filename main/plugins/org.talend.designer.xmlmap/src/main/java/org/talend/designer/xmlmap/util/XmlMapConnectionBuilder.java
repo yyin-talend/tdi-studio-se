@@ -15,6 +15,9 @@ package org.talend.designer.xmlmap.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
@@ -27,6 +30,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.ui.dialog.PrefixChangeDialog;
 import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
 import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 
@@ -36,7 +40,13 @@ import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
  */
 public class XmlMapConnectionBuilder {
 
-    public static void rebuildLinks(TreeNode docNode, XmlMapData mapData) {
+    private boolean applyForAll = false;
+
+    private boolean cancelForAll = false;
+
+    private boolean checkRootNodePrefix = false;
+
+    public void rebuildLinks(TreeNode docNode, XmlMapData mapData) {
         if (docNode == null || mapData == null) {
             return;
         }
@@ -51,7 +61,7 @@ public class XmlMapConnectionBuilder {
         rebuildLink(index, nodes, mapData);
     }
 
-    private static void rebuildLink(int inputTreeIndex, List<TreeNode> children, XmlMapData mapData) {
+    private void rebuildLink(int inputTreeIndex, List<TreeNode> children, XmlMapData mapData) {
         for (TreeNode treeNode : children) {
             if (XmlMapUtil.isDragable(treeNode)) {
                 String expression = XmlMapUtil.convertToExpression(treeNode.getXpath());
@@ -60,21 +70,21 @@ public class XmlMapConnectionBuilder {
                 // LOOKUP ,FILTER
                 for (int i = inputTreeIndex; i < mapData.getInputTrees().size(); i++) {
                     InputXmlTree treeTarget = mapData.getInputTrees().get(i);
-                    if (hasMaptchedLocation(expressionManager, sourceLocation, treeTarget.getExpressionFilter())) {
+                    if (hasMaptchedLocation(expressionManager, sourceLocation, treeTarget, ExpressionType.EXPRESSION_FILTER)) {
                         createFilterConnection(treeNode, treeTarget, mapData);
                     }
                     checkTargetChildren(expressionManager, treeTarget.getNodes(), treeNode, sourceLocation, mapData);
                 }
                 // VAR
                 for (VarNode varNode : mapData.getVarTables().get(0).getNodes()) {
-                    if (hasMaptchedLocation(expressionManager, sourceLocation, varNode.getExpression())) {
+                    if (hasMaptchedLocation(expressionManager, sourceLocation, varNode, ExpressionType.EXPRESSION)) {
                         createConnection(treeNode, varNode, mapData);
                     }
                 }
                 // OUTPUT,FILTER
                 for (int i = 0; i < mapData.getOutputTrees().size(); i++) {
                     OutputXmlTree outputTree = mapData.getOutputTrees().get(i);
-                    if (hasMaptchedLocation(expressionManager, sourceLocation, outputTree.getExpressionFilter())) {
+                    if (hasMaptchedLocation(expressionManager, sourceLocation, outputTree, ExpressionType.EXPRESSION_FILTER)) {
                         createFilterConnection(treeNode, outputTree, mapData);
                     }
                     checkTargetChildren(expressionManager, outputTree.getNodes(), treeNode, sourceLocation, mapData);
@@ -86,11 +96,11 @@ public class XmlMapConnectionBuilder {
         }
     }
 
-    private static void checkTargetChildren(XmlMapExpressionManager expressionManager, List<? extends TreeNode> children,
+    private void checkTargetChildren(XmlMapExpressionManager expressionManager, List<? extends TreeNode> children,
             TreeNode sourceNode, TableEntryLocation sourceLocation, XmlMapData mapData) {
         for (TreeNode targetNode : children) {
             if (XmlMapUtil.isExpressionEditable(targetNode)) {
-                if (hasMaptchedLocation(expressionManager, sourceLocation, targetNode.getExpression())) {
+                if (hasMaptchedLocation(expressionManager, sourceLocation, targetNode, ExpressionType.EXPRESSION)) {
                     if (targetNode instanceof OutputTreeNode) {
                         createConnection(sourceNode, targetNode, mapData);
                     } else {
@@ -104,20 +114,95 @@ public class XmlMapConnectionBuilder {
         }
     }
 
-    private static boolean hasMaptchedLocation(XmlMapExpressionManager expressionManager, TableEntryLocation sourceLocation,
-            String targetExpression) {
+    private boolean hasMaptchedLocation(XmlMapExpressionManager expressionManager, TableEntryLocation sourceLocation,
+            EObject targetNodeOrTree, ExpressionType type) {
+        String targetExpression = null;
+        AbstractNode targetNode = null;
+        AbstractInOutTree targetTree = null;
+        switch (type) {
+        case EXPRESSION:
+            targetNode = (AbstractNode) targetNodeOrTree;
+            targetExpression = targetNode.getExpression();
+            break;
+        case EXPRESSION_FILTER:
+            targetTree = (AbstractInOutTree) targetNodeOrTree;
+            targetExpression = targetTree.getExpressionFilter();
+        default:
+            break;
+        }
         if (!"".equals(targetExpression) && targetExpression != null) {
             List<TableEntryLocation> targetLocations = expressionManager.parseTableEntryLocation(targetExpression);
             for (TableEntryLocation target : targetLocations) {
                 if (sourceLocation.equals(target)) {
                     return true;
+                } else if (checkRootNodePrefix && !cancelForAll) {
+                    StringBuffer bf = new StringBuffer();
+                    String prefix = null;
+                    String nodeName = null;
+                    final String[] split = sourceLocation.toString().split("/");
+                    if (split.length > 2) {
+                        for (int i = 0; i < split.length; i++) {
+                            String value = split[i];
+                            if (i == 1) {
+                                int indexOf = split[1].indexOf(":");
+                                if (indexOf != -1) {
+                                    prefix = split[1].substring(0, indexOf);
+                                    nodeName = split[1].substring(indexOf + 1, split[1].length());
+                                    value = nodeName;
+                                } else {
+                                    break;
+                                }
+                            }
+                            bf.append(value);
+                            if (i < split.length - 1) {
+                                bf.append("/");
+                            }
+                        }
+                    }
+                    if (bf.toString().equals(targetExpression)) {
+                        if (applyForAll) {
+                            // reset the target expression with prefix
+                            if (targetNode != null) {
+                                targetNode.setExpression(expressionManager.replaceExpression(targetExpression, target,
+                                        sourceLocation));
+                            }
+                            if (targetTree != null) {
+                                targetTree.setExpressionFilter(expressionManager.replaceExpression(targetExpression, target,
+                                        sourceLocation));
+                            }
+                            return true;
+                        } else {
+                            PrefixChangeDialog dialog = new PrefixChangeDialog(new Shell());
+                            dialog.setPrefix(prefix);
+                            dialog.setRootNodeName(nodeName);
+                            dialog.setSourceExpression(sourceLocation.toString());
+                            dialog.setTargetExpression(target.toString());
+                            if (dialog.open() == Window.OK) {
+                                applyForAll = dialog.isApplyAll();
+                                cancelForAll = dialog.isCancelAll();
+                                if (cancelForAll) {
+                                    return false;
+                                }
+                                // reset the target expression with prefix
+                                if (targetNode != null) {
+                                    targetNode.setExpression(expressionManager.replaceExpression(targetExpression, target,
+                                            sourceLocation));
+                                }
+                                if (targetTree != null) {
+                                    targetTree.setExpressionFilter(expressionManager.replaceExpression(targetExpression, target,
+                                            sourceLocation));
+                                }
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
         }
         return false;
     }
 
-    public static void createConnection(AbstractNode sourceNode, AbstractNode targetNode, XmlMapData mapData) {
+    public void createConnection(AbstractNode sourceNode, AbstractNode targetNode, XmlMapData mapData) {
         Connection conn = XmlmapFactory.eINSTANCE.createConnection();
         conn.setSource(sourceNode);
         conn.setTarget(targetNode);
@@ -126,7 +211,7 @@ public class XmlMapConnectionBuilder {
         mapData.getConnections().add(conn);
     }
 
-    public static void createLookupConnection(TreeNode sourceNode, TreeNode targetNode, XmlMapData mapData) {
+    public void createLookupConnection(TreeNode sourceNode, TreeNode targetNode, XmlMapData mapData) {
         LookupConnection conn = XmlmapFactory.eINSTANCE.createLookupConnection();
         conn.setSource(sourceNode);
         conn.setTarget(targetNode);
@@ -135,13 +220,27 @@ public class XmlMapConnectionBuilder {
         mapData.getConnections().add(conn);
     }
 
-    public static void createFilterConnection(AbstractNode sourceNode, AbstractInOutTree targetTree, XmlMapData mapData) {
+    public void createFilterConnection(AbstractNode sourceNode, AbstractInOutTree targetTree, XmlMapData mapData) {
         FilterConnection connection = XmlmapFactory.eINSTANCE.createFilterConnection();
         connection.setSource(sourceNode);
         connection.setTarget(targetTree);
         targetTree.getFilterIncomingConnections().add(connection);
         sourceNode.getFilterOutGoingConnections().add(connection);
         mapData.getConnections().add(connection);
+    }
+
+    /**
+     * Sets the checkRootNodePrefix.
+     * 
+     * @param checkRootNodePrefix the checkRootNodePrefix to set
+     */
+    public void setCheckRootNodePrefix(boolean checkRootNodePrefix) {
+        this.checkRootNodePrefix = checkRootNodePrefix;
+    }
+
+    enum ExpressionType {
+        EXPRESSION,
+        EXPRESSION_FILTER;
     }
 
 }
