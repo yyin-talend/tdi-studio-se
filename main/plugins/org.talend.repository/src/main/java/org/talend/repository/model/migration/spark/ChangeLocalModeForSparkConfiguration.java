@@ -13,83 +13,84 @@
 package org.talend.repository.model.migration.spark;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.components.ComponentUtilities;
-import org.talend.core.model.components.ModifyComponentsAction;
-import org.talend.core.model.components.conversions.IComponentConversion;
-import org.talend.core.model.components.filters.IComponentFilter;
-import org.talend.core.model.components.filters.NameComponentFilter;
+import org.eclipse.emf.common.util.EList;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 
 /**
  * TBD-2564: Change the SparkConf design to split local and cluster mode behavior to ease SparkJobServer integration
  */
-public class ChangeLocalModeForSparkConfiguration extends
-		AbstractJobMigrationTask {
+public class ChangeLocalModeForSparkConfiguration extends AbstractJobMigrationTask {
 
-	@Override
-	public List<ERepositoryObjectType> getTypes() {
-		List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
-		ERepositoryObjectType type = ERepositoryObjectType
-				.getType("PROCESS_SPARK"); //$NON-NLS-1$
-		if (type != null) {
-			toReturn.add(type);
-		}
-		type = ERepositoryObjectType
-				.getType("PROCESS_SPARKSTREAMING"); //$NON-NLS-1$
-		if (type != null) {
-			toReturn.add(type);
-		}
-		return toReturn;
-	}
+    @Override
+    public List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
+        // PROCESS_MR stands for Map/Reduce and Spark.
+        toReturn.add(ERepositoryObjectType.PROCESS_MR);
+        // PROCESS_STORM stands for Strom and Spark Streaming.
+        toReturn.add(ERepositoryObjectType.PROCESS_STORM);
+        return toReturn;
+    }
 
-	@Override
-	public ExecutionResult execute(Item item) {
-		ProcessType processType = getProcessType(item);
-		if (processType != null) {
-			try {
-	            IComponentFilter filter = new NameComponentFilter("tSparkConfiguration");
-	            ModifyComponentsAction.searchAndModify(item, processType, filter,
-	                Arrays.<IComponentConversion> asList(new IComponentConversion() {
-	                    @Override
-	                    public void transform(NodeType node) {
-	                    	ElementParameterType ept = ComponentUtilities.getNodeProperty(node, "SPARK_MODE");
-                    		ComponentUtilities.addNodeProperty(node, "SPARK_LOCAL_MODE", "CHECK");
-	                    	if("LOCAL".equalsIgnoreCase(ept.getValue())) {
-	                            ComponentUtilities.getNodeProperty(node, "SPARK_LOCAL_MODE").setValue("true");	
-	                            ComponentUtilities.getNodeProperty(node, "SPARK_MODE").setValue("CLUSTER"); // set back to default	                         
-	                    	} else {
-	                            ComponentUtilities.getNodeProperty(node, "SPARK_LOCAL_MODE").setValue("false");                        		
-	                    	}             
-	                    }
-	                }));
-	            return ExecutionResult.SUCCESS_NO_ALERT;
-	        } catch (Exception e) {
-	            ExceptionHandler.process(e);
-	            return ExecutionResult.FAILURE;
-	        }
-		}
-		return ExecutionResult.NOTHING_TO_DO;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.migration.IProjectMigrationTask#getOrder()
-	 */
-	public Date getOrder() {
-		GregorianCalendar gc = new GregorianCalendar(2015, 9, 9, 12, 0, 0);
-		return gc.getTime();
-	}
+    @Override
+    public ExecutionResult execute(Item item) {
+        try {
+            ProcessType processType = getProcessType(item);
+            if (processType != null) {
+                final ParametersType parameters = processType.getParameters();
+                if (parameters != null) {
+                    boolean modified = false;
+                    EList<ElementParameterType> elementParameters = parameters.getElementParameter();
+                    for (int i = 0; i < elementParameters.size(); i++) {
+                        ElementParameterType param = elementParameters.get(i);
+                        if ("SPARK_MODE".equals(param.getName())) { //$NON-NLS-1$
+                            modified = true;
+                            ElementParameterType property = TalendFileFactory.eINSTANCE.createElementParameterType();
+                            property.setName("SPARK_LOCAL_MODE"); //$NON-NLS-1$
+                            property.setField("CHECK"); //$NON-NLS-1$
+                            property.setValue("false"); //$NON-NLS-1$
+                            if ("LOCAL".equalsIgnoreCase(param.getValue())) { //$NON-NLS-1$
+                                param.setValue("CLUSTER"); //$NON-NLS-1$
+                                property.setValue("true"); //$NON-NLS-1$
+                            }
+                            elementParameters.add(property);
+                            break;
+                        }
+                    }
+                    if (modified) {
+                        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                        factory.save(item, true);
+                        return ExecutionResult.SUCCESS_NO_ALERT;
+                    }
+
+                }
+            }
+        } catch (PersistenceException e) {
+            return ExecutionResult.FAILURE;
+        }
+        return ExecutionResult.NOTHING_TO_DO;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.migration.IProjectMigrationTask#getOrder()
+     */
+    @Override
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2015, 9, 9, 12, 0, 0);
+        return gc.getTime();
+    }
 
 }

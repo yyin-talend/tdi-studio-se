@@ -197,7 +197,8 @@ import orgomg.cwm.objectmodel.core.ModelElement;
 /**
  * Performs a native Drop for the talendEditor. see feature
  *
- * $Id: TalendEditorDropTargetListener.java 1 2006-09-29 17:06:40 +0000 (Г¦В�ВџГ¦ВњВџГ¤ВєВ”, 29 Г¤В№ВќГ¦ВњВ€ 2006) nrousseau $
+ * $Id: TalendEditorDropTargetListener.java 1 2006-09-29 17:06:40 +0000 (Г¦В�ВџГ¦ВњВџГ¤ВєВ”, 29 Г¤В№ВќГ¦ВњВ€ 2006)
+ * nrousseau $
  *
  */
 public class TalendEditorDropTargetListener extends TemplateTransferDropTargetListener {
@@ -653,10 +654,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 // Update spark mode to YARN_CLIENT if repository
                 if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())
                         || ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
+                    IElementParameter sparkLocalParam = process.getElementParameter(HadoopConstants.SPARK_LOCAL_MODE);
                     IElementParameter sparkParam = process.getElementParameter(HadoopConstants.SPARK_MODE);
+                    if (sparkLocalParam != null && (Boolean) (sparkLocalParam.getValue())) {
+                        sparkLocalParam.setValue(false);
+                    }
+
                     if (sparkParam != null && !HadoopConstants.SPARK_MODE_YARN_CLIENT.equals(sparkParam.getValue())) {
                         sparkParam.setValue(HadoopConstants.SPARK_MODE_YARN_CLIENT);
                     }
+
                 }
                 propertyParam.setValue(EmfComponent.REPOSITORY);
                 ChangeValuesFromRepository command = new ChangeValuesFromRepository(process, connection,
@@ -1053,7 +1060,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
             IFigure targetFigure = part.getFigure();
             translateAbsolateToRelative(targetFigure, draw2dPosition);
-            String lastUniqname = "";
+            String lastUniqname = ""; //$NON-NLS-1$
 
             // creates every node
             for (TempStore store : list) {
@@ -1289,13 +1296,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             }
                         }
                         IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
-                        if (externalNode != null && externalNode.getElementParameter("ROOT") != null) {
-                            externalNode.getElementParameter("ROOT").setValue(mapList);
+                        if (externalNode != null && externalNode.getElementParameter("ROOT") != null) { //$NON-NLS-1$
+                            externalNode.getElementParameter("ROOT").setValue(mapList); //$NON-NLS-1$
                         }
 
                         String fileName = ((HL7ConnectionImpl) originalConnection).getOutputFilePath();
-                        if (externalNode != null && externalNode.getElementParameter("FILENAME") != null && fileName != null) {
-                            externalNode.getElementParameter("FILENAME").setValue(TalendTextUtils.addQuotes(fileName));
+                        if (externalNode != null && externalNode.getElementParameter("FILENAME") != null && fileName != null) { //$NON-NLS-1$
+                            externalNode.getElementParameter("FILENAME").setValue(TalendTextUtils.addQuotes(fileName)); //$NON-NLS-1$
                         }
 
                     }
@@ -1325,11 +1332,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         for (Object obj : ((BRMSConnectionImpl) originalConnection).getRoot()) {
                             if (obj instanceof XMLFileNode) {
                                 Map<String, String> rootMap = new HashMap<String, String>();
-                                rootMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute());
-                                rootMap.put("PATH", ((XMLFileNode) obj).getXMLPath());
-                                rootMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn());
-                                rootMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder()));
-                                rootMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue());
+                                rootMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute()); //$NON-NLS-1$
+                                rootMap.put("PATH", ((XMLFileNode) obj).getXMLPath()); //$NON-NLS-1$
+                                rootMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn()); //$NON-NLS-1$
+                                rootMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder())); //$NON-NLS-1$
+                                rootMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue()); //$NON-NLS-1$
                                 rootList.add(rootMap);
 
                             }
@@ -1337,34 +1344,34 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         for (Object obj : ((BRMSConnectionImpl) originalConnection).getLoop()) {
                             if (obj instanceof XMLFileNode) {
                                 Map<String, String> loopMap = new HashMap<String, String>();
-                                loopMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute());
-                                loopMap.put("PATH", ((XMLFileNode) obj).getXMLPath());
-                                loopMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn());
-                                loopMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder()));
-                                loopMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue());
+                                loopMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute()); //$NON-NLS-1$
+                                loopMap.put("PATH", ((XMLFileNode) obj).getXMLPath()); //$NON-NLS-1$
+                                loopMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn()); //$NON-NLS-1$
+                                loopMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder())); //$NON-NLS-1$
+                                loopMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue()); //$NON-NLS-1$
                                 loopList.add(loopMap);
                             }
                         }
                         for (Object obj : ((BRMSConnectionImpl) originalConnection).getGroup()) {
                             if (obj instanceof XMLFileNode) {
                                 Map<String, String> groupMap = new HashMap<String, String>();
-                                groupMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute());
-                                groupMap.put("PATH", ((XMLFileNode) obj).getXMLPath());
-                                groupMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn());
-                                groupMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder()));
-                                groupMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue());
+                                groupMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute()); //$NON-NLS-1$
+                                groupMap.put("PATH", ((XMLFileNode) obj).getXMLPath()); //$NON-NLS-1$
+                                groupMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn()); //$NON-NLS-1$
+                                groupMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder())); //$NON-NLS-1$
+                                groupMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue()); //$NON-NLS-1$
                                 groupList.add(groupMap);
                             }
                         }
                         IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
-                        if (externalNode != null && externalNode.getElementParameter("ROOT") != null) {
-                            externalNode.getElementParameter("ROOT").setValue(rootList);
+                        if (externalNode != null && externalNode.getElementParameter("ROOT") != null) { //$NON-NLS-1$
+                            externalNode.getElementParameter("ROOT").setValue(rootList); //$NON-NLS-1$
                         }
-                        if (externalNode != null && externalNode.getElementParameter("LOOP") != null) {
-                            externalNode.getElementParameter("LOOP").setValue(loopList);
+                        if (externalNode != null && externalNode.getElementParameter("LOOP") != null) { //$NON-NLS-1$
+                            externalNode.getElementParameter("LOOP").setValue(loopList); //$NON-NLS-1$
                         }
-                        if (externalNode != null && externalNode.getElementParameter("GROUP") != null) {
-                            externalNode.getElementParameter("GROUP").setValue(groupList);
+                        if (externalNode != null && externalNode.getElementParameter("GROUP") != null) { //$NON-NLS-1$
+                            externalNode.getElementParameter("GROUP").setValue(groupList); //$NON-NLS-1$
                         }
 
                     }
@@ -1525,7 +1532,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     unit = (SAPFunctionUnit) abstractMetadataObject.eContainer();
                     command.setSapFunctionLabel(unit.getLabel());
                     // set table name to functionName/type/tablename;
-                    String currentTableName = unit.getLabel() + "/" + abstractMetadataObject.getTableType() + "/"
+                    String currentTableName = unit.getLabel() + "/" + abstractMetadataObject.getTableType() + "/" //$NON-NLS-1$ //$NON-NLS-2$
                             + abstractMetadataObject.getLabel();
                     command.setCurrentTableName(currentTableName);
                 }
@@ -1569,8 +1576,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (connection instanceof DatabaseConnection) {
                     etlSchema = connection.getUiSchema();
                 }
-                if (!"".equals(etlSchema)) {
-                    IElementParameter e = node.getElementParameter("ELT_SCHEMA_NAME");
+                if (!"".equals(etlSchema)) { //$NON-NLS-1$
+                    IElementParameter e = node.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
                     if (e != null) {
                         if (connection.isContextMode() && ContextParameterUtils.isContainContextParam(etlSchema)) {
                             e.setValue(etlSchema);
@@ -1633,7 +1640,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     return;
                 }
                 if (node.isELTComponent()) {
-                    node.setPropertyValue(EParameterName.LABEL.getName(), "__ELT_TABLE_NAME__");
+                    node.setPropertyValue(EParameterName.LABEL.getName(), "__ELT_TABLE_NAME__"); //$NON-NLS-1$
                 }
                 schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
                 RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":" //$NON-NLS-1$
@@ -1664,7 +1671,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 functionUnit = (SAPFunctionUnit) table.eContainer();
                 // To judge what the current node is, tSAPOutput or tSAPInput component.
                 String sapComponentName = node.getComponent().getName();
-                if ("tSAPBapi".equals(sapComponentName)) {
+                if ("tSAPBapi".equals(sapComponentName)) { //$NON-NLS-1$
                     RepositoryChangeMetadataForSAPBapi command = new RepositoryChangeMetadataForSAPBapi(node,
                             (SAPFunctionUnit) table.eContainer(), ConvertionHelper.convert(table), null);
                     cc.add(command);
@@ -1673,7 +1680,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         // repository id should be connectionid - sapfunctionName/type/tableName
                         String type = table.getTableType() == null ? MetadataSchemaType.OUTPUT.name() : table.getTableType();
                         String value = connectionItem.getProperty().getId()
-                                + " - " + functionUnit.getLabel() + "/" + type + "/" + table.getLabel(); //$NON-NLS-1$
+                                + " - " + functionUnit.getLabel() + "/" + type + "/" + table.getLabel(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         RepositoryChangeMetadataCommand changeValueCmd = new RepositoryChangeMetadataCommand(node,
                                 schemaParam.getName() + ":" //$NON-NLS-1$
                                         + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value,
@@ -1701,7 +1708,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
         } else if (object instanceof SAPFunctionRepositoryObject) {
             functionUnit = (SAPFunctionUnit) ((SAPFunctionRepositoryObject) object).getAbstractMetadataObject();
-            if (node.getComponent() != null && node.getComponent().getName().equals("tSAPBapi")) {
+            if (node.getComponent() != null && node.getComponent().getName().equals("tSAPBapi")) { //$NON-NLS-1$
                 RepositoryChangeMetadataForSAPBapi command = new RepositoryChangeMetadataForSAPBapi(node, functionUnit, null,
                         null);
                 cc.add(command);
@@ -2112,9 +2119,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // set value to "ORACLE_SERVICE_NAME"
             if (p != null) {
                 // p.setValue(p.getListItemsValue()[1]);
-                node.setPropertyValue("CONNECTION_TYPE", p.getListItemsValue()[1]);
+                node.setPropertyValue("CONNECTION_TYPE", p.getListItemsValue()[1]); //$NON-NLS-1$
             } else {
-                node.setPropertyValue("CONNECTION_TYPE", "ORACLE_SERVICE_NAME");
+                node.setPropertyValue("CONNECTION_TYPE", "ORACLE_SERVICE_NAME"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } else if (name == EDatabaseComponentName.DBORACLEOCI) {
             IElementParameter p = node.getElementParameter("CONNECTION_TYPE"); //$NON-NLS-1$

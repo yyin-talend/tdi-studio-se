@@ -93,9 +93,9 @@ public class BDJobReArchieveCreator {
                 EList<ElementParameterType> parameters = processItem.getProcess().getParameters().getElementParameter();
                 boolean modeParameterVisited = false;
                 for (ElementParameterType pt : parameters) {
-                    if (pt.getName().equals("SPARK_MODE")) { //$NON-NLS-1$
+                    if (pt.getName().equals("SPARK_LOCAL_MODE")) { //$NON-NLS-1$
                         modeParameterVisited = true;
-                        if ("LOCAL".equals(pt.getValue())) { //$NON-NLS-1$
+                        if ("true".equals(pt.getValue())) { //$NON-NLS-1$
                             isSparkWithHDInsight = false;
                             break;
                         }
@@ -103,8 +103,8 @@ public class BDJobReArchieveCreator {
                     if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
                             && EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName().equals(pt.getValue())) {
                         isSparkWithHDInsight = true;
-                        // If the SPARK_MODE parameter already have been processed and if we continue to loop, that
-                        // means we are not in a LOCAL mode context. We can break the loop.
+                        // If the SPARK_LOCAL_MODE parameter already have been processed and if we continue to loop,
+                        // that means we are not in a LOCAL mode context. We can break the loop.
                         if (modeParameterVisited) {
                             break;
                         }
