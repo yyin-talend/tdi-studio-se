@@ -14,6 +14,7 @@ package org.talend.component.core.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +28,13 @@ import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.i18n.Messages;
 import org.talend.component.core.utils.ComponentsUtils;
+import org.talend.components.api.NamedThing;
 import org.talend.components.api.properties.ComponentConnector;
 import org.talend.components.api.properties.ComponentDefinition;
-import org.talend.components.api.properties.Property;
+import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.presentation.Form;
+import org.talend.components.api.properties.presentation.Widget;
+import org.talend.components.api.schema.SchemaElement;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -117,8 +122,7 @@ public class Component extends AbstractComponent {
      */
     @Override
     public String getLongName() {
-        // TODO
-        return "Asks a Access database to upload a bulk file into the database defined";//$NON-NLS-1$
+    	return componentDefinition.getTitle();
     }
 
     /*
@@ -174,38 +178,16 @@ public class Component extends AbstractComponent {
     public List<ElementParameter> createElementParameters(INode node) {
         List<ElementParameter> listParam;
         listParam = new ArrayList<ElementParameter>();
-        // TODO
-        // Try to load component parameters from the EmfComponent , to display the properties .
-        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-        for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
-            String contributer = componentsProvider.getContributer();
-            if (getBundleName().equals(contributer)) {
-                try {
-                    String name = getName();
-                    if ("tSalesforceConnect".equals(name)) {//$NON-NLS-1$
-                        name = "tSalesforceConnection";//$NON-NLS-1$
-                    }
-                    String uriString = ComponentsUtils.DIR_SEPARATOR + IComponentsFactory.COMPONENTS_INNER_FOLDER
-                            + ComponentsUtils.DIR_SEPARATOR + name + ComponentsUtils.DIR_SEPARATOR + name + "_java.xml";//$NON-NLS-1$ 
-                    EmfComponent currentEmfComponent = new EmfComponent(uriString, getBundleName(), name,
-                            IComponentsFactory.COMPONENTS_INNER_FOLDER, ComponentManager.getComponentCache(), true,
-                            componentsProvider);
-                    listParam = currentEmfComponent.createElementParameters(node);
-                } catch (BusinessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
-        // TODO
-        // addMainParameters(listParam, node);
-        // addPropertyParameters(listParam, node, NORMAL_PROPERTY);
-        // addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
-        // initializePropertyParameters(listParam);
-        // checkSchemaParameter(listParam, node);
-        // addViewParameters(listParam, node);
-        // addDocParameters(listParam, node);
-        // addValidationRulesParameters(listParam, node);
+        
+        //addMainParameters(listParam, node);
+        addPropertyParameters(listParam, node, NORMAL_PROPERTY);
+        addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
+        //initializePropertyParameters(listParam);
+        //checkSchemaParameter(listParam, node);
+        //addViewParameters(listParam, node);
+        //addDocParameters(listParam, node);
+        //addValidationRulesParameters(listParam, node);
         return listParam;
     }
 
@@ -296,18 +278,19 @@ public class Component extends AbstractComponent {
         nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
         nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
         listReturn.add(nodeRet);
+        // FIXME - add the REturns
         // ****************** end of standard returns ******************
-        Property[] propertys = componentDefinition.createProperties().getProperties();
-        for (Property property : propertys) {
-            nodeRet = new NodeReturn();
-            nodeRet.setAvailability("");//$NON-NLS-1$
-            nodeRet.setVarName("");//$NON-NLS-1$
-            nodeRet.setDisplayName(property.getDisplayName());
-            nodeRet.setName(property.getName());
-            nodeRet.setType(property.getTypeName());
-            nodeRet.setShowIf("");//$NON-NLS-1$
-            listReturn.add(nodeRet);
-        }
+        //Property[] propertys = componentDefinition.createProperties().getProperties();
+        //for (Property property : propertys) {
+        //    nodeRet = new NodeReturn();
+        //    nodeRet.setAvailability("");//$NON-NLS-1$
+        //    nodeRet.setVarName("");//$NON-NLS-1$
+        //    nodeRet.setDisplayName(property.getDisplayName());
+        //    nodeRet.setName(property.getName());
+        //    nodeRet.setType(property.getTypeName());
+        //    nodeRet.setShowIf("");//$NON-NLS-1$
+        //    listReturn.add(nodeRet);
+       // }
         return listReturn;
     }
 
@@ -1104,73 +1087,91 @@ public class Component extends AbstractComponent {
     @SuppressWarnings("unchecked")
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
         ElementParameter param;
-        boolean autoSwitchAdded = false;
-        Property[] propertys = componentDefinition.createProperties().getProperties();
-        for (Property property : propertys) {
-            if (!autoSwitchAdded) {
-                param = new ElementParameter(node);
-                param.setCategory(EComponentCategory.TECHNICAL);
-                param.setName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
-                param.setDisplayName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getDisplayName());
-                param.setNumRow(1);
-                param.setFieldType(EParameterFieldType.CHECK);
-                param.setValue(Boolean.FALSE);
-                param.setShow(false);
-                param.setRequired(true);
-                param.setReadOnly(true);
-                listParam.add(param);
-                autoSwitchAdded = true;
+        EComponentCategory category = advanced ? EComponentCategory.ADVANCED : EComponentCategory.BASIC;
+        ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
+        Form form = props.getForm(advanced ? "Advanced" : "Main");
+        List<Widget> formWidgets = (List<Widget>) form.getWidgets();
+        for (Widget widget : formWidgets) {
+            param = new ElementParameter(node);
+            param.setCategory(category);
+            param.setName(widget.getName());
+            param.setDisplayName(widget.getDisplayName());
+            SchemaElement se = null;
+            NamedThing[] widgetProperties = widget.getProperties();
+            /*
+             * Could be a SchemaElement or a PresentationItem, if it's a PresentationItem then the widgetType
+             * should not be DEFAULT.
+             */
+            if (widgetProperties[0] instanceof SchemaElement)
+            	se = (SchemaElement) widgetProperties[0];
+
+            // BAI - set the field type based on the switch statements below
+            param.setFieldType(EParameterFieldType.CHECK);
+            
+            switch (widget.getWidgetType()) {
+            case DEFAULT:
+            	if (se == null)
+            		throw new RuntimeException("WidgetType Default requires a SchemaElement");
+            	switch (se.getType()) {
+				case BOOLEAN:
+					break;
+				case BYTE_ARRAY:
+					break;
+				case DATE:
+					break;
+				case DATETIME:
+					break;
+				case DECIMAL:
+					break;
+				case DOUBLE:
+					break;
+				case DYNAMIC:
+					break;
+				case ENUM:
+					break;
+				case FLOAT:
+					break;
+				case INT:
+					break;
+				case SCHEMA:
+					break;
+				case STRING:
+					break;
+				default:
+					break;
+            	}
+            	
+            	break;
+			case BUTTON:
+				break;
+			case COMPONENT_REFERENCE:
+				break;
+			case NAME_SELECTION_AREA:
+				break;
+			case NAME_SELECTION_REFERENCE:
+				break;
+			case SCHEMA_EDITOR:
+				break;
+			case SCHEMA_REFERENCE:
+	            param.setFieldType(EParameterFieldType.SCHEMA_TYPE);
+				break;
+			default:
+				break;
+            }
+            param.setNumRow(widget.getRow());
+            // FIXME - Column?
+            if (se != null) {
+            	param.setRequired(se.isRequired());
+            	param.setValue(props.getValue(se));
+                Collection values = se.getPossibleValues();
             }
 
-            // TODO
-            param = new ElementParameter(node);
-            param.setCategory(EComponentCategory.BASIC);
-            param.setName(property.getName());
-            param.setDisplayName(property.getDisplayName());
-            param.setFieldType(EParameterFieldType.CHECK);
-            param.setNumRow(1);
-            param.setRequired(property.isRequired());
-            param.setValue(property.getValue());
-            param.setShow(false);
-            param.setReadOnly(true);
+            param.setShow(widget.isVisible());
+            // FIXME
+            param.setReadOnly(false);
             listParam.add(param);
         }
 
-        // init parameters to test
-
-        ElementParameter newParam = new ElementParameter(node);
-        newParam.setCategory(EComponentCategory.BASIC);
-        newParam.setName(EParameterName.PROPERTY_TYPE.getName());
-        String displayName = getTranslatedValue(EParameterName.PROPERTY_TYPE.getName() + "." + PROP_NAME); //$NON-NLS-1$
-        if (displayName.startsWith("!!")) { //$NON-NLS-1$
-            displayName = EParameterName.PROPERTY_TYPE.getDisplayName();
-        }
-        newParam.setDisplayName(displayName);
-        newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
-        newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
-        newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
-
-        newParam.setValue(BUILTIN);
-        newParam.setNumRow(1);
-        newParam.setFieldType(EParameterFieldType.TECHNICAL);
-        newParam.setRepositoryValue("");//TODO//$NON-NLS-1$
-        newParam.setShow(false);
-        newParam.setShowIf("");//TODO//$NON-NLS-1$
-        newParam.setNotShowIf("");//TODO//$NON-NLS-1$
-        listParam.add(newParam);
-
-        newParam = new ElementParameter(node);
-        newParam.setCategory(EComponentCategory.BASIC);
-        newParam.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-        newParam.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
-        newParam.setListItemsDisplayName(new String[] {});
-        newParam.setListItemsValue(new String[] {});
-        newParam.setNumRow(2);
-        newParam.setFieldType(EParameterFieldType.TECHNICAL);
-        newParam.setValue(""); //$NON-NLS-1$
-        newParam.setShow(false);
-        newParam.setRequired(true);
-        listParam.add(newParam);
     }
 
     private void initializePropertyParameters(List<ElementParameter> listParam) {
@@ -1908,11 +1909,8 @@ public class Component extends AbstractComponent {
      */
     @Override
     public String getRepositoryType() {
-        // TODO
-        Property[] propertys = componentDefinition.createProperties().getProperties();
-        for (Property property : propertys) {
-        }
-        return null;
+    	// FIXME - this is the name of the object stored in the repository, need to put this in the definition
+    	return "SALESFORCE_CONNECTION";
     }
 
     @Override

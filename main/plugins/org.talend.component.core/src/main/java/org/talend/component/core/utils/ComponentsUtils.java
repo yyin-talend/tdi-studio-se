@@ -51,6 +51,10 @@ public class ComponentsUtils {
         }
         return compService;
     }
+    
+    public static ComponentProperties getComponentProperties(String compName) {
+    	return getComponentService().getComponentProperties(compName);
+    }
 
     public static void loadComponents(ComponentService service) {
         IComponentsFactory componentsFactory = null;
