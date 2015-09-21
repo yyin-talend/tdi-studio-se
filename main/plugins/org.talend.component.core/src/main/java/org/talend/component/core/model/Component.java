@@ -26,6 +26,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.i18n.Messages;
+import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.components.api.properties.ComponentConnector;
 import org.talend.components.api.properties.ComponentDefinition;
 import org.talend.components.api.properties.Property;
@@ -33,7 +34,9 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.ComponentManager;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -58,8 +61,10 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.ComponentBundleToPath;
 import org.talend.designer.core.model.components.ComponentIconLoading;
+import org.talend.designer.core.model.components.ComponentsProviderManager;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.model.components.NodeReturn;
@@ -170,14 +175,37 @@ public class Component extends AbstractComponent {
         List<ElementParameter> listParam;
         listParam = new ArrayList<ElementParameter>();
         // TODO
-        addMainParameters(listParam, node);
-        addPropertyParameters(listParam, node, NORMAL_PROPERTY);
-        addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
-        initializePropertyParameters(listParam);
-        checkSchemaParameter(listParam, node);
-        addViewParameters(listParam, node);
-        addDocParameters(listParam, node);
-        addValidationRulesParameters(listParam, node);
+        // Try to load component parameters from the EmfComponent , to display the properties .
+        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+        for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
+            String contributer = componentsProvider.getContributer();
+            if (getBundleName().equals(contributer)) {
+                try {
+                    String name = getName();
+                    if ("tSalesforceConnect".equals(name)) {//$NON-NLS-1$
+                        name = "tSalesforceConnection";//$NON-NLS-1$
+                    }
+                    String uriString = ComponentsUtils.DIR_SEPARATOR + IComponentsFactory.COMPONENTS_INNER_FOLDER
+                            + ComponentsUtils.DIR_SEPARATOR + name + ComponentsUtils.DIR_SEPARATOR + name + "_java.xml";//$NON-NLS-1$ 
+                    EmfComponent currentEmfComponent = new EmfComponent(uriString, getBundleName(), name,
+                            IComponentsFactory.COMPONENTS_INNER_FOLDER, ComponentManager.getComponentCache(), true,
+                            componentsProvider);
+                    listParam = currentEmfComponent.createElementParameters(node);
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // TODO
+        // addMainParameters(listParam, node);
+        // addPropertyParameters(listParam, node, NORMAL_PROPERTY);
+        // addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
+        // initializePropertyParameters(listParam);
+        // checkSchemaParameter(listParam, node);
+        // addViewParameters(listParam, node);
+        // addDocParameters(listParam, node);
+        // addValidationRulesParameters(listParam, node);
         return listParam;
     }
 

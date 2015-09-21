@@ -36,6 +36,10 @@ import org.talend.core.ui.component.ComponentsFactoryProvider;
  */
 public class ComponentsUtils {
 
+    public static final String DIR_SEPARATOR = "/";//$NON-NLS-1$ 
+
+    public static final String EXP_SEPARATOR = ".";//$NON-NLS-1$ 
+
     private static List<IComponent> components = null;
 
     public static ComponentService getComponentService() {
