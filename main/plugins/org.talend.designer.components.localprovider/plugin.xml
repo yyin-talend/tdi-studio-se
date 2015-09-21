@@ -1724,6 +1724,20 @@
         </libraryNeeded>
 
         <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.0"
+            id="hive-common-0.13.0-mapr-1501.jar"
+            name="hive-common-0.13.0-mapr-1501.jar" mvn_uri="mvn:org.talend.libraries/hive-common-0.13.0-mapr-1501/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hive-common-0.13.0-mapr-1501.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
+            context="plugin:org.talend.libraries.hadoop.mapr.4.1.0"
+            id="hive-serde-0.13.0-mapr-1501.jar"
+            name="hive-serde-0.13.0-mapr-1501.jar" mvn_uri="mvn:org.talend.libraries/hive-serde-0.13.0-mapr-1501/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.hadoop.mapr.4.1.0/lib/hive-serde-0.13.0-mapr-1501.jar">
+        </libraryNeeded>
+
+        <libraryNeeded
             context="plugin:org.talend.libraries.sqoop"
             id="sqoop-mapr-4.1.X-lastest"
             name="sqoop-1.4.4-mapr-1502.jar" mvn_uri="mvn:org.talend.libraries/sqoop-1.4.4-mapr-1502/6.0.0"
@@ -1772,6 +1786,13 @@
          	name="commons-codec-1.4.jar" mvn_uri="mvn:org.talend.libraries/commons-codec-1.4/6.0.0"
          	uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.4.jar">
     	</libraryNeeded>
+    	
+       <libraryNeeded
+            context="plugin:org.talend.libraries.apache.common"
+            id="commons-codec-1.5.jar"
+            name="commons-codec-1.5.jar" mvn_uri="mvn:org.talend.libraries/commons-codec-1.5/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.5.jar">
+        </libraryNeeded>
 
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.apache.common"
