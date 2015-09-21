@@ -13,24 +13,18 @@
 package org.talend.component.core.model;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.i18n.Messages;
 import org.talend.components.api.properties.ComponentConnector;
 import org.talend.components.api.properties.ComponentDefinition;
@@ -39,10 +33,10 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
@@ -208,11 +202,10 @@ public class Component extends AbstractComponent {
             }
         }
 
-        // if the
         if (acceptInputFlow && !hasSchemaType) {
             // increment the row number for each parameter
             for (ElementParameter param : listParam) {
-                if (param.getCategory().equals(EComponentCategory.BASIC)) {
+                if (EComponentCategory.BASIC.equals(param.getCategory())) {
                     param.setNumRow(param.getNumRow() + 1);
                 }
             }
@@ -458,10 +451,7 @@ public class Component extends AbstractComponent {
                 localComponentProviderStore = service.getPreferenceStore();
             }
         }
-
-        // modified to fix the bug 7074.
         String formatId = getNodeFormatIdWithoutFormatType(getName(), getTranslatedFamilyName());
-
         param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
         param.setDisplayName(EParameterName.LABEL.getDisplayName());
@@ -471,7 +461,6 @@ public class Component extends AbstractComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
-        param.setValue(""); // TODO
         if (formatId != null) {
             if (localComponentProviderStore != null) {
                 String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
@@ -499,7 +488,6 @@ public class Component extends AbstractComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
-        param.setValue("");// TODO
         if (formatId != null) {
             if (localComponentProviderStore != null) {
                 String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
@@ -527,7 +515,6 @@ public class Component extends AbstractComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
-        param.setValue("");// TODO//$NON-NLS-1$
         if (formatId != null) {
             if (localComponentProviderStore != null) {
                 String label = localComponentProviderStore.getString(IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
@@ -567,7 +554,6 @@ public class Component extends AbstractComponent {
         param = new ElementParameter(node);
         param.setName(EParameterName.VERSION.getName());
         param.setValue(""); //$NON-NLS-1$ //TODO
-        //$NON-NLS-1$ //$NON-NLS-2$
         param.setDisplayName(EParameterName.VERSION.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.TECHNICAL);
@@ -676,7 +662,7 @@ public class Component extends AbstractComponent {
                         ComponentCategory.CATEGORY_4_DI.getName()) != null;
                 param = new ElementParameter(node);
                 param.setName(EParameterName.TSTATCATCHER_STATS.getName());
-                param.setValue(new Boolean("false"));// TODO //$NON-NLS-1$
+                param.setValue(Boolean.FALSE);// TODO
                 param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
                 param.setFieldType(EParameterFieldType.CHECK);
                 param.setCategory(EComponentCategory.ADVANCED);
@@ -1107,7 +1093,56 @@ public class Component extends AbstractComponent {
                 listParam.add(param);
                 autoSwitchAdded = true;
             }
+
+            // TODO
+            param = new ElementParameter(node);
+            param.setCategory(EComponentCategory.BASIC);
+            param.setName(property.getName());
+            param.setDisplayName(property.getDisplayName());
+            param.setFieldType(EParameterFieldType.CHECK);
+            param.setNumRow(1);
+            param.setRequired(property.isRequired());
+            param.setValue(property.getValue());
+            param.setShow(false);
+            param.setReadOnly(true);
+            listParam.add(param);
         }
+
+        // init parameters to test
+
+        ElementParameter newParam = new ElementParameter(node);
+        newParam.setCategory(EComponentCategory.BASIC);
+        newParam.setName(EParameterName.PROPERTY_TYPE.getName());
+        String displayName = getTranslatedValue(EParameterName.PROPERTY_TYPE.getName() + "." + PROP_NAME); //$NON-NLS-1$
+        if (displayName.startsWith("!!")) { //$NON-NLS-1$
+            displayName = EParameterName.PROPERTY_TYPE.getDisplayName();
+        }
+        newParam.setDisplayName(displayName);
+        newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+        newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+        newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+
+        newParam.setValue(BUILTIN);
+        newParam.setNumRow(1);
+        newParam.setFieldType(EParameterFieldType.TECHNICAL);
+        newParam.setRepositoryValue("");//TODO//$NON-NLS-1$
+        newParam.setShow(false);
+        newParam.setShowIf("");//TODO//$NON-NLS-1$
+        newParam.setNotShowIf("");//TODO//$NON-NLS-1$
+        listParam.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setCategory(EComponentCategory.BASIC);
+        newParam.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        newParam.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
+        newParam.setListItemsDisplayName(new String[] {});
+        newParam.setListItemsValue(new String[] {});
+        newParam.setNumRow(2);
+        newParam.setFieldType(EParameterFieldType.TECHNICAL);
+        newParam.setValue(""); //$NON-NLS-1$
+        newParam.setShow(false);
+        newParam.setRequired(true);
+        listParam.add(newParam);
     }
 
     private void initializePropertyParameters(List<ElementParameter> listParam) {
@@ -1646,8 +1681,8 @@ public class Component extends AbstractComponent {
     @Override
     public ImageDescriptor getIcon16() {
         if (!this.imageRegistry.containsKey(getName() + "_16")) {//$NON-NLS-1$
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName())).append(getPathSource())
-                    .append(getName()).toPortableString();
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName()))
+                    .append(IComponentsFactory.COMPONENTS_INNER_FOLDER).append(getName()).toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
 
             // only call to initialize the icons in the registry
@@ -1661,8 +1696,8 @@ public class Component extends AbstractComponent {
     @Override
     public ImageDescriptor getIcon24() {
         if (!this.imageRegistry.containsKey(getName() + "_24")) {//$NON-NLS-1$
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName())).append(getPathSource())
-                    .append(getName()).toPortableString();
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName()))
+                    .append(IComponentsFactory.COMPONENTS_INNER_FOLDER).append(getName()).toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
 
             // only call to initialize the icons in the registry
@@ -1681,8 +1716,8 @@ public class Component extends AbstractComponent {
     @Override
     public ImageDescriptor getIcon32() {
         if (!this.imageRegistry.containsKey(getName() + "_32")) {//$NON-NLS-1$
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName())).append(getPathSource())
-                    .append(getName()).toPortableString();
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName()))
+                    .append(IComponentsFactory.COMPONENTS_INNER_FOLDER).append(getName()).toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
 
             // only call to initialize the icons in the registry
@@ -1695,42 +1730,14 @@ public class Component extends AbstractComponent {
 
     @Override
     public String getPathSource() {
-        return "components";//$NON-NLS-1$
+        return null;
     }
 
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
-        String applicationPath;
-        try {
-            applicationPath = FileLocator.getBundleFile(Platform.getBundle(getBundleName())).getPath();
-            applicationPath = (new Path(applicationPath)).toPortableString();
-        } catch (IOException e2) {
-            ExceptionHandler.process(e2);
-            return (ArrayList<ECodePart>) Collections.EMPTY_LIST;
-        }
-        // TODO
-        File dirChildFile = new File(applicationPath + "/components/tSalesforceInput/tSalesforceInput_java.xml");//$NON-NLS-1$
-        File dirFile = dirChildFile.getParentFile();
-        final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
-        FilenameFilter fileNameFilter = new FilenameFilter() {
-
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(extension);
-            }
-        };
-
-        String[] jetFiles = dirFile.list(fileNameFilter);
-
-        for (String jetFile : jetFiles) {
-            String name = jetFile;
-            name = jetFile.replace(getName() + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
-            name = name.replace(extension, ""); //$NON-NLS-1$
-            ECodePart part = ECodePart.getCodePartByName(name);
-            if (part != null) {
-                theCodePartList.add(part);
-            }
-        }
+        theCodePartList.add(ECodePart.BEGIN);
+        // theCodePartList.add(ECodePart.MAIN); (no main for salesforceinput for testing)
+        theCodePartList.add(ECodePart.END);
         return theCodePartList;
     }
 
@@ -1838,8 +1845,8 @@ public class Component extends AbstractComponent {
      */
     @Override
     public boolean isTechnical() {
-        boolean isTrchnical = false;
-        return isTrchnical;
+        boolean isTechnical = false;
+        return isTechnical;
 
     }
 
@@ -1999,7 +2006,7 @@ public class Component extends AbstractComponent {
 
     public String getBundleName() {
         // TODO
-        return "org.talend.designer.components.localprovider";//$NON-NLS-1$
+        return IComponentsFactory.COMPONENTS_LOCATION;
     }
 
     /*
