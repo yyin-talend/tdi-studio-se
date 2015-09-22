@@ -75,6 +75,25 @@
 	    </PARAMETER>
 
 		<PARAMETER
+			NAME="USE_SOAP_API"
+			FIELD="RADIO"
+			REQUIRED="true"
+			NUM_ROW="5"
+			GROUP="API_MODE"
+		>
+			<DEFAULT>true</DEFAULT>
+		</PARAMETER>
+		<PARAMETER
+			NAME="USE_REST_API"
+			FIELD="RADIO"
+			REQUIRED="true"
+			NUM_ROW="6"
+			GROUP="API_MODE"
+		>
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER
 			NAME="ENDPOINT"
 			FIELD="TEXT"
 			NUM_ROW="10"
@@ -114,6 +133,21 @@
 		</PARAMETER>
 		
 		<PARAMETER
+			NAME="OPERATION_TYPE"
+			FIELD="CLOSED_LIST"
+			NUM_ROW="30"
+			REQUIRED_IF="(USE_REST_API == 'true')"
+			SHOW_IF="(USE_REST_API == 'true')"
+		>
+			<ITEMS DEFAULT="CREATE_OR_UPDATE">
+				<ITEM NAME="CREATE_ONLY" VALUE="createOnly" />
+				<ITEM NAME="UPDATE_ONLY" VALUE="updateOnly" />
+				<ITEM NAME="CREATE_OR_UPDATE" VALUE="createOrUpdate" />
+				<ITEM NAME="CREATE_DUPLICATE" VALUE="createDuplicate" />
+			</ITEMS>
+		</PARAMETER>
+		
+		<PARAMETER
 			NAME="MAPPING_INPUT"
 			FIELD="TABLE"
 			NUM_ROW="40"
@@ -133,6 +167,28 @@
 			SHOW_IF="OPERATION=='syncMultipleLeads'"
 		>
 			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER
+			NAME="LOOKUP_FIELD"
+			FIELD="OPENED_LIST"
+			NUM_ROW="50"
+			REQUIRED="false"
+			SHOW_IF="(USE_REST_API == 'true') AND (OPERATION=='syncMultipleLeads')"
+		>
+			<ITEMS DEFAULT="EMAIL">
+				<ITEM NAME="ID" VALUE="id" />
+				<ITEM NAME="COOKIE" VALUE="cookie" />
+				<ITEM NAME="EMAIL" VALUE="email" />
+				<ITEM NAME="TWITTERID" VALUE="twitterId" />
+				<ITEM NAME="FACEBOOKID" VALUE="facebookId" />
+				<ITEM NAME="LINKEDINID" VALUE="linkedInId" />
+				<ITEM NAME="SFDCACCOUNTID" VALUE="sfdcAccountId" />
+				<ITEM NAME="SFDCCONTACTID" VALUE="sfdcContactId" />
+				<ITEM NAME="SFDCLEADID" VALUE="sfdcLeadId" />
+				<ITEM NAME="SFDCLEADOWNERID" VALUE="sfdcLeadOwnerId" />
+				<ITEM NAME="SFDCOPPTYID" VALUE="sfdcOpptyId" />
+			</ITEMS>
 		</PARAMETER>
 		
 		<PARAMETER
@@ -166,62 +222,142 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
+			<!-- Soap API -->
 			<IMPORT
 				NAME="SOAP-axis"
-				MODULE="axis.jar" MVN="mvn:org.talend.libraries/axis/6.0.0" 
+				MODULE="axis.jar"
+				MVN="mvn:org.talend.libraries/axis/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
 			<IMPORT
 				NAME="SOAP-discovery"
-				MODULE="commons-discovery-0.2.jar" MVN="mvn:org.talend.libraries/commons-discovery-0.2/6.0.0" 
+				MODULE="commons-discovery-0.2.jar"
+				MVN="mvn:org.talend.libraries/commons-discovery-0.2/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
 			<IMPORT
 				NAME="SOAP-jaxrpc"
-				MODULE="jaxrpc.jar" MVN="mvn:org.talend.libraries/jaxrpc/6.0.0" 
+				MODULE="jaxrpc.jar"
+				MVN="mvn:org.talend.libraries/jaxrpc/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
 			<IMPORT
 				NAME="SOAP-saaj"
-				MODULE="saaj.jar" MVN="mvn:org.talend.libraries/saaj/6.0.0" 
+				MODULE="saaj.jar"
+				MVN="mvn:org.talend.libraries/saaj/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
 			<IMPORT
 				NAME="WSDL4J-1_6_3"
-				MODULE="wsdl4j-1.6.3.jar" MVN="mvn:org.talend.libraries/wsdl4j-1.6.3/6.0.0" 
+				MODULE="wsdl4j-1.6.3.jar"
+				MVN="mvn:org.talend.libraries/wsdl4j-1.6.3/6.0.0"
 				BundleID="org.apache.servicemix.bundles.wsdl4j"
-				REQUIRED="true" />
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
 			<IMPORT
 				NAME="SOAP-logging"
-				MODULE="commons-logging-1.1.jar" MVN="mvn:org.talend.libraries/commons-logging-1.1/6.0.0" 
+				MODULE="commons-logging-1.1.jar"
+				MVN="mvn:org.talend.libraries/commons-logging-1.1/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
 			<IMPORT
 				NAME="SOAP-JavaMail"
-				MODULE="mail.jar" MVN="mvn:org.talend.libraries/mail/6.0.0" 
+				MODULE="mail.jar"
+				MVN="mvn:org.talend.libraries/mail/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
 			<IMPORT
 				NAME="SOAP-JAF"
-				MODULE="activation.jar" MVN="mvn:org.talend.libraries/activation/6.0.0" 
+				MODULE="activation.jar"
+				MVN="mvn:org.talend.libraries/activation/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
 			<IMPORT
 				NAME="XML-DOM4J"
-				MODULE="dom4j-1.6.1.jar" MVN="mvn:org.talend.libraries/dom4j-1.6.1/6.0.0" 
+				MODULE="dom4j-1.6.1.jar"
+				MVN="mvn:org.talend.libraries/dom4j-1.6.1/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar"
-				REQUIRED="true"
+				REQUIRED_IF="(USE_SOAP_API == 'true')"
 				BundleID="" />
 			<IMPORT
 				NAME="XML-XPATH-JAXEN"
-				MODULE="jaxen-1.1.1.jar" MVN="mvn:org.talend.libraries/jaxen-1.1.1/6.0.0" 
+				MODULE="jaxen-1.1.1.jar"
+				MVN="mvn:org.talend.libraries/jaxen-1.1.1/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar"
-				REQUIRED="true"
+				REQUIRED_IF="(USE_SOAP_API == 'true')"
 				BundleID="" />
 			<IMPORT
 				NAME="TALEND-MARKETO"
-				MODULE="talend-marketo-2.7.jar" MVN="mvn:org.talend.libraries/talend-marketo-2.7/6.0.0" 
-				REQUIRED="true" />
+				MODULE="talend-marketo-2.7.jar"
+				MVN="mvn:org.talend.libraries/talend-marketo-2.7/6.0.0"
+				REQUIRED_IF="(USE_SOAP_API == 'true')" />
+		
+			<!-- Rest API -->
+			<IMPORT
+				NAME="CXF-CORE"
+				MODULE="cxf-core-3.1.1.jar"
+				MVN="mvn:org.talend.libraries/cxf-core-3.1.1/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.1.1.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="CXF-RT-FRONTEND-JAXRS"
+				MODULE="cxf-rt-frontend-jaxrs-3.1.1.jar"
+				MVN="mvn:org.talend.libraries/cxf-rt-frontend-jaxrs-3.1.1/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-frontend-jaxrs-3.1.1.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="CXF-RT-RS-CLIENT"
+				MODULE="cxf-rt-rs-client-3.1.1.jar"
+				MVN="mvn:org.talend.libraries/cxf-rt-rs-client-3.1.1/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-rs-client-3.1.1.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="CXF-RT-TRANSPORTS-HTTP"
+				MODULE="cxf-rt-transports-http-3.1.1.jar"
+				MVN="mvn:org.talend.libraries/cxf-rt-transports-http-3.1.1/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-transports-http-3.1.1.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="JAVAX-WS-RS-API"
+				MODULE="javax.ws.rs-api-2.0.1.jar"
+				MVN="mvn:org.talend.libraries/javax.ws.rs-api-2.0.1/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/javax.annotation-api-1.2.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="JAVAX-ANNOTATION-API"
+				MODULE="javax.annotation-api-1.2.jar"
+				MVN="mvn:org.talend.libraries/javax.annotation-api-1.2/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/javax.annotation-api-1.2.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="STAX2-API"
+				MODULE="stax2-api-3.1.4.jar"
+				MVN="mvn:org.talend.libraries/stax2-api-3.1.4/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/stax2-api-3.1.4.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="XMLSCHEMA-CORE"
+				MODULE="xmlschema-core-2.2.1.jar"
+				MVN="mvn:org.talend.libraries/xmlschema-core-2.2.1/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlschema-core-2.2.1.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="WOODSTOX-CORE-ASL"
+				MODULE="woodstox-core-asl-4.4.1.jar"
+				MVN="mvn:org.talend.libraries/woodstox-core-asl-4.4.1/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/woodstox-core-asl-4.4.1.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="GSON"
+				MODULE="gson-2.3.1.jar"
+				MVN="mvn:org.talend.libraries/gson-2.3.1/6.1.0"
+				UrlPath="platform:/plugin/org.talend.libraries.apache.google/lib/gson-2.3.1.jar"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+			<IMPORT
+				NAME="TALEND-MARKETO-REST"
+				MODULE="talend-marketo-rest-1.0-20150911.jar"
+				MVN="mvn:org.talend.libraries/talend-marketo-rest-1.0-20150911/6.1.0"
+				REQUIRED_IF="(USE_REST_API == 'true')" />
+
 		</IMPORTS>
 	</CODEGENERATION>
 

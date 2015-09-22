@@ -173,9 +173,22 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
                         return new ECustomVersionType[] { versionType };
                     }
                 };
+
+                IElementParameter sparkLocalParam = elem.getElementParameter(HadoopConstants.SPARK_LOCAL_MODE);
                 IElementParameter sparkParam = elem.getElementParameter(HadoopConstants.SPARK_MODE);
+                boolean isSparkLocalMode = false;
+
+                if (sparkLocalParam != null) {
+                    isSparkLocalMode = (Boolean) sparkLocalParam.getValue();
+                }
+
                 if (sparkParam != null) {
-                    String sparkMode = "" + sparkParam.getValue(); //$NON-NLS-1$
+                    String sparkMode = null;
+                    if (isSparkLocalMode) {
+                        sparkMode = "LOCAL"; //$NON-NLS-1$
+                    } else {
+                        sparkMode = "" + sparkParam.getValue(); //$NON-NLS-1$
+                    }
                     customVersionDialog.setSparkMode(sparkMode);
                     customVersionDialog.setSparkStreamingMode(sparkMode);
                 }

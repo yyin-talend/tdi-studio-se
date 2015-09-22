@@ -17,7 +17,6 @@ import java.util.Properties;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPerspectiveDescriptor;
@@ -28,9 +27,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -39,16 +38,17 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.core.ui.branding.IBrandingConfiguration;
+import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
-import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -61,88 +61,13 @@ import org.talend.repository.ui.views.IRepositoryView;
 public class EditProcess extends AbstractProcessAction implements IIntroAction {
 
     private static final String EDIT_LABEL = Messages.getString("EditProcess.editJob"); //$NON-NLS-1$
-
     private static final String OPEN_LABEL = Messages.getString("EditProcess.openJob"); //$NON-NLS-1$
 
     private Properties params;
 
     public EditProcess() {
         super();
-
-        this.setText(EDIT_LABEL);
-        this.setToolTipText(EDIT_LABEL);
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROCESS_ICON));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
-    @Override
-    protected void doRun() {
-        ISelection selection = getSelectedObject();
-        if (selection == null) {
-            return;
-        }
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
-        if (obj == null) {
-            return;
-        }
-        RepositoryNode node = (RepositoryNode) obj;
-        Property property = node.getObject().getProperty();
-        ProcessItem processItem = null;
-
-        if (property != null) {
-            ItemCacheManager.clearCache();
-            Assert.isTrue(property.getItem() instanceof ProcessItem);
-
-            processItem = (ProcessItem) property.getItem();
-
-            IWorkbenchPage page = getActivePage();
-
-            try {
-                final ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, true);
-                checkUnLoadedNodeForProcess(fileEditorInput);
-
-                IEditorPart editorPart = page.findEditor(fileEditorInput);
-
-                if (editorPart == null) {
-                    fileEditorInput.setRepositoryNode(node);
-                    editorPart = page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
-                    /* MultiPageTalendEditor openEditor = (MultiPageTalendEditor) */
-                    // List<AbstractProcessProvider> findAllProcessProviders =
-                    // AbstractProcessProvider.findAllProcessProviders();
-                    // boolean isImport = false;
-                    // for (AbstractProcessProvider abstractProcessProvider : findAllProcessProviders) {
-                    // if (abstractProcessProvider != null) {
-                    // boolean update = abstractProcessProvider.updateProcessContexts((Process) fileEditorInput
-                    // .getLoadedProcess());
-                    // if (update) {
-                    // isImport = true;
-                    // }
-                    // }
-                    // }
-                    // if (isImport) {
-                    // openEditor.getTalendEditor().getCommandStack().execute(new Command() {
-                    // });
-                    // }
-                } else {
-                    ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
-                    page.activate(editorPart);
-                }
-            } catch (PartInitException e) {
-                MessageBoxExceptionHandler.process(e);
-            } catch (PersistenceException e) {
-                MessageBoxExceptionHandler.process(e);
-            }
-        }
-        // else {
-        // IRepositoryView viewPart = getViewPart();
-        // if (viewPart != null) {
-        // viewPart.refresh(ERepositoryObjectType.PROCESS);
-        // }
-        // }
     }
 
     /*
@@ -159,27 +84,16 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
             canWork = false;
         }
         if (canWork) {
-
-            Object o = selection.getFirstElement();
-            RepositoryNode node = (RepositoryNode) o;
+            final IRepositoryNode node = (IRepositoryNode) selection.getFirstElement();
             if (RepositoryManager.isOpenedItemInEditor(node.getObject())) {
                 canWork = false;
             } else {
-                switch (node.getType()) {
-                case REPOSITORY_ELEMENT:
-                    if (node.getObjectType() != ERepositoryObjectType.PROCESS) {
-                        canWork = false;
-                    } else {
-                        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-                        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-                        if (repFactory.isPotentiallyEditable(node.getObject())) {
-                            this.setText(EDIT_LABEL);
-                        } else {
-                            this.setText(OPEN_LABEL);
-                        }
-                    }
-                    break;
-                default:
+                if (IRepositoryNode.ENodeType.REPOSITORY_ELEMENT == node.getType()
+                    && node.getObjectType() == getProcessType()) {
+                    final IProxyRepositoryFactory repFactory =
+                        DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+                    this.setText(getLabel(repFactory.isPotentiallyEditable(node.getObject())));
+                } else {
                     canWork = false;
                 }
                 if (canWork && node.getObject() != null
@@ -200,33 +114,60 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
         setEnabled(canWork);
     }
 
-    /**
+    protected ERepositoryObjectType getProcessType() {
+        return ERepositoryObjectType.PROCESS;
+    }
+
+    protected String getLabel(boolean editable) {
+        return editable ? EDIT_LABEL : OPEN_LABEL;
+    }
+
+    /*
+     * (non-Javadoc)
      * 
-     * DOC YeXiaowei EditProcess class global comment. Detailled comment
+     * @see org.eclipse.jface.action.Action#run()
      */
-    // @SuppressWarnings("unchecked")
-    // private static class IRepositoryObjectComparator implements Comparator {
-    //
-    // public int compare(Object o1, Object o2) {
-    // return VersionUtils.compareTo(((IRepositoryObject) o1).getVersion(), ((IRepositoryObject) o2).getVersion());
-    // }
-    // }
-    //
-    // @SuppressWarnings("unchecked")
-    // private boolean isLastJobVersion(RepositoryNode repositoryObject) {
-    // try {
-    // List<IRepositoryObject> allVersion =
-    // ProxyRepositoryFactory.getInstance().getAllVersion(repositoryObject.getId());
-    // if (allVersion == null || allVersion.isEmpty()) {
-    // return false;
-    // }
-    // // Collections.sort(allVersion, new IRepositoryObjectComparator());
-    // IRepositoryObject lastVersion = allVersion.get(allVersion.size() - 1);
-    // return lastVersion.getVersion().equals(repositoryObject.getObject().getVersion());
-    // } catch (PersistenceException e) {
-    // return false;
-    // }
-    // }
+    @Override
+    protected void doRun() {
+        IRepositoryNode node = getSelectedObject();
+        if (node == null) {
+            return;
+        }
+        Property property = node.getObject().getProperty();
+        if (property != null) {
+            Assert.isTrue(property.getItem() instanceof ProcessItem);
+
+            ProcessItem processItem = (ProcessItem) property.getItem();
+
+            IWorkbenchPage page = getActivePage();
+
+            try {
+                final JobEditorInput fileEditorInput = getEditorInput(processItem);
+                checkUnLoadedNodeForProcess(fileEditorInput);
+
+                final IEditorPart editorPart = page.findEditor(fileEditorInput);
+                if (editorPart == null) {
+                    fileEditorInput.setRepositoryNode(node);
+                    page.openEditor(fileEditorInput, getEditorId(), true);
+                } else {
+                    ((AbstractMultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
+                    page.activate(editorPart);
+                }
+            } catch (PartInitException e) {
+                MessageBoxExceptionHandler.process(e);
+            } catch (PersistenceException e) {
+                MessageBoxExceptionHandler.process(e);
+            }
+        }
+    }
+
+    protected JobEditorInput getEditorInput(final ProcessItem processItem) throws PersistenceException {
+        return new ProcessEditorInput(processItem, true, true);
+    }
+
+    protected String getEditorId() {
+        return MultiPageTalendEditor.ID;
+    }
 
     /*
      * (non-Javadoc)
@@ -250,9 +191,16 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
         doRun();
     }
 
-    private ISelection getSelectedObject() {
+    protected String getPerspectiveId() {
+        return IBrandingConfiguration.PERSPECTIVE_DI_ID;
+    }
+
+    private IRepositoryNode getSelectedObject() {
         if (params == null) {
-            return getSelection();
+            ISelection selection = getSelection();
+            if (selection != null) {
+                return (IRepositoryNode)((IStructuredSelection) selection).getFirstElement();
+            }
         } else {
             IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
             if (null == workbenchWindow) {
@@ -264,10 +212,10 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
             }
 
             IPerspectiveDescriptor currentPerspective = workbenchPage.getPerspective();
-            if (!IBrandingConfiguration.PERSPECTIVE_DI_ID.equals(currentPerspective.getId())) {
+            if (!getPerspectiveId().equals(currentPerspective.getId())) {
                 // show di perspective
                 try {
-                    workbenchWindow.getWorkbench().showPerspective(IBrandingConfiguration.PERSPECTIVE_DI_ID, workbenchWindow);
+                    workbenchWindow.getWorkbench().showPerspective(getPerspectiveId(), workbenchWindow);
                     workbenchPage = workbenchWindow.getActivePage();
                 } catch (WorkbenchException e) {
                     ExceptionHandler.process(e);
@@ -275,14 +223,14 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
                 }
             }
 
-            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"), false);
+            IRepositoryNode repositoryNode = RepositorySeekerManager.getInstance().searchRepoViewNode(
+                params.getProperty("nodeId"), false);
             IRepositoryView viewPart = getViewPart();
             if (repositoryNode != null && viewPart != null) {
                 RepositoryNodeUtilities.expandParentNode(viewPart, repositoryNode);
-                return new StructuredSelection(repositoryNode);
+                return repositoryNode;
             }
-            return null;
-
         }
+        return null;
     }
 }

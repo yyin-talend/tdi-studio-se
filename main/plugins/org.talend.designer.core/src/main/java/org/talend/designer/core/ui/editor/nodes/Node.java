@@ -4090,21 +4090,21 @@ public class Node extends Element implements IGraphicalNode {
                         if (sparkConfigList != null && sparkConfigList.size() > 0) {
                             // The tSparkConfiguration is a singleton in a Spark job.
                             INode sparkConfig = sparkConfigList.get(0);
-                            IElementParameter sparkModeParameter = sparkConfig.getElementParameter("SPARK_MODE"); //$NON-NLS-1$
+                            IElementParameter sparkLocalModeParameter = sparkConfig.getElementParameter("SPARK_LOCAL_MODE"); //$NON-NLS-1$
                             IElementParameter sparkLocalVersionParameter = sparkConfig.getElementParameter("SPARK_LOCAL_VERSION"); //$NON-NLS-1$
                             IElementParameter sparkCustomVersionParameter = sparkConfig.getElementParameter("SPARK_API_VERSION"); //$NON-NLS-1$
                             IElementParameter distributionParameter = sparkConfig.getElementParameter("DISTRIBUTION"); //$NON-NLS-1$
                             IElementParameter versionParameter = sparkConfig.getElementParameter("SPARK_VERSION"); //$NON-NLS-1$
-                            if (sparkModeParameter != null && sparkLocalVersionParameter != null
+                            if (sparkLocalModeParameter != null && sparkLocalVersionParameter != null
                                     && sparkCustomVersionParameter != null && distributionParameter != null
                                     && versionParameter != null) {
-                                String sparkMode = (String) sparkModeParameter.getValue();
+                                boolean isLocalMode = (Boolean) sparkLocalModeParameter.getValue();
                                 String sparkLocalVersion = (String) sparkLocalVersionParameter.getValue();
                                 String sparkCustomVersion = (String) sparkCustomVersionParameter.getValue();
                                 String distribution = (String) distributionParameter.getValue();
                                 String sparkVersion = (String) versionParameter.getValue();
 
-                                boolean isCustom = ("LOCAL".equals(sparkMode) && "CUSTOM".equals(sparkLocalVersion)) || ((!"LOCAL".equals(sparkMode)) && "CUSTOM".equals(distribution)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                                boolean isCustom = (isLocalMode && "CUSTOM".equals(sparkLocalVersion)) || ((!isLocalMode) && "CUSTOM".equals(distribution)); //$NON-NLS-1$ //$NON-NLS-2$ 
 
                                 org.talend.core.hadoop.api.components.SparkComponent sparkDistrib = null;
                                 try {

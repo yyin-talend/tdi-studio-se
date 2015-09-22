@@ -13,6 +13,7 @@
 package org.talend.repository.view.di.viewer.tester;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.tester.AbstractNodeTester;
@@ -35,11 +36,6 @@ public class JobTempTester extends AbstractNodeTester {
     public boolean isTypeNode(RepositoryNode repositoryNode) {
         ERepositoryObjectType contentType = getNodeContentType(repositoryNode);
         return contentType != null && (ERepositoryObjectType.getAllTypesOfProcess().contains(contentType));
-    }
-
-    @Override
-    public ERepositoryObjectType getNodeContentType(RepositoryNode repositoryNode) {
-        return repositoryNode != null ? (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE) : null;
     }
 
     @Override

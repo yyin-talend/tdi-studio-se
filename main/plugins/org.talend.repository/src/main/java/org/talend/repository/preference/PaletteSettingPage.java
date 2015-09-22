@@ -611,7 +611,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
                 List<IRepositoryViewObject> allJoblet = repositoryFactory.getAll(project, jobletType, true);
                 addUsedComponents(componentsUsed, allJoblet, ComponentCategory.CATEGORY_4_DI);
             }
-            ERepositoryObjectType routeType = ERepositoryObjectType.valueOf("ROUTES"); //$NON-NLS-1$
+            ERepositoryObjectType routeType = ERepositoryObjectType.PROCESS_ROUTE;
             if (routeType != null) {
                 List<IRepositoryViewObject> allRoutes = repositoryFactory.getAll(project, routeType, true);
                 addUsedComponents(componentsUsed, allRoutes, ComponentCategory.CATEGORY_4_CAMEL);

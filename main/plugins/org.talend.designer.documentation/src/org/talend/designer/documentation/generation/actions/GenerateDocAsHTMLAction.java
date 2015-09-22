@@ -53,14 +53,6 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
         boolean canWork = false;
         List<RepositoryNode> nodes = selection.toList();
         
-        ERepositoryObjectType routeType = null;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-        	ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-        			.getService(ICamelDesignerCoreService.class);
-        	routeType = camelService.getRoutes();
-        }
-        
-        
         for (RepositoryNode node : nodes) {
             if (ERepositoryObjectType.PROCESS_MR != null) {
                 if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS_MR) {
@@ -72,7 +64,7 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
             
             Object contentType = node.getProperties(EProperties.CONTENT_TYPE);
 			if (contentType == ERepositoryObjectType.PROCESS
-					|| (routeType != null && routeType == contentType)) {
+					|| contentType == ERepositoryObjectType.PROCESS_ROUTE) {
 				if (node.getObject() != null
 						&& instance.isInCurrentMainProject(node)) {
 					canWork = true;

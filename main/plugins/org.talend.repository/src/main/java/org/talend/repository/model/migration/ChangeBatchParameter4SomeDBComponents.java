@@ -38,7 +38,7 @@ public class ChangeBatchParameter4SomeDBComponents extends AbstractJobMigrationT
     public ExecutionResult execute(Item item) {
         final ProcessType processType = getProcessType(item);
         String[] compNames = {
-                "tFirebirdOutput", "tGreenplumOutput", "tIngresOutput", "tInterbaseOutput", "tParAccelOutput", "tPostgresPlusOutput", "tSQLiteOutput" };
+                "tFirebirdOutput", "tGreenplumOutput", "tIngresOutput", "tInterbaseOutput", "tParAccelOutput", "tPostgresPlusOutput", "tSQLiteOutput", "tRedshiftOutput" };
 
         IComponentConversion conversion = new IComponentConversion() {
 

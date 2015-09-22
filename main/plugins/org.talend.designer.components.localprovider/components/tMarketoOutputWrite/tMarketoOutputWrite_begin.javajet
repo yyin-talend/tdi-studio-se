@@ -16,6 +16,9 @@ imports="
     String operation = ElementParameterParser.getValue(node, "__OPERATION__");
 	String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
 	String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
+	
+	boolean useSoapAPI = ("true").equals(ElementParameterParser.getValue(node,"__USE_SOAP_API__"));
+	boolean useRestAPI = ("true").equals(ElementParameterParser.getValue(node,"__USE_REST_API__"));
 %>
 	int nb_call_<%=cid%> = 0;
 	globalMap.put("<%=cid %>_NB_CALL",0);
@@ -27,13 +30,31 @@ imports="
     <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
     
 
-	org.talend.marketo.Client client_<%=cid%> = new org.talend.marketo.Client(<%=endpoint%>,decryptedPassword_<%=cid%>,<%=clientAccessID%>);
-	client_<%=cid%>.setTimeout(<%=timeout%>);
-	List<com.marketo.www.mktows.SyncStatus[]> statusList_<%=cid%> = new java.util.ArrayList<com.marketo.www.mktows.SyncStatus[]>();
-<%
-	if(operation.equals("syncMultipleLeads")){
-%>
-	java.util.List<com.marketo.www.mktows.LeadRecord> leadRecordList_<%=cid%> = new java.util.ArrayList<com.marketo.www.mktows.LeadRecord>(<%=batchSize%> * 2);
-<%		
+	<%
+	if(useSoapAPI){
+	%>
+		org.talend.marketo.Client client_<%=cid%> = new org.talend.marketo.Client(<%=endpoint%>,decryptedPassword_<%=cid%>,<%=clientAccessID%>);
+		client_<%=cid%>.setTimeout(<%=timeout%>);
+		List<com.marketo.www.mktows.SyncStatus[]> statusList_<%=cid%> = new java.util.ArrayList<com.marketo.www.mktows.SyncStatus[]>();
+		<%
+		if(operation.equals("syncMultipleLeads")){
+		%>
+			java.util.List<com.marketo.www.mktows.LeadRecord> leadRecordList_<%=cid%> = new java.util.ArrayList<com.marketo.www.mktows.LeadRecord>(<%=batchSize%> * 2);
+		<%
+		}
+	
 	}
-%>
+	if(useRestAPI){
+	%>
+		org.talend.marketo.MarketoRestClient client_<%=cid%> = new org.talend.marketo.MarketoRestClient(<%=endpoint%>,decryptedPassword_<%=cid%>,<%=clientAccessID%>);
+		client_<%=cid%>.setTimeOut(<%=timeout%>);
+		client_<%=cid%>.refreshToken();
+		List<List<org.talend.marketo.type.SyncStatus>> statusList_<%=cid%> = new java.util.ArrayList<List<org.talend.marketo.type.SyncStatus>>();
+		<%
+		if(operation.equals("syncMultipleLeads")){
+		%>
+			java.util.List<java.util.Map<String,Object>> leadRecordList_<%=cid%> = new java.util.ArrayList<java.util.Map<String,Object>>(<%=batchSize%> * 2);
+		<%
+		}
+	}
+	%>

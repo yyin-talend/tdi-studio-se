@@ -153,18 +153,6 @@ public class NewProcessWizardPage extends PropertiesWizardPage {
             }
         }
 
-        // List for esb route
-        ERepositoryObjectType routeType = ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "ROUTES");
-        if (routeType != null) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IProxyRepositoryService.class)) {
-                IProxyRepositoryService service = (IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
-                        IProxyRepositoryService.class);
-                List<IRepositoryViewObject> routeList = service.getProxyRepositoryFactory().getAll(routeType, true, false);
-                if (routeList != null && routeList.size() > 0) {
-                    list.addAll(routeList);
-                }
-            }
-        }
         return list;
     }
 

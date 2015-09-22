@@ -203,14 +203,7 @@ public class EditPropertiesAction extends AContextualAction {
     }
 
     protected static boolean isInstanceofCamelRoutes(final ERepositoryObjectType type) {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                    ICamelDesignerCoreService.class);
-            if (service != null) {
-                return type == service.getRoutes();
-            }
-        }
-        return false;
+        return type == ERepositoryObjectType.PROCESS_ROUTE;
     }
     /**
      * delete the used routine java file if the routine is renamed. This method is added for solving bug 1321, only

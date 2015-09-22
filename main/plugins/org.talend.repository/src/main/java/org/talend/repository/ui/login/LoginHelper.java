@@ -572,13 +572,13 @@ public class LoginHelper {
                         brancesList.addAll(Arrays.asList(branchList));
                     }
 
-                } else if (!p.isLocal() && !svnProviderService.isSVNProject(p)) {
-                    brancesList.add(GITConstant.NAME_TRUNK);
-                    String[] branchList = svnProviderService.getBranchList(p);
-                    if (branchList != null) {
-                        brancesList.addAll(Arrays.asList(branchList));
-                    }
+                } /*else if (!p.isLocal() && !svnProviderService.isSVNProject(p)) {
+            	String url=p.getEmfProject().getUrl();
+            	if("git".equals(getStorage(url)))	{
+            		branchesList.add("master");
+            		
                 }
+            }*/
             } catch (PersistenceException e) {
                 CommonExceptionHandler.process(e);
             }

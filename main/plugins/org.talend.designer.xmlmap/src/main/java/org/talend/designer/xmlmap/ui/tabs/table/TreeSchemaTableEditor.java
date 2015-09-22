@@ -54,7 +54,7 @@ public class TreeSchemaTableEditor extends ExtendedTableModel<TreeNode> {
 
         if (currentPage <= pageCount) {
             int startIndex = (currentPage - 1) * maxColumns;
-            int endIndex = currentPage * maxColumns - 1;
+            int endIndex = currentPage * maxColumns;
             endIndex = Math.min(tableModel.size(), endIndex);
             beanList.addAll(tableModel.subList(startIndex, endIndex));
         }
