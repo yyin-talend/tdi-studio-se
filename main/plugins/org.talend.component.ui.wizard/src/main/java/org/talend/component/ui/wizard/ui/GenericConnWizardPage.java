@@ -14,12 +14,13 @@ package org.talend.component.ui.wizard.ui;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.ui.swt.formtools.LabelledCombo;
-import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
+import org.talend.components.api.properties.presentation.Form;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 
 /**
  * 
@@ -27,8 +28,6 @@ import org.talend.core.model.properties.ConnectionItem;
  *
  */
 public class GenericConnWizardPage extends WizardPage {
-
-    private static final int VISIBLE_DB_TYPE_COUNT = 5;
 
     private final ConnectionItem connectionItem;
 
@@ -38,24 +37,15 @@ public class GenericConnWizardPage extends WizardPage {
 
     private Composite parentComp;
 
-    private LabelledCombo dbTypeCombo;
-
-    private final NoSQLRepositoryFactory repFactory;
-
-    private final NoSQLRepositoryTranslator repositoryTranslator;
-
-    private IWizardPageProvider wizPageProvider;
-
-    private AbstractNoSQLConnForm connectionForm;
+    private Form form;
 
     public GenericConnWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames,
-            boolean creation) {
+            boolean creation, Form form) {
         super("GenericConnWizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
-        repFactory = NoSQLRepositoryFactory.getInstance();
-        repositoryTranslator = NoSQLRepositoryTranslator.getInstance();
+        this.form = form;
     }
 
     @Override
@@ -65,20 +55,27 @@ public class GenericConnWizardPage extends WizardPage {
         parentComp = container;
         setControl(parentComp);
 
-        GenericWizardServiceFactory.getGenericWizardService()
-        new DynamicComposite(parentComp, null);
+        Element element = new Element() {
 
-        Composite dbTypePartComposite = new Composite(parentComp, SWT.NONE);
-        GridLayout dbTypePartLayout = new GridLayout(2, false);
-        dbTypePartLayout.marginWidth = 10;
-        dbTypePartLayout.marginHeight = 5;
-        dbTypePartComposite.setLayout(dbTypePartLayout);
-        dbTypePartComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            @Override
+            public void setReadOnly(boolean readOnly) {
+                return;
+            }
 
-        addFieldsListeners();
-    }
+            @Override
+            public boolean isReadOnly() {
+                return false;
+            }
 
-    protected void addFieldsListeners() {
+            @Override
+            public String getElementName() {
+                return "";
+            }
+
+        };
+        // TODO: add element parameters to element.
+        new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.MAIN, element,
+                true);
     }
 
     @Override

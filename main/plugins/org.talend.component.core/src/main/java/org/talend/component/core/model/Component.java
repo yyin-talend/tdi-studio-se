@@ -39,9 +39,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.ComponentManager;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -66,10 +64,8 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.ComponentBundleToPath;
 import org.talend.designer.core.model.components.ComponentIconLoading;
-import org.talend.designer.core.model.components.ComponentsProviderManager;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.model.components.NodeReturn;
@@ -122,7 +118,7 @@ public class Component extends AbstractComponent {
      */
     @Override
     public String getLongName() {
-    	return componentDefinition.getTitle();
+        return componentDefinition.getTitle();
     }
 
     /*
@@ -179,15 +175,14 @@ public class Component extends AbstractComponent {
         List<ElementParameter> listParam;
         listParam = new ArrayList<ElementParameter>();
 
-        
-        //addMainParameters(listParam, node);
+        // addMainParameters(listParam, node);
         addPropertyParameters(listParam, node, NORMAL_PROPERTY);
         addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
-        //initializePropertyParameters(listParam);
-        //checkSchemaParameter(listParam, node);
-        //addViewParameters(listParam, node);
-        //addDocParameters(listParam, node);
-        //addValidationRulesParameters(listParam, node);
+        // initializePropertyParameters(listParam);
+        // checkSchemaParameter(listParam, node);
+        // addViewParameters(listParam, node);
+        // addDocParameters(listParam, node);
+        // addValidationRulesParameters(listParam, node);
         return listParam;
     }
 
@@ -280,17 +275,17 @@ public class Component extends AbstractComponent {
         listReturn.add(nodeRet);
         // FIXME - add the REturns
         // ****************** end of standard returns ******************
-        //Property[] propertys = componentDefinition.createProperties().getProperties();
-        //for (Property property : propertys) {
-        //    nodeRet = new NodeReturn();
+        // Property[] propertys = componentDefinition.createProperties().getProperties();
+        // for (Property property : propertys) {
+        // nodeRet = new NodeReturn();
         //    nodeRet.setAvailability("");//$NON-NLS-1$
         //    nodeRet.setVarName("");//$NON-NLS-1$
-        //    nodeRet.setDisplayName(property.getDisplayName());
-        //    nodeRet.setName(property.getName());
-        //    nodeRet.setType(property.getTypeName());
+        // nodeRet.setDisplayName(property.getDisplayName());
+        // nodeRet.setName(property.getName());
+        // nodeRet.setType(property.getTypeName());
         //    nodeRet.setShowIf("");//$NON-NLS-1$
-        //    listReturn.add(nodeRet);
-       // }
+        // listReturn.add(nodeRet);
+        // }
         return listReturn;
     }
 
@@ -1090,7 +1085,7 @@ public class Component extends AbstractComponent {
         EComponentCategory category = advanced ? EComponentCategory.ADVANCED : EComponentCategory.BASIC;
         ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
         Form form = props.getForm(advanced ? "Advanced" : "Main");
-        List<Widget> formWidgets = (List<Widget>) form.getWidgets();
+        List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
             param = new ElementParameter(node);
             param.setCategory(category);
@@ -1099,70 +1094,83 @@ public class Component extends AbstractComponent {
             SchemaElement se = null;
             NamedThing[] widgetProperties = widget.getProperties();
             /*
-             * Could be a SchemaElement or a PresentationItem, if it's a PresentationItem then the widgetType
-             * should not be DEFAULT.
+             * Could be a SchemaElement or a PresentationItem, if it's a PresentationItem then the widgetType should not
+             * be DEFAULT.
              */
-            if (widgetProperties[0] instanceof SchemaElement)
-            	se = (SchemaElement) widgetProperties[0];
+            if (widgetProperties[0] instanceof SchemaElement) {
+                se = (SchemaElement) widgetProperties[0];
+            }
 
-            // BAI - set the field type based on the switch statements below
-            param.setFieldType(EParameterFieldType.CHECK);
-            
+            EParameterFieldType fieldType = null;
             switch (widget.getWidgetType()) {
             case DEFAULT:
-            	if (se == null)
-            		throw new RuntimeException("WidgetType Default requires a SchemaElement");
-            	switch (se.getType()) {
-				case BOOLEAN:
-					break;
-				case BYTE_ARRAY:
-					break;
-				case DATE:
-					break;
-				case DATETIME:
-					break;
-				case DECIMAL:
-					break;
-				case DOUBLE:
-					break;
-				case DYNAMIC:
-					break;
-				case ENUM:
-					break;
-				case FLOAT:
-					break;
-				case INT:
-					break;
-				case SCHEMA:
-					break;
-				case STRING:
-					break;
-				default:
-					break;
-            	}
-            	
-            	break;
-			case BUTTON:
-				break;
-			case COMPONENT_REFERENCE:
-				break;
-			case NAME_SELECTION_AREA:
-				break;
-			case NAME_SELECTION_REFERENCE:
-				break;
-			case SCHEMA_EDITOR:
-				break;
-			case SCHEMA_REFERENCE:
-	            param.setFieldType(EParameterFieldType.SCHEMA_TYPE);
-				break;
-			default:
-				break;
+                if (se == null) {
+                    throw new RuntimeException("WidgetType Default requires a SchemaElement");
+                }
+                switch (se.getType()) {
+                case BOOLEAN:
+                    fieldType = EParameterFieldType.CHECK;
+                    break;
+                case BYTE_ARRAY:
+                    fieldType = EParameterFieldType.TEXT;
+                    break;
+                case DATE:
+                    fieldType = EParameterFieldType.DATE;
+                    break;
+                case DATETIME:
+                    fieldType = EParameterFieldType.DATE;
+                    break;
+                case DECIMAL:
+                    fieldType = EParameterFieldType.TEXT;
+                    break;
+                case DOUBLE:
+                    fieldType = EParameterFieldType.TEXT;
+                    break;
+                case DYNAMIC:
+                    fieldType = EParameterFieldType.TEXT;
+                    break;
+                case ENUM:
+                    fieldType = EParameterFieldType.CLOSED_LIST;
+                    break;
+                case FLOAT:
+                    fieldType = EParameterFieldType.TEXT;
+                    break;
+                case INT:
+                    fieldType = EParameterFieldType.TEXT;
+                    break;
+                case SCHEMA:
+                    fieldType = EParameterFieldType.SCHEMA_TYPE;
+                    break;
+                case STRING:
+                    fieldType = EParameterFieldType.TEXT;
+                    break;
+                default:
+                    fieldType = EParameterFieldType.TEXT;
+                    break;
+                }
+                break;
+            case BUTTON:
+                break;
+            case COMPONENT_REFERENCE:
+                break;
+            case NAME_SELECTION_AREA:
+                break;
+            case NAME_SELECTION_REFERENCE:
+                break;
+            case SCHEMA_EDITOR:
+                break;
+            case SCHEMA_REFERENCE:
+                param.setFieldType(EParameterFieldType.SCHEMA_TYPE);
+                break;
+            default:
+                break;
             }
+            param.setFieldType(fieldType);
             param.setNumRow(widget.getRow());
             // FIXME - Column?
             if (se != null) {
-            	param.setRequired(se.isRequired());
-            	param.setValue(props.getValue(se));
+                param.setRequired(se.isRequired());
+                param.setValue(props.getValue(se));
                 Collection values = se.getPossibleValues();
             }
 
@@ -1909,8 +1917,8 @@ public class Component extends AbstractComponent {
      */
     @Override
     public String getRepositoryType() {
-    	// FIXME - this is the name of the object stored in the repository, need to put this in the definition
-    	return "SALESFORCE_CONNECTION";
+        // FIXME - this is the name of the object stored in the repository, need to put this in the definition
+        return "SALESFORCE_CONNECTION";
     }
 
     @Override

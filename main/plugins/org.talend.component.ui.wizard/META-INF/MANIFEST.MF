@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.ui,
  org.talend.repository.view,
  org.talend.repository.view.di,
  org.talend.metadata.managment.ui,
- org.talend.repository
+ org.talend.repository,
+ org.talend.designer.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.talend.component.ui.model.genericMetadata,
  org.talend.component.ui.model.genericMetadata.impl,

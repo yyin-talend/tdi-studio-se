@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.component.ui.wizard.ui;
 
+import java.util.List;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -26,8 +28,12 @@ import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
 import org.talend.component.ui.wizard.constants.IGenericConstants;
 import org.talend.component.ui.wizard.i18n.Messages;
+import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
+import org.talend.component.ui.wizard.internal.service.GenericWizardInternalService;
 import org.talend.component.ui.wizard.update.GenericUpdateManager;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
+import org.talend.components.api.properties.presentation.Form;
+import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -130,15 +136,24 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         String typeName = repNode.getContentType().getType();
         Image wiardImage = GenericWizardServiceFactory.getGenericWizardService().getWiardImage(typeName);
         setDefaultPageImageDescriptor(ImageDescriptor.createFromImage(wiardImage));
-        connPage = new GenericConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation);
-        if (creation) {
-            connPage.setTitle(Messages.getString("NoSQLConnWizardPage.titleCreate.Step2")); //$NON-NLS-1$
-            connPage.setDescription(Messages.getString("NoSQLConnWizardPage.descriptionCreate.Step2")); //$NON-NLS-1$
-            connPage.setPageComplete(false);
-        } else {
-            connPage.setTitle(Messages.getString("NoSQLConnWizardPage.titleUpdate.Step2")); //$NON-NLS-1$
-            connPage.setDescription(Messages.getString("NoSQLConnWizardPage.descriptionUpdate.Step2")); //$NON-NLS-1$
-            connPage.setPageComplete(isRepositoryObjectEditable());
+
+        IGenericWizardInternalService internalService = new GenericWizardInternalService();
+        ComponentWizard componentWizard = internalService.getComponentWizard(typeName);
+        List<Form> forms = componentWizard.getForms();
+        if (forms.size() > 0) {
+            connPage = new GenericConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation,
+                    forms.get(0));
+        }
+        if (connPage != null) {
+            if (creation) {
+                connPage.setTitle(Messages.getString("NoSQLConnWizardPage.titleCreate.Step2")); //$NON-NLS-1$
+                connPage.setDescription(Messages.getString("NoSQLConnWizardPage.descriptionCreate.Step2")); //$NON-NLS-1$
+                connPage.setPageComplete(false);
+            } else {
+                connPage.setTitle(Messages.getString("NoSQLConnWizardPage.titleUpdate.Step2")); //$NON-NLS-1$
+                connPage.setDescription(Messages.getString("NoSQLConnWizardPage.descriptionUpdate.Step2")); //$NON-NLS-1$
+                connPage.setPageComplete(isRepositoryObjectEditable());
+            }
         }
         addPage(connPage);
     }
@@ -155,22 +170,22 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
-                    factory.create(connectionItem, propertiesPage.getDestinationPath());
+                    // factory.create(connectionItem, propertiesPage.getDestinationPath());
                 } else {
                     GenericUpdateManager.updateGenericConnection(connectionItem);
                     updateConnectionItem();
 
-                    boolean isModified = propertiesPage.isNameModifiedByUser();
-                    if (isModified) {
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
-                            IDesignerCoreService service = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                                    IDesignerCoreService.class);
-                            if (service != null) {
-                                service.refreshComponentView(connectionItem);
-                            }
+                    // boolean isModified = propertiesPage.isNameModifiedByUser();
+                    // if (isModified) {
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
+                        IDesignerCoreService service = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                                IDesignerCoreService.class);
+                        if (service != null) {
+                            service.refreshComponentView(connectionItem);
                         }
-
                     }
+
+                    // }
                 }
             } catch (Exception e) {
                 new ErrorDialogWidthDetailArea(getShell(), IGenericConstants.PLUGIN_ID,

@@ -13,6 +13,7 @@
 package org.talend.component.ui.wizard.internal;
 
 import org.talend.components.api.service.ComponentService;
+import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
@@ -29,5 +30,7 @@ public interface IGenericWizardInternalService {
             ENodeType nodeType);
 
     public ComponentService getComponentService();
+
+    public ComponentWizard getComponentWizard(String name);
 
 }
