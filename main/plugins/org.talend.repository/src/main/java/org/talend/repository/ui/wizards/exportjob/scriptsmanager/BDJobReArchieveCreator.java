@@ -89,7 +89,8 @@ public class BDJobReArchieveCreator {
 
         if (isSparkWithHDInsight == null) {
             isSparkWithHDInsight = false;
-            if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_SPARK)) {
+            if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_SPARK)
+                    || isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_SPARKSTREAMING)) {
                 EList<ElementParameterType> parameters = processItem.getProcess().getParameters().getElementParameter();
                 boolean modeParameterVisited = false;
                 for (ElementParameterType pt : parameters) {
