@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: On-boarding presentation resource for DI
+Bundle-SymbolicName: org.talend.presentation.onboarding.resource.di;singleton:=true
+Bundle-Version: 6.1.0.qualifier
+Require-Bundle: org.talend.commons.runtime,
+ org.talend.presentation.onboarding
