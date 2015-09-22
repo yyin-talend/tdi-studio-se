@@ -1,6 +1,6 @@
 /**
  * DescribeTab.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,11 +11,76 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
+    /*
+     * This type was generated from the piece of schema that had name = DescribeTab Namespace URI = urn:partner.soap.sforce.com Namespace
+     * Prefix = ns1
+     */
+
+    /**
+     * field for Colors This was an Array!
+     */
+
+    protected com.salesforce.soap.partner.DescribeColor[] localColors;
 
     /*
-     * This type was generated from the piece of schema that had name = DescribeTab Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
+    protected boolean localColorsTracker = false;
+
+    public boolean isColorsSpecified() {
+        return localColorsTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.DescribeColor[]
+     */
+    public com.salesforce.soap.partner.DescribeColor[] getColors() {
+        return localColors;
+    }
+
+    /**
+     * validate the array for Colors
+     */
+    protected void validateColors(com.salesforce.soap.partner.DescribeColor[] param) {
+
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param Colors
+     */
+    public void setColors(com.salesforce.soap.partner.DescribeColor[] param) {
+
+        validateColors(param);
+
+        localColorsTracker = param != null;
+
+        this.localColors = param;
+    }
+
+    /**
+     * Auto generated add method for the array for convenience
+     * 
+     * @param param com.salesforce.soap.partner.DescribeColor
+     */
+    public void addColors(com.salesforce.soap.partner.DescribeColor param) {
+        if (localColors == null) {
+            localColors = new com.salesforce.soap.partner.DescribeColor[] {};
+        }
+
+        // update the setting tracker
+        localColorsTracker = true;
+
+        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localColors);
+        list.add(param);
+        this.localColors = (com.salesforce.soap.partner.DescribeColor[]) list
+                .toArray(new com.salesforce.soap.partner.DescribeColor[list.size()]);
+
+    }
 
     /**
      * field for Custom
@@ -66,6 +131,72 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
     public void setIconUrl(java.lang.String param) {
 
         this.localIconUrl = param;
+
+    }
+
+    /**
+     * field for Icons This was an Array!
+     */
+
+    protected com.salesforce.soap.partner.DescribeIcon[] localIcons;
+
+    /*
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
+     */
+    protected boolean localIconsTracker = false;
+
+    public boolean isIconsSpecified() {
+        return localIconsTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.DescribeIcon[]
+     */
+    public com.salesforce.soap.partner.DescribeIcon[] getIcons() {
+        return localIcons;
+    }
+
+    /**
+     * validate the array for Icons
+     */
+    protected void validateIcons(com.salesforce.soap.partner.DescribeIcon[] param) {
+
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param Icons
+     */
+    public void setIcons(com.salesforce.soap.partner.DescribeIcon[] param) {
+
+        validateIcons(param);
+
+        localIconsTracker = param != null;
+
+        this.localIcons = param;
+    }
+
+    /**
+     * Auto generated add method for the array for convenience
+     * 
+     * @param param com.salesforce.soap.partner.DescribeIcon
+     */
+    public void addIcons(com.salesforce.soap.partner.DescribeIcon param) {
+        if (localIcons == null) {
+            localIcons = new com.salesforce.soap.partner.DescribeIcon[] {};
+        }
+
+        // update the setting tracker
+        localIconsTracker = true;
+
+        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localIcons);
+        list.add(param);
+        this.localIcons = (com.salesforce.soap.partner.DescribeIcon[]) list
+                .toArray(new com.salesforce.soap.partner.DescribeIcon[list.size()]);
 
     }
 
@@ -122,6 +253,32 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
+     * field for Name
+     */
+
+    protected java.lang.String localName;
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return java.lang.String
+     */
+    public java.lang.String getName() {
+        return localName;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param Name
+     */
+    public void setName(java.lang.String param) {
+
+        this.localName = param;
+
+    }
+
+    /**
      * field for SobjectName
      */
 
@@ -174,7 +331,7 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -213,7 +370,25 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
             }
 
         }
+        if (localColorsTracker) {
+            if (localColors != null) {
+                for (int i = 0; i < localColors.length; i++) {
+                    if (localColors[i] != null) {
+                        localColors[i].serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "colors"),
+                                xmlWriter);
+                    } else {
 
+                        // we don't have to do any thing since minOccures is zero
+
+                    }
+
+                }
+            } else {
+
+                throw new org.apache.axis2.databinding.ADBException("colors cannot be null!!");
+
+            }
+        }
         namespace = "urn:partner.soap.sforce.com";
         writeStartElement(null, namespace, "custom", xmlWriter);
 
@@ -242,7 +417,24 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
         }
 
         xmlWriter.writeEndElement();
+        if (localIconsTracker) {
+            if (localIcons != null) {
+                for (int i = 0; i < localIcons.length; i++) {
+                    if (localIcons[i] != null) {
+                        localIcons[i].serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "icons"), xmlWriter);
+                    } else {
 
+                        // we don't have to do any thing since minOccures is zero
+
+                    }
+
+                }
+            } else {
+
+                throw new org.apache.axis2.databinding.ADBException("icons cannot be null!!");
+
+            }
+        }
         namespace = "urn:partner.soap.sforce.com";
         writeStartElement(null, namespace, "label", xmlWriter);
 
@@ -270,6 +462,22 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
         } else {
 
             xmlWriter.writeCharacters(localMiniIconUrl);
+
+        }
+
+        xmlWriter.writeEndElement();
+
+        namespace = "urn:partner.soap.sforce.com";
+        writeStartElement(null, namespace, "name", xmlWriter);
+
+        if (localName == null) {
+            // write the nil attribute
+
+            throw new org.apache.axis2.databinding.ADBException("name cannot be null!!");
+
+        } else {
+
+            xmlWriter.writeCharacters(localName);
 
         }
 
@@ -479,7 +687,7 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -487,6 +695,27 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
         java.util.ArrayList elementList = new java.util.ArrayList();
         java.util.ArrayList attribList = new java.util.ArrayList();
 
+        if (localColorsTracker) {
+            if (localColors != null) {
+                for (int i = 0; i < localColors.length; i++) {
+
+                    if (localColors[i] != null) {
+                        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "colors"));
+                        elementList.add(localColors[i]);
+                    } else {
+
+                        // nothing to do
+
+                    }
+
+                }
+            } else {
+
+                throw new org.apache.axis2.databinding.ADBException("colors cannot be null!!");
+
+            }
+
+        }
         elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "custom"));
 
         elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCustom));
@@ -498,7 +727,27 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
         } else {
             throw new org.apache.axis2.databinding.ADBException("iconUrl cannot be null!!");
         }
+        if (localIconsTracker) {
+            if (localIcons != null) {
+                for (int i = 0; i < localIcons.length; i++) {
 
+                    if (localIcons[i] != null) {
+                        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "icons"));
+                        elementList.add(localIcons[i]);
+                    } else {
+
+                        // nothing to do
+
+                    }
+
+                }
+            } else {
+
+                throw new org.apache.axis2.databinding.ADBException("icons cannot be null!!");
+
+            }
+
+        }
         elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "label"));
 
         if (localLabel != null) {
@@ -513,6 +762,14 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
             elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMiniIconUrl));
         } else {
             throw new org.apache.axis2.databinding.ADBException("miniIconUrl cannot be null!!");
+        }
+
+        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "name"));
+
+        if (localName != null) {
+            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localName));
+        } else {
+            throw new org.apache.axis2.databinding.ADBException("name cannot be null!!");
         }
 
         elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sobjectName"));
@@ -539,11 +796,10 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static DescribeTab parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             DescribeTab object = new DescribeTab();
@@ -585,6 +841,53 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
 
                 reader.next();
 
+                java.util.ArrayList list1 = new java.util.ArrayList();
+
+                java.util.ArrayList list4 = new java.util.ArrayList();
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "colors").equals(reader.getName())) {
+
+                    // Process the array and step past its final element's end.
+                    list1.add(com.salesforce.soap.partner.DescribeColor.Factory.parse(reader));
+
+                    // loop until we find a start element that is not part of this array
+                    boolean loopDone1 = false;
+                    while (!loopDone1) {
+                        // We should be at the end element, but make sure
+                        while (!reader.isEndElement())
+                            reader.next();
+                        // Step out of this element
+                        reader.next();
+                        // Step to next element event.
+                        while (!reader.isStartElement() && !reader.isEndElement())
+                            reader.next();
+                        if (reader.isEndElement()) {
+                            // two continuous end elements means we are exiting the xml structure
+                            loopDone1 = true;
+                        } else {
+                            if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "colors").equals(reader.getName())) {
+                                list1.add(com.salesforce.soap.partner.DescribeColor.Factory.parse(reader));
+
+                            } else {
+                                loopDone1 = true;
+                            }
+                        }
+                    }
+                    // call the converter utility to convert and set the array
+
+                    object.setColors((com.salesforce.soap.partner.DescribeColor[]) org.apache.axis2.databinding.utils.ConverterUtil
+                            .convertToArray(com.salesforce.soap.partner.DescribeColor.class, list1));
+
+                }  // End of if for expected property start element
+
+                else {
+
+                }
+
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
 
@@ -602,7 +905,7 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -626,11 +929,54 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "icons").equals(reader.getName())) {
+
+                    // Process the array and step past its final element's end.
+                    list4.add(com.salesforce.soap.partner.DescribeIcon.Factory.parse(reader));
+
+                    // loop until we find a start element that is not part of this array
+                    boolean loopDone4 = false;
+                    while (!loopDone4) {
+                        // We should be at the end element, but make sure
+                        while (!reader.isEndElement())
+                            reader.next();
+                        // Step out of this element
+                        reader.next();
+                        // Step to next element event.
+                        while (!reader.isStartElement() && !reader.isEndElement())
+                            reader.next();
+                        if (reader.isEndElement()) {
+                            // two continuous end elements means we are exiting the xml structure
+                            loopDone4 = true;
+                        } else {
+                            if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "icons").equals(reader.getName())) {
+                                list4.add(com.salesforce.soap.partner.DescribeIcon.Factory.parse(reader));
+
+                            } else {
+                                loopDone4 = true;
+                            }
+                        }
+                    }
+                    // call the converter utility to convert and set the array
+
+                    object.setIcons((com.salesforce.soap.partner.DescribeIcon[]) org.apache.axis2.databinding.utils.ConverterUtil
+                            .convertToArray(com.salesforce.soap.partner.DescribeIcon.class, list4));
+
+                }  // End of if for expected property start element
+
+                else {
+
                 }
 
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -650,7 +996,7 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -674,7 +1020,31 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
+
+                else {
+                    // A start element we are not expecting indicates an invalid parameter was passed
+                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "name").equals(reader.getName())) {
+
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                        throw new org.apache.axis2.databinding.ADBException("The element: " + "name" + "  cannot be null");
+                    }
+
+                    java.lang.String content = reader.getElementText();
+
+                    object.setName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -701,7 +1071,7 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -725,7 +1095,7 @@ public class DescribeTab implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed

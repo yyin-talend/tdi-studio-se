@@ -1,6 +1,6 @@
 /**
  * DescribeLayoutSection.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,10 +11,9 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBean {
-
     /*
-     * This type was generated from the piece of schema that had name = DescribeLayoutSection Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This type was generated from the piece of schema that had name = DescribeLayoutSection Namespace URI = urn:partner.soap.sforce.com
+     * Namespace Prefix = ns1
      */
 
     /**
@@ -151,6 +150,32 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
     }
 
     /**
+     * field for TabOrder
+     */
+
+    protected com.salesforce.soap.partner.TabOrderType localTabOrder;
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.TabOrderType
+     */
+    public com.salesforce.soap.partner.TabOrderType getTabOrder() {
+        return localTabOrder;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param TabOrder
+     */
+    public void setTabOrder(com.salesforce.soap.partner.TabOrderType param) {
+
+        this.localTabOrder = param;
+
+    }
+
+    /**
      * field for UseCollapsibleSection
      */
 
@@ -203,7 +228,7 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
     }
 
     /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -262,7 +287,7 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
         if (localHeading == null) {
             // write the nil attribute
 
-            throw new org.apache.axis2.databinding.ADBException("heading cannot be null!!");
+            writeAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance", "nil", "1", xmlWriter);
 
         } else {
 
@@ -302,6 +327,11 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
         }
 
         xmlWriter.writeEndElement();
+
+        if (localTabOrder == null) {
+            throw new org.apache.axis2.databinding.ADBException("tabOrder cannot be null!!");
+        }
+        localTabOrder.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "tabOrder"), xmlWriter);
 
         namespace = "urn:partner.soap.sforce.com";
         writeStartElement(null, namespace, "useCollapsibleSection", xmlWriter);
@@ -502,7 +532,7 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -516,11 +546,8 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
 
         elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "heading"));
 
-        if (localHeading != null) {
-            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localHeading));
-        } else {
-            throw new org.apache.axis2.databinding.ADBException("heading cannot be null!!");
-        }
+        elementList.add(localHeading == null ? null : org.apache.axis2.databinding.utils.ConverterUtil
+                .convertToString(localHeading));
 
         if (localLayoutRows != null) {
             for (int i = 0; i < localLayoutRows.length; i++) {
@@ -545,6 +572,13 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
 
         elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRows));
 
+        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "tabOrder"));
+
+        if (localTabOrder == null) {
+            throw new org.apache.axis2.databinding.ADBException("tabOrder cannot be null!!");
+        }
+        elementList.add(localTabOrder);
+
         elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "useCollapsibleSection"));
 
         elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUseCollapsibleSection));
@@ -564,11 +598,10 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static DescribeLayoutSection parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             DescribeLayoutSection object = new DescribeLayoutSection();
@@ -629,7 +662,7 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -643,17 +676,20 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
                         && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "heading").equals(reader.getName())) {
 
                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
-                        throw new org.apache.axis2.databinding.ADBException("The element: " + "heading" + "  cannot be null");
+                    if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
+
+                        java.lang.String content = reader.getElementText();
+
+                        object.setHeading(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+
+                    } else {
+
+                        reader.getElementText(); // throw away text nodes if any.
                     }
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setHeading(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -698,7 +734,7 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
                     object.setLayoutRows((com.salesforce.soap.partner.DescribeLayoutRow[]) org.apache.axis2.databinding.utils.ConverterUtil
                             .convertToArray(com.salesforce.soap.partner.DescribeLayoutRow.class, list3));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -722,7 +758,24 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
+
+                else {
+                    // A start element we are not expecting indicates an invalid parameter was passed
+                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "tabOrder").equals(reader.getName())) {
+
+                    object.setTabOrder(com.salesforce.soap.partner.TabOrderType.Factory.parse(reader));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -748,7 +801,7 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -772,7 +825,7 @@ public class DescribeLayoutSection implements org.apache.axis2.databinding.ADBBe
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed

@@ -1,6 +1,6 @@
 /**
  * GetDeletedResult.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,10 +11,9 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
-
     /*
-     * This type was generated from the piece of schema that had name = GetDeletedResult Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This type was generated from the piece of schema that had name = GetDeletedResult Namespace URI = urn:partner.soap.sforce.com
+     * Namespace Prefix = ns1
      */
 
     /**
@@ -24,8 +23,8 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
     protected com.salesforce.soap.partner.DeletedRecord[] localDeletedRecords;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localDeletedRecordsTracker = false;
 
@@ -136,44 +135,7 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
-     * field for SforceReserved
-     */
-
-    protected java.lang.String localSforceReserved;
-
-    /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
-     */
-    protected boolean localSforceReservedTracker = false;
-
-    public boolean isSforceReservedSpecified() {
-        return localSforceReservedTracker;
-    }
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String
-     */
-    public java.lang.String getSforceReserved() {
-        return localSforceReserved;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param SforceReserved
-     */
-    public void setSforceReserved(java.lang.String param) {
-        localSforceReservedTracker = param != null;
-
-        this.localSforceReserved = param;
-
-    }
-
-    /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -263,23 +225,7 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
         }
 
         xmlWriter.writeEndElement();
-        if (localSforceReservedTracker) {
-            namespace = "urn:partner.soap.sforce.com";
-            writeStartElement(null, namespace, "sforceReserved", xmlWriter);
 
-            if (localSforceReserved == null) {
-                // write the nil attribute
-
-                throw new org.apache.axis2.databinding.ADBException("sforceReserved cannot be null!!");
-
-            } else {
-
-                xmlWriter.writeCharacters(localSforceReserved);
-
-            }
-
-            xmlWriter.writeEndElement();
-        }
         xmlWriter.writeEndElement();
 
     }
@@ -452,7 +398,7 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -496,15 +442,6 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
         } else {
             throw new org.apache.axis2.databinding.ADBException("latestDateCovered cannot be null!!");
         }
-        if (localSforceReservedTracker) {
-            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sforceReserved"));
-
-            if (localSforceReserved != null) {
-                elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSforceReserved));
-            } else {
-                throw new org.apache.axis2.databinding.ADBException("sforceReserved cannot be null!!");
-            }
-        }
 
         return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(),
                 attribList.toArray());
@@ -517,11 +454,10 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static GetDeletedResult parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             GetDeletedResult object = new GetDeletedResult();
@@ -604,7 +540,7 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
                     object.setDeletedRecords((com.salesforce.soap.partner.DeletedRecord[]) org.apache.axis2.databinding.utils.ConverterUtil
                             .convertToArray(com.salesforce.soap.partner.DeletedRecord.class, list1));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 
@@ -629,7 +565,7 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -655,36 +591,11 @@ public class GetDeletedResult implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sforceReserved")
-                                .equals(reader.getName())) {
-
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
-                        throw new org.apache.axis2.databinding.ADBException("The element: " + "sforceReserved"
-                                + "  cannot be null");
-                    }
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setSforceReserved(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
                 }
 
                 while (!reader.isStartElement() && !reader.isEndElement())

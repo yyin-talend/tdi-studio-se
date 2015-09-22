@@ -17,8 +17,8 @@
 	<!-- modification 2: compile classpath -->
 	<path id="compile.classpath">
 		<pathelement location="${salesforce.dir}/salesforceOAuth.jar" />
-		<pathelement location="${component.plugin.home}/tSalesforceBulkExec/partnerBulk.jar" />
-		<pathelement location="${component.plugin.home}/tSalesforceBulkExec/wsc.jar" />
+		<pathelement location="${component.plugin.home}/tSalesforceBulkExec/partnerBulk-34.jar" />
+		<pathelement location="${salesforce.dir}/force-wsc-33.0.0.jar" />
 		<pathelement location="${csv.dir}/talendcsv.jar" />
 	</path>
 

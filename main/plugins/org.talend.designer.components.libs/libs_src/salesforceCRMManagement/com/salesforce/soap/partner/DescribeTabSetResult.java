@@ -1,6 +1,6 @@
 /**
  * DescribeTabSetResult.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,10 +11,9 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBean {
-
     /*
-     * This type was generated from the piece of schema that had name = DescribeTabSetResult Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This type was generated from the piece of schema that had name = DescribeTabSetResult Namespace URI = urn:partner.soap.sforce.com
+     * Namespace Prefix = ns1
      */
 
     /**
@@ -76,8 +75,8 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
     protected java.lang.String localNamespace;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localNamespaceTracker = false;
 
@@ -133,14 +132,40 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
     }
 
     /**
+     * field for TabSetId
+     */
+
+    protected java.lang.String localTabSetId;
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return java.lang.String
+     */
+    public java.lang.String getTabSetId() {
+        return localTabSetId;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param TabSetId
+     */
+    public void setTabSetId(java.lang.String param) {
+
+        this.localTabSetId = param;
+
+    }
+
+    /**
      * field for Tabs This was an Array!
      */
 
     protected com.salesforce.soap.partner.DescribeTab[] localTabs;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localTabsTracker = false;
 
@@ -199,7 +224,7 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
     }
 
     /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -296,6 +321,22 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
 
         } else {
             xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSelected));
+        }
+
+        xmlWriter.writeEndElement();
+
+        namespace = "urn:partner.soap.sforce.com";
+        writeStartElement(null, namespace, "tabSetId", xmlWriter);
+
+        if (localTabSetId == null) {
+            // write the nil attribute
+
+            throw new org.apache.axis2.databinding.ADBException("tabSetId cannot be null!!");
+
+        } else {
+
+            xmlWriter.writeCharacters(localTabSetId);
+
         }
 
         xmlWriter.writeEndElement();
@@ -489,7 +530,7 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -524,6 +565,14 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
         elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "selected"));
 
         elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSelected));
+
+        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "tabSetId"));
+
+        if (localTabSetId != null) {
+            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTabSetId));
+        } else {
+            throw new org.apache.axis2.databinding.ADBException("tabSetId cannot be null!!");
+        }
         if (localTabsTracker) {
             if (localTabs != null) {
                 for (int i = 0; i < localTabs.length; i++) {
@@ -557,11 +606,10 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static DescribeTabSetResult parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             DescribeTabSetResult object = new DescribeTabSetResult();
@@ -603,7 +651,7 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
 
                 reader.next();
 
-                java.util.ArrayList list5 = new java.util.ArrayList();
+                java.util.ArrayList list6 = new java.util.ArrayList();
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
@@ -622,7 +670,7 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -646,7 +694,7 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -670,7 +718,7 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 
@@ -693,7 +741,31 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
+
+                else {
+                    // A start element we are not expecting indicates an invalid parameter was passed
+                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "tabSetId").equals(reader.getName())) {
+
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                        throw new org.apache.axis2.databinding.ADBException("The element: " + "tabSetId" + "  cannot be null");
+                    }
+
+                    java.lang.String content = reader.getElementText();
+
+                    object.setTabSetId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -707,11 +779,11 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
                         && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "tabs").equals(reader.getName())) {
 
                     // Process the array and step past its final element's end.
-                    list5.add(com.salesforce.soap.partner.DescribeTab.Factory.parse(reader));
+                    list6.add(com.salesforce.soap.partner.DescribeTab.Factory.parse(reader));
 
                     // loop until we find a start element that is not part of this array
-                    boolean loopDone5 = false;
-                    while (!loopDone5) {
+                    boolean loopDone6 = false;
+                    while (!loopDone6) {
                         // We should be at the end element, but make sure
                         while (!reader.isEndElement())
                             reader.next();
@@ -722,22 +794,22 @@ public class DescribeTabSetResult implements org.apache.axis2.databinding.ADBBea
                             reader.next();
                         if (reader.isEndElement()) {
                             // two continuous end elements means we are exiting the xml structure
-                            loopDone5 = true;
+                            loopDone6 = true;
                         } else {
                             if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "tabs").equals(reader.getName())) {
-                                list5.add(com.salesforce.soap.partner.DescribeTab.Factory.parse(reader));
+                                list6.add(com.salesforce.soap.partner.DescribeTab.Factory.parse(reader));
 
                             } else {
-                                loopDone5 = true;
+                                loopDone6 = true;
                             }
                         }
                     }
                     // call the converter utility to convert and set the array
 
                     object.setTabs((com.salesforce.soap.partner.DescribeTab[]) org.apache.axis2.databinding.utils.ConverterUtil
-                            .convertToArray(com.salesforce.soap.partner.DescribeTab.class, list5));
+                            .convertToArray(com.salesforce.soap.partner.DescribeTab.class, list6));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 

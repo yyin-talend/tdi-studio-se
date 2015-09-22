@@ -90,7 +90,7 @@
             REPOSITORY_VALUE="ENDPOINT"
             SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
             GROUP="LOGIN">
-            <DEFAULT IF="LOGIN_TYPE == 'BASIC'">"https://login.salesforce.com/services/Soap/u/25.0"</DEFAULT>
+            <DEFAULT IF="LOGIN_TYPE == 'BASIC'">"https://login.salesforce.com/services/Soap/u/34.0"</DEFAULT>
             <DEFAULT IF="LOGIN_TYPE == 'OAUTH'">"https://login.salesforce.com/services/oauth2"</DEFAULT>
         </PARAMETER>
         <PARAMETER
@@ -101,7 +101,7 @@
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
             REPOSITORY_VALUE="API_VERSION"
             GROUP="LOGIN">
-            <DEFAULT>"25.0"</DEFAULT>
+            <DEFAULT>"34.0"</DEFAULT>
         </PARAMETER>
         <PARAMETER
             NAME="USER"

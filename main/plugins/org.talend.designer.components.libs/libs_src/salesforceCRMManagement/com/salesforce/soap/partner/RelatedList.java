@@ -1,6 +1,6 @@
 /**
  * RelatedList.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,11 +11,102 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class RelatedList implements org.apache.axis2.databinding.ADBBean {
+    /*
+     * This type was generated from the piece of schema that had name = RelatedList Namespace URI = urn:partner.soap.sforce.com Namespace
+     * Prefix = ns1
+     */
+
+    /**
+     * field for AccessLevelRequiredForCreate
+     */
+
+    protected com.salesforce.soap.partner.ShareAccessLevel localAccessLevelRequiredForCreate;
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.ShareAccessLevel
+     */
+    public com.salesforce.soap.partner.ShareAccessLevel getAccessLevelRequiredForCreate() {
+        return localAccessLevelRequiredForCreate;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param AccessLevelRequiredForCreate
+     */
+    public void setAccessLevelRequiredForCreate(com.salesforce.soap.partner.ShareAccessLevel param) {
+
+        this.localAccessLevelRequiredForCreate = param;
+
+    }
+
+    /**
+     * field for Buttons This was an Array!
+     */
+
+    protected com.salesforce.soap.partner.DescribeLayoutButton[] localButtons;
 
     /*
-     * This type was generated from the piece of schema that had name = RelatedList Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
+    protected boolean localButtonsTracker = false;
+
+    public boolean isButtonsSpecified() {
+        return localButtonsTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.DescribeLayoutButton[]
+     */
+    public com.salesforce.soap.partner.DescribeLayoutButton[] getButtons() {
+        return localButtons;
+    }
+
+    /**
+     * validate the array for Buttons
+     */
+    protected void validateButtons(com.salesforce.soap.partner.DescribeLayoutButton[] param) {
+
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param Buttons
+     */
+    public void setButtons(com.salesforce.soap.partner.DescribeLayoutButton[] param) {
+
+        validateButtons(param);
+
+        localButtonsTracker = true;
+
+        this.localButtons = param;
+    }
+
+    /**
+     * Auto generated add method for the array for convenience
+     * 
+     * @param param com.salesforce.soap.partner.DescribeLayoutButton
+     */
+    public void addButtons(com.salesforce.soap.partner.DescribeLayoutButton param) {
+        if (localButtons == null) {
+            localButtons = new com.salesforce.soap.partner.DescribeLayoutButton[] {};
+        }
+
+        // update the setting tracker
+        localButtonsTracker = true;
+
+        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localButtons);
+        list.add(param);
+        this.localButtons = (com.salesforce.soap.partner.DescribeLayoutButton[]) list
+                .toArray(new com.salesforce.soap.partner.DescribeLayoutButton[list.size()]);
+
+    }
 
     /**
      * field for Columns This was an Array!
@@ -235,8 +326,8 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
     protected com.salesforce.soap.partner.RelatedListSort[] localSort;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localSortTracker = false;
 
@@ -295,7 +386,7 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -335,6 +426,44 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
         }
 
+        if (localAccessLevelRequiredForCreate == null) {
+
+            writeStartElement(null, "urn:partner.soap.sforce.com", "accessLevelRequiredForCreate", xmlWriter);
+
+            // write the nil attribute
+            writeAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance", "nil", "1", xmlWriter);
+            xmlWriter.writeEndElement();
+        } else {
+            localAccessLevelRequiredForCreate.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                    "accessLevelRequiredForCreate"), xmlWriter);
+        }
+        if (localButtonsTracker) {
+            if (localButtons != null) {
+                for (int i = 0; i < localButtons.length; i++) {
+                    if (localButtons[i] != null) {
+                        localButtons[i].serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "buttons"),
+                                xmlWriter);
+                    } else {
+
+                        writeStartElement(null, "urn:partner.soap.sforce.com", "buttons", xmlWriter);
+
+                        // write the nil attribute
+                        writeAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance", "nil", "1", xmlWriter);
+                        xmlWriter.writeEndElement();
+
+                    }
+
+                }
+            } else {
+
+                writeStartElement(null, "urn:partner.soap.sforce.com", "buttons", xmlWriter);
+
+                // write the nil attribute
+                writeAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance", "nil", "1", xmlWriter);
+                xmlWriter.writeEndElement();
+
+            }
+        }
         if (localColumns != null) {
             for (int i = 0; i < localColumns.length; i++) {
                 if (localColumns[i] != null) {
@@ -631,7 +760,7 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -639,6 +768,32 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
         java.util.ArrayList elementList = new java.util.ArrayList();
         java.util.ArrayList attribList = new java.util.ArrayList();
 
+        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "accessLevelRequiredForCreate"));
+
+        elementList.add(localAccessLevelRequiredForCreate == null ? null : localAccessLevelRequiredForCreate);
+        if (localButtonsTracker) {
+            if (localButtons != null) {
+                for (int i = 0; i < localButtons.length; i++) {
+
+                    if (localButtons[i] != null) {
+                        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "buttons"));
+                        elementList.add(localButtons[i]);
+                    } else {
+
+                        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "buttons"));
+                        elementList.add(null);
+
+                    }
+
+                }
+            } else {
+
+                elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "buttons"));
+                elementList.add(localButtons);
+
+            }
+
+        }
         if (localColumns != null) {
             for (int i = 0; i < localColumns.length; i++) {
 
@@ -723,11 +878,10 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static RelatedList parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             RelatedList object = new RelatedList();
@@ -769,22 +923,57 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
                 reader.next();
 
-                java.util.ArrayList list1 = new java.util.ArrayList();
+                java.util.ArrayList list2 = new java.util.ArrayList();
 
-                java.util.ArrayList list8 = new java.util.ArrayList();
+                java.util.ArrayList list3 = new java.util.ArrayList();
+
+                java.util.ArrayList list10 = new java.util.ArrayList();
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
 
                 if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "columns").equals(reader.getName())) {
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "accessLevelRequiredForCreate")
+                                .equals(reader.getName())) {
+
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                        object.setAccessLevelRequiredForCreate(null);
+                        reader.next();
+
+                        reader.next();
+
+                    } else {
+
+                        object.setAccessLevelRequiredForCreate(com.salesforce.soap.partner.ShareAccessLevel.Factory.parse(reader));
+
+                        reader.next();
+                    }
+                }  // End of if for expected property start element
+
+                else {
+                    // A start element we are not expecting indicates an invalid parameter was passed
+                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "buttons").equals(reader.getName())) {
 
                     // Process the array and step past its final element's end.
-                    list1.add(com.salesforce.soap.partner.RelatedListColumn.Factory.parse(reader));
 
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                        list2.add(null);
+                        reader.next();
+                    } else {
+                        list2.add(com.salesforce.soap.partner.DescribeLayoutButton.Factory.parse(reader));
+                    }
                     // loop until we find a start element that is not part of this array
-                    boolean loopDone1 = false;
-                    while (!loopDone1) {
+                    boolean loopDone2 = false;
+                    while (!loopDone2) {
                         // We should be at the end element, but make sure
                         while (!reader.isEndElement())
                             reader.next();
@@ -795,22 +984,71 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
                             reader.next();
                         if (reader.isEndElement()) {
                             // two continuous end elements means we are exiting the xml structure
-                            loopDone1 = true;
+                            loopDone2 = true;
+                        } else {
+                            if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "buttons").equals(reader.getName())) {
+
+                                nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                                if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                                    list2.add(null);
+                                    reader.next();
+                                } else {
+                                    list2.add(com.salesforce.soap.partner.DescribeLayoutButton.Factory.parse(reader));
+                                }
+                            } else {
+                                loopDone2 = true;
+                            }
+                        }
+                    }
+                    // call the converter utility to convert and set the array
+
+                    object.setButtons((com.salesforce.soap.partner.DescribeLayoutButton[]) org.apache.axis2.databinding.utils.ConverterUtil
+                            .convertToArray(com.salesforce.soap.partner.DescribeLayoutButton.class, list2));
+
+                }  // End of if for expected property start element
+
+                else {
+
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "columns").equals(reader.getName())) {
+
+                    // Process the array and step past its final element's end.
+                    list3.add(com.salesforce.soap.partner.RelatedListColumn.Factory.parse(reader));
+
+                    // loop until we find a start element that is not part of this array
+                    boolean loopDone3 = false;
+                    while (!loopDone3) {
+                        // We should be at the end element, but make sure
+                        while (!reader.isEndElement())
+                            reader.next();
+                        // Step out of this element
+                        reader.next();
+                        // Step to next element event.
+                        while (!reader.isStartElement() && !reader.isEndElement())
+                            reader.next();
+                        if (reader.isEndElement()) {
+                            // two continuous end elements means we are exiting the xml structure
+                            loopDone3 = true;
                         } else {
                             if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "columns").equals(reader.getName())) {
-                                list1.add(com.salesforce.soap.partner.RelatedListColumn.Factory.parse(reader));
+                                list3.add(com.salesforce.soap.partner.RelatedListColumn.Factory.parse(reader));
 
                             } else {
-                                loopDone1 = true;
+                                loopDone3 = true;
                             }
                         }
                     }
                     // call the converter utility to convert and set the array
 
                     object.setColumns((com.salesforce.soap.partner.RelatedListColumn[]) org.apache.axis2.databinding.utils.ConverterUtil
-                            .convertToArray(com.salesforce.soap.partner.RelatedListColumn.class, list1));
+                            .convertToArray(com.salesforce.soap.partner.RelatedListColumn.class, list3));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -834,7 +1072,7 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -861,7 +1099,7 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -885,7 +1123,7 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -909,7 +1147,7 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -933,7 +1171,7 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -960,7 +1198,7 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -974,11 +1212,11 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
                         && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sort").equals(reader.getName())) {
 
                     // Process the array and step past its final element's end.
-                    list8.add(com.salesforce.soap.partner.RelatedListSort.Factory.parse(reader));
+                    list10.add(com.salesforce.soap.partner.RelatedListSort.Factory.parse(reader));
 
                     // loop until we find a start element that is not part of this array
-                    boolean loopDone8 = false;
-                    while (!loopDone8) {
+                    boolean loopDone10 = false;
+                    while (!loopDone10) {
                         // We should be at the end element, but make sure
                         while (!reader.isEndElement())
                             reader.next();
@@ -989,22 +1227,22 @@ public class RelatedList implements org.apache.axis2.databinding.ADBBean {
                             reader.next();
                         if (reader.isEndElement()) {
                             // two continuous end elements means we are exiting the xml structure
-                            loopDone8 = true;
+                            loopDone10 = true;
                         } else {
                             if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sort").equals(reader.getName())) {
-                                list8.add(com.salesforce.soap.partner.RelatedListSort.Factory.parse(reader));
+                                list10.add(com.salesforce.soap.partner.RelatedListSort.Factory.parse(reader));
 
                             } else {
-                                loopDone8 = true;
+                                loopDone10 = true;
                             }
                         }
                     }
                     // call the converter utility to convert and set the array
 
                     object.setSort((com.salesforce.soap.partner.RelatedListSort[]) org.apache.axis2.databinding.utils.ConverterUtil
-                            .convertToArray(com.salesforce.soap.partner.RelatedListSort.class, list8));
+                            .convertToArray(com.salesforce.soap.partner.RelatedListSort.class, list10));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 
