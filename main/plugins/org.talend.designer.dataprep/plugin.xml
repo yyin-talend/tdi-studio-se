@@ -20,7 +20,7 @@
             name="Preperation Id">
       </generator>
    </extension>
-   <extension
+  <!--<extension
          point="org.talend.core.component_custom_action">
       <CustomAction
             class="org.talend.designer.dataprep.component.TDataprepViewProfileAction"
@@ -28,5 +28,6 @@
             label="Refresh data and open preparation">
       </CustomAction>
    </extension>
+   -->
 
 </plugin>
