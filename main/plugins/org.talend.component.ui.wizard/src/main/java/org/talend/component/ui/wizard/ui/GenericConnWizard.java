@@ -14,18 +14,20 @@ package org.talend.component.ui.wizard.ui;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
-import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
 import org.talend.component.ui.wizard.constants.IGenericConstants;
 import org.talend.component.ui.wizard.i18n.Messages;
+import org.talend.component.ui.wizard.update.GenericUpdateManager;
+import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -36,7 +38,6 @@ import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -51,9 +52,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
  */
 public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
-    private GenericConnPropertiesWizardPage propertiesPage;
-
-    private GenericMetadataPackage connPage;
+    private GenericConnWizardPage connPage;
 
     private GenericConnection connection;
 
@@ -69,11 +68,12 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     private String originalStatus;
 
-    private boolean isToolBar;
+    private RepositoryNode repNode;
 
     public GenericConnWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
         super(workbench, creation);
         this.existingNames = existingNames;
+        repNode = node;
         setNeedsProgressMonitor(true);
         ENodeType nodeType = node.getType();
         switch (nodeType) {
@@ -127,32 +127,19 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
     @Override
     public void addPages() {
         setWindowTitle(Messages.getString("NoSQLWizard.windowTitle")); //$NON-NLS-1$
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(WIZ_ICON));
-        if (isToolBar) {
-            pathToSave = null;
-        }
-        propertiesPage = new GenericConnPropertiesWizardPage(
-                "NoSQLPropertiesWizardPage", connectionProperty, pathToSave, RepositoryNodeType.METADATA_XXX, //$NON-NLS-1$
-                !isRepositoryObjectEditable(), creation);
-        connPage = new GenericConnConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation);
+        String typeName = repNode.getContentType().getType();
+        Image wiardImage = GenericWizardServiceFactory.getGenericWizardService().getWiardImage(typeName);
+        setDefaultPageImageDescriptor(ImageDescriptor.createFromImage(wiardImage));
+        connPage = new GenericConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation);
         if (creation) {
-            propertiesPage.setTitle(Messages.getString("NoSQLPropertiesWizardPage.titleCreate.Step1")); //$NON-NLS-1$
-            propertiesPage.setDescription(Messages.getString("NoSQLPropertiesWizardPage.descriptionCreate.Step1")); //$NON-NLS-1$
-            propertiesPage.setPageComplete(false);
-
             connPage.setTitle(Messages.getString("NoSQLConnWizardPage.titleCreate.Step2")); //$NON-NLS-1$
             connPage.setDescription(Messages.getString("NoSQLConnWizardPage.descriptionCreate.Step2")); //$NON-NLS-1$
             connPage.setPageComplete(false);
         } else {
-            propertiesPage.setTitle(Messages.getString("NoSQLPropertiesWizardPage.titleUpdate.Step1")); //$NON-NLS-1$
-            propertiesPage.setDescription(Messages.getString("NoSQLPropertiesWizardPage.descriptionUpdate.Step1")); //$NON-NLS-1$
-            propertiesPage.setPageComplete(isRepositoryObjectEditable());
-
             connPage.setTitle(Messages.getString("NoSQLConnWizardPage.titleUpdate.Step2")); //$NON-NLS-1$
             connPage.setDescription(Messages.getString("NoSQLConnWizardPage.descriptionUpdate.Step2")); //$NON-NLS-1$
             connPage.setPageComplete(isRepositoryObjectEditable());
         }
-        addPage(propertiesPage);
         addPage(connPage);
     }
 
@@ -170,7 +157,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                     connectionProperty.setId(nextId);
                     factory.create(connectionItem, propertiesPage.getDestinationPath());
                 } else {
-                    GenericUpdateManager.updateNoSQLConnection(connectionItem);
+                    GenericUpdateManager.updateGenericConnection(connectionItem);
                     updateConnectionItem();
 
                     boolean isModified = propertiesPage.isNameModifiedByUser();
@@ -183,13 +170,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                             }
                         }
 
-                    }
-                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
-                        IRunProcessService runProcessService = (IRunProcessService) GlobalServiceRegister.getDefault()
-                                .getService(IRunProcessService.class);
-                        if (runProcessService != null) {
-                            runProcessService.refreshView();
-                        }
                     }
                 }
             } catch (Exception e) {
@@ -227,11 +207,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         this.selection = sel;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.wizards.RepositoryWizard#getConnectionItem()
-     */
     @Override
     public ConnectionItem getConnectionItem() {
         return this.connectionItem;

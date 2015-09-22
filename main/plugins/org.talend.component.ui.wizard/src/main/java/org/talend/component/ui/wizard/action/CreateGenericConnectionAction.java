@@ -6,18 +6,15 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.runtime.model.repository.ERepositoryStatus;
+import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.component.ui.wizard.ui.GenericConnWizard;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
 import org.talend.component.ui.wizard.view.tester.GenericConnectionTester;
-import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.actions.metadata.AbstractCreateAction;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -37,17 +34,20 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
 
     public CreateGenericConnectionAction() {
         super();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
+        connectionTester = new GenericConnectionTester();
         this.setText(getCreateLabel());
         this.setToolTipText(getEditLabel());
-        this.setImageDescriptor(ImageDescriptor.createFromImage(getNodeImage()));
-        connectionTester = new GenericConnectionTester();
+        Image nodeImage = getNodeImage();
+        if (nodeImage != null) {
+            this.setImageDescriptor(ImageDescriptor.createFromImage(nodeImage));
+        }
     }
 
     @Override
     protected void doRun() {
-        if (repositoryNode == null) {
-            repositoryNode = getCurrentRepositoryNode();
-        }
         IWizard wizard = new GenericConnWizard(PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames());
         WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
         if (Platform.getOS().equals(Platform.OS_LINUX)) {
@@ -59,34 +59,19 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
 
     @Override
     protected void init(RepositoryNode node) {
-        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-        if (nodeType == null) {
+        if (!connectionTester.isGenericConnection(node)) {
+            setEnabled(false);
             return;
         }
-
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        if (connectionTester.isGenericConnection(node)) {
-            if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)
-                    || (node.getObject() != null && factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED)) {
-                setEnabled(false);
-                return;
-            }
-            this.setText(getCreateLabel());
-            collectChildNames(node);
-            creation = true;
-            setEnabled(true);
-            return;
-        }
-
         switch (node.getType()) {
         case SIMPLE_FOLDER:
-            if (node.getObject() != null && node.getObject().getProperty().getItem().getState().isDeleted()) {
+        case SYSTEM_FOLDER:
+            if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 setEnabled(false);
                 return;
             }
-            break;
-        case SYSTEM_FOLDER:
-            if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+            if (node.getObject() != null && node.getObject().getProperty().getItem().getState().isDeleted()) {
                 setEnabled(false);
                 return;
             }
@@ -95,19 +80,17 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
             creation = true;
             break;
         case REPOSITORY_ELEMENT:
-            if (factory.isPotentiallyEditable(node.getObject())) {
+            if (factory.isPotentiallyEditable(node.getObject()) && isLastVersion(node)) {
                 this.setText(getEditLabel());
                 collectSiblingNames(node);
             } else {
                 this.setText(getOpenLabel());
             }
-            collectSiblingNames(node);
             creation = false;
             break;
         default:
             return;
         }
-
         setEnabled(true);
     }
 
@@ -120,15 +103,15 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
     }
 
     protected String getCreateLabel() {
-        return Messages.getString("CreateGenericConnectionAction", getNodeLabel()); //$NON-NLS-1$
+        return Messages.getString("CreateGenericConnectionAction.createLabel", getNodeLabel()); //$NON-NLS-1$
     }
 
     protected String getEditLabel() {
-        return Messages.getString("CreateGenericConnectionAction", getNodeLabel()); //$NON-NLS-1$
+        return Messages.getString("CreateGenericConnectionAction.editLabel", getNodeLabel()); //$NON-NLS-1$
     }
 
     protected String getOpenLabel() {
-        return Messages.getString("CreateGenericConnectionAction", getNodeLabel()); //$NON-NLS-1$
+        return Messages.getString("CreateGenericConnectionAction.openLabel", getNodeLabel()); //$NON-NLS-1$
     }
 
     protected String getNodeLabel() {
@@ -136,12 +119,15 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
     }
 
     protected Image getNodeImage() {
-        return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(repositoryNode.getContentType().getType());
+        if (connectionTester.isGenericConnection(repositoryNode)) {
+            return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(repositoryNode.getContentType().getType());
+        }
+        return null;
     }
 
     @Override
     public Class getClassForDoubleClick() {
-        return SalesforceSchemaConnectionItem.class;
+        return GenericConnectionItem.class;
     }
 
 }

@@ -96,7 +96,7 @@
             isEditAction="true"
             isReadAction="true"
             level="10"
-            name="Metadata/Create connection">
+            name="Metadata/Create generic connection">
       </Action>
    </extension>
 

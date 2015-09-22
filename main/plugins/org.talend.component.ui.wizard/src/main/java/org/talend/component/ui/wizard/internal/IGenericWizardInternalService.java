@@ -1,0 +1,33 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.component.ui.wizard.internal;
+
+import org.talend.components.api.service.ComponentService;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode;
+
+/**
+ * created by ycbai on 2015年9月21日 Detailled comment
+ *
+ */
+public interface IGenericWizardInternalService {
+
+    public ERepositoryObjectType createRepositoryType(String type, String label, String alias, String folder, int ordinal);
+
+    public RepositoryNode createRepositoryNode(RepositoryNode curParentNode, String label, ERepositoryObjectType type,
+            ENodeType nodeType);
+
+    public ComponentService getComponentService();
+
+}
