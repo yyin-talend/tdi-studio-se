@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.talend.core.external_component">
+      <ExternalComponent
+            class="org.talend.designer.dataprep.component.DataPrepComponent">
+      </ExternalComponent>
+   </extension>
+   <extension
+         point="org.talend.designer.core.generators">
+      <generator
+            class="org.talend.designer.dataprep.component.controller.generator.FetchSchemaGenerator"
+            mapping="FETCH_SCHEMA"
+            name="Fetch Schema">
+      </generator>
+      <generator
+            class="org.talend.designer.dataprep.component.controller.generator.PreperationIdGenerator"
+            mapping="DATA_PREP_ID"
+            name="Preperation Id">
+      </generator>
+   </extension>
+   <extension
+         point="org.talend.core.component_custom_action">
+      <CustomAction
+            class="org.talend.designer.dataprep.component.TDataprepViewProfileAction"
+            id="org.talend.designer.component.dataprep.preview.viewDataPrep"
+            label="Refresh data and open preparation">
+      </CustomAction>
+   </extension>
+
+</plugin>

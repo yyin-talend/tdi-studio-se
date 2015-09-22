@@ -139,6 +139,7 @@
 		<module>main/plugins/org.talend.sqlbuilder.jars</module>
 		<module>main/plugins/org.talend.designer.runtime.visualization</module>
 		<module>main/plugins/org.talend.designer.runtime.visualization.tools</module>
+		<module>main/plugins/org.talend.designer.dataprep</module>
 		<module>test/plugins/org.talend.designer.codegen.test</module>
 		<module>test/plugins/org.talend.designer.components.localprovider.test</module>
 		<module>test/plugins/org.talend.designer.core.test</module>
