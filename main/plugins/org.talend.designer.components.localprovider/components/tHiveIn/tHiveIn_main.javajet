@@ -93,8 +93,7 @@ imports="
 
 	if(jarsToRegister!=null && jars!=null) {
 %>
-		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/GetJarsToRegister.javajet"%>
-		GetJarsToRegister_<%=cid%> getJarsToRegister_<%=cid %> = new GetJarsToRegister_<%=cid%>();
+		routines.system.GetJarsToRegister getJarsToRegister_<%=cid %> = new routines.system.GetJarsToRegister();
 <%
 		if(generateAddJarCodeForAll) {
 			for(int i=0; i<jarsToRegister.size(); i++) {

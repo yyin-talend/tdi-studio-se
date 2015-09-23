@@ -1,8 +1,6 @@
 <%@ jet 
 %>
-	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/GetJarsToRegister.javajet"%>
-				
-	class GetHiveJarsToRegister_<%=cid%> extends GetJarsToRegister_<%=cid%> {
+	class GetHiveJarsToRegister_<%=cid%> extends routines.system.GetJarsToRegister {
 		
 		private String uploadJarToHDFS(String jar) throws Exception {
 			org.apache.hadoop.fs.FileSystem fs = null;
