@@ -237,7 +237,7 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-         
+
    <plugin
          id="org.talend.oozie.scheduler.test"
          download-size="0"
@@ -245,7 +245,7 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-         
+
    <plugin
          id="org.talend.dataprofiler.core.test"
          download-size="0"
@@ -253,7 +253,7 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-         
+
    <plugin
          id="org.talend.dataprofiler.ecos.test"
          download-size="0"
@@ -287,14 +287,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.dataquality.sampling.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.dataquality.test"
          download-size="0"
          install-size="0"
@@ -309,17 +301,17 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-         
+
    <plugin
          id="org.talend.cwm.compare.test"
          download-size="0"
          install-size="0"
-         version="0.0.0" />
-         
+         version="0.0.0"/>
+
    <plugin
          id="org.talend.cwm.management.test"
          download-size="0"
          install-size="0"
-         version="0.0.0" />
+         version="0.0.0"/>
 
 </feature>
