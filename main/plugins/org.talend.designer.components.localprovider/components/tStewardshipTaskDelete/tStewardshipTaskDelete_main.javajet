@@ -24,19 +24,24 @@
 	boolean targetRecordOnly = ("true").equals(ElementParameterParser.getValue(node,"__TARGET_RECORD_ONLY__"));
 			
 %>
-	int deleted_task_<%=cid%> = 0;	
-        java.net.Authenticator.setDefault(new java.net.Authenticator() {
-            protected java.net.PasswordAuthentication getPasswordAuthentication() {
-                <%
-                String passwordFieldName = "__PASSWORD__";
-                %>
-                <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-            	return new java.net.PasswordAuthentication(<%=username%>, decryptedPassword_<%=cid%>.toCharArray());
-        }});
+	int deleted_task_<%=cid%> = 0;      
 		
 		java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");
 		org.talend.datastewardship.server.ws.TDSCWS_Service service_<%=cid%> = new org.talend.datastewardship.server.ws.TDSCWS_Service(wsdlUrl_<%=cid%>);
 		org.talend.datastewardship.server.ws.TDSCWS TDSCWS_<%=cid%> = service_<%=cid%>.getTDSCWSImplPort();
+
+		javax.xml.ws.BindingProvider stub_<%=cid %> = (javax.xml.ws.BindingProvider) TDSCWS_<%=cid%>;
+		stub_<%=cid %>.getRequestContext().put(javax.xml.ws.BindingProvider.SESSION_MAINTAIN_PROPERTY, false);
+				
+		java.util.Map<String, Object> context_<%=cid %> = stub_<%=cid %>.getRequestContext();
+		context_<%=cid %>.put(javax.xml.ws.BindingProvider.USERNAME_PROPERTY, <%=username %>);
+				
+		<%
+		String passwordFieldName = "__PASSWORD__";
+		%>
+				
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		context_<%=cid %>.put(javax.xml.ws.BindingProvider.PASSWORD_PROPERTY, decryptedPassword_<%=cid%>);
 		
 		String startDateString_<%=cid%> = <%=startDate.equals("")?null:startDate%>;
 		String endDateString_<%=cid%> = <%=endDate.equals("")?null:endDate%>;
