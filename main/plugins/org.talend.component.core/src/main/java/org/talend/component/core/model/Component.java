@@ -14,7 +14,6 @@ package org.talend.component.core.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +27,10 @@ import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.i18n.Messages;
 import org.talend.component.core.utils.ComponentsUtils;
-import org.talend.components.api.NamedThing;
 import org.talend.components.api.properties.ComponentConnector;
 import org.talend.components.api.properties.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.presentation.Form;
-import org.talend.components.api.properties.presentation.Widget;
-import org.talend.components.api.schema.SchemaElement;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -1079,107 +1075,11 @@ public class Component extends AbstractComponent {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
-        ElementParameter param;
         EComponentCategory category = advanced ? EComponentCategory.ADVANCED : EComponentCategory.BASIC;
         ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
         Form form = props.getForm(advanced ? "Advanced" : "Main");
-        List<Widget> formWidgets = form.getWidgets();
-        for (Widget widget : formWidgets) {
-            param = new ElementParameter(node);
-            param.setCategory(category);
-            param.setName(widget.getName());
-            param.setDisplayName(widget.getDisplayName());
-            SchemaElement se = null;
-            NamedThing[] widgetProperties = widget.getProperties();
-            /*
-             * Could be a SchemaElement or a PresentationItem, if it's a PresentationItem then the widgetType should not
-             * be DEFAULT.
-             */
-            if (widgetProperties[0] instanceof SchemaElement) {
-                se = (SchemaElement) widgetProperties[0];
-            }
-
-            EParameterFieldType fieldType = null;
-            switch (widget.getWidgetType()) {
-            case DEFAULT:
-                if (se == null) {
-                    throw new RuntimeException("WidgetType Default requires a SchemaElement");
-                }
-                switch (se.getType()) {
-                case BOOLEAN:
-                    fieldType = EParameterFieldType.CHECK;
-                    break;
-                case BYTE_ARRAY:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case DATE:
-                    fieldType = EParameterFieldType.DATE;
-                    break;
-                case DATETIME:
-                    fieldType = EParameterFieldType.DATE;
-                    break;
-                case DECIMAL:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case DOUBLE:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case DYNAMIC:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case ENUM:
-                    fieldType = EParameterFieldType.CLOSED_LIST;
-                    break;
-                case FLOAT:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case INT:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case SCHEMA:
-                    fieldType = EParameterFieldType.SCHEMA_TYPE;
-                    break;
-                case STRING:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                default:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                }
-                break;
-            case BUTTON:
-                break;
-            case COMPONENT_REFERENCE:
-                break;
-            case NAME_SELECTION_AREA:
-                break;
-            case NAME_SELECTION_REFERENCE:
-                break;
-            case SCHEMA_EDITOR:
-                break;
-            case SCHEMA_REFERENCE:
-                param.setFieldType(EParameterFieldType.SCHEMA_TYPE);
-                break;
-            default:
-                break;
-            }
-            param.setFieldType(fieldType);
-            param.setNumRow(widget.getRow());
-            // FIXME - Column?
-            if (se != null) {
-                param.setRequired(se.isRequired());
-                param.setValue(props.getValue(se));
-                Collection values = se.getPossibleValues();
-            }
-
-            param.setShow(widget.isVisible());
-            // FIXME
-            param.setReadOnly(false);
-            listParam.add(param);
-        }
-
+        listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, form));
     }
 
     private void initializePropertyParameters(List<ElementParameter> listParam) {

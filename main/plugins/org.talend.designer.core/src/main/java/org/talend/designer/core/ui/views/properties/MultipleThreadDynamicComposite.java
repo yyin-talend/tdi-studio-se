@@ -486,7 +486,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 }
                             }
 
-                            //maxRowSize = 0;
+                            // maxRowSize = 0;
                             if (curRowSize > maxRowSize) {
                                 maxRowSize = curRowSize;
                                 // isCompute = true;
@@ -846,7 +846,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         }
 
         // add CSS class
-        CoreUIPlugin.setCSSClass(this, MultipleThreadDynamicComposite.class.getSimpleName());
+        CoreUIPlugin.setCSSClass(this, MultipleThreadDynamicComposite.class.getSimpleName(), false);
     }
 
     /*

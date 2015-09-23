@@ -132,8 +132,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     @Override
     public void addPages() {
-        setWindowTitle(Messages.getString("NoSQLWizard.windowTitle")); //$NON-NLS-1$
         String typeName = repNode.getContentType().getType();
+        setWindowTitle(typeName);
         Image wiardImage = GenericWizardServiceFactory.getGenericWizardService().getWiardImage(typeName);
         setDefaultPageImageDescriptor(ImageDescriptor.createFromImage(wiardImage));
 
@@ -146,12 +146,12 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         }
         if (connPage != null) {
             if (creation) {
-                connPage.setTitle(Messages.getString("NoSQLConnWizardPage.titleCreate.Step2")); //$NON-NLS-1$
-                connPage.setDescription(Messages.getString("NoSQLConnWizardPage.descriptionCreate.Step2")); //$NON-NLS-1$
+                connPage.setTitle(Messages.getString("GenericConnWizardPage.titleCreate", typeName)); //$NON-NLS-1$
+                connPage.setDescription(Messages.getString("GenericConnWizardPage.descriptionCreate")); //$NON-NLS-1$
                 connPage.setPageComplete(false);
             } else {
-                connPage.setTitle(Messages.getString("NoSQLConnWizardPage.titleUpdate.Step2")); //$NON-NLS-1$
-                connPage.setDescription(Messages.getString("NoSQLConnWizardPage.descriptionUpdate.Step2")); //$NON-NLS-1$
+                connPage.setTitle(Messages.getString("GenericConnWizardPage.titleUpdate", typeName)); //$NON-NLS-1$
+                connPage.setDescription(Messages.getString("GenericConnWizardPage.descriptionUpdate")); //$NON-NLS-1$
                 connPage.setPageComplete(isRepositoryObjectEditable());
             }
         }

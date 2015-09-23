@@ -14,8 +14,13 @@ package org.talend.component.ui.wizard.ui;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.component.core.utils.ComponentsUtils;
+import org.talend.component.ui.wizard.model.FakeElement;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -35,8 +40,6 @@ public class GenericConnWizardPage extends WizardPage {
 
     private final boolean isRepositoryObjectEditable;
 
-    private Composite parentComp;
-
     private Form form;
 
     public GenericConnWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames,
@@ -51,31 +54,24 @@ public class GenericConnWizardPage extends WizardPage {
     @Override
     public void createControl(final Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
-        container.setLayout(new GridLayout());
-        parentComp = container;
-        setControl(parentComp);
+        container.setLayoutData(new GridData(GridData.FILL_BOTH));
+        container.setLayout(new FormLayout());
+        setControl(container);
 
-        Element element = new Element() {
+        Element element = new FakeElement(form.getName());
+        element.setElementParameters(ComponentsUtils.getParametersFromForm(element, null, form));
+        MultipleThreadDynamicComposite dynamicComposite = new MultipleThreadDynamicComposite(container, SWT.H_SCROLL
+                | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC, element, true, container.getBackground());
+        dynamicComposite.setLayoutData(createFormData());
+    }
 
-            @Override
-            public void setReadOnly(boolean readOnly) {
-                return;
-            }
-
-            @Override
-            public boolean isReadOnly() {
-                return false;
-            }
-
-            @Override
-            public String getElementName() {
-                return "";
-            }
-
-        };
-        // TODO: add element parameters to element.
-        new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.MAIN, element,
-                true);
+    protected FormData createFormData() {
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        return data;
     }
 
     @Override
