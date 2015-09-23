@@ -1716,6 +1716,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
     
     private String getStorage(Project project) throws JSONException {
+    	if(project==null)	
+    		return "";
         String storage = "";
         if (project != null) {
             String url = project.getEmfProject().getUrl();
