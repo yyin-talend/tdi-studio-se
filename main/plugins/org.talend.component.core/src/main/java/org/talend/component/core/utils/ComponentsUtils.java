@@ -110,7 +110,7 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form) {
+    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form, ElementParameter parentParam) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         if (category == null) {
             category = EComponentCategory.BASIC;
@@ -119,22 +119,28 @@ public class ComponentsUtils {
         List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
             ElementParameter param = new ElementParameter(element);
+            if (parentParam != null)
+            	param.setParentParameter(parentParam);
             param.setCategory(category);
-            param.setName(widget.getName());
-            param.setDisplayName(widget.getDisplayName());
-            SchemaElement se = null;
             NamedThing[] widgetProperties = widget.getProperties();
-
             NamedThing widgetProperty = widgetProperties[0];
+            param.setName(widgetProperty.getName());
+            param.setDisplayName(widgetProperty.getDisplayName());
+            param.setShow(widget.isVisible());
             if (widgetProperty instanceof Form) {
-                elementParameters.addAll(getParametersFromForm(element, category, (Form) widgetProperty));
+                ElementParameter formParam = new ElementParameter(element);
+                formParam.setCategory(category);
+                formParam.setGroup(widgetProperty.getName());
+                formParam.setGroupDisplayName(widgetProperty.getDisplayName());
+                formParam.setName(widgetProperty.getName());
+                formParam.setDisplayName(widgetProperty.getDisplayName());
+                formParam.setShow(widget.isVisible());
+                elementParameters.addAll(getParametersFromForm(element, category, (Form) widgetProperty, param));
                 continue;
             }
 
-            /*
-             * Could be a SchemaElement or a PresentationItem, if it's a PresentationItem then the widgetType should not
-             * be DEFAULT.
-             */
+            SchemaElement se = null;
+
             if (widgetProperty instanceof SchemaElement) {
                 se = (SchemaElement) widgetProperties[0];
             }
@@ -144,9 +150,8 @@ public class ComponentsUtils {
             case DEFAULT:
                 if (se == null) {
                     fieldType = EParameterFieldType.LABEL;
-                    param.setValue(widget.getDisplayName());
+                    param.setValue(widgetProperty.getDisplayName());
                     break;
-                    // throw new RuntimeException("WidgetType Default requires a SchemaElement");
                 }
                 switch (se.getType()) {
                 case BOOLEAN:

@@ -59,7 +59,7 @@ public class GenericConnWizardPage extends WizardPage {
         setControl(container);
 
         Element element = new FakeElement(form.getName());
-        element.setElementParameters(ComponentsUtils.getParametersFromForm(element, null, form));
+        element.setElementParameters(ComponentsUtils.getParametersFromForm(element, null, form, null));
         MultipleThreadDynamicComposite dynamicComposite = new MultipleThreadDynamicComposite(container, SWT.H_SCROLL
                 | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC, element, true, container.getBackground());
         dynamicComposite.setLayoutData(createFormData());
