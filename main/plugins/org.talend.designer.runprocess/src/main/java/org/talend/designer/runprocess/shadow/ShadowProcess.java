@@ -371,18 +371,16 @@ public class ShadowProcess<T extends IProcessDescription> {
         process = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
 
         String error = ProcessStreamTrashReader.readErrorStream(process);
-        if (outputErrorAsException) {
-            if (error != null) {
-                throw new ProcessorException(error);
-            }
-        } else {
-            if (error != null) {
-                log.warn(error, new ProcessorException(error));
-            }
+        if (error != null) {
+            log.warn(error, new ProcessorException(error));
         }
 
         if (!outPath.toFile().exists()) {
-            throw new ProcessorException(Messages.getString("ShadowProcess.notGeneratedOutputException")); //$NON-NLS-1$
+            if (outputErrorAsException && error != null) {
+                throw new ProcessorException(error);
+            } else {
+                throw new ProcessorException(Messages.getString("ShadowProcess.notGeneratedOutputException")); //$NON-NLS-1$
+            }
         }
 
         try {
