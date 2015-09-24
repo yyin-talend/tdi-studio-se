@@ -37,6 +37,7 @@ imports="
 	boolean usePartialDelete = ("true").equals(ElementParameterParser.getValue(node,"__PARTIAL_DELETE__"));
 	
 	boolean storeFlow = ("true").equals(ElementParameterParser.getValue(node, "__STORE_FLOW__"));
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>       
 int nb_line_<%=cid %> = 0;
 int nb_line_rejected_<%=cid%> = 0;
@@ -81,7 +82,11 @@ int nb_line_rejected_<%=cid%> = 0;
     try {
         url = new java.net.URL(<%=mdmUrl %>);
     }catch(Exception e){
+    
+        <%if(isLog4jEnabled){%>
         log.error(e.getMessage(),e);
+        <%}%>
+        
         throw e;
     }
     
