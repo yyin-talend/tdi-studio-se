@@ -203,6 +203,8 @@ public class ComponentsUtils {
                 }
                 break;
             case BUTTON:
+            	// FIXME - this is a button - this needs to be handled, avoids the NPE
+                fieldType = EParameterFieldType.TEXT;
                 break;
             case COMPONENT_REFERENCE:
                 break;

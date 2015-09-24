@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
 import org.talend.component.ui.wizard.internal.service.GenericWizardInternalService;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
+import org.talend.components.api.wizard.WizardImageType;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -67,7 +68,7 @@ public class GenericWizardService implements IGenericWizardService {
 
     @Override
     public Image getNodeImage(String typeName) {
-        InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName);// TODO: use other
+        InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName, WizardImageType.TREE_ICON_16X16);
         // node image
         ImageData id = new ImageData(imageStream);
         Image image = new Image(null, id);
@@ -76,7 +77,7 @@ public class GenericWizardService implements IGenericWizardService {
 
     @Override
     public Image getWiardImage(String typeName) {
-        InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName);
+        InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName, WizardImageType.WIZARD_BANNER_75X66);
         ImageData id = new ImageData(imageStream);
         Image image = new Image(null, id);
         return image;
