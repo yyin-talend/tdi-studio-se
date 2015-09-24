@@ -15,6 +15,7 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
@@ -68,7 +69,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     try {
                         url = new java.net.URL(<%=mdmUrl %>);
                     }catch(Exception e){
+                    
+                        <%if(isLog4jEnabled){%>
                         log.error(e.getMessage(),e);
+                        <%}%>
+                        
                         throw e;
                     }
                     

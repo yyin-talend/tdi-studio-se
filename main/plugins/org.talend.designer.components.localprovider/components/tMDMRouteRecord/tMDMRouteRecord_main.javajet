@@ -25,6 +25,7 @@ imports="
 	boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
 	
 	List<Map<String, String>> ids = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__IDS__");
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>       
 int nb_line_<%=cid %> = 0;
 <%if(!useExistingConn){%>
@@ -32,7 +33,9 @@ int nb_line_<%=cid %> = 0;
     try {
         url = new java.net.URL(<%=mdmUrl %>);
     }catch(Exception e){
+        <%if(isLog4jEnabled){%>
         log.error(e.getMessage(),e);
+        <%}%>
         throw e;
     }
     
