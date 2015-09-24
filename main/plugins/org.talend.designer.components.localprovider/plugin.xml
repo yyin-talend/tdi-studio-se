@@ -38,9 +38,9 @@
         <!-- hd insight common libraries -->
         <libraryNeeded
             context="Talend API to execute a job on HD Insight"
-            id="talend-bigdata-launcher-1.0.0-20150903.jar"
-            name="talend-bigdata-launcher-1.0.0-20150903.jar"
-            mvn_uri="mvn:org.talend.libraries/talend-bigdata-launcher-1.0.0-20150903/6.0.0">
+            id="talend-bigdata-launcher-1.0.0-20150922.jar"
+            name="talend-bigdata-launcher-1.0.0-20150922.jar"
+            mvn_uri="mvn:org.talend.libraries/talend-bigdata-launcher-1.0.0-20150922/6.0.0">
         </libraryNeeded>
         <libraryNeeded
             context="plugin:org.talend.libraries.apache.cxf"
@@ -7775,7 +7775,10 @@
 	    <libraryNeededGroup
 	            description="The lastest Impala libraries of CDH 5.4"
 	            id="IMPALA-LIB-CDH_5_4_LASTEST"
-	            name="IMPALA-LIB-CDH_5_4_LASTEST" >
+	            name="IMPALA-LIB-CDH_5_4_LASTEST">
+             <library
+                id="hive-exec-cdh5.4-lastest">
+             </library>
 	         <library
 	            id="hive-metastore-cdh5.4-lastest">
 	         </library>
@@ -7950,7 +7953,7 @@
                 id="HD_INSIGHT_COMMON_LIBRARIES_LATEST"
                 name="HD_INSIGHT_COMMON_LIBRARIES_LATEST">
             <library
-                id="talend-bigdata-launcher-1.0.0-20150903.jar">
+                id="talend-bigdata-launcher-1.0.0-20150922.jar">
             </library>
             <library
                 id="cxf-api-2.7.7.jar">

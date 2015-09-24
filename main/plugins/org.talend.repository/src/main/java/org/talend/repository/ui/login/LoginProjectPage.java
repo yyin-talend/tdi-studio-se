@@ -107,6 +107,7 @@ import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.login.sandboxProject.CreateSandboxProjectDialog;
 import org.talend.utils.json.JSONException;
+import org.talend.utils.json.JSONObject;
 
 /**
  * created by cmeng on May 13, 2015 Detailled comment
@@ -796,7 +797,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 Project project = getProject();
                 if (project != null) {
                     loginHelper.getPrefManipulator().setLastProject(project.getLabel());
-                    fillUIBranches(project, false);
+                    try {
+						fillUIBranches(project, false);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                     setRepositoryContextInContext();
                 }
             }
@@ -1681,12 +1687,17 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 project = projects[0];
             }
             if (project != null) {
-                selectProject(project);
+                try {
+					selectProject(project);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         }
     }
 
-    private void selectProject(Project goodProject) {
+    private void selectProject(Project goodProject) throws JSONException {
         fillUIBranches(goodProject, true);
         projectViewer.setSelection(new StructuredSelection(new Object[] { goodProject }), true);
         // if (PluginChecker.isTIS()) {
@@ -1694,7 +1705,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         setRepositoryContextInContext();
     }
 
-    private void selectProject(String projectName) {
+    private void selectProject(String projectName) throws JSONException {
         Project[] projects = (Project[]) projectViewer.getInput();
         for (Project current : projects) {
             if (current.getLabel().equals(projectName)) {
@@ -1703,14 +1714,35 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
         }
     }
+    
+    private String getStorage(Project project) throws JSONException {
+    	if(project==null)	
+    		return "";
+        String storage = "";
+        if (project != null) {
+            String url = project.getEmfProject().getUrl();
+            if(url==null)
+            	return "";
+            JSONObject jsonObj = new JSONObject(url);
+            storage = jsonObj.getString("storage");
+        }
+        return storage;
+    }
 
-    private void fillUIBranches(final Project project, boolean lastUsedBranch) {
+    private void fillUIBranches(final Project project, boolean lastUsedBranch) throws JSONException {
+    	final String storage=getStorage(project);
         if (LoginHelper.isRemoteConnection(getConnection())) {
             currentProjectSettings = project;
             final List<String> projectBranches = new ArrayList<String>();
-            projectBranches.add("trunk"); //$NON-NLS-1$
-            branchesViewer.setInput(projectBranches);
-            branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
+            if("svn".equals(storage))	{
+            	projectBranches.add("trunk"); //$NON-NLS-1$
+            	branchesViewer.setInput(projectBranches);
+            	branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
+            }else if("git".equals(storage))	{
+            	projectBranches.add("master");
+            	branchesViewer.setInput(projectBranches);
+            	branchesViewer.setSelection(new StructuredSelection(new Object[] { "master" }));
+            }
             branchesViewer.getCombo().setEnabled(false);
             if (backgroundGUIUpdate == null/* || (backgroundGUIUpdate.getState() == Job.NONE) */) {
                 backgroundGUIUpdate = new Job("List Branches") { //$NON-NLS-1$
@@ -1718,7 +1750,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     @Override
                     protected IStatus run(IProgressMonitor monitor) {
                         projectBranches.clear();
-                        projectBranches.addAll(loginHelper.getProjectBranches(currentProjectSettings));
+                        try {
+							projectBranches.addAll(loginHelper.getProjectBranches(currentProjectSettings));
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
                         return org.eclipse.core.runtime.Status.OK_STATUS;
                     }
 
@@ -1738,7 +1775,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                                             return;
                                         }
                                         branchesViewer.setInput(projectBranches);
-                                        branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
+                                        branchesViewer.setSelection(new StructuredSelection(new Object[] { projectBranches.get(0) })); //$NON-NLS-1$                                        
                                         // svnBranchCombo.getCombo().setFont(originalFont);
                                         branchesViewer.getCombo().setEnabled(projectViewer.getControl().isEnabled());
                                     }
@@ -1830,7 +1867,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         String newProject = ImportProjectAsAction.getInstance().getProjectName();
         if (newProject != null) {
             resetProjectOperationSelectionWithBusyCursor();
-            selectProject(newProject);
+            try {
+				selectProject(newProject);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         } else if (ImportProjectAsAction.getInstance().isImportedSeveralProjects()) {
             resetProjectOperationSelectionWithBusyCursor();
         }
@@ -1845,7 +1887,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         String newProject = ImportDemoProjectAction.getInstance().getProjectName();
         if (newProject != null) {
             resetProjectOperationSelectionWithBusyCursor();
-            selectProject(newProject);
+            try {
+				selectProject(newProject);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         validateProject();
     }
@@ -1902,7 +1949,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             MessageDialog.openError(getShell(), Messages.getString("NewProjectWizard.failureTitle"), Messages //$NON-NLS-1$
                     .getString("NewProjectWizard.failureText")); //$NON-NLS-1$ 
             MessageBoxExceptionHandler.process(e);
-        }
+        } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     protected LoginProjectPageErrorManager getErrorManager() {

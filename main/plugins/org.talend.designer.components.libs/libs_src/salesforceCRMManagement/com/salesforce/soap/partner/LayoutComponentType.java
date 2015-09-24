@@ -1,6 +1,6 @@
 /**
  * LayoutComponentType.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -35,6 +35,9 @@ public class LayoutComponentType implements org.apache.axis2.databinding.ADBBean
 
     }
 
+    public static final java.lang.String _ReportChart = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("ReportChart");
+
     public static final java.lang.String _Field = org.apache.axis2.databinding.utils.ConverterUtil.convertToString("Field");
 
     public static final java.lang.String _Separator = org.apache.axis2.databinding.utils.ConverterUtil
@@ -45,6 +48,25 @@ public class LayoutComponentType implements org.apache.axis2.databinding.ADBBean
     public static final java.lang.String _EmptySpace = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("EmptySpace");
 
+    public static final java.lang.String _VisualforcePage = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("VisualforcePage");
+
+    public static final java.lang.String _ExpandedLookup = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("ExpandedLookup");
+
+    public static final java.lang.String _AuraComponent = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("AuraComponent");
+
+    public static final java.lang.String _Canvas = org.apache.axis2.databinding.utils.ConverterUtil.convertToString("Canvas");
+
+    public static final java.lang.String _CustomLink = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("CustomLink");
+
+    public static final java.lang.String _AnalyticsCloud = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("AnalyticsCloud");
+
+    public static final LayoutComponentType ReportChart = new LayoutComponentType(_ReportChart, true);
+
     public static final LayoutComponentType Field = new LayoutComponentType(_Field, true);
 
     public static final LayoutComponentType Separator = new LayoutComponentType(_Separator, true);
@@ -52,6 +74,18 @@ public class LayoutComponentType implements org.apache.axis2.databinding.ADBBean
     public static final LayoutComponentType SControl = new LayoutComponentType(_SControl, true);
 
     public static final LayoutComponentType EmptySpace = new LayoutComponentType(_EmptySpace, true);
+
+    public static final LayoutComponentType VisualforcePage = new LayoutComponentType(_VisualforcePage, true);
+
+    public static final LayoutComponentType ExpandedLookup = new LayoutComponentType(_ExpandedLookup, true);
+
+    public static final LayoutComponentType AuraComponent = new LayoutComponentType(_AuraComponent, true);
+
+    public static final LayoutComponentType Canvas = new LayoutComponentType(_Canvas, true);
+
+    public static final LayoutComponentType CustomLink = new LayoutComponentType(_CustomLink, true);
+
+    public static final LayoutComponentType AnalyticsCloud = new LayoutComponentType(_AnalyticsCloud, true);
 
     public java.lang.String getValue() {
         return localLayoutComponentType;
@@ -72,7 +106,7 @@ public class LayoutComponentType implements org.apache.axis2.databinding.ADBBean
     }
 
     /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -293,7 +327,7 @@ public class LayoutComponentType implements org.apache.axis2.databinding.ADBBean
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -343,11 +377,10 @@ public class LayoutComponentType implements org.apache.axis2.databinding.ADBBean
         }
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static LayoutComponentType parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             LayoutComponentType object = null;
@@ -393,7 +426,7 @@ public class LayoutComponentType implements org.apache.axis2.databinding.ADBBean
                     } else {
                         reader.next();
                     }
-                } // end of while loop
+                }  // end of while loop
 
             } catch (javax.xml.stream.XMLStreamException e) {
                 throw new java.lang.Exception(e);

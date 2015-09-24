@@ -1,6 +1,6 @@
 /**
  * LocaleOptions.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -22,8 +22,8 @@ public class LocaleOptions implements org.apache.axis2.databinding.ADBBean {
     protected java.lang.String localLanguage;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localLanguageTracker = false;
 
@@ -53,7 +53,46 @@ public class LocaleOptions implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
+     * field for LocalizeErrors
+     */
+
+    protected boolean localLocalizeErrors;
+
+    /*
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
+     */
+    protected boolean localLocalizeErrorsTracker = false;
+
+    public boolean isLocalizeErrorsSpecified() {
+        return localLocalizeErrorsTracker;
+    }
+
+    /**
+     * Auto generated getter method
      * 
+     * @return boolean
+     */
+    public boolean getLocalizeErrors() {
+        return localLocalizeErrors;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param LocalizeErrors
+     */
+    public void setLocalizeErrors(boolean param) {
+
+        // setting primitive attribute tracker to true
+        localLocalizeErrorsTracker = true;
+
+        this.localLocalizeErrors = param;
+
+    }
+
+    /**
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -105,6 +144,20 @@ public class LocaleOptions implements org.apache.axis2.databinding.ADBBean {
 
                 xmlWriter.writeCharacters(localLanguage);
 
+            }
+
+            xmlWriter.writeEndElement();
+        }
+        if (localLocalizeErrorsTracker) {
+            namespace = "urn:partner.soap.sforce.com";
+            writeStartElement(null, namespace, "localizeErrors", xmlWriter);
+
+            if (false) {
+
+                throw new org.apache.axis2.databinding.ADBException("localizeErrors cannot be null!!");
+
+            } else {
+                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocalizeErrors));
             }
 
             xmlWriter.writeEndElement();
@@ -281,7 +334,7 @@ public class LocaleOptions implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -298,6 +351,11 @@ public class LocaleOptions implements org.apache.axis2.databinding.ADBBean {
                 throw new org.apache.axis2.databinding.ADBException("language cannot be null!!");
             }
         }
+        if (localLocalizeErrorsTracker) {
+            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "localizeErrors"));
+
+            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocalizeErrors));
+        }
 
         return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(),
                 attribList.toArray());
@@ -310,11 +368,10 @@ public class LocaleOptions implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static LocaleOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             LocaleOptions object = new LocaleOptions();
@@ -373,7 +430,32 @@ public class LocaleOptions implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
+
+                else {
+
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "localizeErrors")
+                                .equals(reader.getName())) {
+
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                        throw new org.apache.axis2.databinding.ADBException("The element: " + "localizeErrors"
+                                + "  cannot be null");
+                    }
+
+                    java.lang.String content = reader.getElementText();
+
+                    object.setLocalizeErrors(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
 
                 else {
 

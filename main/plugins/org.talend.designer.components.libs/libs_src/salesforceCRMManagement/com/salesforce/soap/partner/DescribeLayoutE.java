@@ -1,6 +1,6 @@
 /**
  * DescribeLayoutE.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -42,14 +42,40 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
+     * field for LayoutName
+     */
+
+    protected java.lang.String localLayoutName;
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return java.lang.String
+     */
+    public java.lang.String getLayoutName() {
+        return localLayoutName;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param LayoutName
+     */
+    public void setLayoutName(java.lang.String param) {
+
+        this.localLayoutName = param;
+
+    }
+
+    /**
      * field for RecordTypeIds This was an Array!
      */
 
     protected com.salesforce.soap.partner.ID[] localRecordTypeIds;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localRecordTypeIdsTracker = false;
 
@@ -108,7 +134,7 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -159,6 +185,22 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
         } else {
 
             xmlWriter.writeCharacters(localSObjectType);
+
+        }
+
+        xmlWriter.writeEndElement();
+
+        namespace = "urn:partner.soap.sforce.com";
+        writeStartElement(null, namespace, "layoutName", xmlWriter);
+
+        if (localLayoutName == null) {
+            // write the nil attribute
+
+            writeAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance", "nil", "1", xmlWriter);
+
+        } else {
+
+            xmlWriter.writeCharacters(localLayoutName);
 
         }
 
@@ -354,7 +396,7 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -369,6 +411,11 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
         } else {
             throw new org.apache.axis2.databinding.ADBException("sObjectType cannot be null!!");
         }
+
+        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "layoutName"));
+
+        elementList.add(localLayoutName == null ? null : org.apache.axis2.databinding.utils.ConverterUtil
+                .convertToString(localLayoutName));
         if (localRecordTypeIdsTracker) {
             if (localRecordTypeIds != null) {
                 for (int i = 0; i < localRecordTypeIds.length; i++) {
@@ -402,11 +449,10 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static DescribeLayoutE parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             DescribeLayoutE object = new DescribeLayoutE();
@@ -448,7 +494,7 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
 
                 reader.next();
 
-                java.util.ArrayList list2 = new java.util.ArrayList();
+                java.util.ArrayList list3 = new java.util.ArrayList();
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
@@ -467,7 +513,34 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
+
+                else {
+                    // A start element we are not expecting indicates an invalid parameter was passed
+                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "layoutName").equals(reader.getName())) {
+
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
+
+                        java.lang.String content = reader.getElementText();
+
+                        object.setLayoutName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+
+                    } else {
+
+                        reader.getElementText(); // throw away text nodes if any.
+                    }
+
+                    reader.next();
+
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -481,11 +554,11 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
                         && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "recordTypeIds").equals(reader.getName())) {
 
                     // Process the array and step past its final element's end.
-                    list2.add(com.salesforce.soap.partner.ID.Factory.parse(reader));
+                    list3.add(com.salesforce.soap.partner.ID.Factory.parse(reader));
 
                     // loop until we find a start element that is not part of this array
-                    boolean loopDone2 = false;
-                    while (!loopDone2) {
+                    boolean loopDone3 = false;
+                    while (!loopDone3) {
                         // We should be at the end element, but make sure
                         while (!reader.isEndElement())
                             reader.next();
@@ -496,23 +569,23 @@ public class DescribeLayoutE implements org.apache.axis2.databinding.ADBBean {
                             reader.next();
                         if (reader.isEndElement()) {
                             // two continuous end elements means we are exiting the xml structure
-                            loopDone2 = true;
+                            loopDone3 = true;
                         } else {
                             if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "recordTypeIds").equals(reader
                                     .getName())) {
-                                list2.add(com.salesforce.soap.partner.ID.Factory.parse(reader));
+                                list3.add(com.salesforce.soap.partner.ID.Factory.parse(reader));
 
                             } else {
-                                loopDone2 = true;
+                                loopDone3 = true;
                             }
                         }
                     }
                     // call the converter utility to convert and set the array
 
                     object.setRecordTypeIds((com.salesforce.soap.partner.ID[]) org.apache.axis2.databinding.utils.ConverterUtil
-                            .convertToArray(com.salesforce.soap.partner.ID.class, list2));
+                            .convertToArray(com.salesforce.soap.partner.ID.class, list3));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 

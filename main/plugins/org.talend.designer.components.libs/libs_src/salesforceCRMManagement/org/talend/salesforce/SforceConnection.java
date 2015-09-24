@@ -68,7 +68,7 @@ public abstract class SforceConnection {
 
     protected DeleteResponse delete(Delete delete) throws Exception {
         try {
-            return stub.delete(delete, sh, co, null, null, null, null, null, null, null, null);
+            return stub.delete(delete, sh, co, null, null, null, null, null, null, null, null, null, null);
         } catch (com.salesforce.soap.partner.UnexpectedErrorFault sfException) {
             if (ExceptionCode.INVALID_SESSION_ID.equals(sfException.getFaultMessage().getUnexpectedErrorFault()
                     .getExceptionCode())) {
@@ -81,7 +81,7 @@ public abstract class SforceConnection {
 
     protected CreateResponse create(Create create) throws Exception {
         try {
-            return stub.create(create, sh, co, null, null, null, null, null, null, null, null, null);
+            return stub.create(create, sh, co, null, null, null, null, null, null, null, null, null, null, null);
         } catch (com.salesforce.soap.partner.UnexpectedErrorFault sfException) {
             if (ExceptionCode.INVALID_SESSION_ID.equals(sfException.getFaultMessage().getUnexpectedErrorFault()
                     .getExceptionCode())) {
@@ -94,7 +94,7 @@ public abstract class SforceConnection {
 
     protected UpdateResponse update(Update update) throws Exception {
         try {
-            return stub.update(update, sh, co, null, null, null, null, null, null, null, null, null);
+            return stub.update(update, sh, co, null, null, null, null, null, null, null, null, null, null, null, null);
         } catch (com.salesforce.soap.partner.UnexpectedErrorFault sfException) {
             if (ExceptionCode.INVALID_SESSION_ID.equals(sfException.getFaultMessage().getUnexpectedErrorFault()
                     .getExceptionCode())) {
@@ -107,7 +107,7 @@ public abstract class SforceConnection {
 
     protected UpsertResponse upsert(Upsert upsert) throws Exception {
         try {
-            return stub.upsert(upsert, sh, co, null, null, null, null, null, null, null, null, null);
+            return stub.upsert(upsert, sh, co, null, null, null, null, null, null, null, null, null, null, null, null);
         } catch (com.salesforce.soap.partner.UnexpectedErrorFault sfException) {
             if (ExceptionCode.INVALID_SESSION_ID.equals(sfException.getFaultMessage().getUnexpectedErrorFault()
                     .getExceptionCode())) {

@@ -1,6 +1,6 @@
 /**
  * SearchRecord.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,10 +11,9 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class SearchRecord implements org.apache.axis2.databinding.ADBBean {
-
     /*
-     * This type was generated from the piece of schema that had name = SearchRecord Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This type was generated from the piece of schema that had name = SearchRecord Namespace URI = urn:partner.soap.sforce.com Namespace
+     * Prefix = ns1
      */
 
     /**
@@ -44,7 +43,44 @@ public class SearchRecord implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
+     * field for Snippet
+     */
+
+    protected com.salesforce.soap.partner.SearchSnippet localSnippet;
+
+    /*
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
+     */
+    protected boolean localSnippetTracker = false;
+
+    public boolean isSnippetSpecified() {
+        return localSnippetTracker;
+    }
+
+    /**
+     * Auto generated getter method
      * 
+     * @return com.salesforce.soap.partner.SearchSnippet
+     */
+    public com.salesforce.soap.partner.SearchSnippet getSnippet() {
+        return localSnippet;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param Snippet
+     */
+    public void setSnippet(com.salesforce.soap.partner.SearchSnippet param) {
+        localSnippetTracker = true;
+
+        this.localSnippet = param;
+
+    }
+
+    /**
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -88,7 +124,18 @@ public class SearchRecord implements org.apache.axis2.databinding.ADBBean {
             throw new org.apache.axis2.databinding.ADBException("record cannot be null!!");
         }
         localRecord.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "record"), xmlWriter);
+        if (localSnippetTracker) {
+            if (localSnippet == null) {
 
+                writeStartElement(null, "urn:partner.soap.sforce.com", "snippet", xmlWriter);
+
+                // write the nil attribute
+                writeAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance", "nil", "1", xmlWriter);
+                xmlWriter.writeEndElement();
+            } else {
+                localSnippet.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "snippet"), xmlWriter);
+            }
+        }
         xmlWriter.writeEndElement();
 
     }
@@ -261,7 +308,7 @@ public class SearchRecord implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -275,6 +322,11 @@ public class SearchRecord implements org.apache.axis2.databinding.ADBBean {
             throw new org.apache.axis2.databinding.ADBException("record cannot be null!!");
         }
         elementList.add(localRecord);
+        if (localSnippetTracker) {
+            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "snippet"));
+
+            elementList.add(localSnippet == null ? null : localSnippet);
+        }
 
         return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(),
                 attribList.toArray());
@@ -287,11 +339,10 @@ public class SearchRecord implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static SearchRecord parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             SearchRecord object = new SearchRecord();
@@ -343,11 +394,36 @@ public class SearchRecord implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "snippet").equals(reader.getName())) {
+
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                        object.setSnippet(null);
+                        reader.next();
+
+                        reader.next();
+
+                    } else {
+
+                        object.setSnippet(com.salesforce.soap.partner.SearchSnippet.Factory.parse(reader));
+
+                        reader.next();
+                    }
+                }  // End of if for expected property start element
+
+                else {
+
                 }
 
                 while (!reader.isStartElement() && !reader.isEndElement())

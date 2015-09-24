@@ -1,6 +1,6 @@
 /**
  * DescribeLayout.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,10 +11,9 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
-
     /*
-     * This type was generated from the piece of schema that had name = DescribeLayout Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This type was generated from the piece of schema that had name = DescribeLayout Namespace URI = urn:partner.soap.sforce.com Namespace
+     * Prefix = ns1
      */
 
     /**
@@ -24,8 +23,8 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
     protected com.salesforce.soap.partner.DescribeLayoutButtonSection localButtonLayoutSection;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localButtonLayoutSectionTracker = false;
 
@@ -61,8 +60,8 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
     protected com.salesforce.soap.partner.DescribeLayoutSection[] localDetailLayoutSections;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localDetailLayoutSectionsTracker = false;
 
@@ -127,8 +126,8 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
     protected com.salesforce.soap.partner.DescribeLayoutSection[] localEditLayoutSections;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localEditLayoutSectionsTracker = false;
 
@@ -187,6 +186,80 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
+     * field for FeedView
+     */
+
+    protected com.salesforce.soap.partner.DescribeLayoutFeedView localFeedView;
+
+    /*
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
+     */
+    protected boolean localFeedViewTracker = false;
+
+    public boolean isFeedViewSpecified() {
+        return localFeedViewTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.DescribeLayoutFeedView
+     */
+    public com.salesforce.soap.partner.DescribeLayoutFeedView getFeedView() {
+        return localFeedView;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param FeedView
+     */
+    public void setFeedView(com.salesforce.soap.partner.DescribeLayoutFeedView param) {
+        localFeedViewTracker = param != null;
+
+        this.localFeedView = param;
+
+    }
+
+    /**
+     * field for HighlightsPanelLayoutSection
+     */
+
+    protected com.salesforce.soap.partner.DescribeLayoutSection localHighlightsPanelLayoutSection;
+
+    /*
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
+     */
+    protected boolean localHighlightsPanelLayoutSectionTracker = false;
+
+    public boolean isHighlightsPanelLayoutSectionSpecified() {
+        return localHighlightsPanelLayoutSectionTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.DescribeLayoutSection
+     */
+    public com.salesforce.soap.partner.DescribeLayoutSection getHighlightsPanelLayoutSection() {
+        return localHighlightsPanelLayoutSection;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param HighlightsPanelLayoutSection
+     */
+    public void setHighlightsPanelLayoutSection(com.salesforce.soap.partner.DescribeLayoutSection param) {
+        localHighlightsPanelLayoutSectionTracker = param != null;
+
+        this.localHighlightsPanelLayoutSection = param;
+
+    }
+
+    /**
      * field for Id
      */
 
@@ -213,14 +286,88 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
+     * field for QuickActionList
+     */
+
+    protected com.salesforce.soap.partner.DescribeQuickActionListResult localQuickActionList;
+
+    /*
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
+     */
+    protected boolean localQuickActionListTracker = false;
+
+    public boolean isQuickActionListSpecified() {
+        return localQuickActionListTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.DescribeQuickActionListResult
+     */
+    public com.salesforce.soap.partner.DescribeQuickActionListResult getQuickActionList() {
+        return localQuickActionList;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param QuickActionList
+     */
+    public void setQuickActionList(com.salesforce.soap.partner.DescribeQuickActionListResult param) {
+        localQuickActionListTracker = param != null;
+
+        this.localQuickActionList = param;
+
+    }
+
+    /**
+     * field for RelatedContent
+     */
+
+    protected com.salesforce.soap.partner.RelatedContent localRelatedContent;
+
+    /*
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
+     */
+    protected boolean localRelatedContentTracker = false;
+
+    public boolean isRelatedContentSpecified() {
+        return localRelatedContentTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return com.salesforce.soap.partner.RelatedContent
+     */
+    public com.salesforce.soap.partner.RelatedContent getRelatedContent() {
+        return localRelatedContent;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param RelatedContent
+     */
+    public void setRelatedContent(com.salesforce.soap.partner.RelatedContent param) {
+        localRelatedContentTracker = param != null;
+
+        this.localRelatedContent = param;
+
+    }
+
+    /**
      * field for RelatedLists This was an Array!
      */
 
     protected com.salesforce.soap.partner.RelatedList[] localRelatedLists;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localRelatedListsTracker = false;
 
@@ -279,7 +426,7 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -363,10 +510,43 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
 
             }
         }
-        if (localId == null) {
-            throw new org.apache.axis2.databinding.ADBException("id cannot be null!!");
+        if (localFeedViewTracker) {
+            if (localFeedView == null) {
+                throw new org.apache.axis2.databinding.ADBException("feedView cannot be null!!");
+            }
+            localFeedView.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "feedView"), xmlWriter);
         }
-        localId.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "id"), xmlWriter);
+        if (localHighlightsPanelLayoutSectionTracker) {
+            if (localHighlightsPanelLayoutSection == null) {
+                throw new org.apache.axis2.databinding.ADBException("highlightsPanelLayoutSection cannot be null!!");
+            }
+            localHighlightsPanelLayoutSection.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                    "highlightsPanelLayoutSection"), xmlWriter);
+        }
+        if (localId == null) {
+
+            writeStartElement(null, "urn:partner.soap.sforce.com", "id", xmlWriter);
+
+            // write the nil attribute
+            writeAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance", "nil", "1", xmlWriter);
+            xmlWriter.writeEndElement();
+        } else {
+            localId.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "id"), xmlWriter);
+        }
+        if (localQuickActionListTracker) {
+            if (localQuickActionList == null) {
+                throw new org.apache.axis2.databinding.ADBException("quickActionList cannot be null!!");
+            }
+            localQuickActionList.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "quickActionList"),
+                    xmlWriter);
+        }
+        if (localRelatedContentTracker) {
+            if (localRelatedContent == null) {
+                throw new org.apache.axis2.databinding.ADBException("relatedContent cannot be null!!");
+            }
+            localRelatedContent.serialize(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relatedContent"),
+                    xmlWriter);
+        }
         if (localRelatedListsTracker) {
             if (localRelatedLists != null) {
                 for (int i = 0; i < localRelatedLists.length; i++) {
@@ -558,7 +738,7 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -616,12 +796,41 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
             }
 
         }
+        if (localFeedViewTracker) {
+            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "feedView"));
+
+            if (localFeedView == null) {
+                throw new org.apache.axis2.databinding.ADBException("feedView cannot be null!!");
+            }
+            elementList.add(localFeedView);
+        }
+        if (localHighlightsPanelLayoutSectionTracker) {
+            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "highlightsPanelLayoutSection"));
+
+            if (localHighlightsPanelLayoutSection == null) {
+                throw new org.apache.axis2.databinding.ADBException("highlightsPanelLayoutSection cannot be null!!");
+            }
+            elementList.add(localHighlightsPanelLayoutSection);
+        }
         elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "id"));
 
-        if (localId == null) {
-            throw new org.apache.axis2.databinding.ADBException("id cannot be null!!");
+        elementList.add(localId == null ? null : localId);
+        if (localQuickActionListTracker) {
+            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "quickActionList"));
+
+            if (localQuickActionList == null) {
+                throw new org.apache.axis2.databinding.ADBException("quickActionList cannot be null!!");
+            }
+            elementList.add(localQuickActionList);
         }
-        elementList.add(localId);
+        if (localRelatedContentTracker) {
+            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relatedContent"));
+
+            if (localRelatedContent == null) {
+                throw new org.apache.axis2.databinding.ADBException("relatedContent cannot be null!!");
+            }
+            elementList.add(localRelatedContent);
+        }
         if (localRelatedListsTracker) {
             if (localRelatedLists != null) {
                 for (int i = 0; i < localRelatedLists.length; i++) {
@@ -655,11 +864,10 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static DescribeLayout parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             DescribeLayout object = new DescribeLayout();
@@ -705,7 +913,7 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
 
                 java.util.ArrayList list3 = new java.util.ArrayList();
 
-                java.util.ArrayList list5 = new java.util.ArrayList();
+                java.util.ArrayList list9 = new java.util.ArrayList();
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
@@ -718,7 +926,7 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 
@@ -763,7 +971,7 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
                     object.setDetailLayoutSections((com.salesforce.soap.partner.DescribeLayoutSection[]) org.apache.axis2.databinding.utils.ConverterUtil
                             .convertToArray(com.salesforce.soap.partner.DescribeLayoutSection.class, list2));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 
@@ -808,7 +1016,41 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
                     object.setEditLayoutSections((com.salesforce.soap.partner.DescribeLayoutSection[]) org.apache.axis2.databinding.utils.ConverterUtil
                             .convertToArray(com.salesforce.soap.partner.DescribeLayoutSection.class, list3));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
+
+                else {
+
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "feedView").equals(reader.getName())) {
+
+                    object.setFeedView(com.salesforce.soap.partner.DescribeLayoutFeedView.Factory.parse(reader));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
+
+                else {
+
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "highlightsPanelLayoutSection")
+                                .equals(reader.getName())) {
+
+                    object.setHighlightsPanelLayoutSection(com.salesforce.soap.partner.DescribeLayoutSection.Factory
+                            .parse(reader));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
 
                 else {
 
@@ -820,11 +1062,20 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
                 if (reader.isStartElement()
                         && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "id").equals(reader.getName())) {
 
-                    object.setId(com.salesforce.soap.partner.ID.Factory.parse(reader));
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                        object.setId(null);
+                        reader.next();
 
-                    reader.next();
+                        reader.next();
 
-                } // End of if for expected property start element
+                    } else {
+
+                        object.setId(com.salesforce.soap.partner.ID.Factory.parse(reader));
+
+                        reader.next();
+                    }
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -835,14 +1086,48 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
                     reader.next();
 
                 if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "quickActionList").equals(reader
+                                .getName())) {
+
+                    object.setQuickActionList(com.salesforce.soap.partner.DescribeQuickActionListResult.Factory.parse(reader));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
+
+                else {
+
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relatedContent")
+                                .equals(reader.getName())) {
+
+                    object.setRelatedContent(com.salesforce.soap.partner.RelatedContent.Factory.parse(reader));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
+
+                else {
+
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
                         && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relatedLists").equals(reader.getName())) {
 
                     // Process the array and step past its final element's end.
-                    list5.add(com.salesforce.soap.partner.RelatedList.Factory.parse(reader));
+                    list9.add(com.salesforce.soap.partner.RelatedList.Factory.parse(reader));
 
                     // loop until we find a start element that is not part of this array
-                    boolean loopDone5 = false;
-                    while (!loopDone5) {
+                    boolean loopDone9 = false;
+                    while (!loopDone9) {
                         // We should be at the end element, but make sure
                         while (!reader.isEndElement())
                             reader.next();
@@ -853,23 +1138,23 @@ public class DescribeLayout implements org.apache.axis2.databinding.ADBBean {
                             reader.next();
                         if (reader.isEndElement()) {
                             // two continuous end elements means we are exiting the xml structure
-                            loopDone5 = true;
+                            loopDone9 = true;
                         } else {
                             if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relatedLists").equals(reader
                                     .getName())) {
-                                list5.add(com.salesforce.soap.partner.RelatedList.Factory.parse(reader));
+                                list9.add(com.salesforce.soap.partner.RelatedList.Factory.parse(reader));
 
                             } else {
-                                loopDone5 = true;
+                                loopDone9 = true;
                             }
                         }
                     }
                     // call the converter utility to convert and set the array
 
                     object.setRelatedLists((com.salesforce.soap.partner.RelatedList[]) org.apache.axis2.databinding.utils.ConverterUtil
-                            .convertToArray(com.salesforce.soap.partner.RelatedList.class, list5));
+                            .convertToArray(com.salesforce.soap.partner.RelatedList.class, list9));
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 

@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.model.process;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -57,7 +57,7 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
         return providerMap.get(pid);
     }
 
-    public static List<AbstractProcessProvider> findAllProcessProviders() {
+    public static Collection<AbstractProcessProvider> findAllProcessProviders() {
         if (providerMap.isEmpty()) {
             IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
             for (IConfigurationElement elem : elems) {
@@ -67,12 +67,11 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
                             .createExecutableExtension(ATTR_CLASS);
                     providerMap.put(pid, createExecutableExtension);
                 } catch (CoreException ex) {
-                    // ex.printStackTrace();
                     ExceptionHandler.process(ex);
                 }
             }
         }
-        return new ArrayList<AbstractProcessProvider>(providerMap.values());
+        return providerMap.values();
     }
 
     /**
@@ -211,11 +210,11 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
     public abstract Item getJobletItem(INode node, String version);
 
     public boolean containNodeInMemoryNotProcess() {
-        return this.canCreateNode;
+        return canCreateNode;
     }
 
     public void setCanCreateNode(boolean flag) {
-        this.canCreateNode = flag;
+        canCreateNode = flag;
     }
 
     public static IProcess getComponentProcess() {

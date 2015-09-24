@@ -71,6 +71,8 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.dialog.OverTimePopupDialogTask;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
+import org.talend.utils.json.JSONException;
+import org.talend.utils.json.JSONObject;
 
 /**
  * created by cmeng on May 22, 2015 Detailled comment
@@ -333,7 +335,13 @@ public class LoginHelper {
         }
         String lastUsedBranch = prefManipulator.getLastSVNBranch();
         if (isRemoteConnection) {
-            List<String> branches = getProjectBranches(lastUsedProject);
+            List<String> branches = null;
+			try {
+				branches = getProjectBranches(lastUsedProject);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             if (branches == null || branches.isEmpty()) {
                 return false;
             }
@@ -561,32 +569,41 @@ public class LoginHelper {
         return projects;
     }
 
-    public List<String> getProjectBranches(Project p) {
-        List<String> brancesList = new ArrayList<String>();
+    public List<String> getProjectBranches(Project p) throws JSONException {
+        List<String> branchesList = new ArrayList<String>();
         if (p != null && svnProviderService != null) {
             try {
                 if (!p.isLocal() && svnProviderService.isSVNProject(p)) {
-                    brancesList.add(SVNConstant.NAME_TRUNK);
+                    branchesList.add(SVNConstant.NAME_TRUNK);
                     String[] branchList = svnProviderService.getBranchList(p);
                     if (branchList != null) {
-                        brancesList.addAll(Arrays.asList(branchList));
+                        branchesList.addAll(Arrays.asList(branchList));
                     }
 
-                } /*else if (!p.isLocal() && !svnProviderService.isSVNProject(p)) {
-            	String url=p.getEmfProject().getUrl();
-            	if("git".equals(getStorage(url)))	{
-            		branchesList.add("master");
+                } else if (!p.isLocal() && !svnProviderService.isSVNProject(p)) {
+                	if("git".equals(getStorage(p)))	{
+                		branchesList.add("master");
             		
                 }
-            }*/
+            }
             } catch (PersistenceException e) {
                 CommonExceptionHandler.process(e);
             }
         }
-        return brancesList;
+        return branchesList;
     }
 
-    public Project getLastUsedProject(Project[] projects) {
+    private String getStorage(Project project) throws JSONException {
+        String storage = "";
+        if (project != null) {
+            String url = project.getEmfProject().getUrl();
+            JSONObject jsonObj = new JSONObject(url);
+            storage = jsonObj.getString("storage");
+        }
+        return storage;
+    }
+
+	public Project getLastUsedProject(Project[] projects) {
         if (projects == null || projects.length == 0) {
             return null;
         }

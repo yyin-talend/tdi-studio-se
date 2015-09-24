@@ -1,6 +1,6 @@
 /**
  * RelatedListColumn.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,10 +11,9 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
-
     /*
-     * This type was generated from the piece of schema that had name = RelatedListColumn Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This type was generated from the piece of schema that had name = RelatedListColumn Namespace URI = urn:partner.soap.sforce.com
+     * Namespace Prefix = ns1
      */
 
     /**
@@ -96,6 +95,43 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
+     * field for LookupId
+     */
+
+    protected java.lang.String localLookupId;
+
+    /*
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
+     */
+    protected boolean localLookupIdTracker = false;
+
+    public boolean isLookupIdSpecified() {
+        return localLookupIdTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return java.lang.String
+     */
+    public java.lang.String getLookupId() {
+        return localLookupId;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param LookupId
+     */
+    public void setLookupId(java.lang.String param) {
+        localLookupIdTracker = true;
+
+        this.localLookupId = param;
+
+    }
+
+    /**
      * field for Name
      */
 
@@ -122,7 +158,7 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -209,7 +245,23 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
         }
 
         xmlWriter.writeEndElement();
+        if (localLookupIdTracker) {
+            namespace = "urn:partner.soap.sforce.com";
+            writeStartElement(null, namespace, "lookupId", xmlWriter);
 
+            if (localLookupId == null) {
+                // write the nil attribute
+
+                writeAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance", "nil", "1", xmlWriter);
+
+            } else {
+
+                xmlWriter.writeCharacters(localLookupId);
+
+            }
+
+            xmlWriter.writeEndElement();
+        }
         namespace = "urn:partner.soap.sforce.com";
         writeStartElement(null, namespace, "name", xmlWriter);
 
@@ -398,7 +450,7 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -422,7 +474,12 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
         } else {
             throw new org.apache.axis2.databinding.ADBException("label cannot be null!!");
         }
+        if (localLookupIdTracker) {
+            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "lookupId"));
 
+            elementList.add(localLookupId == null ? null : org.apache.axis2.databinding.utils.ConverterUtil
+                    .convertToString(localLookupId));
+        }
         elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "name"));
 
         if (localName != null) {
@@ -442,11 +499,10 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static RelatedListColumn parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             RelatedListColumn object = new RelatedListColumn();
@@ -508,7 +564,7 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -535,7 +591,7 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
@@ -559,11 +615,37 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed
                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "lookupId").equals(reader.getName())) {
+
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
+
+                        java.lang.String content = reader.getElementText();
+
+                        object.setLookupId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+
+                    } else {
+
+                        reader.getElementText(); // throw away text nodes if any.
+                    }
+
+                    reader.next();
+
+                }  // End of if for expected property start element
+
+                else {
+
                 }
 
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -583,7 +665,7 @@ public class RelatedListColumn implements org.apache.axis2.databinding.ADBBean {
 
                     reader.next();
 
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
                     // A start element we are not expecting indicates an invalid parameter was passed

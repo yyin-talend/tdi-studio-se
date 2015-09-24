@@ -1,6 +1,6 @@
 /**
  * SearchResult.java
- * 
+ *
  * This file was auto-generated from WSDL by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
@@ -11,11 +11,36 @@ package com.salesforce.soap.partner;
  */
 @SuppressWarnings({ "unchecked", "unused" })
 public class SearchResult implements org.apache.axis2.databinding.ADBBean {
-
     /*
-     * This type was generated from the piece of schema that had name = SearchResult Namespace URI =
-     * urn:partner.soap.sforce.com Namespace Prefix = ns1
+     * This type was generated from the piece of schema that had name = SearchResult Namespace URI = urn:partner.soap.sforce.com Namespace
+     * Prefix = ns1
      */
+
+    /**
+     * field for QueryId
+     */
+
+    protected java.lang.String localQueryId;
+
+    /**
+     * Auto generated getter method
+     * 
+     * @return java.lang.String
+     */
+    public java.lang.String getQueryId() {
+        return localQueryId;
+    }
+
+    /**
+     * Auto generated setter method
+     * 
+     * @param param QueryId
+     */
+    public void setQueryId(java.lang.String param) {
+
+        this.localQueryId = param;
+
+    }
 
     /**
      * field for SearchRecords This was an Array!
@@ -24,8 +49,8 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
     protected com.salesforce.soap.partner.SearchRecord[] localSearchRecords;
 
     /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
+     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be used to determine
+     * whether to include this field in the serialized XML
      */
     protected boolean localSearchRecordsTracker = false;
 
@@ -84,44 +109,7 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
     }
 
     /**
-     * field for SforceReserved
-     */
-
-    protected java.lang.String localSforceReserved;
-
-    /*
-     * This tracker boolean wil be used to detect whether the user called the set method for this attribute. It will be
-     * used to determine whether to include this field in the serialized XML
-     */
-    protected boolean localSforceReservedTracker = false;
-
-    public boolean isSforceReservedSpecified() {
-        return localSforceReservedTracker;
-    }
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String
-     */
-    public java.lang.String getSforceReserved() {
-        return localSforceReserved;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param SforceReserved
-     */
-    public void setSforceReserved(java.lang.String param) {
-        localSforceReservedTracker = param != null;
-
-        this.localSforceReserved = param;
-
-    }
-
-    /**
-     * 
+     *
      * @param parentQName
      * @param factory
      * @return org.apache.axiom.om.OMElement
@@ -160,6 +148,22 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
             }
 
         }
+
+        namespace = "urn:partner.soap.sforce.com";
+        writeStartElement(null, namespace, "queryId", xmlWriter);
+
+        if (localQueryId == null) {
+            // write the nil attribute
+
+            throw new org.apache.axis2.databinding.ADBException("queryId cannot be null!!");
+
+        } else {
+
+            xmlWriter.writeCharacters(localQueryId);
+
+        }
+
+        xmlWriter.writeEndElement();
         if (localSearchRecordsTracker) {
             if (localSearchRecords != null) {
                 for (int i = 0; i < localSearchRecords.length; i++) {
@@ -178,23 +182,6 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
                 throw new org.apache.axis2.databinding.ADBException("searchRecords cannot be null!!");
 
             }
-        }
-        if (localSforceReservedTracker) {
-            namespace = "urn:partner.soap.sforce.com";
-            writeStartElement(null, namespace, "sforceReserved", xmlWriter);
-
-            if (localSforceReserved == null) {
-                // write the nil attribute
-
-                throw new org.apache.axis2.databinding.ADBException("sforceReserved cannot be null!!");
-
-            } else {
-
-                xmlWriter.writeCharacters(localSforceReserved);
-
-            }
-
-            xmlWriter.writeEndElement();
         }
         xmlWriter.writeEndElement();
 
@@ -368,7 +355,7 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * databinding method to get an XML representation of this object
-     * 
+     *
      */
     public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
             throws org.apache.axis2.databinding.ADBException {
@@ -376,6 +363,13 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
         java.util.ArrayList elementList = new java.util.ArrayList();
         java.util.ArrayList attribList = new java.util.ArrayList();
 
+        elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "queryId"));
+
+        if (localQueryId != null) {
+            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localQueryId));
+        } else {
+            throw new org.apache.axis2.databinding.ADBException("queryId cannot be null!!");
+        }
         if (localSearchRecordsTracker) {
             if (localSearchRecords != null) {
                 for (int i = 0; i < localSearchRecords.length; i++) {
@@ -397,15 +391,6 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
             }
 
         }
-        if (localSforceReservedTracker) {
-            elementList.add(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sforceReserved"));
-
-            if (localSforceReserved != null) {
-                elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSforceReserved));
-            } else {
-                throw new org.apache.axis2.databinding.ADBException("sforceReserved cannot be null!!");
-            }
-        }
 
         return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(),
                 attribList.toArray());
@@ -418,11 +403,10 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
 
         /**
-         * static method to create the object Precondition: If this object is an element, the current or next start
-         * element starts this object and any intervening reader events are ignorable If this object is not an element,
-         * it is a complex type and the reader is at the event just after the outer start element Postcondition: If this
-         * object is an element, the reader is positioned at its end element If this object is a complex type, the
-         * reader is positioned at the end element of its outer element
+         * static method to create the object Precondition: If this object is an element, the current or next start element starts this
+         * object and any intervening reader events are ignorable If this object is not an element, it is a complex type and the reader is
+         * at the event just after the outer start element Postcondition: If this object is an element, the reader is positioned at its end
+         * element If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static SearchResult parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             SearchResult object = new SearchResult();
@@ -464,7 +448,31 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
 
                 reader.next();
 
-                java.util.ArrayList list1 = new java.util.ArrayList();
+                java.util.ArrayList list2 = new java.util.ArrayList();
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()
+                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "queryId").equals(reader.getName())) {
+
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                        throw new org.apache.axis2.databinding.ADBException("The element: " + "queryId" + "  cannot be null");
+                    }
+
+                    java.lang.String content = reader.getElementText();
+
+                    object.setQueryId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+
+                    reader.next();
+
+                }  // End of if for expected property start element
+
+                else {
+                    // A start element we are not expecting indicates an invalid parameter was passed
+                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                }
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
@@ -473,11 +481,11 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
                         && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "searchRecords").equals(reader.getName())) {
 
                     // Process the array and step past its final element's end.
-                    list1.add(com.salesforce.soap.partner.SearchRecord.Factory.parse(reader));
+                    list2.add(com.salesforce.soap.partner.SearchRecord.Factory.parse(reader));
 
                     // loop until we find a start element that is not part of this array
-                    boolean loopDone1 = false;
-                    while (!loopDone1) {
+                    boolean loopDone2 = false;
+                    while (!loopDone2) {
                         // We should be at the end element, but make sure
                         while (!reader.isEndElement())
                             reader.next();
@@ -488,48 +496,23 @@ public class SearchResult implements org.apache.axis2.databinding.ADBBean {
                             reader.next();
                         if (reader.isEndElement()) {
                             // two continuous end elements means we are exiting the xml structure
-                            loopDone1 = true;
+                            loopDone2 = true;
                         } else {
                             if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "searchRecords").equals(reader
                                     .getName())) {
-                                list1.add(com.salesforce.soap.partner.SearchRecord.Factory.parse(reader));
+                                list2.add(com.salesforce.soap.partner.SearchRecord.Factory.parse(reader));
 
                             } else {
-                                loopDone1 = true;
+                                loopDone2 = true;
                             }
                         }
                     }
                     // call the converter utility to convert and set the array
 
                     object.setSearchRecords((com.salesforce.soap.partner.SearchRecord[]) org.apache.axis2.databinding.utils.ConverterUtil
-                            .convertToArray(com.salesforce.soap.partner.SearchRecord.class, list1));
+                            .convertToArray(com.salesforce.soap.partner.SearchRecord.class, list2));
 
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sforceReserved")
-                                .equals(reader.getName())) {
-
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
-                        throw new org.apache.axis2.databinding.ADBException("The element: " + "sforceReserved"
-                                + "  cannot be null");
-                    }
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setSforceReserved(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
+                }  // End of if for expected property start element
 
                 else {
 
