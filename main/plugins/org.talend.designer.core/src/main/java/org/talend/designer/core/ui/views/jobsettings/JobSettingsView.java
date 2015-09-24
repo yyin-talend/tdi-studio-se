@@ -54,6 +54,7 @@ import org.talend.core.model.repository.IRepositoryEditorInput;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.RepositoryManagerHelper;
+import org.talend.core.services.IGITProviderService;
 import org.talend.core.services.ISVNProviderService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IHeaderFooterProviderService;
@@ -62,6 +63,7 @@ import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.properties.tab.HorizontalTabFactory;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.core.ui.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.ui.services.IGitUIProviderService;
 import org.talend.core.ui.services.ISVNUiProviderService;
 import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.i18n.Messages;
@@ -114,6 +116,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     private Composite parent;
 
     private ISelection selectedModel;
+    
+    private ISVNProviderService svnService;
+    
+    private ISVNUiProviderService svnUIService;
+    
+    private IGITProviderService gitService;
+    
+    private IGitUIProviderService gitUIService;
 
     public JobSettingsView() {
         tabFactory = new HorizontalTabFactory();
@@ -121,6 +131,19 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
+        initProviderServices();
+    }
+
+    private void initProviderServices() {
+
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            svnService = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+            svnUIService = (ISVNUiProviderService) GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
+        }
+        if (PluginChecker.isGITProviderPluginLoaded()) {
+            gitService = (IGITProviderService) GlobalServiceRegister.getDefault().getService(IGITProviderService.class);
+            gitUIService = (IGitUIProviderService) GlobalServiceRegister.getDefault().getService(IGitUIProviderService.class);
+        }
     }
 
     public static String getViewNameLable() {
@@ -242,11 +265,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS;
         IDynamicProperty dynamicComposite = null;
 
-        ISVNUiProviderService service = null;
-        if (PluginChecker.isSVNProviderPluginLoaded()) {
-            service = (ISVNUiProviderService) GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
-        }
-
         if (EComponentCategory.EXTRA.equals(category)) {
             // achen modify to fix bug 0006241
             Process process = getElement();
@@ -283,9 +301,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                             (IRepositoryViewObject) data);
                 }
             }
-        } else if (EComponentCategory.SVNHISTORY.equals(category) && service != null) {
-            dynamicComposite = service.createProcessSVNHistoryComposite(parent, tabFactory.getWidgetFactory(),
+        } else if (EComponentCategory.SVNHISTORY.equals(category) && svnUIService != null) {
+            dynamicComposite = svnUIService.createProcessSVNHistoryComposite(parent, tabFactory.getWidgetFactory(),
                     (IRepositoryViewObject) data);
+        } else if (EComponentCategory.GITHISTORY.equals(category) && gitUIService != null) {
+          dynamicComposite = gitUIService.createProcessGitHistoryComposite(parent, this, tabFactory.getWidgetFactory(),
+                  (IRepositoryViewObject) data);
         } else if (EComponentCategory.APPEARANCE.equals(category)) {
             dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
                     .getBusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
@@ -476,10 +497,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     private EComponentCategory[] getCategories(Object obj) {
         List<EComponentCategory> category = new ArrayList<EComponentCategory>();
 
-        ISVNProviderService service = null;
-        if (PluginChecker.isSVNProviderPluginLoaded()) {
-            service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
-        }
         boolean isOfflineMode = CorePlugin.getDefault().getProxyRepositoryFactory().getRepositoryContext().isOffline();
 
         if (obj instanceof Process) {
@@ -505,8 +522,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             }
 
             // if svn remote connection, added by nma
-            if (service != null && service.isProjectInSvnMode() && !isOfflineMode) {
+            if (svnService != null && svnService.isProjectInSvnMode() && !isOfflineMode) {
                 category.add(EComponentCategory.SVNHISTORY);
+            }
+            
+            if (gitService != null && gitService.isProjectInGitMode() && !isOfflineMode) {
+                category.add(EComponentCategory.GITHISTORY);
             }
 
         } else if (obj instanceof IRepositoryViewObject) {
@@ -515,12 +536,18 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 category.add(EComponentCategory.VERSIONS);
             }
 
-            if (service != null
-                    && service.isProjectInSvnMode()
+            if (svnService != null
+                    && svnService.isProjectInSvnMode()
                     && !isOfflineMode
                     && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.JOBLET || ERepositoryObjectType
                             .getAllTypesOfProcess().contains(((IRepositoryViewObject) obj).getRepositoryObjectType()))) {
                 category.add(EComponentCategory.SVNHISTORY);
+            } else if (gitService != null
+                    && gitService.isProjectInGitMode()
+                    && !isOfflineMode
+                    && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.JOBLET || ERepositoryObjectType
+                            .getAllTypesOfProcess().contains(((IRepositoryViewObject) obj).getRepositoryObjectType()))) {
+                category.add(EComponentCategory.GITHISTORY);
             }
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
