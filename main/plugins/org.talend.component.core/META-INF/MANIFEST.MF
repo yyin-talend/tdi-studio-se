@@ -17,4 +17,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
-Export-Package: org.talend.component.core.utils
+Export-Package: org.talend.component.core.constants,
+ org.talend.component.core.model,
+ org.talend.component.core.utils

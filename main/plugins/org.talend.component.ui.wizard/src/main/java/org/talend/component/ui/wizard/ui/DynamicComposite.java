@@ -12,35 +12,56 @@
 // ============================================================================
 package org.talend.component.ui.wizard.ui;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.component.ui.wizard.ui.factory.GenericUIBuilder;
+import org.talend.component.core.constants.IElementParameterEventProperties;
+import org.talend.component.core.model.GenericElementParameter;
+import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.components.api.properties.presentation.Form;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.Element;
+import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 
 /**
- * created by ycbai on 2015年1月23日 Detailled comment
+ * 
+ * created by ycbai on 2015年9月24日 Detailled comment
  *
  */
-public class DynamicComposite extends Composite {
+public class DynamicComposite extends MultipleThreadDynamicComposite implements PropertyChangeListener {
 
-    public DynamicComposite(Composite parent, Form form) {
-        super(parent, SWT.NONE);
-        this.setLayoutData(new GridData(GridData.FILL_BOTH));
-        GridLayout gridLayout = new GridLayout();
-        gridLayout.marginWidth = 0;
-        gridLayout.marginHeight = 0;
-        setLayout(gridLayout);
-        createControl(form);
-        addListener();
+    private Element element;
+
+    private Form form;
+
+    public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
+            boolean isCompactView, Color backgroundColor, Form form) {
+        super(parentComposite, styles, section, element, isCompactView, backgroundColor);
+        this.element = element;
+        this.form = form;
+        resetParameters();
     }
 
-    private void createControl(Form form) {
-        new GenericUIBuilder(this).build(form);
+    private void resetParameters() {
+        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, form, null);
+        for (ElementParameter parameter : parameters) {
+            if (parameter instanceof GenericElementParameter) {
+                ((GenericElementParameter) parameter).addPropertyChangeListener(this);
+            }
+        }
+        element.setElementParameters(parameters);
     }
 
-    private void addListener() {
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        if (IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED.equals(event.getPropertyName())) {
+            resetParameters();
+            refresh();
+        }
     }
 
 }

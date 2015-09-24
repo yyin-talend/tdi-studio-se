@@ -1079,7 +1079,7 @@ public class Component extends AbstractComponent {
         EComponentCategory category = advanced ? EComponentCategory.ADVANCED : EComponentCategory.BASIC;
         ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
         Form form = props.getForm(advanced ? "Advanced" : "Main");
-        listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, form));
+        listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, form, null));
     }
 
     private void initializePropertyParameters(List<ElementParameter> listParam) {

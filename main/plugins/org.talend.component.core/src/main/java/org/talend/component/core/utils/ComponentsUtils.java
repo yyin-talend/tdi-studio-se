@@ -24,6 +24,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.model.Component;
+import org.talend.component.core.model.GenericElementParameter;
 import org.talend.components.api.NamedThing;
 import org.talend.components.api.properties.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
@@ -110,7 +111,8 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form, ElementParameter parentParam) {
+    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
+            ElementParameter parentParam) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         if (category == null) {
             category = EComponentCategory.BASIC;
@@ -118,14 +120,19 @@ public class ComponentsUtils {
         ComponentProperties compProperties = form.getProperties();
         List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
-            ElementParameter param = new ElementParameter(element);
-            if (parentParam != null)
-            	param.setParentParameter(parentParam);
+            ElementParameter param = new GenericElementParameter(element, compProperties, widget, getComponentService());
+            if (parentParam != null) {
+                param.setParentParameter(parentParam);
+            }
             param.setCategory(category);
             NamedThing[] widgetProperties = widget.getProperties();
             NamedThing widgetProperty = widgetProperties[0];
             param.setName(widgetProperty.getName());
             param.setDisplayName(widgetProperty.getDisplayName());
+            if (parentParam != null) {
+                param.setGroup(form.getName());
+                param.setGroupDisplayName(form.getDisplayName());
+            }
             param.setShow(widget.isVisible());
             if (widgetProperty instanceof Form) {
                 ElementParameter formParam = new ElementParameter(element);
@@ -135,7 +142,7 @@ public class ComponentsUtils {
                 formParam.setName(widgetProperty.getName());
                 formParam.setDisplayName(widgetProperty.getDisplayName());
                 formParam.setShow(widget.isVisible());
-                elementParameters.addAll(getParametersFromForm(element, category, (Form) widgetProperty, param));
+                elementParameters.addAll(getParametersFromForm(element, category, (Form) widgetProperty, formParam));
                 continue;
             }
 
@@ -230,7 +237,6 @@ public class ComponentsUtils {
                 }
             }
 
-            param.setShow(widget.isVisible());
             // FIXME
             param.setReadOnly(false);
             elementParameters.add(param);
