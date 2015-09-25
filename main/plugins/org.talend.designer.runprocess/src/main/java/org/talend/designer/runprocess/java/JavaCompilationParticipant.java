@@ -27,7 +27,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -35,7 +34,6 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -86,7 +84,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             }
         }
 
-        if (routineToUpdate) {
+        if (routineToUpdate && !CommonsPlugin.isHeadless()) {
             Display.getDefault().asyncExec(new Runnable() {
 
                 @Override
@@ -117,18 +115,12 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             IProject javaProject = talendProcessJavaProject.getProject();
             IFile file = javaProject.getFile(filePath);
             String fileName = file.getName();
+            final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
+                    .createRoutineSynchronizer();
 
             for (IRepositoryViewObject repositoryObject : routineObjectList) {
                 Property property = repositoryObject.getProperty();
-                ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
                 Item item = property.getItem();
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                    ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                            .getService(ICamelDesignerCoreService.class);
-                    if (service.isInstanceofCamel(item)) {
-                        synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
-                    }
-                }
                 IFile currentFile = synchronizer.getFile(item);
                 if (currentFile != null && fileName.equals(currentFile.getName()) && currentFile.exists()) {
                     Problems.addRoutineFile(currentFile, property);

@@ -19,27 +19,30 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.designer.codegen.ITalendSynchronizer;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
@@ -106,7 +109,8 @@ public class JobErrorsChecker {
 
     public static boolean checkExportErrors(IStructuredSelection selection, boolean isJob) {
         if (!selection.isEmpty()) {
-            ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
+            final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
+                    .createRoutineSynchronizer();
             Set<String> jobIds = new HashSet<String>();
 
             List<RepositoryNode> nodes = selection.toList();
@@ -115,13 +119,6 @@ public class JobErrorsChecker {
                 for (RepositoryNode node : nodes) {
                     Item item = node.getObject().getProperty().getItem();
                     try {
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                                    .getService(ICamelDesignerCoreService.class);
-                            if (service.isInstanceofCamel(item)) {
-                                synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
-                            }
-                        }
                         IFile sourceFile = synchronizer.getFile(item);
                         if (sourceFile == null) {
                             return false;
@@ -219,11 +216,12 @@ public class JobErrorsChecker {
         if (updateProblemsView && CommonsPlugin.isHeadless()) {
             updateProblemsView = false;
         }
-        boolean ret = false;
+        boolean hasError = false;
         boolean isJob = true;
         Item item = null;
-        IProxyRepositoryFactory proxyRepositoryFactory = CorePlugin.getDefault().getRepositoryService()
+        final IProxyRepositoryFactory proxyRepositoryFactory = CorePlugin.getDefault().getRepositoryService()
                 .getProxyRepositoryFactory();
+        final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
         Integer line = null;
         String errorMessage = null;
         try {
@@ -243,16 +241,6 @@ public class JobErrorsChecker {
                 if (item == null) {
                     continue;
                 }
-
-                ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                            .getService(ICamelDesignerCoreService.class);
-                    if (camelService.isInstanceofCamel(item)) {
-                        synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
-                    }
-                }
-
                 IFile file = synchronizer.getFile(item);
                 if (file == null) {
                     return;
@@ -267,7 +255,7 @@ public class JobErrorsChecker {
                     if (lineNr != null && message != null && severity != null && start != null && end != null) {
                         switch (severity) {
                         case IMarker.SEVERITY_ERROR:
-                            ret = true;
+                            hasError = true;
                             line = lineNr;
                             errorMessage = message;
                             break;
@@ -280,7 +268,7 @@ public class JobErrorsChecker {
                     Problems.addRoutineFile(file, ProblemType.JOB, item.getProperty().getLabel(),
                             item.getProperty().getVersion(), true);
                 }
-                if (ret) {
+                if (hasError) {
                     break;
                 }
             }
@@ -288,7 +276,7 @@ public class JobErrorsChecker {
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
-        if (ret && item != null) {
+        if (hasError && item != null) {
             if (isJob) {
                 throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + '\n' + //$NON-NLS-1$
                         Messages.getString("JobErrorsChecker_compile_error_message", item.getProperty().getLabel()) + '\n' //$NON-NLS-1$
@@ -303,6 +291,65 @@ public class JobErrorsChecker {
                         + Messages.getString("JobErrorsChecker_compile_error_jvmmessage")); //$NON-NLS-1$
             }
         }
+
+        // if no error for job, check codes.
+
+        List<Problem> errors = Problems.getProblemList().getProblemsBySeverity(ProblemStatus.ERROR);
+        for (Problem p : errors) {
+            if (p instanceof TalendProblem) {
+                TalendProblem talendProblem = (TalendProblem) p;
+                if (talendProblem.getType() == ProblemType.ROUTINE) {
+                    line = talendProblem.getLineNumber();
+                    errorMessage = talendProblem.getDescription();
+                    throw new ProcessorException(Messages.getString(
+                            "JobErrorsChecker_routines_compile_errors", talendProblem.getJavaUnitName()) + '\n'//$NON-NLS-1$
+                            + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + line + '\n' //$NON-NLS-1$
+                            + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ':' + ' ' + errorMessage); //$NON-NLS-1$
+                }
+            }
+        }
+
+        // if can't find the routines problem, try to check the file directly(mainly for commandline)
+        try {
+            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+            List<IRepositoryViewObject> routinesObjects = factory.getAll(ERepositoryObjectType.ROUTINES, false);
+            if (routinesObjects != null) {
+                for (IRepositoryViewObject obj : routinesObjects) {
+                    Property property = obj.getProperty();
+                    Item routinesitem = property.getItem();
+                    IFile routinesFile = synchronizer.getFile(routinesitem);
+                    IMarker[] markers = routinesFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+                    for (IMarker marker : markers) {
+                        Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
+                        String message = (String) marker.getAttribute(IMarker.MESSAGE);
+                        Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
+                        Integer start = (Integer) marker.getAttribute(IMarker.CHAR_START);
+                        Integer end = (Integer) marker.getAttribute(IMarker.CHAR_END);
+                        if (lineNr != null && message != null && severity != null && start != null && end != null) {
+                            switch (severity) {
+                            case IMarker.SEVERITY_ERROR:
+                                hasError = true;
+                                line = lineNr;
+                                errorMessage = message;
+                                throw new ProcessorException(
+                                        Messages.getString("JobErrorsChecker_routines_compile_errors", property.getLabel()) + '\n'//$NON-NLS-1$
+                                                + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + line + '\n' //$NON-NLS-1$
+                                                + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ':' + ' ' + errorMessage); //$NON-NLS-1$
+                            default:
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        } catch (SystemException e) {
+            ExceptionHandler.process(e);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+
     }
 
 }
