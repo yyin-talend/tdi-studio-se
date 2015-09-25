@@ -122,6 +122,8 @@ public class ComponentsUtils {
             lastRowNum = new AtomicInteger();
         }
         ComponentProperties compProperties = form.getProperties();
+        // Have to initialize for the messages
+        compProperties.getProperties();
         List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
             ElementParameter param = new GenericElementParameter(element, compProperties, widget, getComponentService());
