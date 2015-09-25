@@ -23,7 +23,9 @@ import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 
@@ -47,13 +49,28 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     }
 
     private void resetParameters() {
-        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, form, null);
+        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 ((GenericElementParameter) parameter).addPropertyChangeListener(this);
             }
         }
+        parameters.add(getUpdateParameter());
         element.setElementParameters(parameters);
+    }
+
+    private ElementParameter getUpdateParameter() {
+        ElementParameter param = new ElementParameter(element);
+        param.setName(EParameterName.UPDATE_COMPONENTS.getName());
+        param.setValue(true);
+        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
+        param.setFieldType(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setNumRow(5);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        return param;
     }
 
     @Override

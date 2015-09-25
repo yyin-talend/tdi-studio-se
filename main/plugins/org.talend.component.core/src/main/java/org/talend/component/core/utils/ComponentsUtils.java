@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -112,10 +113,13 @@ public class ComponentsUtils {
      * @return parameters list
      */
     public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-            ElementParameter parentParam) {
+            ElementParameter parentParam, AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         if (category == null) {
             category = EComponentCategory.BASIC;
+        }
+        if (lastRowNum == null) {
+            lastRowNum = new AtomicInteger();
         }
         ComponentProperties compProperties = form.getProperties();
         List<Widget> formWidgets = form.getWidgets();
@@ -130,19 +134,19 @@ public class ComponentsUtils {
             param.setName(widgetProperty.getName());
             param.setDisplayName(widgetProperty.getDisplayName());
             if (parentParam != null) {
-                param.setGroup(form.getName());
-                param.setGroupDisplayName(form.getDisplayName());
+                // param.setGroup(form.getName());
+                // param.setGroupDisplayName(form.getDisplayName());
             }
-            param.setShow(widget.isVisible());
+            param.setShow(parentParam == null ? widget.isVisible() : parentParam.isShow(null) && widget.isVisible());
+            int rowNum = widget.getRow();
+            if (parentParam != null) {
+                rowNum += parentParam.getNumRow();
+            }
+            rowNum = rowNum + lastRowNum.get();
+            param.setNumRow(rowNum);
+            lastRowNum.set(rowNum);
             if (widgetProperty instanceof Form) {
-                ElementParameter formParam = new ElementParameter(element);
-                formParam.setCategory(category);
-                formParam.setGroup(widgetProperty.getName());
-                formParam.setGroupDisplayName(widgetProperty.getDisplayName());
-                formParam.setName(widgetProperty.getName());
-                formParam.setDisplayName(widgetProperty.getDisplayName());
-                formParam.setShow(widget.isVisible());
-                elementParameters.addAll(getParametersFromForm(element, category, (Form) widgetProperty, formParam));
+                elementParameters.addAll(getParametersFromForm(element, category, (Form) widgetProperty, param, lastRowNum));
                 continue;
             }
 
@@ -203,7 +207,7 @@ public class ComponentsUtils {
                 }
                 break;
             case BUTTON:
-            	// FIXME - this is a button - this needs to be handled, avoids the NPE
+                // FIXME - this is a button - this needs to be handled, avoids the NPE
                 fieldType = EParameterFieldType.TEXT;
                 break;
             case COMPONENT_REFERENCE:
@@ -221,7 +225,6 @@ public class ComponentsUtils {
                 break;
             }
             param.setFieldType(fieldType);
-            param.setNumRow(widget.getRow());
             // FIXME - Column?
             if (se != null) {
                 param.setRequired(se.isRequired());
@@ -245,5 +248,4 @@ public class ComponentsUtils {
         }
         return elementParameters;
     }
-
 }
