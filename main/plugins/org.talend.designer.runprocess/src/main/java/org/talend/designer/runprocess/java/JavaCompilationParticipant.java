@@ -84,7 +84,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             }
         }
 
-        if (routineToUpdate) {
+        if (routineToUpdate && !CommonsPlugin.isHeadless()) {
             Display.getDefault().asyncExec(new Runnable() {
 
                 @Override
@@ -112,13 +112,14 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             if (talendProcessJavaProject == null) {
                 return;
             }
+            final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
+                    .createRoutineSynchronizer();
             IProject javaProject = talendProcessJavaProject.getProject();
             IFile file = javaProject.getFile(filePath);
             String fileName = file.getName();
 
             for (IRepositoryViewObject repositoryObject : routineObjectList) {
                 Property property = repositoryObject.getProperty();
-                final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
                 Item item = property.getItem();
                 IFile currentFile = synchronizer.getFile(item);
                 if (currentFile != null && fileName.equals(currentFile.getName()) && currentFile.exists()) {
