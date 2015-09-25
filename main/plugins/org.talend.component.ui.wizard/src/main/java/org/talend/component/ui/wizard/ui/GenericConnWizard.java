@@ -140,22 +140,21 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
         ComponentWizard componentWizard = internalService.getComponentWizard(typeName);
         List<Form> forms = componentWizard.getForms();
-        if (forms.size() > 0) {
-            connPage = new GenericConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation,
-                    forms.get(0));
-        }
-        if (connPage != null) {
-            if (creation) {
-                connPage.setTitle(Messages.getString("GenericConnWizardPage.titleCreate", typeName)); //$NON-NLS-1$
-                connPage.setDescription(Messages.getString("GenericConnWizardPage.descriptionCreate")); //$NON-NLS-1$
-                connPage.setPageComplete(false);
-            } else {
-                connPage.setTitle(Messages.getString("GenericConnWizardPage.titleUpdate", typeName)); //$NON-NLS-1$
-                connPage.setDescription(Messages.getString("GenericConnWizardPage.descriptionUpdate")); //$NON-NLS-1$
-                connPage.setPageComplete(isRepositoryObjectEditable());
-            }
-        }
-        addPage(connPage);
+		for (Form form : forms) {
+				connPage = new GenericConnWizardPage(connectionItem,
+						isRepositoryObjectEditable(), existingNames, creation,
+						form);
+			if (connPage != null) {
+				connPage.setTitle(form.getTitle());
+				connPage.setDescription(form.getSubtitle());
+				if (creation) {
+					connPage.setPageComplete(false);
+				} else {
+					connPage.setPageComplete(isRepositoryObjectEditable());
+				}
+			}
+			addPage(connPage);
+		}
     }
 
     @Override
