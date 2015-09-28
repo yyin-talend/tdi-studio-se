@@ -43,7 +43,7 @@ public class DisableUseBatchWhenRejectLineExists extends AbstractJobMigrationTas
      */
     @Override
     public Date getOrder() {
-        return new GregorianCalendar(2015, 8, 10, 12, 0, 0).getTime();
+        return new GregorianCalendar(2015, 9, 28, 12, 0, 0).getTime();
     }
 
     /*
@@ -60,6 +60,7 @@ public class DisableUseBatchWhenRejectLineExists extends AbstractJobMigrationTas
         }
 
         List<String> filterList = Arrays.asList("tFirebirdOutput", "tGreenplumOutput", "tIngresOutput", "tInterbaseOutput", "tParAccelOutput", "tPostgresPlusOutput", "tSQLiteOutput", "tRedshiftOutput");
+        List<String> filterListMore = Arrays.asList("tTeradataOutput", "tOracleOutput");
 
         IComponentConversion disableUseBatchWhenRejectLineExists = new IComponentConversion() {
             public void transform(NodeType node) {
@@ -80,11 +81,46 @@ public class DisableUseBatchWhenRejectLineExists extends AbstractJobMigrationTas
             }
         };
 
+        IComponentConversion disableUseBatchWhenRejectLineExistsMore = new IComponentConversion() {
+            public void transform(NodeType node) {
+                ElementParameterType useBatch = ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE");
+                ElementParameterType useBatchAndUseExistingConn = ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN");
+                List<ConnectionType> list = ComponentUtilities.getNodeOutputConnections(node);
+                for(ConnectionType connType : list){
+                    EConnectionType eConnType = EConnectionType.getTypeFromId(
+                                                  connType.getLineStyle()
+                                                 );
+                    if(eConnType == EConnectionType.FLOW_MAIN && connType.getConnectorName().equals("REJECT")){
+                        if(useBatch ==  null){
+                             ComponentUtilities.addNodeProperty(node, "USE_BATCH_SIZE", "CHECK");
+                        }
+                        if(useBatchAndUseExistingConn ==  null){
+                             ComponentUtilities.addNodeProperty(node, "USE_BATCH_AND_USE_CONN", "CHECK");
+                        }
+                             ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE").setValue("false");
+                             ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN").setValue("false");
+                        break;
+                    }
+                }
+            }
+        };
+
         for (String componentName : filterList) {
             IComponentFilter filter = new NameComponentFilter(componentName);
             try {
                 ModifyComponentsAction.searchAndModify(item, processType, filter,
                         Arrays.<IComponentConversion> asList(disableUseBatchWhenRejectLineExists));
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
+            }
+        }
+
+        for (String componentName : filterListMore) {
+            IComponentFilter filter = new NameComponentFilter(componentName);
+            try {
+                ModifyComponentsAction.searchAndModify(item, processType, filter,
+                        Arrays.<IComponentConversion> asList(disableUseBatchWhenRejectLineExistsMore));
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
                 return ExecutionResult.FAILURE;
