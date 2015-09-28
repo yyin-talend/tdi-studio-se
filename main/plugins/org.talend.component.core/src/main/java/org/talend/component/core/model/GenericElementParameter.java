@@ -66,9 +66,11 @@ public class GenericElementParameter extends ElementParameter {
         super.setValue(o);
         if (!isFirstCall) {
             updateProperty(o);
-            callValidate();
-            callAfter();
-            fireChangedIfNeeded();
+            boolean calledValidate = callValidate();
+            boolean calledAfter = callAfter();
+            if (calledValidate || calledAfter) {
+                fireChangedIfNeeded();
+            }
         }
         isFirstCall = false;
     }
@@ -92,34 +94,40 @@ public class GenericElementParameter extends ElementParameter {
         }
     }
 
-    private void callBefore() {
+    private boolean callBefore() {
         if (widget.isCallBefore()) {
             try {
                 componentProperties = componentService.beforeProperty(getName(), componentProperties);
+                return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
         }
+        return false;
     }
 
-    private void callValidate() {
+    private boolean callValidate() {
         if (widget.isCallValidate()) {
             try {
                 componentProperties = componentService.validateProperty(getName(), componentProperties);
+                return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
         }
+        return false;
     }
 
-    private void callAfter() {
+    private boolean callAfter() {
         if (widget.isCallAfter()) {
             try {
                 componentProperties = componentService.afterProperty(getName(), componentProperties);
+                return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
         }
+        return false;
     }
 
 }

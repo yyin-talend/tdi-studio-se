@@ -140,11 +140,16 @@ public class ComponentsUtils {
                 // param.setGroupDisplayName(form.getDisplayName());
             }
             param.setShow(parentParam == null ? widget.isVisible() : parentParam.isShow(null) && widget.isVisible());
-            int rowNum = widget.getRow();
-            if (parentParam != null) {
-                rowNum += parentParam.getNumRow();
+            int rowNum = 0;
+            if (widget.getOrder() != 1) {
+                rowNum = lastRowNum.get();
+            } else {
+                rowNum = widget.getRow();
+                if (parentParam != null) {
+                    rowNum += parentParam.getNumRow();
+                }
+                rowNum = rowNum + lastRowNum.get();
             }
-            rowNum = rowNum + lastRowNum.get();
             param.setNumRow(rowNum);
             lastRowNum.set(rowNum);
             if (widgetProperty instanceof Form) {
@@ -209,8 +214,7 @@ public class ComponentsUtils {
                 }
                 break;
             case BUTTON:
-                // FIXME - this is a button - this needs to be handled, avoids the NPE
-                fieldType = EParameterFieldType.TEXT;
+                fieldType = EParameterFieldType.BUTTON;
                 break;
             case COMPONENT_REFERENCE:
                 break;

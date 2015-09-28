@@ -107,5 +107,13 @@
             class="org.talend.component.ui.model.genericMetadata.GenericMetadataPackage"
             genModel="model/genericMetadata.genmodel"/>
    </extension>
+   <extension
+         point="org.talend.designer.core.generators">
+      <generator
+            class="org.talend.component.ui.wizard.controller.generator.ButtonGenerator"
+            mapping="BUTTON"
+            name="Button">
+      </generator>
+   </extension>
 
 </plugin>
