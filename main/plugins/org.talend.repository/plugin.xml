@@ -2399,6 +2399,15 @@
                 name="ChangeComponentSettingNameMigrationTask"
                 version="5.6.2">
           </projecttask>
+          <projecttask
+                beforeLogon="false"
+                breaks="5.6.1"
+                class="org.talend.repository.model.migration.DisableUseBatchWhenRejectLineExists"
+                description="Disable use batch when reject line exists"
+                id="org.talend.repository.model.migration.DisableUseBatchWhenRejectLineExists"
+                name="DisableUseBatchWhenRejectLineExists"
+                version="5.6.3">
+          </projecttask>
    </extension>
 
    <extension
