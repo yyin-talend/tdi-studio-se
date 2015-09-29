@@ -24,6 +24,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.Problem.ProblemType;
 import org.talend.core.model.process.TalendProblem;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -57,6 +58,9 @@ public class ErrorDetailTreeBuilder {
                     // System.out.println("tp----" + talendProblem.getElement().getClass());
                     JobErrorEntry jobEntry = getJobEntry(talendProblem.getJavaUnitName());
                     jobEntry.addItem(componentName, talendProblem);
+                } else if (talendProblem.getType() == ProblemType.ROUTINE) { // should add the routine always for job.
+                    JobErrorEntry routineEntry = getJobEntry(talendProblem.getJavaUnitName());
+                    routineEntry.addItem(ProblemType.ROUTINE.getTypeName(), talendProblem);
                 }
 
             } else {
