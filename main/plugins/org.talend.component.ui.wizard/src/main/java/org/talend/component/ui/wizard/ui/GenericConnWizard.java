@@ -30,11 +30,12 @@ import org.talend.component.ui.wizard.constants.IGenericConstants;
 import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
 import org.talend.component.ui.wizard.internal.service.GenericWizardInternalService;
+import org.talend.component.ui.wizard.ui.common.GenericWizardPage;
 import org.talend.component.ui.wizard.update.GenericUpdateManager;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
 import org.talend.components.api.properties.presentation.Form;
+import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ConnectionItem;
@@ -43,7 +44,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
-import org.talend.designer.core.IDesignerCoreService;
+import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -58,7 +59,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
  */
 public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
-    private GenericConnWizardPage connPage;
+    private GenericWizardPage wizPage;
 
     private GenericConnection connection;
 
@@ -76,10 +77,16 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     private RepositoryNode repNode;
 
+    private IGenericWizardService wizardService;
+
+    private ComponentService compService;
+
     public GenericConnWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
         super(workbench, creation);
         this.existingNames = existingNames;
         repNode = node;
+        wizardService = GenericWizardServiceFactory.getGenericWizardService();
+        compService = new GenericWizardInternalService().getComponentService();
         setNeedsProgressMonitor(true);
         ENodeType nodeType = node.getType();
         switch (nodeType) {
@@ -91,7 +98,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             pathToSave = new Path(""); //$NON-NLS-1$
             break;
         }
-
         switch (nodeType) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
@@ -106,7 +112,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             connectionItem.setProperty(connectionProperty);
             connectionItem.setConnection(connection);
             break;
-
         case REPOSITORY_ELEMENT:
             RepositoryObject object = new RepositoryObject(node.getObject().getProperty());
             setRepositoryObject(object);
@@ -134,61 +139,52 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
     public void addPages() {
         String typeName = repNode.getContentType().getType();
         setWindowTitle(typeName);
-        Image wiardImage = GenericWizardServiceFactory.getGenericWizardService().getWiardImage(typeName);
+        Image wiardImage = wizardService.getWiardImage(typeName);
         setDefaultPageImageDescriptor(ImageDescriptor.createFromImage(wiardImage));
 
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
         ComponentWizard componentWizard = internalService.getComponentWizard(typeName);
         List<Form> forms = componentWizard.getForms();
-		for (Form form : forms) {
-				connPage = new GenericConnWizardPage(connectionItem,
-						isRepositoryObjectEditable(), existingNames, creation,
-						form);
-			if (connPage != null) {
-				connPage.setTitle(form.getTitle());
-				connPage.setDescription(form.getSubtitle());
-				if (creation) {
-					connPage.setPageComplete(false);
-				} else {
-					connPage.setPageComplete(isRepositoryObjectEditable());
-				}
-			}
-			addPage(connPage);
-		}
+        for (Form form : forms) {
+            wizPage = new GenericConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation, form,
+                    compService);
+            if (wizPage != null) {
+                wizPage.setTitle(form.getTitle());
+                wizPage.setDescription(form.getSubtitle());
+                if (creation) {
+                    wizPage.setPageComplete(false);
+                } else {
+                    wizPage.setPageComplete(isRepositoryObjectEditable());
+                }
+            }
+            addPage(wizPage);
+        }
     }
 
     @Override
     public boolean performFinish() {
-        if (connPage.isPageComplete()) {
+        if (wizPage.isPageComplete()) {
             final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             String displayName = connectionProperty.getDisplayName();
             connectionProperty.setLabel(displayName);
             this.connection.setName(displayName);
             this.connection.setLabel(displayName);
+            Form form = wizPage.getForm();
             try {
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
-                    // factory.create(connectionItem, propertiesPage.getDestinationPath());
+                    factory.create(connectionItem, null);
                 } else {
                     GenericUpdateManager.updateGenericConnection(connectionItem);
                     updateConnectionItem();
-
-                    // boolean isModified = propertiesPage.isNameModifiedByUser();
-                    // if (isModified) {
-                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
-                        IDesignerCoreService service = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                                IDesignerCoreService.class);
-                        if (service != null) {
-                            service.refreshComponentView(connectionItem);
-                        }
-                    }
-
-                    // }
                 }
-            } catch (Exception e) {
+                if (form.isCallAfterFormFinish()) {
+                    compService.afterFormFinish(form.getName(), form.getProperties());
+                }
+            } catch (Throwable e) {
                 new ErrorDialogWidthDetailArea(getShell(), IGenericConstants.PLUGIN_ID,
-                        Messages.getString("NoSQLWizard.persistenceException"), //$NON-NLS-1$
+                        Messages.getString("GenericConnWizard.persistenceException"), //$NON-NLS-1$
                         ExceptionUtils.getFullStackTrace(e));
                 ExceptionHandler.process(e);
                 return false;

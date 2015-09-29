@@ -12,15 +12,14 @@
 // ============================================================================
 package org.talend.component.ui.wizard.ui;
 
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.component.ui.wizard.model.FakeElement;
+import org.talend.component.ui.wizard.ui.common.GenericWizardPage;
 import org.talend.components.api.properties.presentation.Form;
+import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
@@ -30,23 +29,11 @@ import org.talend.core.model.properties.ConnectionItem;
  * created by ycbai on 2015年9月21日 Detailled comment
  *
  */
-public class GenericConnWizardPage extends WizardPage {
-
-    private final ConnectionItem connectionItem;
-
-    private final String[] existingNames;
-
-    private final boolean isRepositoryObjectEditable;
-
-    private Form form;
+public class GenericConnWizardPage extends GenericWizardPage {
 
     public GenericConnWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames,
-            boolean creation, Form form) {
-        super("GenericConnWizardPage"); //$NON-NLS-1$
-        this.connectionItem = connectionItem;
-        this.existingNames = existingNames;
-        this.isRepositoryObjectEditable = isRepositoryObjectEditable;
-        this.form = form;
+            boolean creation, Form form, ComponentService compService) {
+        super(connectionItem, isRepositoryObjectEditable, existingNames, creation, form, compService);
     }
 
     @Override
@@ -60,21 +47,6 @@ public class GenericConnWizardPage extends WizardPage {
         DynamicComposite dynamicComposite = new DynamicComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS,
                 EComponentCategory.BASIC, element, true, container.getBackground(), form);
         dynamicComposite.setLayoutData(createFormData());
-    }
-
-    protected FormData createFormData() {
-        FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        data.bottom = new FormAttachment(100, 0);
-        return data;
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        setPageComplete(visible);
     }
 
 }
