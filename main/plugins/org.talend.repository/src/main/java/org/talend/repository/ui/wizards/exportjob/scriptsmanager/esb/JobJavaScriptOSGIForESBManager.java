@@ -603,8 +603,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Jar bin = new Jar(classesLocation);
         analyzer.setJar(bin);
 
-        String bundleName = processItem.getProperty().getLabel();
-        String symbolicName = processItem.getProperty().getLabel();
+        final String bundleName = processItem.getProperty().getLabel();
+        String symbolicName = bundleName;
         // http://jira.talendforge.org/browse/TESB-5382 LiXiaopeng
         Project project = ProjectManager.getInstance().getCurrentProject();
         if (project != null) {
@@ -636,13 +636,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
-
-        analyzer.setProperty(Analyzer.EXPORT_SERVICE, "routines.system.api.TalendJob;name=" + bundleName + ";type=" + "job");
         return analyzer;
     }
 
     protected void addOsgiDependencies(Analyzer analyzer, ExportFileResource libResource, ProcessItem processItem)
             throws IOException {
+        analyzer.setProperty(Analyzer.EXPORT_SERVICE, "routines.system.api.TalendJob;name=" + processItem.getProperty().getLabel() + ";type=" + "job");
         analyzer.setProperty(Analyzer.EXPORT_PACKAGE, getPackageName(processItem));
 
         final Collection<String> importPackages = new HashSet<String>();
