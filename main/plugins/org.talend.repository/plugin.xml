@@ -2569,7 +2569,7 @@
               description="Disable use batch when reject line exists"
               id="org.talend.repository.model.migration.DisableUseBatchWhenRejectLineExists"
               name="DisableUseBatchWhenRejectLineExists"
-              version="6.1">
+              version="6.1.0">
         </projecttask>
         <projecttask
               beforeLogon="false"
