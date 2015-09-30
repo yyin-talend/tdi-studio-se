@@ -80,7 +80,12 @@ int nb_line_rejected_<%=cid%> = 0;
 <%if(!useExistingConn){%>
     java.net.URL url = null;
     try {
-        url = new java.net.URL(<%=mdmUrl %>);
+        String murl = <%=mdmUrl %>; 
+        if(murl.endsWith("?wsdl")) {
+            url = new java.net.URL(murl);
+        } else {
+            url = new java.net.URL(murl + "?wsdl");
+        }
     }catch(Exception e){
     
         <%if(isLog4jEnabled){%>
