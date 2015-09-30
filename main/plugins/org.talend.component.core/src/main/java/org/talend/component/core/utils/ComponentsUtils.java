@@ -27,7 +27,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.model.Component;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.components.api.NamedThing;
-import org.talend.components.api.properties.ComponentDefinition;
+import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.properties.presentation.Widget;
