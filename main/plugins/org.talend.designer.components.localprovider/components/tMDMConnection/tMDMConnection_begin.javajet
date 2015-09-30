@@ -22,7 +22,12 @@ boolean useClientTranId = "true".equals(ElementParameterParser.getValue(node, "_
 %>
     java.net.URL url = null;
     try {
-        url = new java.net.URL(<%=mdmUrl %>);
+        String murl = <%=mdmUrl %>; 
+        if(murl.endsWith("?wsdl")) {
+            url = new java.net.URL(murl);
+        } else {
+            url = new java.net.URL(murl + "?wsdl");
+        }
     }catch(Exception e){
         <%if(isLog4jEnabled){%>
         log.error(e.getMessage(),e);
@@ -67,7 +72,8 @@ if(useClientTranId){
 %>
 
 List<org.apache.cxf.headers.Header> headers = new java.util.ArrayList<org.apache.cxf.headers.Header>();
-org.apache.cxf.headers.Header dummyHeader = new org.apache.cxf.headers.Header(new javax.xml.namespace.QName("http://www.talend.com/mdm", "transaction-id"), mdmTransaction_<%=cid%>.getId());
+org.apache.cxf.databinding.DataBinding dataBinding = new org.apache.cxf.jaxb.JAXBDataBinding(String.class); 
+org.apache.cxf.headers.Header dummyHeader = new org.apache.cxf.headers.Header(new javax.xml.namespace.QName("http://www.talend.com/mdm", "transaction-id"), mdmTransaction_<%=cid%>.getId(), dataBinding);
 headers.add(dummyHeader);
 context_<%=cid %>.put(org.apache.cxf.headers.Header.HEADER_LIST, headers);
 
