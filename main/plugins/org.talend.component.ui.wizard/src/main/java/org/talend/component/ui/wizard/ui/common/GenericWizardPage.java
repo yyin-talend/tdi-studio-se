@@ -19,6 +19,8 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.ui.check.ICheckListener;
+import org.talend.core.ui.check.ICheckedComposite;
 
 /**
  * 
@@ -79,6 +81,27 @@ public abstract class GenericWizardPage extends WizardPage {
 
     public Form getForm() {
         return this.form;
+    }
+
+    protected void addCheckListener(ICheckedComposite checkedComposite) {
+        ICheckListener checkListener = new ICheckListener() {
+
+            @Override
+            public void checkPerformed(ICheckedComposite source) {
+                if (source.isStatusOnError()) {
+                    setErrorMessage(source.getStatus());
+                } else {
+                    setErrorMessage(null);
+                    setMessage(source.getStatus(), source.getStatusLevel());
+                }
+                updatePageStatus();
+            }
+        };
+        checkedComposite.setListener(checkListener);
+    }
+
+    protected void updatePageStatus() {
+        setPageComplete(getErrorMessage() == null);
     }
 
 }

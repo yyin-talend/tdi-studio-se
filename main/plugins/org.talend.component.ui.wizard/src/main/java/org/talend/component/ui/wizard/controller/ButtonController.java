@@ -18,13 +18,11 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.CoreUIPlugin;
@@ -38,20 +36,22 @@ import org.talend.designer.core.ui.editor.properties.controllers.AbstractElement
  */
 public class ButtonController extends AbstractElementPropertySectionController {
 
-    private Button theBtn;
-
     public ButtonController(IDynamicProperty dp) {
         super(dp);
     }
 
-    public Command createCommand(Button button) {// implement logic
+    public Command createCommand(Button button) {
+        IElementParameter parameter = (IElementParameter) button.getData();
+        if (parameter != null) {
+            parameter.setValue(null); // so as to invoke listeners to perform some actions.
+        }
         return null;
     }
 
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
-        theBtn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        Button theBtn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         if (param.getDisplayName().equals("")) { //$NON-NLS-1$
             theBtn.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         } else {
@@ -71,6 +71,7 @@ public class ButtonController extends AbstractElementPropertySectionController {
         data.top = new FormAttachment(0, top);
         theBtn.setLayoutData(data);
         theBtn.setEnabled(!param.isReadOnly());
+        theBtn.setData(param);
         theBtn.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -94,11 +95,7 @@ public class ButtonController extends AbstractElementPropertySectionController {
 
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        Point initialSize = new Point(0, 0);
-        if (theBtn != null && !theBtn.isDisposed()) {
-            initialSize = theBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        }
-        return initialSize.y + ITabbedPropertyConstants.VSPACE;
+        return 0;
     }
 
 }

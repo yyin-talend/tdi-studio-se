@@ -20,4 +20,6 @@ public interface IElementParameterEventProperties {
 
     public final static String EVENT_PROPERTY_VALUE_CHANGED = "EVENT_PROPERTY_VALUE_CHANGED"; //$NON-NLS-1$
 
+    public final static String EVENT_VALIDATE_RESULT_UPDATE = "EVENT_VALIDATE_RESULT_UPDATE"; //$NON-NLS-1$
+
 }

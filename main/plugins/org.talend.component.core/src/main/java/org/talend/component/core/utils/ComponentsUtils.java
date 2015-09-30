@@ -246,6 +246,8 @@ public class ComponentsUtils {
                     param.setListItemsDisplayCodeName(valArray);
                     param.setListItemsValue(valArray);
                 }
+            } else {
+                param.setValue(null);
             }
 
             // FIXME

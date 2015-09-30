@@ -14,8 +14,14 @@ package org.talend.component.core.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.components.api.NamedThing;
@@ -67,9 +73,12 @@ public class GenericElementParameter extends ElementParameter {
         if (!isFirstCall) {
             updateProperty(o);
             boolean calledValidate = callValidate();
+            if (calledValidate) {
+                fireValidateStatus();
+            }
             boolean calledAfter = callAfter();
-            if (calledValidate || calledAfter) {
-                fireChangedIfNeeded();
+            if (calledAfter) {
+                fireValueChanged();
             }
         }
         isFirstCall = false;
@@ -84,7 +93,12 @@ public class GenericElementParameter extends ElementParameter {
         }
     }
 
-    private void fireChangedIfNeeded() {
+    private void fireValidateStatus() {
+        this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE, null,
+                componentProperties.getValidationResult());
+    }
+
+    private void fireValueChanged() {
         List<Form> forms = componentProperties.getForms();
         for (Form form : forms) {
             if (form.isRefreshUI()) {
@@ -108,11 +122,22 @@ public class GenericElementParameter extends ElementParameter {
 
     private boolean callValidate() {
         if (widget.isCallValidate()) {
-            try {
-                componentProperties = componentService.validateProperty(getName(), componentProperties);
-                return true;
-            } catch (Throwable e) {
-                ExceptionHandler.process(e);
+            if (widget.isLongRunning()) {
+                return new RunWithProgress(widget.getProperties()[0].getDisplayName()) {
+
+                    @Override
+                    protected void toDo() throws Throwable {
+                        componentProperties = componentService.validateProperty(getName(), componentProperties);
+                    };
+
+                }.run();
+            } else {
+                try {
+                    componentProperties = componentService.validateProperty(getName(), componentProperties);
+                    return true;
+                } catch (Throwable e) {
+                    ExceptionHandler.process(e);
+                }
             }
         }
         return false;
@@ -128,6 +153,44 @@ public class GenericElementParameter extends ElementParameter {
             }
         }
         return false;
+    }
+
+    abstract class RunWithProgress {
+
+        private String taskName;
+
+        public RunWithProgress(String taskName) {
+            this.taskName = taskName;
+        }
+
+        public boolean run() {
+            final AtomicBoolean result = new AtomicBoolean();
+            IRunnableWithProgress runnableWithProgress = new IRunnableWithProgress() {
+
+                @Override
+                public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
+                    try {
+                        toDo();
+                    } catch (Throwable e) {
+                        result.set(false);
+                        throw new InvocationTargetException(e);
+                    }
+                    result.set(true);
+                }
+            };
+            ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+            try {
+                dialog.run(true, true, runnableWithProgress);
+            } catch (Exception e) {
+                result.set(false);
+                ExceptionHandler.process(e);
+            }
+            return result.get();
+        }
+
+        protected abstract void toDo() throws Throwable;
+
     }
 
 }
