@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.talend.presentation.onboarding.resource.handlers.ImportDemoJobHandler"
+            description="import a demo job for on-boarding presentation"
+            id="org.talend.presentation.onboarding.resource.importdemojob"
+            name="Import on-boarding demo job">
+         <commandParameter
+               id="org.talend.presentation.onboarding.resource.importdemojob.pluginid"
+               name="plugin id"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="org.talend.presentation.onboarding.resource.importdemojob.zippath"
+               name="zip file path"
+               optional="true">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="org.talend.presentation.onboarding.resource.handlers.EventHandler"
+            description="response for specified event"
+            id="org.talend.presentation.onboarding.resource.handleevent"
+            name="handle event">
+         <commandParameter
+               id="org.talend.presentation.onboarding.resource.handleevent.type"
+               name="event type"
+               optional="true">
+         </commandParameter>
+      </command>
+   </extension>
+
+</plugin>
