@@ -77,6 +77,8 @@ import org.talend.repository.utils.TemplateProcessor;
  */
 public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
+    protected static final char MANIFEST_ITEM_SEPARATOR = ',';
+
     public JobJavaScriptOSGIForESBManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
             int statisticPort, int tracePort) {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
@@ -623,19 +625,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         addOsgiDependencies(analyzer, libResource, processItem);
 
-        StringBuilder bundleClasspath = new StringBuilder(".");
+        final StringBuilder bundleClasspath = new StringBuilder("."); //$NON-NLS-1$
         Set<String> relativePathList = libResource.getRelativePathList();
         for (String path : relativePathList) {
             Set<URL> resources = libResource.getResourcesByRelativePath(path);
             for (URL url : resources) {
                 File dependencyFile = new File(FilesUtils.getFileRealPath(url.getPath()));
                 String relativePath = libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName();
-                bundleClasspath.append(',').append(relativePath);
+                bundleClasspath.append(MANIFEST_ITEM_SEPARATOR).append(relativePath);
                 bin.putResource(relativePath, new FileResource(dependencyFile));
                 // analyzer.addClasspath(new File(url.getPath()));
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
+
         return analyzer;
     }
 
