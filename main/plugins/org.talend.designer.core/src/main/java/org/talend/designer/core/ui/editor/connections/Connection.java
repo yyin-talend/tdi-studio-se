@@ -291,6 +291,53 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setShow(true);
                 param.setNumRow(1);
                 addElementParameter(param);
+
+                param = new ElementParameter(this);
+                param.setFieldType(EParameterFieldType.CHECK);
+                param.setCategory(EComponentCategory.BASIC);
+                param.setValue("false");
+                param.setName(EParameterName.USE_NAMESPACES.getName());
+                param.setDisplayName(EParameterName.USE_NAMESPACES.getDisplayName());
+                param.setShowIf(EParameterName.ROUTETYPE.getName() + "=='xpath'");
+                param.setShow(true);
+                param.setNumRow(17);
+                addElementParameter(param);
+
+                param = new ElementParameter(this);
+                param.setFieldType(EParameterFieldType.TABLE);
+                param.setCategory(EComponentCategory.BASIC);
+                param.setName(EParameterName.NAMESPACES.getName());
+                param.setDisplayName(EParameterName.NAMESPACES.getDisplayName());
+                param.setShow(true);
+                param.setShowIf("(" + EParameterName.ROUTETYPE.getName() + "=='xpath') AND ("
+                        + EParameterName.USE_NAMESPACES.getName() + " == 'true')");
+                param.setNumRow(18);
+                String[] columns = new String[] { EParameterName.PREFIX.getName(),
+                        EParameterName.URI.getName() };
+                param.setListItemsDisplayCodeName(columns);
+                param.setListItemsDisplayName(new String[] { EParameterName.PREFIX.getDisplayName(),
+                        EParameterName.URI.getName() });
+                ElementParameter p = new ElementParameter(this);
+                p.setFieldType(EParameterFieldType.TEXT);
+                p.setName(EParameterName.PREFIX.getName());
+                ElementParameter p1 = new ElementParameter(this);
+                p1.setFieldType(EParameterFieldType.TEXT);
+                p1.setName(EParameterName.URI.getName());
+                param.setListItemsValue(new ElementParameter[] { p, p1 });
+                param.setValue(new ArrayList<Map<String, Object>>());
+                addElementParameter(param);
+
+                param = new ElementParameter(this);
+                param.setFieldType(EParameterFieldType.LABEL);
+                param.setCategory(EComponentCategory.BASIC);
+                param.setName("WARNING");
+                param.setDisplayName(EParameterName.LANGUAGEWARNING.getDisplayName());
+                param.setShow(true);
+                param.setShowIf("(" + EParameterName.ROUTETYPE.getName() + "=='xpath') AND ("
+                        + EParameterName.USE_NAMESPACES.getName() + " == 'true')");
+                param.setValue(EParameterName.LANGUAGEWARNING.getDisplayName());
+                param.setNumRow(19);
+                addElementParameter(param);
             }
         }
 
