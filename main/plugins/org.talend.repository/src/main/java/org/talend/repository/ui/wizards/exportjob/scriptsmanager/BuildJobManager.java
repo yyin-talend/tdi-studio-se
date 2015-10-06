@@ -18,11 +18,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.osgi.framework.FrameworkUtil;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
@@ -149,7 +157,7 @@ public class BuildJobManager {
         if (monitor != null) {
             pMonitor = monitor;
         }
-        int scale = 1000;
+        final int scale = 1000;
         int total = 3;
         pMonitor.beginTask(Messages.getString("JobScriptsExportWizardPage.newExportJobScript", jobExportType), scale * total); //$NON-NLS-1$
         ProcessItem processItem = itemToExport;
@@ -158,13 +166,36 @@ public class BuildJobManager {
                 && !version.equals(processItem.getProperty().getVersion())) {
             processItem = ItemCacheManager.getProcessItem(processItem.getProperty().getId(), version);
         }
-        IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(processItem, context, version, exportChoiceMap,
-                jobExportType);
-        buildJobHandler.generateItemFiles(true, new SubProgressMonitor(pMonitor, scale));
-        buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale));
-        String label = processItem.getProperty().getLabel();
-        pMonitor.setTaskName(Messages.getString("BuildJobManager.building", label));//$NON-NLS-1$
-        buildJobHandler.build(new SubProgressMonitor(pMonitor, scale));
+        final String label = processItem.getProperty().getLabel();
+        final IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(processItem, context, version,
+                exportChoiceMap, jobExportType);
+        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor wrMonitor) throws CoreException {
+                try {
+                    buildJobHandler.generateItemFiles(true, new SubProgressMonitor(wrMonitor, scale));
+                    buildJobHandler.generateJobFiles(new SubProgressMonitor(wrMonitor, scale));
+                    wrMonitor.setTaskName(Messages.getString("BuildJobManager.building", label));//$NON-NLS-1$
+                    buildJobHandler.build(new SubProgressMonitor(wrMonitor, scale));
+                } catch (Exception e) {
+                    throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, FrameworkUtil.getBundle(
+                            this.getClass()).getSymbolicName(), "Error", e));
+                }
+            };
+
+        };
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        try {
+            ISchedulingRule schedulingRule = workspace.getRoot();
+            // the update the project files need to be done in the workspace runnable to avoid all
+            // notification
+            // of changes before the end of the modifications.
+            workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, pMonitor);
+        } catch (CoreException e) {
+            throw new PersistenceException(e.getCause());
+        }
+
         IFile jobTargetFile = buildJobHandler.getJobTargetFile();
         if (jobTargetFile != null && jobTargetFile.exists()) {
             IPath jobZipLocation = jobTargetFile.getLocation();
