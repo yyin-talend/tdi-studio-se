@@ -28,7 +28,7 @@ public interface NodeProblem {
      * @param node the @{link Node} to validate.
      * @return true if the @{link Node} needs to be checked.
      */
-    boolean validate(Node node);
+    boolean needsCheck(Node node);
 
     /**
      * This method displays a @{link org.talend.core.model.process.Problem} on the given node.
