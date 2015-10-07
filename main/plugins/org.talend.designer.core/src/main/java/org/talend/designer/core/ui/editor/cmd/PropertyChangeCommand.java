@@ -784,7 +784,7 @@ public class PropertyChangeCommand extends Command {
         }
 
         if (toUpdate) {
-            elem.setPropertyValue(updataComponentParamName, new Boolean(true));
+            elem.setPropertyValue(updataComponentParamName, Boolean.TRUE);
         }
         if (changeMetadataCommands != null) {
             int size = changeMetadataCommands.size();
