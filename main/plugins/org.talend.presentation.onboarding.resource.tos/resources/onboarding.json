@@ -22,13 +22,7 @@
 						"size": "500,300",
 						"cssIds": null,
                         "onShow": null,
-                        "onNext": {
-							"commandId": "org.talend.presentation.onboarding.resource.importdemojob",
-							"commandParameters": {
-								"org.talend.presentation.onboarding.resource.importdemojob.pluginid": "org.talend.presentation.onboarding.resource.tos",
-								"org.talend.presentation.onboarding.resource.importdemojob.zippath": "resources/OnBoardingDemoJob.zip"
-							}
-						},
+						"onNext": null,
 						"title": "<div style='color:blue;'>1. <internationalization id='onboarding.page1.title'/></div>",
 						"content": "<internationalization id='onboarding.page1.content'/>"
 					},
@@ -36,6 +30,13 @@
 					    "size": "500,300",
 						"cssIds": "#navigatorLayout || .MPart#org-talend-repository-cnf-view",
                         "onShow": null,
+                        "onShowAnimationDone": {
+                            "commandId": "org.talend.presentation.onboarding.resource.importdemojob",
+                            "commandParameters": {
+                                "org.talend.presentation.onboarding.resource.importdemojob.pluginid": "org.talend.presentation.onboarding.resource.tos",
+                                "org.talend.presentation.onboarding.resource.importdemojob.zippath": "resources/OnBoardingDemoJob.zip"
+                            }
+                        },
                         "onNext": null,
 						"title": "2. <internationalization id='onboarding.page2.title'/>",
 						"content": "<internationalization id='onboarding.page2.content'/>"

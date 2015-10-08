@@ -81,8 +81,8 @@ public class TalendImportUtil {
         return selectedItemRecords;
     }
 
-    public static boolean importItems(String zipPath, IProgressMonitor monitor, final boolean overwrite, final boolean openThem)
-            throws IOException {
+    public static boolean importItems(String zipPath, IProgressMonitor monitor, final boolean overwrite, final boolean openThem,
+            boolean needMigrationTask) throws IOException {
         // File srcFile = new File(zipPath);
         ZipFile srcZipFile = new ZipFile(zipPath);
         final ImportExportHandlersManager importManager = new ImportExportHandlersManager();
@@ -105,6 +105,9 @@ public class TalendImportUtil {
                 ERepositoryStatus status = factory.getStatus(item);
                 if (status != null && status == ERepositoryStatus.LOCK_BY_USER) {
                     factory.unlock(item);
+                }
+                if (!needMigrationTask) {
+                    itemRecord.setMigrationTasksToApply(null);
                 }
             }
             // importManager.importItemRecords(new NullProgressMonitor(), resourcesManager, items, overwrite,
@@ -140,12 +143,13 @@ public class TalendImportUtil {
             }
         }
 
+        IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
+        repositoryView.getViewer().setSelection(new StructuredSelection(nodes));
+
         if (openThem) {
             openJobs(nodes);
         }
 
-        IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
-        repositoryView.getViewer().setSelection(new StructuredSelection(nodes));
     }
 
     private static void openJobs(List<IRepositoryNode> nodes) {

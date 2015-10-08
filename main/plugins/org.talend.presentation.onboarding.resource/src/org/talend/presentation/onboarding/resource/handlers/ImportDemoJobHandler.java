@@ -18,18 +18,14 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.CommonExceptionHandler;
-import org.talend.presentation.onboarding.resource.i18n.Messages;
 import org.talend.presentation.onboarding.resource.utils.OnBoardingResourceConstants;
 import org.talend.presentation.onboarding.resource.utils.OnBoardingResourceUtil;
 import org.talend.presentation.onboarding.resource.utils.TalendImportUtil;
-import org.talend.repository.ui.dialog.AProgressMonitorDialogWithCancel;
 
 public class ImportDemoJobHandler extends AbstractHandler {
 
@@ -59,24 +55,18 @@ public class ImportDemoJobHandler extends AbstractHandler {
     }
 
     private void doImport(final String pluginId, final String zipPath) {
-        Display.getDefault().syncExec(new Runnable() {
+        new Thread(new Runnable() {
 
             @Override
             public void run() {
-                shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-            }
-        });
-        AProgressMonitorDialogWithCancel<Boolean> dialog = new AProgressMonitorDialogWithCancel<Boolean>(shell) {
 
-            @Override
-            protected Boolean runWithCancel(IProgressMonitor monitor) throws Throwable {
                 try {
                     Bundle bundle = Platform.getBundle(pluginId);
                     URL resourceURL = bundle.getEntry(zipPath);
                     boolean isSucceed = false;
                     try {
                         String demoZipPath = FileLocator.toFileURL(resourceURL).getPath();
-                        isSucceed = TalendImportUtil.importItems(demoZipPath, monitor, false, true);
+                        isSucceed = TalendImportUtil.importItems(demoZipPath, new NullProgressMonitor(), false, true, false);
                     } catch (Throwable e) {
                         CommonExceptionHandler.process(e);
                     }
@@ -87,15 +77,7 @@ public class ImportDemoJobHandler extends AbstractHandler {
                 } catch (Throwable e) {
                     CommonExceptionHandler.process(e);
                 }
-                return null;
             }
-        };
-        try {
-            dialog.run(
-                    Messages.getString("importDemoJobHandler.import.excuting"), //$NON-NLS-1$
-                    Messages.getString("importDemoJobHandler.import.waitingFinish"), true, AProgressMonitorDialogWithCancel.ENDLESS_WAIT_TIME); //$NON-NLS-1$
-        } catch (Throwable e) {
-            CommonExceptionHandler.process(e);
-        }
+        }).start();
     }
 }
