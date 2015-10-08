@@ -144,8 +144,6 @@ public class EmfComponent extends AbstractComponent {
 
     private final String name;
 
-    private static final long serialVersionUID = 1L;
-
     private boolean isLoaded = false;
 
     private COMPONENTType compType;
@@ -211,10 +209,6 @@ public class EmfComponent extends AbstractComponent {
 
     // weak ref used so that memory is not used by a static HashMap instance
     private static SoftReference<Map> optionMapSoftRef;
-
-    private String type;
-
-    private boolean reduce = false;
 
     private AbstractComponentsProvider provider;
 
@@ -1263,12 +1257,12 @@ public class EmfComponent extends AbstractComponent {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROPERTY_TYPE.getName());
-            String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME); //$NON-NLS-1$
+            String displayName = getTranslatedValue(xmlParam.getNAME() + '.' + PROP_NAME);
             if (displayName.startsWith("!!")) { //$NON-NLS-1$
                 displayName = EParameterName.PROPERTY_TYPE.getDisplayName();
             }
             newParam.setDisplayName(displayName);
-            if (node.getComponent() != null && node.getComponent().getName().equals("tOracleConnection")) {
+            if (node.getComponent() != null && node.getComponent().getName().equals("tOracleConnection")) { //$NON-NLS-1$
                 newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TEXT_TNS_FILE });
                 newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
                 newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
@@ -1307,7 +1301,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setParentParameter(parentParam);
             // listParam.add(newParam);
         }
-        if (type == EParameterFieldType.SCHEMA_TYPE) {
+        else if (type == EParameterFieldType.SCHEMA_TYPE) {
             String context = xmlParam.getCONTEXT();
             if (context == null) {
                 // by default the schema will be set to the "FLOW" connector.
@@ -1319,7 +1313,7 @@ public class EmfComponent extends AbstractComponent {
 
             boolean useInputLinkSelection = connectorUseInputLinkSelection(context);
 
-            String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME); //$NON-NLS-1$
+            String displayName = getTranslatedValue(xmlParam.getNAME() + '.' + PROP_NAME);
             if (displayName.startsWith("!!")) { //$NON-NLS-1$
                 displayName = EParameterName.SCHEMA_TYPE.getDisplayName();
             }
@@ -1380,7 +1374,7 @@ public class EmfComponent extends AbstractComponent {
                 parentParam.setReadOnly(true);
             }
         }
-        if (type == EParameterFieldType.ENCODING_TYPE) {
+        else if (type == EParameterFieldType.ENCODING_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ENCODING_TYPE.getName());
@@ -1398,7 +1392,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setParentParameter(parentParam);
             // listParam.add(newParam);
         }// Ends
-        if (type == EParameterFieldType.QUERYSTORE_TYPE) {
+        else if (type == EParameterFieldType.QUERYSTORE_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.QUERYSTORE_TYPE.getName());
@@ -1433,15 +1427,14 @@ public class EmfComponent extends AbstractComponent {
             newParam.setParentParameter(parentParam);
             // listParam.add(newParam);
         }
-
-        if (type == EParameterFieldType.PROCESS_TYPE || type == EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE) {
+        else if (type == EParameterFieldType.PROCESS_TYPE || type == EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());
-            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (getTranslatedValue(xmlParam.getNAME() + '.' + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$
                 newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
             } else {
-                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
+                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + '.' + PROP_NAME));
             }
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
@@ -1485,51 +1478,15 @@ public class EmfComponent extends AbstractComponent {
             newParam.setRequired(true);
             newParam.setParentParameter(parentParam);
         }
-
-        // http://jira.talendforge.org/browse/TESB-6285 Xiaopeng Li
-        if (type == EParameterFieldType.ROUTE_RESOURCE_TYPE) {
+        // http://jira.talendforge.org/browse/TESB-6285 Create a new Component Field ROUTE_RESOURCE for Route components
+        else if (type == EParameterFieldType.ROUTE_RESOURCE_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
-            newParam.setCategory(EComponentCategory.BASIC);
-            newParam.setName(EParameterName.ROUTE_RESOURCE_TYPE_ID.getName());
-            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
-                newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_ID.getDisplayName());
-            } else {
-                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
-            }
-            newParam.setListItemsDisplayName(new String[] {});
-            newParam.setListItemsValue(new String[] {});
-            newParam.setValue(""); //$NON-NLS-1$
-            newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setFieldType(EParameterFieldType.TECHNICAL);
-            if (xmlParam.isSetSHOW()) {
-                newParam.setShow(xmlParam.isSHOW());
-            }
-            newParam.setRequired(false);
-            newParam.setParentParameter(parentParam);
-
-            newParam = new ElementParameter(node);
-            newParam.setCategory(EComponentCategory.BASIC);
-            newParam.setName(EParameterName.ROUTE_RESOURCE_TYPE_RES_URI.getName());
-            newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_RES_URI.getName());
-            newParam.setListItemsDisplayName(new String[] {});
-            newParam.setListItemsValue(new String[] {});
-            newParam.setValue(""); //$NON-NLS-1$
-            newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setFieldType(EParameterFieldType.TECHNICAL);
-            if (xmlParam.isSetSHOW()) {
-                newParam.setShow(xmlParam.isSHOW());
-            }
-            newParam.setRequired(false);
-            newParam.setParentParameter(parentParam);
-
-            // http://jira.talendforge.org/browse/TESB-6481
-            newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ROUTE_RESOURCE_TYPE_VERSION.getName());
             newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_VERSION.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { "Latest" });
-            newParam.setListItemsValue(new String[] { "Latest" });
-            newParam.setValue("Latest");
+            newParam.setListItemsDisplayName(new String[] { ItemCacheManager.LATEST_VERSION });
+            newParam.setListItemsValue(new String[] { ItemCacheManager.LATEST_VERSION });
+            newParam.setValue(ItemCacheManager.LATEST_VERSION);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.TECHNICAL);
             if (xmlParam.isSetSHOW()) {

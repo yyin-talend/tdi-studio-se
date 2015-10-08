@@ -326,8 +326,6 @@ public enum EParameterName {
 
     // Route Resource Type
     ROUTE_RESOURCE_TYPE("ROUTE_RESOURCE_TYPE"), //$NON-NLS-1$
-    ROUTE_RESOURCE_TYPE_RES_URI("ROUTE_RESOURCE_TYPE_RES_URI"), //$NON-NLS-1$
-    ROUTE_RESOURCE_TYPE_ID("ROUTE_RESOURCE_TYPE_ID"), //$NON-NLS-1$
     ROUTE_RESOURCE_TYPE_VERSION("Version"), //$NON-NLS-1$
 
     // Route Component Type
