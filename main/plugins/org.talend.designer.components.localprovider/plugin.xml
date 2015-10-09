@@ -2854,6 +2854,74 @@
             uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.2/lib/tezServer/zookeeper-3.4.6.jar">
         </libraryNeeded>
 
+        <!-- Kafka 2.10-0.8.2.0 -->
+        <libraryNeeded
+            id="kafka_2.10-0.8.2.0.jar"
+            name="kafka_2.10-0.8.2.0.jar" mvn_uri="mvn:org.talend.libraries/kafka_2.10-0.8.2.0/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/kafka_2.10-0.8.2.0.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="scala-library-2.10.4.jar"
+            name="scala-library-2.10.4.jar" mvn_uri="mvn:org.talend.libraries/scala-library-2.10.4/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/scala-library-2.10.4.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="jopt-simple-3.2.jar"
+            name="jopt-simple-3.2.jar" mvn_uri="mvn:org.talend.libraries/jopt-simple-3.2/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/jopt-simple-3.2.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="kafka-clients-0.8.2.0.jar"
+            name="kafka-clients-0.8.2.0.jar" mvn_uri="mvn:org.talend.libraries/kafka-clients-0.8.2.0/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/kafka-clients-0.8.2.0.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="lz4-1.2.0.jar"
+            name="lz4-1.2.0.jar" mvn_uri="mvn:org.talend.libraries/lz4-1.2.0/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/lz4-1.2.0.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="metrics-core-2.2.0.jar"
+            name="metrics-core-2.2.0.jar" mvn_uri="mvn:org.talend.libraries/metrics-core-2.2.0/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/metrics-core-2.2.0.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="snappy-java-1.1.1.6.jar"
+            name="snappy-java-1.1.1.6.jar" mvn_uri="mvn:org.talend.libraries/snappy-java-1.1.1.6/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/snappy-java-1.1.1.6.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="zkclient-0.3.jar"
+            name="zkclient-0.3.jar" mvn_uri="mvn:org.talend.libraries/zkclient-0.3/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/zkclient-0.3.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="log4j-1.2.16.jar"
+            name="log4j-1.2.16.jar" mvn_uri="mvn:org.talend.libraries/log4j-1.2.16/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/log4j-1.2.16.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="slf4j-api-1.7.6.jar"
+            name="slf4j-api-1.7.6.jar" mvn_uri="mvn:org.talend.libraries/slf4j-api-1.7.6/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/slf4j-api-1.7.6.jar">
+        </libraryNeeded>
+        <libraryNeeded
+            id="slf4j-log4j12-1.6.1.jar"
+            name="slf4j-log4j12-1.6.1.jar" mvn_uri="mvn:org.talend.libraries/slf4j-log4j12-1.6.1/6.0.0"
+            context="plugin:org.talend.libraries.apache.kafka"
+            uripath="platform:/plugin/org.talend.libraries.apache.kafka/lib/slf4j-log4j12-1.6.1.jar">
+        </libraryNeeded>
+
         <!-- group of spark hive libraries -->
         <libraryNeededGroup
                 description="The lastest SPARK HIVE libraries of CDH 5.4"
@@ -7982,6 +8050,25 @@
             <library
                 id="azure-storage-1.2.0.jar">
             </library>
+        </libraryNeededGroup>
+
+        <!-- Kakfa libraries for 2.10-0.8.2.0 -->
+        <libraryNeededGroup
+                description="Kakfa libraries for 2.10-0.8.2.0"
+                id="KAFKA-LIB-2_10-0_8_2_0"
+                name="KAFKA-LIB-2_10-0_8_2_0">
+            <library id="kafka_2.10-0.8.2.0.jar"/>
+            <library id="scala-library-2.10.4.jar"/>
+            <library id="jopt-simple-3.2.jar"/>
+            <library id="kafka-clients-0.8.2.0.jar"/>
+            <library id="lz4-1.2.0.jar"/>
+            <library id="metrics-core-2.2.0.jar"/>
+            <library id="snappy-java-1.1.1.6.jar"/>
+            <library id="zkclient-0.3.jar"/>
+            <library id="zookeeper-3.4.6.jar"/>
+            <library id="log4j-1.2.16.jar"/>
+            <library id="slf4j-api-1.7.6.jar"/>
+            <library id="slf4j-log4j12-1.6.1.jar"/>
         </libraryNeededGroup>
 
 	</extension>
