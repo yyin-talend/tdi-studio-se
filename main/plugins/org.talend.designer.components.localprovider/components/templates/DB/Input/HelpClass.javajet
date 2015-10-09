@@ -182,23 +182,22 @@ imports="
 		
 	    public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-			if(rs_<%=cid %>.getTimestamp(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>) != null) {
-			    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.getTimestamp(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>).getTime());
-			} else {
-			    <%=firstConnName%>.<%=column.getLabel()%> =  null;
-			}			 
+			<%=firstConnName%>.<%=column.getLabel()%> = routines.system.JDBCUtil.getDate(rs_<%=cid %>, <%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 <%
 	    }
 	    
 	    public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
 %>
-            tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
-            if(tmpContent_<%=cid%> != null) {
-                <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
-            } else {
-                <%=firstConnName%>.<%=column.getLabel()%> = null;
-            }
+        	<%=firstConnName%>.<%=column.getLabel()%> = routines.system.JDBCUtil.getString(rs_<%=cid %>, <%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>, <%if(trimMethod==null||trimMethod.isEmpty()){%>false<%} else {%>true<%}%>);
 <%
+	    }
+	    
+	    public void generateDoubleResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+	    	generateOthersResultSet(firstConnName, column, currentColNo, "Double");
+	    }
+	    
+	    public void generateBooleanResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+	    	generateOthersResultSet(firstConnName, column, currentColNo, "Boolean");
 	    }
 	    
 	    public void generateBytesResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
