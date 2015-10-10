@@ -97,8 +97,6 @@ public class ComponentsUtils {
         // TODO Try to get all component properties
         Set<String> componentNames = service.getAllComponentNames();
         for (String componentName : componentNames) {
-            ComponentProperties componentProperty = service.getComponentProperties(componentName);
-            // System.out.println("Loading:" + componentName);
         }
     }
 
@@ -230,7 +228,7 @@ public class ComponentsUtils {
             default:
                 break;
             }
-            param.setFieldType(fieldType);
+            param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             // FIXME - Column?
             if (se != null) {
                 param.setRequired(se.isRequired());
