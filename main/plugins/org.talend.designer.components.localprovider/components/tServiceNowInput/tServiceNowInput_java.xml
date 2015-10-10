@@ -38,8 +38,14 @@
                 <ITEM NAME="change_request" VALUE="change_request"/>
                 <ITEM NAME="sc_request" VALUE="sc_request"/>
                 <ITEM NAME="sc_cat_item" VALUE="sc_cat_item"/>
+                <ITEM NAME="custom_table" VALUE="custom_table" />
             </ITEMS>
         </PARAMETER>
+        
+        <PARAMETER NAME="CUSTOM_TABLE" FIELD="TEXT" NUM_ROW="20" REQUIRED="true" SHOW_IF="TABLENAME=='custom_table'">
+            <DEFAULT>""</DEFAULT>
+        </PARAMETER>
+        
         <PARAMETER FIELD="SCHEMA_TYPE" NAME="SCHEMA" NUM_ROW="25" REQUIRED="true">
             <TABLE IF="TABLENAME=='incident'">
                 <COLUMN KEY="false" LENGTH="0" NAME="skills" TYPE="id_String"/>
@@ -385,6 +391,8 @@
                 <COLUMN KEY="false" LENGTH="0" NAME="group" TYPE="id_String"/>
                 <COLUMN KEY="false" LENGTH="5" NAME="sys_customer_update" TYPE="id_Boolean"/>
             </TABLE>
+            
+            <TABLE IF="TABLENAME=='custom_table'" />
         </PARAMETER>
         <PARAMETER FIELD="TABLE" NAME="CONDITIONS" NB_LINES="3" NUM_ROW="60" REQUIRED="false">
             <ITEMS>

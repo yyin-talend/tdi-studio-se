@@ -17,8 +17,10 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String tablename = ElementParameterParser.getValue(node, "__TABLENAME__").trim();
-String tablenameLowerCase = tablename.toLowerCase();
+String tablename = ElementParameterParser.getValue(node, "__TABLENAME__").trim().toLowerCase();
+String customTablename = ElementParameterParser.getValue(node, "__CUSTOM_TABLE__").trim().toLowerCase();
+tablename = "custom_table".equals(tablename) ? customTablename : "\""+tablename+"\"";
+
 String dataAction = ElementParameterParser.getValue(node,"__ACTION__");
 boolean isEnablePayloadDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_PAYLOAD_DEBUG_MODE__"));
 boolean isEnableResponseDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_RESPONSE_DEBUG_MODE__"));
@@ -100,7 +102,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 						<%=cid%>_httpPost = new org.apache.http.client.methods.HttpPost(
 							<%=cid%>_URL + 
 							"/api/now/table/" + 
-							"<%=tablenameLowerCase%>"
+							<%=tablename%>
 							);
 						<%=cid%>_httpPost.setHeader("Accept", "application/json");
 						<%=cid%>_httpPost.setHeader("Content-Type", "application/json");
@@ -123,7 +125,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 						<%=cid%>_httpPut = new org.apache.http.client.methods.HttpPut(
 							<%=cid%>_URL + 
 							"/api/now/table/" + 
-							"<%=tablenameLowerCase%>" + 
+							<%=tablename%> + 
 							"/" + 
 							<%=cid%>_SysId.get("sys_id")
 							);

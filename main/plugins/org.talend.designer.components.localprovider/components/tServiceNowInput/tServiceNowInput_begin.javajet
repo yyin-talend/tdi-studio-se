@@ -28,8 +28,10 @@ String connectionURL = "\"httpHost_conn_" + connection + "\"";
 String connectionUsername = "\"username_conn_" + connection + "\"";
 String connectionPassword = "\"password_conn_" + connection + "\"";
 
-String tablename = ElementParameterParser.getValue(node, "__TABLENAME__").trim();
-String tablenameLowerCase = tablename.toLowerCase();
+String tablename = ElementParameterParser.getValue(node, "__TABLENAME__").trim().toLowerCase();
+String customTablename = ElementParameterParser.getValue(node, "__CUSTOM_TABLE__").trim().toLowerCase();
+tablename = "custom_table".equals(tablename) ? customTablename : "\""+tablename+"\"";
+
 String limit = ElementParameterParser.getValue(node, "__LIMIT__").trim(); //result limit
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String valueFilter = "?sysparm_limit="; //An encoded query string used to filter the results
@@ -142,8 +144,8 @@ if(!("").equals(limit)) {
 org.apache.http.client.methods.HttpGet <%=cid%>_httpget = new org.apache.http.client.methods.HttpGet(
   <%=cid%>_URL
   + "/api/now/table/"
-  + "<%=tablenameLowerCase%>"
-  + "?sysparm_limit="
+  + <%=tablename%>
+  + "?sysparm_exclude_reference_link=true&sysparm_limit="
   + limit_<%=cid%>
   + <%=cid%>_conditions
   + <%=cid%>_fields
