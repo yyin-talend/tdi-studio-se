@@ -53,7 +53,8 @@
 		<module>i18n/plugins/org.talend.designer.webservice.nl</module>
 		<module>i18n/plugins/org.talend.designer.xmlmap.nl</module>
 		<module>i18n/plugins/org.talend.expressionbuilder.nl</module>
-		<module>i18n/plugins/org.talend.presentation.onboarding.resource.di.nl</module>
+		<module>i18n/plugins/org.talend.presentation.onboarding.resource.nl</module>
+		<module>i18n/plugins/org.talend.presentation.onboarding.resource.tos.nl</module>
 		<module>i18n/plugins/org.talend.repository.ftp.nl</module>
 		<module>i18n/plugins/org.talend.repository.json.nl</module>
 		<module>i18n/plugins/org.talend.repository.nl</module>
@@ -129,7 +130,8 @@
 		<module>main/plugins/org.talend.libraries.uniserv</module>
 		<module>main/plugins/org.talend.libraries.w3c</module>
 		<module>main/plugins/org.talend.libraries.xml</module>
-		<module>main/plugins/org.talend.presentation.onboarding.resource.di</module>
+		<module>main/plugins/org.talend.presentation.onboarding.resource</module>
+		<module>main/plugins/org.talend.presentation.onboarding.resource.tos</module>
 		<module>main/plugins/org.talend.rcp.branding.tos</module>
 		<module>main/plugins/org.talend.repository</module>
 		<module>main/plugins/org.talend.repository.ftp</module>

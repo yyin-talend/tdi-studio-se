@@ -41,6 +41,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -4000,11 +4001,11 @@ public class Node extends Element implements IGraphicalNode {
         try {
             nodeProblems = bc.getServiceReferences(NodeProblem.class, null);
         } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
+            CommonExceptionHandler.process(e);
         }
         for (ServiceReference<NodeProblem> sr : nodeProblems) {
             NodeProblem np = bc.getService(sr);
-            if (np.validate(this)) {
+            if (np.needsCheck(this)) {
                 np.check(this);
             }
         }

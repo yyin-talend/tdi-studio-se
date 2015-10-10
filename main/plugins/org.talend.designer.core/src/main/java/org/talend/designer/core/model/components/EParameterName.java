@@ -61,6 +61,10 @@ public enum EParameterName {
     CONDITION(Messages.getString("EParameterName.condition")), //$NON-NLS-1$
     ROUTETYPE(Messages.getString("EParameterName.routeType")), //$NON-NLS-1$
     ENDOFCHOICE(Messages.getString("EParameterName.endofChoice")), // TESB-8043 //$NON-NLS-1$
+    USE_NAMESPACES(Messages.getString("EParameterName.useNamespaces")), //$NON-NLS-1$
+    NAMESPACES(Messages.getString("EParameterName.namespaces")), //$NON-NLS-1$
+    PREFIX(Messages.getString("EParameterName.xpathPrefix")), //$NON-NLS-1$
+    URI(Messages.getString("EParameterName.xpathURI")), //$NON-NLS-1$
     EXCEPTIONLIST(Messages.getString("EParameterName.listExceptions")), //$NON-NLS-1$
     COMPONENT_NAME(Messages.getString("EParameterName.componentName")), //$NON-NLS-1$
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
@@ -131,6 +135,7 @@ public enum EParameterName {
     SCHEMA("Schema"), //$NON-NLS-1$
     DCSCHEMA("Schema"), //$NON-NLS-1$
     MONITOR_CONNECTION(Messages.getString("Connection.monitorConnection")), //$NON-NLS-1$
+    LANGUAGEWARNING(Messages.getString("Connection.languageWarning")), //$NON-NLS-1$
     TRACES_CONNECTION_ENABLE(Messages.getString("EParameterName.TracesConnection")), //$NON-NLS-1$
     TRACES_CONNECTION_FILTER("Filter the traces"), //$NON-NLS-1$ Hidden parameter so no translation needed
     TRACES_SHOW_ENABLE("Traces show"), //$NON-NLS-1$ Hidden parameter so no translation needed
@@ -321,8 +326,6 @@ public enum EParameterName {
 
     // Route Resource Type
     ROUTE_RESOURCE_TYPE("ROUTE_RESOURCE_TYPE"), //$NON-NLS-1$
-    ROUTE_RESOURCE_TYPE_RES_URI("ROUTE_RESOURCE_TYPE_RES_URI"), //$NON-NLS-1$
-    ROUTE_RESOURCE_TYPE_ID("ROUTE_RESOURCE_TYPE_ID"), //$NON-NLS-1$
     ROUTE_RESOURCE_TYPE_VERSION("Version"), //$NON-NLS-1$
 
     // Route Component Type

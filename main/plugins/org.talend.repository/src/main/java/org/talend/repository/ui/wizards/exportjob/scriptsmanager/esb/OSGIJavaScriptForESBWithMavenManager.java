@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.IOsgiDependenciesService;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.Item;
 import org.talend.core.repository.utils.ItemResourceUtil;
@@ -120,7 +119,7 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
         if (bundleClasspath == null) {
             return; //
         }
-        String[] classpathes = bundleClasspath.split(Character.toString(IOsgiDependenciesService.ITEM_SEPARATOR));
+        String[] classpathes = bundleClasspath.split(Character.toString(MANIFEST_ITEM_SEPARATOR));
         StringBuffer sb = new StringBuffer(200);
         for (int i = 0; i < classpathes.length; i++) {
             String path = classpathes[i];
@@ -132,7 +131,7 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
             }
             sb.append(path);
             if (i < classpathes.length - 1) { // the last one don't add it
-                sb.append(IOsgiDependenciesService.ITEM_SEPARATOR);
+                sb.append(MANIFEST_ITEM_SEPARATOR);
             }
         }
         mavenPropertiesMap.put(bundleClasspathName, sb.toString());

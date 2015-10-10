@@ -538,30 +538,26 @@
     </PARAMETER>
 
     <PARAMETER
-       NAME="CONSTRAINT_TYPE"
-       FIELD="CLOSED_LIST"
-       NUM_ROW="135"
-       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
-       SHOW_IF="(IGNORE_CONSTRAINT == 'true') AND (INSERT_SELECT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
+        NAME="IGNORE_CONSTRAINT_TABLE"
+        FIELD="TABLE"
+        NUM_ROW="140"
+        NB_LINES="4"
+        GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
+        SHOW_IF="(IGNORE_CONSTRAINT == 'true') AND (INSERT_SELECT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
     >
-       <ITEMS DEFAULT="NULL">
-            <ITEM NAME="CHECK" VALUE="check" />
-            <ITEM NAME="UNIQUE" VALUE="unique" />
-            <ITEM NAME="NULL" VALUE="null" />
-            <ITEM NAME="FOREIGN_KEY" VALUE="foreign key" />
-            <ITEM NAME="DATA_VALUE" VALUE="data value" />
-            <ITEM NAME="ALL" VALUE="all" />
+        <ITEMS >
+          <ITEM NAME="CONSTRAINT_TYPE" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="NULL">
+                <ITEM NAME="CHECK" VALUE="check" />
+                <ITEM NAME="UNIQUE" VALUE="unique" />
+                <ITEM NAME="NULL" VALUE="null" />
+                <ITEM NAME="FOREIGN_KEY" VALUE="foreign key" />
+                <ITEM NAME="DATA_VALUE" VALUE="data value" />
+                <ITEM NAME="ALL" VALUE="all" />
+          </ITEMS>
+          </ITEM>
+          <ITEM NAME="IGNORE_CONSTRAINT_NUMBER" FIELD="TEXT" />
         </ITEMS>
-    </PARAMETER>
-
-    <PARAMETER
-       NAME="IGNORE_CONSTRAINT_NUMBER"
-       FIELD="TEXT"
-       NUM_ROW="135"
-       GROUP="GROUP_INSERT_SELECT_LOAD_OPTIONS"
-       SHOW_IF="(IGNORE_CONSTRAINT == 'true') AND (INSERT_SELECT_LOAD_OPTIONS == 'true') AND (USE_INSERT_LOCATION_SYNTAX == 'true')"
-    >
-        <DEFAULT></DEFAULT>
     </PARAMETER>
 
     <PARAMETER

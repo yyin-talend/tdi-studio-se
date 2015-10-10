@@ -42,8 +42,22 @@
     boolean useInsertSelectLoadOptions = "true".equals(ElementParameterParser.getValue(node,"__INSERT_SELECT_LOAD_OPTIONS__"));
     boolean ignoreConstraint = "true".equals(ElementParameterParser.getValue(node,"__IGNORE_CONSTRAINT__"));
             ignoreConstraint = useInsertSelectLoadOptions && ignoreConstraint;
-    String  ignoredConstraintType = ElementParameterParser.getValue(node,"__CONSTRAINT_TYPE__");
-    String  ignoreConstraintNumber = ElementParameterParser.getValue(node,"__IGNORE_CONSTRAINT_NUMBER__");
+    List<Map<String, String>> constraintMap = null;
+    if(ignoreConstraint){
+        constraintMap = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node,"__IGNORE_CONSTRAINT_TABLE__");
+        %>
+           java.util.Map<String, Integer> constraintMap_<%= cid %> = new java.util.HashMap<>();
+           <%
+              for(Map<String, String> map: constraintMap){
+                  String constraintType = map.get("CONSTRAINT_TYPE");
+                  String constraintNum = map.get("IGNORE_CONSTRAINT_NUMBER");
+                  %>
+                  constraintMap_<%= cid %>.put("<%= constraintType %>", Integer.valueOf(<%= constraintNum %>));
+                  <%
+              }
+            %>
+        <%
+    }
 
     boolean willLogInFile = "true".equals(ElementParameterParser.getValue(node,"__LOG_IN_FILE__"));
             willLogInFile = useInsertSelectLoadOptions && willLogInFile;
@@ -185,10 +199,23 @@
                             valStatement_<%= cid %>.append(Integer.valueOf(<%= workSkipNumber %>));
                                    <%
                                 }
-                                  if(ignoreConstraint && ignoreConstraintNumber != null && !"".equals(ignoreConstraintNumber)){
+                                  if(ignoreConstraint){
                                     %>
-                            valStatement_<%= cid %>.append(" ignore constraint <%= ignoredConstraintType %> ");
-                            valStatement_<%= cid %>.append(Integer.valueOf(<%= ignoreConstraintNumber %>));
+                                    java.util.Set<String> keySet_<%= cid %> = constraintMap_<%= cid %>.keySet();
+                                    if(keySet_<%= cid %>.size() > 0){
+                                       valStatement_<%= cid %>.append(" ignore constraint");
+                                    }
+                                    int counter_<%= cid %> = 0;
+                                    for(String key: keySet_<%= cid %>){
+                                      if(counter_<%= cid %> > 0){
+                                        valStatement_<%= cid %>.append(",");
+                                      }
+                                      valStatement_<%= cid %>.append(" ");
+                                      valStatement_<%= cid %>.append(key);
+                                      valStatement_<%= cid %>.append(" ");
+                                      valStatement_<%= cid %>.append(constraintMap_<%= cid %>.get(key));
+                                      counter_<%= cid %> ++;
+                                    }
                                     <%
                                   }
                             if(willLogInFile){

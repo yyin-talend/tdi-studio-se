@@ -267,7 +267,15 @@ imports="
  <%
 		                        } else if(("String").equals(typeToGenerate)) {
 %>
-		                         <%dbInputBeginUtil.generateStringResultSet(firstConnName, column, currentColNo,trimMethod);%>
+	                         		<%dbInputBeginUtil.generateStringResultSet(firstConnName, column, currentColNo,trimMethod);%>
+<%
+								} else if(("Double").equals(typeToGenerate)) {
+%>
+	                         		<%dbInputBeginUtil.generateDoubleResultSet(firstConnName, column, currentColNo);%>
+<%
+								} else if(("Boolean").equals(typeToGenerate)) {
+%>
+	                         		<%dbInputBeginUtil.generateBooleanResultSet(firstConnName, column, currentColNo);%>
 <%
 								} else if("Geometry".equals(typeToGenerate) && type.indexOf("ORACLE") >= 0) {
 %>

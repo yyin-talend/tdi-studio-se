@@ -34,6 +34,30 @@ imports="
 			return "com.ibm.db2.jcc.DB2Driver";
 		}
 		
+		public void generateDoubleResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+	    	if(column.isNullable()) {
+%>
+				<%=firstConnName%>.<%=column.getLabel()%> = routines.system.JDBCUtil.getDoubleObject(rs_<%=cid %>, <%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
+<%
+			} else {
+%>
+				<%=firstConnName%>.<%=column.getLabel()%> = routines.system.JDBCUtil.getDouble(rs_<%=cid %>, <%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
+<%
+			}
+	    }
+	    
+	    public void generateBooleanResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+    		if(column.isNullable()) {
+%>
+				<%=firstConnName%>.<%=column.getLabel()%> = routines.system.JDBCUtil.getBooleanObject(rs_<%=cid %>, <%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
+<%
+			} else {
+%>
+				<%=firstConnName%>.<%=column.getLabel()%> = routines.system.JDBCUtil.getBoolean(rs_<%=cid %>, <%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
+<%
+			}
+    	}
+		
 		//-----------according schema type to generate ResultSet
 	    
 	    //---------end according schema type to generate ResultSet
