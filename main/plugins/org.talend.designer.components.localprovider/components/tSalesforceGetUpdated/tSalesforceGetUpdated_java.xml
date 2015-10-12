@@ -2489,28 +2489,28 @@
    </PARAMETERS>
    <ADVANCED_PARAMETERS>
     <PARAMETER
-           NAME="NEED_COMPRESSION"
-           FIELD="CHECK"
-           REQUIRED="true"
-           NUM_ROW="10"
-           SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-           <DEFAULT>false</DEFAULT>
+       NAME="NEED_COMPRESSION"
+       FIELD="CHECK"
+       REQUIRED="true"
+       NUM_ROW="10"
+       SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
        NAME="USE_HTTP_CHUNKED"
        FIELD="CHECK"
-       SHOW="false"
+       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
        NUM_ROW="10">
-       <DEFAULT>false</DEFAULT>
+       <DEFAULT>true</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
-            NAME="CLIENT_ID"
-            FIELD="TEXT"
-            NUM_ROW="20"
-            SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-            <DEFAULT>""</DEFAULT>
+        NAME="CLIENT_ID"
+        FIELD="TEXT"
+        NUM_ROW="20"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+        <DEFAULT>""</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
   <CODEGENERATION>

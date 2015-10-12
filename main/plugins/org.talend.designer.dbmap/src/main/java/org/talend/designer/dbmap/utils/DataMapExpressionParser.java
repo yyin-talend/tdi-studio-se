@@ -35,7 +35,7 @@ import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
  */
 public class DataMapExpressionParser {
 
-    private final static String EXPRESSION_PATTERN = "\\s*(\\w+)\\s*\\.(\\w+)\\s*";//$NON-NLS-1$
+    private final static String EXPRESSION_PATTERN = "(\\s*(\\w+)\\s*\\.(\\w+)\\s*\\.(\\w+)\\s*)|(\\s*(\\w+)\\s*\\.(\\w+)\\s*)";//$NON-NLS-1$
 
     private Perl5Matcher matcher = new Perl5Matcher();
 
@@ -78,12 +78,14 @@ public class DataMapExpressionParser {
             recompilePatternIfNecessary(EXPRESSION_PATTERN);
             while (matcher.contains(patternMatcherInput, pattern)) {
                 MatchResult matchResult = matcher.getMatch();
-                if (matchResult.group(1) != null) {
-                    TableEntryLocation location = new TableEntryLocation(matchResult.group(1), matchResult.group(2));
+                if (matchResult.group(5) != null) {
+                    // tablename.columnname
+                    TableEntryLocation location = new TableEntryLocation(matchResult.group(6), matchResult.group(7));
                     resultList.add(location);
-                } else if (matchResult.group(matchResult.groups() - 1) != null) {
-                    TableEntryLocation location = new TableEntryLocation(matchResult.group(matchResult.groups() - 2),
-                            matchResult.group(matchResult.groups() - 1));
+                } else if (matchResult.group(1) != null) {
+                    // tablename.schemaname.columnname
+                    TableEntryLocation location = new TableEntryLocation(matchResult.group(2) + "." + matchResult.group(3),
+                            matchResult.group(4));
                     resultList.add(location);
                 }
             }
