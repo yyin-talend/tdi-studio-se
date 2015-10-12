@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.dbmap.language.oracle;
 
-import static org.talend.designer.dbmap.language.generation.DbGenerationManager.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -145,16 +143,23 @@ public class OracleGenerationManager extends DbGenerationManager {
                                     mapperManager.getCurrentLanguage());
                             TableEntryLocation[] tableEntriesLocationsSources = dataMapExpressionParser
                                     .parseTableEntryLocations(expression);
-                            for (TableEntryLocation tableEntriesLocationsSource : tableEntriesLocationsSources) {
-                                TableEntryLocation location = tableEntriesLocationsSource;
-                                String entryName = getAliasOf(dbMapEntry.getName());
-                                if (location != null && entryName != null
-                                        && !entryName.startsWith("_") && !entryName.equals(location.columnName)) {//$NON-NLS-1$
-                                    if (!added) {
-                                        sb.append(DbMapSqlConstants.SPACE + DbMapSqlConstants.AS + DbMapSqlConstants.SPACE
-                                                + getAliasOf(dbMapEntry.getName()));
+                            boolean columnChanged = false;
+                            if (tableEntriesLocationsSources.length > 1) {
+                                columnChanged = true;
+                            } else {
+                                for (TableEntryLocation tableEntriesLocationsSource : tableEntriesLocationsSources) {
+                                    TableEntryLocation location = tableEntriesLocationsSource;
+                                    String entryName = getAliasOf(dbMapEntry.getName());
+                                    if (location != null && entryName != null
+                                            && !entryName.startsWith("_") && !entryName.equals(location.columnName)) {//$NON-NLS-1$
+                                        columnChanged = true;
+
                                     }
                                 }
+                            }
+                            if (!added && columnChanged) {
+                                sb.append(DbMapSqlConstants.SPACE + DbMapSqlConstants.AS + DbMapSqlConstants.SPACE
+                                        + getAliasOf(dbMapEntry.getName()));
                             }
                         }
                         queryColumnsName += expression;
