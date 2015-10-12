@@ -14,7 +14,6 @@ package org.talend.designer.dbmap.model.tableentry;
 
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.language.DbLanguageConstants;
-import org.talend.designer.dbmap.language.generation.DbMapSqlConstants;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -28,10 +27,6 @@ public class TableEntryLocation {
 
     public String columnName;
 
-    public String prefix;
-
-    public String sufix;
-
     public TableEntryLocation() {
         super();
     }
@@ -39,29 +34,19 @@ public class TableEntryLocation {
     public TableEntryLocation(TableEntryLocation tableEntryLocation) {
         this.tableName = tableEntryLocation.tableName;
         this.columnName = tableEntryLocation.columnName;
-        this.prefix = tableEntryLocation.prefix;
-        this.sufix = tableEntryLocation.sufix;
     }
 
     public TableEntryLocation(String tableName, String columnName) {
-        this(DbMapSqlConstants.EMPTY, tableName, columnName, DbMapSqlConstants.EMPTY);
-    }
-
-    public TableEntryLocation(String prefix, String tableName, String columnName, String sufix) {
-        this.prefix = (prefix == null ? null : prefix.trim());
         this.tableName = (tableName == null ? null : tableName.trim());
         this.columnName = (columnName == null ? null : columnName.trim());
-        this.sufix = (sufix == null ? null : sufix.trim());
     }
 
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(prefix);
         buffer.append(tableName);
         buffer.append(DbLanguageConstants.PREFIX_FIELD_NAME);
         buffer.append(columnName);
-        buffer.append(sufix);
         return buffer.toString();
     }
 
@@ -75,8 +60,6 @@ public class TableEntryLocation {
         int result = 1;
         result = prime * result + ((this.columnName == null) ? 0 : this.columnName.hashCode());
         result = prime * result + ((this.tableName == null) ? 0 : this.tableName.hashCode());
-        result = prime * result + ((this.prefix == null) ? 0 : this.prefix.hashCode());
-        result = prime * result + ((this.sufix == null) ? 0 : this.sufix.hashCode());
         return result;
     }
 
@@ -107,21 +90,6 @@ public class TableEntryLocation {
             return false;
         }
 
-        if (this.prefix == null) {
-            if (other.prefix != null) {
-                return false;
-            }
-        } else if (!this.prefix.equals(other.prefix)) {
-            return false;
-        }
-
-        if (this.sufix == null) {
-            if (other.sufix != null) {
-                return false;
-            }
-        } else if (!this.sufix.equals(other.sufix)) {
-            return false;
-        }
         return true;
     }
 
