@@ -31,6 +31,8 @@ import org.talend.core.model.properties.ConnectionItem;
  */
 public class GenericConnWizardPage extends GenericWizardPage {
 
+    private DynamicComposite dynamicComposite;
+
     public GenericConnWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames,
             boolean creation, Form form, ComponentService compService) {
         super(connectionItem, isRepositoryObjectEditable, existingNames, creation, form, compService);
@@ -44,10 +46,19 @@ public class GenericConnWizardPage extends GenericWizardPage {
         setControl(container);
 
         Element element = new FakeElement(form.getName());
-        DynamicComposite dynamicComposite = new DynamicComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS,
-                EComponentCategory.BASIC, element, true, container.getBackground(), form);
+        dynamicComposite = new DynamicComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
+                element, true, container.getBackground(), form);
         dynamicComposite.setLayoutData(createFormData());
-        addCheckListener(dynamicComposite);
+        addCheckListener(dynamicComposite.getChecker());
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+            dynamicComposite.resetParameters();
+            dynamicComposite.refresh();
+        }
     }
 
 }

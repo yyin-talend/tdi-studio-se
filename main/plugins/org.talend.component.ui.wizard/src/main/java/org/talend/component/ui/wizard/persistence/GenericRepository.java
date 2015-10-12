@@ -24,7 +24,7 @@ public class GenericRepository implements Repository {
 
     @Override
     public String storeComponentProperties(ComponentProperties properties, String name, String repositoryLocation, Schema schema) {
-        return null; // TODO
+        return properties.toSerialized();
     }
 
 }

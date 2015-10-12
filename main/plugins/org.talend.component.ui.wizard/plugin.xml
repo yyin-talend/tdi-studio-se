@@ -114,6 +114,11 @@
             mapping="BUTTON"
             name="Button">
       </generator>
+      <generator
+            class="org.talend.component.ui.wizard.controller.generator.NameAndLabelsTreeGenerator"
+            mapping="NAME_SELECTION_AREA"
+            name="Name Selection Area">
+      </generator>
    </extension>
 
 </plugin>

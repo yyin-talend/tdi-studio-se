@@ -22,4 +22,6 @@ public interface IElementParameterEventProperties {
 
     public final static String EVENT_VALIDATE_RESULT_UPDATE = "EVENT_VALIDATE_RESULT_UPDATE"; //$NON-NLS-1$
 
+    public final static String EVENT_SHOW_DIALOG = "EVENT_SHOW_DIALOG"; //$NON-NLS-1$
+
 }

@@ -29,6 +29,7 @@ import org.talend.component.core.model.GenericElementParameter;
 import org.talend.components.api.NamedThing;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.PresentationItem;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.properties.presentation.Widget;
 import org.talend.components.api.schema.SchemaElement;
@@ -217,6 +218,7 @@ public class ComponentsUtils {
             case COMPONENT_REFERENCE:
                 break;
             case NAME_SELECTION_AREA:
+                fieldType = EParameterFieldType.NAME_SELECTION_AREA;
                 break;
             case NAME_SELECTION_REFERENCE:
                 break;
@@ -244,7 +246,7 @@ public class ComponentsUtils {
                     param.setListItemsDisplayCodeName(valArray);
                     param.setListItemsValue(valArray);
                 }
-            } else {
+            } else if (widgetProperty instanceof PresentationItem) {
                 param.setValue(null);
             }
 

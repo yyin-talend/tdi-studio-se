@@ -26,6 +26,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.components.api.NamedThing;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.PresentationItem;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.properties.presentation.Widget;
 import org.talend.components.api.schema.SchemaElement;
@@ -74,11 +75,11 @@ public class GenericElementParameter extends ElementParameter {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
-                fireValidateStatus();
+                fireValidateStatusEvent();
             }
             boolean calledAfter = callAfter();
             if (calledAfter) {
-                fireValueChanged();
+                fireValueChangedEvent();
             }
         }
         isFirstCall = false;
@@ -90,15 +91,21 @@ public class GenericElementParameter extends ElementParameter {
         if (widgetProperty instanceof SchemaElement) {
             SchemaElement se = (SchemaElement) widgetProperty;
             componentProperties.setValue(se, newValue);
+        } else if (widgetProperty instanceof PresentationItem) {
+            PresentationItem pi = (PresentationItem) widgetProperty;
+            Form formtoShow = pi.getFormtoShow();
+            if (formtoShow != null) {
+                fireShowDialogEvent(formtoShow);
+            }
         }
     }
 
-    private void fireValidateStatus() {
+    private void fireValidateStatusEvent() {
         this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE, null,
                 componentProperties.getValidationResult());
     }
 
-    private void fireValueChanged() {
+    private void fireValueChangedEvent() {
         List<Form> forms = componentProperties.getForms();
         for (Form form : forms) {
             if (form.isRefreshUI()) {
@@ -106,6 +113,10 @@ public class GenericElementParameter extends ElementParameter {
                 return;
             }
         }
+    }
+
+    private void fireShowDialogEvent(Form formToDisplay) {
+        this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_SHOW_DIALOG, null, formToDisplay);
     }
 
     private boolean callBefore() {

@@ -12,15 +12,18 @@
 // ============================================================================
 package org.talend.component.ui.wizard.ui.common;
 
+import java.util.List;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.properties.presentation.Form;
+import org.talend.components.api.properties.presentation.Widget;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.check.ICheckListener;
-import org.talend.core.ui.check.ICheckedComposite;
+import org.talend.core.ui.check.IChecker;
 
 /**
  * 
@@ -61,6 +64,16 @@ public abstract class GenericWizardPage extends WizardPage {
         return false;
     }
 
+    private boolean hasValidateWidget() {
+        List<Widget> widgets = form.getWidgets();
+        for (Widget widget : widgets) {
+            if (widget.isCallValidate()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected FormData createFormData() {
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
@@ -75,19 +88,19 @@ public abstract class GenericWizardPage extends WizardPage {
         super.setVisible(visible);
         if (visible) {
             callBefore();
+            setPageComplete(!hasValidateWidget());
         }
-        setPageComplete(visible);
     }
 
     public Form getForm() {
         return this.form;
     }
 
-    protected void addCheckListener(ICheckedComposite checkedComposite) {
+    protected void addCheckListener(IChecker checker) {
         ICheckListener checkListener = new ICheckListener() {
 
             @Override
-            public void checkPerformed(ICheckedComposite source) {
+            public void checkPerformed(IChecker source) {
                 if (source.isStatusOnError()) {
                     setErrorMessage(source.getStatus());
                 } else {
@@ -97,7 +110,7 @@ public abstract class GenericWizardPage extends WizardPage {
                 updatePageStatus();
             }
         };
-        checkedComposite.setListener(checkListener);
+        checker.setListener(checkListener);
     }
 
     protected void updatePageStatus() {
