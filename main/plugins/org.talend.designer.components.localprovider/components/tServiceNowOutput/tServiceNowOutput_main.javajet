@@ -70,14 +70,28 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 					%>
 					if(<%=conn.getName() %>.<%=column.getLabel()%> != null) {//6
 						<%
-						if ("sys_id".equals(column.getLabel())) {
-							%>
+						if("id_Dynamic".equals(column.getTalendType())) {
+						%>
+							routines.system.Dynamic dynamic_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+							for (int j_<%=cid%> = 0; j_<%=cid%> < dynamic_<%=cid%>.getColumnCount(); j_<%=cid%>++) {
+                                if (dynamic_<%=cid%>.getColumnValue(j_<%=cid%>) != null) {
+                                    routines.system.DynamicMetadata metadata_<%=cid%> = dynamic_<%=cid%>.getColumnMetadata(j_<%=cid%>);
+                                    if ("sys_id".equals(metadata_<%=cid%>.getName())) {
+                                    	<%=cid%>_SysId.put(metadata_<%=cid%>.getName(), <%=firstConnName%>.<%=column.getLabel()%>.getColumnValue(metadata_<%=cid%>.getName()));
+                                    } else {
+                                    	<%=cid%>_ob.put(metadata_<%=cid%>.getName(), <%=firstConnName%>.<%=column.getLabel()%>.getColumnValue(metadata_<%=cid%>.getName()));
+                                    }
+                                }
+                            }
+						<%
+						} else if ("sys_id".equals(column.getLabel())) {
+						%>
 							<%=cid%>_SysId.put("<%=column%>", <%=firstConnName%>.<%=column.getLabel()%>);
-							<%
+						<%
 						} else {
-							%>
+						%>
 							<%=cid%>_ob.put("<%=column%>", <%=firstConnName%>.<%=column.getLabel()%>);
-							<%
+						<%
 						}
 						%>
 					}//6
