@@ -18,6 +18,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -30,6 +31,8 @@ import org.talend.component.ui.wizard.constants.IGenericConstants;
 import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
 import org.talend.component.ui.wizard.internal.service.GenericWizardInternalService;
+import org.talend.component.ui.wizard.persistence.GenericRepository;
+import org.talend.component.ui.wizard.ui.common.GenericWizardDialog;
 import org.talend.component.ui.wizard.ui.common.GenericWizardPage;
 import org.talend.component.ui.wizard.update.GenericUpdateManager;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
@@ -86,7 +89,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         this.existingNames = existingNames;
         repNode = node;
         wizardService = GenericWizardServiceFactory.getGenericWizardService();
-        compService = new GenericWizardInternalService().getComponentService();
         setNeedsProgressMonitor(true);
         ENodeType nodeType = node.getType();
         switch (nodeType) {
@@ -129,6 +131,12 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             this.originalDescription = this.connectionItem.getProperty().getDescription();
             this.originalPurpose = this.connectionItem.getProperty().getPurpose();
             this.originalStatus = this.connectionItem.getProperty().getStatusCode();
+        }
+        compService = new GenericWizardInternalService().getComponentService();
+        compService.setRepository(new GenericRepository(connection));
+        IWizardContainer container = this.getContainer();
+        if (container instanceof GenericWizardDialog) {
+            ((GenericWizardDialog) container).setCompService(compService);
         }
         // initialize the context mode
         ConnectionContextHelper.checkContextMode(connectionItem);
@@ -174,7 +182,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
-                    factory.create(connectionItem, null);
+                    factory.create(connectionItem, new Path(""));
                 } else {
                     GenericUpdateManager.updateGenericConnection(connectionItem);
                     updateConnectionItem();

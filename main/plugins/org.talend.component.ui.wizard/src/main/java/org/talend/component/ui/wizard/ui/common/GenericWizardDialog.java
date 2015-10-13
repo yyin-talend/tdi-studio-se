@@ -69,4 +69,8 @@ public class GenericWizardDialog extends WizardDialog {
         return form;
     }
 
+    public void setCompService(ComponentService compService) {
+        this.compService = compService;
+    }
+
 }

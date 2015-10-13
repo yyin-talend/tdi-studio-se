@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.component.ui.wizard.persistence;
 
+import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.Repository;
 import org.talend.components.api.schema.Schema;
@@ -22,9 +23,16 @@ import org.talend.components.api.schema.Schema;
  */
 public class GenericRepository implements Repository {
 
+    private GenericConnection connection;
+
+    public GenericRepository(GenericConnection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public String storeComponentProperties(ComponentProperties properties, String name, String repositoryLocation, Schema schema) {
-        return properties.toSerialized();
+        connection.setCompProperties(properties.toSerialized());
+        return properties.getName();
     }
 
 }

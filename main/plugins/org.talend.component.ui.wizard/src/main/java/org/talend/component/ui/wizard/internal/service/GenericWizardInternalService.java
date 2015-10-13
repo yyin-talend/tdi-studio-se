@@ -19,7 +19,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
-import org.talend.component.ui.wizard.persistence.GenericRepository;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -40,9 +39,6 @@ public class GenericWizardInternalService implements IGenericWizardInternalServi
         ServiceReference<ComponentService> compServiceRef = bundleContext.getServiceReference(ComponentService.class);
         if (compServiceRef != null) {
             compService = bundleContext.getService(compServiceRef);
-        }
-        if (compService != null) {
-            compService.setRepository(new GenericRepository());
         }
         return compService;
     }

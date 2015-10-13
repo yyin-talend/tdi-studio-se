@@ -5,9 +5,7 @@ package org.talend.component.ui.model.genericMetadata;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.talend.core.model.metadata.builder.connection.ConnectionPackage;
-
 import org.talend.core.model.properties.PropertiesPackage;
 
 /**
@@ -17,7 +15,6 @@ import org.talend.core.model.properties.PropertiesPackage;
  * <ul>
  *   <li>each class,</li>
  *   <li>each feature of each class,</li>
- *   <li>each operation of each class,</li>
  *   <li>each enum,</li>
  *   <li>and each data type</li>
  * </ul>
@@ -448,13 +445,13 @@ public interface GenericMetadataPackage extends EPackage {
     int GENERIC_CONNECTION__CONTEXT_NAME = ConnectionPackage.CONNECTION__CONTEXT_NAME;
 
     /**
-     * The feature id for the '<em><b>Parameters</b></em>' attribute.
+     * The feature id for the '<em><b>Comp Properties</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int GENERIC_CONNECTION__PARAMETERS = ConnectionPackage.CONNECTION_FEATURE_COUNT + 0;
+    int GENERIC_CONNECTION__COMP_PROPERTIES = ConnectionPackage.CONNECTION_FEATURE_COUNT + 0;
 
     /**
      * The number of structural features of the '<em>Generic Connection</em>' class.
@@ -464,24 +461,6 @@ public interface GenericMetadataPackage extends EPackage {
      * @ordered
      */
     int GENERIC_CONNECTION_FEATURE_COUNT = ConnectionPackage.CONNECTION_FEATURE_COUNT + 1;
-
-    /**
-     * The operation id for the '<em>Get Connection Type Name</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int GENERIC_CONNECTION___GET_CONNECTION_TYPE_NAME = ConnectionPackage.CONNECTION___GET_CONNECTION_TYPE_NAME;
-
-    /**
-     * The number of operations of the '<em>Generic Connection</em>' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int GENERIC_CONNECTION_OPERATION_COUNT = ConnectionPackage.CONNECTION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.talend.component.ui.model.genericMetadata.impl.GenericConnectionItemImpl <em>Generic Connection Item</em>}' class.
@@ -565,15 +544,6 @@ public interface GenericMetadataPackage extends EPackage {
      */
     int GENERIC_CONNECTION_ITEM_FEATURE_COUNT = PropertiesPackage.CONNECTION_ITEM_FEATURE_COUNT + 0;
 
-    /**
-     * The number of operations of the '<em>Generic Connection Item</em>' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int GENERIC_CONNECTION_ITEM_OPERATION_COUNT = PropertiesPackage.CONNECTION_ITEM_OPERATION_COUNT + 0;
-
 
     /**
      * Returns the meta object for class '{@link org.talend.component.ui.model.genericMetadata.GenericConnection <em>Generic Connection</em>}'.
@@ -586,15 +556,15 @@ public interface GenericMetadataPackage extends EPackage {
     EClass getGenericConnection();
 
     /**
-     * Returns the meta object for the attribute '{@link org.talend.component.ui.model.genericMetadata.GenericConnection#getParameters <em>Parameters</em>}'.
+     * Returns the meta object for the attribute '{@link org.talend.component.ui.model.genericMetadata.GenericConnection#getCompProperties <em>Comp Properties</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Parameters</em>'.
-     * @see org.talend.component.ui.model.genericMetadata.GenericConnection#getParameters()
+     * @return the meta object for the attribute '<em>Comp Properties</em>'.
+     * @see org.talend.component.ui.model.genericMetadata.GenericConnection#getCompProperties()
      * @see #getGenericConnection()
      * @generated
      */
-    EAttribute getGenericConnection_Parameters();
+    EAttribute getGenericConnection_CompProperties();
 
     /**
      * Returns the meta object for class '{@link org.talend.component.ui.model.genericMetadata.GenericConnectionItem <em>Generic Connection Item</em>}'.
@@ -621,7 +591,6 @@ public interface GenericMetadataPackage extends EPackage {
      * <ul>
      *   <li>each class,</li>
      *   <li>each feature of each class,</li>
-     *   <li>each operation of each class,</li>
      *   <li>each enum,</li>
      *   <li>and each data type</li>
      * </ul>
@@ -640,12 +609,12 @@ public interface GenericMetadataPackage extends EPackage {
         EClass GENERIC_CONNECTION = eINSTANCE.getGenericConnection();
 
         /**
-         * The meta object literal for the '<em><b>Parameters</b></em>' attribute feature.
+         * The meta object literal for the '<em><b>Comp Properties</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GENERIC_CONNECTION__PARAMETERS = eINSTANCE.getGenericConnection_Parameters();
+        EAttribute GENERIC_CONNECTION__COMP_PROPERTIES = eINSTANCE.getGenericConnection_CompProperties();
 
         /**
          * The meta object literal for the '{@link org.talend.component.ui.model.genericMetadata.impl.GenericConnectionItemImpl <em>Generic Connection Item</em>}' class.

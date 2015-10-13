@@ -6,16 +6,12 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
-
 import org.talend.core.model.metadata.builder.connection.ConnectionPackage;
-
 import org.talend.core.model.properties.PropertiesPackage;
 
 /**
@@ -117,7 +113,7 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getGenericConnection_Parameters() {
+    public EAttribute getGenericConnection_CompProperties() {
         return (EAttribute)genericConnectionEClass.getEStructuralFeatures().get(0);
     }
 
@@ -159,7 +155,7 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
 
         // Create classes and their features
         genericConnectionEClass = createEClass(GENERIC_CONNECTION);
-        createEAttribute(genericConnectionEClass, GENERIC_CONNECTION__PARAMETERS);
+        createEAttribute(genericConnectionEClass, GENERIC_CONNECTION__COMP_PROPERTIES);
 
         genericConnectionItemEClass = createEClass(GENERIC_CONNECTION_ITEM);
     }
@@ -200,9 +196,9 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
         genericConnectionEClass.getESuperTypes().add(theConnectionPackage.getConnection());
         genericConnectionItemEClass.getESuperTypes().add(thePropertiesPackage.getConnectionItem());
 
-        // Initialize classes, features, and operations; add parameters
+        // Initialize classes and features; add operations and parameters
         initEClass(genericConnectionEClass, GenericConnection.class, "GenericConnection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getGenericConnection_Parameters(), theEcorePackage.getEString(), "parameters", null, 0, 1, GenericConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getGenericConnection_CompProperties(), theEcorePackage.getEString(), "compProperties", null, 0, 1, GenericConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(genericConnectionItemEClass, GenericConnectionItem.class, "GenericConnectionItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

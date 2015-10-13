@@ -3,14 +3,10 @@
 package org.talend.component.ui.model.genericMetadata.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
-
 import org.talend.core.model.metadata.builder.connection.impl.ConnectionImpl;
 
 /**
@@ -20,7 +16,7 @@ import org.talend.core.model.metadata.builder.connection.impl.ConnectionImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.talend.component.ui.model.genericMetadata.impl.GenericConnectionImpl#getParameters <em>Parameters</em>}</li>
+ *   <li>{@link org.talend.component.ui.model.genericMetadata.impl.GenericConnectionImpl#getCompProperties <em>Comp Properties</em>}</li>
  * </ul>
  * </p>
  *
@@ -28,24 +24,23 @@ import org.talend.core.model.metadata.builder.connection.impl.ConnectionImpl;
  */
 public class GenericConnectionImpl extends ConnectionImpl implements GenericConnection {
     /**
-     * The default value of the '{@link #getParameters() <em>Parameters</em>}' attribute.
+     * The default value of the '{@link #getCompProperties() <em>Comp Properties</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getParameters()
+     * @see #getCompProperties()
      * @generated
      * @ordered
      */
-    protected static final String PARAMETERS_EDEFAULT = null;
-
+    protected static final String COMP_PROPERTIES_EDEFAULT = null;
     /**
-     * The cached value of the '{@link #getParameters() <em>Parameters</em>}' attribute.
+     * The cached value of the '{@link #getCompProperties() <em>Comp Properties</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getParameters()
+     * @see #getCompProperties()
      * @generated
      * @ordered
      */
-    protected String parameters = PARAMETERS_EDEFAULT;
+    protected String compProperties = COMP_PROPERTIES_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -71,8 +66,8 @@ public class GenericConnectionImpl extends ConnectionImpl implements GenericConn
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getParameters() {
-        return parameters;
+    public String getCompProperties() {
+        return compProperties;
     }
 
     /**
@@ -80,11 +75,11 @@ public class GenericConnectionImpl extends ConnectionImpl implements GenericConn
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setParameters(String newParameters) {
-        String oldParameters = parameters;
-        parameters = newParameters;
+    public void setCompProperties(String newCompProperties) {
+        String oldCompProperties = compProperties;
+        compProperties = newCompProperties;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, GenericMetadataPackage.GENERIC_CONNECTION__PARAMETERS, oldParameters, parameters));
+            eNotify(new ENotificationImpl(this, Notification.SET, GenericMetadataPackage.GENERIC_CONNECTION__COMP_PROPERTIES, oldCompProperties, compProperties));
     }
 
     /**
@@ -95,8 +90,8 @@ public class GenericConnectionImpl extends ConnectionImpl implements GenericConn
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case GenericMetadataPackage.GENERIC_CONNECTION__PARAMETERS:
-                return getParameters();
+            case GenericMetadataPackage.GENERIC_CONNECTION__COMP_PROPERTIES:
+                return getCompProperties();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -109,8 +104,8 @@ public class GenericConnectionImpl extends ConnectionImpl implements GenericConn
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case GenericMetadataPackage.GENERIC_CONNECTION__PARAMETERS:
-                setParameters((String)newValue);
+            case GenericMetadataPackage.GENERIC_CONNECTION__COMP_PROPERTIES:
+                setCompProperties((String)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -124,8 +119,8 @@ public class GenericConnectionImpl extends ConnectionImpl implements GenericConn
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-            case GenericMetadataPackage.GENERIC_CONNECTION__PARAMETERS:
-                setParameters(PARAMETERS_EDEFAULT);
+            case GenericMetadataPackage.GENERIC_CONNECTION__COMP_PROPERTIES:
+                setCompProperties(COMP_PROPERTIES_EDEFAULT);
                 return;
         }
         super.eUnset(featureID);
@@ -139,8 +134,8 @@ public class GenericConnectionImpl extends ConnectionImpl implements GenericConn
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case GenericMetadataPackage.GENERIC_CONNECTION__PARAMETERS:
-                return PARAMETERS_EDEFAULT == null ? parameters != null : !PARAMETERS_EDEFAULT.equals(parameters);
+            case GenericMetadataPackage.GENERIC_CONNECTION__COMP_PROPERTIES:
+                return COMP_PROPERTIES_EDEFAULT == null ? compProperties != null : !COMP_PROPERTIES_EDEFAULT.equals(compProperties);
         }
         return super.eIsSet(featureID);
     }
@@ -155,8 +150,8 @@ public class GenericConnectionImpl extends ConnectionImpl implements GenericConn
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (parameters: ");
-        result.append(parameters);
+        result.append(" (compProperties: ");
+        result.append(compProperties);
         result.append(')');
         return result.toString();
     }
