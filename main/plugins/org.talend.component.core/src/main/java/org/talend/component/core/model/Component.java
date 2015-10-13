@@ -33,7 +33,6 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
@@ -174,11 +173,11 @@ public class Component extends AbstractComponent {
         addMainParameters(listParam, node);
         addPropertyParameters(listParam, node, NORMAL_PROPERTY);
         addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
-        // initializePropertyParameters(listParam);
-        // checkSchemaParameter(listParam, node);
+        initializePropertyParameters(listParam, node);
+        checkSchemaParameter(listParam, node);
         // addViewParameters(listParam, node);
-        // addDocParameters(listParam, node);
-        // addValidationRulesParameters(listParam, node);
+        addDocParameters(listParam, node);
+        addValidationRulesParameters(listParam, node);
         return listParam;
     }
 
@@ -331,7 +330,6 @@ public class Component extends AbstractComponent {
         param.setDefaultValue(param.getValue());
         param.setShow(true);
         listParam.add(param);
-
         listParam.add(addValidationRuleType(node, 3));
     }
 
@@ -577,20 +575,6 @@ public class Component extends AbstractComponent {
         param.setShow(false);
         listParam.add(param);
 
-        if (canStart()) {
-            param = new ElementParameter(node);
-            param.setName(EParameterName.START.getName());
-            param.setValue(new Boolean(false));
-            param.setDisplayName(EParameterName.START.getDisplayName());
-            param.setFieldType(EParameterFieldType.CHECK);
-            param.setCategory(EComponentCategory.TECHNICAL);
-            param.setNumRow(5);
-            param.setReadOnly(true);
-            param.setRequired(false);
-            param.setShow(false);
-            listParam.add(param);
-        }
-
         param = new ElementParameter(node);
         param.setName(EParameterName.STARTABLE.getName());
         param.setValue(new Boolean(canStart()));
@@ -748,48 +732,6 @@ public class Component extends AbstractComponent {
         param.setShow(false);
         param.setDefaultValue(param.getValue());
         listParam.add(param);
-
-        // These parameters is only work when TIS is loaded
-        // GLiu Added for Task http://jira.talendforge.org/browse/TESB-4279
-        if (PluginChecker.isTeamEdition() && !"CAMEL".equals(getPaletteType())) {//$NON-NLS-1$
-            boolean defaultParalelize = new Boolean("false");// TODO//$NON-NLS-1$
-            param = new ElementParameter(node);
-            param.setReadOnly(!defaultParalelize);
-            param.setName(EParameterName.PARALLELIZE.getName());
-            param.setValue(Boolean.FALSE);
-            param.setDisplayName(EParameterName.PARALLELIZE.getDisplayName());
-            param.setFieldType(EParameterFieldType.CHECK);
-            param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(200);
-            param.setShow(true);
-            param.setDefaultValue(param.getValue());
-            listParam.add(param);
-
-            param = new ElementParameter(node);
-            param.setReadOnly(!defaultParalelize);
-            param.setName(EParameterName.PARALLELIZE_NUMBER.getName());
-            param.setValue("");// TODO//$NON-NLS-1$
-            param.setDisplayName(EParameterName.PARALLELIZE_NUMBER.getDisplayName());
-            param.setFieldType(EParameterFieldType.TEXT);
-            param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(200);
-            param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'"); //$NON-NLS-1$
-            param.setDefaultValue(param.getValue());
-            listParam.add(param);
-
-            param = new ElementParameter(node);
-            param.setReadOnly(!defaultParalelize);
-            param.setName(EParameterName.PARALLELIZE_KEEP_EMPTY.getName());
-            param.setValue(Boolean.FALSE);
-            param.setDisplayName(EParameterName.PARALLELIZE_KEEP_EMPTY.getDisplayName());
-            param.setFieldType(EParameterFieldType.CHECK);
-            param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(200);
-            param.setShow(false);
-            param.setDefaultValue(param.getValue());
-            listParam.add(param);
-        }
-
     }
 
     private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,
@@ -1030,7 +972,7 @@ public class Component extends AbstractComponent {
         listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, form, null, null));
     }
 
-    private void initializePropertyParameters(List<ElementParameter> listParam) {
+    private void initializePropertyParameters(List<ElementParameter> listParam, final INode node) {
         for (ElementParameter param : listParam) {
             if (param.getDefaultValues().size() > 0) {
                 boolean isSet = false;
@@ -1080,7 +1022,7 @@ public class Component extends AbstractComponent {
                 }
             }
         }
-        initializePropertyParametersForSchema(listParam);
+        initializePropertyParametersForSchema(listParam, node);
     }
 
     private int computeIndex(List<ElementParameter> listParam, ElementParameter param) {
@@ -1122,26 +1064,44 @@ public class Component extends AbstractComponent {
      * 
      * @param listParam
      */
-    private void initializePropertyParametersForSchema(List<ElementParameter> listParam) {
+    private void initializePropertyParametersForSchema(List<ElementParameter> listParam, final INode node) {
         for (ElementParameter param : listParam) {
-            if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                    || !param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
-                continue;
-            }
-            if (param.getDefaultValues().size() > 0) {
-                boolean isSet = false;
-                for (IElementParameterDefaultValue defaultValue : param.getDefaultValues()) {
-                    String conditionIf = defaultValue.getIfCondition();
-                    String conditionNotIf = defaultValue.getNotIfCondition();
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
+                String context = "FLOW"; //$NON-NLS-1$
+                ElementParameter newParam = new ElementParameter(node);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setName(EParameterName.SCHEMA_TYPE.getName());
+                newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
+                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+                newParam.setValue(BUILTIN);
+                newParam.setNumRow(param.getNumRow());
+                newParam.setFieldType(EParameterFieldType.TECHNICAL);
+                newParam.setShow(false);
+                newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                newParam.setReadOnly(param.isReadOnly());
+                newParam.setNotShowIf(param.getNotShowIf());
+                newParam.setContext(context);
+                newParam.setParentParameter(param);
 
-                    if (param.isShow(conditionIf, conditionNotIf, listParam)) {
-                        isSet = true;
-                        param.setValue(defaultValue.getDefaultValue());
-                    }
-                }
-                if (!isSet) {
-                    param.setValue(param.getDefaultValues().get(0).getDefaultValue());
-                }
+                newParam = new ElementParameter(node);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setName(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                newParam.setDisplayName(EParameterName.REPOSITORY_SCHEMA_TYPE.getDisplayName());
+                newParam.setListItemsDisplayName(new String[] {});
+                newParam.setListItemsValue(new String[] {});
+                newParam.setNumRow(param.getNumRow());
+                newParam.setFieldType(EParameterFieldType.TECHNICAL);
+                newParam.setValue(""); //$NON-NLS-1$
+                newParam.setShow(false);
+                newParam.setRequired(true);
+                newParam.setReadOnly(param.isReadOnly());
+                newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$//$NON-NLS-2$
+                newParam.setNotShowIf(param.getNotShowIf());
+                newParam.setContext(context);
+                newParam.setParentParameter(param);
             }
         }
     }
@@ -1404,11 +1364,13 @@ public class Component extends AbstractComponent {
             Integer lineStyle = currentType.getDefaultLineStyle();
 
             nodeConnector.setMaxLinkInput(componentConnector.getMaxInput());
-            nodeConnector.setMaxLinkOutput(componentConnector.getMaxOutput());
+            // nodeConnector.setMaxLinkOutput(componentConnector.getMaxOutput());
 
             if (nodeConnector.getName() == null) {
                 nodeConnector.setName(componentConnector.getType().name());
+                nodeConnector.setBaseSchema(currentType.getName());
             }
+            nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
             listConnector.add(nodeConnector);
         }
 

@@ -125,13 +125,16 @@ public class ComponentsUtils {
         compProperties.getProperties();
         List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
+            NamedThing[] widgetProperties = widget.getProperties();
+            NamedThing widgetProperty = widgetProperties[0];
+            if (widgetProperty.getName() == null || "moduleName".equals(widgetProperty.getName())) { //$NON-NLS-1$
+                continue;
+            }
             ElementParameter param = new GenericElementParameter(element, compProperties, widget, getComponentService());
             if (parentParam != null) {
                 param.setParentParameter(parentParam);
             }
             param.setCategory(category);
-            NamedThing[] widgetProperties = widget.getProperties();
-            NamedThing widgetProperty = widgetProperties[0];
             param.setName(widgetProperty.getName());
             param.setDisplayName(widgetProperty.getDisplayName());
             if (parentParam != null) {
@@ -160,6 +163,7 @@ public class ComponentsUtils {
 
             if (widgetProperty instanceof SchemaElement) {
                 se = (SchemaElement) widgetProperties[0];
+                param.setContext("FLOW"); //$NON-NLS-1$
             }
 
             EParameterFieldType fieldType = null;
@@ -234,7 +238,8 @@ public class ComponentsUtils {
             // FIXME - Column?
             if (se != null) {
                 param.setRequired(se.isRequired());
-                param.setValue(compProperties.getValue(se));
+                param.setValue(compProperties.getValue(se) != null ? compProperties.getValue(se).toString() : compProperties
+                        .getValue(se));
                 Collection values = se.getPossibleValues();
                 if (values != null) {
                     List<String> possVals = new ArrayList<>();
