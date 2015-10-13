@@ -2488,6 +2488,15 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.spark.StripslachesOnQuotesForTCollectAndCheck"
+              id="org.talend.repository.model.migration.spark.StripslachesOnQuotesForTCollectAndCheck"
+              description="Remove slash before quotes on tCollectAndCheck"
+              name="StripslachesOnQuotesForTCollectAndCheck"
+              version="6.1.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
               breaks="6.0.0"
               class="org.talend.repository.model.migration.ChangeDefaultSparkSerializer"
               id="org.talend.repository.model.migration.ChangeDefaultSparkSerializer"
