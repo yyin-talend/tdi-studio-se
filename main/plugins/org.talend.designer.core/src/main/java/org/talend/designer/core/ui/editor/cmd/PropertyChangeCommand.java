@@ -407,7 +407,7 @@ public class PropertyChangeCommand extends Command {
         }
 
         if (toUpdate) {
-            elem.setPropertyValue(updataComponentParamName, new Boolean(true));
+            elem.setPropertyValue(updataComponentParamName, Boolean.TRUE);
         }
         // see bug 9151:100% CPU when typing text.
         if (getNewValue() instanceof String && elem instanceof INode) {
