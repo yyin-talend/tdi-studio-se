@@ -431,7 +431,7 @@
 	      	<IMPORT MODULE="httpcore-4.3.1.jar" NAME="httpcore" MVN="mvn:org.talend.libraries/httpcore-4.3.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.3.1.jar" REQUIRED="true"/>
 	      	<IMPORT MODULE="httpmime-4.3.1.jar" NAME="httpmime" MVN="mvn:org.talend.libraries/httpmime-4.3.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpmime-4.3.1.jar" REQUIRED="true"/>
             <IMPORT MODULE="org.json.jar" NAME="json" MVN="mvn:org.talend.libraries/org.json/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/org.json.jar" REQUIRED="true"/>
-            <IMPORT MODULE="servicenow.jar" NAME="json" MVN="mvn:org.talend.libraries/servicenow/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/servicenow.jar" REQUIRED="true"/>
+            <IMPORT MODULE="servicenow.jar" NAME="json" MVN="mvn:org.talend.libraries/servicenow/6.0.0" REQUIRED="true"/>
         </IMPORTS>
     </CODEGENERATION>
     <RETURNS>
