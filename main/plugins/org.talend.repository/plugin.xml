@@ -2488,6 +2488,15 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.spark.StripslachesOnQuotesForTCollectAndCheck"
+              id="org.talend.repository.model.migration.spark.StripslachesOnQuotesForTCollectAndCheck"
+              description="Remove slash before quotes on tCollectAndCheck"
+              name="StripslachesOnQuotesForTCollectAndCheck"
+              version="6.1.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
               breaks="6.0.0"
               class="org.talend.repository.model.migration.ChangeDefaultSparkSerializer"
               id="org.talend.repository.model.migration.ChangeDefaultSparkSerializer"
@@ -2615,7 +2624,25 @@
                 id="org.talend.repository.model.migration.ChangeComponentSettingNameMigrationTask"
                 name="ChangeComponentSettingNameMigrationTask"
                 version="5.6.2">
-          </projecttask>
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.UpdateKakfaInputConsumerTimeoutAndAutoOffsetTask"
+              id="org.talend.repository.model.migration.UpdateKakfaInputConsumerTimeoutAndAutoOffsetTask"
+              description="Update stopping conditions and consumer timeout for tKafkaInput."
+              name="UpdateKakfaInputConsumerTimeoutAndAutoOffsetTask"
+              version="6.1.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.1"
+              class="org.talend.repository.model.migration.ChangeOptionDefaultValueForFileArchive"
+              description="Change the old operation name to newo one"
+              id="org.talend.repository.model.migration.ChangeOptionDefaultValueForFileArchive"
+              name="ChangeOptionDefaultValueForFileArchive"
+              version="6.1.0">
+        </projecttask>
    </extension>
 
    <extension

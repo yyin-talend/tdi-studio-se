@@ -161,7 +161,7 @@
 		unzip_<%=cid%>.setVerbose(<%=needPrintout%>);
 		unzip_<%=cid%>.setExtractPath(<%=extractPath%>);
 		unzip_<%=cid%>.setUtil(util_<%=cid %>);
-		unzip_<%=cid%>.setUseAesDecryption(<%="AES256".equals(decryptMethod)%>);
+		unzip_<%=cid%>.setUseZip4jDecryption(<%="ZIP4J_DECRYPT".equals(decryptMethod)%>);
 		
 		unzip_<%=cid%>.doUnzip();
 	}

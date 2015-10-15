@@ -26,10 +26,13 @@ public class Zip {
 
 	private String zip64Mode = null;
 
-	private boolean useAesEncryption = false;
+    private boolean useZip4jEncryption = false;
 
-	public void setUseAesEncryption(boolean useAesEncryption) {
-		this.useAesEncryption = useAesEncryption;
+    private int encryptionMethod = Zip4jConstants.ENC_METHOD_AES;
+    private int aesKeyStrength = Zip4jConstants.AES_STRENGTH_256;
+
+    public void setUseZip4jEncryption(boolean useZip4jEncryption) {
+        this.useZip4jEncryption = useZip4jEncryption;
 	}
 
 	public void setZip64Mode(String zip64Mode) {
@@ -68,7 +71,15 @@ public class Zip {
 		this.makeTargetDir = makeTargetDir;
 	}
 
-	public Zip(String sourceDir, String targetZip) {
+    public void setEncryptionMethod(int encryptionMethod) {
+        this.encryptionMethod = encryptionMethod;
+    }
+
+    public void setAesKeyStrength(int aesKeyStrength) {
+        this.aesKeyStrength = aesKeyStrength;
+    }
+
+    public Zip(String sourceDir, String targetZip) {
 		this.sourceDir = sourceDir;
 		this.targetZip = targetZip;
 	}
@@ -116,7 +127,7 @@ public class Zip {
 			return;
 		}
 
-		if (isEncrypted && useAesEncryption) {
+        if (isEncrypted && useZip4jEncryption) {
 			doZip2(source, list);
 		} else {
 			doZip1(source, list);
@@ -204,8 +215,10 @@ public class Zip {
 
 		if (isEncrypted && !"".equals(password)) {
 			params.setEncryptFiles(true);
-			params.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
-			params.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+            params.setEncryptionMethod(encryptionMethod);
+            if (Zip4jConstants.ENC_METHOD_AES == encryptionMethod) {
+                params.setAesKeyStrength(aesKeyStrength);
+            }
 			params.setPassword(password);
 		}
 

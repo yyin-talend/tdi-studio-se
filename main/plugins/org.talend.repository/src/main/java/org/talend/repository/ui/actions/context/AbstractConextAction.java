@@ -48,6 +48,7 @@ public class AbstractConextAction extends AContextualAction {
      * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         setEnabled(false);
         Object o = selection.getFirstElement();
@@ -72,20 +73,12 @@ public class AbstractConextAction extends AContextualAction {
         Property property = repositoryNode.getObject().getProperty();
         Property updatedProperty = null;
 
-        if (getNeededVersion() == null) {
-            try {
-                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        } else {
-            try {
-                updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance()
+                    .getLastVersion(new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId())
+                    .getProperty();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
         }
 
         // update the property of the node repository object

@@ -1,6 +1,7 @@
 <%@ jet
 imports="
 java.util.List
+java.util.ArrayList
 java.util.Map
 org.talend.core.model.metadata.IMetadataColumn
 org.talend.core.model.metadata.IMetadataTable
@@ -28,8 +29,10 @@ String connectionURL = "\"httpHost_conn_" + connection + "\"";
 String connectionUsername = "\"username_conn_" + connection + "\"";
 String connectionPassword = "\"password_conn_" + connection + "\"";
 
-String tablename = ElementParameterParser.getValue(node, "__TABLENAME__").trim();
-String tablenameLowerCase = tablename.toLowerCase();
+String tablename = ElementParameterParser.getValue(node, "__TABLENAME__").trim().toLowerCase();
+String customTablename = ElementParameterParser.getValue(node, "__CUSTOM_TABLE__").trim().toLowerCase();
+tablename = "custom_table".equals(tablename) ? customTablename : "\""+tablename+"\"";
+
 String limit = ElementParameterParser.getValue(node, "__LIMIT__").trim(); //result limit
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String valueFilter = "?sysparm_limit="; //An encoded query string used to filter the results
@@ -72,6 +75,79 @@ org.apache.http.client.CredentialsProvider <%=cid%>_credsProvider = new org.apac
 org.apache.http.impl.client.CloseableHttpClient <%=cid%>_httpclient = org.apache.http.impl.client.HttpClients.custom()
 .setDefaultCredentialsProvider(<%=cid%>_credsProvider)
 .build();
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas == null) || metadatas.isEmpty()) {
+	return stringBuffer.toString();
+}
+
+IMetadataTable metadata = metadatas.get(0);
+if (metadata == null) {
+	return stringBuffer.toString();
+}
+
+List<IMetadataColumn> columnList = metadata.getListColumns();
+List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+if(columnList==null || columnList.isEmpty() || outgoingConns == null || outgoingConns.isEmpty()){
+	return stringBuffer.toString();
+}
+
+IConnection outgoingConn = outgoingConns.get(0);
+
+boolean hasDynamic = false;
+String dynamicColName = "";
+StringBuilder unDynamicCols = new StringBuilder();
+for(IMetadataColumn column : columnList) {
+    if(column.getTalendType().equals("id_Dynamic")){
+        hasDynamic = true;
+        dynamicColName = column.getLabel();
+    } else {
+    	unDynamicCols.append(column.getLabel());
+    	unDynamicCols.append(",");
+    }
+}
+
+if(unDynamicCols.lastIndexOf(",")>-1){
+	unDynamicCols.deleteCharAt(unDynamicCols.lastIndexOf(","));
+}
+
+if(hasDynamic) {
+%>
+	routines.system.Dynamic dynamic_<%=cid%> = new routines.system.Dynamic();
+	
+	org.talend.servicenow.Util util_<%=cid%> = new org.talend.servicenow.Util(<%=cid%>_httpclient, <%=cid%>_URL);
+	java.util.Map<String, org.talend.servicenow.Util.ColumnMetadata> metadata_<%=cid%> = util_<%=cid%>.getMetadata(<%=tablename%>);
+	
+	java.util.List<String> unDynamicCols_<%=cid%> = java.util.Arrays.asList("<%=unDynamicCols%>".split(","));
+	
+	for (java.util.Map.Entry<String, org.talend.servicenow.Util.ColumnMetadata> entry_<%=cid%> : metadata_<%=cid%>.entrySet()) {
+		String columnname_<%=cid%> = entry_<%=cid%>.getKey();
+		
+		if(unDynamicCols_<%=cid%>.contains(columnname_<%=cid%>)) {
+			continue;
+		}
+		
+    	routines.system.DynamicMetadata dynamicMetadata_<%=cid%> = new routines.system.DynamicMetadata();
+    	dynamicMetadata_<%=cid%>.setName(columnname_<%=cid%>);
+    	dynamicMetadata_<%=cid%>.setDbName(columnname_<%=cid%>);
+    	
+    	dynamicMetadata_<%=cid%>.setType(entry_<%=cid%>.getValue().getType());
+    	int maxlength_<%=cid%> = entry_<%=cid%>.getValue().getMaxLength();
+    	dynamicMetadata_<%=cid%>.setLength(maxlength_<%=cid%>>256 ? 256 : maxlength_<%=cid%>);
+    	dynamicMetadata_<%=cid%>.setFormat(entry_<%=cid%>.getValue().getPattern());
+    	
+    	dynamicMetadata_<%=cid%>.setDbType("VARCHAR");
+    	dynamicMetadata_<%=cid%>.setPrecision(0);
+    	dynamicMetadata_<%=cid%>.setNullable(true);
+    	dynamicMetadata_<%=cid%>.setKey(false);
+    	dynamicMetadata_<%=cid%>.setSourceType(routines.system.DynamicMetadata.sourceTypes.servicenow);
+    	dynamic_<%=cid%>.metadatas.add(dynamicMetadata_<%=cid%>);
+    }
+<%
+}
+%>
+
 //Query paramiter builder
 String <%=cid%>_conditions = "";
 String <%=cid%>_conditionValues = "";
@@ -108,26 +184,16 @@ if(keyColumns.size() > 0 ) {
   }
 }
 //Return Field builder
+if(!hasDynamic) {
 %>
-String <%=cid%>_fields = "";
+	String <%=cid%>_fields = "";
 <%
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas != null) && (metadatas.size() > 0)) {
-  IMetadataTable metadata = metadatas.get(0);
-  if (metadata != null) {
-    List<IMetadataColumn> columnList = metadata.getListColumns();
-    int nbSchemaColumns = columnList.size();  
-    List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-    if(nbSchemaColumns > 0 && outgoingConns != null && outgoingConns.size() > 0){
-     IConnection outgoingConn = outgoingConns.get(0);
-     for (int i = 0; i < columnList.size(); i++) {
-      IMetadataColumn column = columnList.get(i);
-      %>
-        <%=cid%>_fields += <%=cid%>_fields.isEmpty() ? "&sysparm_fields=" + "<%=column.getLabel()%>" : "," + "<%=column.getLabel()%>";
-      <%
+    for (int i = 0; i < columnList.size(); i++) {
+    	IMetadataColumn column = columnList.get(i);
+      	%>
+    	<%=cid%>_fields += <%=cid%>_fields.isEmpty() ? "&sysparm_fields=" + "<%=column.getLabel()%>" : "," + "<%=column.getLabel()%>";
+      	<%
     }
-   }
-  }
 }
 %>
 //Set limit
@@ -142,11 +208,17 @@ if(!("").equals(limit)) {
 org.apache.http.client.methods.HttpGet <%=cid%>_httpget = new org.apache.http.client.methods.HttpGet(
   <%=cid%>_URL
   + "/api/now/table/"
-  + "<%=tablenameLowerCase%>"
-  + "?sysparm_limit="
+  + <%=tablename%>
+  + "?sysparm_exclude_reference_link=true&sysparm_limit="
   + limit_<%=cid%>
   + <%=cid%>_conditions
+<%
+if(!hasDynamic) {
+%>
   + <%=cid%>_fields
+<%
+}
+%>
   );
 //Header builder
 <%=cid%>_httpget.setHeader("Accept", "application/json");

@@ -12,10 +12,14 @@
 // ============================================================================
 package org.talend.presentation.onboarding.resource.handlers;
 
-import org.apache.log4j.Priority;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.intro.IIntroManager;
+import org.eclipse.ui.intro.IIntroPart;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.presentation.onboarding.resource.utils.OnBoardingResourceUtil;
 import org.talend.updates.runtime.ui.ShowWizardHandler;
@@ -40,11 +44,12 @@ public class EventHandler extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
         String eventType = event.getParameter(EVENT_TYPE);
-        boolean isNotFirstTimeShow = OnBoardingResourceUtil.getPreferenceStore().getBoolean(
-                PREFERENCE_ONBOARDING_RESOURCE_NOT_FIRSTTIME_SHOW);
-        if (!isNotFirstTimeShow) {
-            OnBoardingResourceUtil.getPreferenceStore().setValue(PREFERENCE_ONBOARDING_RESOURCE_NOT_FIRSTTIME_SHOW, true);
-            if (EVENT_TYPE_ON_OPEN.equals(eventType)) {
+        if (EVENT_TYPE_ON_OPEN.equals(eventType)) {
+            // 1. whether to lock popup dialog
+            boolean isNotFirstTimeShow = OnBoardingResourceUtil.getPreferenceStore().getBoolean(
+                    PREFERENCE_ONBOARDING_RESOURCE_NOT_FIRSTTIME_SHOW);
+            if (!isNotFirstTimeShow) {
+                OnBoardingResourceUtil.getPreferenceStore().setValue(PREFERENCE_ONBOARDING_RESOURCE_NOT_FIRSTTIME_SHOW, true);
                 synchronized (lockThread) {
                     if (lockThread.isAlive()) {
                         CommonExceptionHandler.process(new Throwable(
@@ -56,12 +61,31 @@ public class EventHandler extends AbstractHandler {
                     }
                 }
             }
+
+            // 2. try to close intro welcome view
+            Display.getDefault().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                    IIntroManager introManager = workbenchWindow.getWorkbench().getIntroManager();
+                    if (introManager.hasIntro()) {
+                        IIntroPart introPart = introManager.getIntro();
+                        if (introPart != null) {
+                            // change the intro view status to close it without exceptions
+                            introManager.showIntro(workbenchWindow, true);
+                            introManager.closeIntro(introManager.getIntro());
+                        }
+                    }
+                }
+            });
         }
         if (EVENT_TYPE_ON_CLOSE.equals(eventType)) {
             synchronized (lockThread) {
                 lockThread.interrupt();
             }
         }
+
         return null;
     }
 
@@ -78,7 +102,8 @@ public class EventHandler extends AbstractHandler {
                         try {
                             Thread.sleep(10000000);
                         } catch (InterruptedException e) {
-                            CommonExceptionHandler.process(e, Priority.INFO);
+                            // maybe needn't to print anything
+                            // CommonExceptionHandler.process(e, Priority.INFO);
                             break;
                         }
                     }

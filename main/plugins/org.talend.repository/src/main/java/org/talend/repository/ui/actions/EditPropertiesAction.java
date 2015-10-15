@@ -48,7 +48,6 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -58,7 +57,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -69,7 +67,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.update.RepositoryUpdateManager;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.services.IUIRefresher;
@@ -78,7 +75,6 @@ import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.metadata.managment.ui.wizard.PropertiesWizard;
 import org.talend.metadata.managment.ui.wizard.process.EditProcessPropertiesWizard;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -116,24 +112,15 @@ public class EditPropertiesAction extends AContextualAction {
         // }
 
         IRepositoryViewObject object = node.getObject();
-        if (getNeededVersion() != null && !object.getVersion().equals(getNeededVersion())) {
-            try {
-                object = ProxyRepositoryFactory.getInstance().getSpecificVersion(
-                        new Project(ProjectManager.getInstance().getProject(object.getProperty().getItem())),
-                        object.getProperty().getId(), getNeededVersion(), false);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        }
         IPath path = RepositoryNodeUtilities.getPath(node);
         String originalName = object.getLabel();
         final PropertiesWizard wizard;
         if (ERepositoryObjectType.ROUTINES == object.getRepositoryObjectType()
-            || isInstanceofCamelBeans(object.getRepositoryObjectType())) {
-            wizard = new EditRoutinePropertiesWizard(object, path, getNeededVersion() == null);
+                || isInstanceofCamelBeans(object.getRepositoryObjectType())) {
+            wizard = new EditRoutinePropertiesWizard(object, path, true);
         } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()
-            || isInstanceofCamelRoutes(object.getRepositoryObjectType())) {
-            wizard = new EditProcessPropertiesWizard(object, path, getNeededVersion() == null);
+                || isInstanceofCamelRoutes(object.getRepositoryObjectType())) {
+            wizard = new EditProcessPropertiesWizard(object, path, true);
         } else {
             wizard = getPropertiesWizard(object, path);
         }
@@ -188,7 +175,7 @@ public class EditPropertiesAction extends AContextualAction {
     }
 
     protected PropertiesWizard getPropertiesWizard(IRepositoryViewObject object, IPath path) {
-        return new PropertiesWizard(object, path, getNeededVersion() == null);
+        return new PropertiesWizard(object, path, true);
     }
 
     private static boolean isInstanceofCamelBeans(final ERepositoryObjectType type) {
@@ -205,6 +192,7 @@ public class EditPropertiesAction extends AContextualAction {
     protected static boolean isInstanceofCamelRoutes(final ERepositoryObjectType type) {
         return type == ERepositoryObjectType.PROCESS_ROUTE;
     }
+
     /**
      * delete the used routine java file if the routine is renamed. This method is added for solving bug 1321, only
      * supply to talend java version.
@@ -399,8 +387,7 @@ public class EditPropertiesAction extends AContextualAction {
                             canWork = false;
                         }
                     } else {
-                        canWork = isInstanceofCamelRoutes(node.getObjectType())
-                            || isInstanceofCamelBeans(node.getObjectType());
+                        canWork = isInstanceofCamelRoutes(node.getObjectType()) || isInstanceofCamelBeans(node.getObjectType());
                     }
                     break;
                 default:

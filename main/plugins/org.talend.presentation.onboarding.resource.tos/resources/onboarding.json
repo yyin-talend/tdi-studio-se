@@ -23,7 +23,7 @@
 						"cssIds": null,
                         "onShow": null,
 						"onNext": null,
-						"title": "<div style='color:blue;'>1. <internationalization id='onboarding.page1.title'/></div>",
+						"title": "<div style=''>1. <internationalization id='onboarding.page1.title'/></div>",
 						"content": "<internationalization id='onboarding.page1.content'/>"
 					},
 					{
@@ -58,7 +58,7 @@
 						"content": "<internationalization id='onboarding.page4.content'/>"
 					},
 					{
-						"size": "500,300",
+						"size": "570,355",
 						"cssIds": "#paletteLayout || .MPart#org-eclipse-gef-ui-palette_view",
                         "onShow": null,
                         "onNext": null,

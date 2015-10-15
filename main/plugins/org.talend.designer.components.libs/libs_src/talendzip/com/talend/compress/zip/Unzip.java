@@ -40,12 +40,12 @@ public class Unzip {
 		this.targetDir = targetDir;
 	}
 
-	public void setUseAesDecryption(boolean useAesDecryption) {
-		this.useAesDecryption = useAesDecryption;
+    public void setUseZip4jDecryption(boolean useZip4jDecryption) {
+        this.useZip4jDecryption = useZip4jDecryption;
 	}
 
 	private boolean needPassword = false;
-	private boolean useAesDecryption = false;
+    private boolean useZip4jDecryption = false;
 
 	private String password = null;
 	private boolean checkArchive = false;
@@ -67,7 +67,7 @@ public class Unzip {
 		System.out.println();
 
 		if (needPassword) {
-			if (useAesDecryption) {
+            if (useZip4jDecryption) {
 				doUnzipWithAes();
 			} else {
 				doUnzipWithDecryption();
