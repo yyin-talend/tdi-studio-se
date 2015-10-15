@@ -19,6 +19,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobErrorsChecker;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.bigdata.BigDataJavaProcessor;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
@@ -66,6 +67,7 @@ public class SparkJavaProcessor extends BigDataJavaProcessor {
         exportChoiceMap.put(ExportChoice.addStatistics, SparkJavaProcessorUtil.isStatistics());
 
         super.buildJob(destinationPath, processItem, version, ctx, exportChoiceMap, jobExportType, monitor);
+        JobErrorsChecker.checkLastGenerationHasCompilationError(false);
     }
 
     /*
