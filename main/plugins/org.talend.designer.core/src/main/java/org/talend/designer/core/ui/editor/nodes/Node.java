@@ -695,16 +695,12 @@ public class Node extends Element implements IGraphicalNode {
      */
     @Override
     public INodeConnector getConnectorFromName(final String connName) {
-        INodeConnector nodeConnector = null;
-        int nbConn = 0;
-
-        while ((nodeConnector == null) && (nbConn < listConnector.size())) {
-            if (listConnector.get(nbConn).getName().equals(connName)) {
-                nodeConnector = listConnector.get(nbConn);
+        for (INodeConnector nodeConnector : listConnector) {
+            if (connName.equals(nodeConnector.getName())) {
+                return nodeConnector;
             }
-            nbConn++;
         }
-        return nodeConnector;
+        return null;
     }
 
     public List<INodeConnector> getConnectorsFromType(final EConnectionType connType) {
