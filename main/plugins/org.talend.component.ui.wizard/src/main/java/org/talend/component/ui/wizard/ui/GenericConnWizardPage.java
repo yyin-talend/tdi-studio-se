@@ -56,7 +56,7 @@ public class GenericConnWizardPage extends GenericWizardPage {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {
-            dynamicComposite.resetParameters();
+            parameters = dynamicComposite.resetParameters();
             dynamicComposite.refresh();
         }
     }

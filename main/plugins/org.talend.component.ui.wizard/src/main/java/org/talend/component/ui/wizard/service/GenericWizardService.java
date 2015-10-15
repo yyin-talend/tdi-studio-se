@@ -66,9 +66,21 @@ public class GenericWizardService implements IGenericWizardService {
         return typeNames;
     }
 
+    public boolean isGenericType(ERepositoryObjectType repObjType) {
+        if (repObjType == null) {
+            return false;
+        }
+        List<String> genericTypeNames = getGenericTypeNames();
+        if (genericTypeNames != null && genericTypeNames.contains(repObjType.getType())) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Image getNodeImage(String typeName) {
-        InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName, WizardImageType.TREE_ICON_16X16);
+        InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName,
+                WizardImageType.TREE_ICON_16X16);
         // node image
         ImageData id = new ImageData(imageStream);
         Image image = new Image(null, id);
@@ -77,7 +89,8 @@ public class GenericWizardService implements IGenericWizardService {
 
     @Override
     public Image getWiardImage(String typeName) {
-        InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName, WizardImageType.WIZARD_BANNER_75X66);
+        InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName,
+                WizardImageType.WIZARD_BANNER_75X66);
         ImageData id = new ImageData(imageStream);
         Image image = new Image(null, id);
         return image;

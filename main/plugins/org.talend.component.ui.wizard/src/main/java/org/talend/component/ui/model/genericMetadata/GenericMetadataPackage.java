@@ -536,13 +536,22 @@ public interface GenericMetadataPackage extends EPackage {
     int GENERIC_CONNECTION_ITEM__CONNECTION = PropertiesPackage.CONNECTION_ITEM__CONNECTION;
 
     /**
+     * The feature id for the '<em><b>Type Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GENERIC_CONNECTION_ITEM__TYPE_NAME = PropertiesPackage.CONNECTION_ITEM_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>Generic Connection Item</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int GENERIC_CONNECTION_ITEM_FEATURE_COUNT = PropertiesPackage.CONNECTION_ITEM_FEATURE_COUNT + 0;
+    int GENERIC_CONNECTION_ITEM_FEATURE_COUNT = PropertiesPackage.CONNECTION_ITEM_FEATURE_COUNT + 1;
 
 
     /**
@@ -575,6 +584,17 @@ public interface GenericMetadataPackage extends EPackage {
      * @generated
      */
     EClass getGenericConnectionItem();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.component.ui.model.genericMetadata.GenericConnectionItem#getTypeName <em>Type Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Type Name</em>'.
+     * @see org.talend.component.ui.model.genericMetadata.GenericConnectionItem#getTypeName()
+     * @see #getGenericConnectionItem()
+     * @generated
+     */
+    EAttribute getGenericConnectionItem_TypeName();
 
     /**
      * Returns the factory that creates the instances of the model.
@@ -625,6 +645,14 @@ public interface GenericMetadataPackage extends EPackage {
          * @generated
          */
         EClass GENERIC_CONNECTION_ITEM = eINSTANCE.getGenericConnectionItem();
+
+        /**
+         * The meta object literal for the '<em><b>Type Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute GENERIC_CONNECTION_ITEM__TYPE_NAME = eINSTANCE.getGenericConnectionItem_TypeName();
 
     }
 

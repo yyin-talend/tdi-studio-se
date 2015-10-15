@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.component.ui.wizard.ui.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -24,6 +25,7 @@ import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.check.ICheckListener;
 import org.talend.core.ui.check.IChecker;
+import org.talend.designer.core.model.components.ElementParameter;
 
 /**
  * 
@@ -31,6 +33,8 @@ import org.talend.core.ui.check.IChecker;
  *
  */
 public abstract class GenericWizardPage extends WizardPage {
+
+    protected List<ElementParameter> parameters = new ArrayList<>();
 
     protected ConnectionItem connectionItem;
 
@@ -115,6 +119,10 @@ public abstract class GenericWizardPage extends WizardPage {
 
     protected void updatePageStatus() {
         setPageComplete(getErrorMessage() == null);
+    }
+
+    public List<ElementParameter> getParameters() {
+        return this.parameters;
     }
 
 }

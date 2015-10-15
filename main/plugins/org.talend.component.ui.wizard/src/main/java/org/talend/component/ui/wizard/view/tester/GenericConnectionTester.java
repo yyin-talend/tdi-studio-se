@@ -1,7 +1,5 @@
 package org.talend.component.ui.wizard.view.tester;
 
-import java.util.List;
-
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
@@ -29,14 +27,7 @@ public class GenericConnectionTester extends AbstractNodeTester {
 
     public boolean isGenericConnection(RepositoryNode repositoryNode) {
         ERepositoryObjectType contentType = getNodeContentType(repositoryNode);
-        if (contentType == null) {
-            return false;
-        }
-        List<String> genericTypeNames = GenericWizardServiceFactory.getGenericWizardService().getGenericTypeNames();
-        if (genericTypeNames != null && genericTypeNames.contains(contentType.getType())) {
-            return true;
-        }
-        return false;
+        return GenericWizardServiceFactory.getGenericWizardService().isGenericType(contentType);
     }
 
 }

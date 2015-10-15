@@ -13,12 +13,14 @@
 package org.talend.component.ui.wizard.internal.service;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
+import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -44,8 +46,23 @@ public class GenericWizardInternalService implements IGenericWizardInternalServi
     }
 
     @Override
-    public ComponentWizard getComponentWizard(String name) {
-        return getComponentService().getComponentWizard(name, null);
+    public ComponentWizard getComponentWizard(String name, String location) {
+        return getComponentService().getComponentWizard(name, location);
+    }
+
+    @Override
+    public List<ComponentWizard> getComponentWizardsForProperties(ComponentProperties properties, String location) {
+        return getComponentService().getComponentWizardsForProperties(properties, location);
+    }
+
+    public ComponentWizard getTopLevelComponentWizard(ComponentProperties properties, String location) {
+        List<ComponentWizard> componentWizards = getComponentWizardsForProperties(properties, location);
+        for (ComponentWizard componentWizard : componentWizards) {
+            if (componentWizard.getDefinition().isTopLevel()) {
+                return componentWizard;
+            }
+        }
+        return null;
     }
 
     @Override

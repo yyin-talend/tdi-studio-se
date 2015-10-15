@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.component.ui.wizard.internal;
 
+import java.util.List;
+
+import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -31,6 +34,10 @@ public interface IGenericWizardInternalService {
 
     public ComponentService getComponentService();
 
-    public ComponentWizard getComponentWizard(String name);
+    public ComponentWizard getComponentWizard(String name, String location);
+
+    public List<ComponentWizard> getComponentWizardsForProperties(ComponentProperties properties, String location);
+
+    public ComponentWizard getTopLevelComponentWizard(ComponentProperties properties, String location);
 
 }

@@ -120,5 +120,11 @@
             name="Name Selection Area">
       </generator>
    </extension>
+   <extension
+         point="org.talend.core.repository.repository_content">
+      <RepositoryContent
+            class="org.talend.component.ui.wizard.handler.GenericRepositoryContentHandler">
+      </RepositoryContent>
+   </extension>
 
 </plugin>

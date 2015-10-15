@@ -131,6 +131,15 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getGenericConnectionItem_TypeName() {
+        return (EAttribute)genericConnectionItemEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public GenericMetadataFactory getGenericMetadataFactory() {
         return (GenericMetadataFactory)getEFactoryInstance();
     }
@@ -158,6 +167,7 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
         createEAttribute(genericConnectionEClass, GENERIC_CONNECTION__COMP_PROPERTIES);
 
         genericConnectionItemEClass = createEClass(GENERIC_CONNECTION_ITEM);
+        createEAttribute(genericConnectionItemEClass, GENERIC_CONNECTION_ITEM__TYPE_NAME);
     }
 
     /**
@@ -201,6 +211,7 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
         initEAttribute(getGenericConnection_CompProperties(), theEcorePackage.getEString(), "compProperties", null, 0, 1, GenericConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(genericConnectionItemEClass, GenericConnectionItem.class, "GenericConnectionItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getGenericConnectionItem_TypeName(), theEcorePackage.getEString(), "typeName", null, 1, 1, GenericConnectionItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Create resource
         createResource(eNS_URI);

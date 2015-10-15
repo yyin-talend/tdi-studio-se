@@ -55,7 +55,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         checker = new Checker();
     }
 
-    public void resetParameters() {
+    public List<ElementParameter> resetParameters() {
         List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
@@ -64,6 +64,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         }
         parameters.add(getUpdateParameter());
         element.setElementParameters(parameters);
+        return parameters;
     }
 
     private ElementParameter getUpdateParameter() {

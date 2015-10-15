@@ -12,13 +12,17 @@
 // ============================================================================
 package org.talend.component.ui.wizard.ui;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardContainer;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -26,6 +30,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
+import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
 import org.talend.component.ui.wizard.constants.IGenericConstants;
 import org.talend.component.ui.wizard.i18n.Messages;
@@ -36,6 +41,8 @@ import org.talend.component.ui.wizard.ui.common.GenericWizardDialog;
 import org.talend.component.ui.wizard.ui.common.GenericWizardPage;
 import org.talend.component.ui.wizard.update.GenericUpdateManager;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
+import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentProperties.Deserialized;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
@@ -48,6 +55,7 @@ import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.services.IGenericWizardService;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -83,6 +91,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
     private IGenericWizardService wizardService;
 
     private ComponentService compService;
+
+    private List<ElementParameter> parameters = new ArrayList<>();
 
     public GenericConnWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
         super(workbench, creation);
@@ -149,9 +159,24 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         setWindowTitle(typeName);
         Image wiardImage = wizardService.getWiardImage(typeName);
         setDefaultPageImageDescriptor(ImageDescriptor.createFromImage(wiardImage));
+        ((GenericConnectionItem) connectionItem).setTypeName(typeName);
 
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
-        ComponentWizard componentWizard = internalService.getComponentWizard(typeName);
+        ComponentWizard componentWizard = null;
+        if (creation) {
+            componentWizard = internalService.getComponentWizard(typeName, null);
+        } else {
+            String compPropertiesStr = connection.getCompProperties();
+            if (compPropertiesStr != null) {
+                Deserialized fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr);
+                if (fromSerialized != null) {
+                    componentWizard = internalService.getTopLevelComponentWizard(fromSerialized.properties, null);
+                }
+            }
+        }
+        if (componentWizard == null) {
+            return;
+        }
         List<Form> forms = componentWizard.getForms();
         for (Form form : forms) {
             wizPage = new GenericConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation, form,
@@ -172,13 +197,25 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
     @Override
     public boolean performFinish() {
         if (wizPage.isPageComplete()) {
-            final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            String displayName = connectionProperty.getDisplayName();
-            connectionProperty.setLabel(displayName);
-            this.connection.setName(displayName);
-            this.connection.setLabel(displayName);
-            Form form = wizPage.getForm();
+            IWizardPage[] pages = getPages();
+            for (IWizardPage page : pages) {
+                if (page instanceof GenericConnWizardPage) {
+                    GenericConnWizardPage gPage = (GenericConnWizardPage) page;
+                    parameters.addAll(gPage.getParameters());
+                }
+            }
             try {
+                final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                String propertyName = getPropertyName();
+                connectionProperty.setDisplayName(StringUtils.trimToNull(propertyName));
+                connectionProperty.setLabel(StringUtils.trimToNull(propertyName));
+                connectionProperty.setModificationDate(new Date());
+                String displayName = connectionProperty.getDisplayName();
+                connectionProperty.setLabel(displayName);
+                this.connection.setName(displayName);
+                this.connection.setLabel(displayName);
+                Form form = wizPage.getForm();
+
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
@@ -201,6 +238,15 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         } else {
             return false;
         }
+    }
+
+    private String getPropertyName() throws Exception {
+        for (ElementParameter parameter : parameters) {
+            if ("name".equalsIgnoreCase(parameter.getName())) { //$NON-NLS-1$
+                return String.valueOf(parameter.getValue());
+            }
+        }
+        throw new Exception("Name property is required!");
     }
 
     @Override
