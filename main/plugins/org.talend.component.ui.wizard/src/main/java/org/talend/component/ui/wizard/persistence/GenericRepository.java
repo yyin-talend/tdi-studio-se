@@ -35,4 +35,10 @@ public class GenericRepository implements Repository {
         return properties.getName();
     }
 
+	@Override
+	public ComponentProperties getPropertiesForComponent(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -51,7 +51,8 @@ Require-Bundle: org.talend.model,
  org.eclipse.swt,
  org.eclipse.gmf.runtime.draw2d.ui,
  org.eclipse.help.base,
- org.eclipse.e4.ui.css.swt.theme
+ org.eclipse.e4.ui.css.swt.theme,
+ org.talend.components.api
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;

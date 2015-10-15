@@ -44,6 +44,7 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -290,6 +291,8 @@ public class Node extends Element implements IGraphicalNode {
     private boolean mrContainsReduce;
 
     private boolean isUpdate;
+    
+    private ComponentProperties componentProperties;
 
     /**
      * Getter for index.
@@ -4931,6 +4934,14 @@ public class Node extends Element implements IGraphicalNode {
             return;
         }
         param.setValue(new Boolean(subtreeStart));
+    }
+
+    public void setComponentProperties(ComponentProperties props) {
+    	componentProperties = props;
+    }
+    
+    public ComponentProperties getComponentProperties() {
+    	return componentProperties;
     }
 
     public Integer getMrGroupId() {

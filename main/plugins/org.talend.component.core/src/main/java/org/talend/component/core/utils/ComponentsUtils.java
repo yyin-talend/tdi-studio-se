@@ -39,6 +39,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.INode;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.ElementParameter;
 
@@ -106,6 +107,7 @@ public class ComponentsUtils {
      * <p>
      * Get element parameters of <code>element</code> from <code>form</code>.
      * 
+     * @param node optional, used if there is a component setting up the properties
      * @param element
      * @param category
      * @param form
@@ -124,6 +126,9 @@ public class ComponentsUtils {
             return elementParameters;
         }
         ComponentProperties compProperties = form.getProperties();
+        if (element instanceof INode)
+        	((INode)element).setComponentProperties(compProperties);
+        
         // Have to initialize for the messages
         compProperties.getProperties();
         List<Widget> formWidgets = form.getWidgets();
