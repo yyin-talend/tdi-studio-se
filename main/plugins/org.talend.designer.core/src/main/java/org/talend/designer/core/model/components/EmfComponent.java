@@ -1559,9 +1559,10 @@ public class EmfComponent extends AbstractComponent {
             for (ServiceReference<? extends HadoopComponent> sr : distributions) {
                 HadoopComponent np = bc.getService(sr);
                 distribSet.add(new Bean(np.getDistribution(), np.getDistributionName()));
-                if (np.getVersion() != null) {
-                    versionSet.add(new Bean(np.getVersion(), np.getVersionName(), np.getDistribution(), np
-                            .getModuleGroups(componentType)));
+                String version = np.getVersion();
+                if (version != null) {
+                    versionSet
+                            .add(new Bean(version, np.getVersionName(), np.getDistribution(), np.getModuleGroups(componentType)));
                 }
             }
 
@@ -1612,14 +1613,16 @@ public class EmfComponent extends AbstractComponent {
                 showIfVersion[index] = componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
                 notShowIfVersion[index] = null;
 
-                Iterator<String> moduleGroups = that.getModuleGroups().iterator();
-                while (moduleGroups.hasNext()) {
-                    IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
-                    importType.setMODULEGROUP(moduleGroups.next());
-                    importType
-                            .setREQUIREDIF("(" + componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "') AND (" + componentType.getVersionParameter() + "=='" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                                    + that.getName() + "')"); //$NON-NLS-1$
-                    ModulesNeededProvider.collectModuleNeeded("", importType, componentImportNeedsList); //$NON-NLS-1$
+                if (that.getModuleGroups() != null) {
+                    Iterator<String> moduleGroups = that.getModuleGroups().iterator();
+                    while (moduleGroups.hasNext()) {
+                        IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
+                        importType.setMODULEGROUP(moduleGroups.next());
+                        importType
+                                .setREQUIREDIF("(" + componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "') AND (" + componentType.getVersionParameter() + "=='" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                                        + that.getName() + "')"); //$NON-NLS-1$
+                        ModulesNeededProvider.collectModuleNeeded("", importType, componentImportNeedsList); //$NON-NLS-1$
+                    }
                 }
 
                 index++;

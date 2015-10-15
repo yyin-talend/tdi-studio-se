@@ -1,0 +1,146 @@
+package org.talend.hadoop.distribution.emr240hive0131;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.talend.core.hadoop.version.EHadoopDistributions;
+import org.talend.hadoop.distribution.AbstractDistribution;
+import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.EHadoopVersion;
+import org.talend.hadoop.distribution.component.HiveComponent;
+
+// ============================================================================
+//
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+
+public class EMRApache240_Hive_0_13_1_Distribution extends AbstractDistribution implements HiveComponent {
+
+    private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*,/usr/share/aws/emr/emr-fs/lib/*,/usr/share/aws/emr/lib/*"; //$NON-NLS-1$ {
+
+    private static Map<ComponentType, Set<String>> moduleGroups;
+
+    static {
+        moduleGroups = new HashMap<>();
+    }
+
+    @Override
+    public String getDistribution() {
+        return EHadoopDistributions.AMAZON_EMR.getName();
+    }
+
+    @Override
+    public String getDistributionName() {
+        return EHadoopDistributions.AMAZON_EMR.getDisplayName();
+    }
+
+    @Override
+    public String getVersion() {
+        return "APACHE_2_4_0_EMR_0_13_1"; //$NON-NLS-1$
+    }
+
+    @Override
+    public String getVersionName() {
+        return "EMR Apache 2.4.0 (Hive 0.13.1)"; //$NON-NLS-1$
+    }
+
+    @Override
+    public EHadoopVersion getHadoopVersion() {
+        return EHadoopVersion.HADOOP_2;
+    }
+
+    @Override
+    public boolean doSupportKerberos() {
+        return false;
+    }
+
+    @Override
+    public Set<String> getModuleGroups(ComponentType componentType) {
+        return moduleGroups.get(componentType);
+    }
+
+    @Override
+    public boolean doSupportCrossPlatformSubmission() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportImpersonation() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportUseDatanodeHostname() {
+        return true;
+    }
+
+    @Override
+    public String getYarnApplicationClasspath() {
+        return YARN_APPLICATION_CLASSPATH;
+    }
+
+    @Override
+    public boolean doSupportEmbeddedMode() {
+        return false;
+    }
+
+    @Override
+    public boolean doSupportStandaloneMode() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportHive1() {
+        return false;
+    }
+
+    @Override
+    public boolean doSupportHive2() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportTezForHive() {
+        return false;
+    }
+
+    @Override
+    public boolean doSupportHBaseForHive() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportSSL() {
+        return false;
+    }
+
+    @Override
+    public boolean doSupportORCFormat() {
+        return false;
+    }
+
+    @Override
+    public boolean doSupportAvroFormat() {
+        return false;
+    }
+
+    @Override
+    public boolean doSupportParquetFormat() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportStoreAsParquet() {
+        return false;
+    }
+
+}

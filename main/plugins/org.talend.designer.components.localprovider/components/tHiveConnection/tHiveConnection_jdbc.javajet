@@ -12,10 +12,10 @@ imports="
 
 	class ConnectionUtil extends DefaultConnectionUtil{
 		private String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
-		private org.talend.core.hadoop.api.components.HiveComponent hiveDistrib;
+		private org.talend.hadoop.distribution.component.HiveComponent hiveDistrib;
 		private boolean isCustom;
 
-		public ConnectionUtil(org.talend.core.hadoop.api.components.HiveComponent hiveDistrib) {
+		public ConnectionUtil(org.talend.hadoop.distribution.component.HiveComponent hiveDistrib) {
 			this.hiveDistrib = hiveDistrib;
 			this.isCustom = hiveDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
 		}
