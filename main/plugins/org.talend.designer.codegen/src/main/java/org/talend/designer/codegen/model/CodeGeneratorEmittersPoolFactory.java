@@ -452,7 +452,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                 jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginExtension()).getClass()
                         .getClassLoader());
             } else {
-
+                jetBean.addClassPath("HADOOP_DISTRIBUTIONS", "org.talend.hadoop.distribution"); //$NON-NLS-1$ //$NON-NLS-2$
+                jetBean.addClassPath("HADOOP_CUSTOM_DISTRIBUTIONS", "org.talend.hadoop.distribution.custom"); //$NON-NLS-1$ //$NON-NLS-2$
                 jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
 
             }

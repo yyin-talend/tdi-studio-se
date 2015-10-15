@@ -20,11 +20,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -42,8 +45,13 @@ import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.utils.image.ColorUtils;
@@ -103,6 +111,7 @@ import org.talend.designer.core.model.utils.emf.component.ARGType;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
 import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
+import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.DEFAULTType;
 import org.talend.designer.core.model.utils.emf.component.DocumentRoot;
 import org.talend.designer.core.model.utils.emf.component.FORMATType;
@@ -124,6 +133,9 @@ import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYT
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.DistributionFactory;
+import org.talend.hadoop.distribution.component.HadoopComponent;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 
@@ -611,7 +623,7 @@ public class EmfComponent extends AbstractComponent {
         parentParam.setShowIf(EParameterName.VALIDATION_RULES.getName() + " == 'true'"); //$NON-NLS-1$
         parentParam.setContext(context);
         parentParam.setRepositoryValue(ERepositoryCategoryType.VALIDATIONRULES.getName());
-        parentParam.setValue("");
+        parentParam.setValue(""); //$NON-NLS-1$
 
         ElementParameter newParam = new ElementParameter(node);
         newParam.setCategory(EComponentCategory.VALIDATION_RULES);
@@ -697,8 +709,6 @@ public class EmfComponent extends AbstractComponent {
             value.add(map);
         }
         param.setValue(value);
-
-        IElementParameter sqlPatternValue = param;
 
         String[] listRepositoryItem = new String[1];
         String[] listItemsDisplayValue = new String[1];
@@ -1210,7 +1220,7 @@ public class EmfComponent extends AbstractComponent {
 
         // These parameters is only work when TIS is loaded
         // GLiu Added for Task http://jira.talendforge.org/browse/TESB-4279
-        if (PluginChecker.isTeamEdition() && !"CAMEL".equals(getPaletteType())) {
+        if (PluginChecker.isTeamEdition() && !"CAMEL".equals(getPaletteType())) { //$NON-NLS-1$
             boolean defaultParalelize = new Boolean(compType.getHEADER().isPARALLELIZE());
             param = new ElementParameter(node);
             param.setReadOnly(!defaultParalelize);
@@ -1300,8 +1310,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setRequired(true);
             newParam.setParentParameter(parentParam);
             // listParam.add(newParam);
-        }
-        else if (type == EParameterFieldType.SCHEMA_TYPE) {
+        } else if (type == EParameterFieldType.SCHEMA_TYPE) {
             String context = xmlParam.getCONTEXT();
             if (context == null) {
                 // by default the schema will be set to the "FLOW" connector.
@@ -1373,8 +1382,7 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setParentParameter(parentParam);
                 parentParam.setReadOnly(true);
             }
-        }
-        else if (type == EParameterFieldType.ENCODING_TYPE) {
+        } else if (type == EParameterFieldType.ENCODING_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ENCODING_TYPE.getName());
@@ -1426,8 +1434,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setParentParameter(parentParam);
             // listParam.add(newParam);
-        }
-        else if (type == EParameterFieldType.PROCESS_TYPE || type == EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE) {
+        } else if (type == EParameterFieldType.PROCESS_TYPE || type == EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());
@@ -1494,6 +1501,151 @@ public class EmfComponent extends AbstractComponent {
             }
             newParam.setRequired(false);
             newParam.setParentParameter(parentParam);
+        } else if (type == EParameterFieldType.HADOOP_DISTRIBUTION) {
+
+            ComponentType componentType = ComponentType.getComponentType(parentParam.getName());
+            BundleContext bc = FrameworkUtil.getBundle(DistributionFactory.class).getBundleContext();
+            Collection<ServiceReference<? extends HadoopComponent>> distributions = new LinkedList<>();
+            try {
+                Class<? extends HadoopComponent> clazz = (Class<? extends HadoopComponent>) Class.forName(componentType
+                        .getService());
+                distributions.addAll(bc.getServiceReferences(clazz, null));
+            } catch (InvalidSyntaxException | ClassNotFoundException e) {
+                CommonExceptionHandler.process(e);
+            }
+
+            class Bean {
+
+                private String mName;
+
+                private String mDisplayName;
+
+                private String mDistributionName;
+
+                private Set<String> mModuleGroups;
+
+                public Bean(String name, String displayName) {
+                    this.mName = name;
+                    this.mDisplayName = displayName;
+                }
+
+                public Bean(String name, String displayName, String distributionName, Set<String> moduleGroups) {
+                    this.mName = name;
+                    this.mDisplayName = displayName;
+                    this.mDistributionName = distributionName;
+                    this.mModuleGroups = moduleGroups;
+                }
+
+                public String getName() {
+                    return this.mName;
+                }
+
+                public String getDisplayName() {
+                    return this.mDisplayName;
+                }
+
+                public String getDistributionName() {
+                    return this.mDistributionName;
+                }
+
+                public Set<String> getModuleGroups() {
+                    return this.mModuleGroups;
+                }
+            }
+
+            Set<Bean> distribSet = new HashSet<>();
+            Set<Bean> versionSet = new HashSet<>();
+
+            for (ServiceReference<? extends HadoopComponent> sr : distributions) {
+                HadoopComponent np = bc.getService(sr);
+                distribSet.add(new Bean(np.getDistribution(), np.getDistributionName()));
+                if (np.getVersion() != null) {
+                    versionSet.add(new Bean(np.getVersion(), np.getVersionName(), np.getDistribution(), np
+                            .getModuleGroups(componentType)));
+                }
+            }
+
+            ElementParameter newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.BASIC);
+            newParam.setName(componentType.getDistributionParameter());
+            newParam.setDisplayName("Distribution"); //$NON-NLS-1$
+
+            String[] displayName = new String[distribSet.size()];
+            String[] itemValue = new String[distribSet.size()];
+            Iterator<Bean> distribIter = distribSet.iterator();
+            int index = 0;
+
+            while (distribIter.hasNext()) {
+                Bean that = distribIter.next();
+                displayName[index] = that.getDisplayName();
+                itemValue[index] = that.getName();
+                index++;
+            }
+
+            String defaultValue = itemValue[0];
+
+            newParam.setListItemsDisplayName(displayName);
+            newParam.setListItemsDisplayCodeName(displayName);
+            newParam.setListItemsValue(itemValue);
+            newParam.setValue(defaultValue);
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
+            newParam.setShow(true);
+            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            newParam.setGroup(xmlParam.getGROUP());
+            newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
+
+            listParam.add(newParam);
+
+            displayName = new String[versionSet.size()];
+            itemValue = new String[versionSet.size()];
+            String[] showIfVersion = new String[versionSet.size()];
+            String[] notShowIfVersion = new String[versionSet.size()];
+            Iterator<Bean> versionIter = versionSet.iterator();
+            index = 0;
+
+            while (versionIter.hasNext()) {
+                Bean that = versionIter.next();
+                displayName[index] = that.getDisplayName();
+                itemValue[index] = that.getName();
+                showIfVersion[index] = componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+                notShowIfVersion[index] = null;
+
+                Iterator<String> moduleGroups = that.getModuleGroups().iterator();
+                while (moduleGroups.hasNext()) {
+                    IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
+                    importType.setMODULEGROUP(moduleGroups.next());
+                    importType
+                            .setREQUIREDIF("(" + componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "') AND (" + componentType.getVersionParameter() + "=='" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                                    + that.getName() + "')"); //$NON-NLS-1$
+                    ModulesNeededProvider.collectModuleNeeded("", importType, componentImportNeedsList); //$NON-NLS-1$
+                }
+
+                index++;
+            }
+
+            defaultValue = itemValue[0];
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.BASIC);
+            newParam.setName(componentType.getVersionParameter());
+            newParam.setDisplayName("Version"); //$NON-NLS-1$
+            newParam.setListItemsDisplayName(displayName);
+            newParam.setListItemsDisplayCodeName(displayName);
+            newParam.setListItemsValue(itemValue);
+            newParam.setListItemsShowIf(showIfVersion);
+            newParam.setListItemsNotShowIf(notShowIfVersion);
+            newParam.setValue(defaultValue);
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
+            newParam.setShow(true);
+            newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            newParam.setGroup(xmlParam.getGROUP());
+            newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
+
+            listParam.add(newParam);
         }
     }
 
@@ -1504,7 +1656,6 @@ public class EmfComponent extends AbstractComponent {
             try {
                 load();
             } catch (BusinessException e) {
-                // TODO Auto-generated catch block
                 ExceptionHandler.process(e);
             }
         }
@@ -1658,7 +1809,7 @@ public class EmfComponent extends AbstractComponent {
                 param.setValue(""); //$NON-NLS-1$
                 break;
             case JAVA_COMMAND:
-                param.setValue("");
+                param.setValue(""); //$NON-NLS-1$
                 if (xmlParam.getJAVACOMMAND() != null) {
                     param.setJar(xmlParam.getJAVACOMMAND().getJAR());
                     param.setJavaClass(xmlParam.getJAVACOMMAND().getCLASS());
@@ -1728,7 +1879,7 @@ public class EmfComponent extends AbstractComponent {
 
         // TODO to remove later, need to find another way to do this (for feature 18686)
         // adds manually all definitions to avoid to modify the component
-        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleInput".equals(name)) {
+        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleInput".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
             if (!advanced) {
                 // <PARAMETER NAME="FORCE_CRS" FIELD="CHECK" REQUIRED="true"
                 // NUM_ROW="110">
@@ -1754,9 +1905,9 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setFieldType(EParameterFieldType.TEXT);
                 newParam.setRequired(true);
                 newParam.setNumRow(110);
-                newParam.setShowIf("FORCE_CRS == 'true'");
+                newParam.setShowIf("FORCE_CRS == 'true'"); //$NON-NLS-1$
                 newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("\"EPSG:4326\"");
+                newParam.setValue("\"EPSG:4326\""); //$NON-NLS-1$
                 listParam.add(newParam);
 
                 // <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="2">
@@ -1770,12 +1921,12 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setNumRow(2);
                 newParam.setShow(false);
                 newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("import org.talend.sdi.geometry.Geometry;");
+                newParam.setValue("import org.talend.sdi.geometry.Geometry;"); //$NON-NLS-1$
                 listParam.add(newParam);
             }
         }
 
-        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleOutput".equals(name)) {
+        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleOutput".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
             if (!advanced) {
                 // <PARAMETER
                 // NAME="USE_SPATIAL_OPTIONS"
@@ -1791,8 +1942,8 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setDisplayName("Use spatial options"); //$NON-NLS-1$
                 newParam.setFieldType(EParameterFieldType.CHECK);
                 newParam.setRequired(true);
-                newParam.setShowIf("(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or"
-                        + " (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE')");
+                newParam.setShowIf("(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or" //$NON-NLS-1$
+                        + " (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE')"); //$NON-NLS-1$
                 newParam.setNumRow(200);
                 newParam.setCategory(EComponentCategory.BASIC);
                 newParam.setValue(new Boolean(false));
@@ -1813,9 +1964,9 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setDisplayName("Create Spatial index"); //$NON-NLS-1$
                 newParam.setFieldType(EParameterFieldType.CHECK);
                 newParam.setRequired(true);
-                newParam.setShowIf("(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or "
-                        + "(TABLE_ACTION=='DROP_CREATE') or (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or"
-                        + " (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))");
+                newParam.setShowIf("(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or " //$NON-NLS-1$
+                        + "(TABLE_ACTION=='DROP_CREATE') or (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or" //$NON-NLS-1$
+                        + " (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"); //$NON-NLS-1$
                 newParam.setNumRow(200);
                 newParam.setCategory(EComponentCategory.BASIC);
                 newParam.setValue(new Boolean(false));
@@ -1837,12 +1988,12 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setDisplayName("Index accuracy"); //$NON-NLS-1$
                 newParam.setFieldType(EParameterFieldType.TEXT);
                 newParam.setRequired(true);
-                newParam.setShowIf("(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or "
-                        + "(TABLE_ACTION=='DROP_CREATE') or (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or"
-                        + " (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))");
+                newParam.setShowIf("(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or " //$NON-NLS-1$
+                        + "(TABLE_ACTION=='DROP_CREATE') or (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or" //$NON-NLS-1$
+                        + " (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"); //$NON-NLS-1$
                 newParam.setNumRow(201);
                 newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("0.001");
+                newParam.setValue("0.001"); //$NON-NLS-1$
                 listParam.add(newParam);
 
                 // <PARAMETER NAME="SRID" FIELD="TEXT" NUM_ROW="208" REQUIRED="true"
@@ -1854,10 +2005,10 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setDisplayName("Oracle Spatial Reference System Identifier"); //$NON-NLS-1$
                 newParam.setFieldType(EParameterFieldType.TEXT);
                 newParam.setRequired(true);
-                newParam.setShowIf("USE_SPATIAL_OPTIONS == 'true'");
+                newParam.setShowIf("USE_SPATIAL_OPTIONS == 'true'"); //$NON-NLS-1$
                 newParam.setNumRow(208);
                 newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("-1");
+                newParam.setValue("-1"); //$NON-NLS-1$
                 listParam.add(newParam);
 
                 // <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="2">
@@ -1871,7 +2022,7 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setNumRow(2);
                 newParam.setShow(false);
                 newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setValue("import org.talend.sdi.geometry.Geometry;");
+                newParam.setValue("import org.talend.sdi.geometry.Geometry;"); //$NON-NLS-1$
                 listParam.add(newParam);
             }
         }
@@ -1903,7 +2054,7 @@ public class EmfComponent extends AbstractComponent {
         for (Object parameter : compType.getPARAMETERS().getPARAMETER()) {
             if (parameter instanceof PARAMETERType) {
                 PARAMETERType paramType = (PARAMETERType) parameter;
-                if ("MAPPING_TYPE".equals(paramType.getFIELD())) {
+                if ("MAPPING_TYPE".equals(paramType.getFIELD())) { //$NON-NLS-1$
                     if (paramType.getDEFAULT().size() > 0) {
                         return ((DEFAULTType) paramType.getDEFAULT().get(0)).getValue();
                     } else {
@@ -1916,7 +2067,7 @@ public class EmfComponent extends AbstractComponent {
             for (Object parameter : compType.getADVANCEDPARAMETERS().getPARAMETER()) {
                 if (parameter instanceof PARAMETERType) {
                     PARAMETERType paramType = (PARAMETERType) parameter;
-                    if ("MAPPING_TYPE".equals(paramType.getFIELD())) {
+                    if ("MAPPING_TYPE".equals(paramType.getFIELD())) { //$NON-NLS-1$
                         if (paramType.getDEFAULT().size() > 0) {
                             return ((DEFAULTType) paramType.getDEFAULT().get(0)).getValue();
                         } else {
@@ -2380,12 +2531,12 @@ public class EmfComponent extends AbstractComponent {
                 info.setTranslatedFamilyName(translatedFamilyName);
                 return translatedFamilyName;
             }
-            translatedFamilyName = "";
+            translatedFamilyName = ""; //$NON-NLS-1$
             IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
 
             int nbTotal = compType.getFAMILIES().getFAMILY().size();
             int nb = 0;
-            String transFamilyNames = "";
+            String transFamilyNames = ""; //$NON-NLS-1$
             for (Object objFam : compType.getFAMILIES().getFAMILY()) {
 
                 String curFamily = (String) objFam;
@@ -2400,32 +2551,32 @@ public class EmfComponent extends AbstractComponent {
                     } else {
                         translatedFamilyName += translated;
                     }
-                    transFamilyNames += toTranslate + ";";
+                    transFamilyNames += toTranslate + ";"; //$NON-NLS-1$
                     nbSub++;
                     if (nbSubTotal != nbSub) {
                         translatedFamilyName += "/"; //$NON-NLS-1$
-                        transFamilyNames += "/" + ";";
+                        transFamilyNames += "/" + ";"; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
                 nb++;
                 if (nbTotal != nb) {
                     translatedFamilyName += "|"; //$NON-NLS-1$
-                    transFamilyNames += "|" + ";";
+                    transFamilyNames += "|" + ";"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             info.setTranslatedFamilyName(transFamilyNames);
         } else {
             if (translatedFamilyName == null) {
-                translatedFamilyName = "";
+                translatedFamilyName = ""; //$NON-NLS-1$
                 if (info != null) {
                     IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
                     String transName = info.getTranslatedFamilyName();
-                    String[] transNames = transName.split(";");
+                    String[] transNames = transName.split(";"); //$NON-NLS-1$
                     for (String toTranslate : transNames) {
-                        if (toTranslate.equals("/") || toTranslate.equals("|")) {
+                        if (toTranslate.equals("/") || toTranslate.equals("|")) { //$NON-NLS-1$ //$NON-NLS-2$
                             translatedFamilyName += toTranslate;
                         } else {
-                            String translated = factory.getFamilyTranslation(this, "FAMILY." + toTranslate.replace(" ", "_"));
+                            String translated = factory.getFamilyTranslation(this, "FAMILY." + toTranslate.replace(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             if (translated.startsWith("!!")) { //$NON-NLS-1$
                                 // no key to translate, so use original
                                 translatedFamilyName += toTranslate;
@@ -2480,7 +2631,7 @@ public class EmfComponent extends AbstractComponent {
             return compType.getHEADER().getSHORTNAME();
         } else {
             String originalComponentName = getName();
-            String calculatedShortName = "";
+            String calculatedShortName = ""; //$NON-NLS-1$
             char[] cars = new char[originalComponentName.length()];
             int nbChars = 0;
 
@@ -2501,7 +2652,7 @@ public class EmfComponent extends AbstractComponent {
     @Override
     public String getLongName() {
         if (isAlreadyLoad) {
-            return info.getLongName() == null ? "" : info.getLongName();
+            return info.getLongName() == null ? "" : info.getLongName(); //$NON-NLS-1$
         }
         String longName = getTranslatedValue(PROP_LONG_NAME);
         if (info != null) {
@@ -2608,12 +2759,12 @@ public class EmfComponent extends AbstractComponent {
             }
 
             String notShowIf = connType.getNOTSHOWIF();
-            if (notShowIf != null && !("".equals(notShowIf))) {
+            if (notShowIf != null && !("".equals(notShowIf))) { //$NON-NLS-1$
                 nodeConnector.setNotShowIf(notShowIf);
             }
 
             String showIf = connType.getSHOWIF();
-            if (showIf != null && !("".equals(showIf))) {
+            if (showIf != null && !("".equals(showIf))) { //$NON-NLS-1$
                 nodeConnector.setShowIf(showIf);
             }
 
@@ -2805,7 +2956,7 @@ public class EmfComponent extends AbstractComponent {
 
     @Override
     public String getVersion() {
-        String version = "";
+        String version = ""; //$NON-NLS-1$
         if (!isAlreadyLoad) {
             version = String.valueOf(compType.getHEADER().getVERSION());
             info.setVersion(version);
@@ -2818,7 +2969,7 @@ public class EmfComponent extends AbstractComponent {
 
     private List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
 
-    private static final String DB_VERSION = "DB_VERSION";
+    private static final String DB_VERSION = "DB_VERSION"; //$NON-NLS-1$
 
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
@@ -2862,8 +3013,8 @@ public class EmfComponent extends AbstractComponent {
                     EList itemsList = parameterType.getITEMS().getITEM();
                     for (int j = 0; j < itemsList.size(); j++) {
                         ITEMType itemType = (ITEMType) itemsList.get(j);
-                        if (itemType.getVALUE().contains(".jar")) {
-                            String[] values = itemType.getVALUE().split(";");
+                        if (itemType.getVALUE().contains(".jar")) { //$NON-NLS-1$
+                            String[] values = itemType.getVALUE().split(";"); //$NON-NLS-1$
                             for (String value : values) {
                                 String valueIndex = value;
                                 if (!moduleNames.contains(valueIndex)) {
@@ -2888,6 +3039,7 @@ public class EmfComponent extends AbstractComponent {
                 for (int i = 0; i < emfImportList.size(); i++) {
                     IMPORTType importType = (IMPORTType) emfImportList.get(i);
                     ModulesNeededProvider.collectModuleNeeded(this.getName(), importType, componentImportNeedsList);
+
                 }
                 for (String name : info.getComponentNames()) {
                     IComponent component = ComponentsFactoryProvider.getInstance().get(name);
@@ -2910,56 +3062,56 @@ public class EmfComponent extends AbstractComponent {
 
         // TODO to remove later, need to find another way to do this (for feature 18686)
         // adds manually all definitions to avoid to modify the component
-        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleInput".equals(name)) {
+        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleInput".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
             // <IMPORT NAME="oracle-sdoapi" MODULE="sdoapi.jar" REQUIRED="true" />
-            ModuleNeeded componentImportNeeds = new ModuleNeeded("oracle-sdoapi", "sdoapi.jar",
-                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null);
+            ModuleNeeded componentImportNeeds = new ModuleNeeded("oracle-sdoapi", "sdoapi.jar", //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null); //$NON-NLS-1$
             componentImportNeedsList.add(componentImportNeeds);
 
             // <IMPORT NAME="oracle-sdoutil" MODULE="sdoutil.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("oracle-sdoutil", "sdoutil.jar", Messages.getString("modules.required"),
+            componentImportNeeds = new ModuleNeeded("oracle-sdoutil", "sdoutil.jar", Messages.getString("modules.required"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     true, new ArrayList<String>(), null, null);
             componentImportNeedsList.add(componentImportNeeds);
 
             // <IMPORT NAME="jts-1.12" MODULE="jts-1.12.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("jts-1.12", "jts-1.12.jar", Messages.getString("modules.required"), true,
+            componentImportNeeds = new ModuleNeeded("jts-1.12", "jts-1.12.jar", Messages.getString("modules.required"), true, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     new ArrayList<String>(), null, null);
             componentImportNeedsList.add(componentImportNeeds);
 
             // <IMPORT NAME="org.talend.sdi" MODULE="org.talend.sdi.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("org.talend.sdi", "org.talend.sdi.jar",
-                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null);
+            componentImportNeeds = new ModuleNeeded("org.talend.sdi", "org.talend.sdi.jar", //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null); //$NON-NLS-1$
             componentImportNeedsList.add(componentImportNeeds);
 
             // <IMPORT NAME="Java-DOM4J" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("Java-DOM4J", "dom4j-1.6.1.jar", Messages.getString("modules.required"),
+            componentImportNeeds = new ModuleNeeded("Java-DOM4J", "dom4j-1.6.1.jar", Messages.getString("modules.required"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     true, new ArrayList<String>(), null, null);
             componentImportNeedsList.add(componentImportNeeds);
 
             // <IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("Java-JAXEN", "jaxen-1.1.1.jar", Messages.getString("modules.required"),
+            componentImportNeeds = new ModuleNeeded("Java-JAXEN", "jaxen-1.1.1.jar", Messages.getString("modules.required"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     true, new ArrayList<String>(), null, null);
             componentImportNeedsList.add(componentImportNeeds);
         }
 
-        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleOutput".equals(name)) {
+        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleOutput".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
             // <IMPORT NAME="oracle-sdoapi" MODULE="sdoapi.jar" REQUIRED="true" />
-            ModuleNeeded componentImportNeeds = new ModuleNeeded("oracle-sdoapi", "sdoapi.jar",
-                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null);
+            ModuleNeeded componentImportNeeds = new ModuleNeeded("oracle-sdoapi", "sdoapi.jar", //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("modules.required"), true, new ArrayList<String>(), null, null); //$NON-NLS-1$
             componentImportNeedsList.add(componentImportNeeds);
 
             // <IMPORT NAME="oracle-sdoutil" MODULE="sdoutil.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("oracle-sdoutil", "sdoutil.jar", Messages.getString("modules.required"),
+            componentImportNeeds = new ModuleNeeded("oracle-sdoutil", "sdoutil.jar", Messages.getString("modules.required"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     true, new ArrayList<String>(), null, null);
             componentImportNeedsList.add(componentImportNeeds);
 
             // <IMPORT NAME="Java-DOM4J" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("Java-DOM4J", "dom4j-1.6.1.jar", Messages.getString("modules.required"),
+            componentImportNeeds = new ModuleNeeded("Java-DOM4J", "dom4j-1.6.1.jar", Messages.getString("modules.required"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     true, new ArrayList<String>(), null, null);
             componentImportNeedsList.add(componentImportNeeds);
 
             // <IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("Java-JAXEN", "jaxen-1.1.1.jar", Messages.getString("modules.required"),
+            componentImportNeeds = new ModuleNeeded("Java-JAXEN", "jaxen-1.1.1.jar", Messages.getString("modules.required"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     true, new ArrayList<String>(), null, null);
             componentImportNeedsList.add(componentImportNeeds);
         }
@@ -2972,8 +3124,8 @@ public class EmfComponent extends AbstractComponent {
         if (bundleID != null) {
             String bundleName = null;
             String bundleVersion = null;
-            if (bundleID.contains(":")) {
-                String[] nameAndVersion = bundleID.split(":");
+            if (bundleID.contains(":")) { //$NON-NLS-1$
+                String[] nameAndVersion = bundleID.split(":"); //$NON-NLS-1$
                 bundleName = nameAndVersion[0];
                 bundleVersion = nameAndVersion[1];
             } else {
@@ -3084,7 +3236,7 @@ public class EmfComponent extends AbstractComponent {
                         target = templateParamType.getTARGET();
 
                         if (lookupMode) {
-                            target = "LOOKUP." + target;
+                            target = "LOOKUP." + target; //$NON-NLS-1$
                         }
 
                         multipleComponentManager.addParam(source, target);
@@ -3095,7 +3247,7 @@ public class EmfComponent extends AbstractComponent {
                         target = templateParamType.getTARGET();
 
                         if (lookupMode) {
-                            target = "LOOKUP." + target;
+                            target = "LOOKUP." + target; //$NON-NLS-1$
                         }
 
                         multipleComponentManager.addValue(target, value);
@@ -3136,7 +3288,7 @@ public class EmfComponent extends AbstractComponent {
      */
     @Override
     public ImageDescriptor getIcon16() {
-        if (!this.imageRegistry.containsKey(getName() + "_16")) {
+        if (!this.imageRegistry.containsKey(getName() + "_16")) { //$NON-NLS-1$
             String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
                     .toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
@@ -3146,7 +3298,7 @@ public class EmfComponent extends AbstractComponent {
             cil.getImage16();
             cil.getImage24();
         }
-        return this.imageRegistry.get(getName() + "_16");
+        return this.imageRegistry.get(getName() + "_16"); //$NON-NLS-1$
     }
 
     /**
@@ -3156,7 +3308,7 @@ public class EmfComponent extends AbstractComponent {
      */
     @Override
     public ImageDescriptor getIcon24() {
-        if (!this.imageRegistry.containsKey(getName() + "_24")) {
+        if (!this.imageRegistry.containsKey(getName() + "_24")) { //$NON-NLS-1$
             String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
                     .toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
@@ -3166,7 +3318,7 @@ public class EmfComponent extends AbstractComponent {
             cil.getImage16();
             cil.getImage24();
         }
-        return this.imageRegistry.get(getName() + "_24");
+        return this.imageRegistry.get(getName() + "_24"); //$NON-NLS-1$
     }
 
     /**
@@ -3176,7 +3328,7 @@ public class EmfComponent extends AbstractComponent {
      */
     @Override
     public ImageDescriptor getIcon32() {
-        if (!this.imageRegistry.containsKey(getName() + "_32")) {
+        if (!this.imageRegistry.containsKey(getName() + "_32")) { //$NON-NLS-1$
             String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
                     .toPortableString();
             ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
@@ -3186,7 +3338,7 @@ public class EmfComponent extends AbstractComponent {
             cil.getImage16();
             cil.getImage24();
         }
-        return this.imageRegistry.get(getName() + "_32");
+        return this.imageRegistry.get(getName() + "_32"); //$NON-NLS-1$
     }
 
     @Override

@@ -119,8 +119,9 @@ public class ComboController extends AbstractElementPropertySectionController {
                     if (!((CCombo) ctrl).getText().equals(elem.getPropertyValue(name))) {
 
                         String value = new String(""); //$NON-NLS-1$
-                        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                            IElementParameter param = elem.getElementParameters().get(i);
+                        List<? extends IElementParameter> params = elem.getElementParametersWithChildrens();
+                        for (int i = 0; i < params.size(); i++) {
+                            IElementParameter param = params.get(i);
                             if (param.getName().equals(name)) {
                                 for (int j = 0; j < param.getListItemsValue().length; j++) {
                                     if (j < param.getListItemsDisplayName().length

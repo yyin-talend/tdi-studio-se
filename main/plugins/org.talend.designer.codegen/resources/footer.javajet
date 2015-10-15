@@ -1025,7 +1025,7 @@ if (execStat) {
             return "";
         }
 
-        boolean isCustom = hbaseDistrib instanceof org.talend.core.hadoop.api.distribution.CustomDistribution;
+        boolean isCustom = hbaseDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
 		
 	    boolean isHadoop2 = "HADOOP_2".equals(ElementParameterParser.getValue(hbaseComponent, "__HADOOP_CUSTOM_VERSION__"));%>
    			org.apache.hadoop.conf.Configuration conn_<%=hbaseComponent.getUniqueName()%> =(org.apache.hadoop.conf.Configuration)globalMap.get("conn_<%=hbaseComponent.getUniqueName()%>");
