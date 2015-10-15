@@ -18,26 +18,39 @@ package org.talend.hadoop.distribution;
  *
  */
 public enum ComponentType {
-    HDFS("org.talend.hadoop.distribution.component.HDFSComponent", "DISTRIBUTION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    PIG("org.talend.hadoop.distribution.component.PigComponent", "DISTRIBUTION", "PIG_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    MAPREDUCE("org.talend.hadoop.distribution.component.MRComponent", "DISTRIBUTION", "MR_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    HIVE("org.talend.hadoop.distribution.component.HiveComponent", "DISTRIBUTION", "HIVE_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    SQOOP("org.talend.hadoop.distribution.component.SqoopComponent", "DISTRIBUTION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    HCATALOG("org.talend.hadoop.distribution.component.HCatalogComponent", "DISTRIBUTION", "HCAT_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    HBASE("org.talend.hadoop.distribution.component.HBaseComponent", "DISTRIBUTION", "HBASE_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    SPARKBATCH("org.talend.hadoop.distribution.component.SparkBatchComponent", "DISTRIBUTION", "SPARK_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    SPARKSTREAMING("org.talend.hadoop.distribution.component.SparkStreamingComponent", "DISTRIBUTION", "SPARK_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    IMPALA("org.talend.hadoop.distribution.component.ImpalaComponent", "DISTRIBUTION", "IMPALA_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    HDFS("org.talend.hadoop.distribution.component.HDFSComponent", "DISTRIBUTION", "DISTRIBUTION", "DB_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    PIG("org.talend.hadoop.distribution.component.PigComponent", "DISTRIBUTION", "DISTRIBUTION", "PIG_VERSION", "PIG_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    MAPREDUCE("org.talend.hadoop.distribution.component.MRComponent", "DISTRIBUTION", "DISTRIBUTION", "MR_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    HIVE("org.talend.hadoop.distribution.component.HiveComponent", "DISTRIBUTION", "DISTRIBUTION", "HIVE_VERSION", "HIVE_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    SQOOP(
+          "org.talend.hadoop.distribution.component.SqoopComponent", "DISTRIBUTION", "HADOOP_PROPERTY/DISTRIBUTION", "DB_VERSION", "HADOOP_PROPERTY/DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    HCATALOG(
+             "org.talend.hadoop.distribution.component.HCatalogComponent", "DISTRIBUTION", "DISTRIBUTION", "HCAT_VERSION", "HCAT_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    HBASE(
+          "org.talend.hadoop.distribution.component.HBaseComponent", "DISTRIBUTION", "HBASE_DISTRIBUTION", "HBASE_VERSION", "HBASE_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    SPARKBATCH(
+               "org.talend.hadoop.distribution.component.SparkBatchComponent", "DISTRIBUTION", "DISTRIBUTION", "SPARK_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    SPARKSTREAMING(
+                   "org.talend.hadoop.distribution.component.SparkStreamingComponent", "DISTRIBUTION", "DISTRIBUTION", "SPARK_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    IMPALA(
+           "org.talend.hadoop.distribution.component.ImpalaComponent", "DISTRIBUTION", "DISTRIBUTION", "IMPALA_VERSION", "IMPALA_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
     /**
      * @param service - the interface of the service
      * @param distributionParameter - the name of the parameter to create for the distribution on the component side.
+     * @param distributionRepositoryValueParameter - the name of the repository value parameter for the distribution on
+     * the component side.
      * @param versionParameter - the name of the parameter to create for the version on the component side.
+     * @param versionRepositoryValueParameter - the name of the repository value parameter for the version on the
+     * component side.
      */
-    ComponentType(String service, String distributionParameter, String versionParameter) {
+    ComponentType(String service, String distributionParameter, String distributionRepositoryValueParameter,
+            String versionParameter, String versionRepositoryValueParameter) {
         this.mService = service;
         this.mDistributionParameter = distributionParameter;
         this.mVersionParameter = versionParameter;
+        this.mDistributionRepositoryValueParameter = distributionRepositoryValueParameter;
+        this.mVersionRepositoryValueParameter = versionRepositoryValueParameter;
     }
 
     private String mService;
@@ -45,6 +58,10 @@ public enum ComponentType {
     private String mDistributionParameter;
 
     private String mVersionParameter;
+
+    private String mDistributionRepositoryValueParameter;
+
+    private String mVersionRepositoryValueParameter;
 
     public static ComponentType getComponentType(String type) {
         for (ComponentType ct : values()) {
@@ -65,5 +82,13 @@ public enum ComponentType {
 
     public String getVersionParameter() {
         return this.mVersionParameter;
+    }
+
+    public String getDistributionRepositoryValueParameter() {
+        return this.mDistributionRepositoryValueParameter;
+    }
+
+    public String getVersionRepositoryValueParameter() {
+        return this.mVersionRepositoryValueParameter;
     }
 }

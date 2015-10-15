@@ -19,6 +19,7 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1553,8 +1554,8 @@ public class EmfComponent extends AbstractComponent {
                 }
             }
 
-            Set<Bean> distribSet = new HashSet<>();
-            Set<Bean> versionSet = new HashSet<>();
+            List<Bean> distribSet = new ArrayList<>();
+            List<Bean> versionSet = new ArrayList<>();
 
             for (ServiceReference<? extends HadoopComponent> sr : distributions) {
                 HadoopComponent np = bc.getService(sr);
@@ -1563,6 +1564,45 @@ public class EmfComponent extends AbstractComponent {
                 if (version != null) {
                     versionSet
                             .add(new Bean(version, np.getVersionName(), np.getDistribution(), np.getModuleGroups(componentType)));
+                }
+            }
+
+            Collections.sort(distribSet, new Comparator<Bean>() {
+
+                @Override
+                public int compare(Bean b1, Bean b2) {
+                    if ("CUSTOM".equals(b1.getName())) { //$NON-NLS-1$
+                        return 1;
+                    }
+
+                    if ("CUSTOM".equals(b2.getName())) { //$NON-NLS-1$
+                        return -1;
+                    }
+
+                    return b1.getName().compareTo(b2.getName());
+                }
+            });
+
+            Collections.sort(versionSet, new Comparator<Bean>() {
+
+                @Override
+                public int compare(Bean b1, Bean b2) {
+                    if (!b1.getName().equals(b2.getName())) {
+                        return b1.getDistributionName().compareTo(b2.getDistributionName());
+                    } else {
+                        return b1.getName().compareTo(b2.getName());
+                    }
+                }
+            });
+
+            Set<String> dedupDistribList = new HashSet<>();
+            Iterator<Bean> it = distribSet.iterator();
+            while (it.hasNext()) {
+                Bean bean = it.next();
+                if (dedupDistribList.contains(bean.getName())) {
+                    it.remove();
+                } else {
+                    dedupDistribList.add(bean.getName());
                 }
             }
 
@@ -1596,6 +1636,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setGroup(xmlParam.getGROUP());
             newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
+            newParam.setRepositoryValue(componentType.getDistributionRepositoryValueParameter());
 
             listParam.add(newParam);
 
@@ -1643,10 +1684,16 @@ public class EmfComponent extends AbstractComponent {
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
             newParam.setShow(true);
-            newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+            String showIf = xmlParam.getSHOWIF();
+            if (showIf != null) {
+                newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setGroup(xmlParam.getGROUP());
             newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
+            newParam.setRepositoryValue(componentType.getVersionRepositoryValueParameter());
 
             listParam.add(newParam);
         }
