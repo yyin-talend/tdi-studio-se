@@ -62,6 +62,7 @@ public class CDH4MR1DistributionTest {
         assertFalse(((PigComponent) cdh400mr1).doSupportHCatalog());
         assertFalse(((PigComponent) cdh400mr1).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) cdh400mr1).doSupportHBase());
+        assertFalse(((PigComponent) cdh400mr1).doSupportTezForPig());
         assertTrue(((HiveComponent) cdh400mr1).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) cdh400mr1).doSupportStandaloneMode());
         assertTrue(((HiveComponent) cdh400mr1).doSupportHive1());

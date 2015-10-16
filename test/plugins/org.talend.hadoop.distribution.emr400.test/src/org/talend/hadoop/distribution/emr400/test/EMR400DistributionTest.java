@@ -60,6 +60,7 @@ public class EMR400DistributionTest {
         assertFalse(((PigComponent) emr400).doSupportHCatalog());
         assertFalse(((PigComponent) emr400).pigVersionPriorTo_0_12());
         assertFalse(((PigComponent) emr400).doSupportHBase());
+        assertFalse(((PigComponent) emr400).doSupportTezForPig());
         assertFalse(((HiveComponent) emr400).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) emr400).doSupportStandaloneMode());
         assertFalse(((HiveComponent) emr400).doSupportHive1());

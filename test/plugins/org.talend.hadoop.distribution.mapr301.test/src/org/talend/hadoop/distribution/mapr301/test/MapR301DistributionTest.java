@@ -61,6 +61,7 @@ public class MapR301DistributionTest {
         assertFalse(((SqoopComponent) mapr301).doJavaAPISqoopImportAllTablesSupportExcludeTable());
         assertFalse(((PigComponent) mapr301).doSupportHCatalog());
         assertFalse(((PigComponent) mapr301).pigVersionPriorTo_0_12());
+        assertFalse(((PigComponent) mapr301).doSupportTezForPig());
         assertTrue(((PigComponent) mapr301).doSupportHBase());
         assertTrue(((HiveComponent) mapr301).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) mapr301).doSupportStandaloneMode());

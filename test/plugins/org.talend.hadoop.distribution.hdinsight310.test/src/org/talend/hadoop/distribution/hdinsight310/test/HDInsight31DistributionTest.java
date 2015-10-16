@@ -60,6 +60,7 @@ public class HDInsight31DistributionTest {
         assertTrue(((PigComponent) hdinsight310).doSupportHCatalog());
         assertFalse(((PigComponent) hdinsight310).pigVersionPriorTo_0_12());
         assertFalse(((PigComponent) hdinsight310).doSupportHBase());
+        assertFalse(((PigComponent) hdinsight310).doSupportTezForPig());
         assertFalse(((HiveComponent) hdinsight310).doSupportEmbeddedMode());
         assertFalse(((HiveComponent) hdinsight310).doSupportStandaloneMode());
         assertFalse(((HiveComponent) hdinsight310).doSupportHive1());

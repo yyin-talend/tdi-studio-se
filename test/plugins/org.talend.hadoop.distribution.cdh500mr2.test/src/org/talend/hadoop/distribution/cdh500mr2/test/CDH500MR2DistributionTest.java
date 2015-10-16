@@ -62,6 +62,7 @@ public class CDH500MR2DistributionTest {
         assertTrue(((PigComponent) cdh500).doSupportHCatalog());
         assertFalse(((PigComponent) cdh500).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) cdh500).doSupportHBase());
+        assertFalse(((PigComponent) cdh500).doSupportTezForPig());
         assertTrue(((HiveComponent) cdh500).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) cdh500).doSupportStandaloneMode());
         assertTrue(((HiveComponent) cdh500).doSupportHive1());

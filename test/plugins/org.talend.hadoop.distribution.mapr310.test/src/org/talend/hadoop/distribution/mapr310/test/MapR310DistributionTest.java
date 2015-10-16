@@ -62,6 +62,7 @@ public class MapR310DistributionTest {
         assertTrue(((PigComponent) mapr310).doSupportHCatalog());
         assertTrue(((PigComponent) mapr310).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) mapr310).doSupportHBase());
+        assertFalse(((PigComponent) mapr310).doSupportTezForPig());
         assertTrue(((HiveComponent) mapr310).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) mapr310).doSupportStandaloneMode());
         assertTrue(((HiveComponent) mapr310).doSupportHive1());

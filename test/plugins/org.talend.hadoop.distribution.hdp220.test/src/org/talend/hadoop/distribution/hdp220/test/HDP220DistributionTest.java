@@ -62,6 +62,7 @@ public class HDP220DistributionTest {
         assertTrue(((PigComponent) hdp220).doSupportHCatalog());
         assertFalse(((PigComponent) hdp220).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) hdp220).doSupportHBase());
+        assertTrue(((PigComponent) hdp220).doSupportTezForPig());
         assertTrue(((HiveComponent) hdp220).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) hdp220).doSupportStandaloneMode());
         assertTrue(((HiveComponent) hdp220).doSupportHive1());

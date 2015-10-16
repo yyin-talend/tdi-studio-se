@@ -60,6 +60,7 @@ public class EMRApache103DistributionTest {
         assertFalse(((PigComponent) emr103).doSupportHCatalog());
         assertFalse(((PigComponent) emr103).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) emr103).doSupportHBase());
+        assertFalse(((PigComponent) emr103).doSupportTezForPig());
         assertTrue(((HiveComponent) emr103).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) emr103).doSupportStandaloneMode());
         assertTrue(((HiveComponent) emr103).doSupportHive1());

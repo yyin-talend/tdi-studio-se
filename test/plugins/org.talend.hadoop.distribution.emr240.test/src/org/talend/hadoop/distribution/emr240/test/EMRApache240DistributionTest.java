@@ -62,6 +62,7 @@ public class EMRApache240DistributionTest {
         assertFalse(((PigComponent) emr240).doSupportHCatalog());
         assertFalse(((PigComponent) emr240).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) emr240).doSupportHBase());
+        assertFalse(((PigComponent) emr240).doSupportTezForPig());
         assertTrue(((HiveComponent) emr240).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) emr240).doSupportStandaloneMode());
         assertFalse(((HiveComponent) emr240).doSupportHive1());

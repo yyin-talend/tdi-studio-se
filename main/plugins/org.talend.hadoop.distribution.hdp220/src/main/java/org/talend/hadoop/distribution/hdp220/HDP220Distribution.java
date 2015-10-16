@@ -132,6 +132,11 @@ public class HDP220Distribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
+    public boolean doSupportTezForPig() {
+        return true;
+    }
+
+    @Override
     public boolean doSupportImpersonation() {
         return true;
     }

@@ -124,6 +124,11 @@ public class MapR410Distribution extends AbstractMapRDistribution implements HDF
     }
 
     @Override
+    public boolean doSupportTezForPig() {
+        return true;
+    }
+
+    @Override
     public boolean doSupportEmbeddedMode() {
         return true;
     }

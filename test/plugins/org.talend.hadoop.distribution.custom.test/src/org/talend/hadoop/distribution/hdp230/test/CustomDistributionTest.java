@@ -59,6 +59,7 @@ public class CustomDistributionTest {
         assertTrue(((PigComponent) custom).doSupportHCatalog());
         assertFalse(((PigComponent) custom).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) custom).doSupportHBase());
+        assertTrue(((PigComponent) custom).doSupportTezForPig());
         assertTrue(((HiveComponent) custom).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) custom).doSupportStandaloneMode());
         assertTrue(((HiveComponent) custom).doSupportHive1());

@@ -62,6 +62,7 @@ public class MapR212DistributionTest {
         assertFalse(((PigComponent) mapr212).doSupportHCatalog());
         assertFalse(((PigComponent) mapr212).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) mapr212).doSupportHBase());
+        assertFalse(((PigComponent) mapr212).doSupportTezForPig());
         assertTrue(((HiveComponent) mapr212).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) mapr212).doSupportStandaloneMode());
         assertTrue(((HiveComponent) mapr212).doSupportHive1());

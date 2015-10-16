@@ -62,6 +62,7 @@ public class Pivotal200DistributionTest {
         assertFalse(((PigComponent) piv200).doSupportHCatalog());
         assertFalse(((PigComponent) piv200).pigVersionPriorTo_0_12());
         assertFalse(((PigComponent) piv200).doSupportHBase());
+        assertFalse(((PigComponent) piv200).doSupportTezForPig());
         assertTrue(((HiveComponent) piv200).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) piv200).doSupportStandaloneMode());
         assertTrue(((HiveComponent) piv200).doSupportHive1());

@@ -60,6 +60,7 @@ public class Apache100DistributionTest {
         assertFalse(((PigComponent) apache100).doSupportHCatalog());
         assertFalse(((PigComponent) apache100).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) apache100).doSupportHBase());
+        assertFalse(((PigComponent) apache100).doSupportTezForPig());
         assertTrue(((HiveComponent) apache100).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) apache100).doSupportStandaloneMode());
         assertTrue(((HiveComponent) apache100).doSupportHive1());

@@ -62,6 +62,7 @@ public class Pivotal101DistributionTest {
         assertFalse(((PigComponent) piv101).doSupportHCatalog());
         assertFalse(((PigComponent) piv101).pigVersionPriorTo_0_12());
         assertTrue(((PigComponent) piv101).doSupportHBase());
+        assertFalse(((PigComponent) piv101).doSupportTezForPig());
         assertTrue(((HiveComponent) piv101).doSupportEmbeddedMode());
         assertTrue(((HiveComponent) piv101).doSupportStandaloneMode());
         assertTrue(((HiveComponent) piv101).doSupportHive1());
