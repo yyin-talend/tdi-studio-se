@@ -295,7 +295,6 @@ public class ProcessVersionComposite extends AbstractTabComposite {
                                 action.init(null, structuredSelection);
                                 Object o = structuredSelection.getFirstElement();
                                 if (o instanceof RepositoryNode) {
-                                    ((AContextualAction) action).setNeededVersion(((RepositoryNode) o).getObject().getVersion());
                                     ((AContextualAction) action).setAvoidUnloadResources(true);
                                 }
                                 if (action.isVisible()) {

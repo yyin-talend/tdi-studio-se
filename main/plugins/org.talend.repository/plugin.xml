@@ -2103,6 +2103,17 @@
               name="ChangeLocalModeForSparkConfiguration"
               version="6.1.0">
         </projecttask>
+        
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.ReviewPigLoadLayout"
+              description="Review the tPigLoad layout for a better parameters management."
+              id="org.talend.repository.model.migration.ReviewPigLoadLayout"
+              name="ReviewPigLoadLayout"
+              version="6.1.0">
+        </projecttask>
+        
         <projecttask
               beforeLogon="false"
               breaks="5.2.3"
@@ -2632,6 +2643,15 @@
               id="org.talend.repository.model.migration.UpdateKakfaInputConsumerTimeoutAndAutoOffsetTask"
               description="Update stopping conditions and consumer timeout for tKafkaInput."
               name="UpdateKakfaInputConsumerTimeoutAndAutoOffsetTask"
+              version="6.1.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.1"
+              class="org.talend.repository.model.migration.ChangeOptionDefaultValueForFileArchive"
+              description="Change the old operation name to newo one"
+              id="org.talend.repository.model.migration.ChangeOptionDefaultValueForFileArchive"
+              name="ChangeOptionDefaultValueForFileArchive"
               version="6.1.0">
         </projecttask>
    </extension>

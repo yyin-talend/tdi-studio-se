@@ -58,7 +58,7 @@
 						"content": "<internationalization id='onboarding.page4.content'/>"
 					},
 					{
-						"size": "550,310",
+						"size": "570,355",
 						"cssIds": "#paletteLayout || .MPart#org-eclipse-gef-ui-palette_view",
                         "onShow": null,
                         "onNext": null,

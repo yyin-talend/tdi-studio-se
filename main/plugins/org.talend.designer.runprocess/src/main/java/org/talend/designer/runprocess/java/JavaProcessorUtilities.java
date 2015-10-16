@@ -204,12 +204,10 @@ public class JavaProcessorUtilities {
             if (camelService.isInstanceofCamel(property.getItem())) {
                 // http://jira.talendforge.org/browse/TESB-5887 LiXiaopeng 2012-6-19
                 // Synchronize Route resources
-                camelService.synchronizeRouteResource(property.getItem());
-
-                ERepositoryObjectType beansType = camelService.getBeansType();
+                camelService.synchronizeRouteResource((ProcessItem) property.getItem());
                 try {
                     for (IRepositoryViewObject object : CoreRuntimePlugin.getInstance().getProxyRepositoryFactory()
-                            .getAll(beansType)) {
+                            .getAll(camelService.getBeansType())) {
                         Item item = object.getProperty().getItem();
                         if (item instanceof RoutineItem) {
                             RoutineItem routine = (RoutineItem) item;
