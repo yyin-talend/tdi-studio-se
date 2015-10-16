@@ -299,15 +299,23 @@ public class JobErrorsChecker {
             }
         }
 
+        /*
+         * ignore the routine errors.
+         */
         // if no error for job, check codes.
+        // checkRoutinesCompilationError();
 
+    }
+
+    private static void checkRoutinesCompilationError() throws ProcessorException {
+        // from Problems
         List<Problem> errors = Problems.getProblemList().getProblemsBySeverity(ProblemStatus.ERROR);
         for (Problem p : errors) {
             if (p instanceof TalendProblem) {
                 TalendProblem talendProblem = (TalendProblem) p;
                 if (talendProblem.getType() == ProblemType.ROUTINE) {
-                    line = talendProblem.getLineNumber();
-                    errorMessage = talendProblem.getDescription();
+                    int line = talendProblem.getLineNumber();
+                    String errorMessage = talendProblem.getDescription();
                     throw new ProcessorException(Messages.getString(
                             "JobErrorsChecker_routines_compile_errors", talendProblem.getJavaUnitName()) + '\n'//$NON-NLS-1$
                             + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + line + '\n' //$NON-NLS-1$
@@ -318,6 +326,8 @@ public class JobErrorsChecker {
 
         // if can't find the routines problem, try to check the file directly(mainly for commandline)
         try {
+            final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
+                    .createRoutineSynchronizer();
             IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
             List<IRepositoryViewObject> routinesObjects = factory.getAll(ERepositoryObjectType.ROUTINES, false);
             if (routinesObjects != null) {
@@ -335,13 +345,10 @@ public class JobErrorsChecker {
                         if (lineNr != null && message != null && severity != null && start != null && end != null) {
                             switch (severity) {
                             case IMarker.SEVERITY_ERROR:
-                                hasError = true;
-                                line = lineNr;
-                                errorMessage = message;
                                 throw new ProcessorException(
                                         Messages.getString("JobErrorsChecker_routines_compile_errors", property.getLabel()) + '\n'//$NON-NLS-1$
-                                                + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + line + '\n' //$NON-NLS-1$
-                                                + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ':' + ' ' + errorMessage); //$NON-NLS-1$
+                                                + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + lineNr + '\n' //$NON-NLS-1$
+                                                + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ':' + ' ' + message); //$NON-NLS-1$
                             default:
                                 break;
                             }
