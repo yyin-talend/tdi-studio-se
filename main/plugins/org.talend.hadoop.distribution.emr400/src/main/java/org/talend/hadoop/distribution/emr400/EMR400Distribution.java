@@ -2,11 +2,13 @@ package org.talend.hadoop.distribution.emr400;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
 import org.talend.hadoop.distribution.AbstractDistribution;
 import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.ESparkVersion;
 import org.talend.hadoop.distribution.component.HDFSComponent;
@@ -39,7 +41,7 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
 
     private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,/usr/lib/hadoop-lzo/lib/*,/usr/share/aws/emr/emrfs/conf, /usr/share/aws/emr/emrfs/lib/*,/usr/share/aws/emr/emrfs/auxlib/*,/usr/share/aws/emr/lib/*,/usr/share/aws/emr/ddb/lib/emr-ddb-hadoop.jar, /usr/share/aws/emr/goodies/lib/emr-hadoop-goodies.jar,/usr/share/aws/emr/kinesis/lib/emr-kinesis-hadoop.jar,/usr/lib/spark/yarn/lib/datanucleus-api-jdo.jar,/usr/lib/spark/yarn/lib/datanucleus-core.jar,/usr/lib/spark/yarn/lib/datanucleus-rdbms.jar,/usr/share/aws/emr/cloudwatch-sink/lib/*"; //$NON-NLS-1$
 
-    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+    private static Map<ComponentType, Set<DistributionModuleGroup>> moduleGroups;
 
     private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
@@ -82,7 +84,7 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
+    public Set<DistributionModuleGroup> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 

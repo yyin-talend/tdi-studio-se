@@ -13,12 +13,13 @@
 // ============================================================================
 package org.talend.hadoop.distribution.custom;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.hadoop.distribution.AbstractDistribution;
 import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.component.HBaseComponent;
 import org.talend.hadoop.distribution.component.HCatalogComponent;
@@ -30,7 +31,6 @@ import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SparkBatchComponent;
 import org.talend.hadoop.distribution.component.SparkStreamingComponent;
 import org.talend.hadoop.distribution.component.SqoopComponent;
-import org.talend.hadoop.distribution.condition.ComponentCondition;
 
 public class CustomDistribution extends AbstractDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent, SparkBatchComponent, SparkStreamingComponent, ImpalaComponent,
@@ -79,8 +79,8 @@ public class CustomDistribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
-        return new HashMap<>();
+    public Set<DistributionModuleGroup> getModuleGroups(ComponentType componentType) {
+        return new HashSet<>();
     }
 
     @Override

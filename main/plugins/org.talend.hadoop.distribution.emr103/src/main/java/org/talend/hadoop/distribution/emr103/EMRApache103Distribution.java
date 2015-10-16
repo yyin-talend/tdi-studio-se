@@ -2,11 +2,13 @@ package org.talend.hadoop.distribution.emr103;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
 import org.talend.hadoop.distribution.AbstractDistribution;
 import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.component.HBaseComponent;
 import org.talend.hadoop.distribution.component.HDFSComponent;
@@ -33,7 +35,7 @@ import org.talend.hadoop.distribution.condition.EqualityOperator;
 public class EMRApache103Distribution extends AbstractDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         PigComponent, HiveComponent {
 
-    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+    private static Map<ComponentType, Set<DistributionModuleGroup>> moduleGroups;
 
     private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
@@ -75,7 +77,7 @@ public class EMRApache103Distribution extends AbstractDistribution implements HD
     }
 
     @Override
-    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
+    public Set<DistributionModuleGroup> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 

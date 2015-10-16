@@ -2,11 +2,13 @@ package org.talend.hadoop.distribution.cdh500mr2;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
 import org.talend.hadoop.distribution.AbstractDistribution;
 import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.component.HBaseComponent;
 import org.talend.hadoop.distribution.component.HCatalogComponent;
@@ -15,7 +17,6 @@ import org.talend.hadoop.distribution.component.HiveComponent;
 import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SqoopComponent;
-import org.talend.hadoop.distribution.condition.ComponentCondition;
 
 // ============================================================================
 //
@@ -35,7 +36,7 @@ public class CDH500MR2Distribution extends AbstractDistribution implements HDFSC
 
     private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$YARN_HOME/*,$YARN_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*"; //$NON-NLS-1$
 
-    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+    private static Map<ComponentType, Set<DistributionModuleGroup>> moduleGroups;
 
     static {
         moduleGroups = new HashMap<>();
@@ -72,7 +73,7 @@ public class CDH500MR2Distribution extends AbstractDistribution implements HDFSC
     }
 
     @Override
-    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
+    public Set<DistributionModuleGroup> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 

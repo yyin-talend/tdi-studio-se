@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -138,6 +137,7 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.hadoop.distribution.ComponentType;
 import org.talend.hadoop.distribution.DistributionFactory;
+import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.component.HadoopComponent;
 import org.talend.hadoop.distribution.condition.ComponentCondition;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -1526,7 +1526,7 @@ public class EmfComponent extends AbstractComponent {
 
                 private String mDistributionName;
 
-                private Map<String, ComponentCondition> mModuleGroups;
+                private Set<DistributionModuleGroup> mModuleGroups;
 
                 private ComponentCondition mDisplayCondition;
 
@@ -1535,8 +1535,8 @@ public class EmfComponent extends AbstractComponent {
                     this.mDisplayName = displayName;
                 }
 
-                public Bean(String name, String displayName, String distributionName,
-                        Map<String, ComponentCondition> moduleGroups, ComponentCondition displayCondition) {
+                public Bean(String name, String displayName, String distributionName, Set<DistributionModuleGroup> moduleGroups,
+                        ComponentCondition displayCondition) {
                     this.mName = name;
                     this.mDisplayName = displayName;
                     this.mDistributionName = distributionName;
@@ -1556,7 +1556,7 @@ public class EmfComponent extends AbstractComponent {
                     return this.mDistributionName;
                 }
 
-                public Map<String, ComponentCondition> getModuleGroups() {
+                public Set<DistributionModuleGroup> getModuleGroups() {
                     return this.mModuleGroups;
                 }
 
@@ -1681,21 +1681,23 @@ public class EmfComponent extends AbstractComponent {
                 notShowIfVersion[index] = null;
 
                 if (that.getModuleGroups() != null) {
-                    Iterator<Entry<String, ComponentCondition>> moduleGroups = that.getModuleGroups().entrySet().iterator();
+                    Iterator<DistributionModuleGroup> moduleGroups = that.getModuleGroups().iterator();
                     while (moduleGroups.hasNext()) {
-                        Entry<String, ComponentCondition> entry = moduleGroups.next();
+                        DistributionModuleGroup group = moduleGroups.next();
                         IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
-                        importType.setMODULEGROUP(entry.getKey());
+                        importType.setMODULEGROUP(group.getModuleName());
                         StringBuilder condition = new StringBuilder(
                                 "("     + componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "') AND (" + componentType.getVersionParameter() + "=='" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                                         + that.getName() + "')"); //$NON-NLS-1$ 
-                        ComponentCondition additionalCondition = entry.getValue();
+                        ComponentCondition additionalCondition = group.getRequiredIf();
                         if (additionalCondition != null) {
                             condition.append(" AND "); //$NON-NLS-1$
                             condition.append(additionalCondition.getConditionString());
                         }
                         importType.setREQUIREDIF(condition.toString());
-                        ModulesNeededProvider.collectModuleNeeded("", importType, componentImportNeedsList); //$NON-NLS-1$
+                        importType.setMRREQUIRED(group.isMrRequired());
+                        ModulesNeededProvider.collectModuleNeeded(node.getComponent().getName(), importType,
+                                componentImportNeedsList);
                     }
                 }
 

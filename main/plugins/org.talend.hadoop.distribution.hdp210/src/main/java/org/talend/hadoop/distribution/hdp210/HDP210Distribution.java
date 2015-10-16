@@ -2,11 +2,13 @@ package org.talend.hadoop.distribution.hdp210;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
 import org.talend.hadoop.distribution.AbstractDistribution;
 import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.component.HBaseComponent;
 import org.talend.hadoop.distribution.component.HCatalogComponent;
@@ -15,7 +17,6 @@ import org.talend.hadoop.distribution.component.HiveComponent;
 import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SqoopComponent;
-import org.talend.hadoop.distribution.condition.ComponentCondition;
 
 // ============================================================================
 //
@@ -35,7 +36,7 @@ public class HDP210Distribution extends AbstractDistribution implements HDFSComp
 
     private final static String YARN_APPLICATION_CLASSPATH = "/etc/hadoop/conf,/usr/lib/hadoop/*,/usr/lib/hadoop/lib/*,/usr/lib/hadoop-hdfs/*,/usr/lib/hadoop-hdfs/lib/*,/usr/lib/hadoop-yarn/*,/usr/lib/hadoop-yarn/lib/*,/usr/lib/hadoop-mapreduce/*,/usr/lib/hadoop-mapreduce/lib/*"; //$NON-NLS-1$
 
-    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+    private static Map<ComponentType, Set<DistributionModuleGroup>> moduleGroups;
 
     static {
         moduleGroups = new HashMap<>();
@@ -72,7 +73,7 @@ public class HDP210Distribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
+    public Set<DistributionModuleGroup> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 

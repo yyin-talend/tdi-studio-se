@@ -2,11 +2,13 @@ package org.talend.hadoop.distribution.mapr200;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
 import org.talend.hadoop.distribution.AbstractMapRDistribution;
 import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.component.HBaseComponent;
 import org.talend.hadoop.distribution.component.HDFSComponent;
@@ -34,7 +36,7 @@ import org.talend.hadoop.distribution.condition.EqualityOperator;
 public class MapR200Distribution extends AbstractMapRDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent {
 
-    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+    private static Map<ComponentType, Set<DistributionModuleGroup>> moduleGroups;
 
     private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
@@ -76,7 +78,7 @@ public class MapR200Distribution extends AbstractMapRDistribution implements HDF
     }
 
     @Override
-    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
+    public Set<DistributionModuleGroup> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 
