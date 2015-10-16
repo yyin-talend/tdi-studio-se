@@ -50,6 +50,7 @@ public class CamelEndpointBuilder {
 	private String component;
 	private String name;
 	private List<String> paths;
+    private boolean useDoubleSlash = true;
 
 	/** The params map. k-v both are Expression. */
 	private final Map<String, String> paramsMap;
@@ -266,7 +267,11 @@ public class CamelEndpointBuilder {
 
 	public String build() {
 		StringBuilder sb = new StringBuilder();
-		sb.append('\"').append(component).append("://").append('\"');
+        sb.append('\"').append(component).append(":");
+        if (useDoubleSlash) {
+            sb.append("//");
+        }
+        sb.append('\"');
 		// "comp:"
 		if(name!=null) {
 			SBTool.appendExpression(sb, name);
@@ -405,6 +410,18 @@ public class CamelEndpointBuilder {
 		this.name = name;
 		return this;
 	}
+
+    /**
+     * 
+     * @param useDoubleSlash
+     *            if set to {@code false} (default = true) result endpoint will
+     *            start with {@code componentName:Category[?options]} <br/>
+     * @return
+     */
+    public CamelEndpointBuilder useDoubleSlash(boolean useDoubleSlash) {
+        this.useDoubleSlash = useDoubleSlash;
+        return this;
+    }
 
 	public CamelEndpointBuilder setDirectName(String directName) {
 		this.name = '\"' + directName + '\"';
