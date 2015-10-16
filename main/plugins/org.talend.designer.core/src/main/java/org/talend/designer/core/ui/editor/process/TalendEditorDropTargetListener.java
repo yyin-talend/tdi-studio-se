@@ -144,6 +144,7 @@ import org.talend.core.repository.model.repositoryObject.SalesforceModuleReposit
 import org.talend.core.service.ISAPProviderService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
@@ -1000,6 +1001,15 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
 
                 Item item = sourceNode.getObject().getProperty().getItem();
+
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+                    ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                            .getDefault().getService(ITestContainerProviderService.class);
+                    if (testContainerService != null && testContainerService.isTestContainerItem(item)) {
+                        continue;
+                    }
+                }
+
                 ERepositoryObjectType type = sourceNode.getObjectType();
                 if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem) && !(item instanceof JobletProcessItem)
                         && !(item instanceof RulesItem) && !(item instanceof LinkRulesItem)) { // hywang modified for
