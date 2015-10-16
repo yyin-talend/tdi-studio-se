@@ -2103,6 +2103,17 @@
               name="ChangeLocalModeForSparkConfiguration"
               version="6.1.0">
         </projecttask>
+        
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.ReviewPigLoadLayout"
+              description="Review the tPigLoad layout for a better parameters management."
+              id="org.talend.repository.model.migration.ReviewPigLoadLayout"
+              name="ReviewPigLoadLayout"
+              version="6.1.0">
+        </projecttask>
+        
         <projecttask
               beforeLogon="false"
               breaks="5.2.3"
