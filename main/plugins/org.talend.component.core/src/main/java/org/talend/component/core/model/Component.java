@@ -33,8 +33,6 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -70,7 +68,6 @@ import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 
 /**
  * created by hcyi on Sep 10, 2015 Detailled comment
@@ -637,30 +634,6 @@ public class Component extends AbstractComponent {
         param.setShow(false);
         listParam.add(param);
 
-        if (ComponentCategory.CATEGORY_4_DI.getName().equals(this.getPaletteType())) {
-            boolean isStatCatcherComponent = false;
-            if (getName() != null && getName().equals(TSTATCATCHER_NAME)) {
-                isStatCatcherComponent = true;
-            }
-            /* for bug 0021961,should not show parameter TSTATCATCHER_STATS in UI on component tStatCatcher */
-            if (!isStatCatcherComponent) {
-                boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME,
-                        ComponentCategory.CATEGORY_4_DI.getName()) != null;
-                param = new ElementParameter(node);
-                param.setName(EParameterName.TSTATCATCHER_STATS.getName());
-                param.setValue(Boolean.FALSE);// TODO
-                param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
-                param.setFieldType(EParameterFieldType.CHECK);
-                param.setCategory(EComponentCategory.ADVANCED);
-                param.setNumRow(199);
-                param.setReadOnly(false);
-                param.setRequired(false);
-                param.setDefaultValue(param.getValue());
-                param.setShow(tStatCatcherAvailable);
-                listParam.add(param);
-            }
-        }
-
         param = new ElementParameter(node);
         param.setName(EParameterName.HELP.getName());
         param.setValue(getTranslatedValue(PROP_HELP));
@@ -694,18 +667,6 @@ public class Component extends AbstractComponent {
         param.setShow(false);
         // "cmd /c cd \"C:\Program Files\JasperSoft\iReport-2.0.3\" && iReport.exe"
         param.setValue(CorePlugin.getDefault().getPluginPreferences().getString(ITalendCorePrefConstants.IREPORT_PATH));
-        param.setReadOnly(true);
-        listParam.add(param);
-
-        param = new ElementParameter(node);
-        param.setName(EParameterName.JAVA_LIBRARY_PATH.getName());
-        param.setCategory(EComponentCategory.ADVANCED);
-        param.setFieldType(EParameterFieldType.DIRECTORY);
-        param.setDisplayName(EParameterName.JAVA_LIBRARY_PATH.getDisplayName());
-        param.setNumRow(99);
-        param.setShow(false);
-        // param.setValue(CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath());
-        param.setValue(LibrariesManagerUtils.getLibrariesPath(ECodeLanguage.JAVA));
         param.setReadOnly(true);
         listParam.add(param);
 
@@ -1084,6 +1045,7 @@ public class Component extends AbstractComponent {
                 newParam.setReadOnly(param.isReadOnly());
                 newParam.setNotShowIf(param.getNotShowIf());
                 newParam.setContext(context);
+                newParam.setSerialized(true);
                 newParam.setParentParameter(param);
 
                 newParam = new ElementParameter(node);
@@ -1101,6 +1063,7 @@ public class Component extends AbstractComponent {
                 newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$//$NON-NLS-2$
                 newParam.setNotShowIf(param.getNotShowIf());
                 newParam.setContext(context);
+                newParam.setSerialized(true);
                 newParam.setParentParameter(param);
             }
         }

@@ -977,9 +977,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else {
                     JSONObject paramJsonObject = new JSONObject();
                     paramJsonObject.put(param.getName(), param.getValue());// need json again for value.
-                    jsonArray.put(paramJsonObject);
                     for (String key : param.getChildParameters().keySet()) {
                         paramJsonObject.put(param.getName() + ":" + key, param.getChildParameters().get(key).getValue()); //$NON-NLS-1$
+                    }
+                    if (paramJsonObject.length() > 0) {
+                        jsonArray.put(paramJsonObject);
                     }
                 }
             }

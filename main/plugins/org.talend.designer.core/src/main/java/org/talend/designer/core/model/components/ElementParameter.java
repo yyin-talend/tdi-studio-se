@@ -150,6 +150,8 @@ public class ElementParameter implements IElementParameter {
 
     private Object defaultValue;
 
+    protected boolean isSerialized = false;
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -1256,8 +1258,7 @@ public class ElementParameter implements IElementParameter {
      */
     @Override
     public boolean isSerialized() {
-        // TODO Auto-generated method stub
-        return false;
+        return isSerialized;
     }
 
     /*
@@ -1267,6 +1268,6 @@ public class ElementParameter implements IElementParameter {
      */
     @Override
     public void setSerialized(boolean isSerialized) {
-        // TODO Auto-generated method stub
+        this.isSerialized = isSerialized;
     }
 }
