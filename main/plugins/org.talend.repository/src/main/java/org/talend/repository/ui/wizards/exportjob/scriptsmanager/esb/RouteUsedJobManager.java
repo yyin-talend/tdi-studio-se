@@ -13,12 +13,15 @@
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.documentation.ExportFileResource;
 
 import aQute.bnd.osgi.Analyzer;
@@ -33,12 +36,18 @@ import aQute.bnd.osgi.Analyzer;
  */
 public class RouteUsedJobManager extends JobJavaScriptOSGIForESBManager {
 
-	private String routeName;
+    private static final String DLL = ".dll";
+    private static final String OSGI_OS = System.getProperty("osgi.os");
+    private static final String  OSGI_ARCH = System.getProperty("osgi.arch");
+    
+    private String routeName;
 	private String bundleName;
 	private String routeVersion;
 	private String groupId;
 	private String artifactId;
 	private String artifactVersion;
+    private List<URL> dllLibraries = new java.util.ArrayList<URL>();
+    
 
 	public RouteUsedJobManager(Map<ExportChoice, Object> exportChoiceMap) {
 		super(exportChoiceMap, null, null, IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
@@ -83,11 +92,34 @@ public class RouteUsedJobManager extends JobJavaScriptOSGIForESBManager {
 		extraParams.put("artifactId", artifactId);
 		extraParams.put("artifactVersion", artifactVersion);
 		appendExportServiceParams(analyzer, extraParams);
+		
+        // TESB-15680: Add bundle manifest using the Bundle-NativeCode header
+        appendBundleNativeCodeForDll(analyzer, libResource);
 
 		return analyzer;
 	}
 
-	private void appendExportServiceParams(Analyzer analyzer, Map<String, String> extraParams) {
+    /**
+     * Add Bundle-NativeCode in Manifest
+     */
+    private void appendBundleNativeCodeForDll(Analyzer analyzer, ExportFileResource libResource) {
+
+        StringBuilder sb = new StringBuilder();
+        for (URL url : libResource.getResourcesByRelativePath("")) {
+            String path = url.toString();
+            if (path.endsWith(DLL)) {
+                dllLibraries.add(url);
+                sb.append(path.substring(path.lastIndexOf('/') + 1, path.length())).append(';').append("osname=").append(OSGI_OS)
+                        .append(';').append("processor=").append(OSGI_ARCH).append(',');
+            }
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+            analyzer.setProperty(Analyzer.BUNDLE_NATIVECODE, sb.toString());
+        }
+    }
+
+    private void appendExportServiceParams(Analyzer analyzer, Map<String, String> extraParams) {
 		if (!extraParams.isEmpty()) {
 			StringBuilder sb = new StringBuilder(analyzer.getProperty(Analyzer.EXPORT_SERVICE));
 			for (Entry<String, String> e : extraParams.entrySet()) {
@@ -100,4 +132,22 @@ public class RouteUsedJobManager extends JobJavaScriptOSGIForESBManager {
 		}
 	}
 
+    /*
+     * Add DLLs in root path
+     * 
+     * @see
+     * org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBManager#getExportResources
+     * (org.talend.repository.documentation.ExportFileResource[], java.lang.String[])
+     */
+    @Override
+    public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
+            throws ProcessorException {
+        List<ExportFileResource> list = super.getExportResources(processes, codeOptions);
+        if (dllLibraries.size() > 0) {
+            ExportFileResource dllResource = new ExportFileResource(null, ""); //$NON-NLS-1$;
+            dllResource.addResources(dllLibraries);
+            list.add(dllResource);
+        }
+        return list;
+    }
 }
