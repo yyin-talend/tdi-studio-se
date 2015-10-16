@@ -59,6 +59,7 @@ import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
@@ -1651,7 +1652,15 @@ public class EmfComponent extends AbstractComponent {
                 Bean that = versionIter.next();
                 displayName[index] = that.getDisplayName();
                 itemValue[index] = that.getName();
-                showIfVersion[index] = componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+                // CDH 5.1 in Spark and Spark Streaming must be present in the Item, but shouldn't visible for TUJs
+                // retro-compatibility. It's an isolated case.
+                if ((componentType == ComponentType.SPARKBATCH || componentType == ComponentType.SPARKSTREAMING)
+                        && that.getName().equals(EHadoopVersion4Drivers.CLOUDERA_CDH5_1.getVersionValue())) {
+                    showIfVersion[index] = "false"; //$NON-NLS-1$
+                } else {
+                    showIfVersion[index] = componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+                }
+
                 notShowIfVersion[index] = null;
 
                 if (that.getModuleGroups() != null) {
