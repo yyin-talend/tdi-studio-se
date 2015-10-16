@@ -894,7 +894,7 @@ public class CodeGenerator implements ICodeGenerator {
                     + TemplateUtil.DIR_SEP
                     + componentFileNaming.getJetFileName(node.getComponent(), language.getExtension(), part);
             // Need rewrite templateURI for generic component since create a new JetBean .
-            if (component.getPathSource() == null && EComponentType.JOBLET != component.getComponentType()) {
+            if (EComponentType.GENERIC.equals(component.getComponentType())) {
                 templateURI = TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + TemplateUtil.RESOURCES_DIRECTORY_GENERIC
                         + TemplateUtil.DIR_SEP + "component_" + part.getName()//$NON-NLS-1$ 
                         + TemplateUtil.EXT_SEP + language.getExtension() + TemplateUtil.TEMPLATE_EXT;

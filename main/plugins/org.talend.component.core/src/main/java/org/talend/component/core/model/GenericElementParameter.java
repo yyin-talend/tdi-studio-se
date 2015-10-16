@@ -50,6 +50,8 @@ public class GenericElementParameter extends ElementParameter {
 
     private boolean isFirstCall;
 
+    private boolean isSerialized = false;
+
     public GenericElementParameter(IElement element, ComponentProperties componentProperties, Widget widget,
             ComponentService componentService) {
         super(element);
@@ -204,4 +206,13 @@ public class GenericElementParameter extends ElementParameter {
 
     }
 
+    @Override
+    public boolean isSerialized() {
+        return isSerialized;
+    }
+
+    @Override
+    public void setSerialized(boolean isSerialized) {
+        this.isSerialized = isSerialized;
+    }
 }

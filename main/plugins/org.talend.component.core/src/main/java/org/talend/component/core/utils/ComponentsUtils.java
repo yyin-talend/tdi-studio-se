@@ -253,9 +253,9 @@ public class ComponentsUtils {
             } else if (widgetProperty instanceof PresentationItem) {
                 param.setValue(null);
             }
-
             // FIXME
             param.setReadOnly(false);
+            param.setSerialized(true);
             elementParameters.add(param);
         }
         return elementParameters;

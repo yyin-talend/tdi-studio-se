@@ -1671,7 +1671,7 @@ public class Component extends AbstractComponent {
      */
     @Override
     public EComponentType getComponentType() {
-        return EComponentType.EMF;
+        return EComponentType.GENERIC;
     }
 
     /*

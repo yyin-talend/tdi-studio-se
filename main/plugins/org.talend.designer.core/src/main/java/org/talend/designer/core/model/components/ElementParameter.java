@@ -1249,4 +1249,24 @@ public class ElementParameter implements IElementParameter {
         this.enable = enable;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isSerialized()
+     */
+    @Override
+    public boolean isSerialized() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setSerialized(boolean)
+     */
+    @Override
+    public void setSerialized(boolean isSerialized) {
+        // TODO Auto-generated method stub
+    }
 }

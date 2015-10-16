@@ -1300,8 +1300,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setRequired(true);
             newParam.setParentParameter(parentParam);
             // listParam.add(newParam);
-        }
-        else if (type == EParameterFieldType.SCHEMA_TYPE) {
+        } else if (type == EParameterFieldType.SCHEMA_TYPE) {
             String context = xmlParam.getCONTEXT();
             if (context == null) {
                 // by default the schema will be set to the "FLOW" connector.
@@ -1373,8 +1372,7 @@ public class EmfComponent extends AbstractComponent {
                 newParam.setParentParameter(parentParam);
                 parentParam.setReadOnly(true);
             }
-        }
-        else if (type == EParameterFieldType.ENCODING_TYPE) {
+        } else if (type == EParameterFieldType.ENCODING_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ENCODING_TYPE.getName());
@@ -1426,8 +1424,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setParentParameter(parentParam);
             // listParam.add(newParam);
-        }
-        else if (type == EParameterFieldType.PROCESS_TYPE || type == EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE) {
+        } else if (type == EParameterFieldType.PROCESS_TYPE || type == EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());

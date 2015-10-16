@@ -182,7 +182,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     ECodePart codePart = ECodePart.MAIN;
                     for (IComponent component : new ArrayList<IComponent>(components)) {
                         // don't do anything for generic component?
-                        if (component.getPathSource() == null && EComponentType.JOBLET != component.getComponentType()) {
+                        if (EComponentType.GENERIC.equals(component.getComponentType())) {
                             genericComponents.add(component);
                             continue;
                         }
