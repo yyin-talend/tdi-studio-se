@@ -2,7 +2,6 @@ package org.talend.hadoop.distribution.cdh4mr1;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
@@ -15,6 +14,11 @@ import org.talend.hadoop.distribution.component.HiveComponent;
 import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SqoopComponent;
+import org.talend.hadoop.distribution.condition.BasicExpression;
+import org.talend.hadoop.distribution.condition.BooleanOperator;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
+import org.talend.hadoop.distribution.condition.EqualityOperator;
+import org.talend.hadoop.distribution.condition.MultiComponentCondition;
 
 // ============================================================================
 //
@@ -32,10 +36,16 @@ import org.talend.hadoop.distribution.component.SqoopComponent;
 public class CDH4MR1Distribution extends AbstractDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent {
 
-    private static Map<ComponentType, Set<String>> moduleGroups;
+    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+
+    private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
     static {
         moduleGroups = new HashMap<>();
+
+        ComponentCondition c1 = new MultiComponentCondition(
+                new BasicExpression("STORE", "HCATSTORER", EqualityOperator.NOT_EQ), new ComponentCondition(new BasicExpression("STORE", "PARQUETSTORER", EqualityOperator.NOT_EQ)), BooleanOperator.AND); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        displayConditions.put(ComponentType.PIGOUTPUT, c1);
     }
 
     @Override
@@ -69,7 +79,7 @@ public class CDH4MR1Distribution extends AbstractDistribution implements HDFSCom
     }
 
     @Override
-    public Set<String> getModuleGroups(ComponentType componentType) {
+    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 
@@ -182,5 +192,10 @@ public class CDH4MR1Distribution extends AbstractDistribution implements HDFSCom
     @Override
     public boolean doSupportStoreAsParquet() {
         return false;
+    }
+
+    @Override
+    public ComponentCondition getDisplayCondition(ComponentType componentType) {
+        return displayConditions.get(componentType);
     }
 }

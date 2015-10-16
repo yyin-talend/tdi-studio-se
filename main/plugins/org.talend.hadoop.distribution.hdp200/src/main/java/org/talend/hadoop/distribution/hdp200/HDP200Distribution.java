@@ -2,7 +2,6 @@ package org.talend.hadoop.distribution.hdp200;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
@@ -16,6 +15,9 @@ import org.talend.hadoop.distribution.component.HiveComponent;
 import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SqoopComponent;
+import org.talend.hadoop.distribution.condition.BasicExpression;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
+import org.talend.hadoop.distribution.condition.EqualityOperator;
 
 // ============================================================================
 //
@@ -35,10 +37,15 @@ public class HDP200Distribution extends AbstractDistribution implements HDFSComp
 
     private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,/usr/hdp/current/hadoop-client/*,/usr/hdp/current/hadoop-client/lib/*,/usr/hdp/current/hadoop-hdfs-client/*,/usr/hdp/current/hadoop-hdfs-client/lib/*,/usr/hdp/current/hadoop-mapreduce-client/*,/usr/hdp/current/hadoop-mapreduce-client/lib/*,/usr/hdp/current/hadoop-yarn-client/*,/usr/hdp/current/hadoop-yarn-client/lib/*"; //$NON-NLS-1$
 
-    private static Map<ComponentType, Set<String>> moduleGroups;
+    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+
+    private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
     static {
         moduleGroups = new HashMap<>();
+
+        ComponentCondition c1 = new ComponentCondition(new BasicExpression("STORE", "HBASESTORAGE", EqualityOperator.NOT_EQ)); //$NON-NLS-1$ //$NON-NLS-2$ 
+        displayConditions.put(ComponentType.PIGOUTPUT, c1);
     }
 
     @Override
@@ -72,7 +79,7 @@ public class HDP200Distribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public Set<String> getModuleGroups(ComponentType componentType) {
+    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 
@@ -194,6 +201,11 @@ public class HDP200Distribution extends AbstractDistribution implements HDFSComp
     @Override
     public boolean doSupportStoreAsParquet() {
         return false;
+    }
+
+    @Override
+    public ComponentCondition getDisplayCondition(ComponentType componentType) {
+        return displayConditions.get(componentType);
     }
 
 }

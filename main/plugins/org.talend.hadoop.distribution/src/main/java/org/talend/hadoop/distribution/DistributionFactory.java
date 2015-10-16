@@ -56,7 +56,7 @@ public class DistributionFactory {
         for (ServiceReference<HadoopComponent> sr : distributions) {
             HadoopComponent np = bc.getService(sr);
             String thatDistribution = np.getDistribution();
-            if (EHadoopDistributions.CUSTOM.getName().equals(thatDistribution)) {
+            if (EHadoopDistributions.CUSTOM.getName().equals(thatDistribution) && thatDistribution.equals(pDistribution)) {
                 return np;
             }
             if (thatDistribution != null && thatDistribution.equals(pDistribution)) {

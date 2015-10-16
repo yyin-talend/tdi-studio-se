@@ -2,13 +2,13 @@ package org.talend.hadoop.distribution.emr240hive0131;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.hadoop.distribution.AbstractDistribution;
 import org.talend.hadoop.distribution.ComponentType;
 import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.component.HiveComponent;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
 
 // ============================================================================
 //
@@ -27,7 +27,7 @@ public class EMRApache240_Hive_0_13_1_Distribution extends AbstractDistribution 
 
     private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*,/usr/share/aws/emr/emr-fs/lib/*,/usr/share/aws/emr/lib/*"; //$NON-NLS-1$ {
 
-    private static Map<ComponentType, Set<String>> moduleGroups;
+    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
 
     static {
         moduleGroups = new HashMap<>();
@@ -64,7 +64,7 @@ public class EMRApache240_Hive_0_13_1_Distribution extends AbstractDistribution 
     }
 
     @Override
-    public Set<String> getModuleGroups(ComponentType componentType) {
+    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 

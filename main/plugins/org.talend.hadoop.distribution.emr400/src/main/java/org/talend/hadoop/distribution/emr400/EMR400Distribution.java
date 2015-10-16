@@ -2,7 +2,6 @@ package org.talend.hadoop.distribution.emr400;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
@@ -16,6 +15,11 @@ import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SparkBatchComponent;
 import org.talend.hadoop.distribution.component.SparkStreamingComponent;
+import org.talend.hadoop.distribution.condition.BasicExpression;
+import org.talend.hadoop.distribution.condition.BooleanOperator;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
+import org.talend.hadoop.distribution.condition.EqualityOperator;
+import org.talend.hadoop.distribution.condition.MultiComponentCondition;
 
 // ============================================================================
 //
@@ -35,10 +39,16 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
 
     private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,/usr/lib/hadoop-lzo/lib/*,/usr/share/aws/emr/emrfs/conf, /usr/share/aws/emr/emrfs/lib/*,/usr/share/aws/emr/emrfs/auxlib/*,/usr/share/aws/emr/lib/*,/usr/share/aws/emr/ddb/lib/emr-ddb-hadoop.jar, /usr/share/aws/emr/goodies/lib/emr-hadoop-goodies.jar,/usr/share/aws/emr/kinesis/lib/emr-kinesis-hadoop.jar,/usr/lib/spark/yarn/lib/datanucleus-api-jdo.jar,/usr/lib/spark/yarn/lib/datanucleus-core.jar,/usr/lib/spark/yarn/lib/datanucleus-rdbms.jar,/usr/share/aws/emr/cloudwatch-sink/lib/*"; //$NON-NLS-1$
 
-    private static Map<ComponentType, Set<String>> moduleGroups;
+    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+
+    private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
     static {
         moduleGroups = new HashMap<>();
+
+        ComponentCondition c1 = new MultiComponentCondition(
+                new BasicExpression("STORE", "HCATSTORER", EqualityOperator.NOT_EQ), new ComponentCondition(new BasicExpression("STORE", "HBASESTORAGE", EqualityOperator.NOT_EQ)), BooleanOperator.AND); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        displayConditions.put(ComponentType.PIGOUTPUT, c1);
     }
 
     @Override
@@ -72,7 +82,7 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public Set<String> getModuleGroups(ComponentType componentType) {
+    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 
@@ -192,4 +202,8 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
         return true;
     }
 
+    @Override
+    public ComponentCondition getDisplayCondition(ComponentType componentType) {
+        return displayConditions.get(componentType);
+    }
 }

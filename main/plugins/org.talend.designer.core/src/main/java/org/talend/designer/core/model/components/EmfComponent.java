@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -138,6 +139,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.hadoop.distribution.ComponentType;
 import org.talend.hadoop.distribution.DistributionFactory;
 import org.talend.hadoop.distribution.component.HadoopComponent;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 
@@ -1524,18 +1526,22 @@ public class EmfComponent extends AbstractComponent {
 
                 private String mDistributionName;
 
-                private Set<String> mModuleGroups;
+                private Map<String, ComponentCondition> mModuleGroups;
+
+                private ComponentCondition mDisplayCondition;
 
                 public Bean(String name, String displayName) {
                     this.mName = name;
                     this.mDisplayName = displayName;
                 }
 
-                public Bean(String name, String displayName, String distributionName, Set<String> moduleGroups) {
+                public Bean(String name, String displayName, String distributionName,
+                        Map<String, ComponentCondition> moduleGroups, ComponentCondition displayCondition) {
                     this.mName = name;
                     this.mDisplayName = displayName;
                     this.mDistributionName = distributionName;
                     this.mModuleGroups = moduleGroups;
+                    this.mDisplayCondition = displayCondition;
                 }
 
                 public String getName() {
@@ -1550,8 +1556,12 @@ public class EmfComponent extends AbstractComponent {
                     return this.mDistributionName;
                 }
 
-                public Set<String> getModuleGroups() {
+                public Map<String, ComponentCondition> getModuleGroups() {
                     return this.mModuleGroups;
+                }
+
+                public ComponentCondition getDisplayCondition() {
+                    return this.mDisplayCondition;
                 }
             }
 
@@ -1563,8 +1573,8 @@ public class EmfComponent extends AbstractComponent {
                 distribSet.add(new Bean(np.getDistribution(), np.getDistributionName()));
                 String version = np.getVersion();
                 if (version != null) {
-                    versionSet
-                            .add(new Bean(version, np.getVersionName(), np.getDistribution(), np.getModuleGroups(componentType)));
+                    versionSet.add(new Bean(version, np.getVersionName(), np.getDistribution(),
+                            np.getModuleGroups(componentType), np.getDisplayCondition(componentType)));
                 }
             }
 
@@ -1658,19 +1668,33 @@ public class EmfComponent extends AbstractComponent {
                         && that.getName().equals(EHadoopVersion4Drivers.CLOUDERA_CDH5_1.getVersionValue())) {
                     showIfVersion[index] = "false"; //$NON-NLS-1$
                 } else {
-                    showIfVersion[index] = componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+                    StringBuilder condition = new StringBuilder(componentType.getDistributionParameter()
+                            + "=='" + that.getDistributionName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                    ComponentCondition additionalCondition = that.getDisplayCondition();
+                    if (additionalCondition != null) {
+                        condition.append(" AND "); //$NON-NLS-1$
+                        condition.append(additionalCondition.getConditionString());
+                    }
+                    showIfVersion[index] = condition.toString();
                 }
 
                 notShowIfVersion[index] = null;
 
                 if (that.getModuleGroups() != null) {
-                    Iterator<String> moduleGroups = that.getModuleGroups().iterator();
+                    Iterator<Entry<String, ComponentCondition>> moduleGroups = that.getModuleGroups().entrySet().iterator();
                     while (moduleGroups.hasNext()) {
+                        Entry<String, ComponentCondition> entry = moduleGroups.next();
                         IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
-                        importType.setMODULEGROUP(moduleGroups.next());
-                        importType
-                                .setREQUIREDIF("(" + componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "') AND (" + componentType.getVersionParameter() + "=='" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                                        + that.getName() + "')"); //$NON-NLS-1$
+                        importType.setMODULEGROUP(entry.getKey());
+                        StringBuilder condition = new StringBuilder(
+                                "("     + componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "') AND (" + componentType.getVersionParameter() + "=='" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                                        + that.getName() + "')"); //$NON-NLS-1$ 
+                        ComponentCondition additionalCondition = entry.getValue();
+                        if (additionalCondition != null) {
+                            condition.append(" AND "); //$NON-NLS-1$
+                            condition.append(additionalCondition.getConditionString());
+                        }
+                        importType.setREQUIREDIF(condition.toString());
                         ModulesNeededProvider.collectModuleNeeded("", importType, componentImportNeedsList); //$NON-NLS-1$
                     }
                 }

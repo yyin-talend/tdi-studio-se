@@ -2,7 +2,6 @@ package org.talend.hadoop.distribution.emr103;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
@@ -14,6 +13,9 @@ import org.talend.hadoop.distribution.component.HDFSComponent;
 import org.talend.hadoop.distribution.component.HiveComponent;
 import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
+import org.talend.hadoop.distribution.condition.BasicExpression;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
+import org.talend.hadoop.distribution.condition.EqualityOperator;
 
 // ============================================================================
 //
@@ -31,10 +33,15 @@ import org.talend.hadoop.distribution.component.PigComponent;
 public class EMRApache103Distribution extends AbstractDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         PigComponent, HiveComponent {
 
-    private static Map<ComponentType, Set<String>> moduleGroups;
+    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+
+    private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
     static {
         moduleGroups = new HashMap<>();
+
+        ComponentCondition c1 = new ComponentCondition(new BasicExpression("STORE", "HCATSTORER", EqualityOperator.NOT_EQ)); //$NON-NLS-1$ //$NON-NLS-2$
+        displayConditions.put(ComponentType.PIGOUTPUT, c1);
     }
 
     @Override
@@ -68,7 +75,7 @@ public class EMRApache103Distribution extends AbstractDistribution implements HD
     }
 
     @Override
-    public Set<String> getModuleGroups(ComponentType componentType) {
+    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 
@@ -168,4 +175,8 @@ public class EMRApache103Distribution extends AbstractDistribution implements HD
         return false;
     }
 
+    @Override
+    public ComponentCondition getDisplayCondition(ComponentType componentType) {
+        return displayConditions.get(componentType);
+    }
 }

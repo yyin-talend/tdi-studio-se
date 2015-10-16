@@ -2,7 +2,6 @@ package org.talend.hadoop.distribution.hdinsight310;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
@@ -12,6 +11,11 @@ import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.component.HiveComponent;
 import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
+import org.talend.hadoop.distribution.condition.BasicExpression;
+import org.talend.hadoop.distribution.condition.BooleanOperator;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
+import org.talend.hadoop.distribution.condition.EqualityOperator;
+import org.talend.hadoop.distribution.condition.MultiComponentCondition;
 
 // ============================================================================
 //
@@ -30,10 +34,16 @@ public class HDInsight31Distribution extends AbstractDistribution implements MRC
 
     private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$YARN_HOME/*,$YARN_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*"; //$NON-NLS-1$
 
-    private static Map<ComponentType, Set<String>> moduleGroups;
+    private static Map<ComponentType, Map<String, ComponentCondition>> moduleGroups;
+
+    private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
     static {
         moduleGroups = new HashMap<>();
+
+        ComponentCondition c1 = new MultiComponentCondition(
+                new BasicExpression("STORE", "HBASESTORAGE", EqualityOperator.NOT_EQ), new ComponentCondition(new BasicExpression("STORE", "HCATSTORER", EqualityOperator.NOT_EQ)), BooleanOperator.AND); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+        displayConditions.put(ComponentType.PIGOUTPUT, c1);
     }
 
     @Override
@@ -67,7 +77,7 @@ public class HDInsight31Distribution extends AbstractDistribution implements MRC
     }
 
     @Override
-    public Set<String> getModuleGroups(ComponentType componentType) {
+    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType) {
         return moduleGroups.get(componentType);
     }
 
@@ -164,6 +174,11 @@ public class HDInsight31Distribution extends AbstractDistribution implements MRC
     @Override
     public boolean doSupportStoreAsParquet() {
         return false;
+    }
+
+    @Override
+    public ComponentCondition getDisplayCondition(ComponentType componentType) {
+        return displayConditions.get(componentType);
     }
 
 }

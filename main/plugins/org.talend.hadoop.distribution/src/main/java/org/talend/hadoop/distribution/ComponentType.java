@@ -20,6 +20,8 @@ package org.talend.hadoop.distribution;
 public enum ComponentType {
     HDFS("org.talend.hadoop.distribution.component.HDFSComponent", "DISTRIBUTION", "DISTRIBUTION", "DB_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     PIG("org.talend.hadoop.distribution.component.PigComponent", "DISTRIBUTION", "DISTRIBUTION", "PIG_VERSION", "PIG_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    PIGOUTPUT(
+              "org.talend.hadoop.distribution.component.PigComponent", "DISTRIBUTION", "DISTRIBUTION", "HBASE_VERSION", "PIG_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     MAPREDUCE("org.talend.hadoop.distribution.component.MRComponent", "DISTRIBUTION", "DISTRIBUTION", "MR_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     HIVE("org.talend.hadoop.distribution.component.HiveComponent", "DISTRIBUTION", "DISTRIBUTION", "HIVE_VERSION", "HIVE_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     SQOOP(

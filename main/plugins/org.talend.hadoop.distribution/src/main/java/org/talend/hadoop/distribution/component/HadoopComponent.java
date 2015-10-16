@@ -13,10 +13,11 @@
 // ============================================================================
 package org.talend.hadoop.distribution.component;
 
-import java.util.Set;
+import java.util.Map;
 
 import org.talend.hadoop.distribution.ComponentType;
 import org.talend.hadoop.distribution.EHadoopVersion;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
 
 /**
  * Base interface that exposes generic methods for all Hadoop components (eg. HDFS, M/R, Pig).
@@ -81,5 +82,7 @@ public interface HadoopComponent {
      * @param componentType - the {@link ComponentType} for which we want to retrieve the module groups.
      * @return a Set of String describing the module groups name.
      */
-    public Set<String> getModuleGroups(ComponentType componentType);
+    public Map<String, ComponentCondition> getModuleGroups(ComponentType componentType);
+
+    public ComponentCondition getDisplayCondition(ComponentType componentType);
 }

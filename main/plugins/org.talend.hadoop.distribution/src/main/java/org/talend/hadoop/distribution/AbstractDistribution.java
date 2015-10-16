@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.hadoop.distribution;
 
+import org.talend.hadoop.distribution.condition.ComponentCondition;
+
 /**
  * Base class that describes a Distribution.
  *
@@ -63,5 +65,9 @@ public abstract class AbstractDistribution {
 
     public boolean doSupportTezForPig() {
         return false;
+    }
+
+    public ComponentCondition getDisplayCondition(ComponentType componentType) {
+        return null;
     }
 }
