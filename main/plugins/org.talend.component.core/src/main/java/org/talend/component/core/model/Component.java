@@ -92,6 +92,10 @@ public class Component extends AbstractComponent {
         this.setPaletteType("DI"); //$NON-NLS-1$
     }
 
+    public ComponentDefinition getComponentDefinition() {
+    	return componentDefinition;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -1292,8 +1296,7 @@ public class Component extends AbstractComponent {
     }
 
     public boolean canStart() {
-        // TODO
-        return false;
+    	return componentDefinition.isStartable();
     }
 
     /*

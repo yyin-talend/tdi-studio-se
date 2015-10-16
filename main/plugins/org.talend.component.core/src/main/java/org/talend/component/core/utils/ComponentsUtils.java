@@ -126,8 +126,12 @@ public class ComponentsUtils {
             return elementParameters;
         }
         ComponentProperties compProperties = form.getProperties();
-        if (element instanceof INode)
-        	((INode)element).setComponentProperties(compProperties);
+        if (element instanceof INode) {
+        	INode node = (INode)element;
+        	// Set the properties only one time to get the top-level properties object
+        	if (node.getComponentProperties() == null)
+        		node.setComponentProperties(compProperties);
+        }
         
         // Have to initialize for the messages
         compProperties.getProperties();

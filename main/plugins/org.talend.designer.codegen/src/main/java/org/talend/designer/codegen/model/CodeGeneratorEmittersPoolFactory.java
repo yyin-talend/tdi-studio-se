@@ -411,6 +411,9 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
+            jetBean.addClassPath("COMPONENT_FRAMEWORK", "org.talend.components.api"); //$NON-NLS-1$
+            jetBean.addClassPath("COMPONENT_CORE", "org.talend.component.core"); //$NON-NLS-1$
+            jetBean.addClassPath("DESIGNER_CORE", "org.talend.designer.core"); //$NON-NLS-1$
 
             if (PluginChecker.isGEFAbstractMapLoaded()) {
                 jetBean.addClassPath("GEF_MAP", "org.talend.designer.gefabstractmap"); //$NON-NLS-1$ //$NON-NLS-2$
