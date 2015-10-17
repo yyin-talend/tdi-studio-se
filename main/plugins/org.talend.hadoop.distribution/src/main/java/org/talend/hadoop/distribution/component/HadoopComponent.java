@@ -85,5 +85,10 @@ public interface HadoopComponent {
      */
     public Set<DistributionModuleGroup> getModuleGroups(ComponentType componentType);
 
+    /**
+     * @param componentType - the {@link ComponentType} for which we want to retrieve the display conditions.
+     * @return a {@link ComponentCondition} defining the condition that makes a distribution visible or not.
+     */
+
     public ComponentCondition getDisplayCondition(ComponentType componentType);
 }

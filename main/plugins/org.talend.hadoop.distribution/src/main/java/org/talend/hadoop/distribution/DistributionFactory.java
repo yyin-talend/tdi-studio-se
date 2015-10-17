@@ -1,17 +1,3 @@
-package org.talend.hadoop.distribution;
-
-import java.util.Collection;
-import java.util.Collections;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.talend.commons.exception.CommonExceptionHandler;
-import org.talend.core.hadoop.version.EHadoopDistributions;
-import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
-import org.talend.hadoop.distribution.component.HadoopComponent;
-
 // ============================================================================
 //
 
@@ -25,6 +11,20 @@ import org.talend.hadoop.distribution.component.HadoopComponent;
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
+
+package org.talend.hadoop.distribution;
+
+import java.util.Collection;
+import java.util.Collections;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.core.hadoop.version.EHadoopDistributions;
+import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
+import org.talend.hadoop.distribution.component.HadoopComponent;
 
 /**
  * This is a factory class that provides a way to create a {@link HadoopComponent} using the underlying GUI classes

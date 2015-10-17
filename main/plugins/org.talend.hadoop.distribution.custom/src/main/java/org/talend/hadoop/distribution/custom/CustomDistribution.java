@@ -11,6 +11,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
+
 package org.talend.hadoop.distribution.custom;
 
 import java.util.HashSet;

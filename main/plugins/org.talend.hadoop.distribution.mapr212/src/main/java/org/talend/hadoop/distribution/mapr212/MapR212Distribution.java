@@ -1,3 +1,16 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+
 package org.talend.hadoop.distribution.mapr212;
 
 import java.util.HashMap;
@@ -19,19 +32,8 @@ import org.talend.hadoop.distribution.component.SqoopComponent;
 import org.talend.hadoop.distribution.condition.BasicExpression;
 import org.talend.hadoop.distribution.condition.ComponentCondition;
 import org.talend.hadoop.distribution.condition.EqualityOperator;
-
-// ============================================================================
-//
-// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
-//
-// This source code is available under agreement available at
-// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
-//
-// You should have received a copy of the agreement
-// along with this program; if not, write to Talend SA
-// 9 rue Pages 92150 Suresnes, France
-//
-// ============================================================================
+import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
+import org.talend.hadoop.distribution.constants.Constant;
 
 public class MapR212Distribution extends AbstractMapRDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent {
@@ -43,7 +45,8 @@ public class MapR212Distribution extends AbstractMapRDistribution implements HDF
     static {
         moduleGroups = new HashMap<>();
 
-        ComponentCondition c1 = new ComponentCondition(new BasicExpression("STORE", "HCATSTORER", EqualityOperator.NOT_EQ)); //$NON-NLS-1$ //$NON-NLS-2$ 
+        ComponentCondition c1 = new SimpleComponentCondition(new BasicExpression(Constant.PIG_STORE_PARAMETER,
+                Constant.PIG_HCATSTORER_PARAMETER, EqualityOperator.NOT_EQ));
         displayConditions.put(ComponentType.PIGOUTPUT, c1);
     }
 

@@ -1,3 +1,16 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+
 package org.talend.hadoop.distribution.cdh510mr2;
 
 import java.util.HashMap;
@@ -20,19 +33,9 @@ import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SparkBatchComponent;
 import org.talend.hadoop.distribution.component.SparkStreamingComponent;
 import org.talend.hadoop.distribution.component.SqoopComponent;
-
-// ============================================================================
-//
-// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
-//
-// This source code is available under agreement available at
-// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
-//
-// You should have received a copy of the agreement
-// along with this program; if not, write to Talend SA
-// 9 rue Pages 92150 Suresnes, France
-//
-// ============================================================================
+import org.talend.hadoop.distribution.condition.BooleanExpression;
+import org.talend.hadoop.distribution.condition.ComponentCondition;
+import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
 
 public class CDH510MR2Distribution extends AbstractDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent, ImpalaComponent, HCatalogComponent, SparkBatchComponent,
@@ -42,8 +45,17 @@ public class CDH510MR2Distribution extends AbstractDistribution implements HDFSC
 
     private static Map<ComponentType, Set<DistributionModuleGroup>> moduleGroups;
 
+    private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
+
     static {
         moduleGroups = new HashMap<>();
+
+        ComponentCondition c1 = new SimpleComponentCondition(new BooleanExpression(Boolean.FALSE));
+        // We don't want to display CDH 5.1 in the Spark components as this distribution is only used for
+        // retro-compatibility in our TUJs.
+        displayConditions.put(ComponentType.SPARKBATCH, c1);
+        displayConditions.put(ComponentType.SPARKSTREAMING, c1);
+
     }
 
     @Override
@@ -210,4 +222,10 @@ public class CDH510MR2Distribution extends AbstractDistribution implements HDFSC
     public boolean doSupportCheckpointing() {
         return true;
     }
+
+    @Override
+    public ComponentCondition getDisplayCondition(ComponentType componentType) {
+        return displayConditions.get(componentType);
+    }
+
 }

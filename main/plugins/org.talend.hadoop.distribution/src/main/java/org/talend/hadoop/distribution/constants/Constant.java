@@ -10,15 +10,16 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.hadoop.distribution.condition;
+package org.talend.hadoop.distribution.constants;
 
-/**
- * Represents a component XML expression such as "A == 'xxx'" or "false".
- */
-public interface Expression {
+public final class Constant {
 
-    /**
-     * @return the String representation of the Expression.
-     */
-    String getExpressionString();
+    public static final String PIG_STORE_PARAMETER = "STORE"; //$NON-NLS-1$
+
+    public static final String PIG_HCATSTORER_PARAMETER = "HCATSTORER"; //$NON-NLS-1$
+
+    public static final String PIG_HBASESTORAGE_PARAMETER = "HBASESTORAGE"; //$NON-NLS-1$
+
+    public static final String PIG_PARQUETSTORER_PARAMETER = "PARQUETSTORER";//$NON-NLS-1$
+
 }

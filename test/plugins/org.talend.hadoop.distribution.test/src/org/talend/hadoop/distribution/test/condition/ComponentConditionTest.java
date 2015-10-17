@@ -27,6 +27,8 @@ import org.talend.hadoop.distribution.condition.ComponentCondition;
 import org.talend.hadoop.distribution.condition.EqualityOperator;
 import org.talend.hadoop.distribution.condition.Expression;
 import org.talend.hadoop.distribution.condition.MultiComponentCondition;
+import org.talend.hadoop.distribution.condition.NestedComponentCondition;
+import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
 
 /**
  * Test class for the {@link ComponentCondition} distribution.
@@ -48,7 +50,7 @@ public class ComponentConditionTest {
 
     private final static String ENCODING = "UTF-8"; //$NON-NLS-1$
 
-    private static String result1;
+    private static String result1, result2;
 
     @Before
     public void setUp() throws IOException {
@@ -57,11 +59,16 @@ public class ComponentConditionTest {
         IOUtils.copy(inputStream, writer, ENCODING);
         result1 = writer.toString();
 
+        inputStream = getClass().getResourceAsStream("/resources/complexcondition2"); //$NON-NLS-1$
+        writer = new StringWriter();
+        IOUtils.copy(inputStream, writer, ENCODING);
+        result2 = writer.toString();
+
     }
 
     @Test
     public void testGetConditionString() throws Exception {
-        ComponentCondition dc1 = new ComponentCondition(new BasicExpression(PARAM_1, VALUE_1, EqualityOperator.EQ));
+        ComponentCondition dc1 = new SimpleComponentCondition(new BasicExpression(PARAM_1, VALUE_1, EqualityOperator.EQ));
         assertEquals(dc1.getConditionString(), LEFT_PAR + PARAM_1 + EQ + SINGLE_QUOTE + VALUE_1 + SINGLE_QUOTE + RIGHT_PAR);
 
         Expression e1 = new BasicExpression("A", "aaa", EqualityOperator.EQ); //$NON-NLS-1$ //$NON-NLS-2$
@@ -69,8 +76,14 @@ public class ComponentConditionTest {
         Expression e3 = new BasicExpression("A", "bbb", EqualityOperator.EQ); //$NON-NLS-1$ //$NON-NLS-2$
         Expression e4 = new BasicExpression("B", "ccc", EqualityOperator.NOT_EQ); //$NON-NLS-1$ //$NON-NLS-2$
 
-        dc1 = new MultiComponentCondition(e1, new MultiComponentCondition(e4, new MultiComponentCondition(e2,
-                new ComponentCondition(e3), BooleanOperator.AND), BooleanOperator.OR), BooleanOperator.AND);
+        dc1 = new NestedComponentCondition(new MultiComponentCondition(e1, new NestedComponentCondition(
+                new MultiComponentCondition(e4, new NestedComponentCondition(new MultiComponentCondition(e2,
+                        new SimpleComponentCondition(e3), BooleanOperator.AND)), BooleanOperator.OR)), BooleanOperator.AND));
         assertEquals(dc1.getConditionString(), result1);
+
+        dc1 = new MultiComponentCondition(e1, new MultiComponentCondition(e2, new NestedComponentCondition(
+                new MultiComponentCondition(e4, new SimpleComponentCondition(e3), BooleanOperator.OR)), BooleanOperator.AND),
+                BooleanOperator.AND);
+        assertEquals(dc1.getConditionString(), result2);
     }
 }

@@ -1,3 +1,16 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+
 package org.talend.hadoop.distribution.mapr410;
 
 import java.util.HashMap;
@@ -19,19 +32,6 @@ import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SparkBatchComponent;
 import org.talend.hadoop.distribution.component.SqoopComponent;
-
-// ============================================================================
-//
-// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
-//
-// This source code is available under agreement available at
-// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
-//
-// You should have received a copy of the agreement
-// along with this program; if not, write to Talend SA
-// 9 rue Pages 92150 Suresnes, France
-//
-// ============================================================================
 
 public class MapR410Distribution extends AbstractMapRDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent, HCatalogComponent, SparkBatchComponent {

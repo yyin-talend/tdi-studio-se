@@ -1,3 +1,16 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+
 package org.talend.hadoop.distribution.piv200;
 
 import java.util.HashMap;
@@ -21,19 +34,9 @@ import org.talend.hadoop.distribution.condition.BooleanOperator;
 import org.talend.hadoop.distribution.condition.ComponentCondition;
 import org.talend.hadoop.distribution.condition.EqualityOperator;
 import org.talend.hadoop.distribution.condition.MultiComponentCondition;
-
-// ============================================================================
-//
-// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
-//
-// This source code is available under agreement available at
-// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
-//
-// You should have received a copy of the agreement
-// along with this program; if not, write to Talend SA
-// 9 rue Pages 92150 Suresnes, France
-//
-// ============================================================================
+import org.talend.hadoop.distribution.condition.NestedComponentCondition;
+import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
+import org.talend.hadoop.distribution.constants.Constant;
 
 public class Pivotal200Distribution extends AbstractDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent {
@@ -47,8 +50,10 @@ public class Pivotal200Distribution extends AbstractDistribution implements HDFS
     static {
         moduleGroups = new HashMap<>();
 
-        ComponentCondition c1 = new MultiComponentCondition(
-                new BasicExpression("STORE", "HBASESTORAGE", EqualityOperator.NOT_EQ), new ComponentCondition(new BasicExpression("STORE", "HCATSTORER", EqualityOperator.NOT_EQ)), BooleanOperator.AND); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+        ComponentCondition c1 = new NestedComponentCondition(new MultiComponentCondition(new BasicExpression(
+                Constant.PIG_STORE_PARAMETER, Constant.PIG_HBASESTORAGE_PARAMETER, EqualityOperator.NOT_EQ),
+                new SimpleComponentCondition(new BasicExpression(Constant.PIG_STORE_PARAMETER, Constant.PIG_HCATSTORER_PARAMETER,
+                        EqualityOperator.NOT_EQ)), BooleanOperator.AND));
         displayConditions.put(ComponentType.PIGOUTPUT, c1);
     }
 

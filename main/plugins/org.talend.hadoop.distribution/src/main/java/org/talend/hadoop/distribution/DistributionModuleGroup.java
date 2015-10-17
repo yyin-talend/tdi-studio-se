@@ -15,7 +15,7 @@ package org.talend.hadoop.distribution;
 import org.talend.hadoop.distribution.condition.ComponentCondition;
 
 /**
- * created by rdubois on 16 oct. 2015 Detailled comment
+ * Bean class representing a module group and its property.
  *
  */
 public class DistributionModuleGroup {

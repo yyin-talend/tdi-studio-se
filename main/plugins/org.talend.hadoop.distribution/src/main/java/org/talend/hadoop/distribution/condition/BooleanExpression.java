@@ -13,12 +13,18 @@
 package org.talend.hadoop.distribution.condition;
 
 /**
- * Represents a component XML expression such as "A == 'xxx'" or "false".
+ * Represents an expression made of a boolean.
  */
-public interface Expression {
+public class BooleanExpression implements Expression {
 
-    /**
-     * @return the String representation of the Expression.
-     */
-    String getExpressionString();
+    private Boolean mBoolean;
+
+    public BooleanExpression(boolean bool) {
+        this.mBoolean = bool;
+    }
+
+    @Override
+    public String getExpressionString() {
+        return "(" + this.mBoolean.toString() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ 
+    }
 }

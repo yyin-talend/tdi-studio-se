@@ -12,30 +12,90 @@
 // ============================================================================
 package org.talend.hadoop.distribution;
 
+import org.talend.hadoop.distribution.constants.HBaseConstant;
+import org.talend.hadoop.distribution.constants.HCatalogConstant;
+import org.talend.hadoop.distribution.constants.HDFSConstant;
+import org.talend.hadoop.distribution.constants.HiveConstant;
+import org.talend.hadoop.distribution.constants.ImpalaConstant;
+import org.talend.hadoop.distribution.constants.MRConstant;
+import org.talend.hadoop.distribution.constants.PigConstant;
+import org.talend.hadoop.distribution.constants.PigOutputConstant;
+import org.talend.hadoop.distribution.constants.SparkBatchConstant;
+import org.talend.hadoop.distribution.constants.SparkStreamingConstant;
+import org.talend.hadoop.distribution.constants.SqoopConstant;
+
 /**
  * Enumeration that describes component types with their information. This Enumeration is used by the components when
  * they used a HADOOP_DISTRIBUTION field to declare which kind of components they are.
  *
  */
 public enum ComponentType {
-    HDFS("org.talend.hadoop.distribution.component.HDFSComponent", "DISTRIBUTION", "DISTRIBUTION", "DB_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    PIG("org.talend.hadoop.distribution.component.PigComponent", "DISTRIBUTION", "DISTRIBUTION", "PIG_VERSION", "PIG_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    PIGOUTPUT(
-              "org.talend.hadoop.distribution.component.PigComponent", "DISTRIBUTION", "DISTRIBUTION", "HBASE_VERSION", "PIG_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    MAPREDUCE("org.talend.hadoop.distribution.component.MRComponent", "DISTRIBUTION", "DISTRIBUTION", "MR_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    HIVE("org.talend.hadoop.distribution.component.HiveComponent", "DISTRIBUTION", "DISTRIBUTION", "HIVE_VERSION", "HIVE_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    SQOOP(
-          "org.talend.hadoop.distribution.component.SqoopComponent", "DISTRIBUTION", "HADOOP_PROPERTY/DISTRIBUTION", "DB_VERSION", "HADOOP_PROPERTY/DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    HCATALOG(
-             "org.talend.hadoop.distribution.component.HCatalogComponent", "DISTRIBUTION", "DISTRIBUTION", "HCAT_VERSION", "HCAT_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    HDFS(
+         HDFSConstant.SERVICE,
+         HDFSConstant.DISTRIBUTION_PARAMETER,
+         HDFSConstant.DISTRIBUTION_REPOSITORYVALUE,
+         HDFSConstant.VERSION_PARAMETER,
+         HDFSConstant.VERSION_REPOSITORYVALUE),
+    PIG(
+        PigConstant.SERVICE,
+        PigConstant.DISTRIBUTION_PARAMETER,
+        PigConstant.DISTRIBUTION_REPOSITORYVALUE,
+        PigConstant.VERSION_PARAMETER,
+        PigConstant.VERSION_REPOSITORYVALUE),
     HBASE(
-          "org.talend.hadoop.distribution.component.HBaseComponent", "DISTRIBUTION", "HBASE_DISTRIBUTION", "HBASE_VERSION", "HBASE_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    SPARKBATCH(
-               "org.talend.hadoop.distribution.component.SparkBatchComponent", "DISTRIBUTION", "DISTRIBUTION", "SPARK_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    SPARKSTREAMING(
-                   "org.talend.hadoop.distribution.component.SparkStreamingComponent", "DISTRIBUTION", "DISTRIBUTION", "SPARK_VERSION", "DB_VERSION"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+          HBaseConstant.SERVICE,
+          HBaseConstant.DISTRIBUTION_PARAMETER,
+          HBaseConstant.DISTRIBUTION_REPOSITORYVALUE,
+          HBaseConstant.VERSION_PARAMETER,
+          HBaseConstant.VERSION_REPOSITORYVALUE),
+    HIVE(
+         HiveConstant.SERVICE,
+         HiveConstant.DISTRIBUTION_PARAMETER,
+         HiveConstant.DISTRIBUTION_REPOSITORYVALUE,
+         HiveConstant.VERSION_PARAMETER,
+         HiveConstant.VERSION_REPOSITORYVALUE),
     IMPALA(
-           "org.talend.hadoop.distribution.component.ImpalaComponent", "DISTRIBUTION", "DISTRIBUTION", "IMPALA_VERSION", "IMPALA_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+           ImpalaConstant.SERVICE,
+           ImpalaConstant.DISTRIBUTION_PARAMETER,
+           ImpalaConstant.DISTRIBUTION_REPOSITORYVALUE,
+           ImpalaConstant.VERSION_PARAMETER,
+           ImpalaConstant.VERSION_REPOSITORYVALUE),
+    MAPREDUCE(
+              MRConstant.SERVICE,
+              MRConstant.DISTRIBUTION_PARAMETER,
+              MRConstant.DISTRIBUTION_REPOSITORYVALUE,
+              MRConstant.VERSION_PARAMETER,
+              MRConstant.VERSION_REPOSITORYVALUE),
+    PIGOUTPUT(
+              PigOutputConstant.SERVICE,
+              PigOutputConstant.DISTRIBUTION_PARAMETER,
+              PigOutputConstant.DISTRIBUTION_REPOSITORYVALUE,
+              PigOutputConstant.VERSION_PARAMETER,
+              PigOutputConstant.VERSION_REPOSITORYVALUE),
+    SQOOP(
+          SqoopConstant.SERVICE,
+          SqoopConstant.DISTRIBUTION_PARAMETER,
+          SqoopConstant.DISTRIBUTION_REPOSITORYVALUE,
+          SqoopConstant.VERSION_PARAMETER,
+          SqoopConstant.VERSION_REPOSITORYVALUE),
+    HCATALOG(
+             HCatalogConstant.SERVICE,
+             HCatalogConstant.DISTRIBUTION_PARAMETER,
+             HCatalogConstant.DISTRIBUTION_REPOSITORYVALUE,
+             HCatalogConstant.VERSION_PARAMETER,
+             HCatalogConstant.VERSION_REPOSITORYVALUE),
+    SPARKBATCH(
+               SparkBatchConstant.SERVICE,
+               SparkBatchConstant.DISTRIBUTION_PARAMETER,
+               SparkBatchConstant.DISTRIBUTION_REPOSITORYVALUE,
+               SparkBatchConstant.VERSION_PARAMETER,
+               SparkBatchConstant.VERSION_REPOSITORYVALUE),
+    SPARKSTREAMING(
+                   SparkStreamingConstant.SERVICE,
+                   SparkStreamingConstant.DISTRIBUTION_PARAMETER,
+                   SparkStreamingConstant.DISTRIBUTION_REPOSITORYVALUE,
+                   SparkStreamingConstant.VERSION_PARAMETER,
+                   SparkStreamingConstant.VERSION_REPOSITORYVALUE);
 
     /**
      * @param service - the interface of the service

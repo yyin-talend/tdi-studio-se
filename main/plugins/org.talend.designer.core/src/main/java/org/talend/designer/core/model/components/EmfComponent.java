@@ -59,7 +59,6 @@ import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.hadoop.version.EHadoopVersion4Drivers;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
@@ -139,7 +138,13 @@ import org.talend.hadoop.distribution.ComponentType;
 import org.talend.hadoop.distribution.DistributionFactory;
 import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.component.HadoopComponent;
+import org.talend.hadoop.distribution.condition.BasicExpression;
+import org.talend.hadoop.distribution.condition.BooleanOperator;
 import org.talend.hadoop.distribution.condition.ComponentCondition;
+import org.talend.hadoop.distribution.condition.EqualityOperator;
+import org.talend.hadoop.distribution.condition.MultiComponentCondition;
+import org.talend.hadoop.distribution.condition.NestedComponentCondition;
+import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 
@@ -1662,20 +1667,24 @@ public class EmfComponent extends AbstractComponent {
                 Bean that = versionIter.next();
                 displayName[index] = that.getDisplayName();
                 itemValue[index] = that.getName();
-                // CDH 5.1 in Spark and Spark Streaming must be present in the Item, but shouldn't visible for TUJs
-                // retro-compatibility. It's an isolated case.
-                if ((componentType == ComponentType.SPARKBATCH || componentType == ComponentType.SPARKSTREAMING)
-                        && that.getName().equals(EHadoopVersion4Drivers.CLOUDERA_CDH5_1.getVersionValue())) {
-                    showIfVersion[index] = "false"; //$NON-NLS-1$
+
+                ComponentCondition additionalCondition = that.getDisplayCondition();
+                if (additionalCondition != null
+                        && ("(true)".equals(additionalCondition.getConditionString()) || "(false)".equals(additionalCondition //$NON-NLS-1$ //$NON-NLS-2$
+                                .getConditionString()))) {
+                    showIfVersion[index] = "(true)".equals(additionalCondition.getConditionString()) ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 } else {
-                    StringBuilder condition = new StringBuilder(componentType.getDistributionParameter()
-                            + "=='" + that.getDistributionName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-                    ComponentCondition additionalCondition = that.getDisplayCondition();
+                    ComponentCondition condition;
+                    org.talend.hadoop.distribution.condition.Expression e = new BasicExpression(
+                            componentType.getDistributionParameter(), that.getDistributionName(), EqualityOperator.EQ);
                     if (additionalCondition != null) {
-                        condition.append(" AND "); //$NON-NLS-1$
-                        condition.append(additionalCondition.getConditionString());
+                        condition = new MultiComponentCondition(e, new NestedComponentCondition(additionalCondition),
+                                BooleanOperator.AND);
+                    } else {
+                        condition = new SimpleComponentCondition(e);
                     }
-                    showIfVersion[index] = condition.toString();
+
+                    showIfVersion[index] = condition.getConditionString();
                 }
 
                 notShowIfVersion[index] = null;
@@ -1686,15 +1695,21 @@ public class EmfComponent extends AbstractComponent {
                         DistributionModuleGroup group = moduleGroups.next();
                         IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
                         importType.setMODULEGROUP(group.getModuleName());
-                        StringBuilder condition = new StringBuilder(
-                                "("     + componentType.getDistributionParameter() + "=='" + that.getDistributionName() + "') AND (" + componentType.getVersionParameter() + "=='" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                                        + that.getName() + "')"); //$NON-NLS-1$ 
-                        ComponentCondition additionalCondition = group.getRequiredIf();
-                        if (additionalCondition != null) {
-                            condition.append(" AND "); //$NON-NLS-1$
-                            condition.append(additionalCondition.getConditionString());
+
+                        ComponentCondition condition;
+                        org.talend.hadoop.distribution.condition.Expression e1 = new BasicExpression(
+                                componentType.getDistributionParameter(), that.getDistributionName(), EqualityOperator.EQ);
+                        org.talend.hadoop.distribution.condition.Expression e2 = new BasicExpression(
+                                componentType.getVersionParameter(), that.getName(), EqualityOperator.EQ);
+
+                        if (group.getRequiredIf() != null) {
+                            condition = new MultiComponentCondition(e1, new MultiComponentCondition(e2,
+                                    new NestedComponentCondition(group.getRequiredIf()), BooleanOperator.AND),
+                                    BooleanOperator.AND);
+                        } else {
+                            condition = new MultiComponentCondition(e1, new SimpleComponentCondition(e2), BooleanOperator.AND);
                         }
-                        importType.setREQUIREDIF(condition.toString());
+                        importType.setREQUIREDIF(condition.getConditionString());
                         importType.setMRREQUIRED(group.isMrRequired());
                         ModulesNeededProvider.collectModuleNeeded(node.getComponent().getName(), importType,
                                 componentImportNeedsList);

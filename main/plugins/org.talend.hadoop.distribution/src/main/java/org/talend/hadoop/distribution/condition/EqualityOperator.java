@@ -12,10 +12,6 @@
 // ============================================================================
 package org.talend.hadoop.distribution.condition;
 
-/**
- * created by rdubois on 16 oct. 2015 Detailled comment
- *
- */
 public enum EqualityOperator {
     EQ("=="), //$NON-NLS-1$
     NOT_EQ("!="); //$NON-NLS-1$

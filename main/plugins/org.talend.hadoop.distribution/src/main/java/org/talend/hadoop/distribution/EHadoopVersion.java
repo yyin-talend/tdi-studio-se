@@ -1,5 +1,3 @@
-package org.talend.hadoop.distribution;
-
 // ============================================================================
 //
 // Copyright (C) 2006-2015 Talend Inc. - www.talend.com
@@ -12,6 +10,8 @@ package org.talend.hadoop.distribution;
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
+
+package org.talend.hadoop.distribution;
 
 /**
  * Enumeration that describes the Hadoop version.

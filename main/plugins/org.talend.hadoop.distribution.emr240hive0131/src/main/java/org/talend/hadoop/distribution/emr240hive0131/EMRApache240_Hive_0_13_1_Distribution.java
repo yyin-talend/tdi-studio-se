@@ -1,16 +1,3 @@
-package org.talend.hadoop.distribution.emr240hive0131;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.talend.core.hadoop.version.EHadoopDistributions;
-import org.talend.hadoop.distribution.AbstractDistribution;
-import org.talend.hadoop.distribution.ComponentType;
-import org.talend.hadoop.distribution.DistributionModuleGroup;
-import org.talend.hadoop.distribution.EHadoopVersion;
-import org.talend.hadoop.distribution.component.HiveComponent;
-
 // ============================================================================
 //
 // Copyright (C) 2006-2015 Talend Inc. - www.talend.com
@@ -23,6 +10,19 @@ import org.talend.hadoop.distribution.component.HiveComponent;
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
+
+package org.talend.hadoop.distribution.emr240hive0131;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.talend.core.hadoop.version.EHadoopDistributions;
+import org.talend.hadoop.distribution.AbstractDistribution;
+import org.talend.hadoop.distribution.ComponentType;
+import org.talend.hadoop.distribution.DistributionModuleGroup;
+import org.talend.hadoop.distribution.EHadoopVersion;
+import org.talend.hadoop.distribution.component.HiveComponent;
 
 public class EMRApache240_Hive_0_13_1_Distribution extends AbstractDistribution implements HiveComponent {
 

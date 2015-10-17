@@ -13,12 +13,20 @@
 package org.talend.hadoop.distribution.condition;
 
 /**
- * Represents a component XML expression such as "A == 'xxx'" or "false".
+ * Represents a simple condition, made of an {@link Expression}.
+ *
  */
-public interface Expression {
+public class SimpleComponentCondition implements ComponentCondition {
 
-    /**
-     * @return the String representation of the Expression.
-     */
-    String getExpressionString();
+    protected Expression mExpression;
+
+    public SimpleComponentCondition(Expression expression) {
+        this.mExpression = expression;
+    }
+
+    @Override
+    public String getConditionString() {
+        return this.mExpression.getExpressionString();
+    }
+
 }

@@ -13,19 +13,12 @@
 package org.talend.hadoop.distribution.condition;
 
 /**
- * created by rdubois on 16 oct. 2015 Detailled comment
- *
+ * Represents a component XML condition.
  */
-public class ComponentCondition {
+public interface ComponentCondition {
 
-    protected Expression mExpression;
-
-    public ComponentCondition(Expression expression) {
-        this.mExpression = expression;
-    }
-
-    public String getConditionString() {
-        return this.mExpression.getExpressionString();
-    }
-
+    /**
+     * @return the String representation of the ComponentCondition.
+     */
+    String getConditionString();
 }

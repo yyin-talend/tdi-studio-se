@@ -13,8 +13,8 @@
 package org.talend.hadoop.distribution.condition;
 
 /**
- * created by rdubois on 16 oct. 2015 Detailled comment
- *
+ * Represents an expression made of a parameter name, a value and an {@link EqualityOperator} operator. A
+ * BasicExpression is always surrounded by parenthesis.
  */
 public class BasicExpression implements Expression {
 
