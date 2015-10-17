@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -31,12 +32,11 @@ import org.talend.components.api.component.ComponentConnector;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.presentation.Form;
+import org.talend.components.api.service.ComponentService;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.param.ERepositoryCategoryType;
@@ -51,7 +51,6 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
@@ -81,7 +80,7 @@ public class Component extends AbstractComponent {
 
     private ComponentDefinition componentDefinition;
 
-    private List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
+    private List<ModuleNeeded> componentImportNeedsList;
 
     private List<IMultipleComponentManager> multipleComponentManagers;
 
@@ -270,12 +269,12 @@ public class Component extends AbstractComponent {
         // Property[] propertys = componentDefinition.createProperties().getProperties();
         // for (Property property : propertys) {
         // nodeRet = new NodeReturn();
-        //    nodeRet.setAvailability("");//$NON-NLS-1$
-        //    nodeRet.setVarName("");//$NON-NLS-1$
+        // nodeRet.setAvailability("");//$NON-NLS-1$
+        // nodeRet.setVarName("");//$NON-NLS-1$
         // nodeRet.setDisplayName(property.getDisplayName());
         // nodeRet.setName(property.getName());
         // nodeRet.setType(property.getTypeName());
-        //    nodeRet.setShowIf("");//$NON-NLS-1$
+        // nodeRet.setShowIf("");//$NON-NLS-1$
         // listReturn.add(nodeRet);
         // }
         return listReturn;
@@ -356,7 +355,7 @@ public class Component extends AbstractComponent {
         newParam.setNumRow(rowNb);
         newParam.setFieldType(EParameterFieldType.TECHNICAL);
         newParam.setShow(true);
-        newParam.setShowIf(parentParam.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$ 
+        newParam.setShowIf(parentParam.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         newParam.setReadOnly(false);
         newParam.setContext(context);
         newParam.setParentParameter(parentParam);
@@ -823,9 +822,10 @@ public class Component extends AbstractComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ENCODING_TYPE.getName());
             newParam.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
-            newParam.setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
-                    ENCODING_TYPE_CUSTOM });
+            newParam.setListItemsDisplayName(
+                    new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+            newParam.setListItemsDisplayCodeName(
+                    new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
             newParam.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
             newParam.setValue(ENCODING_TYPE_ISO_8859_15);
             newParam.setNumRow(xmlParam.getNUMROW());
@@ -835,7 +835,7 @@ public class Component extends AbstractComponent {
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setParentParameter(parentParam);
             // listParam.add(newParam);
-        }// Ends
+        } // Ends
         if (type == EParameterFieldType.QUERYSTORE_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
@@ -972,8 +972,8 @@ public class Component extends AbstractComponent {
                             param.setValue(defaultValue);
                             if (param.getFieldType() == EParameterFieldType.ENCODING_TYPE) {
                                 String encodingType = TalendTextUtils.removeQuotes((String) defaultValue);
-                                IElementParameter elementParameter = param.getChildParameters().get(
-                                        EParameterName.ENCODING_TYPE.getName());
+                                IElementParameter elementParameter = param.getChildParameters()
+                                        .get(EParameterName.ENCODING_TYPE.getName());
                                 if (elementParameter != null) {
                                     elementParameter.setValue(encodingType);
                                 }
@@ -1310,11 +1310,11 @@ public class Component extends AbstractComponent {
         ComponentConnector[] listConnectors = componentDefinition.getConnectors();
         for (ComponentConnector componentConnector : listConnectors) {
             EConnectionType currentType = EConnectionType.getTypeFromName(componentConnector.getType().name());
-            if (currentType == null
-                    || ("LOOKUP").equals(componentConnector.getType().name()) || ("MERGE").equals(componentConnector.getType().name())) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (currentType == null || ("LOOKUP").equals(componentConnector.getType().name()) //$NON-NLS-1$
+                    || ("MERGE").equals(componentConnector.getType().name())) { //$NON-NLS-1$
                 if (currentType == null) {
                     log.warn(Messages.getString("Component.componentNotExist", this.getName() //$NON-NLS-1$
-                            , componentConnector.getType().name()));
+                    , componentConnector.getType().name()));
                 }
                 continue;
             }
@@ -1427,38 +1427,46 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
-        // TODO
-        if (componentImportNeedsList != null && componentImportNeedsList.size() > 0) {
+        if (componentImportNeedsList != null) {
+            return componentImportNeedsList;
+        } else {
+            ComponentService componentService = ComponentsUtils.getComponentService();
+            Set<String> mavenUriDependencies = componentService.getMavenUriDependencies(getName());
+            componentImportNeedsList = new ArrayList<>(mavenUriDependencies.size());
+            for (String mvnUri : mavenUriDependencies) {
+                ModuleNeeded moduleNeeded = new ModuleNeeded(getName(), "", true, mvnUri);
+                componentImportNeedsList.add(moduleNeeded);
+            }
+
+            // List<String> moduleNames = new ArrayList<String>();
+            // List<String> componentList = new ArrayList<String>();
+            // for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
+            // for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
+            // IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
+            // componentList.add(multipleComponentItem.getComponent());
+            // if (component == null) {
+            // continue;
+            // }
+            // for (ModuleNeeded moduleNeeded : component.getModulesNeeded()) {
+            // if (!moduleNames.contains(moduleNeeded.getModuleName())) {
+            // ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), moduleNeeded.getModuleName(),
+            // moduleNeeded.getInformationMsg(), moduleNeeded.isRequired(), moduleNeeded.getInstallURL(),
+            // moduleNeeded.getRequiredIf(), moduleNeeded.getMavenUri());
+            // componentImportNeeds.setModuleLocaion(moduleNeeded.getModuleLocaion());
+            // componentImportNeedsList.add(componentImportNeeds);
+            // }
+            // }
+            // }
+            // }
             return componentImportNeedsList;
         }
-        List<String> moduleNames = new ArrayList<String>();
-        List<String> componentList = new ArrayList<String>();
-        for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
-            for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
-                IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
-                componentList.add(multipleComponentItem.getComponent());
-                if (component == null) {
-                    continue;
-                }
-                for (ModuleNeeded moduleNeeded : component.getModulesNeeded()) {
-                    if (!moduleNames.contains(moduleNeeded.getModuleName())) {
-                        ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), moduleNeeded.getModuleName(),
-                                moduleNeeded.getInformationMsg(), moduleNeeded.isRequired(), moduleNeeded.getInstallURL(),
-                                moduleNeeded.getRequiredIf(), moduleNeeded.getMavenUri());
-                        componentImportNeeds.setModuleLocaion(moduleNeeded.getModuleLocaion());
-                        componentImportNeedsList.add(componentImportNeeds);
-                    }
-                }
-            }
-        }
-        return componentImportNeedsList;
     }
 
     @Override
     public List<IMultipleComponentManager> getMultipleComponentManagers() {
         if (multipleComponentManagers == null) {
             multipleComponentManagers = createMultipleComponentManagerFromTemplates();
-        }// else already exist so return it
+        } // else already exist so return it
         return multipleComponentManagers;
     }
 
