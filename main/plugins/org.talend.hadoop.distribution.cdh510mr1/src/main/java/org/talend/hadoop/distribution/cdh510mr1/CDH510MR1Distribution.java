@@ -56,7 +56,7 @@ public class CDH510MR1Distribution extends AbstractDistribution implements HDFSC
     }
 
     @Override
-    public String getVersionName() {
+    public String getVersionName(ComponentType componentType) {
         return EHadoopVersion4Drivers.CLOUDERA_CDH5_1_MR1.getVersionDisplay();
     }
 

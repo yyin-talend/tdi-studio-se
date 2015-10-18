@@ -42,7 +42,7 @@ public class EMRApache240_Hive_0_13_1_DistributionTest {
     public void testEMRApache240_Hive_0_13_1_Distribution() throws Exception {
         HadoopComponent emr240hive0131 = new EMRApache240_Hive_0_13_1_Distribution();
         assertNotNull(emr240hive0131.getDistributionName());
-        assertNotNull(emr240hive0131.getVersionName());
+        assertNotNull(emr240hive0131.getVersionName(null));
         assertEquals(EHadoopDistributions.AMAZON_EMR.getName(), emr240hive0131.getDistribution());
         assertEquals("APACHE_2_4_0_EMR_0_13_1", emr240hive0131.getVersion()); //$NON-NLS-1$
         assertEquals(EHadoopVersion.HADOOP_2, emr240hive0131.getHadoopVersion());

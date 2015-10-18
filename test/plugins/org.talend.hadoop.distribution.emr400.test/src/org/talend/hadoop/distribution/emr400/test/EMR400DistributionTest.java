@@ -43,7 +43,7 @@ public class EMR400DistributionTest {
     public void testEMR400Distribution() throws Exception {
         HadoopComponent emr400 = new EMR400Distribution();
         assertNotNull(emr400.getDistributionName());
-        assertNotNull(emr400.getVersionName());
+        assertNotNull(emr400.getVersionName(null));
         assertEquals(EHadoopDistributions.AMAZON_EMR.getName(), emr400.getDistribution());
         assertEquals(EHadoopVersion4Drivers.EMR_4_0_0.getVersionValue(), emr400.getVersion());
         assertEquals(EHadoopVersion.HADOOP_2, emr400.getHadoopVersion());

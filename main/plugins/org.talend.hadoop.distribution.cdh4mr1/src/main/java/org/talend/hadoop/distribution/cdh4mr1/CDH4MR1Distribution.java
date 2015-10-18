@@ -71,7 +71,7 @@ public class CDH4MR1Distribution extends AbstractDistribution implements HDFSCom
     }
 
     @Override
-    public String getVersionName() {
+    public String getVersionName(ComponentType componentType) {
         return EHadoopVersion4Drivers.CLOUDERA_CDH4.getVersionDisplay();
     }
 

@@ -43,7 +43,7 @@ public class EMRApache103DistributionTest {
     public void testEMRApache103Distribution() throws Exception {
         HadoopComponent emr103 = new EMRApache103Distribution();
         assertNotNull(emr103.getDistributionName());
-        assertNotNull(emr103.getVersionName());
+        assertNotNull(emr103.getVersionName(null));
         assertEquals(EHadoopDistributions.AMAZON_EMR.getName(), emr103.getDistribution());
         assertEquals(EHadoopVersion4Drivers.APACHE_1_0_3_EMR.getVersionValue(), emr103.getVersion());
         assertEquals(EHadoopVersion.HADOOP_1, emr103.getHadoopVersion());

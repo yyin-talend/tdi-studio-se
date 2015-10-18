@@ -73,7 +73,7 @@ public class Pivotal200Distribution extends AbstractDistribution implements HDFS
     }
 
     @Override
-    public String getVersionName() {
+    public String getVersionName(ComponentType componentType) {
         return EHadoopVersion4Drivers.PIVOTAL_HD_2_0.getVersionDisplay();
     }
 

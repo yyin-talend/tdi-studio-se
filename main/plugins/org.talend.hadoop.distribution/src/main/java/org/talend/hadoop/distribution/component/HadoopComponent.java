@@ -42,9 +42,10 @@ public interface HadoopComponent {
     public String getVersion();
 
     /**
+     * @param componentType - the {@link ComponentType} for which we want to retrieve the version name.
      * @return the display name of the version.
      */
-    public String getVersionName();
+    public String getVersionName(ComponentType componentType);
 
     /**
      * A distribution can be using Hadoop 1 or Hadoop 2. This method returns the used Hadoop version.

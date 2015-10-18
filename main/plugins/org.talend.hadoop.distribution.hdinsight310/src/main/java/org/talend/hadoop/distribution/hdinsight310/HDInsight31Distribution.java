@@ -69,7 +69,7 @@ public class HDInsight31Distribution extends AbstractDistribution implements MRC
     }
 
     @Override
-    public String getVersionName() {
+    public String getVersionName(ComponentType componentType) {
         return EHadoopVersion4Drivers.MICROSOFT_HD_INSIGHT_3_1.getVersionDisplay();
     }
 

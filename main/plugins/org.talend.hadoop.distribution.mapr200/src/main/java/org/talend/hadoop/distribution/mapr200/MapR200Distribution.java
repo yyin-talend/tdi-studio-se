@@ -42,12 +42,16 @@ public class MapR200Distribution extends AbstractMapRDistribution implements HDF
 
     private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
+    private static Map<ComponentType, String> customVersionDisplayNames = new HashMap<>();
+
     static {
         moduleGroups = new HashMap<>();
 
         ComponentCondition c1 = new SimpleComponentCondition(new BasicExpression(Constant.PIG_STORE_PARAMETER,
                 Constant.PIG_HCATSTORER_PARAMETER, EqualityOperator.NOT_EQ));
         displayConditions.put(ComponentType.PIGOUTPUT, c1);
+
+        customVersionDisplayNames.put(ComponentType.SQOOP, Constant.SQOOP_MAPR2_DISPLAY);
     }
 
     @Override
@@ -66,8 +70,9 @@ public class MapR200Distribution extends AbstractMapRDistribution implements HDF
     }
 
     @Override
-    public String getVersionName() {
-        return EHadoopVersion4Drivers.MAPR2.getVersionDisplay();
+    public String getVersionName(ComponentType componentType) {
+        String customVersionName = customVersionDisplayNames.get(componentType);
+        return customVersionName != null ? customVersionName : EHadoopVersion4Drivers.MAPR2.getVersionDisplay();
     }
 
     @Override

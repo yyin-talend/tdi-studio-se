@@ -70,7 +70,7 @@ public class CDH540Distribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public String getVersionName() {
+    public String getVersionName(ComponentType componentType) {
         return EHadoopVersion4Drivers.CLOUDERA_CDH5_4.getVersionDisplay();
     }
 

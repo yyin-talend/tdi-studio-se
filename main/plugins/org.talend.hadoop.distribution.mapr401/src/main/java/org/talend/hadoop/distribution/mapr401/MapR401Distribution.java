@@ -58,7 +58,7 @@ public class MapR401Distribution extends AbstractMapRDistribution implements HDF
     }
 
     @Override
-    public String getVersionName() {
+    public String getVersionName(ComponentType componentType) {
         return EHadoopVersion4Drivers.MAPR401.getVersionDisplay();
     }
 

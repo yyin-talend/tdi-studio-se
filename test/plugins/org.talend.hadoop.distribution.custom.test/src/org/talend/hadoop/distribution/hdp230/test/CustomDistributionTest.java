@@ -40,7 +40,7 @@ public class CustomDistributionTest {
     public void testCustomDistribution() throws Exception {
         HadoopComponent custom = new org.talend.hadoop.distribution.custom.CustomDistribution();
         assertNotNull(custom.getDistributionName());
-        assertNull(custom.getVersionName());
+        assertNull(custom.getVersionName(null));
         assertEquals(EHadoopDistributions.CUSTOM.getName(), custom.getDistribution());
         assertNull(custom.getVersion());
         assertNull(custom.getHadoopVersion());

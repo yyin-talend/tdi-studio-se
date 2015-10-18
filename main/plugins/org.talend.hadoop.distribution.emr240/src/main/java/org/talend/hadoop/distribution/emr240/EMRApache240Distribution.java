@@ -44,12 +44,19 @@ public class EMRApache240Distribution extends AbstractDistribution implements HD
 
     private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
+    private static Map<ComponentType, String> customVersionDisplayNames = new HashMap<>();
+
     static {
         moduleGroups = new HashMap<>();
 
         ComponentCondition c1 = new SimpleComponentCondition(new BasicExpression(Constant.PIG_STORE_PARAMETER,
                 Constant.PIG_HCATSTORER_PARAMETER, EqualityOperator.NOT_EQ));
         displayConditions.put(ComponentType.PIGOUTPUT, c1);
+
+        customVersionDisplayNames.put(ComponentType.PIG, Constant.PIG_APACHE240_DISPLAY);
+        customVersionDisplayNames.put(ComponentType.PIGOUTPUT, Constant.PIG_APACHE240_DISPLAY);
+        customVersionDisplayNames.put(ComponentType.HBASE, Constant.HBASE_APACHE240_DISPLAY);
+        customVersionDisplayNames.put(ComponentType.HIVE, Constant.HIVE_APACHE240_DISPLAY);
     }
 
     @Override
@@ -68,8 +75,9 @@ public class EMRApache240Distribution extends AbstractDistribution implements HD
     }
 
     @Override
-    public String getVersionName() {
-        return EHadoopVersion4Drivers.APACHE_2_4_0_EMR.getVersionDisplay();
+    public String getVersionName(ComponentType componentType) {
+        String customVersionName = customVersionDisplayNames.get(componentType);
+        return customVersionName != null ? customVersionName : EHadoopVersion4Drivers.APACHE_2_4_0_EMR.getVersionDisplay();
     }
 
     @Override

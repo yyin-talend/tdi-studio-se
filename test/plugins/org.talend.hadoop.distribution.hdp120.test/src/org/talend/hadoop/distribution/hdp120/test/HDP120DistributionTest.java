@@ -43,7 +43,7 @@ public class HDP120DistributionTest {
     public void testHDP120Distribution() throws Exception {
         HadoopComponent hdp120 = new HDP120Distribution();
         assertNotNull(hdp120.getDistributionName());
-        assertNotNull(hdp120.getVersionName());
+        assertNotNull(hdp120.getVersionName(null));
         assertEquals(EHadoopDistributions.HORTONWORKS.getName(), hdp120.getDistribution());
         assertEquals(EHadoopVersion4Drivers.HDP_1_2.getVersionValue(), hdp120.getVersion());
         assertEquals(EHadoopVersion.HADOOP_1, hdp120.getHadoopVersion());

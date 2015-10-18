@@ -43,7 +43,7 @@ public class MapR301DistributionTest {
     public void testMapR301Distribution() throws Exception {
         HadoopComponent mapr301 = new MapR301Distribution();
         assertNotNull(mapr301.getDistributionName());
-        assertNotNull(mapr301.getVersionName());
+        assertNotNull(mapr301.getVersionName(null));
         assertEquals(EHadoopDistributions.MAPR.getName(), mapr301.getDistribution());
         assertEquals(EHadoopVersion4Drivers.MAPR301.getVersionValue(), mapr301.getVersion());
         assertEquals(EHadoopVersion.HADOOP_1, mapr301.getHadoopVersion());

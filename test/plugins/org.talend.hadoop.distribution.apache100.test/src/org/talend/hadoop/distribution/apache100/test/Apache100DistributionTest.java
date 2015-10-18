@@ -43,7 +43,7 @@ public class Apache100DistributionTest {
     public void testApache100Distribution() throws Exception {
         HadoopComponent apache100 = new Apache100Distribution();
         assertNotNull(apache100.getDistributionName());
-        assertNotNull(apache100.getVersionName());
+        assertNotNull(apache100.getVersionName(null));
         assertEquals(EHadoopDistributions.APACHE.getName(), apache100.getDistribution());
         assertEquals(EHadoopVersion4Drivers.APACHE_1_0_0.getVersionValue(), apache100.getVersion());
         assertEquals(EHadoopVersion.HADOOP_1, apache100.getHadoopVersion());

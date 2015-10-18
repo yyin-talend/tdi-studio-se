@@ -40,12 +40,17 @@ public class Apache100Distribution extends AbstractDistribution implements HDFSC
 
     private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
+    private static Map<ComponentType, String> customVersionDisplayNames = new HashMap<>();
+
     static {
         moduleGroups = new HashMap<>();
 
         ComponentCondition c1 = new SimpleComponentCondition(new BasicExpression(Constant.PIG_STORE_PARAMETER,
                 Constant.PIG_HCATSTORER_PARAMETER, EqualityOperator.NOT_EQ));
         displayConditions.put(ComponentType.PIGOUTPUT, c1);
+
+        customVersionDisplayNames.put(ComponentType.PIGOUTPUT, Constant.PIG_APACHE100_DISPLAY);
+        customVersionDisplayNames.put(ComponentType.HIVE, Constant.HIVE_APACHE100_DISPLAY);
     }
 
     @Override
@@ -64,8 +69,9 @@ public class Apache100Distribution extends AbstractDistribution implements HDFSC
     }
 
     @Override
-    public String getVersionName() {
-        return EHadoopVersion4Drivers.APACHE_1_0_0.getVersionDisplay();
+    public String getVersionName(ComponentType componentType) {
+        String customVersionName = customVersionDisplayNames.get(componentType);
+        return customVersionName != null ? customVersionName : EHadoopVersion4Drivers.APACHE_1_0_0.getVersionDisplay();
     }
 
     @Override

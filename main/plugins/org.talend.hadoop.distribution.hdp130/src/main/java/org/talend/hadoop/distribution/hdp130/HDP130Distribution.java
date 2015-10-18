@@ -56,7 +56,7 @@ public class HDP130Distribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public String getVersionName() {
+    public String getVersionName(ComponentType componentType) {
         return EHadoopVersion4Drivers.HDP_1_3.getVersionDisplay();
     }
 

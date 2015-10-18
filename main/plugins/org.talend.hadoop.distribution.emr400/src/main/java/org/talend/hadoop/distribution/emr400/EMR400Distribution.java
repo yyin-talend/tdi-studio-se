@@ -48,6 +48,8 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
 
     private static Map<ComponentType, ComponentCondition> displayConditions = new HashMap<>();
 
+    private static Map<ComponentType, String> customVersionDisplayNames = new HashMap<>();
+
     static {
         moduleGroups = new HashMap<>();
 
@@ -56,6 +58,9 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
                 new SimpleComponentCondition(new BasicExpression(Constant.PIG_STORE_PARAMETER,
                         Constant.PIG_HBASESTORAGE_PARAMETER, EqualityOperator.NOT_EQ)), BooleanOperator.AND));
         displayConditions.put(ComponentType.PIGOUTPUT, c1);
+
+        customVersionDisplayNames.put(ComponentType.PIG, Constant.PIG_EMR400_DISPLAY);
+        customVersionDisplayNames.put(ComponentType.HIVE, Constant.HIVE_EMR400_DISPLAY);
     }
 
     @Override
@@ -74,8 +79,9 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public String getVersionName() {
-        return EHadoopVersion4Drivers.EMR_4_0_0.getVersionDisplay();
+    public String getVersionName(ComponentType componentType) {
+        String customVersionName = customVersionDisplayNames.get(componentType);
+        return customVersionName != null ? customVersionName : EHadoopVersion4Drivers.EMR_4_0_0.getVersionDisplay();
     }
 
     @Override

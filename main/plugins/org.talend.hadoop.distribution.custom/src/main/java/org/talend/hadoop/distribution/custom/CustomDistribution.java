@@ -55,7 +55,7 @@ public class CustomDistribution extends AbstractDistribution implements HDFSComp
     }
 
     @Override
-    public String getVersionName() {
+    public String getVersionName(ComponentType componentType) {
         return null;
     }
 

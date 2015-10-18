@@ -50,8 +50,8 @@ public class EMRApache240_Hive_0_13_1_Distribution extends AbstractDistribution 
     }
 
     @Override
-    public String getVersionName() {
-        return "EMR Apache 2.4.0 (Hive 0.13.1)"; //$NON-NLS-1$
+    public String getVersionName(ComponentType componentType) {
+        return "Apache 2.4.0 (Hive 0.13.1)"; //$NON-NLS-1$
     }
 
     @Override

@@ -43,7 +43,7 @@ public class MapR500DistributionTest {
     public void testMapR500Distribution() throws Exception {
         HadoopComponent mapr500 = new MapR500Distribution();
         assertNotNull(mapr500.getDistributionName());
-        assertNotNull(mapr500.getVersionName());
+        assertNotNull(mapr500.getVersionName(null));
         assertEquals(EHadoopDistributions.MAPR.getName(), mapr500.getDistribution());
         assertEquals(EHadoopVersion4Drivers.MAPR500.getVersionValue(), mapr500.getVersion());
         assertEquals(EHadoopVersion.HADOOP_2, mapr500.getHadoopVersion());

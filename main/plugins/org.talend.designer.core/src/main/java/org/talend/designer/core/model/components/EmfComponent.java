@@ -1578,8 +1578,8 @@ public class EmfComponent extends AbstractComponent {
                 distribSet.add(new Bean(np.getDistribution(), np.getDistributionName()));
                 String version = np.getVersion();
                 if (version != null) {
-                    versionSet.add(new Bean(version, np.getVersionName(), np.getDistribution(),
-                            np.getModuleGroups(componentType), np.getDisplayCondition(componentType)));
+                    versionSet.add(new Bean(version, np.getVersionName(componentType), np.getDistribution(), np
+                            .getModuleGroups(componentType), np.getDisplayCondition(componentType)));
                 }
             }
 

@@ -43,7 +43,7 @@ public class EMRApache240DistributionTest {
     public void testEMRApache240Distribution() throws Exception {
         HadoopComponent emr240 = new EMRApache240Distribution();
         assertNotNull(emr240.getDistributionName());
-        assertNotNull(emr240.getVersionName());
+        assertNotNull(emr240.getVersionName(null));
         assertEquals(EHadoopDistributions.AMAZON_EMR.getName(), emr240.getDistribution());
         assertEquals(EHadoopVersion4Drivers.APACHE_2_4_0_EMR.getVersionValue(), emr240.getVersion());
         assertEquals(EHadoopVersion.HADOOP_2, emr240.getHadoopVersion());

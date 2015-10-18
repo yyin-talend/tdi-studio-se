@@ -43,7 +43,7 @@ public class CDH510MR2DistributionTest {
     public void testCDH540Distribution() throws Exception {
         HadoopComponent cdh510mr2 = new CDH510MR2Distribution();
         assertNotNull(cdh510mr2.getDistributionName());
-        assertNotNull(cdh510mr2.getVersionName());
+        assertNotNull(cdh510mr2.getVersionName(null));
         assertEquals(EHadoopDistributions.CLOUDERA.getName(), cdh510mr2.getDistribution());
         assertEquals(EHadoopVersion4Drivers.CLOUDERA_CDH5_1.getVersionValue(), cdh510mr2.getVersion());
         assertEquals(EHadoopVersion.HADOOP_2, cdh510mr2.getHadoopVersion());

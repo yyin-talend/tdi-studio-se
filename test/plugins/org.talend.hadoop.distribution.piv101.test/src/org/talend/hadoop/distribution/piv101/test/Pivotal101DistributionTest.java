@@ -43,7 +43,7 @@ public class Pivotal101DistributionTest {
     public void testPivotal101Distribution() throws Exception {
         HadoopComponent piv101 = new Pivotal101Distribution();
         assertNotNull(piv101.getDistributionName());
-        assertNotNull(piv101.getVersionName());
+        assertNotNull(piv101.getVersionName(null));
         assertEquals(EHadoopDistributions.PIVOTAL_HD.getName(), piv101.getDistribution());
         assertEquals(EHadoopVersion4Drivers.PIVOTAL_HD_1_0_1.getVersionValue(), piv101.getVersion());
         assertEquals(EHadoopVersion.HADOOP_2, piv101.getHadoopVersion());

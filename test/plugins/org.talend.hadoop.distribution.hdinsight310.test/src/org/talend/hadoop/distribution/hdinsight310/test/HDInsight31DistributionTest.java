@@ -43,7 +43,7 @@ public class HDInsight31DistributionTest {
     public void testHDInsight31Distribution() throws Exception {
         HadoopComponent hdinsight310 = new HDInsight31Distribution();
         assertNotNull(hdinsight310.getDistributionName());
-        assertNotNull(hdinsight310.getVersionName());
+        assertNotNull(hdinsight310.getVersionName(null));
         assertEquals(EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName(), hdinsight310.getDistribution());
         assertEquals(EHadoopVersion4Drivers.MICROSOFT_HD_INSIGHT_3_1.getVersionValue(), hdinsight310.getVersion());
         assertEquals(EHadoopVersion.HADOOP_2, hdinsight310.getHadoopVersion());
