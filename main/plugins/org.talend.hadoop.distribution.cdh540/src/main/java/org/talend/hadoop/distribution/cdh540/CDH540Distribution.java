@@ -29,6 +29,7 @@ import org.talend.hadoop.distribution.component.HBaseComponent;
 import org.talend.hadoop.distribution.component.HCatalogComponent;
 import org.talend.hadoop.distribution.component.HDFSComponent;
 import org.talend.hadoop.distribution.component.HiveComponent;
+import org.talend.hadoop.distribution.component.HiveOnSparkComponent;
 import org.talend.hadoop.distribution.component.ImpalaComponent;
 import org.talend.hadoop.distribution.component.MRComponent;
 import org.talend.hadoop.distribution.component.PigComponent;
@@ -38,7 +39,7 @@ import org.talend.hadoop.distribution.component.SqoopComponent;
 
 public class CDH540Distribution extends AbstractDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent, ImpalaComponent, HCatalogComponent, SparkBatchComponent,
-        SparkStreamingComponent {
+        SparkStreamingComponent, HiveOnSparkComponent {
 
     private final static Set<DistributionModuleGroup> hdfsModuleGroups = new HashSet<>();
 

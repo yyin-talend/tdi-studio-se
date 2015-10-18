@@ -12,15 +12,15 @@
 // ============================================================================
 package org.talend.hadoop.distribution.constants;
 
-public final class SparkStreamingConstant {
+public final class HiveOnSparkConstant {
 
-    public static final String SERVICE = "org.talend.hadoop.distribution.component.SparkStreamingComponent";//$NON-NLS-1$
+    public static final String SERVICE = "org.talend.hadoop.distribution.component.HiveOnSparkComponent";//$NON-NLS-1$
 
     public static final String DISTRIBUTION_PARAMETER = "DISTRIBUTION";//$NON-NLS-1$
 
     public static final String DISTRIBUTION_REPOSITORYVALUE = "DISTRIBUTION";//$NON-NLS-1$
 
-    public static final String VERSION_PARAMETER = "SPARK_VERSION";//$NON-NLS-1$
+    public static final String VERSION_PARAMETER = "DB_VERSION";//$NON-NLS-1$
 
-    public static final String VERSION_REPOSITORYVALUE = "DB_VERSION";//$NON-NLS-1$
+    public static final String VERSION_REPOSITORYVALUE = "HIVE_VERSION";//$NON-NLS-1$
 }
