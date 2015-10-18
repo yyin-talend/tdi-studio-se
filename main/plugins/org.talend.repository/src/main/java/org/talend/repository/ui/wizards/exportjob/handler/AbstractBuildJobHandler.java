@@ -189,6 +189,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         } else {
             otherArgsBuffer.append("-fn");
         }
+        otherArgsBuffer.append(" -Dmaven.main.skip=true");
 
         return otherArgsBuffer;
     }
