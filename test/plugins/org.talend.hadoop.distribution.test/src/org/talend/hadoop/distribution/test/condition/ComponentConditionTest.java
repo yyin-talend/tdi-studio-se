@@ -86,4 +86,5 @@ public class ComponentConditionTest {
                 BooleanOperator.AND);
         assertEquals(dc1.getConditionString(), result2);
     }
+
 }

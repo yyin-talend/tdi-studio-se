@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.hadoop.distribution.condition;
 
+
 /**
  * Represents a simple condition, made of an {@link Expression}.
  *

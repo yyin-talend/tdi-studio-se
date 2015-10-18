@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.hadoop.distribution.condition;
 
+
 /**
  * Represents a component XML condition.
  */
@@ -21,4 +22,5 @@ public interface ComponentCondition {
      * @return the String representation of the ComponentCondition.
      */
     String getConditionString();
+
 }

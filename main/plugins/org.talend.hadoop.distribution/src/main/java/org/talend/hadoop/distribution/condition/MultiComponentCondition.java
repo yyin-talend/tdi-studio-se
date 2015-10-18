@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.hadoop.distribution.condition;
 
+
 /**
  * Represents a condition composed by an {@link Expression} and another {@link ComponentCondition}, linked by a
  * {@link BooleanOperator} operator.
@@ -34,4 +35,5 @@ public class MultiComponentCondition extends SimpleComponentCondition {
         return this.mExpression.getExpressionString()
                 + " " + mBooleanOperator.name() + " " + this.mOtherCondition.getConditionString(); //$NON-NLS-1$ //$NON-NLS-2$ 
     }
+
 }

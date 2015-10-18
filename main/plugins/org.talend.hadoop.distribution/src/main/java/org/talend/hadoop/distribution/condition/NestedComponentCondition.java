@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.hadoop.distribution.condition;
 
+
 /**
  * Represents a nested condition, surrounded by parenthesis.
  *
