@@ -23,7 +23,6 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.PluginChecker;
-import org.talend.core.hadoop.api.DistributionFactory;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -36,6 +35,7 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.hadoop.distribution.DistributionFactory;
 
 /**
  * This class will test an expression in the element parameters. <br>

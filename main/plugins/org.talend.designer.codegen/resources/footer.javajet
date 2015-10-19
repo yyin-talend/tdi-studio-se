@@ -1017,15 +1017,15 @@ if (execStat) {
         String hbaseDistribution = ElementParameterParser.getValue(hbaseComponent, "__DISTRIBUTION__");
 	    String hbaseVersion = ElementParameterParser.getValue(hbaseComponent, "__HBASE_VERSION__");
 
-        org.talend.core.hadoop.api.components.HBaseComponent hbaseDistrib = null;
+        org.talend.hadoop.distribution.component.HBaseComponent hbaseDistrib = null;
         try {
-            hbaseDistrib = (org.talend.core.hadoop.api.components.HBaseComponent) org.talend.core.hadoop.api.DistributionFactory.buildDistribution(hbaseDistribution, hbaseVersion);
+            hbaseDistrib = (org.talend.hadoop.distribution.component.HBaseComponent) org.talend.hadoop.distribution.DistributionFactory.buildDistribution(hbaseDistribution, hbaseVersion);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
             return "";
         }
 
-        boolean isCustom = hbaseDistrib instanceof org.talend.core.hadoop.api.distribution.CustomDistribution;
+        boolean isCustom = hbaseDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
 		
 	    boolean isHadoop2 = "HADOOP_2".equals(ElementParameterParser.getValue(hbaseComponent, "__HADOOP_CUSTOM_VERSION__"));%>
    			org.apache.hadoop.conf.Configuration conn_<%=hbaseComponent.getUniqueName()%> =(org.apache.hadoop.conf.Configuration)globalMap.get("conn_<%=hbaseComponent.getUniqueName()%>");
