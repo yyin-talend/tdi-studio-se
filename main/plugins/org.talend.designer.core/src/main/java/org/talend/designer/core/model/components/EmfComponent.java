@@ -145,6 +145,7 @@ import org.talend.hadoop.distribution.condition.EqualityOperator;
 import org.talend.hadoop.distribution.condition.MultiComponentCondition;
 import org.talend.hadoop.distribution.condition.NestedComponentCondition;
 import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
+import org.talend.hadoop.distribution.utils.ComponentConditionUtil;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 
@@ -1511,8 +1512,10 @@ public class EmfComponent extends AbstractComponent {
             newParam.setRequired(false);
             newParam.setParentParameter(parentParam);
         } else if (type == EParameterFieldType.HADOOP_DISTRIBUTION) {
-
+            // We get the component type defined by the NAME of the HADOOP_DISTRIBUTION parameter.
             ComponentType componentType = ComponentType.getComponentType(parentParam.getName());
+
+            // We retrieve all the implementations of the HadoopComponent service.
             BundleContext bc = FrameworkUtil.getBundle(DistributionFactory.class).getBundleContext();
             Collection<ServiceReference<? extends HadoopComponent>> distributions = new LinkedList<>();
             try {
@@ -1570,20 +1573,28 @@ public class EmfComponent extends AbstractComponent {
                 }
             }
 
-            List<Bean> distribSet = new ArrayList<>();
-            List<Bean> versionSet = new ArrayList<>();
+            Map<String, Bean> distribMap = new HashMap<>();
+            List<Bean> versionList = new ArrayList<>();
+            Map<String, Set<ComponentCondition>> showIfMap = new HashMap<>();
 
             for (ServiceReference<? extends HadoopComponent> sr : distributions) {
-                HadoopComponent np = bc.getService(sr);
-                distribSet.add(new Bean(np.getDistribution(), np.getDistributionName()));
-                String version = np.getVersion();
+                HadoopComponent hc = bc.getService(sr);
+                String distribution = hc.getDistribution();
+                distribMap.put(distribution, new Bean(distribution, hc.getDistributionName()));
+                String version = hc.getVersion();
                 if (version != null) {
-                    versionSet.add(new Bean(version, np.getVersionName(componentType), np.getDistribution(), np
-                            .getModuleGroups(componentType), np.getDisplayCondition(componentType)));
+                    versionList.add(new Bean(version, hc.getVersionName(componentType), distribution, hc
+                            .getModuleGroups(componentType), hc.getDisplayCondition(componentType)));
+                    if (showIfMap.get(distribution) == null) {
+                        showIfMap.put(distribution, new HashSet<ComponentCondition>());
+                    }
+                    showIfMap.get(distribution).add(hc.getDisplayCondition(componentType));
                 }
             }
 
-            Collections.sort(distribSet, new Comparator<Bean>() {
+            List<Bean> distribList = new ArrayList<>(distribMap.values());
+            // The distribution list is sorted by alphabetical order, putting the custom version at the last position.
+            Collections.sort(distribList, new Comparator<Bean>() {
 
                 @Override
                 public int compare(Bean b1, Bean b2) {
@@ -1599,7 +1610,7 @@ public class EmfComponent extends AbstractComponent {
                 }
             });
 
-            Collections.sort(versionSet, new Comparator<Bean>() {
+            Collections.sort(versionList, new Comparator<Bean>() {
 
                 @Override
                 public int compare(Bean b1, Bean b2) {
@@ -1611,31 +1622,28 @@ public class EmfComponent extends AbstractComponent {
                 }
             });
 
-            Set<String> dedupDistribList = new HashSet<>();
-            Iterator<Bean> it = distribSet.iterator();
-            while (it.hasNext()) {
-                Bean bean = it.next();
-                if (dedupDistribList.contains(bean.getName())) {
-                    it.remove();
-                } else {
-                    dedupDistribList.add(bean.getName());
-                }
-            }
-
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(componentType.getDistributionParameter());
             newParam.setDisplayName("Distribution"); //$NON-NLS-1$
 
-            String[] displayName = new String[distribSet.size()];
-            String[] itemValue = new String[distribSet.size()];
-            Iterator<Bean> distribIter = distribSet.iterator();
+            String[] displayName = new String[distribList.size()];
+            String[] itemValue = new String[distribList.size()];
+            String[] showIfVersion = new String[distribList.size()];
+            String[] notShowIfVersion = new String[distribList.size()];
+            Iterator<Bean> distribIter = distribList.iterator();
             int index = 0;
 
             while (distribIter.hasNext()) {
                 Bean that = distribIter.next();
                 displayName[index] = that.getDisplayName();
                 itemValue[index] = that.getName();
+
+                // We compose a ShowIf parameter for a distribution, only if the list of its version all have a display
+                // condition.
+                ComponentCondition cc = ComponentConditionUtil.buildDistributionShowIf(showIfMap.get(that.getName()));
+                showIfVersion[index] = cc == null ? null : cc.getConditionString();
+                notShowIfVersion[index] = null;
                 index++;
             }
 
@@ -1644,6 +1652,8 @@ public class EmfComponent extends AbstractComponent {
             newParam.setListItemsDisplayName(displayName);
             newParam.setListItemsDisplayCodeName(displayName);
             newParam.setListItemsValue(itemValue);
+            newParam.setListItemsShowIf(showIfVersion);
+            newParam.setListItemsNotShowIf(notShowIfVersion);
             newParam.setValue(defaultValue);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
@@ -1656,11 +1666,11 @@ public class EmfComponent extends AbstractComponent {
 
             listParam.add(newParam);
 
-            displayName = new String[versionSet.size()];
-            itemValue = new String[versionSet.size()];
-            String[] showIfVersion = new String[versionSet.size()];
-            String[] notShowIfVersion = new String[versionSet.size()];
-            Iterator<Bean> versionIter = versionSet.iterator();
+            displayName = new String[versionList.size()];
+            itemValue = new String[versionList.size()];
+            showIfVersion = new String[versionList.size()];
+            notShowIfVersion = new String[versionList.size()];
+            Iterator<Bean> versionIter = versionList.iterator();
             index = 0;
 
             while (versionIter.hasNext()) {
@@ -1672,14 +1682,16 @@ public class EmfComponent extends AbstractComponent {
                 if (additionalCondition != null
                         && ("(true)".equals(additionalCondition.getConditionString()) || "(false)".equals(additionalCondition //$NON-NLS-1$ //$NON-NLS-2$
                                 .getConditionString()))) {
+                    // Don't show a version if it's display condition is a BooleanCondition.
                     showIfVersion[index] = "(true)".equals(additionalCondition.getConditionString()) ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 } else {
+                    // Compose the ComponentCondition to display a version.
                     ComponentCondition condition;
                     org.talend.hadoop.distribution.condition.Expression e = new BasicExpression(
                             componentType.getDistributionParameter(), that.getDistributionName(), EqualityOperator.EQ);
                     if (additionalCondition != null) {
-                        condition = new MultiComponentCondition(e, new NestedComponentCondition(additionalCondition),
-                                BooleanOperator.AND);
+                        condition = new MultiComponentCondition(new SimpleComponentCondition(e), new NestedComponentCondition(
+                                additionalCondition), BooleanOperator.AND);
                     } else {
                         condition = new SimpleComponentCondition(e);
                     }
@@ -1689,6 +1701,8 @@ public class EmfComponent extends AbstractComponent {
 
                 notShowIfVersion[index] = null;
 
+                // Create the EMF IMPORTType to import the modules group required by a Hadoop distribution for a given
+                // ComponentType.
                 if (that.getModuleGroups() != null) {
                     Iterator<DistributionModuleGroup> moduleGroups = that.getModuleGroups().iterator();
                     while (moduleGroups.hasNext()) {
@@ -1703,11 +1717,12 @@ public class EmfComponent extends AbstractComponent {
                                 componentType.getVersionParameter(), that.getName(), EqualityOperator.EQ);
 
                         if (group.getRequiredIf() != null) {
-                            condition = new MultiComponentCondition(e1, new MultiComponentCondition(e2,
-                                    new NestedComponentCondition(group.getRequiredIf()), BooleanOperator.AND),
-                                    BooleanOperator.AND);
+                            condition = new MultiComponentCondition(new SimpleComponentCondition(e1),
+                                    new MultiComponentCondition(new SimpleComponentCondition(e2), new NestedComponentCondition(
+                                            group.getRequiredIf()), BooleanOperator.AND), BooleanOperator.AND);
                         } else {
-                            condition = new MultiComponentCondition(e1, new SimpleComponentCondition(e2), BooleanOperator.AND);
+                            condition = new MultiComponentCondition(new SimpleComponentCondition(e1),
+                                    new SimpleComponentCondition(e2), BooleanOperator.AND);
                         }
                         importType.setREQUIREDIF(condition.getConditionString());
                         importType.setMRREQUIRED(group.isMrRequired());

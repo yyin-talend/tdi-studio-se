@@ -50,8 +50,8 @@ public class Pivotal200Distribution extends AbstractDistribution implements HDFS
     static {
         moduleGroups = new HashMap<>();
 
-        ComponentCondition c1 = new NestedComponentCondition(new MultiComponentCondition(new BasicExpression(
-                Constant.PIG_STORE_PARAMETER, Constant.PIG_HBASESTORAGE_PARAMETER, EqualityOperator.NOT_EQ),
+        ComponentCondition c1 = new NestedComponentCondition(new MultiComponentCondition(new SimpleComponentCondition(
+                new BasicExpression(Constant.PIG_STORE_PARAMETER, Constant.PIG_HBASESTORAGE_PARAMETER, EqualityOperator.NOT_EQ)),
                 new SimpleComponentCondition(new BasicExpression(Constant.PIG_STORE_PARAMETER, Constant.PIG_HCATSTORER_PARAMETER,
                         EqualityOperator.NOT_EQ)), BooleanOperator.AND));
         displayConditions.put(ComponentType.PIGOUTPUT, c1);

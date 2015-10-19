@@ -76,14 +76,17 @@ public class ComponentConditionTest {
         Expression e3 = new BasicExpression("A", "bbb", EqualityOperator.EQ); //$NON-NLS-1$ //$NON-NLS-2$
         Expression e4 = new BasicExpression("B", "ccc", EqualityOperator.NOT_EQ); //$NON-NLS-1$ //$NON-NLS-2$
 
-        dc1 = new NestedComponentCondition(new MultiComponentCondition(e1, new NestedComponentCondition(
-                new MultiComponentCondition(e4, new NestedComponentCondition(new MultiComponentCondition(e2,
-                        new SimpleComponentCondition(e3), BooleanOperator.AND)), BooleanOperator.OR)), BooleanOperator.AND));
+        dc1 = new NestedComponentCondition(new MultiComponentCondition(new SimpleComponentCondition(e1),
+                new NestedComponentCondition(new MultiComponentCondition(new SimpleComponentCondition(e4),
+                        new NestedComponentCondition(new MultiComponentCondition(new SimpleComponentCondition(e2),
+                                new SimpleComponentCondition(e3), BooleanOperator.AND)), BooleanOperator.OR)),
+                BooleanOperator.AND));
         assertEquals(dc1.getConditionString(), result1);
 
-        dc1 = new MultiComponentCondition(e1, new MultiComponentCondition(e2, new NestedComponentCondition(
-                new MultiComponentCondition(e4, new SimpleComponentCondition(e3), BooleanOperator.OR)), BooleanOperator.AND),
-                BooleanOperator.AND);
+        dc1 = new MultiComponentCondition(new SimpleComponentCondition(e1), new MultiComponentCondition(
+                new SimpleComponentCondition(e2), new NestedComponentCondition(new MultiComponentCondition(
+                        new SimpleComponentCondition(e4), new SimpleComponentCondition(e3), BooleanOperator.OR)),
+                BooleanOperator.AND), BooleanOperator.AND);
         assertEquals(dc1.getConditionString(), result2);
     }
 
