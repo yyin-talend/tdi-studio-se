@@ -1,5 +1,7 @@
 <%@ jet 
 imports="
+        org.talend.components.api.runtime.ComponentRuntime
+		org.talend.component.core.model.Component
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser 
 		org.talend.core.model.metadata.IMetadataTable 
@@ -11,3 +13,25 @@ imports="
 		"
 %>
 // end of generic
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+Component component = (Component)node.getComponent();
+
+if (component.canStart()) {
+// Input
+%>
+	} // while
+
+	runtime_<%=cid %>.inputEnd();
+<%
+} else { 
+// Output
+%>
+	runtime_<%=cid %>.outputEnd();
+<%
+}
+%>
+
