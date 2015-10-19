@@ -35,7 +35,6 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -62,7 +61,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.exception.SystemException;
 import org.talend.commons.runtime.model.emf.EmfHelper;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -4221,19 +4219,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     }
                 }
             }
-            // check error code items.
-            List<String> errorItemIds = new ArrayList<String>();
-            try {
-                List<RoutineItem> errorItems = new ArrayList<RoutineItem>();
-                RoutinesUtil.collectErrorCodesItems(errorItems, null, routines);
-                for (RoutineItem item : errorItems) {
-                    errorItemIds.add(item.getProperty().getId());
-                }
-            } catch (SystemException e) {
-                ExceptionHandler.process(e);
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
 
             // always add the system, others must be checked
             Set<String> nonExistingRoutines = new HashSet<String>();
@@ -4242,10 +4227,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 boolean found = false;
                 for (IRepositoryViewObject object : routines) {
                     if (routine.equals(object.getLabel())) {
-                        // if compile error, ignore also.
-                        if (errorItemIds.contains(object.getId())) {
-                            continue;
-                        }
                         found = true;
                         break;
                     }
