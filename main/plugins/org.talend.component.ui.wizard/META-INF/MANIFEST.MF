@@ -24,8 +24,8 @@ Require-Bundle: org.eclipse.ui,
  org.talend.metadata.managment.ui,
  org.talend.repository,
  org.talend.designer.core,
- org.talend.component.core,
- org.apache.commons.collections
+ org.apache.commons.collections,
+ org.talend.component.core
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.talend.component.ui.model.genericMetadata,

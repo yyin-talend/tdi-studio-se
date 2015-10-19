@@ -1,7 +1,8 @@
 <%@ jet
 imports="
         java.util.List
-
+        java.util.ArrayList
+        java.util.Stack
         org.talend.components.api.component.ComponentDefinition
         org.talend.components.api.properties.ComponentProperties
         org.talend.components.api.runtime.ComponentRuntimeContainer
@@ -23,25 +24,37 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 Component component = (Component)node.getComponent();
 ComponentProperties componentProps = node.getComponentProperties();
 ComponentDefinition def = component.getComponentDefinition();
 %>
 
-org.talend.components.api.properties.ComponentProperties props_<%=cid %> = new org.talend.components.api.properties.ComponentProperties();
-props.init();
+org.talend.components.api.component.ComponentDefinition def_<%=cid %> =
+   new <%= def.getClass().getName()%>();
+
 
 <%
-List<SchemaElement> properties = componentProps.getProperties();
-for (SchemaElement property : properties) {
-	if (componentProps.getValue(property) != null) {
+List<Component.CodegenPropInfo> propsToProcess = component.getCodegenPropInfos(componentProps);
 %>
 
-	props.setValue("<%=property.getName()%>", <%=componentProps.getStringValue(property)%>);
+org.talend.components.api.properties.ComponentProperties props_<%=cid %> = def_<%=cid %>.createProperties();
+props_<%=cid %>.init();
+<%
+
+for (Component.CodegenPropInfo propInfo : propsToProcess) {
+	List<SchemaElement> properties = propInfo.props.getProperties();
+	for (SchemaElement property : properties) {
+		if (propInfo.props.getValue(property) != null) {
+%>
+
+	props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>", 
+		<%=component.getCodegenValue(property, propInfo.props.getStringValue(property))%>);
 
 <%
-	} // if
-} // for
+		} // if
+	} // for property
+} // for propToProcess
 %>
 
 
@@ -49,36 +62,34 @@ for (SchemaElement property : properties) {
 org.talend.components.api.runtime.ComponentRuntimeContainer container_<%=cid %> = 
     new org.talend.components.api.runtime.ComponentRuntimeContainer() {
 
-    public Map<String, Object> getGlobalMap() {
+    public java.util.Map<String, Object> getGlobalMap() {
 		return globalMap;
     }
 
-    public String formatDate(Date date, String pattern) {
+    public String formatDate(java.util.Date date, String pattern) {
 		throw new RuntimeException("implement me");
     }
 	
-    public SchemaElement[] getDynamicElements(Object dynamic) {
+    public org.talend.components.api.schema.SchemaElement[] getDynamicElements(Object dynamic) {
 		throw new RuntimeException("implement me");
     }
 
-    public void setDynamicElements(SchemaElement[] elements) {
+    public void setDynamicElements(org.talend.components.api.schema.SchemaElement[] elements) {
 		throw new RuntimeException("implement me");
     }
 
     public Object getDynamicValue(Object dynamic, String fieldName) {
 		throw new RuntimeException("implement me");
     }
-}
+};
 
-// FIXME this is not going to work, how to get the component definition at runtime,
-// need to use the component service to look up the component (or something).
-org.talend.components.api.runtime.ComponentRuntime runtime_<%=cid %> = def.getComponentRuntime();
+org.talend.components.api.runtime.ComponentRuntime runtime_<%=cid %> = def_<%=cid %>.createRuntime();
 
 <%
 if (component.canStart()) {
 // Input
 %>
-
+	runtime_<%=cid %>.inputBegin(props_<%=cid %>, container_<%=cid %>, null);
 
 <%
 } else { 
