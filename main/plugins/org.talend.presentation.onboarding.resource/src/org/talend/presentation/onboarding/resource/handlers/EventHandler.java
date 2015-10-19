@@ -12,16 +12,24 @@
 // ============================================================================
 package org.talend.presentation.onboarding.resource.handlers;
 
+import java.net.URL;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.intro.IIntroPart;
+import org.osgi.framework.Bundle;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.presentation.onboarding.resource.utils.OnBoardingResourceConstants;
 import org.talend.presentation.onboarding.resource.utils.OnBoardingResourceUtil;
+import org.talend.presentation.onboarding.resource.utils.TalendImportUtil;
 import org.talend.updates.runtime.ui.ShowWizardHandler;
 
 public class EventHandler extends AbstractHandler {
@@ -31,6 +39,16 @@ public class EventHandler extends AbstractHandler {
     public static final String EVENT_TYPE_ON_OPEN = "ON_OPEN"; //$NON-NLS-1$
 
     public static final String EVENT_TYPE_ON_CLOSE = "ON_CLOSE"; //$NON-NLS-1$
+
+    public static final String EVENT_TYPE_ON_STEP = "ON_STEP"; //$NON-NLS-1$
+
+    public static final String PARAM_STEP = "org.talend.presentation.onboarding.resource.handleevent.step"; //$NON-NLS-1$
+
+    public static final String PARAM_PLUGIN_ID = "org.talend.presentation.onboarding.resource.handleevent.pluginid"; //$NON-NLS-1$
+
+    public static final String PARAM_ZIP_PATH = "org.talend.presentation.onboarding.resource.handleevent.zippath"; //$NON-NLS-1$
+
+    public static final String PARAM_JOB_NAME = "org.talend.presentation.onboarding.resource.handleevent.jobname"; //$NON-NLS-1$
 
     private static final String PREFERENCE_ONBOARDING_RESOURCE_NOT_FIRSTTIME_SHOW = "ONBOARDING_RESOURCE_NOT_FIRSTTIME_SHOW"; //$NON-NLS-1$
 
@@ -85,8 +103,51 @@ public class EventHandler extends AbstractHandler {
                 lockThread.interrupt();
             }
         }
+        if (EVENT_TYPE_ON_STEP.equals(eventType)) {
+            // String step = event.getParameter(PARAM_STEP);
+            String pluginId = event.getParameter(PARAM_PLUGIN_ID);
+            String zipPath = event.getParameter(PARAM_ZIP_PATH);
+            String jobName = event.getParameter(PARAM_JOB_NAME);
+            doImport(pluginId, zipPath, jobName);
+        }
 
         return null;
+    }
+
+    private void doImport(final String pluginId, final String zipPath, final String jobName) {
+        boolean alreadyImportDemoJob = OnBoardingResourceUtil.getPreferenceStore().getBoolean(
+                OnBoardingResourceConstants.PREFERENCE_ALREADY_IMPORT_DEMO_JOB);
+        if (alreadyImportDemoJob) {
+            return;
+        }
+
+        if (pluginId == null || pluginId.isEmpty() || zipPath == null || zipPath.isEmpty() || jobName == null
+                || jobName.isEmpty()) {
+            return;
+        }
+
+        OnBoardingResourceUtil.getPreferenceStore()
+                .setValue(OnBoardingResourceConstants.PREFERENCE_ALREADY_IMPORT_DEMO_JOB, true);
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+                    Bundle bundle = Platform.getBundle(pluginId);
+                    URL resourceURL = bundle.getEntry(zipPath);
+                    try {
+                        String demoZipPath = FileLocator.toFileURL(resourceURL).getPath();
+                        TalendImportUtil.importItems(demoZipPath, new NullProgressMonitor(), false, true, false);
+                        TalendImportUtil.openJob(jobName);
+                    } catch (Throwable e) {
+                        CommonExceptionHandler.process(e);
+                    }
+                } catch (Throwable e) {
+                    CommonExceptionHandler.process(e);
+                }
+            }
+        }).start();
     }
 
     private static Thread createLockThread() {
