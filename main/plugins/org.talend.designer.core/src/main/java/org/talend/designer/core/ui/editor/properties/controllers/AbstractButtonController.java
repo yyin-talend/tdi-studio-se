@@ -18,11 +18,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 
@@ -70,6 +72,8 @@ public abstract class AbstractButtonController extends AbstractElementPropertySe
         btnCmd.setEnabled(!param.isReadOnly());
         btnCmd.addSelectionListener(listenerSelection);
 
+        Point btnSize = btnCmd.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
         return btnCmd;
     }
 

@@ -253,7 +253,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         branchArea = new Composite(projectListArea, SWT.NONE);
         branchLabel = new Label(branchArea, SWT.NONE);
         branchLabel.setFont(LoginDialogV2.fixedFont);
-        branchLabel.setText(Messages.getString("LoginProjectPage.svnBranch")); //$NON-NLS-1$
+        branchLabel.setText(Messages.getString("LoginProjectPage.Branch")); //$NON-NLS-1$
         branchesViewer = new ComboViewer(branchArea, SWT.READ_ONLY);
         branchesViewer.getControl().setFont(LoginDialogV2.fixedFont);
         branchesViewer.setContentProvider(ArrayContentProvider.getInstance());
