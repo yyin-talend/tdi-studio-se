@@ -115,22 +115,13 @@ public class EditPropertiesAction extends AContextualAction {
         // }
 
         IRepositoryViewObject object = node.getObject();
-        if (getNeededVersion() != null && !object.getVersion().equals(getNeededVersion())) {
-            try {
-                object = ProxyRepositoryFactory.getInstance().getSpecificVersion(
-                        new Project(ProjectManager.getInstance().getProject(object.getProperty().getItem())),
-                        object.getProperty().getId(), getNeededVersion(), false);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        }
         IPath path = RepositoryNodeUtilities.getPath(node);
         String originalName = object.getLabel();
         PropertiesWizard wizard = null;
         if (ERepositoryObjectType.ROUTINES == object.getRepositoryObjectType()) {
-            wizard = new EditRoutinePropertiesWizard(object, path, getNeededVersion() == null);
+            wizard = new EditRoutinePropertiesWizard(object, path, true);
         } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()) {
-            wizard = new EditProcessPropertiesWizard(object, path, getNeededVersion() == null);
+            wizard = new EditProcessPropertiesWizard(object, path, true);
         } else {
             wizard = getPropertiesWizard(object, path);
         }
