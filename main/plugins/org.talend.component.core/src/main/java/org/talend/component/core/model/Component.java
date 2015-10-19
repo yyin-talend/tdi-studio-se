@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -95,9 +94,9 @@ public class Component extends AbstractComponent {
     }
 
     public ComponentDefinition getComponentDefinition() {
-    	return componentDefinition;
+        return componentDefinition;
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -1298,7 +1297,7 @@ public class Component extends AbstractComponent {
     }
 
     public boolean canStart() {
-    	return componentDefinition.isStartable();
+        return componentDefinition.isStartable();
     }
 
     /*
@@ -1432,7 +1431,6 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
-<<<<<<< Upstream, based on branch 'feature/6.1/TUP-3462_addGenericWizard' of https://github.com/Talend/tdi-studio-se.git
         if (componentImportNeedsList != null) {
             return componentImportNeedsList;
         } else {
@@ -1464,25 +1462,8 @@ public class Component extends AbstractComponent {
             // }
             // }
             // }
-=======
-        if (componentImportNeedsList != null && componentImportNeedsList.size() > 0) {
->>>>>>> 7b518f6 TUP-3313 New Component Architecture (codegen - wip2)
             return componentImportNeedsList;
         }
-<<<<<<< Upstream, based on branch 'feature/6.1/TUP-3462_addGenericWizard' of https://github.com/Talend/tdi-studio-se.git
-=======
-
-        List<String> installUrls = new ArrayList<>();
-    	ComponentService service = ComponentsUtils.getComponentService();
-    	Set<String> deps = service.getMavenUriDependencies(getName());
-    	for (String dep : deps) {
-            ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), "ModuleName: " + dep,
-                    "Message: " + dep, true, installUrls,
-                    null, dep);
-            componentImportNeedsList.add(componentImportNeeds);
-    	}
-        return componentImportNeedsList;
->>>>>>> 7b518f6 TUP-3313 New Component Architecture (codegen - wip2)
     }
 
     @Override
@@ -1848,46 +1829,50 @@ public class Component extends AbstractComponent {
     }
 
     public static class CodegenPropInfo {
-    	public String fieldName;
-    	public String className;
-    	public ComponentProperties props;
+
+        public String fieldName;
+
+        public String className;
+
+        public ComponentProperties props;
     }
 
-	protected void processCodegenPropInfos(List<CodegenPropInfo> propList,
-			ComponentProperties props, String fieldString) {
-		for (String fieldName : props.getPropertyFieldNames()) {
-			SchemaElement property = props.getPropertyByFieldName(fieldName);
-			if (property instanceof ComponentProperties) {
-				CodegenPropInfo childPropInfo = new CodegenPropInfo();
-				if (fieldString.equals(""))
-					childPropInfo.fieldName = "." + fieldName;
-				else
-					childPropInfo.fieldName = fieldString + "." + fieldName;
-				childPropInfo.className = property.getClass().getName();
-				childPropInfo.props = (ComponentProperties) property;
-				propList.add(childPropInfo);
-				processCodegenPropInfos(propList, childPropInfo.props, childPropInfo.fieldName);
-			}
-		}
-	}
+    protected void processCodegenPropInfos(List<CodegenPropInfo> propList, ComponentProperties props, String fieldString) {
+        for (String fieldName : props.getPropertyFieldNames()) {
+            SchemaElement property = props.getPropertyByFieldName(fieldName);
+            if (property instanceof ComponentProperties) {
+                CodegenPropInfo childPropInfo = new CodegenPropInfo();
+                if (fieldString.equals("")) {
+                    childPropInfo.fieldName = "." + fieldName;
+                } else {
+                    childPropInfo.fieldName = fieldString + "." + fieldName;
+                }
+                childPropInfo.className = property.getClass().getName();
+                childPropInfo.props = (ComponentProperties) property;
+                propList.add(childPropInfo);
+                processCodegenPropInfos(propList, childPropInfo.props, childPropInfo.fieldName);
+            }
+        }
+    }
 
-	public List<CodegenPropInfo> getCodegenPropInfos(ComponentProperties props) {
-		List<CodegenPropInfo> propsList = new ArrayList<>();
-		CodegenPropInfo propInfo = new CodegenPropInfo();
-		propInfo.fieldName = "";
-		propInfo.className = props.getClass().getName();
-		propInfo.props = props;
-		propsList.add(propInfo);
-		processCodegenPropInfos(propsList, props, propInfo.fieldName);
-		return propsList;
-	}
-    
-	public String getCodegenValue(SchemaElement property, String value) {
-		if (property.getType() == SchemaElement.Type.ENUM)
-			return "\"" + value + "\"";
-		return value;
-	}
-	
+    public List<CodegenPropInfo> getCodegenPropInfos(ComponentProperties props) {
+        List<CodegenPropInfo> propsList = new ArrayList<>();
+        CodegenPropInfo propInfo = new CodegenPropInfo();
+        propInfo.fieldName = "";
+        propInfo.className = props.getClass().getName();
+        propInfo.props = props;
+        propsList.add(propInfo);
+        processCodegenPropInfos(propsList, props, propInfo.fieldName);
+        return propsList;
+    }
+
+    public String getCodegenValue(SchemaElement property, String value) {
+        if (property.getType() == SchemaElement.Type.ENUM) {
+            return "\"" + value + "\"";
+        }
+        return value;
+    }
+
     /*
      * (non-Javadoc)
      * 
