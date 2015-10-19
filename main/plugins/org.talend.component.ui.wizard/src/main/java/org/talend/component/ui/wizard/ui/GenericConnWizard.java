@@ -51,6 +51,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
@@ -60,6 +61,7 @@ import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 
@@ -155,7 +157,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     @Override
     public void addPages() {
-        String typeName = repNode.getContentType().getType();
+        ERepositoryObjectType repObjType = (ERepositoryObjectType) repNode.getProperties(EProperties.CONTENT_TYPE);
+        String typeName = repObjType.getType();
         setWindowTitle(typeName);
         Image wiardImage = wizardService.getWiardImage(typeName);
         setDefaultPageImageDescriptor(ImageDescriptor.createFromImage(wiardImage));
@@ -215,7 +218,9 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                 this.connection.setName(displayName);
                 this.connection.setLabel(displayName);
                 Form form = wizPage.getForm();
-
+                if (form.isCallAfterFormFinish()) {
+                    compService.afterFormFinish(form.getName(), form.getProperties());
+                }
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
@@ -223,9 +228,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                 } else {
                     GenericUpdateManager.updateGenericConnection(connectionItem);
                     updateConnectionItem();
-                }
-                if (form.isCallAfterFormFinish()) {
-                    compService.afterFormFinish(form.getName(), form.getProperties());
                 }
             } catch (Throwable e) {
                 new ErrorDialogWidthDetailArea(getShell(), IGenericConstants.PLUGIN_ID,

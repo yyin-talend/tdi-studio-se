@@ -13,10 +13,12 @@ import org.talend.component.ui.wizard.ui.GenericConnWizard;
 import org.talend.component.ui.wizard.ui.common.GenericWizardDialog;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
 import org.talend.component.ui.wizard.view.tester.GenericConnectionTester;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.actions.metadata.AbstractCreateAction;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -34,12 +36,15 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
 
     private GenericConnectionTester connectionTester;
 
+    private ERepositoryObjectType repObjType;
+
     public CreateGenericConnectionAction() {
         super();
         if (repositoryNode == null) {
             repositoryNode = getCurrentRepositoryNode();
         }
         connectionTester = new GenericConnectionTester();
+        repObjType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
         this.setText(getCreateLabel());
         this.setToolTipText(getEditLabel());
         Image nodeImage = getNodeImage();
@@ -118,12 +123,12 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
     }
 
     protected String getNodeLabel() {
-        return repositoryNode.getContentType().getLabel();
+        return repObjType.getLabel();
     }
 
     protected Image getNodeImage() {
         if (connectionTester.isGenericConnection(repositoryNode)) {
-            return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(repositoryNode.getContentType().getType());
+            return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(repObjType.getType());
         }
         return null;
     }

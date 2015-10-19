@@ -14,6 +14,8 @@ package org.talend.component.ui.wizard.view.content;
 
 import org.eclipse.swt.graphics.Image;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.viewer.label.RepositoryViewLabelProvider;
 
@@ -27,7 +29,8 @@ public class MetadataGenericLabelProvider extends RepositoryViewLabelProvider {
     public Image getImage(Object element) {
         if (element instanceof RepositoryNode) {
             RepositoryNode node = (RepositoryNode) element;
-            return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(node.getContentType().getType());
+            ERepositoryObjectType repObjType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(repObjType.getType());
         }
         return super.getImage(element);
     }
