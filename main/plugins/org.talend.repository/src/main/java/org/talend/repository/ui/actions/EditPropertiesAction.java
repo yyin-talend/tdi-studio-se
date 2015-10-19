@@ -49,7 +49,6 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -59,7 +58,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -70,10 +68,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.update.RepositoryUpdateManager;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
@@ -115,22 +111,13 @@ public class EditPropertiesAction extends AContextualAction {
         // }
 
         IRepositoryViewObject object = node.getObject();
-        if (getNeededVersion() != null && !object.getVersion().equals(getNeededVersion())) {
-            try {
-                object = ProxyRepositoryFactory.getInstance().getSpecificVersion(
-                        new Project(ProjectManager.getInstance().getProject(object.getProperty().getItem())),
-                        object.getProperty().getId(), getNeededVersion(), false);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        }
         IPath path = RepositoryNodeUtilities.getPath(node);
         String originalName = object.getLabel();
         PropertiesWizard wizard = null;
         if (ERepositoryObjectType.ROUTINES == object.getRepositoryObjectType()) {
-            wizard = new EditRoutinePropertiesWizard(object, path, getNeededVersion() == null);
+            wizard = new EditRoutinePropertiesWizard(object, path, true);
         } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()) {
-            wizard = new EditProcessPropertiesWizard(object, path, getNeededVersion() == null);
+            wizard = new EditProcessPropertiesWizard(object, path, true);
         } else {
             wizard = getPropertiesWizard(object, path);
         }
@@ -175,7 +162,7 @@ public class EditPropertiesAction extends AContextualAction {
     }
 
     protected PropertiesWizard getPropertiesWizard(IRepositoryViewObject object, IPath path) {
-        return new PropertiesWizard(object, path, getNeededVersion() == null);
+        return new PropertiesWizard(object, path, true);
     }
 
     /**
