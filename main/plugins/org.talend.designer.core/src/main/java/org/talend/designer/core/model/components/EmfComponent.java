@@ -1770,8 +1770,8 @@ public class EmfComponent extends AbstractComponent {
                         }
                         importType.setREQUIREDIF(condition.getConditionString());
                         importType.setMRREQUIRED(group.isMrRequired());
-                        ModulesNeededProvider.collectModuleNeeded(node.getComponent().getName(), importType,
-                                hadoopDistributionImportNeedsList);
+                        ModulesNeededProvider.collectModuleNeeded(node.getComponent() != null ? node.getComponent().getName()
+                                : "", importType, hadoopDistributionImportNeedsList);
                     }
                 }
 

@@ -14,7 +14,6 @@
 package org.talend.hadoop.distribution.hdp230;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,21 +34,15 @@ import org.talend.hadoop.distribution.component.PigComponent;
 import org.talend.hadoop.distribution.component.SparkBatchComponent;
 import org.talend.hadoop.distribution.component.SparkStreamingComponent;
 import org.talend.hadoop.distribution.component.SqoopComponent;
-import org.talend.hadoop.distribution.condition.BooleanOperator;
-import org.talend.hadoop.distribution.condition.ComponentCondition;
-import org.talend.hadoop.distribution.condition.EqualityOperator;
-import org.talend.hadoop.distribution.condition.LinkedNodeExpression;
-import org.talend.hadoop.distribution.condition.MultiComponentCondition;
-import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
 import org.talend.hadoop.distribution.constants.SparkStreamingConstant;
+import org.talend.hadoop.distribution.hdp230.modulegroup.HDP230HDFSModuleGroup;
+import org.talend.hadoop.distribution.hdp230.modulegroup.HDP230SparkBatchModuleGroup;
+import org.talend.hadoop.distribution.hdp230.modulegroup.HDP230SparkStreamingKafkaNodeModuleGroup;
+import org.talend.hadoop.distribution.hdp230.modulegroup.HDP230SparkStreamingModuleGroup;
 
 public class HDP230Distribution extends AbstractDistribution implements HDFSComponent, MRComponent, HBaseComponent,
         SqoopComponent, PigComponent, HiveComponent, HCatalogComponent, SparkBatchComponent, SparkStreamingComponent,
         HiveOnSparkComponent {
-
-    private final static Set<DistributionModuleGroup> hdfsModuleGroups = new HashSet<>();
-
-    private static Set<DistributionModuleGroup> nodeModuleGroupsSet = new HashSet<>();
 
     private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,/usr/hdp/current/hadoop-client/*,/usr/hdp/current/hadoop-client/lib/*,/usr/hdp/current/hadoop-hdfs-client/*,/usr/hdp/current/hadoop-hdfs-client/lib/*,/usr/hdp/current/hadoop-mapreduce-client/*,/usr/hdp/current/hadoop-mapreduce-client/lib/*,/usr/hdp/current/hadoop-yarn-client/*,/usr/hdp/current/hadoop-yarn-client/lib/*"; //$NON-NLS-1$
 
@@ -59,32 +52,15 @@ public class HDP230Distribution extends AbstractDistribution implements HDFSComp
 
     static {
 
-        hdfsModuleGroups.add(new DistributionModuleGroup("HDFS-LIB-HDP_2_3")); //$NON-NLS-1$
-
         moduleGroups = new HashMap<>();
-        moduleGroups.put(ComponentType.HDFS, hdfsModuleGroups);
-
-        nodeModuleGroupsSet = new HashSet<>();
-
-        ComponentCondition cc = new MultiComponentCondition(
-                new SimpleComponentCondition(new LinkedNodeExpression(
-                        SparkStreamingConstant.KAFKA_INPUT_COMPONENT_LINKEDPARAMETER,
-                        SparkStreamingConstant.SPARKCONFIGURATION_IS_LOCAL_MODE_PARAMETER, "false", EqualityOperator.EQ)), new MultiComponentCondition( //$NON-NLS-1$
-                        new SimpleComponentCondition(new LinkedNodeExpression(
-                                SparkStreamingConstant.KAFKA_INPUT_COMPONENT_LINKEDPARAMETER, ComponentType.SPARKSTREAMING
-                                        .getDistributionParameter(), EHadoopDistributions.HORTONWORKS.getName(),
-                                EqualityOperator.EQ)), new SimpleComponentCondition(new LinkedNodeExpression(
-                                SparkStreamingConstant.KAFKA_INPUT_COMPONENT_LINKEDPARAMETER, ComponentType.SPARKSTREAMING
-                                        .getVersionParameter(), EHadoopVersion4Drivers.HDP_2_3.getVersionValue(),
-                                EqualityOperator.EQ)), BooleanOperator.AND), BooleanOperator.AND);
-        DistributionModuleGroup dmg = new DistributionModuleGroup("SPARK-STREAMING-KAFKA-LIB-HDP_2_3", false, cc); //$NON-NLS-1$
-
-        nodeModuleGroupsSet.add(dmg);
+        moduleGroups.put(ComponentType.HDFS, HDP230HDFSModuleGroup.getModuleGroups());
+        moduleGroups.put(ComponentType.SPARKBATCH, HDP230SparkBatchModuleGroup.getModuleGroups());
+        moduleGroups.put(ComponentType.SPARKSTREAMING, HDP230SparkStreamingModuleGroup.getModuleGroups());
 
         nodeModuleGroups = new HashMap<>();
         nodeModuleGroups.put(
                 new NodeComponentTypeBean(ComponentType.SPARKSTREAMING, SparkStreamingConstant.KAFKA_INPUT_COMPONENT),
-                nodeModuleGroupsSet);
+                HDP230SparkStreamingKafkaNodeModuleGroup.getModuleGroups());
     }
 
     @Override
