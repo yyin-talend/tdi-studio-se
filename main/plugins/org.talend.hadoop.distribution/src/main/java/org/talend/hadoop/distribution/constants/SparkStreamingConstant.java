@@ -23,4 +23,11 @@ public final class SparkStreamingConstant {
     public static final String VERSION_PARAMETER = "SPARK_VERSION";//$NON-NLS-1$
 
     public static final String VERSION_REPOSITORYVALUE = "DB_VERSION";//$NON-NLS-1$
+
+    public static final String KAFKA_INPUT_COMPONENT = "tKafkaInput"; //$NON-NLS-1$
+
+    public static final String KAFKA_INPUT_COMPONENT_LINKEDPARAMETER = "STORAGE_CONFIGURATION"; //$NON-NLS-1$
+
+    public static final String SPARKCONFIGURATION_IS_LOCAL_MODE_PARAMETER = "SPARK_LOCAL_MODE"; //$NON-NLS-1$
+
 }

@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.hadoop.distribution;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.talend.hadoop.distribution.condition.ComponentCondition;
 
 /**
@@ -69,5 +72,9 @@ public abstract class AbstractDistribution {
 
     public ComponentCondition getDisplayCondition(ComponentType componentType) {
         return null;
+    }
+
+    public Set<DistributionModuleGroup> getModuleGroups(ComponentType componentType, String componentName) {
+        return new HashSet<>();
     }
 }
