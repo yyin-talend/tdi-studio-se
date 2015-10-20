@@ -128,6 +128,7 @@ public class EventHandler extends AbstractHandler {
 
         OnBoardingResourceUtil.getPreferenceStore()
                 .setValue(OnBoardingResourceConstants.PREFERENCE_ALREADY_IMPORT_DEMO_JOB, true);
+        OnBoardingResourceUtil.savePreferenceStore();
         new Thread(new Runnable() {
 
             @Override

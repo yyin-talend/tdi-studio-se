@@ -12,9 +12,13 @@
 // ============================================================================
 package org.talend.presentation.onboarding.resource.utils;
 
+import java.io.IOException;
+
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.talend.commons.exception.CommonExceptionHandler;
 
 /**
  * created by cmeng on Sep 29, 2015 Detailled comment
@@ -30,5 +34,16 @@ public class OnBoardingResourceUtil {
         }
 
         return preferenceStore;
+    }
+
+    public static void savePreferenceStore() {
+        if (preferenceStore == null) {
+            return;
+        }
+        try {
+            ((IPersistentPreferenceStore) preferenceStore).save();
+        } catch (IOException e) {
+            CommonExceptionHandler.process(e);
+        }
     }
 }
