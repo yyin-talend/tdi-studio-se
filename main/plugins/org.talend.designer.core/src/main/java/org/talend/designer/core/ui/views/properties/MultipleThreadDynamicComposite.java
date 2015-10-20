@@ -362,6 +362,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         } else {
             heightSize = height;
         }
+        final List<IElementParameter> currentValidParameters = new ArrayList<IElementParameter>(20);
 
         hashCurControls = new DualHashBidiMap();
 
@@ -369,9 +370,13 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
         Map<String, Integer> groupPosition = new HashMap<String, Integer>();
         for (int i = 0; i < listParam.size(); i++) {
-            if (listParam.get(i).getCategory() == section) {
-                if (listParam.get(i).getNumRow() > maxRow && listParam.get(i).isShow(listParam)) {
-                    maxRow = listParam.get(i).getNumRow();
+            IElementParameter param = listParam.get(i);
+            if (param.getCategory() == section && param.getFieldType() != EParameterFieldType.TECHNICAL
+                    && param.isShow(listParam)) {
+
+                currentValidParameters.add(param);
+                if (param.getNumRow() > maxRow) {
+                    maxRow = param.getNumRow();
                 }
             }
         }
@@ -391,114 +396,123 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         generator.initController(this);
 
-        // System.out.println("********************** NEW ADDCOMPONENTS
-        // **********************");
         int additionalHeightSize = 0;
         boolean hasDynamicRow = false;
-        for (int i = 0; i < listParam.size(); i++) {
-            IElementParameter curParam = listParam.get(i);
-            if (curParam.getCategory() == section) {
-                if (curParam.getFieldType() != EParameterFieldType.TECHNICAL) {
-                    if (curParam.isShow(listParam)) {
-                        AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
-                                this);
+        for (int i = 0; i < currentValidParameters.size(); i++) {
+            IElementParameter curParam = currentValidParameters.get(i);
+            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(), this);
 
-                        if (controller == null) {
-                            continue;
-                        }
-                        if (controller.hasDynamicRowSize()) {
-                            hasDynamicRow = true;
-                            break;
-                        }
-                    }
-                }
+            if (controller == null) {
+                continue;
+            }
+            if (controller.hasDynamicRowSize()) {
+                hasDynamicRow = true;
+                break;
             }
         }
         if (hasDynamicRow) {
             additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
         }
 
-        //long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
             nbInRow = 0;
-            for (int i = 0; i < listParam.size(); i++) {
-                IElementParameter curParam = listParam.get(i);
-                if (curParam.getCategory() == section) {
-                    if (curParam.getNumRow() == curRow && curParam.isShow(listParam)
-                            && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
-                        nbInRow++;
-                    }
+            for (int i = 0; i < currentValidParameters.size(); i++) {
+                IElementParameter curParam = currentValidParameters.get(i);
+                if (curParam.getNumRow() == curRow) {
+                    nbInRow++;
                 }
             }
             numInRow = 0;
             lastControl = null;
             curRowSize = 0;
-            for (int i = 0; i < listParam.size(); i++) {
-                IElementParameter curParam = listParam.get(i);
+            for (int i = 0; i < currentValidParameters.size(); i++) {
+                IElementParameter curParam = currentValidParameters.get(i);
                 updateParameter(curParam);
-                if (curParam.getCategory() == section) {
-                    if (curParam.getNumRow() == curRow && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
-                        // System.out.println("test:" + curParam.getName() + "
-                        // field:"+curParam.getField());
-                        if (curParam.isShow(listParam) && isShouldDisParameter(curParam)) {
-                            // System.out.println("show:" + curParam.getName() + " field:" + curParam.getField());
-                            numInRow++;
-                            AbstractElementPropertySectionController controller = generator.getController(
-                                    curParam.getFieldType(), this);
+                if (curParam.getNumRow() == curRow && isShouldDisParameter(curParam)) {
+                    numInRow++;
+                    AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(), this);
 
-                            if (controller == null) {
-                                continue;
+                    if (controller == null) {
+                        continue;
+                    }
+
+                    if (controller.hasDynamicRowSize()) {
+                        controller.setAdditionalHeightSize(additionalHeightSize);
+                    }
+
+                    String groupName = curParam.getGroup();
+                    Composite subComposite = null;
+                    Control cutLastControl = lastControl;
+                    int curNumInRow = numInRow;
+                    int curNbInRow = nbInRow;
+                    int curTop = 0;
+
+                    if (groupName != null) {
+                        if (!hashCurControls.containsKey(groupName)) {
+                            if (groupPosition.size() > 0) {
+                                heightSize += DEFAULT_GROUP_HEIGHT;
                             }
-
-                            if (controller.hasDynamicRowSize()) {
-                                controller.setAdditionalHeightSize(additionalHeightSize);
-                            }
-
-                            String groupName = curParam.getGroup();
-                            Composite subComposite = null;
-
-                            if (groupName != null) {
-                                if (!hashCurControls.containsKey(groupName)) {
-                                    if (groupPosition.size() > 0) {
-                                        heightSize += DEFAULT_GROUP_HEIGHT;
-                                    }
-                                    new GroupController(this).createControl(composite, curParam, numInRow, nbInRow, heightSize,
-                                            lastControl);
-                                    groupPosition.put(groupName, heightSize);
-                                }
-                                subComposite = (Composite) hashCurControls.get(groupName);
-                                int h2 = heightSize - groupPosition.get(groupName);
-                                lastControl = controller
-                                        .createControl(subComposite, curParam, numInRow, nbInRow, h2, lastControl);
-
-                            } else {
-                                if (isCompactView()) {
-                                    int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
-                                    lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3,
-                                            lastControl);
-                                } else {
-                                    if (numInRow > 1 && nbInRow > 1) {
-                                        heightSize += maxRowSize;
-                                    }
-                                    int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
-                                    lastControl = controller.createControl(composite, curParam, 1, 1, h3, null);
-                                }
-                            }
-
-                            // maxRowSize = 0;
-                            if (curRowSize > maxRowSize) {
-                                maxRowSize = curRowSize;
-                                // isCompute = true;
-                            }
+                            new GroupController(this).createControl(composite, curParam, numInRow, nbInRow, heightSize,
+                                    lastControl);
+                            groupPosition.put(groupName, heightSize);
                         }
+                        subComposite = (Composite) hashCurControls.get(groupName);
+                        int h2 = heightSize - groupPosition.get(groupName);
+                        lastControl = controller.createControl(subComposite, curParam, numInRow, nbInRow, h2, lastControl);
+
+                    } else {
+                        if (isCompactView()) {
+                            int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                            lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3, lastControl);
+                        } else {
+                            if (numInRow > 1 && nbInRow > 1) {
+                                heightSize += maxRowSize;
+                            }
+                            int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                            lastControl = controller.createControl(composite, curParam, 1, 1, h3, null);
+                        }
+                    }
+
+                    // maxRowSize = 0;
+                    if (curRowSize > maxRowSize) {
+                        maxRowSize = curRowSize;
+                        // isCompute = true;
+                    }
+                    if (!isCompactView()) {
+                        if (numInRow > 1 && nbInRow > 1) {
+                            heightSize += maxRowSize;
+                        }
+                        curNumInRow = 1;
+                        curNbInRow = 1;
+                        cutLastControl = null;
+                    }
+
+                    if (groupName != null) {
+                        if (!hashCurControls.containsKey(groupName)) {
+                            if (groupPosition.size() > 0) {
+                                heightSize += DEFAULT_GROUP_HEIGHT;
+                            }
+                            new GroupController(this).createControl(composite, curParam, numInRow, nbInRow, heightSize,
+                                    lastControl);
+                            groupPosition.put(groupName, heightSize);
+                        }
+                        subComposite = (Composite) hashCurControls.get(groupName);
+                        curTop = heightSize - groupPosition.get(groupName);
+                    } else {
+                        subComposite = composite;
+                        curTop = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                    }
+
+                    lastControl = controller.createControl(subComposite, curParam, curNumInRow, curNbInRow, curTop,
+                            cutLastControl);
+
+                    if (curRowSize > maxRowSize) {
+                        maxRowSize = curRowSize;
                     }
                 }
             }
-            // if (isCompute) {
             heightSize += maxRowSize;
-            // isCompute = false;
-            // }
 
         }
         if (synchronizeSchemaParam != null) {

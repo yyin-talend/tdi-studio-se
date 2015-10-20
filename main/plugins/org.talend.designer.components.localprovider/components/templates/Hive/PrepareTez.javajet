@@ -6,14 +6,14 @@ class PrepareTez{
         String hiveDistribution = ElementParameterParser.getValue(node, "__DISTRIBUTION__");
         String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
 
-        org.talend.core.hadoop.api.components.HiveComponent hiveDistrib = null;
+        org.talend.hadoop.distribution.component.HiveComponent hiveDistrib = null;
         try {
-            hiveDistrib = (org.talend.core.hadoop.api.components.HiveComponent) org.talend.core.hadoop.api.DistributionFactory.buildDistribution(hiveDistribution, hiveVersion);
+            hiveDistrib = (org.talend.hadoop.distribution.component.HiveComponent) org.talend.hadoop.distribution.DistributionFactory.buildDistribution(hiveDistribution, hiveVersion);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
 
-        boolean isCustom = hiveDistrib instanceof org.talend.core.hadoop.api.distribution.CustomDistribution;
+        boolean isCustom = hiveDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
 
         boolean changePathSeparator = !hiveDistrib.isExecutedThroughWebHCat();
 

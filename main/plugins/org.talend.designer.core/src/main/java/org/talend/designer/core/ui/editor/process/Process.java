@@ -121,7 +121,6 @@ import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.process.IGEFProcess;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ITestContainerGEFService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
@@ -4315,6 +4314,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     }
                 }
             }
+
             // always add the system, others must be checked
             Set<String> nonExistingRoutines = new HashSet<String>();
 
@@ -4375,13 +4375,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     @Override
     public boolean isSubjobEnabled() {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                    ICamelDesignerCoreService.class);
-            if (camelService.isInstanceofCamelRoutes(getProperty().getItem())) {
-                return false;
-            }
-        }
         return true;
     }
 

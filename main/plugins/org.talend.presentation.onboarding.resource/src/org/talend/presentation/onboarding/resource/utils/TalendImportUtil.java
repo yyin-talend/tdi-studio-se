@@ -31,6 +31,8 @@ import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
@@ -39,6 +41,8 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.repository.items.importexport.handlers.ImportExportHandlersManager;
+import org.talend.repository.items.importexport.handlers.cache.RepositoryObjectCache;
+import org.talend.repository.items.importexport.handlers.imports.ImportCacheHelper;
 import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
 import org.talend.repository.items.importexport.ui.managers.ResourcesManagerFactory;
@@ -112,8 +116,10 @@ public class TalendImportUtil {
             }
             // importManager.importItemRecords(new NullProgressMonitor(), resourcesManager, items, overwrite,
             // nodesBuilder.getAllImportItemRecords(), null);
-            importManager.importItemRecords(monitor, resourcesManager, items, overwrite, nodesBuilder.getAllImportItemRecords(),
-                    null);
+            if (items != null && !items.isEmpty()) {
+                importManager.importItemRecords(monitor, resourcesManager, items, overwrite,
+                        nodesBuilder.getAllImportItemRecords(), null);
+            }
         } catch (Exception e) {
             CommonExceptionHandler.process(e);
         } finally {
@@ -123,31 +129,55 @@ public class TalendImportUtil {
             }
             nodesBuilder.clear();
         }
-        Display.getDefault().syncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                doSelection(itemIds, openThem);
-            }
-        });
         return true;
     }
 
-    private static void doSelection(List<String> itemIds, final boolean openThem) {
-        List<IRepositoryNode> nodes = new ArrayList<IRepositoryNode>();
-        RepositorySeekerManager repSeekerManager = RepositorySeekerManager.getInstance();
-        for (String itemId : itemIds) {
-            IRepositoryNode repoViewNode = repSeekerManager.searchRepoViewNode(itemId);
-            if (repoViewNode != null) {
-                nodes.add(repoViewNode);
-            }
+    // private static void doSelection(List<String> itemIds) {
+    // List<IRepositoryNode> nodes = new ArrayList<IRepositoryNode>();
+    // RepositorySeekerManager repSeekerManager = RepositorySeekerManager.getInstance();
+    // for (String itemId : itemIds) {
+    // IRepositoryNode repoViewNode = repSeekerManager.searchRepoViewNode(itemId);
+    // if (repoViewNode != null) {
+    // nodes.add(repoViewNode);
+    // }
+    // }
+    //
+    // IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
+    // repositoryView.getViewer().setSelection(new StructuredSelection(nodes));
+    // }
+
+    public static void openJob(String jobName) {
+        if (jobName == null) {
+            return;
         }
+        RepositoryObjectCache repObjectcache = ImportCacheHelper.getInstance().getRepObjectcache();
+        try {
+            repObjectcache.initialize(ERepositoryObjectType.PROCESS);
+            List<IRepositoryViewObject> repViewObjectList = repObjectcache.getItemsFromRepository().get(
+                    ERepositoryObjectType.PROCESS);
+            Iterator<IRepositoryViewObject> repoViewObjectIter = repViewObjectList.iterator();
+            while (repoViewObjectIter.hasNext()) {
+                final IRepositoryViewObject current = repoViewObjectIter.next();
+                current.getPath();
+                if (jobName.equals(current.getLabel())) {
+                    Display.getDefault().syncExec(new Runnable() {
 
-        IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
-        repositoryView.getViewer().setSelection(new StructuredSelection(nodes));
-
-        if (openThem) {
-            openJobs(nodes);
+                        @Override
+                        public void run() {
+                            final List<IRepositoryNode> jobs = new ArrayList<IRepositoryNode>(1);
+                            IRepositoryNode repositoryNode = RepositorySeekerManager.getInstance().searchRepoViewNode(
+                                    current.getId());
+                            jobs.add(repositoryNode);
+                            IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
+                            repositoryView.getViewer().setSelection(new StructuredSelection(jobs));
+                            openJobs(jobs);
+                        }
+                    });
+                    break;
+                }
+            }
+        } catch (Throwable e) {
+            CommonExceptionHandler.process(e);
         }
 
     }
