@@ -2107,6 +2107,16 @@
         <projecttask
               beforeLogon="false"
               breaks="6.1.0"
+              class="org.talend.repository.model.migration.spark.RenameSparkCDH51"
+              description="Rename the CDH 5.1 version in Spark and Spark Streaming."
+              id="org.talend.repository.model.migration.spark.RenameSparkCDH51"
+              name="RenameSparkCDH51"
+              version="6.1.0">
+        </projecttask>
+        
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
               class="org.talend.repository.model.migration.ReviewPigLoadLayout"
               description="Review the tPigLoad layout for a better parameters management."
               id="org.talend.repository.model.migration.ReviewPigLoadLayout"

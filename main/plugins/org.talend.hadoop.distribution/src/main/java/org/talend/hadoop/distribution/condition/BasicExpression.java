@@ -18,11 +18,11 @@ package org.talend.hadoop.distribution.condition;
  */
 public class BasicExpression implements Expression {
 
-    private String mParameter;
+    protected String mParameter;
 
-    private String mValue;
+    protected String mValue;
 
-    private EqualityOperator mEqualityOperator;
+    protected EqualityOperator mEqualityOperator;
 
     public BasicExpression(String parameter, String value, EqualityOperator equalityOperator) {
         this.mParameter = parameter != null ? parameter.trim() : null;

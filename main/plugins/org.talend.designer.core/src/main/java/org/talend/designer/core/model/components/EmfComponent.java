@@ -1511,9 +1511,47 @@ public class EmfComponent extends AbstractComponent {
             }
             newParam.setRequired(false);
             newParam.setParentParameter(parentParam);
+        } else if (type == EParameterFieldType.HADOOP_LIBRARIES) {
+            // We get the component type defined by the NAME of the HADOOP_DISTRIBUTION parameter.
+            ComponentType componentType = ComponentType.getComponentType(parentParam.getName());
+
+            componentHadoopDistributionImportNeedsList = new ArrayList<>();
+
+            // We retrieve all the implementations of the HadoopComponent service.
+            BundleContext bc = FrameworkUtil.getBundle(DistributionFactory.class).getBundleContext();
+            Collection<ServiceReference<? extends HadoopComponent>> distributions = new LinkedList<>();
+            try {
+                Class<? extends HadoopComponent> clazz = (Class<? extends HadoopComponent>) Class.forName(componentType
+                        .getService());
+                distributions.addAll(bc.getServiceReferences(clazz, null));
+            } catch (InvalidSyntaxException | ClassNotFoundException e) {
+                CommonExceptionHandler.process(e);
+            }
+            for (ServiceReference<? extends HadoopComponent> sr : distributions) {
+                HadoopComponent hc = bc.getService(sr);
+                Set<DistributionModuleGroup> nodeModuleGroups = hc.getModuleGroups(componentType, node.getComponent().getName());
+                if (nodeModuleGroups != null) {
+                    Iterator<DistributionModuleGroup> moduleGroups = nodeModuleGroups.iterator();
+                    while (moduleGroups.hasNext()) {
+                        DistributionModuleGroup group = moduleGroups.next();
+                        IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
+                        importType.setMODULEGROUP(group.getModuleName());
+
+                        ComponentCondition condition = group.getRequiredIf();
+                        if (condition != null) {
+                            importType.setREQUIREDIF(new NestedComponentCondition(condition).getConditionString());
+                        }
+                        importType.setMRREQUIRED(group.isMrRequired());
+                        ModulesNeededProvider.collectModuleNeeded(node.getComponent().getName(), importType,
+                                componentHadoopDistributionImportNeedsList);
+                    }
+                }
+            }
         } else if (type == EParameterFieldType.HADOOP_DISTRIBUTION) {
             // We get the component type defined by the NAME of the HADOOP_DISTRIBUTION parameter.
             ComponentType componentType = ComponentType.getComponentType(parentParam.getName());
+
+            hadoopDistributionImportNeedsList = new ArrayList<>();
 
             // We retrieve all the implementations of the HadoopComponent service.
             BundleContext bc = FrameworkUtil.getBundle(DistributionFactory.class).getBundleContext();
@@ -1576,6 +1614,7 @@ public class EmfComponent extends AbstractComponent {
             Map<String, Bean> distribMap = new HashMap<>();
             List<Bean> versionList = new ArrayList<>();
             Map<String, Set<ComponentCondition>> showIfMap = new HashMap<>();
+            Map<String, String> defaultVersionPerDistribution = new HashMap<>();
 
             for (ServiceReference<? extends HadoopComponent> sr : distributions) {
                 HadoopComponent hc = bc.getService(sr);
@@ -1589,11 +1628,13 @@ public class EmfComponent extends AbstractComponent {
                         showIfMap.put(distribution, new HashSet<ComponentCondition>());
                     }
                     showIfMap.get(distribution).add(hc.getDisplayCondition(componentType));
+                    defaultVersionPerDistribution.put(distribution, version);
                 }
             }
 
             List<Bean> distribList = new ArrayList<>(distribMap.values());
-            // The distribution list is sorted by alphabetical order, putting the custom version at the last position.
+            // The distribution list is sorted by alphabetical order, putting the custom version at the last
+            // position.
             Collections.sort(distribList, new Comparator<Bean>() {
 
                 @Override
@@ -1639,7 +1680,8 @@ public class EmfComponent extends AbstractComponent {
                 displayName[index] = that.getDisplayName();
                 itemValue[index] = that.getName();
 
-                // We compose a ShowIf parameter for a distribution, only if the list of its version all have a display
+                // We compose a ShowIf parameter for a distribution, only if the list of its version all have a
+                // display
                 // condition.
                 ComponentCondition cc = ComponentConditionUtil.buildDistributionShowIf(showIfMap.get(that.getName()));
                 showIfVersion[index] = cc == null ? null : cc.getConditionString();
@@ -1655,6 +1697,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setListItemsShowIf(showIfVersion);
             newParam.setListItemsNotShowIf(notShowIfVersion);
             newParam.setValue(defaultValue);
+            newParam.setDefaultValue(defaultValue);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
             newParam.setShow(true);
@@ -1701,7 +1744,8 @@ public class EmfComponent extends AbstractComponent {
 
                 notShowIfVersion[index] = null;
 
-                // Create the EMF IMPORTType to import the modules group required by a Hadoop distribution for a given
+                // Create the EMF IMPORTType to import the modules group required by a Hadoop distribution for a
+                // given
                 // ComponentType.
                 if (that.getModuleGroups() != null) {
                     Iterator<DistributionModuleGroup> moduleGroups = that.getModuleGroups().iterator();
@@ -1727,7 +1771,7 @@ public class EmfComponent extends AbstractComponent {
                         importType.setREQUIREDIF(condition.getConditionString());
                         importType.setMRREQUIRED(group.isMrRequired());
                         ModulesNeededProvider.collectModuleNeeded(node.getComponent().getName(), importType,
-                                componentImportNeedsList);
+                                hadoopDistributionImportNeedsList);
                     }
                 }
 
@@ -1745,7 +1789,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setListItemsValue(itemValue);
             newParam.setListItemsShowIf(showIfVersion);
             newParam.setListItemsNotShowIf(notShowIfVersion);
-            newParam.setValue(defaultValue);
+            // newParam.setValue(defaultValue);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
             newParam.setShow(true);
@@ -1759,6 +1803,13 @@ public class EmfComponent extends AbstractComponent {
             newParam.setGroup(xmlParam.getGROUP());
             newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
             newParam.setRepositoryValue(componentType.getVersionRepositoryValueParameter());
+            for (Bean b : distribList) {
+                IElementParameterDefaultValue defaultType = new ElementParameterDefaultValue();
+                defaultType.setDefaultValue(defaultVersionPerDistribution.get(b.getName()));
+                defaultType.setIfCondition(new SimpleComponentCondition(new BasicExpression(componentType
+                        .getDistributionParameter(), b.getName(), EqualityOperator.EQ)).getConditionString());
+                newParam.getDefaultValues().add(defaultType);
+            }
 
             listParam.add(newParam);
         }
@@ -1789,6 +1840,7 @@ public class EmfComponent extends AbstractComponent {
         } else {
             listXmlParam = compType.getPARAMETERS().getPARAMETER();
         }
+
         for (int i = 0; i < listXmlParam.size(); i++) {
             xmlParam = (PARAMETERType) listXmlParam.get(i);
             EParameterFieldType type = EParameterFieldType.getFieldTypeByName(xmlParam.getFIELD());
@@ -3084,6 +3136,10 @@ public class EmfComponent extends AbstractComponent {
 
     private List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
 
+    private List<ModuleNeeded> hadoopDistributionImportNeedsList = new ArrayList<ModuleNeeded>();
+
+    private List<ModuleNeeded> componentHadoopDistributionImportNeedsList = new ArrayList<ModuleNeeded>();
+
     private static final String DB_VERSION = "DB_VERSION"; //$NON-NLS-1$
 
     @Override
@@ -3230,6 +3286,10 @@ public class EmfComponent extends AbstractComponent {
                     true, new ArrayList<String>(), null, null);
             componentImportNeedsList.add(componentImportNeeds);
         }
+
+        componentImportNeedsList.addAll(hadoopDistributionImportNeedsList);
+
+        componentImportNeedsList.addAll(componentHadoopDistributionImportNeedsList);
 
         return componentImportNeedsList;
     }
