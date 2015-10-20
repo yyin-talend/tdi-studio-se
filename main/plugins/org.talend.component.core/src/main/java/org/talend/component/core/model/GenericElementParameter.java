@@ -46,6 +46,8 @@ public class GenericElementParameter extends ElementParameter {
 
     private ComponentService componentService;
 
+    private List<?> possibleValues;
+
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     private boolean isFirstCall;
@@ -203,4 +205,13 @@ public class GenericElementParameter extends ElementParameter {
         protected abstract void toDo() throws Throwable;
 
     }
+
+    public List<?> getPossibleValues() {
+        return this.possibleValues;
+    }
+
+    public void setPossibleValues(List<?> possibleValues) {
+        this.possibleValues = possibleValues;
+    }
+
 }

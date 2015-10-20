@@ -54,7 +54,7 @@ public class NameAndLabelsDialog extends Dialog {
         comp.setLayoutData(new GridData(GridData.FILL_BOTH));
         comp.setLayout(new GridLayout());
 
-        selectionComposite = new ElementsSelectionComposite<NameAndLabel>(comp) {
+        selectionComposite = new ElementsSelectionComposite<NameAndLabel>(comp, false) {
 
             @Override
             protected IBaseLabelProvider getLabelProvider() {
@@ -89,14 +89,14 @@ public class NameAndLabelsDialog extends Dialog {
 
     @Override
     protected void okPressed() {
-        result = getSelectedNameAndLabel();
+        result = getSelectedName();
         super.okPressed();
     }
 
-    private String getSelectedNameAndLabel() {
+    private String getSelectedName() {
         List<NameAndLabel> selectedElements = selectionComposite.getSelectedElements();
         if (selectedElements.size() > 0) {
-            return selectedElements.get(0).getLabel();
+            return selectedElements.get(0).getName();
         }
         return ""; //$NON-NLS-1$
     }

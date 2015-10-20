@@ -13,7 +13,6 @@
 package org.talend.component.core.utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import org.talend.component.core.model.GenericElementParameter;
 import org.talend.components.api.NamedThing;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.NameAndLabel;
 import org.talend.components.api.properties.PresentationItem;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.properties.presentation.Widget;
@@ -127,19 +127,20 @@ public class ComponentsUtils {
         }
         ComponentProperties compProperties = form.getProperties();
         if (element instanceof INode) {
-        	INode node = (INode)element;
-        	// Set the properties only one time to get the top-level properties object
-        	if (node.getComponentProperties() == null)
-        		node.setComponentProperties(compProperties);
+            INode node = (INode) element;
+            // Set the properties only one time to get the top-level properties object
+            if (node.getComponentProperties() == null) {
+                node.setComponentProperties(compProperties);
+            }
         }
-        
+
         // Have to initialize for the messages
         compProperties.getProperties();
         List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
             NamedThing[] widgetProperties = widget.getProperties();
             NamedThing widgetProperty = widgetProperties[0];
-            ElementParameter param = new GenericElementParameter(element, compProperties, widget, getComponentService());
+            GenericElementParameter param = new GenericElementParameter(element, compProperties, widget, getComponentService());
             if (parentParam != null) {
                 param.setParentParameter(parentParam);
             }
@@ -249,16 +250,24 @@ public class ComponentsUtils {
             if (se != null) {
                 param.setRequired(se.isRequired());
                 param.setValue(compProperties.getValue(se));
-                Collection values = se.getPossibleValues();
+                List<?> values = se.getPossibleValues();
                 if (values != null) {
+                    param.setPossibleValues(values);
                     List<String> possVals = new ArrayList<>();
+                    List<String> possValsDisplay = new ArrayList<>();
                     for (Object obj : values) {
-                        possVals.add(String.valueOf(obj));
+                        if (obj instanceof NameAndLabel) {
+                            NameAndLabel nal = (NameAndLabel) obj;
+                            possVals.add(nal.getName());
+                            possValsDisplay.add(nal.getLabel());
+                        } else {
+                            possVals.add(String.valueOf(obj));
+                            possValsDisplay.add(String.valueOf(obj));
+                        }
                     }
-                    String[] valArray = possVals.toArray(new String[0]);
-                    param.setListItemsDisplayName(valArray);
-                    param.setListItemsDisplayCodeName(valArray);
-                    param.setListItemsValue(valArray);
+                    param.setListItemsDisplayName(possValsDisplay.toArray(new String[0]));
+                    param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
+                    param.setListItemsValue(possVals.toArray(new String[0]));
                 }
             } else if (widgetProperty instanceof PresentationItem) {
                 param.setValue(null);

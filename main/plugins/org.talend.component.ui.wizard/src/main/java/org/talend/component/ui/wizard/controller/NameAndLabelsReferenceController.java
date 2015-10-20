@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.component.core.model.GenericElementParameter;
 import org.talend.components.api.properties.NameAndLabel;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
@@ -63,12 +63,17 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
     }
 
     public Command createCommand(Button button) {
-        IElementParameter nameParameter = elem.getElementParameterFromField(EParameterFieldType.NAME_SELECTION_AREA);
-        List<NameAndLabel> nals = null;
-        if (nameParameter == null) {
-            nals = new ArrayList<>();
-        } else {
-            nals = (List<NameAndLabel>) nameParameter.getValue();
+        List<NameAndLabel> nals = new ArrayList<>();
+        if (curParameter instanceof GenericElementParameter) {
+            GenericElementParameter gParam = (GenericElementParameter) curParameter;
+            List<?> possibleValues = gParam.getPossibleValues();
+            if (gParam != null) {
+                for (Object object : possibleValues) {
+                    if (object instanceof NameAndLabel) {
+                        nals.add((NameAndLabel) object);
+                    }
+                }
+            }
         }
         NameAndLabelsDialog nameAndLabelsDialog = new NameAndLabelsDialog(composite.getShell(), nals);
         if (nameAndLabelsDialog.open() == IDialogConstants.OK_ID) {
