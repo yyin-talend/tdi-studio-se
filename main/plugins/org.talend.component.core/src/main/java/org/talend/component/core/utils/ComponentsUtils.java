@@ -234,6 +234,7 @@ public class ComponentsUtils {
                 fieldType = EParameterFieldType.NAME_SELECTION_AREA;
                 break;
             case NAME_SELECTION_REFERENCE:
+                fieldType = EParameterFieldType.NAME_SELECTION_REFERENCE;
                 break;
             case SCHEMA_EDITOR:
                 break;
