@@ -25,6 +25,11 @@ public interface MRComponent extends HadoopComponent {
     public boolean isExecutedThroughWebHCat();
 
     /**
+     * @return true if the distribution is compatible with cloudera navigator (usually, cloudera distribution > 4.3).
+     */
+    public boolean doSupportClouderaNavigator();
+
+    /**
      * @return true if the distribution supports the "cross platform submission" Hadoop property.
      */
     public boolean doSupportCrossPlatformSubmission();
