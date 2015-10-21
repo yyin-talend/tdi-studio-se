@@ -1778,7 +1778,7 @@ public class EmfComponent extends AbstractComponent {
                             importType.setREQUIREDIF(condition.getConditionString());
                             importType.setMRREQUIRED(group.isMrRequired());
                             ModulesNeededProvider.collectModuleNeeded(node.getComponent() != null ? node.getComponent().getName()
-                                    : "", importType, hadoopDistributionImportNeedsList);
+                                    : "", importType, hadoopDistributionImportNeedsList); //$NON-NLS-1$
                         }
                     }
                 }
@@ -1815,7 +1815,12 @@ public class EmfComponent extends AbstractComponent {
             newParam.setRepositoryValue(componentType.getVersionRepositoryValueParameter());
             for (Bean b : distribList) {
                 IElementParameterDefaultValue defaultType = new ElementParameterDefaultValue();
-                defaultType.setDefaultValue(defaultVersionPerDistribution.get(b.getName()));
+                String defaultValuePerDistrib = defaultVersionPerDistribution.get(b.getName());
+                if (defaultValuePerDistrib == null || "".equals(defaultValuePerDistrib)) { //$NON-NLS-1$
+                    defaultType.setDefaultValue(defaultValue);
+                } else {
+                    defaultType.setDefaultValue(defaultValuePerDistrib);
+                }
                 defaultType.setIfCondition(new SimpleComponentCondition(new BasicExpression(componentType
                         .getDistributionParameter(), b.getName(), EqualityOperator.EQ)).getConditionString());
                 newParam.getDefaultValues().add(defaultType);
