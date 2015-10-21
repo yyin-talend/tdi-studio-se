@@ -39,23 +39,18 @@ String valueFilter = "?sysparm_limit="; //An encoded query string used to filter
 //Connection method def
 String httpHost = ElementParameterParser.getValue(node,"__SERVICENOWURL__").trim();
 String username = ElementParameterParser.getValue(node,"__USERNAME__").trim();
-String password = ElementParameterParser.getValue(node,"__PASSWORD__").trim();
 %>
 String <%=cid%>_domain = null;
 String <%=cid%>_URL = null;
-if (("").equals(<%=httpHost%>)) {
-  throw new IllegalArgumentException("URL can't be empty!");
-} else if (("").equals(<%=username%>)) {
-  throw new IllegalArgumentException("UserName can't be empty!");
-} else if (("").equals(<%=password%>)) {
-  throw new IllegalArgumentException("Password can't be empty!");
-}
 <%
 if(!"true".equals(useExistingConn)) {
+  String passwordFieldName = "__PASSWORD__";
   %>
+    
+  <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
   <%=cid%>_URL = StringHandling.EREPLACE(<%=httpHost%>, "(/$)", "");
   <%=cid%>_domain = <%=cid%>_URL.replaceAll("https?://", "");
-  org.apache.http.auth.UsernamePasswordCredentials <%=cid%>_usernamePasswordCredentials = new org.apache.http.auth.UsernamePasswordCredentials(<%=username%>, <%=password%>);
+  org.apache.http.auth.UsernamePasswordCredentials <%=cid%>_usernamePasswordCredentials = new org.apache.http.auth.UsernamePasswordCredentials(<%=username%>, decryptedPassword_<%=cid%>);
   <%
 } else {
   %>
