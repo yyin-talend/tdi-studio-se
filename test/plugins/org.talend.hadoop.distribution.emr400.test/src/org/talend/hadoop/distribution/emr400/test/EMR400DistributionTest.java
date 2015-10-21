@@ -74,10 +74,14 @@ public class EMR400DistributionTest {
         assertTrue(((SparkBatchComponent) emr400).isSpark14());
         assertTrue(((SparkBatchComponent) emr400).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkBatchComponent) emr400).isExecutedThroughSparkJobServer());
+        assertFalse(((SparkBatchComponent) emr400).doSupportSparkStandaloneMode());
+        assertTrue(((SparkBatchComponent) emr400).doSupportSparkYarnClientMode());
         assertTrue(((SparkStreamingComponent) emr400).isSpark14());
         assertTrue(((SparkStreamingComponent) emr400).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkStreamingComponent) emr400).isExecutedThroughSparkJobServer());
         assertTrue(((SparkStreamingComponent) emr400).doSupportCheckpointing());
+        assertFalse(((SparkStreamingComponent) emr400).doSupportSparkStandaloneMode());
+        assertTrue(((SparkStreamingComponent) emr400).doSupportSparkYarnClientMode());
         assertFalse(emr400 instanceof HCatalogComponent);
         assertFalse(emr400 instanceof ImpalaComponent);
     }

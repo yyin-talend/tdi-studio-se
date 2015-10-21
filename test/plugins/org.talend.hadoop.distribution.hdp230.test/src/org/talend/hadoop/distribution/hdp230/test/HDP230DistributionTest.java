@@ -75,6 +75,10 @@ public class HDP230DistributionTest {
         assertTrue(((HiveComponent) hdp230).doSupportParquetFormat());
         assertTrue(hdp230 instanceof SparkBatchComponent);
         assertTrue(hdp230 instanceof SparkStreamingComponent);
+        assertFalse(((SparkBatchComponent) hdp230).doSupportSparkStandaloneMode());
+        assertTrue(((SparkBatchComponent) hdp230).doSupportSparkYarnClientMode());
+        assertFalse(((SparkStreamingComponent) hdp230).doSupportSparkStandaloneMode());
+        assertTrue(((SparkStreamingComponent) hdp230).doSupportSparkYarnClientMode());
         assertTrue(hdp230 instanceof HCatalogComponent);
         assertFalse(hdp230 instanceof ImpalaComponent);
     }

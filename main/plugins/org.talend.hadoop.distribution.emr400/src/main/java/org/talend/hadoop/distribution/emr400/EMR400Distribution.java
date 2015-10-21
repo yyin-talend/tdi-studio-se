@@ -225,4 +225,14 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
     public ComponentCondition getDisplayCondition(ComponentType componentType) {
         return displayConditions.get(componentType);
     }
+
+    @Override
+    public boolean doSupportSparkStandaloneMode() {
+        return false;
+    }
+
+    @Override
+    public boolean doSupportSparkYarnClientMode() {
+        return true;
+    }
 }

@@ -76,10 +76,14 @@ public class CDH540DistributionTest {
         assertFalse(((SparkBatchComponent) cdh540).isSpark14());
         assertTrue(((SparkBatchComponent) cdh540).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkBatchComponent) cdh540).isExecutedThroughSparkJobServer());
+        assertTrue(((SparkBatchComponent) cdh540).doSupportSparkStandaloneMode());
+        assertTrue(((SparkBatchComponent) cdh540).doSupportSparkYarnClientMode());
         assertFalse(((SparkStreamingComponent) cdh540).isSpark14());
         assertTrue(((SparkStreamingComponent) cdh540).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkStreamingComponent) cdh540).isExecutedThroughSparkJobServer());
         assertTrue(((SparkStreamingComponent) cdh540).doSupportCheckpointing());
+        assertTrue(((SparkStreamingComponent) cdh540).doSupportSparkStandaloneMode());
+        assertTrue(((SparkStreamingComponent) cdh540).doSupportSparkYarnClientMode());
         assertTrue(cdh540 instanceof HCatalogComponent);
         assertTrue(cdh540 instanceof ImpalaComponent);
     }

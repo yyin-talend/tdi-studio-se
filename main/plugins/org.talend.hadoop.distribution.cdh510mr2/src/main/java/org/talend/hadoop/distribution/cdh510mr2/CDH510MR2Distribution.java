@@ -228,4 +228,14 @@ public class CDH510MR2Distribution extends AbstractDistribution implements HDFSC
         return displayConditions.get(componentType);
     }
 
+    @Override
+    public boolean doSupportSparkStandaloneMode() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportSparkYarnClientMode() {
+        return true;
+    }
+
 }

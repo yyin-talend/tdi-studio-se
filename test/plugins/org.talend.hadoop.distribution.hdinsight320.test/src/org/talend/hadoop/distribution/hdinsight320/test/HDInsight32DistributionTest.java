@@ -74,10 +74,14 @@ public class HDInsight32DistributionTest {
         assertFalse(((SparkBatchComponent) hdinsight320).isSpark14());
         assertFalse(((SparkBatchComponent) hdinsight320).doSupportDynamicMemoryAllocation());
         assertTrue(((SparkBatchComponent) hdinsight320).isExecutedThroughSparkJobServer());
+        assertTrue(((SparkBatchComponent) hdinsight320).doSupportSparkStandaloneMode());
+        assertFalse(((SparkBatchComponent) hdinsight320).doSupportSparkYarnClientMode());
         assertFalse(((SparkStreamingComponent) hdinsight320).isSpark14());
         assertFalse(((SparkStreamingComponent) hdinsight320).doSupportDynamicMemoryAllocation());
         assertTrue(((SparkStreamingComponent) hdinsight320).isExecutedThroughSparkJobServer());
         assertFalse(((SparkStreamingComponent) hdinsight320).doSupportCheckpointing());
+        assertTrue(((SparkStreamingComponent) hdinsight320).doSupportSparkStandaloneMode());
+        assertFalse(((SparkStreamingComponent) hdinsight320).doSupportSparkYarnClientMode());
         assertFalse(hdinsight320 instanceof HCatalogComponent);
         assertFalse(hdinsight320 instanceof ImpalaComponent);
     }

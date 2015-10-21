@@ -208,4 +208,14 @@ public class CustomDistribution extends AbstractDistribution implements HDFSComp
     public boolean doSupportCheckpointing() {
         return true;
     }
+
+    @Override
+    public boolean doSupportSparkStandaloneMode() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportSparkYarnClientMode() {
+        return true;
+    }
 }
