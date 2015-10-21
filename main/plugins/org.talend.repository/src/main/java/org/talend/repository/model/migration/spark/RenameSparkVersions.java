@@ -28,9 +28,9 @@ import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
- * Migration task that renames the CDH 5.1 version name.
+ * Migration task that renames the wrong versions name.
  */
-public class RenameSparkCDH51 extends AbstractJobMigrationTask {
+public class RenameSparkVersions extends AbstractJobMigrationTask {
 
     @Override
     public List<ERepositoryObjectType> getTypes() {
@@ -54,6 +54,10 @@ public class RenameSparkCDH51 extends AbstractJobMigrationTask {
                         if ("SPARK_VERSION".equals(param.getName())) { //$NON-NLS-1$
                             if ("Cloudera_CDH51".equals(param.getValue())) { //$NON-NLS-1$
                                 param.setValue("Cloudera_CDH5_1"); //$NON-NLS-1$
+                                modified = true;
+                            }
+                            if ("MAPR_410".equals(param.getValue())) { //$NON-NLS-1$
+                                param.setValue("MAPR410"); //$NON-NLS-1$
                                 modified = true;
                             }
 
