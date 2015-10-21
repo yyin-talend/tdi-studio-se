@@ -2,7 +2,7 @@
 <project name="org.talend.designer.components.libs" default="process" basedir=".">
 	
 	<property name="component.plugin.home" value="../../../org.talend.designer.components.localprovider/components" />
-	<property name="libraries.apache.common" value="../../../org.talend.libraries.apache.common/lib" />
+	<property name="libraries.apache.common" value="../../../../../../tcommon-studio-se/main/plugins/org.talend.libraries.apache.common/lib" />
 
 	<!-- #################################################### -->
 
@@ -14,7 +14,7 @@
 	<!-- modification 2: compile classpath -->
 	<path id="compile.classpath">
         <pathelement location="${component.plugin.home}/${component.name}/zip4j_1.3.1.jar" />
-		<pathelement location="${libraries.apache.common}/commons-compress-1.6.jar" />
+		<pathelement location="${libraries.apache.common}/commons-compress-1.10.jar" />
         <pathelement location="${component.plugin.home}/${component.name}/checkArchive.jar" />
 	</path>
 
