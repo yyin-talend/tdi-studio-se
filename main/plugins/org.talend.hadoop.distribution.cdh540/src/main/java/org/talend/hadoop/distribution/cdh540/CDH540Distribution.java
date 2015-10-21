@@ -219,4 +219,9 @@ public class CDH540Distribution extends AbstractDistribution implements HDFSComp
     public boolean doSupportCheckpointing() {
         return true;
     }
+
+    @Override
+    public boolean doSupportClouderaNavigator() {
+        return true;
+    }
 }
