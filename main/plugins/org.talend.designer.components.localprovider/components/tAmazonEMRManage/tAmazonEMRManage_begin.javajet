@@ -80,6 +80,8 @@
 	%>
 		com.amazonaws.services.elasticmapreduce.model.ListClustersRequest request_<%=cid%> = new com.amazonaws.services.elasticmapreduce.model.ListClustersRequest()
 			.withClusterStates(
+				com.amazonaws.services.elasticmapreduce.model.ClusterState.BOOTSTRAPPING,
+				com.amazonaws.services.elasticmapreduce.model.ClusterState.STARTING,
 				com.amazonaws.services.elasticmapreduce.model.ClusterState.RUNNING,
 				com.amazonaws.services.elasticmapreduce.model.ClusterState.WAITING
 			)
