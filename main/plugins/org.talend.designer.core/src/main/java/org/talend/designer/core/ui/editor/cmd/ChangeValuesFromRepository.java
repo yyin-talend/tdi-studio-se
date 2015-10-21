@@ -21,6 +21,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.runtime.xml.XmlUtil;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.hadoop.HadoopConstants;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -48,6 +50,7 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
@@ -214,6 +217,24 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (propertyName.split(":")[1].equals(propertyTypeName)) { //$NON-NLS-1$
             elem.setPropertyValue(propertyName, value);
             if (allowAutoSwitch) {
+                // Update spark mode to YARN_CLIENT if repository
+                if (elem instanceof IProcess) {
+                    if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(((IProcess) elem).getComponentsType())
+                            || ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName()
+                                    .equals(((IProcess) elem).getComponentsType())) {
+                        if (EmfComponent.REPOSITORY.equals(value)) {
+                            IElementParameter sparkLocalParam = ((IProcess) elem)
+                                    .getElementParameter(HadoopConstants.SPARK_LOCAL_MODE);
+                            IElementParameter sparkParam = ((IProcess) elem).getElementParameter(HadoopConstants.SPARK_MODE);
+                            if (sparkLocalParam != null && (Boolean) (sparkLocalParam.getValue())) {
+                                sparkLocalParam.setValue(false);
+                            }
+                            if (sparkParam != null && !HadoopConstants.SPARK_MODE_YARN_CLIENT.equals(sparkParam.getValue())) {
+                                sparkParam.setValue(HadoopConstants.SPARK_MODE_YARN_CLIENT);
+                            }
+                        }
+                    }
+                }
                 setOtherProperties();
             }
         } else {
