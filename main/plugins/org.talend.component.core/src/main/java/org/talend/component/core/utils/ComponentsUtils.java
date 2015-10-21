@@ -145,8 +145,6 @@ public class ComponentsUtils {
                 param.setParentParameter(parentParam);
             }
             param.setCategory(category);
-            param.setName(widgetProperty.getName());
-            param.setDisplayName(widgetProperty.getDisplayName());
             if (parentParam != null) {
                 // param.setGroup(form.getName());
                 // param.setGroupDisplayName(form.getDisplayName());

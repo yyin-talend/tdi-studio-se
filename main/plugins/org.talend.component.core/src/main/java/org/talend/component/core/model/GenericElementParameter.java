@@ -59,6 +59,11 @@ public class GenericElementParameter extends ElementParameter {
         this.widget = widget;
         this.componentService = componentService;
         isFirstCall = true;
+
+        NamedThing[] widgetProperties = widget.getProperties();
+        NamedThing widgetProperty = widgetProperties[0];
+        setName(widgetProperty.getName());
+        setDisplayName(widgetProperty.getDisplayName());
         callBefore();
     }
 

@@ -113,24 +113,26 @@ if (component.canStart()) { // canStart
 	runtime_<%=cid %>.inputBegin(props_<%=cid %>);
 <%
 	List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-	// FIXME - multiple outgoing connections?
-	IConnection outgoingConn = outgoingConns.get(0);
-	if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // outgoingConn 
+	if (outgoingConns.size() > 0) { // outgoing size
+		// FIXME - multiple outgoing connections?
+		IConnection outgoingConn = outgoingConns.get(0);
+		if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // outgoingConn 
 %>
 	
-		java.util.Map<String, Object> row_<%=cid %>;
-		Object value_<%=cid %>;
-		while ((row_<%=cid %> = runtime_<%=cid %>.inputRow()) != null) { // while (ends in component_end)
+			java.util.Map<String, Object> row_<%=cid %>;
+			Object value_<%=cid %>;
+			while ((row_<%=cid %> = runtime_<%=cid %>.inputRow()) != null) { // while (ends in component_end)
 <%
-			for (IMetadataColumn column : columnList) { // column
-				String columnName = column.getLabel();
+				for (IMetadataColumn column : columnList) { // column
+					String columnName = column.getLabel();
 %>
-				value_<%=cid %> = row.get("<%=columnName %>");
-				if (value_<%=cid %> != null)
-					<%=outgoingConn.getName() %>.<%=columnName %> = value_<%=cid %>;
+					value_<%=cid %> = row.get("<%=columnName %>");
+					if (value_<%=cid %> != null)
+						<%=outgoingConn.getName() %>.<%=columnName %> = value_<%=cid %>;
 <%
-			} // column
-	} // outgoingConn
+				} // column
+		} // outgoingConn
+	} // outgoing size
 } else { // canStart
 // Output
 %>

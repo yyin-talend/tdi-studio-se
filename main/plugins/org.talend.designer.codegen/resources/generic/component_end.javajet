@@ -22,8 +22,17 @@ Component component = (Component)node.getComponent();
 
 if (component.canStart()) {
 // Input
+	List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+	if (outgoingConns.size() > 0) { // outgoing size
+		// FIXME - multiple outgoing connections?
+		IConnection outgoingConn = outgoingConns.get(0);
+		if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // outgoingConn 
 %>
-	} // while
+			} // while
+<%
+		} // outgoingConn
+	} // outgoing size
+%>
 
 	runtime_<%=cid %>.inputEnd();
 <%
