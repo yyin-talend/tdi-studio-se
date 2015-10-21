@@ -17,7 +17,11 @@ String cid = node.getUniqueName();
 %>
 }// responce loop
 } else {
-	throw new org.apache.http.HttpException(<%=cid%>_json.getJSONObject("error").getString("message"));
+	String error_<%=cid%> = <%=cid%>_json.getJSONObject("error").getString("message");
+	boolean no_record_<%=cid%> = (<%=cid%>_response.getStatusLine().getStatusCode() == 404) && ("No Record found".equals(error_<%=cid%>));
+	if(!no_record_<%=cid%>) {
+		throw new org.apache.http.HttpException(error_<%=cid%>);
+	}
 } 
 } finally {
 	<%=cid%>_response.close();
