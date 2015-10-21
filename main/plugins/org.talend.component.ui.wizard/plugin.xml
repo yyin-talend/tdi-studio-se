@@ -124,6 +124,11 @@
             mapping="NAME_SELECTION_REFERENCE"
             name="Name Selection Reference">
       </generator>
+      <generator
+            class="org.talend.component.ui.wizard.controller.generator.ComponentRefGenerator"
+            mapping="COMPONENT_REFERENCE"
+            name="Component Reference">
+      </generator>
    </extension>
    <extension
          point="org.talend.core.repository.repository_content">

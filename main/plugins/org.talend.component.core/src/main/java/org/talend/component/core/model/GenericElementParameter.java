@@ -219,4 +219,8 @@ public class GenericElementParameter extends ElementParameter {
         this.possibleValues = possibleValues;
     }
 
+    public Widget getWidget() {
+        return this.widget;
+    }
+
 }

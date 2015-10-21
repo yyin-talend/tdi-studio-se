@@ -228,6 +228,7 @@ public class ComponentsUtils {
                 fieldType = EParameterFieldType.BUTTON;
                 break;
             case COMPONENT_REFERENCE:
+                fieldType = EParameterFieldType.COMPONENT_REFERENCE;
                 break;
             case NAME_SELECTION_AREA:
                 fieldType = EParameterFieldType.NAME_SELECTION_AREA;
