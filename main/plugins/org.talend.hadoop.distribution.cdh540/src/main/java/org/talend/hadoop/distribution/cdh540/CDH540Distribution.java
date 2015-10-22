@@ -14,7 +14,6 @@
 package org.talend.hadoop.distribution.cdh540;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +24,7 @@ import org.talend.hadoop.distribution.ComponentType;
 import org.talend.hadoop.distribution.DistributionModuleGroup;
 import org.talend.hadoop.distribution.EHadoopVersion;
 import org.talend.hadoop.distribution.ESparkVersion;
+import org.talend.hadoop.distribution.cdh540.modulegroup.CDH540HDFSModuleGroup;
 import org.talend.hadoop.distribution.component.HBaseComponent;
 import org.talend.hadoop.distribution.component.HCatalogComponent;
 import org.talend.hadoop.distribution.component.HDFSComponent;
@@ -41,18 +41,13 @@ public class CDH540Distribution extends AbstractDistribution implements HDFSComp
         SqoopComponent, PigComponent, HiveComponent, ImpalaComponent, HCatalogComponent, SparkBatchComponent,
         SparkStreamingComponent, HiveOnSparkComponent {
 
-    private final static Set<DistributionModuleGroup> hdfsModuleGroups = new HashSet<>();
-
     private final static String YARN_APPLICATION_CLASSPATH = "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$YARN_HOME/*,$YARN_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*"; //$NON-NLS-1$
 
     private static Map<ComponentType, Set<DistributionModuleGroup>> moduleGroups;
 
     static {
-
-        hdfsModuleGroups.add(new DistributionModuleGroup("HDFS-LIB-CDH_5_4_LASTEST")); //$NON-NLS-1$
-
         moduleGroups = new HashMap<>();
-        moduleGroups.put(ComponentType.HDFS, hdfsModuleGroups);
+        moduleGroups.put(ComponentType.HDFS, CDH540HDFSModuleGroup.getModuleGroups());
     }
 
     @Override
@@ -222,6 +217,21 @@ public class CDH540Distribution extends AbstractDistribution implements HDFSComp
 
     @Override
     public boolean doSupportCheckpointing() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportClouderaNavigator() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportSparkStandaloneMode() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportSparkYarnClientMode() {
         return true;
     }
 }

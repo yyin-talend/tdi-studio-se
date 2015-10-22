@@ -42,7 +42,7 @@ public class MapperSelectEditPartTracker extends SelectEditPartTracker {
 
     @Override
     protected boolean handleButtonUp(int button) {
-        if (isInState(STATE_DRAG)) {
+        if (isInState(STATE_DRAG) || button == 3) {
             performSelection();
             if (hasSelectionOccurred()) {
                 performDirectEdit();

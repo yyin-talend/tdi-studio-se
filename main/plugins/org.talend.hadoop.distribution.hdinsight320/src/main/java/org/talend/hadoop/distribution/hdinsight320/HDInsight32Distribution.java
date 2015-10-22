@@ -206,4 +206,14 @@ public class HDInsight32Distribution extends AbstractDistribution implements MRC
         return displayConditions.get(componentType);
     }
 
+    @Override
+    public boolean doSupportSparkStandaloneMode() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportSparkYarnClientMode() {
+        return false;
+    }
+
 }

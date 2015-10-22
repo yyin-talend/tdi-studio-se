@@ -231,6 +231,9 @@
            <library
                  id="joda-time-2.3.jar">
            </library>
+           <library
+                 id="jline-1.0.jar">
+           </library>
         </libraryNeededGroup>     
         <libraryNeededGroup
            description="The lastest Map Reduce libraries of MAPR50X"
@@ -434,9 +437,6 @@
             </group>
             <library
                   id="hbase-server-mapr-5.0.X-lastest">
-            </library>
-            <library
-                  id="jline-1.0.jar">
             </library>
         </libraryNeededGroup>
         <libraryNeededGroup

@@ -204,4 +204,14 @@ public class MapR410Distribution extends AbstractMapRDistribution implements HDF
     public boolean doSupportMapRDB() {
         return true;
     }
+
+    @Override
+    public boolean doSupportSparkStandaloneMode() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportSparkYarnClientMode() {
+        return true;
+    }
 }

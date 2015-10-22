@@ -73,10 +73,14 @@ public class CustomDistributionTest {
         assertFalse(((SparkBatchComponent) custom).isSpark14());
         assertTrue(((SparkBatchComponent) custom).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkBatchComponent) custom).isExecutedThroughSparkJobServer());
+        assertTrue(((SparkBatchComponent) custom).doSupportSparkStandaloneMode());
+        assertTrue(((SparkBatchComponent) custom).doSupportSparkYarnClientMode());
         assertFalse(((SparkStreamingComponent) custom).isSpark14());
         assertTrue(((SparkStreamingComponent) custom).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkStreamingComponent) custom).isExecutedThroughSparkJobServer());
         assertTrue(((SparkStreamingComponent) custom).doSupportCheckpointing());
+        assertTrue(((SparkStreamingComponent) custom).doSupportSparkStandaloneMode());
+        assertTrue(((SparkStreamingComponent) custom).doSupportSparkYarnClientMode());
         assertTrue(custom instanceof HCatalogComponent);
         assertTrue(custom instanceof ImpalaComponent);
     }

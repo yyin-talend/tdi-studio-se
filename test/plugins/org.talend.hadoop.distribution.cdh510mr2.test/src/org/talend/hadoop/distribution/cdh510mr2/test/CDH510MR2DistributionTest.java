@@ -76,10 +76,14 @@ public class CDH510MR2DistributionTest {
         assertFalse(((SparkBatchComponent) cdh510mr2).isSpark14());
         assertFalse(((SparkBatchComponent) cdh510mr2).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkBatchComponent) cdh510mr2).isExecutedThroughSparkJobServer());
+        assertTrue(((SparkBatchComponent) cdh510mr2).doSupportSparkStandaloneMode());
+        assertTrue(((SparkBatchComponent) cdh510mr2).doSupportSparkYarnClientMode());
         assertFalse(((SparkStreamingComponent) cdh510mr2).isSpark14());
         assertFalse(((SparkStreamingComponent) cdh510mr2).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkStreamingComponent) cdh510mr2).isExecutedThroughSparkJobServer());
         assertTrue(((SparkStreamingComponent) cdh510mr2).doSupportCheckpointing());
+        assertTrue(((SparkStreamingComponent) cdh510mr2).doSupportSparkStandaloneMode());
+        assertTrue(((SparkStreamingComponent) cdh510mr2).doSupportSparkYarnClientMode());
         assertTrue(cdh510mr2 instanceof HCatalogComponent);
         assertTrue(cdh510mr2 instanceof ImpalaComponent);
     }

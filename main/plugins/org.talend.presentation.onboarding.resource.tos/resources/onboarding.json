@@ -23,7 +23,7 @@
 						"cssIds": null,
                         "onShow": null,
 						"onNext": null,
-						"title": "<div style=''>1. <internationalization id='onboarding.page1.title'/></div>",
+						"title": "<div style=''><internationalization id='onboarding.page1.title'/></div>",
 						"content": "<internationalization id='onboarding.page1.content'/>"
 					},
 					{
@@ -41,7 +41,7 @@
                             }
                         },
                         "onNext": null,
-						"title": "2. <internationalization id='onboarding.page2.title'/>",
+						"title": "<internationalization id='onboarding.page2.title'/>",
 						"content": "<internationalization id='onboarding.page2.content'/>"
 					},
 					{
@@ -59,7 +59,7 @@
                             }
                         },
                         "onNext": null,
-						"title": "3. <internationalization id='onboarding.page3.title'/>",
+						"title": "<internationalization id='onboarding.page3.title'/>",
 						"content": "<internationalization id='onboarding.page3.content'/>"
 					},
 					{
@@ -77,7 +77,7 @@
                             }
                         },
                         "onNext": null,
-						"title": "4. <internationalization id='onboarding.page4.title'/>",
+						"title": "<internationalization id='onboarding.page4.title'/>",
 						"content": "<internationalization id='onboarding.page4.content'/>"
 					},
 					{
@@ -95,7 +95,7 @@
                             }
                         },
                         "onNext": null,
-						"title": "5. <internationalization id='onboarding.page5.title'/>",
+						"title": "<internationalization id='onboarding.page5.title'/>",
 						"content": "<internationalization id='onboarding.page5.content'/>"
 					}
 			]

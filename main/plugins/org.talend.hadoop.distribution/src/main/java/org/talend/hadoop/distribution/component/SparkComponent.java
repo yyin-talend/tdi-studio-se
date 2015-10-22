@@ -33,6 +33,16 @@ public interface SparkComponent extends MRComponent {
     public boolean isSpark14();
 
     /**
+     * @return true if the distribution supports the Spark Standalone mode.
+     */
+    public boolean doSupportSparkStandaloneMode();
+
+    /**
+     * @return true if the distribution supports the Spark Yarn Client mode.
+     */
+    public boolean doSupportSparkYarnClientMode();
+
+    /**
      * @return true if the distribution supports the Dynamic Allocation feature.
      * @see http://spark.apache.org/docs/latest/configuration.html#dynamic-allocation
      */

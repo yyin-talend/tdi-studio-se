@@ -193,7 +193,11 @@ public class BuildJobManager {
             // of changes before the end of the modifications.
             workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, pMonitor);
         } catch (CoreException e) {
-            throw new PersistenceException(e.getCause());
+            Throwable cause = e.getCause();
+            if (cause == null) {
+                throw new PersistenceException(e);
+            }
+            throw new PersistenceException(cause);
         }
 
         IFile jobTargetFile = buildJobHandler.getJobTargetFile();

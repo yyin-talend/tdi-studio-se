@@ -207,4 +207,14 @@ public class MapR500Distribution extends AbstractMapRDistribution implements HDF
         return true;
     }
 
+    @Override
+    public boolean doSupportSparkStandaloneMode() {
+        return true;
+    }
+
+    @Override
+    public boolean doSupportSparkYarnClientMode() {
+        return true;
+    }
+
 }

@@ -39,6 +39,8 @@ import org.talend.hadoop.distribution.condition.MultiComponentCondition;
 import org.talend.hadoop.distribution.condition.NestedComponentCondition;
 import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
 import org.talend.hadoop.distribution.constants.Constant;
+import org.talend.hadoop.distribution.emr400.modulegroup.EMR400SparkBatchModuleGroup;
+import org.talend.hadoop.distribution.emr400.modulegroup.EMR400SparkStreamingModuleGroup;
 
 public class EMR400Distribution extends AbstractDistribution implements HDFSComponent, MRComponent, PigComponent, HiveComponent,
         SparkBatchComponent, SparkStreamingComponent, HiveOnSparkComponent {
@@ -52,8 +54,6 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
     private static Map<ComponentType, String> customVersionDisplayNames = new HashMap<>();
 
     static {
-        moduleGroups = new HashMap<>();
-
         ComponentCondition c1 = new NestedComponentCondition(new MultiComponentCondition(new SimpleComponentCondition(
                 new BasicExpression(Constant.PIG_STORE_PARAMETER, Constant.PIG_HCATSTORER_PARAMETER, EqualityOperator.NOT_EQ)),
                 new SimpleComponentCondition(new BasicExpression(Constant.PIG_STORE_PARAMETER,
@@ -62,6 +62,11 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
 
         customVersionDisplayNames.put(ComponentType.PIG, Constant.PIG_EMR400_DISPLAY);
         customVersionDisplayNames.put(ComponentType.HIVE, Constant.HIVE_EMR400_DISPLAY);
+
+        moduleGroups = new HashMap<>();
+
+        moduleGroups.put(ComponentType.SPARKBATCH, EMR400SparkBatchModuleGroup.getModuleGroups());
+        moduleGroups.put(ComponentType.SPARKSTREAMING, EMR400SparkStreamingModuleGroup.getModuleGroups());
     }
 
     @Override
@@ -219,5 +224,15 @@ public class EMR400Distribution extends AbstractDistribution implements HDFSComp
     @Override
     public ComponentCondition getDisplayCondition(ComponentType componentType) {
         return displayConditions.get(componentType);
+    }
+
+    @Override
+    public boolean doSupportSparkStandaloneMode() {
+        return false;
+    }
+
+    @Override
+    public boolean doSupportSparkYarnClientMode() {
+        return true;
     }
 }

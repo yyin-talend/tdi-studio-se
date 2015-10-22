@@ -76,6 +76,8 @@ public class MapR410DistributionTest {
         assertFalse(((SparkBatchComponent) mapr410).isSpark14());
         assertFalse(((SparkBatchComponent) mapr410).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkBatchComponent) mapr410).isExecutedThroughSparkJobServer());
+        assertTrue(((SparkBatchComponent) mapr410).doSupportSparkStandaloneMode());
+        assertTrue(((SparkBatchComponent) mapr410).doSupportSparkYarnClientMode());
         assertFalse(mapr410 instanceof SparkStreamingComponent);
         assertTrue(mapr410 instanceof HCatalogComponent);
         assertFalse(mapr410 instanceof ImpalaComponent);

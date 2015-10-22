@@ -43,6 +43,10 @@ public abstract class AbstractDistribution {
         return false;
     }
 
+    public boolean doSupportClouderaNavigator() {
+        return false;
+    }
+
     public String getYarnApplicationClasspath() {
         // Not used in Hadoop 1
         return ""; //$NON-NLS-1$

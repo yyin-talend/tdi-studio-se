@@ -2107,10 +2107,10 @@
         <projecttask
               beforeLogon="false"
               breaks="6.1.0"
-              class="org.talend.repository.model.migration.spark.RenameSparkCDH51"
-              description="Rename the CDH 5.1 version in Spark and Spark Streaming."
-              id="org.talend.repository.model.migration.spark.RenameSparkCDH51"
-              name="RenameSparkCDH51"
+              class="org.talend.repository.model.migration.spark.RenameSparkVersions"
+              description="Rename the wrong version in Spark and Spark Streaming."
+              id="org.talend.repository.model.migration.spark.RenameSparkVersions"
+              name="RenameSparkVersions"
               version="6.1.0">
         </projecttask>
         

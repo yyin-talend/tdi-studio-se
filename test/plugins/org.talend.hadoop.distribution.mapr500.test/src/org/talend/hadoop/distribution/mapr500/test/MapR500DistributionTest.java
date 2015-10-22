@@ -76,7 +76,11 @@ public class MapR500DistributionTest {
         assertFalse(((SparkBatchComponent) mapr500).isSpark14());
         assertFalse(((SparkBatchComponent) mapr500).doSupportDynamicMemoryAllocation());
         assertFalse(((SparkBatchComponent) mapr500).isExecutedThroughSparkJobServer());
+        assertTrue(((SparkBatchComponent) mapr500).doSupportSparkStandaloneMode());
+        assertTrue(((SparkBatchComponent) mapr500).doSupportSparkYarnClientMode());
         assertTrue(mapr500 instanceof SparkStreamingComponent);
+        assertTrue(((SparkStreamingComponent) mapr500).doSupportSparkStandaloneMode());
+        assertTrue(((SparkStreamingComponent) mapr500).doSupportSparkYarnClientMode());
         assertTrue(mapr500 instanceof HCatalogComponent);
         assertFalse(mapr500 instanceof ImpalaComponent);
         assertTrue(((SparkStreamingComponent) mapr500).doSupportCheckpointing());

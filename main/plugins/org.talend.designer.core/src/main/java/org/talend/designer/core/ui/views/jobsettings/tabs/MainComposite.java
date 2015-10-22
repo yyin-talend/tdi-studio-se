@@ -582,12 +582,8 @@ public class MainComposite extends AbstractTabComposite {
                         if (!originalDescription.equals(StringUtils.trimToEmpty(repositoryObject.getDescription()))) {
                             property.setDescription(originalDescription);
                         }
-                        //
-                        boolean convert = true;
-                        if (originalJobType.equals(StringUtils.trimToEmpty(jobTypeValue))) {
-                            convert = false;
-                        }
-                        if (convert) {
+
+                        if (ConvertJobsUtil.isNeedConvert(jobTypeValue, frameworkValue, originalJobType, originalFramework)) {
                             // Convert
                             final Item newItem = ConvertJobsUtil.createOperation(originalName, originalJobType,
                                     originalFramework, repositoryObject);
@@ -604,12 +600,25 @@ public class MainComposite extends AbstractTabComposite {
                                                 proxyRepositoryFactory.unlock(repositoryObject);
                                             }
                                         }
-                                        proxyRepositoryFactory.deleteObjectPhysical(repositoryObject);
-                                        proxyRepositoryFactory.saveProject(ProjectManager.getInstance().getCurrentProject());
+
+                                        boolean isNewItemCreated = true;
+                                        Property repositoryProperty = repositoryObject.getProperty();
+                                        if (repositoryProperty != null) {
+                                            isNewItemCreated = (repositoryProperty.getItem() != newItem);
+                                        }
+                                        if (isNewItemCreated) {
+                                            // new Item created
+                                            proxyRepositoryFactory.deleteObjectPhysical(repositoryObject);
+                                            proxyRepositoryFactory.saveProject(ProjectManager.getInstance().getCurrentProject());
+                                        }
                                         if (newItem != null && newItem.getProperty() != null) {
                                             String newId = newItem.getProperty().getId();
-                                            newRepositoryObject = proxyRepositoryFactory.getLastVersion(ProjectManager
-                                                    .getInstance().getCurrentProject(), newId);
+                                            if (isNewItemCreated) {
+                                                newRepositoryObject = proxyRepositoryFactory.getLastVersion(ProjectManager
+                                                        .getInstance().getCurrentProject(), newId);
+                                            } else {
+                                                newRepositoryObject = repositoryObject;
+                                            }
                                             if (!isOpened) {
                                                 repositoryObject = newRepositoryObject;
                                                 if (!jobTypeCCombo.isDisposed() && !jobFrameworkCCombo.isDisposed()) {
