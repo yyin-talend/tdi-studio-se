@@ -6,9 +6,9 @@
 	if(!listIdFlag_<%=cid%>.equals(<%=conn.getName()%>.ListId)){
 		while(true){
 			try{
-				client_<%=cid%>.listOperation("<%=operation%>",listIdFlag_<%=cid%>,leadKeyList_<%=cid%>);
+				resultListOperation_<%=cid%> = client_<%=cid%>.listOperation("<%=operation%>",listIdFlag_<%=cid%>,leadKeyList_<%=cid%>);
 				globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
-				if(client_<%=cid%>.isAccessTokenExpired(changeRecords_<%=cid%>.getErrors())){
+				if(client_<%=cid%>.isAccessTokenExpired(resultListOperation_<%=cid%>.getErrors())){
             		client_<%=cid%>.refreshToken();
             		continue;
             	}	
@@ -39,7 +39,7 @@
 			whetherReject_<%=cid%> = false;
 			resultListOperation_<%=cid%> = client_<%=cid%>.listOperation("<%=operation%>",<%=conn.getName()%>.ListId,leadKeyList_<%=cid%>);
 			globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
-			if(client_<%=cid%>.isAccessTokenExpired(changeRecords_<%=cid%>.getErrors())){
+			if(client_<%=cid%>.isAccessTokenExpired(resultListOperation_<%=cid%>.getErrors())){
         		client_<%=cid%>.refreshToken();
         		continue;
         	}	

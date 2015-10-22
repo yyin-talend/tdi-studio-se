@@ -42,7 +42,7 @@
 			try{
 				org.talend.marketo.response.ResultSync syncLead_<%=cid%> = client_<%=cid%>.syncLead("<%=operationType%>","<%=lookupField%>",leadAllAttrList_<%=cid%>,false,null);
 				globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
-				if(client_<%=cid%>.isAccessTokenExpired(changeRecords_<%=cid%>.getErrors())){
+				if(client_<%=cid%>.isAccessTokenExpired(syncLead_<%=cid%>.getErrors())){
 	            	client_<%=cid%>.refreshToken();
 	            	continue;
 	            }
@@ -74,7 +74,6 @@
 						errorMsg_<%=cid%> = ex_<%=cid%>.getMessage();
 						marketoId_<%=cid%> = <%=conn.getName() %>.id;
 						marketoStatus_<%=cid%> = marketoStatus_<%=cid%>;
-						errorReson_<%=cid%> = ex_<%=cid%>.getMessage();
 					<%
 					}else{
 					%>
@@ -96,7 +95,7 @@
 				try{
 					org.talend.marketo.response.ResultSync syncLeads_<%=cid%> = client_<%=cid%>.syncMultipleLeads("<%=operationType%>","<%=lookupField%>",leadRecordList_<%=cid%>,false,null);
 					globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
-					if(client_<%=cid%>.isAccessTokenExpired(changeRecords_<%=cid%>.getErrors())){
+					if(client_<%=cid%>.isAccessTokenExpired(syncLeads_<%=cid%>.getErrors())){
 	            		client_<%=cid%>.refreshToken();
 	            		continue;
 	            	}
