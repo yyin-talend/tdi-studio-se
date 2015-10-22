@@ -62,7 +62,7 @@ imports="
 				while(true){
 					try{
 						org.talend.marketo.response.ResultSync syncLeads_<%=cid%> = client_<%=cid%>.syncMultipleLeads("<%=operationType%>","<%=lookupField%>",leadRecordList_<%=cid%>,false,null);
-						if(client_<%=cid%>.isAccessTokenExpired(changeRecords_<%=cid%>.getErrors())){
+						if(client_<%=cid%>.isAccessTokenExpired(syncLeads_<%=cid%>.getErrors())){
 		            		client_<%=cid%>.refreshToken();
 		            		globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
 		            		continue;
