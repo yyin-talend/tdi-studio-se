@@ -36,6 +36,14 @@ if ((metadatas != null) && (metadatas.size() > 0) && (metadata = metadatas.get(0
 List<IMetadataColumn> columnList = metadata.getListColumns();
 int nbSchemaColumns = columnList.size();
 
+boolean hasDynamic = false;
+for (IMetadataColumn column : columnList) {
+	if (column.getTalendType().equals("id_Dynamic")) {
+		hasDynamic = true;
+		break;
+	}
+}
+
 %>
 
 org.talend.components.api.component.ComponentDefinition def_<%=cid %> =
@@ -63,43 +71,20 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 } // propInfo
 %>
 
-// FIXME - consider making this an actual class for most of the methods. The issue
-// is that the dynamic stuff is in ee.
 org.talend.components.api.runtime.ComponentRuntimeContainer container_<%=cid %> = 
-    new org.talend.components.api.runtime.ComponentRuntimeContainer() {
-
+<%
+	if (hasDynamic) {
+%>
+    	new routines.system.ComponentRuntimeContainerDynamic() {
+<%
+	} else {
+%>
+    	new routines.system.ComponentRuntimeContainerBase() {
+<%
+	}
+%>
     public java.util.Map<String, Object> getGlobalMap() {
 		return globalMap;
-    }
-
-    public String formatDate(java.util.Date date, String pattern) {
-		return FormatterUtils.format_Date(date, pattern);
-    }
-	
-    public org.talend.components.api.schema.SchemaElement[] getDynamicElements(Object dynamicObj) {
-		routines.system.Dynamic dynamic = (routines.system.Dynamic)dynamicObj;
-		int len = dynamic.getColumnCount();
-		org.talend.components.api.schema.SchemaElement[] schemaElements = new org.talend.components.api.schema.SchemaElement[len]; 
-		for (int i = 0; i < len; i++) {
-        	routines.system.DynamicMetadata dynamicMetadata = dynamic.getColumnMetadata(i);
-        	
-        	// FIXME - set the types up properly
-        	org.talend.components.api.schema.SchemaElement se = 
-        		org.talend.components.api.schema.SchemaFactory.newSchemaElement(org.talend.components.api.schema.SchemaElement.Type.STRING, 
-        			dynamicMetadata.getName());
-        	schemaElements[i] = se;
-        }
-        return schemaElements;
-    }
-
-	// FIXME - this is probably not the right message signature
-    public void setDynamicElements(org.talend.components.api.schema.SchemaElement[] elements) {
-		throw new RuntimeException("implement me");
-    }
-
-    public Object getDynamicValue(Object dynamicObj, String fieldName) {
-		routines.system.Dynamic dynamic = (routines.system.Dynamic)dynamicObj;
-        return dynamic.getColumnValue(fieldName);
     }
 };
 
