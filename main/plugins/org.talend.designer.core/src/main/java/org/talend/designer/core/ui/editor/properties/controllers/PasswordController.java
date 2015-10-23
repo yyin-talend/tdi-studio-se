@@ -122,7 +122,11 @@ public class PasswordController extends TextController {
         data.height = STANDARD_HEIGHT - 2;
         btn.setLayoutData(data);
 
-        dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
+        // dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
+        int buttonHeight = btnSize.y + ITabbedPropertyConstants.VSPACE;
+        if (dynamicProperty.getCurRowSize() < buttonHeight) {
+            dynamicProperty.setCurRowSize(buttonHeight);
+        }
         return lastControlUsed;
     }
 
