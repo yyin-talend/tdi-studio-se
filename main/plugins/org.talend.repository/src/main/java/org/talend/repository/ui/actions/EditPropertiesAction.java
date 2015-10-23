@@ -118,8 +118,7 @@ public class EditPropertiesAction extends AContextualAction {
         if (ERepositoryObjectType.ROUTINES == object.getRepositoryObjectType()
                 || isInstanceofCamelBeans(object.getRepositoryObjectType())) {
             wizard = new EditRoutinePropertiesWizard(object, path, true);
-        } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()
-                || isInstanceofCamelRoutes(object.getRepositoryObjectType())) {
+        } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()) {
             wizard = new EditProcessPropertiesWizard(object, path, true);
         } else {
             wizard = getPropertiesWizard(object, path);
@@ -190,7 +189,7 @@ public class EditPropertiesAction extends AContextualAction {
     }
 
     protected static boolean isInstanceofCamelRoutes(final ERepositoryObjectType type) {
-        return type == ERepositoryObjectType.PROCESS_ROUTE;
+        return type == ERepositoryObjectType.PROCESS_ROUTE || type == ERepositoryObjectType.PROCESS_ROUTELET;
     }
 
     /**
