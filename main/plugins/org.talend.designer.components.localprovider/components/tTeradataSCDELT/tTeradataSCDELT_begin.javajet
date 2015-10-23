@@ -179,7 +179,7 @@ if(columnList != null && columnList.size() > 0) {//Tag_A
         String updateForType2_<%=cid%> = "UPDATE " + tableName_<%=cid%>
                                         + " FROM " + sourceTable_<%=cid%> + " t"
                                         + " SET <%=endDateField%> = cast('" + (new java.sql.Timestamp((Long)start_Hash.get("<%=cid %>")))
-                                        + "' as timestamp format 'YYYY-MM-DDBHH:MI:SS')<%if(isEnableActive) {%>, <%=activeField%> = 0<%}%> "
+                                        + "' as timestamp format 'YYYY-MM-DDBHH:MI:SS.S(F)')<%if(isEnableActive) {%>, <%=activeField%> = 0<%}%> "
                                         + " WHERE <%=updateJoinClauseString%> AND (<%=updateWhereClauseString%>) AND " + tableName_<%=cid%> + ".<%=endDateField%> IS NULL";
         java.sql.Statement stmtType2Update_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtType2Update_<%=cid%>.executeUpdate(updateForType2_<%=cid%>);
@@ -212,9 +212,9 @@ if(columnList != null && columnList.size() > 0) {//Tag_A
         }
         columnNameString = StringUtils.join(columnNames.toArray(), ", ");
         %>
-        String insertForType2_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + "(<%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%><%=surrogateKey%>, <%}%><%=columnNameString%>) SELECT <%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%>" + <%=sequenceName%> + ".NEXTVAL, <%}%>t.<%=selectColumnString%>, '" +
-        (new java.sql.Timestamp((Long)start_Hash.get("<%=cid %>"))) + "', NULL<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, d.<%=versionField%> + 1<%}%> FROM " +
-        sourceTable_<%=cid%> + " t, " + tableName_<%=cid%> + " d WHERE <%=joinClauseString%> AND (<%=whereClauseString%>) AND d.<%=endDateField%> = '" + (new java.sql.Timestamp((Long)start_Hash.get("<%=cid %>"))) + "'";
+        String insertForType2_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + "(<%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%><%=surrogateKey%>, <%}%><%=columnNameString%>) SELECT <%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%>" + <%=sequenceName%> + ".NEXTVAL, <%}%>t.<%=selectColumnString%>, cast('" +
+        (new java.sql.Timestamp((Long)start_Hash.get("<%=cid %>"))) + "' as timestamp format 'YYYY-MM-DDBHH:MI:SS.S(F)'), NULL<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, d.<%=versionField%> + 1<%}%> FROM " +
+        sourceTable_<%=cid%> + " t, " + tableName_<%=cid%> + " d WHERE <%=joinClauseString%> AND (<%=whereClauseString%>) AND d.<%=endDateField%> = cast('" + (new java.sql.Timestamp((Long)start_Hash.get("<%=cid %>"))) + "' as timestamp format 'YYYY-MM-DDBHH:MI:SS.S(F)')";
         java.sql.Statement stmtType2Insert_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtType2Insert_<%=cid%>.executeUpdate(insertForType2_<%=cid%>);
         stmtType2Insert_<%=cid%>.close();
@@ -227,7 +227,7 @@ if(columnList != null && columnList.size() > 0) {//Tag_A
     }
     String outerWhereClauseString = StringUtils.join(outerWhereClause.toArray(), " AND ");
     %>
-    String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + "(<%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%><%=surrogateKey%>, <%}%><%=columnNameString%>) SELECT <%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%>" + <%=sequenceName%> + ".NEXTVAL, <%}%>t.<%=selectColumnString%>"<%if(scdType2Enabled) {%> + ", '" + (new java.sql.Timestamp((Long)start_Hash.get("<%=cid %>"))) + "', NULL"<%}%>
+    String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + "(<%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%><%=surrogateKey%>, <%}%><%=columnNameString%>) SELECT <%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%>" + <%=sequenceName%> + ".NEXTVAL, <%}%>t.<%=selectColumnString%>"<%if(scdType2Enabled) {%> + ", cast('" + (new java.sql.Timestamp((Long)start_Hash.get("<%=cid %>"))) + "' as timestamp format 'YYYY-MM-DDBHH:MI:SS.S(F)'), NULL"<%}%>
     + "<%if(scdType2Enabled && isEnableActive) {%>, 1<%}%><%if(scdType2Enabled && isEnableVersion) {%>, 1<%}%> FROM " +
     sourceTable_<%=cid%> + " t LEFT JOIN " + tableName_<%=cid%> + " d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
     java.sql.Statement stmtInsert_<%=cid%> = conn_<%=cid%>.createStatement();
