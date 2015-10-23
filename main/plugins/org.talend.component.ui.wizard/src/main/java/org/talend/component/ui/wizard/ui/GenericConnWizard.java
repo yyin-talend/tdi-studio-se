@@ -117,12 +117,16 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         case SYSTEM_FOLDER:
             connection = GenericMetadataFactory.eINSTANCE.createGenericConnection();
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-            connectionProperty.setAuthor(((RepositoryContext) CoreRuntimePlugin.getInstance().getContext()
-                    .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+            // ses the id to be used for persistence lookup
+            connectionProperty.setId(ProxyRepositoryFactory.getInstance().getNextId());
+            connectionProperty.setAuthor(
+                    ((RepositoryContext) CoreRuntimePlugin.getInstance().getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
             connectionItem = GenericMetadataFactory.eINSTANCE.createGenericConnectionItem();
+
             connectionItem.setProperty(connectionProperty);
             connectionItem.setConnection(connection);
             break;
@@ -167,13 +171,13 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
         ComponentWizard componentWizard = null;
         if (creation) {
-            componentWizard = internalService.getComponentWizard(typeName, null);
+            componentWizard = internalService.getComponentWizard(typeName, connectionProperty.getId());
         } else {
             String compPropertiesStr = connection.getCompProperties();
             if (compPropertiesStr != null) {
                 Deserialized fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr);
                 if (fromSerialized != null) {
-                    componentWizard = internalService.getTopLevelComponentWizard(fromSerialized.properties, null);
+                    componentWizard = internalService.getTopLevelComponentWizard(fromSerialized.properties, repNode.getId());
                 }
             }
         }
@@ -219,16 +223,13 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                 this.connection.setLabel(displayName);
                 Form form = wizPage.getForm();
                 if (form.isCallAfterFormFinish()) {
+                    if (creation) {
+                        factory.create(connectionItem, new Path(""));
+                    }
                     compService.afterFormFinish(form.getName(), form.getProperties());
                 }
-                if (creation) {
-                    String nextId = factory.getNextId();
-                    connectionProperty.setId(nextId);
-                    factory.create(connectionItem, new Path(""));
-                } else {
-                    GenericUpdateManager.updateGenericConnection(connectionItem);
-                    updateConnectionItem();
-                }
+                GenericUpdateManager.updateGenericConnection(connectionItem);
+                updateConnectionItem();
             } catch (Throwable e) {
                 new ErrorDialogWidthDetailArea(getShell(), IGenericConstants.PLUGIN_ID,
                         Messages.getString("GenericConnWizard.persistenceException"), //$NON-NLS-1$
