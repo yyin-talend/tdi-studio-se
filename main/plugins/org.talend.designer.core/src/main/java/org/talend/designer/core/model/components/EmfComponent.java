@@ -1231,7 +1231,7 @@ public class EmfComponent extends AbstractComponent {
 
         // These parameters is only work when TIS is loaded
         // GLiu Added for Task http://jira.talendforge.org/browse/TESB-4279
-        if (PluginChecker.isTeamEdition() && !"CAMEL".equals(getPaletteType())) { //$NON-NLS-1$
+        if (PluginChecker.isTeamEdition() && !ERepositoryObjectType.PROD_CAMEL.equals(getPaletteType())) {
             boolean defaultParalelize = new Boolean(compType.getHEADER().isPARALLELIZE());
             param = new ElementParameter(node);
             param.setReadOnly(!defaultParalelize);
