@@ -1658,11 +1658,11 @@ public class EmfComponent extends AbstractComponent {
 
                 @Override
                 public int compare(Bean b1, Bean b2) {
-                    if (!b1.getName().equals(b2.getName())) {
-                        return b1.getDistributionName().compareTo(b2.getDistributionName());
-                    } else {
-                        return b1.getName().compareTo(b2.getName());
+                    int cmp = b1.getDistributionName().compareTo(b2.getDistributionName());
+                    if (cmp == 0) {
+                        cmp = b1.getName().compareTo(b2.getName());
                     }
+                    return cmp;
                 }
             });
 
