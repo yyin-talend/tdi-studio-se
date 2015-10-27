@@ -750,6 +750,11 @@ public class UpdateNodeParameterCommand extends Command {
                     String schemaParamName = UpdatesConstants.SCHEMA + UpdatesConstants.COLON
                             + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
                     IElementParameter repositoryParam = node.getElementParameter(schemaParamName);
+                    if (repositoryParam == null) {
+                        schemaParamName = UpdatesConstants.SCHEMA_FLOW + UpdatesConstants.COLON
+                                + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+                        repositoryParam = node.getElementParameter(schemaParamName);
+                    }
                     if (repositoryParam != null && oldSourceId.equals(repositoryParam.getValue())) {
                         node.setPropertyValue(schemaParamName, newSourceId);
                         if (newTable != null) {
