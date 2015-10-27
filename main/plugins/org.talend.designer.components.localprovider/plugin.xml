@@ -3549,6 +3549,7 @@
             <library id="jackson-jaxrs-1.9.13.jar"/>
             <library id="jackson-mapper-asl-1.9.13.jar"/>
             <library id="jackson-xc-1.9.13.jar"/>
+            <library id="jersey-client-1.9.jar"/>
             <library id="jersey-core-1.9.jar"/>
             <library id="log4j-1.2.17.jar"/>
             <library id="protobuf-java-2.5.0.jar"/>
