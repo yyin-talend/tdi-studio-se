@@ -658,7 +658,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setFieldType(EParameterFieldType.CHECK);
         param.setValue(Boolean.TRUE);
         param.setCategory(EComponentCategory.ADVANCED);
-        param.setShow(false);
+        param.setShow(true);
         param.setNumRow(1);
         param.setDefaultValue(param.getValue());
         addElementParameter(param);
