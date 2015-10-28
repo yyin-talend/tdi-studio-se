@@ -65,7 +65,8 @@ public class CodeGeneratorActivator extends AbstractUIPlugin {
     }
 
     private boolean isRequiredJREVersion(String version) {
-        if (version.equals(JavaCore.VERSION_1_5) || version.equals(JavaCore.VERSION_1_6)) {
+        if (version.equals(JavaCore.VERSION_1_5) || version.equals(JavaCore.VERSION_1_6) || version.equals(JavaCore.VERSION_1_7)
+                || version.equals(JavaCore.VERSION_1_8)) {
             return true;
         }
         return false;
