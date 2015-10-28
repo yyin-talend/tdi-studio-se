@@ -96,10 +96,6 @@ public class ComponentsUtils {
                 e.printStackTrace();
             }
         }
-        // TODO Try to get all component properties
-        Set<String> componentNames = service.getAllComponentNames();
-        for (String componentName : componentNames) {
-        }
     }
 
     /**
@@ -145,6 +141,7 @@ public class ComponentsUtils {
                 param.setParentParameter(parentParam);
             }
             param.setCategory(category);
+            param.setRepositoryValue(widgetProperty.getName());
             if (parentParam != null) {
                 // param.setGroup(form.getName());
                 // param.setGroupDisplayName(form.getDisplayName());

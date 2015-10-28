@@ -133,5 +133,10 @@
             class="org.talend.component.ui.wizard.handler.GenericRepositoryContentHandler">
       </RepositoryContent>
    </extension>
-
+   <extension
+         point="org.talend.core.repository.repository_handler">
+      <RepositoryHandler
+            class="org.talend.component.ui.wizard.ui.dnd.GenericDragAndDropHandler">
+      </RepositoryHandler>
+   </extension>
 </plugin>

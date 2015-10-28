@@ -697,6 +697,53 @@ public class Component extends AbstractComponent {
         param.setShow(false);
         param.setDefaultValue(param.getValue());
         listParam.add(param);
+        //
+        param = new ElementParameter(node);
+        param.setName("PROPERTY");//$NON-NLS-1$
+        param.setCategory(EComponentCategory.BASIC);
+        param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+        param.setFieldType(EParameterFieldType.PROPERTY_TYPE);
+        param.setRepositoryValue(getRepositoryType());
+        param.setValue("");//$NON-NLS-1$
+        param.setNumRow(99);
+
+        String context = "FLOW"; //$NON-NLS-1$
+        ElementParameter newParam = new ElementParameter(node);
+        newParam.setCategory(EComponentCategory.BASIC);
+        newParam.setName(EParameterName.PROPERTY_TYPE.getName());
+        newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+        newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+        newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+        newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+        newParam.setValue(BUILTIN);
+        newParam.setNumRow(param.getNumRow());
+        newParam.setFieldType(EParameterFieldType.TECHNICAL);
+        newParam.setShow(false);
+        newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        newParam.setReadOnly(param.isReadOnly());
+        newParam.setNotShowIf(param.getNotShowIf());
+        newParam.setContext(context);
+        newParam.setSerialized(true);
+        newParam.setParentParameter(param);
+
+        newParam = new ElementParameter(node);
+        newParam.setCategory(EComponentCategory.BASIC);
+        newParam.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        newParam.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
+        newParam.setListItemsDisplayName(new String[] {});
+        newParam.setListItemsValue(new String[] {});
+        newParam.setNumRow(param.getNumRow());
+        newParam.setFieldType(EParameterFieldType.TECHNICAL);
+        newParam.setValue(""); //$NON-NLS-1$
+        newParam.setShow(false);
+        newParam.setRequired(true);
+        newParam.setReadOnly(param.isReadOnly());
+        newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$//$NON-NLS-2$
+        newParam.setNotShowIf(param.getNotShowIf());
+        newParam.setContext(context);
+        newParam.setSerialized(true);
+        newParam.setParentParameter(param);
+        listParam.add(param);
     }
 
     private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,
@@ -827,10 +874,9 @@ public class Component extends AbstractComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ENCODING_TYPE.getName());
             newParam.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(
-                    new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
-            newParam.setListItemsDisplayCodeName(
-                    new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+            newParam.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+            newParam.setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
+                    ENCODING_TYPE_CUSTOM });
             newParam.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
             newParam.setValue(ENCODING_TYPE_ISO_8859_15);
             newParam.setNumRow(xmlParam.getNUMROW());
@@ -977,8 +1023,8 @@ public class Component extends AbstractComponent {
                             param.setValue(defaultValue);
                             if (param.getFieldType() == EParameterFieldType.ENCODING_TYPE) {
                                 String encodingType = TalendTextUtils.removeQuotes((String) defaultValue);
-                                IElementParameter elementParameter = param.getChildParameters()
-                                        .get(EParameterName.ENCODING_TYPE.getName());
+                                IElementParameter elementParameter = param.getChildParameters().get(
+                                        EParameterName.ENCODING_TYPE.getName());
                                 if (elementParameter != null) {
                                     elementParameter.setValue(encodingType);
                                 }
@@ -1318,7 +1364,7 @@ public class Component extends AbstractComponent {
                     || ("MERGE").equals(componentConnector.getType().name())) { //$NON-NLS-1$
                 if (currentType == null) {
                     log.warn(Messages.getString("Component.componentNotExist", this.getName() //$NON-NLS-1$
-                    , componentConnector.getType().name()));
+                            , componentConnector.getType().name()));
                 }
                 continue;
             }
