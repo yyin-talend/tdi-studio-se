@@ -14,5 +14,8 @@
     <genClasses ecoreClass="genericMetadata.ecore#//GenericConnectionItem">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute genericMetadata.ecore#//GenericConnectionItem/typeName"/>
     </genClasses>
+    <genClasses ecoreClass="genericMetadata.ecore#//SubContainer">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute genericMetadata.ecore#//SubContainer/compProperties"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -9,4 +9,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" lowerBound="1"
         eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SubContainer" eSuperTypes="../../org.talend.cwm.mip/model/CWM.ecore#//cwm/objectmodel/core/Package">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compProperties" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
+  </eClassifiers>
 </ecore:EPackage>

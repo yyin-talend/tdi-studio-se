@@ -30,7 +30,10 @@ public class MetadataGenericLabelProvider extends RepositoryViewLabelProvider {
         if (element instanceof RepositoryNode) {
             RepositoryNode node = (RepositoryNode) element;
             ERepositoryObjectType repObjType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-            return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(repObjType.getType());
+            if (repObjType != null) {
+                return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(repObjType.getType());
+            }
+
         }
         return super.getImage(element);
     }

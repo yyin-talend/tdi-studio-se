@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.talend.core.model.metadata.builder.connection.ConnectionPackage;
 import org.talend.core.model.properties.PropertiesPackage;
+import orgomg.cwm.objectmodel.core.CorePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -555,6 +556,233 @@ public interface GenericMetadataPackage extends EPackage {
 
 
     /**
+     * The meta object id for the '{@link org.talend.component.ui.model.genericMetadata.impl.SubContainerImpl <em>Sub Container</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.talend.component.ui.model.genericMetadata.impl.SubContainerImpl
+     * @see org.talend.component.ui.model.genericMetadata.impl.GenericMetadataPackageImpl#getSubContainer()
+     * @generated
+     */
+    int SUB_CONTAINER = 2;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__NAME = CorePackage.PACKAGE__NAME;
+
+    /**
+     * The feature id for the '<em><b>Visibility</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__VISIBILITY = CorePackage.PACKAGE__VISIBILITY;
+
+    /**
+     * The feature id for the '<em><b>Client Dependency</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__CLIENT_DEPENDENCY = CorePackage.PACKAGE__CLIENT_DEPENDENCY;
+
+    /**
+     * The feature id for the '<em><b>Supplier Dependency</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__SUPPLIER_DEPENDENCY = CorePackage.PACKAGE__SUPPLIER_DEPENDENCY;
+
+    /**
+     * The feature id for the '<em><b>Constraint</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__CONSTRAINT = CorePackage.PACKAGE__CONSTRAINT;
+
+    /**
+     * The feature id for the '<em><b>Namespace</b></em>' container reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__NAMESPACE = CorePackage.PACKAGE__NAMESPACE;
+
+    /**
+     * The feature id for the '<em><b>Importer</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__IMPORTER = CorePackage.PACKAGE__IMPORTER;
+
+    /**
+     * The feature id for the '<em><b>Stereotype</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__STEREOTYPE = CorePackage.PACKAGE__STEREOTYPE;
+
+    /**
+     * The feature id for the '<em><b>Tagged Value</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__TAGGED_VALUE = CorePackage.PACKAGE__TAGGED_VALUE;
+
+    /**
+     * The feature id for the '<em><b>Document</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__DOCUMENT = CorePackage.PACKAGE__DOCUMENT;
+
+    /**
+     * The feature id for the '<em><b>Description</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__DESCRIPTION = CorePackage.PACKAGE__DESCRIPTION;
+
+    /**
+     * The feature id for the '<em><b>Responsible Party</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__RESPONSIBLE_PARTY = CorePackage.PACKAGE__RESPONSIBLE_PARTY;
+
+    /**
+     * The feature id for the '<em><b>Element Node</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__ELEMENT_NODE = CorePackage.PACKAGE__ELEMENT_NODE;
+
+    /**
+     * The feature id for the '<em><b>Set</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__SET = CorePackage.PACKAGE__SET;
+
+    /**
+     * The feature id for the '<em><b>Rendered Object</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__RENDERED_OBJECT = CorePackage.PACKAGE__RENDERED_OBJECT;
+
+    /**
+     * The feature id for the '<em><b>Vocabulary Element</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__VOCABULARY_ELEMENT = CorePackage.PACKAGE__VOCABULARY_ELEMENT;
+
+    /**
+     * The feature id for the '<em><b>Measurement</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__MEASUREMENT = CorePackage.PACKAGE__MEASUREMENT;
+
+    /**
+     * The feature id for the '<em><b>Change Request</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__CHANGE_REQUEST = CorePackage.PACKAGE__CHANGE_REQUEST;
+
+    /**
+     * The feature id for the '<em><b>Dasdl Property</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__DASDL_PROPERTY = CorePackage.PACKAGE__DASDL_PROPERTY;
+
+    /**
+     * The feature id for the '<em><b>Owned Element</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__OWNED_ELEMENT = CorePackage.PACKAGE__OWNED_ELEMENT;
+
+    /**
+     * The feature id for the '<em><b>Imported Element</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__IMPORTED_ELEMENT = CorePackage.PACKAGE__IMPORTED_ELEMENT;
+
+    /**
+     * The feature id for the '<em><b>Data Manager</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__DATA_MANAGER = CorePackage.PACKAGE__DATA_MANAGER;
+
+    /**
+     * The feature id for the '<em><b>Comp Properties</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER__COMP_PROPERTIES = CorePackage.PACKAGE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of structural features of the '<em>Sub Container</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUB_CONTAINER_FEATURE_COUNT = CorePackage.PACKAGE_FEATURE_COUNT + 1;
+
+
+    /**
      * Returns the meta object for class '{@link org.talend.component.ui.model.genericMetadata.GenericConnection <em>Generic Connection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -595,6 +823,27 @@ public interface GenericMetadataPackage extends EPackage {
      * @generated
      */
     EAttribute getGenericConnectionItem_TypeName();
+
+    /**
+     * Returns the meta object for class '{@link org.talend.component.ui.model.genericMetadata.SubContainer <em>Sub Container</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Sub Container</em>'.
+     * @see org.talend.component.ui.model.genericMetadata.SubContainer
+     * @generated
+     */
+    EClass getSubContainer();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.component.ui.model.genericMetadata.SubContainer#getCompProperties <em>Comp Properties</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Comp Properties</em>'.
+     * @see org.talend.component.ui.model.genericMetadata.SubContainer#getCompProperties()
+     * @see #getSubContainer()
+     * @generated
+     */
+    EAttribute getSubContainer_CompProperties();
 
     /**
      * Returns the factory that creates the instances of the model.
@@ -653,6 +902,24 @@ public interface GenericMetadataPackage extends EPackage {
          * @generated
          */
         EAttribute GENERIC_CONNECTION_ITEM__TYPE_NAME = eINSTANCE.getGenericConnectionItem_TypeName();
+
+        /**
+         * The meta object literal for the '{@link org.talend.component.ui.model.genericMetadata.impl.SubContainerImpl <em>Sub Container</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.component.ui.model.genericMetadata.impl.SubContainerImpl
+         * @see org.talend.component.ui.model.genericMetadata.impl.GenericMetadataPackageImpl#getSubContainer()
+         * @generated
+         */
+        EClass SUB_CONTAINER = eINSTANCE.getSubContainer();
+
+        /**
+         * The meta object literal for the '<em><b>Comp Properties</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute SUB_CONTAINER__COMP_PROPERTIES = eINSTANCE.getSubContainer_CompProperties();
 
     }
 

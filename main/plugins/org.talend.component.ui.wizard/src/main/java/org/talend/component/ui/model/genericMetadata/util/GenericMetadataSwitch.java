@@ -114,6 +114,16 @@ public class GenericMetadataSwitch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case GenericMetadataPackage.SUB_CONTAINER: {
+                SubContainer subContainer = (SubContainer)theEObject;
+                T result = caseSubContainer(subContainer);
+                if (result == null) result = casePackage(subContainer);
+                if (result == null) result = caseNamespace(subContainer);
+                if (result == null) result = caseModelElement(subContainer);
+                if (result == null) result = caseElement(subContainer);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             default: return defaultCase(theEObject);
         }
     }
@@ -145,6 +155,21 @@ public class GenericMetadataSwitch<T> {
      * @generated
      */
     public T caseGenericConnectionItem(GenericConnectionItem object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Sub Container</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Sub Container</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseSubContainer(SubContainer object) {
         return null;
     }
 

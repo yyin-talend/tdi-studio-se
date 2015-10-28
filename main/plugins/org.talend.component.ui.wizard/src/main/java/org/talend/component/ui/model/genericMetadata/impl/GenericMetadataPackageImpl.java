@@ -11,8 +11,10 @@ import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
+import org.talend.component.ui.model.genericMetadata.SubContainer;
 import org.talend.core.model.metadata.builder.connection.ConnectionPackage;
 import org.talend.core.model.properties.PropertiesPackage;
+import orgomg.cwm.objectmodel.core.CorePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -34,6 +36,13 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
      * @generated
      */
     private EClass genericConnectionItemEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass subContainerEClass = null;
 
     /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -140,6 +149,24 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getSubContainer() {
+        return subContainerEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getSubContainer_CompProperties() {
+        return (EAttribute)subContainerEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public GenericMetadataFactory getGenericMetadataFactory() {
         return (GenericMetadataFactory)getEFactoryInstance();
     }
@@ -168,6 +195,9 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
 
         genericConnectionItemEClass = createEClass(GENERIC_CONNECTION_ITEM);
         createEAttribute(genericConnectionItemEClass, GENERIC_CONNECTION_ITEM__TYPE_NAME);
+
+        subContainerEClass = createEClass(SUB_CONTAINER);
+        createEAttribute(subContainerEClass, SUB_CONTAINER__COMP_PROPERTIES);
     }
 
     /**
@@ -197,6 +227,7 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
         ConnectionPackage theConnectionPackage = (ConnectionPackage)EPackage.Registry.INSTANCE.getEPackage(ConnectionPackage.eNS_URI);
         EcorePackage theEcorePackage = (EcorePackage)EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI);
         PropertiesPackage thePropertiesPackage = (PropertiesPackage)EPackage.Registry.INSTANCE.getEPackage(PropertiesPackage.eNS_URI);
+        CorePackage theCorePackage = (CorePackage)EPackage.Registry.INSTANCE.getEPackage(CorePackage.eNS_URI);
 
         // Create type parameters
 
@@ -205,6 +236,7 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
         // Add supertypes to classes
         genericConnectionEClass.getESuperTypes().add(theConnectionPackage.getConnection());
         genericConnectionItemEClass.getESuperTypes().add(thePropertiesPackage.getConnectionItem());
+        subContainerEClass.getESuperTypes().add(theCorePackage.getPackage());
 
         // Initialize classes and features; add operations and parameters
         initEClass(genericConnectionEClass, GenericConnection.class, "GenericConnection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -212,6 +244,9 @@ public class GenericMetadataPackageImpl extends EPackageImpl implements GenericM
 
         initEClass(genericConnectionItemEClass, GenericConnectionItem.class, "GenericConnectionItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getGenericConnectionItem_TypeName(), theEcorePackage.getEString(), "typeName", null, 1, 1, GenericConnectionItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(subContainerEClass, SubContainer.class, "SubContainer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getSubContainer_CompProperties(), theEcorePackage.getEString(), "compProperties", null, 0, 1, SubContainer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Create resource
         createResource(eNS_URI);

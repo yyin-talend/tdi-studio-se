@@ -119,9 +119,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             // ses the id to be used for persistence lookup
             connectionProperty.setId(ProxyRepositoryFactory.getInstance().getNextId());
-            connectionProperty.setAuthor(
-                    ((RepositoryContext) CoreRuntimePlugin.getInstance().getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                            .getUser());
+            connectionProperty.setAuthor(((RepositoryContext) CoreRuntimePlugin.getInstance().getContext()
+                    .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -149,7 +148,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             this.originalStatus = this.connectionItem.getProperty().getStatusCode();
         }
         compService = new GenericWizardInternalService().getComponentService();
-        compService.setRepository(new GenericRepository(connection));
+        compService.setRepository(new GenericRepository());
         IWizardContainer container = this.getContainer();
         if (container instanceof GenericWizardDialog) {
             ((GenericWizardDialog) container).setCompService(compService);

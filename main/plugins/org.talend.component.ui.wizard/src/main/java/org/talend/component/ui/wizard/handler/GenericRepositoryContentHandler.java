@@ -1,6 +1,6 @@
 package org.talend.component.ui.wizard.handler;
 
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -9,11 +9,13 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
+import org.talend.component.ui.model.genericMetadata.SubContainer;
 import org.talend.component.ui.wizard.ui.GenericConnWizard;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
 import org.talend.core.model.metadata.MetadataManager;
@@ -25,9 +27,11 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.RepositoryNodeManager;
 import org.talend.core.repository.utils.XmiResourceManager;
-import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.StableRepositoryNode;
+import orgomg.cwm.objectmodel.core.Package;
 
 /**
  * 
@@ -136,15 +140,38 @@ public class GenericRepositoryContentHandler extends AbstractRepositoryContentHa
         if (isRepObjType(type)) {
             GenericConnection connection = (GenericConnection) ((GenericConnectionItem) repositoryObject.getProperty().getItem())
                     .getConnection();
-            Set<MetadataTable> tableset = ConnectionHelper.getTables(connection);
-            for (MetadataTable metadataTable : tableset) {
-                if (!SubItemHelper.isDeleted(metadataTable)) {
-                    RepositoryNode tableNode = RepositoryNodeManager.createMetatableNode(node, repositoryObject, metadataTable);
-                    node.getChildren().add(tableNode);
-                    if (metadataTable.getColumns().size() > 0) {
-                        RepositoryNodeManager.createColumns(tableNode, repositoryObject, metadataTable);
-                    }
-                }
+            createSubNodes(node, repositoryObject, connection);
+        }
+    }
+
+    private void createSubNodes(RepositoryNode parentNode, IRepositoryViewObject repObj, Package pack) {
+        List<SubContainer> subContainers = PackageHelper.getOwnedElements(pack, SubContainer.class);
+        if (subContainers.size() > 0) {
+            for (SubContainer subContainer : subContainers) {
+                RepositoryNode subContainerNode = createSubContainerNode(parentNode, subContainer.getName());
+                createSubNodes(subContainerNode, repObj, subContainer);
+            }
+        } else {
+            List<MetadataTable> metadataTables = PackageHelper.getOwnedElements(pack, MetadataTable.class);
+            for (MetadataTable metadataTable : metadataTables) {
+                createTable(parentNode, repObj, metadataTable);
+            }
+        }
+    }
+
+    // FIXME: need to improve after...
+    private RepositoryNode createSubContainerNode(RepositoryNode parentNode, String containerName) {
+        RepositoryNode subContainerNode = new StableRepositoryNode(parentNode, containerName, ECoreImage.FOLDER_CLOSE_ICON);
+        parentNode.getChildren().add(subContainerNode);
+        return subContainerNode;
+    }
+
+    private void createTable(RepositoryNode parentNode, IRepositoryViewObject repObj, MetadataTable metadataTable) {
+        if (!SubItemHelper.isDeleted(metadataTable)) {
+            RepositoryNode tableNode = RepositoryNodeManager.createMetatableNode(parentNode, repObj, metadataTable);
+            parentNode.getChildren().add(tableNode);
+            if (metadataTable.getColumns().size() > 0) {
+                RepositoryNodeManager.createColumns(tableNode, repObj, metadataTable);
             }
         }
     }

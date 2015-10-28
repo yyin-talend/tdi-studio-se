@@ -47,9 +47,6 @@
                         property="org.talend.repository.node.metadata.isSchemaColumn">
                   </test>
                   <test
-                        property="org.talend.repository.node.metadata.isSalesforceModule">
-                  </test>
-                  <test
                         property="org.talend.repository.node.metadata.isGenericConnection">
                   </test>
                </or>

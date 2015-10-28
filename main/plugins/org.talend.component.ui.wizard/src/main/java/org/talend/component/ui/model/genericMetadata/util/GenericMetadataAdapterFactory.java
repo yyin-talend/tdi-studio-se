@@ -83,6 +83,10 @@ public class GenericMetadataAdapterFactory extends AdapterFactoryImpl {
                 return createGenericConnectionItemAdapter();
             }
             @Override
+            public Adapter caseSubContainer(SubContainer object) {
+                return createSubContainerAdapter();
+            }
+            @Override
             public Adapter caseElement(Element object) {
                 return createElementAdapter();
             }
@@ -171,6 +175,20 @@ public class GenericMetadataAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createGenericConnectionItemAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.component.ui.model.genericMetadata.SubContainer <em>Sub Container</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.component.ui.model.genericMetadata.SubContainer
+     * @generated
+     */
+    public Adapter createSubContainerAdapter() {
         return null;
     }
 

@@ -55,6 +55,7 @@ public class GenericMetadataFactoryImpl extends EFactoryImpl implements GenericM
         switch (eClass.getClassifierID()) {
             case GenericMetadataPackage.GENERIC_CONNECTION: return createGenericConnection();
             case GenericMetadataPackage.GENERIC_CONNECTION_ITEM: return createGenericConnectionItem();
+            case GenericMetadataPackage.SUB_CONTAINER: return createSubContainer();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -78,6 +79,16 @@ public class GenericMetadataFactoryImpl extends EFactoryImpl implements GenericM
     public GenericConnectionItem createGenericConnectionItem() {
         GenericConnectionItemImpl genericConnectionItem = new GenericConnectionItemImpl();
         return genericConnectionItem;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public SubContainer createSubContainer() {
+        SubContainerImpl subContainer = new SubContainerImpl();
+        return subContainer;
     }
 
     /**

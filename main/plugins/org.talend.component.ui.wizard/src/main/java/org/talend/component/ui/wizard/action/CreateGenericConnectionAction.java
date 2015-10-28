@@ -67,7 +67,7 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
 
     @Override
     protected void init(RepositoryNode node) {
-        if (!connectionTester.isGenericConnection(node)) {
+        if (!isGenericConnection(node)) {
             setEnabled(false);
             return;
         }
@@ -127,10 +127,16 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
     }
 
     protected Image getNodeImage() {
-        if (connectionTester.isGenericConnection(repositoryNode)) {
+        if (isGenericConnection(repositoryNode)) {
             return GenericWizardServiceFactory.getGenericWizardService().getNodeImage(repObjType.getType());
         }
         return null;
+    }
+
+    private boolean isGenericConnection(RepositoryNode node) {
+        ERepositoryObjectType contentType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        boolean isGenericType = GenericWizardServiceFactory.getGenericWizardService().isGenericType(contentType);
+        return isGenericType;
     }
 
     @Override

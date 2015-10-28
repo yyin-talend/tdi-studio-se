@@ -40,6 +40,15 @@ public interface GenericMetadataFactory extends EFactory {
     GenericConnectionItem createGenericConnectionItem();
 
     /**
+     * Returns a new object of class '<em>Sub Container</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Sub Container</em>'.
+     * @generated
+     */
+    SubContainer createSubContainer();
+
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
