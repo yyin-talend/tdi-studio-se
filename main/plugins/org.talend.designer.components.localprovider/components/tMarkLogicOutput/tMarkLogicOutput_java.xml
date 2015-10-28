@@ -5,7 +5,7 @@
         PLATEFORM="ALL"
         RELEASE_DATE="20151030A"
         SERIAL=""
-        STARTABLE="true"
+        STARTABLE="false"
         STATUS="ALPHA"
         DATA_AUTO_PROPAGATE="false"
         SCHEMA_AUTO_PROPAGATE="false"
