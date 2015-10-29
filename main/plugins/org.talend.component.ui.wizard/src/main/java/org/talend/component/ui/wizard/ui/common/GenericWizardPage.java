@@ -19,6 +19,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.properties.presentation.Widget;
 import org.talend.components.api.service.ComponentService;
@@ -48,12 +49,16 @@ public abstract class GenericWizardPage extends WizardPage {
 
     public GenericWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames,
             boolean creation, Form form, ComponentService compService) {
-        super("GenericWizardPage"); //$NON-NLS-1$
-        this.connectionItem = connectionItem;
+        this(connectionItem, isRepositoryObjectEditable);
         this.existingNames = existingNames;
-        this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.form = form;
         this.compService = compService;
+    }
+
+    public GenericWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable) {
+        super("GenericWizardPage"); //$NON-NLS-1$
+        this.connectionItem = connectionItem;
+        this.isRepositoryObjectEditable = isRepositoryObjectEditable;
     }
 
     private boolean callBefore() {
@@ -123,6 +128,10 @@ public abstract class GenericWizardPage extends WizardPage {
 
     public List<ElementParameter> getParameters() {
         return this.parameters;
+    }
+
+    public GenericConnection getConnection() {
+        return (GenericConnection) connectionItem.getConnection();
     }
 
 }

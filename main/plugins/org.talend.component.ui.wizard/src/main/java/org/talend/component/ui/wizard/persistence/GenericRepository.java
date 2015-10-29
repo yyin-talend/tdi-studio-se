@@ -22,15 +22,13 @@ import org.talend.component.ui.wizard.constants.IGenericConstants;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.Repository;
 import org.talend.components.api.schema.Schema;
-import org.talend.components.api.schema.SchemaElement;
-import org.talend.components.api.schema.SchemaElement.Type;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
-import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.properties.Item;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.cwm.helper.PackageHelper;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
@@ -66,7 +64,7 @@ public class GenericRepository implements Repository {
             // if there is a schema then creates a Schema element
             if (schema != null) {
                 MetadataTable metadataTable = createSchema(subContainer, name, serializedProperties);
-                convertComponentSchemaIntoTalendSchema(schema, metadataTable);
+                SchemaUtils.convertComponentSchemaIntoTalendSchema(schema, metadataTable);
             }
             return repositoryLocation + IGenericConstants.REPOSITORY_LOCATION_SEPARATOR + name;
         } else {// simple properties to be set
@@ -89,9 +87,12 @@ public class GenericRepository implements Repository {
     }
 
     private MetadataTable createSchema(SubContainer container, String name, String serializedProperties) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+        metadataTable.setId(factory.getNextId());
         metadataTable.setName(name);
         metadataTable.setLabel(name);
+        metadataTable.setSourceName(name);
         TaggedValue serializedProps = CoreFactory.eINSTANCE.createTaggedValue();
         metadataTable.getTaggedValue().add(serializedProps);
         serializedProps.setTag(IGenericConstants.COMPONENT_PROPERTIES_TAG);
@@ -128,60 +129,6 @@ public class GenericRepository implements Repository {
             }
         }
         return null;
-    }
-
-    /**
-     * DOC sgandon Comment method "convertComponentSchemaIntoTalendSchema".
-     * 
-     * @param schema
-     * @param metadataTable
-     */
-    private void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
-        SchemaElement root = schema.getRoot();
-        if (root != null) {
-            List<SchemaElement> schemaElements = root.getChildren();
-            for (SchemaElement schemaElement : schemaElements) {
-                MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                setupMetadataColumn(metadataColumn, schemaElement);
-                metadataTable.getColumns().add(metadataColumn);
-            }
-        }
-    }
-
-    private void setupMetadataColumn(MetadataColumn metadataColumn, SchemaElement schemaElement) {
-        String talendType = JavaTypesManager.STRING.getId();
-        Type type = schemaElement.getType();
-        switch (type) {
-        case BOOLEAN:
-            talendType = JavaTypesManager.BOOLEAN.getId();
-            break;
-        case INT:
-            talendType = JavaTypesManager.INTEGER.getId();
-            break;
-        case DATE:
-            talendType = JavaTypesManager.DATE.getId();
-            break;
-        case DATETIME:
-            talendType = JavaTypesManager.DATE.getId();
-            break;
-        case DOUBLE:
-            talendType = JavaTypesManager.DOUBLE.getId();
-            break;
-        case DECIMAL:
-            talendType = JavaTypesManager.BIGDECIMAL.getId();
-            break;
-        default:
-            talendType = JavaTypesManager.STRING.getId();
-            break;
-        }
-        metadataColumn.setTalendType(talendType);
-        metadataColumn.setName(schemaElement.getName());
-        metadataColumn.setLabel(metadataColumn.getName());
-        metadataColumn.setPattern(schemaElement.getPattern());
-        metadataColumn.setNullable(schemaElement.isNullable());
-        metadataColumn.setLength(schemaElement.getSize());
-        metadataColumn.setPrecision(schemaElement.getPrecision());
-        metadataColumn.setDefaultValue(schemaElement.getDefaultValue());
     }
 
     /**

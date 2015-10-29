@@ -16,15 +16,19 @@ import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
 import org.talend.component.ui.model.genericMetadata.SubContainer;
+import org.talend.component.ui.wizard.persistence.SchemaUtils;
 import org.talend.component.ui.wizard.ui.GenericConnWizard;
+import org.talend.component.ui.wizard.ui.GenericSchemaWizard;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
 import org.talend.core.model.metadata.MetadataManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.AbstractRepositoryContentHandler;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.repository.utils.RepositoryNodeManager;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.cwm.helper.PackageHelper;
@@ -187,6 +191,29 @@ public class GenericRepositoryContentHandler extends AbstractRepositoryContentHa
         }
 
         return new GenericConnWizard(wb, creation, node, existingNames);
+    }
+
+    @Override
+    public IWizard newSchemaWizard(IWorkbench workbench, boolean creation, IRepositoryViewObject object,
+            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly) {
+        if (object == null) {
+            return null;
+        }
+        IWorkbench wb = workbench;
+        if (wb == null) {
+            wb = PlatformUI.getWorkbench();
+        }
+        MetadataTable table = metadataTable;
+        if (table == null && object instanceof MetadataTableRepositoryObject) {
+            MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) object;
+            table = metaTableRepObj.getTable();
+        }
+        if (table == null) {
+            return null;
+        }
+        ConnectionItem connectionItem = (ConnectionItem) object.getProperty().getItem();
+        table = SchemaUtils.getMetadataTable(connectionItem.getConnection(), table.getLabel());
+        return new GenericSchemaWizard(wb, creation, connectionItem, table, forceReadOnly);
     }
 
 }
