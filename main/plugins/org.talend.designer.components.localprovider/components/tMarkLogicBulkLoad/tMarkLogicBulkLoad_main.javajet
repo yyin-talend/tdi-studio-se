@@ -54,7 +54,7 @@ imports="
     if(runOnWindows_<%= cid %>){
         mlcpCmd_<%= cid %>.append("cmd /c mlcp.bat");
     }else{
-        mlcpCmd_<%= cid %>.append("sh -c mlcp.sh");
+        mlcpCmd_<%= cid %>.append("mlcp.sh");
     }
     if(fmtLoadPath_<%= cid %>.contains(":")){
        fmtLoadPath_<%= cid %> = "/" + fmtLoadPath_<%= cid %>;
@@ -74,7 +74,7 @@ imports="
     %>
        mlcpCmd_<%= cid %>.append(" -output_uri_replace \"");
        mlcpCmd_<%= cid %>.append(fmtLoadPath_<%= cid %>);
-       mlcpCmd_<%= cid %>.append(", '");
+       mlcpCmd_<%= cid %>.append(",'");
        mlcpCmd_<%= cid %>.append((<%= outputURIReplaceTo %>).replace("\\", "/"));
        mlcpCmd_<%= cid %>.append("'\"");
     <%

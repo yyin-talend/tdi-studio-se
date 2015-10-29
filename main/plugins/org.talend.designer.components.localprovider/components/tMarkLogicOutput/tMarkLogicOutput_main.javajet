@@ -44,11 +44,12 @@ imports="
                     String connName = conn.getName();
                     List<IMetadataColumn> columns = metadata.getListColumns();
                     %>
-                    String docId_<%= cid %> = <%= connName %>.docId;
+                    String docId_<%= cid %> = null;
                     String docContent_<%= cid %> = null;
                     <%
                     if("DELETE".equals(actionType)){
                     %>
+                       docId_<%= cid %> = <%= connName %>.docId;
                        docMgr_<%= cid %>.delete(docId_<%= cid %>);
                     <%
                     }else if("INSERT".equals(actionType)){
@@ -72,7 +73,8 @@ imports="
                         <%
                         }else{
                         %>
-                        docMgr_<%= cid %>.write(<%= connName %>.docId, strHandle_<%= cid %>);
+                        docId_<%= cid %> = <%= connName %>.docId;
+                        docMgr_<%= cid %>.write(docId_<%= cid %>, strHandle_<%= cid %>);
                         <%
                         }
                     }else{
