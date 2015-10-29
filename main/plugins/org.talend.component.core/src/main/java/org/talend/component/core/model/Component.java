@@ -2000,7 +2000,7 @@ public class Component extends AbstractComponent {
         Deserialized fromSerialized = ComponentProperties.fromSerialized(propertiesStr);
         if (fromSerialized != null) {
             ComponentProperties componentProperties = fromSerialized.properties;
-            SchemaElement ses = componentProperties.getProperty(value);
+            SchemaElement ses = ComponentsUtils.getGenericSchemaElement(componentProperties, value);
             if (ses != null) {
                 return componentProperties.getValue(ses);
             }
@@ -2013,7 +2013,7 @@ public class Component extends AbstractComponent {
         if (param != null) {
             ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
             if (componentProperties != null) {
-                SchemaElement ses = componentProperties.getProperty(param.getName());
+                SchemaElement ses = ComponentsUtils.getGenericSchemaElement(componentProperties, param.getName());
                 if (ses != null) {
                     componentProperties.setValue(ses, param.getValue());
                     return componentProperties.toSerialized();

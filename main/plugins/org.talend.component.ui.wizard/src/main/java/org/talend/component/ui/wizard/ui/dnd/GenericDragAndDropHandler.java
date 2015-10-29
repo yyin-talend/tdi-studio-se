@@ -37,6 +37,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.IComponentName;
 import org.talend.core.repository.RepositoryComponentSetting;
+import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -76,7 +77,10 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             Deserialized fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr);
             if (fromSerialized != null) {
                 ComponentProperties componentProperties = fromSerialized.properties;
-                return ComponentsUtils.getGenericRepositoryValue(componentProperties, value);
+                SchemaElement ses = ComponentsUtils.getGenericSchemaElement(componentProperties, value);
+                if (ses != null) {
+                    return componentProperties.getValue(ses);
+                }
             }
         }
         return null;
@@ -149,17 +153,11 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
 
     private void setGenericRepositoryValue(GenericConnection connection, INode node, IElementParameter param) {
         if (connection != null) {
-            String compPropertiesStr = connection.getCompProperties();
-            if (compPropertiesStr != null) {
-                Deserialized fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr);
-                if (fromSerialized != null) {
-                    ComponentProperties componentProperties = fromSerialized.properties;
-                    SchemaElement ses = componentProperties.getProperty(param.getName());
-                    if (ses != null) {
-                        componentProperties.setValue(ses, param.getValue());
-                        connection.setCompProperties(compPropertiesStr);
-                    }
-                }
+            IComponent component = node.getComponent();
+            if (component != null && component instanceof AbstractComponent) {
+                AbstractComponent comp = (AbstractComponent) component;
+                String compProperties = comp.genericToSerialized(param);
+                connection.setCompProperties(compProperties);
             }
         }
     }

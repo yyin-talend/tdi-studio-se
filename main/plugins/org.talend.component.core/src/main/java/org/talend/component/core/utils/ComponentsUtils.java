@@ -276,19 +276,25 @@ public class ComponentsUtils {
         return elementParameters;
     }
 
-    public static Object getGenericRepositoryValue(ComponentProperties componentProperties, String value) {
-        if (componentProperties == null) {
+    public static SchemaElement getGenericSchemaElement(ComponentProperties componentProperties, String name) {
+        SchemaElement schemaElement = null;
+        if (componentProperties == null || name == null) {
             return null;
         }
         List<SchemaElement> schemaElements = componentProperties.getProperties();
-        for (SchemaElement schemaElement : schemaElements) {
-            if (schemaElement instanceof ComponentProperties) {
-                ComponentProperties childComponentProperties = (ComponentProperties) schemaElement;
-                getGenericRepositoryValue(childComponentProperties, value);
-            } else if (schemaElement.getName().equals(value)) {
-                return componentProperties.getValue(schemaElement);
+        for (SchemaElement se : schemaElements) {
+            if (name.equals(se.getName())) {
+                schemaElement = se;
+                break;
+            }
+            if (se instanceof ComponentProperties) {
+                ComponentProperties childComponentProperties = (ComponentProperties) se;
+                schemaElement = getGenericSchemaElement(childComponentProperties, name);
+            }
+            if (schemaElement != null) {
+                break;
             }
         }
-        return null;
+        return schemaElement;
     }
 }
