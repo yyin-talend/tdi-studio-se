@@ -123,6 +123,7 @@ import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITestContainerGEFService;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EOozieParameterName;
 import org.talend.designer.core.model.components.EParameterName;
@@ -176,9 +177,6 @@ import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
-import org.talend.utils.json.JSONArray;
-import org.talend.utils.json.JSONException;
-import org.talend.utils.json.JSONObject;
 
 /**
  * The diagram will contain all elements (nodes, connections) The xml that describes the diagram will be saved from the
@@ -964,33 +962,30 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         // if it's a generic component,try to serialize the component to json,then save all in a new ElementParameter,
         // that name: PROPERTIES".Then later when load the job, if the component loaded is a generic component... if
         // yes,then deserialize the json to get back the properties / set each element parameter.
-        JSONArray jsonArray = new JSONArray();
-        try {
-            for (int j = 0; j < paramList.size(); j++) {
-                param = paramList.get(j);
-                if (!param.isSerialized()) {
-                    saveElementParameter(param, process, fileFact, paramList, listParamType);
-                    for (String key : param.getChildParameters().keySet()) {
-                        saveElementParameter(param.getChildParameters().get(key), process, fileFact, paramList, listParamType);
-                    }
-                } else {
-                    JSONObject paramJsonObject = new JSONObject();
-                    paramJsonObject.put(param.getName(), param.getValue());// need json again for value.
-                    for (String key : param.getChildParameters().keySet()) {
-                        paramJsonObject.put(param.getName() + ":" + key, param.getChildParameters().get(key).getValue()); //$NON-NLS-1$
-                    }
-                    if (paramJsonObject.length() > 0) {
-                        jsonArray.put(paramJsonObject);
+        String serializedProperties = null;
+        for (int j = 0; j < paramList.size(); j++) {
+            param = paramList.get(j);
+            if (!param.isSerialized()) {
+                saveElementParameter(param, process, fileFact, paramList, listParamType);
+                for (String key : param.getChildParameters().keySet()) {
+                    saveElementParameter(param.getChildParameters().get(key), process, fileFact, paramList, listParamType);
+                }
+            } else {
+                if (serializedProperties == null) {
+                    if (param.getElement() != null && param.getElement() instanceof INode) {
+                        IComponent iComponent = ((INode) param.getElement()).getComponent();
+                        if (iComponent instanceof AbstractComponent) {
+                            AbstractComponent component = (AbstractComponent) iComponent;
+                            serializedProperties = component.genericToSerialized();
+                        }
                     }
                 }
             }
-        } catch (JSONException e) {
-            ExceptionHandler.process(e);
         }
-        if (jsonArray.length() > 0) {
+        if (serializedProperties != null) {
             ElementParameterType pType = fileFact.createElementParameterType();
             pType.setName("PROPERTIES"); //$NON-NLS-1$
-            pType.setValue(jsonArray.toString());
+            pType.setValue(serializedProperties);
             listParamType.add(pType);
         }
     }
@@ -1177,76 +1172,70 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         // that name: PROPERTIES".Then later when load the job, if the component loaded is a generic component... if
         // yes,then deserialize the json to get back the properties / set each element parameter.
         // Check if it's a generic component
+        IComponent component = null;
         if (elemParam instanceof Node) {
-            IComponent component = ((INode) elemParam).getComponent();
+            component = ((INode) elemParam).getComponent();
             if (EComponentType.GENERIC.equals(component.getComponentType())) {
                 generic = true;
             }
         }
         if (generic) {
-            try {
-                for (int j = 0; j < listParamType.size(); j++) {
-                    pType = (ElementParameterType) listParamType.get(j);
-                    if (pType != null) {
-                        if ("PROPERTIES".equals(pType.getName())) {//$NON-NLS-1$
-                            String pTypeValue = pType.getValue();
-                            if (pTypeValue != null) {
-                                IElementParameter param = null;
-                                JSONArray jsonArray = new JSONArray(pTypeValue);
-                                for (int k = 0; k < jsonArray.length(); k++) {
-                                    JSONObject object = jsonArray.getJSONObject(k);
-                                    Iterator<String> it = object.keys();
-                                    while (it.hasNext()) {
-                                        String key = it.next();
-                                        String value = String.valueOf(object.get(key));
-                                        param = elemParam.getElementParameter(key);
-                                        if (param != null) {
-                                            // Simply skip if this can not be serialized
-                                            if (!param.isSerialized()) {
-                                                continue;
-                                            }
-                                            if ((param.isReadOnly() && !isJunitLoad)
-                                                    && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param
-                                                            .getName().equals(EParameterName.VERSION.getName()))) {
-                                                continue;
-                                            }
-                                            //
-                                            loadElementParameters(elemParam, pType, param, key, value, false);
-                                        }
+            for (int j = 0; j < listParamType.size(); j++) {
+                pType = (ElementParameterType) listParamType.get(j);
+                if (pType != null) {
+                    if ("PROPERTIES".equals(pType.getName())) {//$NON-NLS-1$
+                        String pTypeValue = pType.getValue();
+                        if (pTypeValue != null) {
+                            if (component != null && component instanceof AbstractComponent) {
+                                AbstractComponent comp = (AbstractComponent) component;
+                                List<? extends IElementParameter> paramList = elemParam.getElementParameters();
+                                for (int m = 0; m < paramList.size(); m++) {
+                                    IElementParameter param = paramList.get(m);
+                                    if (!param.isSerialized()) {
+                                        continue;
                                     }
+                                    if ((param.isReadOnly() && !isJunitLoad)
+                                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName()
+                                                    .equals(EParameterName.VERSION.getName()))) {
+                                        continue;
+                                    }
+                                    String value = null;
+                                    Object obj = comp.genericFromSerialized(pTypeValue, param.getName());
+                                    if (obj != null) {
+                                        value = obj.toString();
+                                    }
+                                    loadElementParameters(elemParam, pType, param, param.getName(), value, false);
                                 }
                             }
-                        } else {
-                            IElementParameter param = null;
-                            if (EParameterFieldType.SURVIVOR_RELATION.name().equals(pType.getField())) {
-                                param = new ElementParameter(elemParam);
-                                param.setValue(pType.getValue());
-                                param.setName(pType.getName());
-                                param.setCategory(EComponentCategory.TECHNICAL);
-                                param.setFieldType(EParameterFieldType.SURVIVOR_RELATION);
-                                param.setNumRow(99);
-                                param.setShow(false);
-                                param.setReadOnly(false);
-                                elemParam.addElementParameter(param);
-                                param = null;
+                        }
+                    } else {
+                        IElementParameter param = null;
+                        if (EParameterFieldType.SURVIVOR_RELATION.name().equals(pType.getField())) {
+                            param = new ElementParameter(elemParam);
+                            param.setValue(pType.getValue());
+                            param.setName(pType.getName());
+                            param.setCategory(EComponentCategory.TECHNICAL);
+                            param.setFieldType(EParameterFieldType.SURVIVOR_RELATION);
+                            param.setNumRow(99);
+                            param.setShow(false);
+                            param.setReadOnly(false);
+                            elemParam.addElementParameter(param);
+                            param = null;
+                            continue;
+                        }
+
+                        param = elemParam.getElementParameter(pType.getName());
+                        if (param != null) {
+                            if ((param.isReadOnly() && !isJunitLoad)
+                                    && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
+                                            EParameterName.VERSION.getName()))) {
                                 continue;
                             }
-
-                            param = elemParam.getElementParameter(pType.getName());
-                            if (param != null) {
-                                if ((param.isReadOnly() && !isJunitLoad)
-                                        && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName()
-                                                .equals(EParameterName.VERSION.getName()))) {
-                                    continue;
-                                }
-                                //
-                                loadElementParameters(elemParam, pType, param, pType.getName(), pType.getValue(), false);
-                            }
+                            //
+                            loadElementParameters(elemParam, pType, param, pType.getName(), pType.getValue(), false);
                         }
                     }
                 }
-            } catch (JSONException e) {
-                ExceptionHandler.process(e);
             }
         } else {
             for (int j = 0; j < listParamType.size(); j++) {

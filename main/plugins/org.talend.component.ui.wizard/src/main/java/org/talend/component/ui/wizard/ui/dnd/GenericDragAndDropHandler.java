@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.dnd.AbstractComponentDragAndDropHandler;
+import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.components.api.properties.ComponentProperties;
@@ -75,10 +76,7 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             Deserialized fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr);
             if (fromSerialized != null) {
                 ComponentProperties componentProperties = fromSerialized.properties;
-                SchemaElement ses = componentProperties.getProperty(value);
-                if (ses != null) {
-                    return componentProperties.getValue(ses);
-                }
+                return ComponentsUtils.getGenericRepositoryValue(componentProperties, value);
             }
         }
         return null;

@@ -275,4 +275,20 @@ public class ComponentsUtils {
         }
         return elementParameters;
     }
+
+    public static Object getGenericRepositoryValue(ComponentProperties componentProperties, String value) {
+        if (componentProperties == null) {
+            return null;
+        }
+        List<SchemaElement> schemaElements = componentProperties.getProperties();
+        for (SchemaElement schemaElement : schemaElements) {
+            if (schemaElement instanceof ComponentProperties) {
+                ComponentProperties childComponentProperties = (ComponentProperties) schemaElement;
+                getGenericRepositoryValue(childComponentProperties, value);
+            } else if (schemaElement.getName().equals(value)) {
+                return componentProperties.getValue(schemaElement);
+            }
+        }
+        return null;
+    }
 }

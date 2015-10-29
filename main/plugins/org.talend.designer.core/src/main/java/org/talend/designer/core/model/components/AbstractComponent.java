@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.core.i18n.Messages;
 
@@ -200,4 +201,15 @@ public abstract class AbstractComponent implements IComponent {
         return true;
     }
 
+    public Object genericFromSerialized(String propertiesStr, String value) {
+        return null;
+    }
+
+    public String genericToSerialized(IElementParameter param) {
+        return null;
+    }
+
+    public String genericToSerialized() {
+        return null;
+    }
 }

@@ -31,6 +31,7 @@ import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.components.api.component.ComponentConnector;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentProperties.Deserialized;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.schema.SchemaElement;
 import org.talend.components.api.service.ComponentService;
@@ -676,7 +677,7 @@ public class Component extends AbstractComponent {
 
         param = new ElementParameter(node);
         param.setName(EParameterName.SUBJOB_COLOR.getName());
-        param.setValue("");// TODO
+        param.setValue("");//$NON-NLS-1$// TODO
         param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.ADVANCED);
@@ -688,7 +689,7 @@ public class Component extends AbstractComponent {
 
         param = new ElementParameter(node);
         param.setName(EParameterName.SUBJOB_TITLE_COLOR.getName());
-        param.setValue("");// TODO//$NON-NLS-1$
+        param.setValue("");//$NON-NLS-1$// TODO
         param.setDisplayName(EParameterName.SUBJOB_TITLE_COLOR.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.ADVANCED);
@@ -705,7 +706,7 @@ public class Component extends AbstractComponent {
         param.setFieldType(EParameterFieldType.PROPERTY_TYPE);
         param.setRepositoryValue(getRepositoryType());
         param.setValue("");//$NON-NLS-1$
-        param.setNumRow(99);
+        param.setNumRow(2);
 
         String context = "FLOW"; //$NON-NLS-1$
         ElementParameter newParam = new ElementParameter(node);
@@ -1992,5 +1993,39 @@ public class Component extends AbstractComponent {
     public EList getCONNECTORList() {
         // TODO
         return null;
+    }
+
+    @Override
+    public Object genericFromSerialized(String propertiesStr, String value) {
+        Deserialized fromSerialized = ComponentProperties.fromSerialized(propertiesStr);
+        if (fromSerialized != null) {
+            ComponentProperties componentProperties = fromSerialized.properties;
+            SchemaElement ses = componentProperties.getProperty(value);
+            if (ses != null) {
+                return componentProperties.getValue(ses);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String genericToSerialized(IElementParameter param) {
+        if (param != null) {
+            ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
+            if (componentProperties != null) {
+                SchemaElement ses = componentProperties.getProperty(param.getName());
+                if (ses != null) {
+                    componentProperties.setValue(ses, param.getValue());
+                    return componentProperties.toSerialized();
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String genericToSerialized() {
+        ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
+        return componentProperties.toSerialized();
     }
 }
