@@ -69,6 +69,16 @@ public class ComponentsUtils {
         return getComponentService().getComponentProperties(compName);
     }
 
+    public static List<ComponentDefinition> getPossibleComponents(ComponentProperties properties) {
+        List<ComponentDefinition> possibleComponents = new ArrayList<ComponentDefinition>();
+        try {
+            possibleComponents.addAll(getComponentService().getPossibleComponents(properties));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return possibleComponents;
+    }
+
     public static void loadComponents(ComponentService service) {
         IComponentsFactory componentsFactory = null;
         if (componentsFactory == null) {

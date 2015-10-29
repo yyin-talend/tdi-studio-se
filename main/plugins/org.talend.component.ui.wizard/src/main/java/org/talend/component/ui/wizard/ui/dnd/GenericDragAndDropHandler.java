@@ -49,11 +49,15 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
 
     private static final String SALESFORCE = "SALESFORCE"; //$NON-NLS-1$
 
-    private static final String MAP = "MAP"; //$NON-NLS-1$
+    public static final String COMPONENT_T_SALSEFORCE_CONNECTION = "tSalesforceConnection"; //$NON-NLS-1$
 
-    private static final String INPUT = "tSalesforceInput"; //$NON-NLS-1$
+    public static final String COMPONENT_T_SALSEFORCE_WAVE_BULK_EXEC = "tSalesforceWaveBulkExec"; //$NON-NLS-1$
 
-    private static final String OUTPUT = "tSalesforceOutput"; //$NON-NLS-1$
+    public static final String COMPONENT_T_SALSEFORCE_WAVE_OUTPUT_BULK_EXEC = "tSalesforceWaveOutputBulkExec"; //$NON-NLS-1$
+
+    public static final String COMPONENT_T_SALSEFORCE_INPUT = "tSalesforceInput"; //$NON-NLS-1$
+
+    public static final String COMPONENT_T_SALSEFORCE_OUTPUT = "tSalesforceOutput"; //$NON-NLS-1$
 
     @Override
     public boolean canHandle(Connection connection) {
@@ -110,22 +114,22 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             return false;
         }
         String componentProductname = component.getRepositoryType();
-        if (componentProductname != null && componentProductname.contains(repositoryType)
-                && isSubValid(item, type, seletetedNode, component, repositoryType)) {
-            return true;
-        }
-        return false;
-    }
-
-    protected boolean isSubValid(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
-            String repositoryType) {
-        boolean tableWithMap = true;
-        if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
-            if (component.getName().toUpperCase().endsWith(MAP)) {
-                tableWithMap = false;
+        if (componentProductname != null && componentProductname.contains(repositoryType)) {
+            String componentName = component.getName();
+            if (ERepositoryObjectType.METADATA_SALESFORCE_MODULE == type || ERepositoryObjectType.METADATA_CON_TABLE == type
+                    || ERepositoryObjectType.METADATA_CON_COLUMN == type) {
+                if (COMPONENT_T_SALSEFORCE_INPUT.equals(componentName) || COMPONENT_T_SALSEFORCE_OUTPUT.equals(componentName)) {
+                    return true;
+                }
+            } else {
+                if (COMPONENT_T_SALSEFORCE_CONNECTION.equals(componentName)
+                        || COMPONENT_T_SALSEFORCE_WAVE_BULK_EXEC.equals(componentName)
+                        || COMPONENT_T_SALSEFORCE_WAVE_OUTPUT_BULK_EXEC.equals(componentName)) {
+                    return true;
+                }
             }
         }
-        return tableWithMap;
+        return false;
     }
 
     @Override

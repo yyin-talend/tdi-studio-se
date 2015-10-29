@@ -1437,14 +1437,12 @@ public class Component extends AbstractComponent {
 
     @Override
     public boolean isSchemaAutoPropagated() {
-        // TODO
-        return false;
+        return componentDefinition.isSchemaAutoPropagate();
     }
 
     @Override
     public boolean isDataAutoPropagated() {
-        // TODO
-        return false;
+        return componentDefinition.isDataAutoPropagate();
     }
 
     /*
