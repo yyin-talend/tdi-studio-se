@@ -61,21 +61,13 @@ imports="
                     nb_line_<%= cid %> ++;
                     String docId_<%= cid %> = null;
                     String docContent_<%= cid %> = null;
+                    try{
                     <%
                     if("DELETE".equals(actionType)){
                     %>
                        docId_<%= cid %> = <%= connName %>.docId;
                        docMgr_<%= cid %>.delete(docId_<%= cid %>);
                        nb_line_deleted_<%= cid %> ++;
-                       <%
-                       if(hasMainFlow){
-                       %>
-                          <%= outputConn.getName() %> = new <%= outputConn.getName() %>Struct();
-                          <%= outputConn.getName() %>.docId = docId_<%= cid %>;
-                          <%= outputConn.getName() %>.docContent = docContent_<%= cid %>;
-                       <%
-                       }
-                       %>
                     <%
                     }else if("INSERT".equals(actionType)){
                     %>
@@ -105,9 +97,15 @@ imports="
                     <%
                     }
                     %>
-                        try{
                             docMgr_<%= cid %>.write(docId_<%= cid %>, strHandle_<%= cid %>);
                             nb_line_inserted_<%= cid %> ++;
+                    <%
+                    }else{
+                    %>
+                       Compile Err: UNSUPPORTED_ACTION_TYPE <%= actionType %>
+                    <%
+                    }
+                    %>
                     <%
                             if(hasMainFlow){
                     %>
@@ -136,13 +134,6 @@ imports="
                             e.printStackTrace();
                         }
                         <%
-                    }else{
-                    %>
-                       Compile Err: UNSUPPORTED_ACTION_TYPE <%= actionType %>
-                    <%
-                    }
-                    %>
-                    <%
                 }//Tag D
             }//Tag C
         }//Tag B
