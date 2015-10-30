@@ -205,11 +205,12 @@ public abstract class AbstractComponent implements IComponent {
         return null;
     }
 
+    public void genericFromSerialized(IElementParameter param, String serialized) {
+        // nothing by default
+    }
+
     public String genericToSerialized(IElementParameter param) {
         return null;
     }
 
-    public String genericToSerialized() {
-        return null;
-    }
 }

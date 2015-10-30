@@ -976,7 +976,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         IComponent iComponent = ((INode) param.getElement()).getComponent();
                         if (iComponent instanceof AbstractComponent) {
                             AbstractComponent component = (AbstractComponent) iComponent;
-                            serializedProperties = component.genericToSerialized();
+                            serializedProperties = component.genericToSerialized(param);
                         }
                     }
                 }
@@ -1199,12 +1199,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                                     .equals(EParameterName.VERSION.getName()))) {
                                         continue;
                                     }
-                                    String value = null;
-                                    Object obj = comp.genericFromSerialized(pTypeValue, param.getName());
-                                    if (obj != null) {
-                                        value = obj.toString();
-                                    }
-                                    loadElementParameters(elemParam, pType, param, param.getName(), value, false);
+                                    comp.genericFromSerialized(param, pTypeValue);
+                                    break;
                                 }
                             }
                         }

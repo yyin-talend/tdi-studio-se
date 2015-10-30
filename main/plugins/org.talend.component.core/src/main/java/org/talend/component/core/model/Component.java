@@ -1975,6 +1975,13 @@ public class Component extends AbstractComponent {
     }
 
     @Override
+    public void genericFromSerialized(IElementParameter param, String serialized) {
+        if (param instanceof GenericElementParameter) {
+            ((GenericElementParameter) param).setComponentProperties(ComponentProperties.fromSerialized(serialized).properties);
+        }
+    }
+
+    @Override
     public Object genericFromSerialized(String propertiesStr, String value) {
         Deserialized fromSerialized = ComponentProperties.fromSerialized(propertiesStr);
         if (fromSerialized != null) {
@@ -1989,22 +1996,11 @@ public class Component extends AbstractComponent {
 
     @Override
     public String genericToSerialized(IElementParameter param) {
-        if (param != null) {
+        if (param instanceof GenericElementParameter) {
+            return ((GenericElementParameter) param).getComponentProperties().toSerialized();
+        } else {
             ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
-            if (componentProperties != null) {
-                SchemaElement ses = ComponentsUtils.getGenericSchemaElement(componentProperties, param.getName());
-                if (ses != null) {
-                    componentProperties.setValue(ses, param.getValue());
-                    return componentProperties.toSerialized();
-                }
-            }
+            return componentProperties.toSerialized();
         }
-        return null;
-    }
-
-    @Override
-    public String genericToSerialized() {
-        ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
-        return componentProperties.toSerialized();
     }
 }

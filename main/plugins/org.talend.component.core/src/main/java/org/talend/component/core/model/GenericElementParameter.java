@@ -223,4 +223,12 @@ public class GenericElementParameter extends ElementParameter {
         return this.widget;
     }
 
+    public ComponentProperties getComponentProperties() {
+        return this.componentProperties;
+    }
+
+    public void setComponentProperties(ComponentProperties componentProperties) {
+        this.componentProperties = componentProperties;
+    }
+
 }
