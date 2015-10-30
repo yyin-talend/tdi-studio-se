@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.component.core.model;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +20,17 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.i18n.Messages;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.components.api.component.ComponentConnector;
 import org.talend.components.api.component.ComponentDefinition;
+import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ComponentProperties.Deserialized;
 import org.talend.components.api.properties.presentation.Form;
@@ -56,8 +57,6 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
-import org.talend.designer.core.model.components.ComponentBundleToPath;
-import org.talend.designer.core.model.components.ComponentIconLoading;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
@@ -131,9 +130,6 @@ public class Component extends AbstractComponent {
             if (sb.length() > 0) {
                 sb.append("|");//$NON-NLS-1$
             }
-            // later no need this
-            // TODO
-            sb.append("Service/");//$NON-NLS-1$
             sb.append(familyName);
         }
         // return "Service/Business/Salesforce|Service/Cloud/Salesforce";
@@ -153,9 +149,6 @@ public class Component extends AbstractComponent {
             if (sb.length() > 0) {
                 sb.append("|");//$NON-NLS-1$
             }
-            // later no need this
-            // TODO
-            sb.append("Service/");//$NON-NLS-1$
             sb.append(familyName);
         }
         // return "Service/Business/Salesforce|Service/Cloud/Salesforce";
@@ -1547,32 +1540,24 @@ public class Component extends AbstractComponent {
 
     @Override
     public ImageDescriptor getIcon16() {
-        if (!this.imageRegistry.containsKey(getName() + "_16")) {//$NON-NLS-1$
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName()))
-                    .append(IComponentsFactory.COMPONENTS_INNER_FOLDER).append(getName()).toPortableString();
-            ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
-
-            // only call to initialize the icons in the registry
-            cil.getImage32();
-            cil.getImage16();
-            cil.getImage24();
+        InputStream imageStream = ComponentsUtils.getComponentService().getComponentPngImage(getName(),
+                ComponentImageType.PALLETE_ICON_32X32);
+        if (imageStream != null) {
+            ImageData imageData = new ImageData(imageStream);
+            return ImageDescriptor.createFromImageData(imageData.scaledTo(16, 16));
         }
-        return this.imageRegistry.get(getName() + "_16");//$NON-NLS-1$
+        return null;
     }
 
     @Override
     public ImageDescriptor getIcon24() {
-        if (!this.imageRegistry.containsKey(getName() + "_24")) {//$NON-NLS-1$
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName()))
-                    .append(IComponentsFactory.COMPONENTS_INNER_FOLDER).append(getName()).toPortableString();
-            ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
-
-            // only call to initialize the icons in the registry
-            cil.getImage32();
-            cil.getImage16();
-            cil.getImage24();
+        InputStream imageStream = ComponentsUtils.getComponentService().getComponentPngImage(getName(),
+                ComponentImageType.PALLETE_ICON_32X32);
+        if (imageStream != null) {
+            ImageData imageData = new ImageData(imageStream);
+            return ImageDescriptor.createFromImageData(imageData.scaledTo(24, 24));
         }
-        return this.imageRegistry.get(getName() + "_24");//$NON-NLS-1$
+        return null;
     }
 
     /**
@@ -1582,17 +1567,13 @@ public class Component extends AbstractComponent {
      */
     @Override
     public ImageDescriptor getIcon32() {
-        if (!this.imageRegistry.containsKey(getName() + "_32")) {//$NON-NLS-1$
-            String path = new Path(ComponentBundleToPath.getPathFromBundle(getBundleName()))
-                    .append(IComponentsFactory.COMPONENTS_INNER_FOLDER).append(getName()).toPortableString();
-            ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
-
-            // only call to initialize the icons in the registry
-            cil.getImage32();
-            cil.getImage16();
-            cil.getImage24();
+        InputStream imageStream = ComponentsUtils.getComponentService().getComponentPngImage(getName(),
+                ComponentImageType.PALLETE_ICON_32X32);
+        if (imageStream != null) {
+            ImageData imageData = new ImageData(imageStream);
+            return ImageDescriptor.createFromImageData(imageData);
         }
-        return this.imageRegistry.get(getName() + "_32");//$NON-NLS-1$
+        return null;
     }
 
     @Override
