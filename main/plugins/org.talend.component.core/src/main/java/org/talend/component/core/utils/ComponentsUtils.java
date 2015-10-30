@@ -108,6 +108,11 @@ public class ComponentsUtils {
         }
     }
 
+    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
+            ElementParameter parentParam, AtomicInteger lastRowNum) {
+        return getParametersFromForm(element, category, null, form, parentParam, lastRowNum);
+    }
+
     /**
      * DOC ycbai Comment method "loadParametersFromForm".
      * <p>
@@ -119,8 +124,8 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-            ElementParameter parentParam, AtomicInteger lastRowNum) {
+    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
+            ComponentProperties compProperties, Form form, ElementParameter parentParam, AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         if (category == null) {
             category = EComponentCategory.BASIC;
@@ -131,7 +136,9 @@ public class ComponentsUtils {
         if (form == null) {
             return elementParameters;
         }
-        ComponentProperties compProperties = form.getProperties();
+        if (compProperties == null) {
+            compProperties = form.getProperties();
+        }
         if (element instanceof INode) {
             INode node = (INode) element;
             // Set the properties only one time to get the top-level properties object
@@ -170,7 +177,10 @@ public class ComponentsUtils {
             param.setNumRow(rowNum);
             lastRowNum.set(rowNum);
             if (widgetProperty instanceof Form) {
-                elementParameters.addAll(getParametersFromForm(element, category, (Form) widgetProperty, param, lastRowNum));
+                Form subForm = (Form) widgetProperty;
+                ComponentProperties subProperties = subForm.getProperties();
+                subProperties = (ComponentProperties) compProperties.getProperty(subProperties.getClass());
+                elementParameters.addAll(getParametersFromForm(element, category, subProperties, subForm, param, lastRowNum));
                 continue;
             }
 
@@ -254,6 +264,7 @@ public class ComponentsUtils {
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             // FIXME - Column?
             if (se != null) {
+                se = compProperties.getProperty(se.getName());
                 param.setRequired(se.isRequired());
                 param.setValue(compProperties.getValue(se));
                 List<?> values = se.getPossibleValues();
