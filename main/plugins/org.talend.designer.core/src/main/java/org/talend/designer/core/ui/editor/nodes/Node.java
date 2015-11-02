@@ -65,6 +65,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
@@ -102,6 +103,7 @@ import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -2716,6 +2718,44 @@ public class Node extends Element implements IGraphicalNode {
                         }
                     }
                     break;
+                case COMPONENT_LIST:
+                    if (param != null) {
+                        String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                        if (isUseExistedConnetion(this)) {
+                            List<INode> list = (List<INode>) this.getProcess().getNodesOfType(param.getFilter());
+                            if (list == null || list.size() == 0 || list.isEmpty()) {
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            } else {
+                                List<INode> nodeList = new ArrayList<INode>();
+                                for (INode datanode : list) {
+                                    if (!datanode.isVirtualGenerateNode()) {
+                                        nodeList.add(datanode);
+                                    }
+                                }
+                                if (nodeList.size() == 0 || nodeList.isEmpty()) {
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                    break;
+                                }
+                                boolean foundValue = false;
+                                for (INode datanode : nodeList) {
+                                    if (datanode.getUniqueName().equals(param.getValue())) {
+                                        foundValue = true;
+                                        break;
+                                    }
+                                }
+                                errorMessage = Messages.getString("Node.parameterWrong", param.getDisplayName()); //$NON-NLS-1$
+                                if (!foundValue) {
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                    PropertyChangeCommand changeCommand = new PropertyChangeCommand(this, param.getName(),
+                                            nodeList.get(0).getUniqueName());
+                                    if (this.getCommandStack() != null) {
+                                        this.getCommandStack().execute(changeCommand);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
                 default:
                     if (param.getValue() != null && !(param.getValue() instanceof String)) {
                         break;
@@ -2763,6 +2803,19 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
+    }
+
+    public boolean isUseExistedConnetion(IElement currentElem) {
+        IElementParameter param = currentElem.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+        if (param != null) {
+            Object value = param.getValue();
+            if (value instanceof Boolean) {
+                return (Boolean) value;
+            } else if (value instanceof String) {
+                return Boolean.parseBoolean((String) value);
+            }
+        }
+        return false;
     }
 
     private List<String> getColumnLabels(IMetadataTable metadataTable) {
