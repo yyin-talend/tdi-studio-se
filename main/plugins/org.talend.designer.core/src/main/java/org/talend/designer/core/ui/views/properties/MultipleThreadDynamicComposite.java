@@ -448,37 +448,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     int curNbInRow = nbInRow;
                     int curTop = 0;
 
-                    if (groupName != null) {
-                        if (!hashCurControls.containsKey(groupName)) {
-                            if (groupPosition.size() > 0) {
-                                heightSize += DEFAULT_GROUP_HEIGHT;
-                            }
-                            new GroupController(this).createControl(composite, curParam, numInRow, nbInRow, heightSize,
-                                    lastControl);
-                            groupPosition.put(groupName, heightSize);
-                        }
-                        subComposite = (Composite) hashCurControls.get(groupName);
-                        int h2 = heightSize - groupPosition.get(groupName);
-                        lastControl = controller.createControl(subComposite, curParam, numInRow, nbInRow, h2, lastControl);
-
-                    } else {
-                        if (isCompactView()) {
-                            int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
-                            lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3, lastControl);
-                        } else {
-                            if (numInRow > 1 && nbInRow > 1) {
-                                heightSize += maxRowSize;
-                            }
-                            int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
-                            lastControl = controller.createControl(composite, curParam, 1, 1, h3, null);
-                        }
-                    }
-
-                    // maxRowSize = 0;
-                    if (curRowSize > maxRowSize) {
-                        maxRowSize = curRowSize;
-                        // isCompute = true;
-                    }
                     if (!isCompactView()) {
                         if (numInRow > 1 && nbInRow > 1) {
                             heightSize += maxRowSize;
