@@ -66,6 +66,7 @@ import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
 import org.talend.designer.core.model.utils.emf.component.ITEMSType;
 import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
 
@@ -164,7 +165,6 @@ public class Component extends AbstractComponent {
     public List<ElementParameter> createElementParameters(INode node) {
         List<ElementParameter> listParam;
         listParam = new ArrayList<ElementParameter>();
-
         addMainParameters(listParam, node);
         addPropertyParameters(listParam, node, NORMAL_PROPERTY);
         addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
@@ -974,7 +974,7 @@ public class Component extends AbstractComponent {
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
         EComponentCategory category = advanced ? EComponentCategory.ADVANCED : EComponentCategory.BASIC;
         ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
-        Form form = props.getForm(advanced ? "Advanced" : "Main");
+        Form form = props.getForm(advanced ? "Advanced" : "Main"); //$NON-NLS-1$ //$NON-NLS-2$
         listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, form, null, null));
     }
 
@@ -1975,21 +1975,39 @@ public class Component extends AbstractComponent {
     }
 
     @Override
-    public void genericFromSerialized(IElementParameter param, String serialized) {
-        if (param instanceof GenericElementParameter) {
-            ((GenericElementParameter) param).setComponentProperties(ComponentProperties.fromSerialized(serialized).properties);
+    public void initNodePropertiesFromSerialized(INode node, String serialized) {
+        if (node != null) {
+            node.setComponentProperties(ComponentProperties.fromSerialized(serialized).properties);
         }
     }
 
     @Override
-    public Object genericFromSerialized(String propertiesStr, String value) {
-        Deserialized fromSerialized = ComponentProperties.fromSerialized(propertiesStr);
+    public void initParamPropertiesFromSerialized(IElementParameter param, String serialized) {
+        if (param instanceof GenericElementParameter) {
+            Deserialized fromSerialized = ComponentProperties.fromSerialized(serialized);
+            if (fromSerialized != null) {
+                ComponentProperties componentProperties = fromSerialized.properties;
+                ((GenericElementParameter) param).setComponentProperties(ComponentsUtils.getCurrentComponentProperties(
+                        componentProperties, param.getName()));
+            }
+        }
+    }
+
+    @Override
+    public Object getElementParameterValue(IElementParameter param) {
+        if (param instanceof GenericElementParameter) {
+            return ComponentsUtils.getGenericPropertyValue(((GenericElementParameter) param).getComponentProperties(),
+                    param.getName());
+        }
+        return null;
+    }
+
+    @Override
+    public Object genericFromSerialized(String serialized, String name) {
+        Deserialized fromSerialized = ComponentProperties.fromSerialized(serialized);
         if (fromSerialized != null) {
             ComponentProperties componentProperties = fromSerialized.properties;
-            SchemaElement ses = ComponentsUtils.getGenericSchemaElement(componentProperties, value);
-            if (ses != null) {
-                return componentProperties.getValue(ses);
-            }
+            return ComponentsUtils.getGenericPropertyValue(componentProperties, name);
         }
         return null;
     }
@@ -1997,7 +2015,7 @@ public class Component extends AbstractComponent {
     @Override
     public String genericToSerialized(IElementParameter param) {
         if (param instanceof GenericElementParameter) {
-            return ((GenericElementParameter) param).getComponentProperties().toSerialized();
+            return ((Node) ((GenericElementParameter) param).getElement()).getComponentProperties().toSerialized();
         } else {
             ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
             return componentProperties.toSerialized();

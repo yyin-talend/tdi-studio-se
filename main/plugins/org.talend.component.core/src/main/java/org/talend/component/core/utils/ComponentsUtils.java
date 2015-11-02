@@ -297,6 +297,28 @@ public class ComponentsUtils {
         return elementParameters;
     }
 
+    public static ComponentProperties getCurrentComponentProperties(ComponentProperties componentProperties, String name) {
+        ComponentProperties currentComponentProperties = null;
+        if (componentProperties == null || name == null) {
+            return null;
+        }
+        List<SchemaElement> schemaElements = componentProperties.getProperties();
+        for (SchemaElement se : schemaElements) {
+            if (name.equals(se.getName())) {
+                currentComponentProperties = componentProperties;
+                break;
+            }
+            if (se instanceof ComponentProperties) {
+                ComponentProperties childComponentProperties = (ComponentProperties) se;
+                currentComponentProperties = getCurrentComponentProperties(childComponentProperties, name);
+            }
+            if (currentComponentProperties != null) {
+                break;
+            }
+        }
+        return currentComponentProperties;
+    }
+
     public static SchemaElement getGenericSchemaElement(ComponentProperties componentProperties, String name) {
         SchemaElement schemaElement = null;
         if (componentProperties == null || name == null) {
@@ -317,5 +339,30 @@ public class ComponentsUtils {
             }
         }
         return schemaElement;
+    }
+
+    public static Object getGenericPropertyValue(ComponentProperties componentProperties, String name) {
+        Object obj = null;
+        SchemaElement schemaElement = null;
+        if (componentProperties == null || name == null) {
+            return null;
+        }
+        List<SchemaElement> schemaElements = componentProperties.getProperties();
+        for (SchemaElement se : schemaElements) {
+            if (name.equals(se.getName())) {
+                schemaElement = se;
+                obj = componentProperties.getValue(schemaElement);
+                break;
+            }
+            if (se instanceof ComponentProperties) {
+                ComponentProperties childComponentProperties = (ComponentProperties) se;
+                schemaElement = getGenericSchemaElement(childComponentProperties, name);
+                obj = childComponentProperties.getValue(schemaElement);
+            }
+            if (schemaElement != null) {
+                break;
+            }
+        }
+        return obj;
     }
 }

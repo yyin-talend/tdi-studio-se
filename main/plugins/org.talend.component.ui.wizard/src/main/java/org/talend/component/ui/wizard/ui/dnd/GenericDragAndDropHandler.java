@@ -19,12 +19,10 @@ import java.util.Set;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.dnd.AbstractComponentDragAndDropHandler;
 import org.talend.component.core.model.GenericElementParameter;
-import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ComponentProperties.Deserialized;
-import org.talend.components.api.schema.SchemaElement;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
@@ -77,15 +75,13 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
         if (connection == null) {
             return null;
         }
-        String compPropertiesStr = connection.getCompProperties();
-        if (compPropertiesStr != null) {
-            Deserialized fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr);
+        String serialized = connection.getCompProperties();
+        if (serialized != null) {
+            Deserialized fromSerialized = ComponentProperties.fromSerialized(serialized);
             if (fromSerialized != null) {
                 ComponentProperties componentProperties = fromSerialized.properties;
-                SchemaElement ses = ComponentsUtils.getGenericSchemaElement(componentProperties, value);
-                if (ses != null) {
-                    return componentProperties.getValue(ses);
-                }
+                // return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+                return "test";
             }
         }
         return null;
