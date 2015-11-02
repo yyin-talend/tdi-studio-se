@@ -2836,11 +2836,13 @@ public class Node extends Element implements IGraphicalNode {
                             }
                         }
                     }
+                    checkDataprepRun(param);
                 }
             }
             checkValidationRule(param);
 
             checktAggregateRow(param);
+
         }
 
         checkJobletConnections();
@@ -3028,6 +3030,17 @@ public class Node extends Element implements IGraphicalNode {
             String errorMessage = Messages.getString("Node.eachRowNeedLoop", param.getDisplayName()); //$NON-NLS-1$
             Problems.add(ProblemStatus.ERROR, this, errorMessage);
             // }
+        }
+    }
+
+    private void checkDataprepRun(IElementParameter param) {
+        if (EParameterName.PREPARATION_ID.getName().equals(param.getName())) {
+            final IElementParameter prepIdParam = getElementParameter(EParameterName.PREPARATION_ID.getName());
+            if (prepIdParam == null || prepIdParam.getValue() == null
+                    || "".equals(TalendTextUtils.removeQuotes(String.valueOf(prepIdParam.getValue())).trim())) {
+                Problems.add(ProblemStatus.ERROR, this, "Must set the preparation id");
+
+            }
         }
     }
 
