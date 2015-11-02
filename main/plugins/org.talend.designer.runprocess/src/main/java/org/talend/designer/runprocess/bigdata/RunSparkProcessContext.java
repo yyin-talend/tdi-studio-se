@@ -49,7 +49,7 @@ public class RunSparkProcessContext extends RunBigDataProcessContext {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
             ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
                     .getDefault().getService(ITestContainerProviderService.class);
-            if (testContainerService != null && property.getItem() != null) {
+            if (testContainerService != null && property != null && property.getItem() != null) {
                 isTestContainer = testContainerService.isTestContainerItem(property.getItem());
             }
         }
