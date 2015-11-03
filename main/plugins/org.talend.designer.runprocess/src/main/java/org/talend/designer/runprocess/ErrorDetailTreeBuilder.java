@@ -22,11 +22,14 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
+import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.designer.core.DesignerPlugin;
 
 /**
  * DOC chuang class global comment. Detailled comment
@@ -132,18 +135,37 @@ public class ErrorDetailTreeBuilder {
             entry.addItem(problem);
         }
 
+        @Override
         public List getChildren() {
             return new ArrayList<ComponentErrorEntry>(componentEntryMap.values());
         }
 
+        @Override
         public Image getImage() {
+            IProcess activeProcess = DesignerPlugin.getDefault().getRunProcessService().getActiveProcess();
+            if (activeProcess != null) {
+                String componentsType = activeProcess.getComponentsType();
+                if (HadoopConstants.MAPREDUCE_TYPE.equals(componentsType)) {
+                    return ImageProvider.getImage(ECoreImage.PROCESS_BATCH_MR_ICON);
+                } else if (HadoopConstants.SPARK_TYPE.equals(componentsType)) {
+                    return ImageProvider.getImage(ECoreImage.PROCESS_BATCH_SPARK_ICON);
+                } else if (HadoopConstants.STORM_TYPE.equals(componentsType)) {
+                    return ImageProvider.getImage(ECoreImage.PROCESS_STREAMING_STORM_ICON);
+                } else if (HadoopConstants.SPARKSTREAMING_TYPE.equals(componentsType)) {
+                    return ImageProvider.getImage(ECoreImage.PROCESS_STREAMING_SPARK_ICON);
+                } else {
+                    return ImageProvider.getImage(ECoreImage.PROCESS_ICON);
+                }
+            }
             return ImageProvider.getImage(ECoreImage.PROCESS_ICON);
         }
 
+        @Override
         public String getLabel() {
             return label;
         }
 
+        @Override
         public boolean hasChildren() {
             return componentEntryMap.values().size() > 0;
         }
@@ -166,6 +188,7 @@ public class ErrorDetailTreeBuilder {
             this.label = label;
         }
 
+        @Override
         public String getLabel() {
             return label;
         }
@@ -178,6 +201,7 @@ public class ErrorDetailTreeBuilder {
             }
         }
 
+        @Override
         public List getChildren() {
             return errors;
         }
@@ -187,6 +211,7 @@ public class ErrorDetailTreeBuilder {
          * 
          * @see org.talend.designer.runprocess.ErrorDetailTreeBuilder.IContainerEntry#getImage()
          */
+        @Override
         public Image getImage() {
             if (label.equals(GENERAL_ERROR)) {
                 return ImageProvider.getImage(ECoreImage.UNKNOWN);
@@ -201,6 +226,7 @@ public class ErrorDetailTreeBuilder {
          * 
          * @see org.talend.designer.runprocess.ErrorDetailTreeBuilder.IContainerEntry#hasChildren()
          */
+        @Override
         public boolean hasChildren() {
             return errors.size() > 0;
         }
