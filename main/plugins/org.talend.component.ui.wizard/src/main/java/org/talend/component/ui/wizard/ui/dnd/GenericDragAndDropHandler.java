@@ -17,8 +17,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.dnd.AbstractComponentDragAndDropHandler;
 import org.talend.component.core.model.GenericElementParameter;
+import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.components.api.properties.ComponentProperties;
@@ -80,8 +82,19 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             Deserialized fromSerialized = ComponentProperties.fromSerialized(serialized);
             if (fromSerialized != null) {
                 ComponentProperties componentProperties = fromSerialized.properties;
-                // return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-                return "test";
+                String tableName = null;
+                if (IComponentConstants.SCHEMA.equals(value)) {
+                    if (table != null) {
+                        tableName = table.getTableName();
+                        if (tableName != null) {
+                            return table.getId() + " - " + tableName;//$NON-NLS-1$
+                        }
+                    }
+                } else if (IComponentConstants.MODULENAME.equals(value)) {
+                    return tableName;
+                } else {
+                    return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+                }
             }
         }
         return null;
