@@ -223,7 +223,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                 Form form = wizPage.getForm();
                 if (form.isCallAfterFormFinish()) {
                     if (creation) {
-                        factory.create(connectionItem, new Path(""));
+                        factory.create(connectionItem, new Path("")); //$NON-NLS-1$
                     }
                     compService.afterFormFinish(form.getName(), form.getProperties());
                 }
@@ -244,7 +244,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     private String getPropertyName() throws Exception {
         for (ElementParameter parameter : parameters) {
-            if ("name".equalsIgnoreCase(parameter.getName())) { //$NON-NLS-1$
+            if (IGenericConstants.NAME_PROPERTY.equalsIgnoreCase(parameter.getName())) {
                 return String.valueOf(parameter.getValue());
             }
         }

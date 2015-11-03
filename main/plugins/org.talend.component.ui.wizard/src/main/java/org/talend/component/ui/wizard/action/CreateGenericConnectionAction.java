@@ -12,7 +12,6 @@ import org.talend.component.ui.wizard.internal.service.GenericWizardInternalServ
 import org.talend.component.ui.wizard.ui.GenericConnWizard;
 import org.talend.component.ui.wizard.ui.common.GenericWizardDialog;
 import org.talend.component.ui.wizard.util.GenericWizardServiceFactory;
-import org.talend.component.ui.wizard.view.tester.GenericConnectionTester;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.actions.metadata.AbstractCreateAction;
@@ -34,8 +33,6 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
 
     private boolean creation = true;
 
-    private GenericConnectionTester connectionTester;
-
     private ERepositoryObjectType repObjType;
 
     public CreateGenericConnectionAction() {
@@ -43,7 +40,6 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
         if (repositoryNode == null) {
             repositoryNode = getCurrentRepositoryNode();
         }
-        connectionTester = new GenericConnectionTester();
         repObjType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
         this.setText(getCreateLabel());
         this.setToolTipText(getEditLabel());

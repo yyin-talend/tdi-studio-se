@@ -95,6 +95,12 @@
             level="10"
             name="Metadata/Create generic connection">
       </Action>
+      <Action
+            class="org.talend.component.ui.wizard.action.EditGenericConnectionPropertiesAction"
+            id="org.talend.component.ui.wizard.action.EditGenericConnectionPropertiesAction"
+            isPropertiesAction="true"
+            name="Edit Properties">
+      </Action>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">

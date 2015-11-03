@@ -24,4 +24,6 @@ public interface IGenericConstants {
 
     public static final String REPOSITORY_LOCATION_SEPARATOR = "#"; //$NON-NLS-1$
 
+    public static final String NAME_PROPERTY = "name"; //$NON-NLS-1$
+
 }
