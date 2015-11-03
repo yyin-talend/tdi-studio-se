@@ -73,6 +73,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.PluginChecker;
+import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
@@ -166,6 +167,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     private List<String> mavenModules = new ArrayList<String>();
 
     private ExportFileResource[] exportFileResource;
+    
+    private boolean isHDInsight = false;
 
     public static final String PLUGIN_ID = "org.talend.libraries.apache.storm"; //$NON-NLS-1$
 
@@ -289,6 +292,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected List<URL> posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess,
             ProcessItem processItem, String selectedJobVersion, List<URL> resources, String... codeOptions) {
+        isHDInsight = isHDInsight(processItem);
+        
         resources.addAll(getLauncher(isOptionChoosed(ExportChoice.needLauncher),
                 isOptionChoosed(ExportChoice.setParameterValues), isOptionChoosed(ExportChoice.needContext), jobProcess,
                 processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
@@ -309,8 +314,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         // workaround for problem on children jobs generation
         processItem.getProcess().getNode();
-
-        addContextScripts(process[i], selectedJobVersion, isOptionChoosed(ExportChoice.needContext));
+        
+        if(!isHDInsight) {
+            addContextScripts(process[i], selectedJobVersion, isOptionChoosed(ExportChoice.needContext));
+        }
 
         addBuildScripts(process[i], processItem, selectedJobVersion);
 
@@ -325,6 +332,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice,
                 selectedJobVersion);
         return childrenList;
+    }
+    
+    private boolean isHDInsight(ProcessItem processItem) {
+        Object distribution = getProcessParameterValue(processItem, "DISTRIBUTION"); //$NON-NLS-1$
+        if ("MICROSOFT_HD_INSIGHT".equals(distribution)) { //$NON-NLS-1$
+            return true;
+        }
+        return false;
     }
 
     private List<URL> getEsbConfigs(ProcessItem processItem) {
@@ -1307,8 +1322,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
         allJobScripts.addAll(getJobScripts(childProjectName, process.getProperty().getLabel(),
                 process.getProperty().getVersion(), isOptionChoosed(ExportChoice.needJobScript)));
-        addContextScripts(process, process.getProperty().getLabel(), process.getProperty().getVersion(), resource,
-                isOptionChoosed(ExportChoice.needContext));
+        if (!isHDInsight) {
+            addContextScripts(process, process.getProperty().getLabel(), process.getProperty().getVersion(), resource,
+                    isOptionChoosed(ExportChoice.needContext));
+        }
         addJobItem(allResources, process, isOptionChoosed(ExportChoice.needJobItem), resource);
         addDependencies(allResources, process, isOptionChoosed(ExportChoice.needDependencies)
                 && isOptionChoosed(ExportChoice.needJobItem), resource);
@@ -1603,8 +1620,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String jobPath = projectName + PATH_SEPARATOR + jobFolderName;
             jarbuilder.setIncludeDir(Collections.singleton(jobPath));
             // filter the context
-            String contextPath = jobPath + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
-            jarbuilder.setExcludeDir(Collections.singleton(contextPath));
+            if (!isHDInsight) {
+                String contextPath = jobPath + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
+                jarbuilder.setExcludeDir(Collections.singleton(contextPath));
+            }
 
             jarbuilder.buildJar();
 
