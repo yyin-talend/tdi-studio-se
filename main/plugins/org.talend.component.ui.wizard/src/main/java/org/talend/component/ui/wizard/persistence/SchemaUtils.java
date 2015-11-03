@@ -14,7 +14,6 @@ package org.talend.component.ui.wizard.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.talend.component.ui.model.genericMetadata.SubContainer;
 import org.talend.components.api.schema.Schema;
@@ -25,7 +24,6 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 
 /**
@@ -51,22 +49,6 @@ public class SchemaUtils {
         List<MetadataTable> tables = getMetadataTables(connection);
         for (MetadataTable table : tables) {
             if (tabLabel != null && tabLabel.equals(table.getLabel())) {
-                return table;
-            }
-        }
-        return null;
-    }
-
-    public static MetadataTable findByLabel(Connection connection, String label) {
-        if (connection == null) {
-            throw new IllegalArgumentException("null connection"); //$NON-NLS-1$
-        }
-        if (label == null || "".equals(label)) {
-            throw new IllegalArgumentException("null/empty label"); //$NON-NLS-1$
-        }
-        Set<MetadataTable> tables = ConnectionHelper.getTables(connection);
-        for (MetadataTable table : tables) {
-            if (label.equals(table.getLabel())) {
                 return table;
             }
         }
