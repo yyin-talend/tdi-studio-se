@@ -26,5 +26,11 @@ public interface IComponentConstants {
 
     public static final String SCHEMA = "schema";//$NON-NLS-1$ 
 
-    public static final String MODULENAME = "moduleName";//$NON-NLS-1$ 
+    public static final String MODULENAME = "moduleName";//$NON-NLS-1$  
+
+    public static final String QUERYMODE = "QueryMode";//$NON-NLS-1$
+
+    public static final String QUERY_QUERY = "Query";//$NON-NLS-1$
+
+    public static final String QUERY_BULK = "Bulk";//$NON-NLS-1$
 }
