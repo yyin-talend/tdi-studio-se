@@ -1318,25 +1318,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String[] addVMArguments(String[] strings) {
         String[] vmargs = getJVMArgs();
-
-        RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
-        if (runProcessContext != null) {
-            ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
-            if (config != null && config.getCommandlineServerConfig() == null) {
-                if (config.isRemote()) {
-                    if (config.isUseJMX()) {
-                        String[] jmxArg = new String[] { "-Dcom.sun.management.jmxremote",
-                                "-Dcom.sun.management.jmxremote.port=" + config.getRemotePort(),
-                                "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false " };
-                        String[] _vmargs = new String[vmargs.length + jmxArg.length];
-                        System.arraycopy(vmargs, 0, _vmargs, 0, vmargs.length);
-                        System.arraycopy(jmxArg, 0, _vmargs, vmargs.length, jmxArg.length);
-                        vmargs = _vmargs;
-                    }
-                }
-            }
-        }
-
+        
         if (vmargs != null && vmargs.length > 0) {
             String[] lines = new String[strings.length + vmargs.length];
             System.arraycopy(strings, 0, lines, 0, 1);
@@ -1351,10 +1333,10 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     public String[] getJVMArgs() {
         String[] vmargs = getSettingsJVMArguments();
         /* check parameter won't happened on exportingJob */
+        List<String> asList = convertArgsToList(vmargs);
         if (!isExportConfig() && !isRunAsExport()) {
             String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-1$
             String encodingFromIni = "-Dfile.encoding=" + fileEncoding; //$NON-NLS-1$
-            List<String> asList = convertArgsToList(vmargs);
             boolean encodingSetInjob = false;
             for (String arg : asList) {
                 if (arg.startsWith("-Dfile.encoding") && fileEncoding != null) { //$NON-NLS-1$
@@ -1365,9 +1347,25 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
             if (!encodingSetInjob) {
                 asList.add(encodingFromIni);
-                vmargs = asList.toArray(new String[0]);
             }
         }
+        //add args if using JMX.
+        RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        if (runProcessContext != null) {
+            ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
+            if (config != null && config.getCommandlineServerConfig() == null) {
+                if (config.isRemote()) {
+                    if (config.isUseJMX()) {
+                        asList.add("-Dcom.sun.management.jmxremote"); //$NON-NLS-1$
+                        asList.add("-Dcom.sun.management.jmxremote.port=" + config.getRemotePort()); //$NON-NLS-1$
+                        asList.add("-Dcom.sun.management.jmxremote.ssl=false"); //$NON-NLS-1$
+                        asList.add("-Dcom.sun.management.jmxremote.authenticate=false"); //$NON-NLS-1$
+                    }
+                }
+            }
+        }
+        
+        vmargs = asList.toArray(new String[0]);
         return vmargs;
     }
 
