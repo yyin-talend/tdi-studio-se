@@ -1729,7 +1729,7 @@ public class Component extends AbstractComponent {
     @Override
     public String getRepositoryType() {
         // FIXME - this is the name of the object stored in the repository, need to put this in the definition
-        return "SALESFORCE_CONNECTION";
+        return "salesforce";
     }
 
     @Override

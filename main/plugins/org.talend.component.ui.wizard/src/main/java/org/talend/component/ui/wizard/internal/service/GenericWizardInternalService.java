@@ -55,6 +55,7 @@ public class GenericWizardInternalService implements IGenericWizardInternalServi
         return getComponentService().getComponentWizardsForProperties(properties, location);
     }
 
+    @Override
     public ComponentWizard getTopLevelComponentWizard(ComponentProperties properties, String location) {
         List<ComponentWizard> componentWizards = getComponentWizardsForProperties(properties, location);
         for (ComponentWizard componentWizard : componentWizards) {
@@ -85,6 +86,7 @@ public class GenericWizardInternalService implements IGenericWizardInternalServi
             dynamicConstructor.setAccessible(true);
             typeObject = dynamicConstructor.newInstance(type, label, folder, type, ordinal, false, alias,
                     new String[] { ERepositoryObjectType.PROD_DI }, false, new String[0], new boolean[] { true });
+            typeObject.setAParent(ERepositoryObjectType.METADATA);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }

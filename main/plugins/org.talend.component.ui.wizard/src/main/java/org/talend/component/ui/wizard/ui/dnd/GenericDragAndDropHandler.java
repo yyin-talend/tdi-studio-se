@@ -48,7 +48,7 @@ import org.talend.repository.model.RepositoryNode;
  */
 public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandler {
 
-    private static final String SALESFORCE = "SALESFORCE"; //$NON-NLS-1$
+    private static final String SALESFORCE = "salesforce"; //$NON-NLS-1$
 
     public static final String COMPONENT_T_SALSEFORCE_CONNECTION = "tSalesforceConnection"; //$NON-NLS-1$
 
