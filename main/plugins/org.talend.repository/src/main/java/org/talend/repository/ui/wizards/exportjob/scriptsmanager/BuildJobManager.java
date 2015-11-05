@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
@@ -160,11 +161,13 @@ public class BuildJobManager {
         }
         IBuildJobHandler buildJobHandler = BuildJobFactory.createBuildJobHandler(processItem, context, version, exportChoiceMap,
                 jobExportType);
+        ProcessUtils.setHDInsight(ProcessUtils.isDistributionExist(processItem));
         buildJobHandler.generateItemFiles(true, new SubProgressMonitor(pMonitor, scale));
         buildJobHandler.generateJobFiles(new SubProgressMonitor(pMonitor, scale));
         String label = processItem.getProperty().getLabel();
         pMonitor.setTaskName(Messages.getString("BuildJobManager.building", label));//$NON-NLS-1$
         buildJobHandler.build(new SubProgressMonitor(pMonitor, scale));
+        ProcessUtils.setHDInsight(false);
         IFile jobTargetFile = buildJobHandler.getJobTargetFile();
         if (jobTargetFile != null && jobTargetFile.exists()) {
             IPath jobZipLocation = jobTargetFile.getLocation();

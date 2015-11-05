@@ -24,6 +24,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
@@ -153,7 +154,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         }
         // the running context is only useful, when binaries
         addArg(profileBuffer, isOptionChoosed(ExportChoice.binaries) && isOptionChoosed(ExportChoice.needContext),
-                TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS, isHDInsight());
+                TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS, ProcessUtils.isHDInsight());
 
         // for test
         addArg(profileBuffer, isOptionChoosed(ExportChoice.includeTestSource), TalendMavenConstants.PROFILE_INCLUDE_TEST_SOURCES);
