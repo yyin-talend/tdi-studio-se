@@ -30,6 +30,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -2986,7 +2987,13 @@ public class DataProcess implements IGeneratingProcess {
             return (INode) buildGraphicalMap.get(graphicalNode);
         }
 
-        Node newGraphicalNode = new Node(graphicalNode.getComponent(), (IProcess2) process);
+        IComponent component = graphicalNode.getComponent();
+        Node newGraphicalNode = null;
+        if (EComponentType.GENERIC.equals(component.getComponentType())) {
+            newGraphicalNode = new Node(graphicalNode, (IProcess2) process);
+        } else {
+            newGraphicalNode = new Node(graphicalNode.getComponent(), (IProcess2) process);
+        }
         newGraphicalNode.setMetadataList(graphicalNode.getMetadataList());
 
         // // for bug 11771

@@ -291,7 +291,7 @@ public class Node extends Element implements IGraphicalNode {
     private boolean mrContainsReduce;
 
     private boolean isUpdate;
-    
+
     private ComponentProperties componentProperties;
 
     /**
@@ -440,6 +440,14 @@ public class Node extends Element implements IGraphicalNode {
         this.inOutUniqueName = inOutUniqueName;
         this.process = process;
         init(component);
+        needlibrary = false;
+    }
+
+    public Node(INode oldNode, IProcess2 process) {
+        this.oldcomponent = oldNode.getComponent();
+        this.componentProperties = oldNode.getComponentProperties();
+        this.process = process;
+        init(oldNode.getComponent());
         needlibrary = false;
     }
 
@@ -4936,12 +4944,14 @@ public class Node extends Element implements IGraphicalNode {
         param.setValue(new Boolean(subtreeStart));
     }
 
+    @Override
     public void setComponentProperties(ComponentProperties props) {
-    	componentProperties = props;
+        componentProperties = props;
     }
-    
+
+    @Override
     public ComponentProperties getComponentProperties() {
-    	return componentProperties;
+        return componentProperties;
     }
 
     public Integer getMrGroupId() {

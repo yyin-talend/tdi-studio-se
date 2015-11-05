@@ -973,14 +973,9 @@ public class Component extends AbstractComponent {
 
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
         EComponentCategory category = advanced ? EComponentCategory.ADVANCED : EComponentCategory.BASIC;
-        ComponentProperties props = null;
-        if (node.getComponentProperties() == null) {
-            props = ComponentsUtils.getComponentProperties(getName());
-        } else {
-            props = node.getComponentProperties();
-        }
+        ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
         Form form = props.getForm(advanced ? "Advanced" : "Main"); //$NON-NLS-1$ //$NON-NLS-2$
-        listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, form, null, null));
+        listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, node.getComponentProperties(), form, null, null));
     }
 
     private void initializePropertyParameters(List<ElementParameter> listParam, final INode node) {
