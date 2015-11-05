@@ -17,15 +17,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Composite;
+import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
 import org.talend.component.ui.wizard.internal.service.GenericWizardInternalService;
 import org.talend.component.ui.wizard.persistence.SchemaUtils;
+import org.talend.component.ui.wizard.ui.DynamicComposite;
+import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.components.api.wizard.WizardImageType;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.Element;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -107,5 +116,26 @@ public class GenericWizardService implements IGenericWizardService {
             return SchemaUtils.getMetadataTables(connection);
         }
         return metadataTables;
+    }
+
+    @Override
+    public Composite creatDynamicComposite(Composite composite, Element element, EComponentCategory sectionCategory,
+            boolean isCompactView) {
+        DynamicComposite dynamicComposite = null;
+        if (element != null && element instanceof INode) {
+            INode node = (INode) element;
+            ComponentProperties props = null;
+            if (node.getComponentProperties() == null) {
+                props = ComponentsUtils.getComponentProperties(node.getComponent().getName());
+            } else {
+                props = node.getComponentProperties();
+            }
+            if (props != null) {
+                Form form = props.getForm(EComponentCategory.ADVANCED.equals(sectionCategory) ? "Advanced" : "Main"); //$NON-NLS-1$ //$NON-NLS-2$ 
+                dynamicComposite = new DynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, sectionCategory,
+                        element, isCompactView, composite.getBackground(), form);
+            }
+        }
+        return dynamicComposite;
     }
 }

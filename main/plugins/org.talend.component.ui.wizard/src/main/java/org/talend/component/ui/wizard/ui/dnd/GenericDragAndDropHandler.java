@@ -102,6 +102,12 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                     } else {
                         return IComponentConstants.QUERY_QUERY;
                     }
+                } else if (IComponentConstants.OUTPUTACTION.equals(value)) {
+                    if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
+                        return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+                    } else {
+                        return IComponentConstants.ACTION_INSERT;
+                    }
                 } else {
                     return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
                 }

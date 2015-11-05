@@ -32,5 +32,15 @@ public interface IComponentConstants {
 
     public static final String QUERY_QUERY = "Query";//$NON-NLS-1$
 
-    public static final String QUERY_BULK = "Bulk";//$NON-NLS-1$
+    public static final String QUERY_BULK = "Bulk";//$NON-NLS-1$  
+
+    public static final String OUTPUTACTION = "outputAction";//$NON-NLS-1$
+
+    public static final String ACTION_INSERT = "INSERT";//$NON-NLS-1$
+
+    public static final String ACTION_UPDATE = "UPDATE";//$NON-NLS-1$
+
+    public static final String ACTION_UPSERT = "UPSERT";//$NON-NLS-1$
+
+    public static final String ACTION_DELETE = "DELETE";//$NON-NLS-1$
 }
