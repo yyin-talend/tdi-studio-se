@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -373,16 +374,30 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                     return false;
                 }
                 @SuppressWarnings("rawtypes")
-                int sourceColumnNumber = ((HashMap) dataList.get(0)).size();
-                int colNum = tableEditorModel.getElemParameter().getListItemsDisplayCodeName().length;
+                HashMap sourceMap = (HashMap) dataList.get(0);
+                int sourceColumnNumber = sourceMap.size();
+                Object[] sourceArray = sourceMap.keySet().toArray();
+                String[] listItemsDisplayCodeName = tableEditorModel.getElemParameter().getListItemsDisplayCodeName();
+                int colNum = listItemsDisplayCodeName.length;
+                boolean allExistFlag = false;
+                int count = 0;
+                for (String element : listItemsDisplayCodeName) {
+                    if (Arrays.asList(sourceArray).contains((element))) {
+                        count++;
+                    }
+                }
+                if (count == colNum) {
+                    allExistFlag = true;
+                }
                 if (data != null) {
-                    if (colNum == sourceColumnNumber) {
+                    if (colNum <= sourceColumnNumber && allExistFlag) {
                         sameNumberOfParamAssSourceTable = true;
                     } else {
                         sameNumberOfParamAssSourceTable = false;
                     }
                 }
-
+                boolean flag = super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts())
+                        && sameNumberOfParamAssSourceTable;
                 return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts())
                         && sameNumberOfParamAssSourceTable;
             }
