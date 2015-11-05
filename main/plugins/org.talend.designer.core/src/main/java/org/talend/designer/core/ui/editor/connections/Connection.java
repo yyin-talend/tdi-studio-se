@@ -635,6 +635,23 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     public void initTraceParamters() {
+
+        // won't store them by default when creating
+        // initTraceFilterParameters();
+
+        if (trace != null) {
+            this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
+        }
+        // if (resuming != null) {
+        // this.resuming.setPropertyValue(EParameterName.RESUMING_CHECKPOINT.getName(), checkResumingShowEnable());
+        // }
+    }
+
+    /**
+     * just keep this method in case we need it again in some day, or we can delete it dirrectly, since it is never
+     * used.
+     */
+    private void initTraceFilterParameters() {
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         IMetadataTable metadataTable = this.getMetadataTable();
         if (metadataTable != null) {
@@ -651,12 +668,6 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()) != null && values != null) {
             getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()).setValue(values);
         }
-        if (trace != null) {
-            this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
-        }
-        // if (resuming != null) {
-        // this.resuming.setPropertyValue(EParameterName.RESUMING_CHECKPOINT.getName(), checkResumingShowEnable());
-        // }
     }
 
     public boolean checkTraceShowEnable() {
