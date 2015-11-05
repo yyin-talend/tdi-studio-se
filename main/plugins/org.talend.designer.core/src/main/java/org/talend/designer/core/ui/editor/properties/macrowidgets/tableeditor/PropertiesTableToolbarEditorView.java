@@ -396,8 +396,6 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                         sameNumberOfParamAssSourceTable = false;
                     }
                 }
-                boolean flag = super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts())
-                        && sameNumberOfParamAssSourceTable;
                 return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts())
                         && sameNumberOfParamAssSourceTable;
             }
