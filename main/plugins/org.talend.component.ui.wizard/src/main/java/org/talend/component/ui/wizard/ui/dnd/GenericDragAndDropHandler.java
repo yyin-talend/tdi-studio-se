@@ -94,7 +94,13 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                     if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
                         return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
                     } else {
-                        return "";//$NON-NLS-1$
+                        if (table != null) {
+                            tableName = table.getTableName();
+                            if (tableName == null) {
+                                tableName = table.getLabel();
+                            }
+                            return tableName;
+                        }
                     }
                 } else if (IComponentConstants.QUERYMODE.equals(value)) {
                     if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {

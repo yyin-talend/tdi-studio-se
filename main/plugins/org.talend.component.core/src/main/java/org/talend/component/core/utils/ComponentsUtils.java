@@ -23,6 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
+import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.model.Component;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.components.api.NamedThing;
@@ -158,6 +159,13 @@ public class ComponentsUtils {
             if (parentParam != null) {
                 // param.setGroup(form.getName());
                 // param.setGroupDisplayName(form.getDisplayName());
+            }
+            //
+            if (EComponentCategory.ADVANCED.equals(category) && param.getName() != null) {
+                if (IComponentConstants.USERID.equals(param.getName()) || IComponentConstants.PASSWORD.equals(param.getName())) {
+                    param.setName(EComponentCategory.ADVANCED.name().toLowerCase() + IComponentConstants.UNDERLINE_SEPARATOR
+                            + param.getName());
+                }
             }
             param.setShow(parentParam == null ? widget.isVisible() : parentParam.isShow(null) && widget.isVisible());
             int rowNum = 0;

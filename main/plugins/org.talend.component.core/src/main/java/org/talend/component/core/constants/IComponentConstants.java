@@ -24,6 +24,12 @@ public interface IComponentConstants {
 
     public static final String EXP_SEPARATOR = ".";//$NON-NLS-1$ 
 
+    public static final String UNDERLINE_SEPARATOR = "_";//$NON-NLS-1$ 
+
+    public static final String USERID = "userId";//$NON-NLS-1$
+
+    public static final String PASSWORD = "password";//$NON-NLS-1$
+
     public static final String SCHEMA = "schema";//$NON-NLS-1$ 
 
     public static final String MODULENAME = "moduleName";//$NON-NLS-1$  

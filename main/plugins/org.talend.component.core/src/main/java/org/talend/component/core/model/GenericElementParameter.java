@@ -97,6 +97,9 @@ public class GenericElementParameter extends ElementParameter {
         NamedThing widgetProperty = widgetProperties[0];
         if (widgetProperty instanceof SchemaElement) {
             SchemaElement se = (SchemaElement) widgetProperty;
+            if (componentProperties == null && newValue == null) {
+                return;
+            }
             SchemaElement originalElement = componentProperties.getProperty(se.getName());
             if (originalElement != null) {
                 se = originalElement;
