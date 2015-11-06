@@ -377,20 +377,18 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 HashMap sourceMap = (HashMap) dataList.get(0);
                 int sourceColumnNumber = sourceMap.size();
                 Object[] sourceArray = sourceMap.keySet().toArray();
+                ArrayList<Object> sourceList = new ArrayList<Object>(Arrays.asList(sourceArray));
                 String[] listItemsDisplayCodeName = tableEditorModel.getElemParameter().getListItemsDisplayCodeName();
-                int colNum = listItemsDisplayCodeName.length;
-                boolean allExistFlag = false;
-                int count = 0;
-                for (String element : listItemsDisplayCodeName) {
-                    if (Arrays.asList(sourceArray).contains((element))) {
-                        count++;
-                    }
+                List<String> itemDisCodeNameList = null;
+                int colNum = 0;
+                if (listItemsDisplayCodeName != null) {
+                    itemDisCodeNameList = Arrays.asList(listItemsDisplayCodeName);
+                    colNum = listItemsDisplayCodeName.length;
                 }
-                if (count == colNum) {
-                    allExistFlag = true;
-                }
+                ArrayList<String> list = new ArrayList<String>(itemDisCodeNameList);
+                list.removeAll(sourceList);
                 if (data != null) {
-                    if (colNum <= sourceColumnNumber && allExistFlag) {
+                    if (colNum <= sourceColumnNumber && list.size() == 0) {
                         sameNumberOfParamAssSourceTable = true;
                     } else {
                         sameNumberOfParamAssSourceTable = false;
