@@ -61,6 +61,7 @@ imports="
 			boolean useSsl = "true".equals(ElementParameterParser.getValue(node, "__USE_SSL__"));
 			String sslTrustStore = ElementParameterParser.getValue(node, "__SSL_TRUST_STORE__");
 			boolean configureFromClassPath = "true".equals(ElementParameterParser.getValue(node, "__CONFIGURATIONS_FROM_CLASSPATH__"));
+			boolean storeByHBase = "true".equals(ElementParameterParser.getValue(node, "__STORE_BY_HBASE__"));
 
 
 			if(hiveServer!=null && !"".equals(hiveServer.trim()) && (this.isCustom || this.hiveDistrib.doSupportHive2())) {
@@ -237,11 +238,22 @@ imports="
 					String tldHiveEnc = conf.get("talend.hive.encryption", "");
 					String tldHiveSslTsPath = conf.get("talend.hive.ssl.trustStore.path", "");
 					String tldHiveSslTsPassword = conf.get("talend.hive.ssl.trustStore.password", "");
+					// Add configurations from hive-site.xml
+					conf.addResource("hive-site.xml");
+					// Add configurations from yarn-site.xml
+					conf.addResource("yarn-site.xml");
+<%
+					if(storeByHBase){
+%>
+						// Add configurations from hbase-site.xml
+						conf.addResource("hbase-site.xml");
+<%
+					}
+%>
 
 					if(org.apache.hadoop.security.UserGroupInformation.isSecurityEnabled()){
 
-						// Looking for the Hive Server2 principal in hive-site.xml
-						conf.addResource("hive-site.xml");
+						
 						String hiveServer2KerberosPrincipal = conf.get("hive.server2.authentication.kerberos.principal", "");
 						String urlKerberosParameter = "principal=" + hiveServer2KerberosPrincipal;
 
