@@ -185,6 +185,16 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         }
         List<Form> forms = componentWizard.getForms();
         for (Form form : forms) {
+            ComponentProperties properties = form.getProperties();
+            // FIXME: Need to improve this part after.
+            // When creating the wizard from component properties, component service only set the component properties
+            // to the orignal form which doesn't created by it. So if you use this component properties to get forms, it
+            // will return the wrong ones. Now I just fix it in studio side. Maybe it will be better to fix this problem
+            // in component contract?
+            Form rightForm = properties.getForm(form.getName());
+            if (rightForm != form) {
+                form = rightForm;
+            }
             wizPage = new GenericConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation, form,
                     compService);
             if (wizPage != null) {

@@ -1171,74 +1171,6 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
-            contentProvider="org.talend.repository.view.di.metadata.content.MetadataSalesforceContentProvider"
-            icon="icons/salesforce.png"
-            id="org.talend.repository.viewer.metadata.salesforce"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Salesforce"
-            priority="higher">
-         <triggerPoints>
-            <and>
-               <instanceof
-                     value="org.talend.repository.model.RepositoryNode">
-               </instanceof>
-               <or>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isMetadataTopNode">
-                  </test>
-                  <test
-                        property="org.talend.repository.node.metadata.isSalesforce">
-                  </test>
-               </or>
-            </and>
-         </triggerPoints>
-         <possibleChildren>
-            <and>
-               <instanceof
-                     value="org.talend.repository.model.RepositoryNode">
-               </instanceof>
-               <or>
-                  <test
-                        property="org.talend.repository.node.metadata.isSchema">
-                  </test>
-                  <test
-                        property="org.talend.repository.node.metadata.isSchemaColumn">
-                  </test>
-                  <test
-                        property="org.talend.repository.node.metadata.isSalesforceModule">
-                  </test>
-                  <test
-                        property="org.talend.repository.node.metadata.isSalesforce">
-                  </test>
-               </or>
-            </and>
-         </possibleChildren>
-         <actionProvider
-               class="org.talend.repository.view.di.metadata.action.MetedataNodeActionProvier"
-               id="org.talend.repository.metadata.salesforce.action.provider.id">
-            <enablement>
-               <and>
-                  <instanceof
-                        value="org.talend.repository.model.RepositoryNode">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.metadata.isSalesforce">
-                  </test>
-                  <not>
-                     <test
-                           forcePluginActivation="true"
-                           property="org.talend.repository.node.isDeleted">
-                     </test>
-                  </not>
-               </and>
-            </enablement>
-         </actionProvider>
-      </navigatorContent>
-      <navigatorContent
-            activeByDefault="true"
             appearsBefore="org.talend.repository.viewer.metadata.mdm"
             contentProvider="org.talend.repository.view.di.metadata.content.MetadataGenericSchemasContentProvider"
             icon="icons/genericSchemas.png"
@@ -1497,7 +1429,7 @@
             class="org.talend.repository.view.di.metadata.tester.DIMetadatasNodeTester"
             id="org.talend.repository.node.tester.metadata"
             namespace="org.talend.repository.node.metadata"
-            properties="isDbConnection,isFileDelimited,isFilePositional,isFileRegexp,isFileXML,isFileExcel,isFileLDIF,isLDAP,isSalesforce,isGenericSchema,isMDM,isWebService"
+            properties="isDbConnection,isFileDelimited,isFilePositional,isFileRegexp,isFileXML,isFileExcel,isFileLDIF,isLDAP,isGenericSchema,isMDM,isWebService"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
         <propertyTester
@@ -1526,13 +1458,6 @@
             id="org.talend.repository.node.tester.rules"
             namespace="org.talend.repository.node"
             properties="isRulesTopNode"
-            type="org.talend.repository.model.RepositoryNode">
-      </propertyTester>
-      <propertyTester
-            class="org.talend.repository.view.di.metadata.tester.SalesforceModuleNodeTester"
-            id="org.talend.repository.node.tester.metadata.salesforce.module"
-            namespace="org.talend.repository.node.metadata"
-            properties="isSalesforceModule"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
    </extension>
