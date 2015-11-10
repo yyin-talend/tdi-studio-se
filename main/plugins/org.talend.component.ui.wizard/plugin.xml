@@ -145,4 +145,15 @@
             class="org.talend.component.ui.wizard.ui.dnd.GenericDragAndDropHandler">
       </RepositoryHandler>
    </extension>
+   <extension
+         point="org.talend.repository.items.importexport.handler">
+      <importItemsProvider
+            id="org.talend.repository.metadata.importProvider.generic"
+            name="Generic Import"
+            priority="LOW">
+         <importItemsHandler
+               class="org.talend.component.ui.wizard.handler.GenericImportHandler">
+         </importItemsHandler>
+      </importItemsProvider>
+   </extension>
 </plugin>
