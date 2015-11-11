@@ -17,11 +17,13 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
+import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.components.api.properties.ValidationResult;
 import org.talend.components.api.properties.ValidationResult.Result;
 import org.talend.components.api.properties.presentation.Form;
@@ -86,14 +88,17 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         Result validationStatus = validationResult.getStatus();
         switch (validationStatus) {
         case WARNING:
-            checker.updateStatus(IStatus.WARNING, validationMessage);
+            checker.updateStatus(IStatus.WARNING, null);
+            MessageDialog.openWarning(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), validationMessage); //$NON-NLS-1$
             break;
         case ERROR:
-            checker.updateStatus(IStatus.ERROR, validationMessage);
+            checker.updateStatus(IStatus.ERROR, null);
+            MessageDialog.openError(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), validationMessage); //$NON-NLS-1$
             break;
         default:
-            validationMessage = "Connection successful!";
-            checker.updateStatus(IStatus.OK, validationMessage);
+            checker.updateStatus(IStatus.OK, null);
+            MessageDialog.openInformation(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), //$NON-NLS-1$
+                    Messages.getString("DynamicComposite.connectionTest.msg.success")); //$NON-NLS-1$
             break;
         }
     }

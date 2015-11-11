@@ -41,6 +41,8 @@ public abstract class GenericWizardPage extends WizardPage {
 
     protected String[] existingNames;
 
+    protected boolean creation;
+
     protected boolean isRepositoryObjectEditable;
 
     protected Form form;
@@ -51,6 +53,7 @@ public abstract class GenericWizardPage extends WizardPage {
             boolean creation, Form form, ComponentService compService) {
         this(connectionItem, isRepositoryObjectEditable);
         this.existingNames = existingNames;
+        this.creation = creation;
         this.form = form;
         this.compService = compService;
     }
@@ -97,7 +100,7 @@ public abstract class GenericWizardPage extends WizardPage {
         super.setVisible(visible);
         if (visible) {
             callBefore();
-            setPageComplete(!hasValidateWidget());
+            setPageComplete(!creation || !hasValidateWidget());
         }
     }
 
@@ -110,11 +113,14 @@ public abstract class GenericWizardPage extends WizardPage {
 
             @Override
             public void checkPerformed(IChecker source) {
+                String status = source.getStatus();
                 if (source.isStatusOnError()) {
-                    setErrorMessage(source.getStatus());
+                    setErrorMessage(status);
                 } else {
                     setErrorMessage(null);
-                    setMessage(source.getStatus(), source.getStatusLevel());
+                    if (status != null) {
+                        setMessage(status, source.getStatusLevel());
+                    }
                 }
                 updatePageStatus();
             }
