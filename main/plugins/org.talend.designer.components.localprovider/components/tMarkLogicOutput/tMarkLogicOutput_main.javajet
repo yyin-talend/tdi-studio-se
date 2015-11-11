@@ -106,7 +106,7 @@ imports="
                         docContent_<%= cid %> = <%= connName %>.docContent;
                         com.marklogic.client.io.StringHandle strHandle_<%= cid %> = new com.marklogic.client.io.StringHandle(docContent_<%= cid %>);
                         docMgr_<%= cid %>.patch(docId_<%= cid %>, strHandle_<%= cid %>);
-                        nb_line_inserted_<%= cid %> ++;
+                        nb_line_updated_<%= cid %> ++;
                     <%
                     }else{
                     %>
