@@ -114,9 +114,10 @@ public class GenericRepositoryContentHandler extends AbstractRepositoryContentHa
 
     @Override
     public Item createNewItem(ERepositoryObjectType type) {
-        Item item = null;
+        GenericConnectionItem item = null;
         if (isRepObjType(type)) {
             item = GenericMetadataFactory.eINSTANCE.createGenericConnectionItem();
+            item.setTypeName(type.getType());
         }
 
         return item;
