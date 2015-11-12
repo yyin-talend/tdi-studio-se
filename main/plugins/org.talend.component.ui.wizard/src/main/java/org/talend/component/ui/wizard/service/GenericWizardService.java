@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.component.core.utils.ComponentsUtils;
+import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
 import org.talend.component.ui.wizard.internal.service.GenericWizardInternalService;
 import org.talend.component.ui.wizard.persistence.SchemaUtils;
@@ -35,6 +36,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -88,6 +90,10 @@ public class GenericWizardService implements IGenericWizardService {
             return true;
         }
         return false;
+    }
+
+    public boolean isGenericItem(Item item) {
+        return item != null && item.eClass() == GenericMetadataPackage.Literals.GENERIC_CONNECTION_ITEM;
     }
 
     @Override
