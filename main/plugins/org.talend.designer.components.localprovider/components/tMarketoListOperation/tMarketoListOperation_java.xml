@@ -13,7 +13,7 @@
     HAS_CONDITIONAL_OUTPUTS="true"
 
     STARTABLE="false"
-	PARTITIONING="AUTO"
+    PARTITIONING="AUTO"
   >
     <SIGNATURE/>
   </HEADER>
@@ -41,16 +41,16 @@
   </CONNECTORS>
 
   <PARAMETERS>
-	<PARAMETER
+    <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
       READONLY="true"
       NUM_ROW="1">
       <TABLE READONLY="true">
         <COLUMN NAME="ListKeyType" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
       </TABLE>
     </PARAMETER>
 
@@ -62,20 +62,20 @@
       SHOW="false">
       <TABLE READONLY="true" IF="((OPERATION=='ADDTOLIST') or (OPERATION=='REMOVEFROMLIST')) and (MUTIPLE_OPERATION=='true')">
         <COLUMN NAME="ListKeyType" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
       </TABLE>
       <TABLE READONLY="true" IF="(OPERATION=='ISMEMBEROFLIST') or (MUTIPLE_OPERATION=='false')">
-     	<COLUMN NAME="ListKeyType" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="ListKeyType" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
         <COLUMN NAME="Success" TYPE="id_Boolean" READONLY="true"/>
       </TABLE>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
@@ -83,58 +83,58 @@
       CONTEXT="REJECT"
       SHOW="false">
       <TABLE READONLY="true">
-      	<COLUMN NAME="ListKeyType" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
-		<COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="ListKeyType" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
+        <COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
         <COLUMN NAME="ERROR_MSG" TYPE="id_String" READONLY="true"/>
       </TABLE>
     </PARAMETER>
 
-	<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10" REQUIRED="true">
-		<DEFAULT>"https://123-ABC-456.mktoapi.com/soap/mktows/2_7"</DEFAULT>
-	</PARAMETER>
-	<PARAMETER NAME="SECRET_KEY" FIELD="PASSWORD" NUM_ROW="20" REQUIRED="true">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
-  	<PARAMETER NAME="CLIENT_ACCESSID" FIELD="TEXT" NUM_ROW="20" REQUIRED="true" >
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
-	<PARAMETER NAME="OPERATION" FIELD="CLOSED_LIST" NUM_ROW="30"
-			REQUIRED="true">
-		<ITEMS DEFAULT="ADDTOLIST">
-			<ITEM NAME="ADDTOLIST" VALUE="ADDTOLIST" />
-			<ITEM NAME="ISMEMBEROFLIST" VALUE="ISMEMBEROFLIST" />
-			<ITEM NAME="REMOVEFROMLIST" VALUE="REMOVEFROMLIST" />
-		</ITEMS>
-	</PARAMETER>
+    <PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10" REQUIRED="true">
+        <DEFAULT>"https://123-ABC-456.mktoapi.com/soap/mktows/2_7"</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="SECRET_KEY" FIELD="PASSWORD" NUM_ROW="20" REQUIRED="true">
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="CLIENT_ACCESSID" FIELD="TEXT" NUM_ROW="20" REQUIRED="true" >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="OPERATION" FIELD="CLOSED_LIST" NUM_ROW="30"
+            REQUIRED="true">
+        <ITEMS DEFAULT="ADDTOLIST">
+            <ITEM NAME="ADDTOLIST" VALUE="ADDTOLIST" />
+            <ITEM NAME="ISMEMBEROFLIST" VALUE="ISMEMBEROFLIST" />
+            <ITEM NAME="REMOVEFROMLIST" VALUE="REMOVEFROMLIST" />
+        </ITEMS>
+    </PARAMETER>
 
-	<PARAMETER NAME="MUTIPLE_OPERATION" FIELD="CHECK" NUM_ROW="40" REQUIRED="true"  SHOW_IF="(OPERATION=='ADDTOLIST') or (OPERATION=='REMOVEFROMLIST')">
-		<DEFAULT>false</DEFAULT>
-	</PARAMETER>
-	<PARAMETER NAME="STRICT" FIELD="CHECK" NUM_ROW="50" REQUIRED="true">
-		<DEFAULT>false</DEFAULT>
-	</PARAMETER>
+    <PARAMETER NAME="MUTIPLE_OPERATION" FIELD="CHECK" NUM_ROW="40" REQUIRED="true"  SHOW_IF="(OPERATION=='ADDTOLIST') or (OPERATION=='REMOVEFROMLIST')">
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="STRICT" FIELD="CHECK" NUM_ROW="50" REQUIRED="true">
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
-	<PARAMETER NAME="TIMEOUT" FIELD="TEXT" NUM_ROW="70" REQUIRED="true">
-		<DEFAULT>60000</DEFAULT>
-	</PARAMETER>
+    <PARAMETER NAME="TIMEOUT" FIELD="TEXT" NUM_ROW="70" REQUIRED="true">
+        <DEFAULT>60000</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
 
   <CODEGENERATION>
- 	 <IMPORTS>
-		<IMPORT NAME="SOAP-axis" MODULE="axis.jar" MVN="mvn:org.talend.libraries/axis/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" REQUIRED="true" />
-		<IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" MVN="mvn:org.talend.libraries/commons-discovery-0.2/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" REQUIRED="true" />
-		<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" MVN="mvn:org.talend.libraries/jaxrpc/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar" REQUIRED="true" />
-		<IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" MVN="mvn:org.talend.libraries/saaj/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj.jar" REQUIRED="true" />
-		<IMPORT NAME="WSDL4J-1_6_3" MODULE="wsdl4j-1.6.3.jar" MVN="mvn:org.talend.libraries/wsdl4j-1.6.3/6.0.0"  BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
-		<IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" MVN="mvn:org.talend.libraries/commons-logging-1.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" REQUIRED="true" />
-		<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" MVN="mvn:org.talend.libraries/mail/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
-		<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" MVN="mvn:org.talend.libraries/activation/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true" />
-		<IMPORT NAME="XML-DOM4J" MODULE="dom4j-1.6.1.jar" MVN="mvn:org.talend.libraries/dom4j-1.6.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" REQUIRED="true" BundleID="" />
-		<IMPORT NAME="XML-XPATH-JAXEN" MODULE="jaxen-1.1.1.jar" MVN="mvn:org.talend.libraries/jaxen-1.1.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar" REQUIRED="true" BundleID="" />
-		<IMPORT NAME="TALEND-MARKETO" MODULE="talend-marketo-2.7.jar" MVN="mvn:org.talend.libraries/talend-marketo-2.7/6.0.0"  REQUIRED="true" />
-	</IMPORTS>
+     <IMPORTS>
+        <IMPORT NAME="SOAP-axis" MODULE="axis.jar" MVN="mvn:org.talend.libraries/axis/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" REQUIRED="true" />
+        <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" MVN="mvn:org.talend.libraries/commons-discovery-0.2/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" REQUIRED="true" />
+        <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" MVN="mvn:org.talend.libraries/jaxrpc/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar" REQUIRED="true" />
+        <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" MVN="mvn:org.talend.libraries/saaj/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj.jar" REQUIRED="true" />
+        <IMPORT NAME="WSDL4J-1_6_3" MODULE="wsdl4j-1.6.3.jar" MVN="mvn:org.talend.libraries/wsdl4j-1.6.3/6.0.0"  BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
+        <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" MVN="mvn:org.talend.libraries/commons-logging-1.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" REQUIRED="true" />
+        <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" MVN="mvn:org.talend.libraries/mail/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
+        <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" MVN="mvn:org.talend.libraries/activation/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true" />
+        <IMPORT NAME="XML-DOM4J" MODULE="dom4j-1.6.1.jar" MVN="mvn:org.talend.libraries/dom4j-1.6.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" REQUIRED="true" BundleID="" />
+        <IMPORT NAME="XML-XPATH-JAXEN" MODULE="jaxen-1.1.1.jar" MVN="mvn:org.talend.libraries/jaxen-1.1.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar" REQUIRED="true" BundleID="" />
+        <IMPORT NAME="TALEND-MARKETO" MODULE="talend-marketo-2.7.jar" MVN="mvn:org.talend.libraries/talend-marketo-2.7/6.0.0"  REQUIRED="true" />
+    </IMPORTS>
   </CODEGENERATION>
 
   <RETURNS>
