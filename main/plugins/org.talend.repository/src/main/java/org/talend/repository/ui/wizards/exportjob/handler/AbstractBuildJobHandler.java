@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
@@ -158,7 +159,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         }
         // the running context is only useful, when binaries
         addArg(profileBuffer, isBinaries && isOptionChoosed(ExportChoice.needContext),
-                TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
+                TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS, ProcessUtils.isHDInsight());
 
         // for test
         addArg(profileBuffer, isOptionChoosed(ExportChoice.includeTestSource), TalendMavenConstants.PROFILE_INCLUDE_TEST_SOURCES);
@@ -207,7 +208,16 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
     protected void addArg(StringBuffer commandBuffer, boolean include, String arg) {
         addArg(commandBuffer, false, include, arg);
     }
-
+    
+    private void addArg(StringBuffer commandBuffer, boolean include, String arg, boolean isHD) {
+        if (isHD) {
+            commandBuffer.append(NEGATION);
+            commandBuffer.append(arg);
+        } else {
+            addArg(commandBuffer, false, include, arg);
+        }
+    }
+    
     @Override
     public IFile getJobTargetFile() {
         if (talendProcessJavaProject == null) {
@@ -226,4 +236,5 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         IFile jobFile = targetFolder.getFile(jobZipName);
         return jobFile;
     }
+    
 }

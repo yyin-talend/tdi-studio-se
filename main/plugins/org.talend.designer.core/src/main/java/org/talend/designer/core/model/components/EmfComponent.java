@@ -144,6 +144,7 @@ import org.talend.hadoop.distribution.condition.ComponentCondition;
 import org.talend.hadoop.distribution.condition.EqualityOperator;
 import org.talend.hadoop.distribution.condition.MultiComponentCondition;
 import org.talend.hadoop.distribution.condition.NestedComponentCondition;
+import org.talend.hadoop.distribution.condition.ShowExpression;
 import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
 import org.talend.hadoop.distribution.utils.ComponentConditionUtil;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -1765,16 +1766,25 @@ public class EmfComponent extends AbstractComponent {
                                     componentType.getDistributionParameter(), that.getDistributionName(), EqualityOperator.EQ);
                             org.talend.hadoop.distribution.condition.Expression e2 = new BasicExpression(
                                     componentType.getVersionParameter(), that.getName(), EqualityOperator.EQ);
+                            org.talend.hadoop.distribution.condition.Expression e3 = new ShowExpression(
+                                    componentType.getDistributionParameter());
+                            org.talend.hadoop.distribution.condition.Expression e4 = new ShowExpression(
+                                    componentType.getVersionParameter());
+
+                            // The import is needed only if the good version and the good distribution are selected, and
+                            // if the Distribution and Version parameters are shown. The second condition to take the
+                            // USE_EXISTING_CONNECTIOn into account.
+
+                            condition = new MultiComponentCondition(new SimpleComponentCondition(e1),
+                                    new MultiComponentCondition(new SimpleComponentCondition(e2), new MultiComponentCondition(
+                                            new SimpleComponentCondition(e3), new SimpleComponentCondition(e4),
+                                            BooleanOperator.AND), BooleanOperator.AND), BooleanOperator.AND);
 
                             if (group.getRequiredIf() != null) {
-                                condition = new MultiComponentCondition(new SimpleComponentCondition(e1),
-                                        new MultiComponentCondition(new SimpleComponentCondition(e2),
-                                                new NestedComponentCondition(group.getRequiredIf()), BooleanOperator.AND),
-                                        BooleanOperator.AND);
-                            } else {
-                                condition = new MultiComponentCondition(new SimpleComponentCondition(e1),
-                                        new SimpleComponentCondition(e2), BooleanOperator.AND);
+                                condition = new MultiComponentCondition(condition, new NestedComponentCondition(
+                                        group.getRequiredIf()), BooleanOperator.AND);
                             }
+
                             importType.setREQUIREDIF(condition.getConditionString());
                             importType.setMRREQUIRED(group.isMrRequired());
                             ModulesNeededProvider.collectModuleNeeded(node.getComponent() != null ? node.getComponent().getName()

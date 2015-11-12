@@ -2,7 +2,7 @@
 <feature
       id="org.talend.rcp.branding.tos.test.feature"
       label="Test feature for TOS"
-      version="6.1.0.qualifier">
+      version="6.1.1.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -264,14 +264,6 @@
 
    <plugin
          id="org.talend.dataquality.matching.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.dataquality.record.linkage.test"
          download-size="0"
          install-size="0"
          version="0.0.0"

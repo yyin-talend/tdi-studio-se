@@ -233,10 +233,13 @@ if (metadatas != null && metadatas.size()>0) {
 		          }
 		        }
 		      } else {
-		      
+		          %>
+		          
+		          <% logUtil.info("\"Attempt to put item with to staging data.\"");%>
+		          
+		          <%
 		        if (isMassInsert) {
-		        %>
-		        	<%if(addTaskID){%>
+		        	if(addTaskID){%>
 		        		taskIDs_<%=cid%>.add(<%=isCustom?taskID:"xmlFlowList_" + cid + ".get(flowNum_" + cid + ").get(\"" + prevColumn + "\")"%>);
 		        	<%}%>
 		          miList_<%=cid %>.add(item_<%=cid %>);
