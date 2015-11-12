@@ -1484,27 +1484,6 @@ public class Component extends AbstractComponent {
                 ModuleNeeded moduleNeeded = new ModuleNeeded(getName(), "", true, mvnUri);
                 componentImportNeedsList.add(moduleNeeded);
             }
-
-            // List<String> moduleNames = new ArrayList<String>();
-            // List<String> componentList = new ArrayList<String>();
-            // for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
-            // for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
-            // IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
-            // componentList.add(multipleComponentItem.getComponent());
-            // if (component == null) {
-            // continue;
-            // }
-            // for (ModuleNeeded moduleNeeded : component.getModulesNeeded()) {
-            // if (!moduleNames.contains(moduleNeeded.getModuleName())) {
-            // ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), moduleNeeded.getModuleName(),
-            // moduleNeeded.getInformationMsg(), moduleNeeded.isRequired(), moduleNeeded.getInstallURL(),
-            // moduleNeeded.getRequiredIf(), moduleNeeded.getMavenUri());
-            // componentImportNeeds.setModuleLocaion(moduleNeeded.getModuleLocaion());
-            // componentImportNeedsList.add(componentImportNeeds);
-            // }
-            // }
-            // }
-            // }
             return componentImportNeedsList;
         }
     }

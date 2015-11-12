@@ -79,7 +79,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     public List<ElementParameter> resetElementParameters() {
         List<ElementParameter> oldParameters = (List<ElementParameter>) element.getElementParameters();
-        List<ElementParameter> removeParameters = new ArrayList<ElementParameter>();
+        final List<ElementParameter> newParameters = new ArrayList<ElementParameter>();
         ComponentProperties props = null;
         if (element instanceof INode) {
             INode node = (INode) element;
@@ -93,24 +93,38 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                 ((GenericElementParameter) parameter).addPropertyChangeListener(this);
             }
         }
-        //
         for (ElementParameter oldParameter : oldParameters) {
             if (EParameterName.UPDATE_COMPONENTS.getName().equals(oldParameter.getName())) {
-                removeParameters.add(oldParameter);
-                continue;
+                oldParameter.setValue(true);
             }
+            boolean added = false;
             for (ElementParameter parameter : parameters) {
                 if (oldParameter.getCategory() != null && oldParameter.getCategory().equals(parameter.getCategory())
                         && oldParameter.getName() != null && oldParameter.getName().equals(parameter.getName())) {
-                    removeParameters.add(oldParameter);
+                    if (EParameterFieldType.SCHEMA_TYPE.equals(parameter.getFieldType())) {
+                        if (parameter.getChildParameters().size() == 0) {
+                            parameter.getChildParameters().putAll(oldParameter.getChildParameters());
+                        }
+                    }
+                    newParameters.add(parameter);
+                    added = true;
                 }
             }
+            if (!added) {
+                newParameters.add(oldParameter);
+            }
         }
-        oldParameters.removeAll(removeParameters);
-        parameters.addAll(oldParameters);
-        parameters.add(getUpdateParameter());
-        element.setElementParameters(parameters);
-        return parameters;
+        Display.getDefault().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                if (newParameters.size() > 0) {
+                    element.setElementParameters(newParameters);
+                }
+            }
+        });
+
+        return newParameters;
     }
 
     private ElementParameter getUpdateParameter() {

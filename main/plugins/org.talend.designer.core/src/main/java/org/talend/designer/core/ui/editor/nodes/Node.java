@@ -541,8 +541,10 @@ public class Node extends Element implements IGraphicalNode {
         for (IElementParameter param : getElementParameters()) {
             if (param.getValue() != null && param.getValue() instanceof String) {
                 String value = (String) param.getValue();
-                value = value.replace("__NODE_UNIQUE_NAME__", uniqueName2); //$NON-NLS-1$
-                param.setValue(value);
+                if (value.contains("__NODE_UNIQUE_NAME__")) {
+                    value = value.replace("__NODE_UNIQUE_NAME__", uniqueName2); //$NON-NLS-1$
+                    param.setValue(value);
+                }
             }
         }
 
