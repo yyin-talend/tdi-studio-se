@@ -120,7 +120,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 						String idValue = map.get("IDVALUE");
 					%>
 					ids_<%=cid %>.add(<%=idValue %>);
-					<% logUtil.debug("\"To get item :\""+idValue);%>
+					<% logUtil.debug("\"To get item :\"+"+idValue);%>
 					<%
 					}//for
 					%>
