@@ -48,6 +48,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jface.action.IAction;
@@ -193,6 +194,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public static final String DISPLAY_CODE_VIEW = "DISPLAY_CODE_VIEW"; //$NON-NLS-1$
 
     public static final String CSS_CLASS_ID = "org-talend-rcp-abstractMultiPageEditor-footer"; //$NON-NLS-1$
+    
+    private boolean isCheckout = false;
 
     protected AdapterImpl dirtyListener = new AdapterImpl() {
 
@@ -777,6 +780,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         oldJobName = label;
     }
 
+    public abstract void setName(String revisionNumStr);
+    
     /*
      * (non-Javadoc)
      * 
@@ -1087,6 +1092,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 testContainerService.updateDetect(getProcess(), false);
 
             }
+        }
+        
+        if (isCheckout) {
+            CommandStack stack = (CommandStack) getAdapter(CommandStack.class);
+            stack.flush();
+            isCheckout = false;
         }
     }
 
@@ -1770,6 +1781,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             return null;
         }
 
+    }
+    
+    public boolean isCheckout() {
+        return isCheckout;
+    }
+
+    
+    public void setCheckout(boolean isCheckout) {
+        this.isCheckout = isCheckout;
     }
 
 }
