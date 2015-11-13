@@ -112,9 +112,10 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
                 File source = new File(sourcePath);
                 if (source.exists()) {
                     for (File file : source.listFiles(ff)) {
-                        FilesUtils.copyFolder(file,
-                                new File(installationFolder.getAbsolutePath() + File.separator + file.getName()), true, ff, null,
-                                true, false);
+                        if (file.isDirectory())
+                            FilesUtils.copyFolder(file,
+                                    new File(installationFolder.getAbsolutePath() + File.separator + file.getName()), true, ff,
+                                    null, true, false);
                     }
                 }
             }
