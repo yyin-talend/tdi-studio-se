@@ -26,6 +26,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
+import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.i18n.Messages;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.components.api.component.ComponentConnector;
@@ -974,7 +975,11 @@ public class Component extends AbstractComponent {
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
         EComponentCategory category = advanced ? EComponentCategory.ADVANCED : EComponentCategory.BASIC;
         ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
-        Form form = props.getForm(advanced ? "Advanced" : "Main"); //$NON-NLS-1$ //$NON-NLS-2$
+        Form form = props.getForm(advanced ? IComponentConstants.FORM_ADVANCED : IComponentConstants.FORM_MAIN);
+        if (node.getComponentProperties() != null) {
+            props = node.getComponentProperties();
+            form = props.getForm(advanced ? IComponentConstants.FORM_ADVANCED : IComponentConstants.FORM_MAIN);
+        }
         listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, node.getComponentProperties(), form, null, null));
     }
 

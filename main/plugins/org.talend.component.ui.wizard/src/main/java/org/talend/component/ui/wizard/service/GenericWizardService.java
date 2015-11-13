@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
@@ -137,9 +138,12 @@ public class GenericWizardService implements IGenericWizardService {
                 props = node.getComponentProperties();
             }
             if (props != null) {
-                Form form = props.getForm(EComponentCategory.ADVANCED.equals(sectionCategory) ? "Advanced" : "Main"); //$NON-NLS-1$ //$NON-NLS-2$ 
+                Form form = props.getForm(EComponentCategory.ADVANCED.equals(sectionCategory) ? IComponentConstants.FORM_ADVANCED
+                        : IComponentConstants.FORM_MAIN);
                 dynamicComposite = new DynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, sectionCategory,
                         element, isCompactView, composite.getBackground(), form);
+                dynamicComposite.resetElementParameters();
+                dynamicComposite.refresh();
             }
         }
         return dynamicComposite;

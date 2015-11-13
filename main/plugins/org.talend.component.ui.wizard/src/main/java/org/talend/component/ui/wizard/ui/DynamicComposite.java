@@ -14,16 +14,20 @@ package org.talend.component.ui.wizard.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.wizard.i18n.Messages;
+import org.talend.component.ui.wizard.model.FakeElement;
+import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ValidationResult;
 import org.talend.components.api.properties.ValidationResult.Result;
 import org.talend.components.api.properties.presentation.Form;
@@ -31,6 +35,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.ui.check.Checker;
 import org.talend.core.ui.check.IChecker;
 import org.talend.designer.core.model.components.EParameterName;
@@ -67,6 +72,42 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                 genericElementParameter.addPropertyChangeListener(this);
             }
         }
+        parameters.add(getUpdateParameter());
+        element.setElementParameters(parameters);
+        return parameters;
+    }
+
+    public List<ElementParameter> resetElementParameters() {
+        List<ElementParameter> oldParameters = (List<ElementParameter>) element.getElementParameters();
+        List<ElementParameter> removeParameters = new ArrayList<ElementParameter>();
+        ComponentProperties props = null;
+        if (element instanceof INode) {
+            INode node = (INode) element;
+            if (node.getComponentProperties() != null) {
+                props = node.getComponentProperties();
+            }
+        }
+        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, section, props, form, null, null);
+        for (ElementParameter parameter : parameters) {
+            if (parameter instanceof GenericElementParameter) {
+                ((GenericElementParameter) parameter).addPropertyChangeListener(this);
+            }
+        }
+        //
+        for (ElementParameter oldParameter : oldParameters) {
+            if (EParameterName.UPDATE_COMPONENTS.getName().equals(oldParameter.getName())) {
+                removeParameters.add(oldParameter);
+                continue;
+            }
+            for (ElementParameter parameter : parameters) {
+                if (oldParameter.getCategory() != null && oldParameter.getCategory().equals(parameter.getCategory())
+                        && oldParameter.getName() != null && oldParameter.getName().equals(parameter.getName())) {
+                    removeParameters.add(oldParameter);
+                }
+            }
+        }
+        oldParameters.removeAll(removeParameters);
+        parameters.addAll(oldParameters);
         parameters.add(getUpdateParameter());
         element.setElementParameters(parameters);
         return parameters;
@@ -109,8 +150,18 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         if (IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED.equals(event.getPropertyName())) {
-            resetParameters();
-            refresh();
+            if (element instanceof FakeElement) {
+                resetParameters();
+            } else {
+                resetElementParameters();
+            }
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    refresh();
+                }
+            });
         } else if (IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE.equals(event.getPropertyName())) {
             Object newValue = event.getNewValue();
             if (newValue instanceof ValidationResult) {
