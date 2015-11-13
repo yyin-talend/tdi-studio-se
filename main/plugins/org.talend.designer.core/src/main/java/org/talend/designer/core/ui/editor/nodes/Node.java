@@ -3981,8 +3981,11 @@ public class Node extends Element implements IGraphicalNode {
             for (ICheckNodesService checkService : checkNodeServices) {
                 checkService.checkNode(this);
             }
-            if (externalNode != null) {
-                List<Problem> problems = externalNode.getProblems();
+
+            // init external node firstly by method getExternalNode
+            IExternalNode iExternalNode = getExternalNode();
+            if (iExternalNode != null) {
+                List<Problem> problems = iExternalNode.getProblems();
                 if (problems != null) {
                     for (Problem current : problems) {
                         current.setElement(this);
