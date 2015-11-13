@@ -1515,7 +1515,7 @@ public class EmfComponent extends AbstractComponent {
             newParam.setParentParameter(parentParam);
         } else if (type == EParameterFieldType.HADOOP_LIBRARIES) {
             if (!areHadoopLibsLoaded) {
-                // We get the component type defined by the NAME of the HADOOP_DISTRIBUTION parameter.
+                // We get the component type defined by the NAME of the HADOOP_LIBRARIES parameter.
                 ComponentType componentType = ComponentType.getComponentType(parentParam.getName());
 
                 componentHadoopDistributionImportNeedsList = new ArrayList<>();
