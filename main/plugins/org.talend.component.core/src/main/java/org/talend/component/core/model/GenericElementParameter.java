@@ -77,7 +77,7 @@ public class GenericElementParameter extends ElementParameter {
     @Override
     public void setValue(Object o) {
         super.setValue(o);
-        if (!isFirstCall && pcs.getPropertyChangeListeners().length != 0) {
+        if (!isFirstCall) {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
@@ -113,23 +113,33 @@ public class GenericElementParameter extends ElementParameter {
         }
     }
 
+    private boolean hasPropertyChangeListener() {
+        return pcs.getPropertyChangeListeners().length != 0;
+    }
+
     private void fireValidateStatusEvent() {
-        this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE, null,
-                componentProperties.getValidationResult());
+        if (hasPropertyChangeListener()) {
+            this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE, null,
+                    componentProperties.getValidationResult());
+        }
     }
 
     private void fireValueChangedEvent() {
-        List<Form> forms = componentProperties.getForms();
-        for (Form form : forms) {
-            if (form.isRefreshUI()) {
-                this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED, null, null);
-                return;
+        if (hasPropertyChangeListener()) {
+            List<Form> forms = componentProperties.getForms();
+            for (Form form : forms) {
+                if (form.isRefreshUI()) {
+                    this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED, null, null);
+                    return;
+                }
             }
         }
     }
 
     private void fireShowDialogEvent(Form formToDisplay) {
-        this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_SHOW_DIALOG, null, formToDisplay);
+        if (hasPropertyChangeListener()) {
+            this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_SHOW_DIALOG, null, formToDisplay);
+        }
     }
 
     public boolean callBefore() {

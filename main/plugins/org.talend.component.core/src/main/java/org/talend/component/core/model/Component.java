@@ -752,19 +752,10 @@ public class Component extends AbstractComponent {
                 displayName = EParameterName.PROPERTY_TYPE.getDisplayName();
             }
             newParam.setDisplayName(displayName);
-            if (node.getComponent() != null && node.getComponent().getName().equals("tOracleConnection")) {//$NON-NLS-1$
-                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TEXT_TNS_FILE });
-                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
-                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
-            } else {
-                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
-                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
-                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
-            }
+            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
 
-            // if(xmlParam.isUSETNSFILE){
-            //
-            // }
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.TECHNICAL);

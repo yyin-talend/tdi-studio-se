@@ -980,6 +980,12 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         }
                     }
                 }
+                // save the schema type
+                if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
+                    for (String key : param.getChildParameters().keySet()) {
+                        saveElementParameter(param.getChildParameters().get(key), process, fileFact, paramList, listParamType);
+                    }
+                }
             }
         }
         if (serializedProperties != null) {
