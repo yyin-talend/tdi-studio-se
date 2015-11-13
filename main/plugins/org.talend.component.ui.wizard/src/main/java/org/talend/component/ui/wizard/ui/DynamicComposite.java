@@ -30,6 +30,7 @@ import org.talend.components.api.properties.presentation.Form;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.check.Checker;
 import org.talend.core.ui.check.IChecker;
 import org.talend.designer.core.model.components.EParameterName;
@@ -61,7 +62,9 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
-                ((GenericElementParameter) parameter).addPropertyChangeListener(this);
+                GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
+                genericElementParameter.callBefore();
+                genericElementParameter.addPropertyChangeListener(this);
             }
         }
         parameters.add(getUpdateParameter());
@@ -123,6 +126,17 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     public IChecker getChecker() {
         return this.checker;
+    }
+
+    @Override
+    public synchronized void dispose() {
+        List<? extends IElementParameter> elementParameters = element.getElementParameters();
+        for (IElementParameter elementParameter : elementParameters) {
+            if (elementParameter instanceof GenericElementParameter) {
+                ((GenericElementParameter) elementParameter).removePropertyChangeListener(this);
+            }
+        }
+        super.dispose();
     }
 
 }

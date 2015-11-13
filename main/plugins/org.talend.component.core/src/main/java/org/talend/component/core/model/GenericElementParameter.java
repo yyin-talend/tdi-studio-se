@@ -64,7 +64,6 @@ public class GenericElementParameter extends ElementParameter {
         NamedThing widgetProperty = widgetProperties[0];
         setName(widgetProperty.getName());
         setDisplayName(widgetProperty.getDisplayName());
-        callBefore();
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -78,7 +77,7 @@ public class GenericElementParameter extends ElementParameter {
     @Override
     public void setValue(Object o) {
         super.setValue(o);
-        if (!isFirstCall) {
+        if (!isFirstCall && pcs.getPropertyChangeListeners().length != 0) {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
@@ -133,7 +132,7 @@ public class GenericElementParameter extends ElementParameter {
         this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_SHOW_DIALOG, null, formToDisplay);
     }
 
-    private boolean callBefore() {
+    public boolean callBefore() {
         if (widget.isCallBefore()) {
             try {
                 componentProperties = componentService.beforeProperty(getName(), componentProperties);
