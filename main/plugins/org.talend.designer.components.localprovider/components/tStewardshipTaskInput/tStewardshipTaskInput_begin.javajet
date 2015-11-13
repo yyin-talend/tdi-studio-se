@@ -133,7 +133,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		            <%}%>
 		            for(java.util.Map<String,String> record_<%=cid%> : records_<%=cid%>){
 		            
-		                <% logUtil.debug("\"Retrieving the task \"+ (nb_line_"+cid+")");%>
+		                <% logUtil.debug("\"Retrieving the task \"+ nb_line_"+cid);%>
 		            	
 		            	<%=outgoingConn.getName()%>.TASK_ID = taskCols_<%=cid%>.get(0);
 						<%=outgoingConn.getName()%>.TASK_TYPE = taskCols_<%=cid%>.get(1);

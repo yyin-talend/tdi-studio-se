@@ -241,12 +241,16 @@
 		          }
 		        }
 		      } else {
+		          %>
+		          
 		          <% logUtil.info("\"Attempt to put item with to staging data.\"");%>
+		          
+		        <%  
 		        if (isMassInsert) {
+		        	if(addTaskID){
 		        %>
-		        	<%if(addTaskID){%>
 		        		taskIDs_<%=cid%>.add(<%=isCustom?taskID:inputConnName + "." + prevColumn%>); 
-		        	<%}%>
+		        <%}%>
 		          miList_<%=cid %>.add(item_<%=cid %>);
 		
 		          if (miList_<%=cid %>.size() >= <%=numMassInsert %>) {

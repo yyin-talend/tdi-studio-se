@@ -442,7 +442,8 @@ public class UpdateNodeParameterCommand extends Command {
                                             List<HashMap<String, Object>> oldValue = (List<HashMap<String, Object>>) param
                                                     .getValue();
                                             for (HashMap<String, Object> map : oldValue) {
-                                                if (map.get("BUILDIN") != null && !map.get("BUILDIN").equals("")) {
+                                                if (map.get("BUILDIN") != null && !map.get("BUILDIN").equals("")
+                                                        && Boolean.valueOf(String.valueOf(map.get("BUILDIN")))) {
                                                     ((List<HashMap<String, Object>>) objectValue).add(map);
                                                 }
                                             }

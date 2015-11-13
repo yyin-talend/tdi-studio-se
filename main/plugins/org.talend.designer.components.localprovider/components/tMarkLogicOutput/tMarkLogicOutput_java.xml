@@ -139,6 +139,7 @@
         >
             <ITEMS DEFAULT="INSERT">
                 <ITEM NAME="INSERT" VALUE="INSERT" />
+                <ITEM NAME="UPDATE" VALUE="UPDATE" />
                 <ITEM NAME="DELETE" VALUE="DELETE" />
             </ITEMS>
         </PARAMETER>
@@ -157,11 +158,9 @@
         <PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE"
             REQUIRED="true" NUM_ROW="35" CONTEXT="REJECT"
         >
-            <TABLE>
-                <COLUMN KEY="true" LENGTH="255" NAME="docId"
-                    TYPE="id_String" NULLABLE="false" READONLY="true" />
-                <COLUMN KEY="false" LENGTH="255" NAME="docContent"
-                    TYPE="id_String" NULLABLE="false" READONLY="true" />
+            <TABLE READONLY="true">
+                <COLUMN KEY="false" LENGTH="255" NAME="errMessage"
+                    TYPE="id_String" NULLABLE="false" CUSTOM="true" />
             </TABLE>
         </PARAMETER>
     </PARAMETERS>
@@ -293,6 +292,10 @@
 
     <RETURNS>
         <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+        <RETURN NAME="NB_LINE_UPSERTED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
+        <RETURN NAME="NB_LINE_DELETED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
+        <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
+        <RETURN NAME="NB_LINE_REJECTED" TYPE="id_Integer" AVAILABILITY="AFTER"/>
     </RETURNS>
 
 </COMPONENT>

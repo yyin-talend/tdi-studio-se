@@ -33,7 +33,7 @@
 			<%
 			if(isSpecifyTaskID){
 		    %>
-		        <% logUtil.info("\"Attempt to delete task by specify task id: \""+taskID);%>
+		        <% logUtil.info("\"Attempt to delete task by specify task id: \"+"+taskID);%>
 		        
 				TDSCWS_<%=cid%>.deleteTask(<%=taskID%>);
 				
