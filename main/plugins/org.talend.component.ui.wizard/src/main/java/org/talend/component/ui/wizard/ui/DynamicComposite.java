@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -40,6 +41,7 @@ import org.talend.core.ui.check.Checker;
 import org.talend.core.ui.check.IChecker;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 
 /**
@@ -90,6 +92,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, section, props, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
+                ((GenericElementParameter) parameter).callBefore();
                 ((GenericElementParameter) parameter).addPropertyChangeListener(this);
             }
         }
@@ -104,6 +107,23 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     if (EParameterFieldType.SCHEMA_TYPE.equals(parameter.getFieldType())) {
                         if (parameter.getChildParameters().size() == 0) {
                             parameter.getChildParameters().putAll(oldParameter.getChildParameters());
+                        }
+                    }
+                    // Repository
+                    IElementParameter property = element.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
+                    if (property != null) {
+                        Map<String, IElementParameter> childParameters = property.getChildParameters();
+                        if (childParameters != null) {
+                            IElementParameter elementParameter = childParameters.get(EParameterName.PROPERTY_TYPE.getName());
+                            if (elementParameter != null && EmfComponent.REPOSITORY.equals(elementParameter.getValue())) {
+                                String repositoryValue = parameter.getRepositoryValue();
+                                if (oldParameter.isShow(oldParameters) && (repositoryValue != null)
+                                        && (!parameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                                        && parameter.getCategory() == section) {
+                                    parameter.setRepositoryValueUsed(true);
+                                    parameter.setReadOnly(true);
+                                }
+                            }
                         }
                     }
                     newParameters.add(parameter);

@@ -87,7 +87,7 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                     if (table != null) {
                         tableName = table.getTableName();
                         if (tableName != null) {
-                            return table.getId() + " - " + tableName;//$NON-NLS-1$
+                            // return table.getId() + " - " + tableName;//$NON-NLS-1$
                         }
                     }
                 } else if (IComponentConstants.MODULENAME.equals(value)) {

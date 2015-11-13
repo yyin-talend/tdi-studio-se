@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.component.core.constants.IComponentConstants;
+import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
@@ -40,6 +41,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericWizardService;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 
@@ -93,6 +95,7 @@ public class GenericWizardService implements IGenericWizardService {
         return false;
     }
 
+    @Override
     public boolean isGenericItem(Item item) {
         return item != null && item.eClass() == GenericMetadataPackage.Literals.GENERIC_CONNECTION_ITEM;
     }
@@ -142,8 +145,14 @@ public class GenericWizardService implements IGenericWizardService {
                         : IComponentConstants.FORM_MAIN);
                 dynamicComposite = new DynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, sectionCategory,
                         element, isCompactView, composite.getBackground(), form);
-                dynamicComposite.resetElementParameters();
-                dynamicComposite.refresh();
+                List<ElementParameter> elementParameters = (List<ElementParameter>) node.getElementParameters();
+                for (ElementParameter parameter : elementParameters) {
+                    if (parameter instanceof GenericElementParameter) {
+                        GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
+                        genericElementParameter.callBefore();
+                        genericElementParameter.addPropertyChangeListener(dynamicComposite);
+                    }
+                }
             }
         }
         return dynamicComposite;
