@@ -780,7 +780,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         oldJobName = label;
     }
 
-    public abstract void setName(String revisionNumStr);
+    public void setName(String revisionNum) {
+        setName();
+        String label = getEditorInput().getName();
+        String jobVersion = this.getProcess().getVersion();
+        setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + revisionNum); //$NON-NLS-1$
+        revisionNumStr = revisionNum;
+    }
     
     /*
      * (non-Javadoc)
