@@ -101,6 +101,11 @@ public class GenericWizardService implements IGenericWizardService {
     }
 
     @Override
+    public boolean isGenericConnection(Connection connection) {
+        return connection != null && connection.eClass() == GenericMetadataPackage.Literals.GENERIC_CONNECTION;
+    }
+
+    @Override
     public Image getNodeImage(String typeName) {
         InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName,
                 WizardImageType.TREE_ICON_16X16);
@@ -157,4 +162,5 @@ public class GenericWizardService implements IGenericWizardService {
         }
         return dynamicComposite;
     }
+
 }
