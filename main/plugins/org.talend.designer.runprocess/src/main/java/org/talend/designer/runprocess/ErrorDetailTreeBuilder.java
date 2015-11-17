@@ -24,6 +24,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IContainerEntry;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
@@ -94,21 +95,6 @@ public class ErrorDetailTreeBuilder {
             entry.setLabel(name);
         }
         return entry;
-    }
-
-    /**
-     * 
-     * DOC chuang ErrorDetailTreeBuilder class global comment. Detailled comment
-     */
-    interface IContainerEntry {
-
-        public String getLabel();
-
-        public boolean hasChildren();
-
-        public List getChildren();
-
-        public Image getImage();
     }
 
     /**
