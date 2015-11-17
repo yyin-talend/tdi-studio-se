@@ -48,6 +48,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jface.action.IAction;
@@ -188,7 +189,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         ISelectionListener, IUIRefresher, IMultiPageTalendEditor {
 
     protected static final String DISPLAY_CODE_VIEW = "DISPLAY_CODE_VIEW"; //$NON-NLS-1$
-
+    
+    private boolean isCheckout = false;
+    
     protected AdapterImpl dirtyListener = new AdapterImpl() {
 
         @Override
@@ -765,7 +768,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         String label = getEditorInput().getName();
         oldJobName = label;
     }
-
+    
+    public void setName(String revisionNum) {
+        setName();
+        String label = getEditorInput().getName();
+        String jobVersion = this.getProcess().getVersion();
+        setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + revisionNum); //$NON-NLS-1$
+        revisionNumStr = revisionNum;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -1045,6 +1056,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         refreshJobSettingsView();
         changeCollapsedState(false, jobletMap);
+        
+        if (isCheckout) {
+            CommandStack stack = (CommandStack) getAdapter(CommandStack.class);
+            stack.flush();
+            isCheckout = false;
+        }
     }
 
     public boolean haveDirtyJoblet() {
@@ -1721,5 +1738,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
 
     }
-
+    
+    public boolean isCheckout() {
+        return isCheckout;
+    }
+    
+    public void setCheckout(boolean isCheckout) {
+        this.isCheckout = isCheckout;
+    }
+    
 }
