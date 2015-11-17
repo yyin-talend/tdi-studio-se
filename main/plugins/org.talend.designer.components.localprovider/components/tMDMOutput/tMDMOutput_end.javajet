@@ -53,7 +53,7 @@ if(!usePartialUpdate){%>
 			int i2_<%=cid %> = 0;
 		    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
 		        String compositeId = "";
-		        for(String id:wspk2_<%=cid %>.getId()) {
+		        for(String id:wspk2_<%=cid %>.getIds()) {
 		          compositeId += id;
 		        }
 		        <% logUtil.debug("\"Add task id for item :\"+compositeId");%>
@@ -84,7 +84,7 @@ if(!usePartialUpdate){%>
 		    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
 		        
 		        String compositeId = "";
-                for(String id:wspk2_<%=cid %>.getId()) {
+                for(String id:wspk2_<%=cid %>.getIds()) {
                   compositeId += id;
                 }
                 <% logUtil.debug("\"Add task id for item :\"+compositeId");%>

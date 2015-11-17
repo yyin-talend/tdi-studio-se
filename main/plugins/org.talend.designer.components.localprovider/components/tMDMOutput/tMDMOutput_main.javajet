@@ -202,7 +202,7 @@
 					    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
 					    
 					       String compositeId = "";
-					       for(String id:wspk2_<%=cid %>.getId()) {
+					       for(String id:wspk2_<%=cid %>.getIds()) {
 					           compositeId += id;
 					       }
 					       <% logUtil.debug("\"Add task id for item :\"+compositeId");%>
@@ -241,12 +241,16 @@
 		          }
 		        }
 		      } else {
+		          %>
+		          
 		          <% logUtil.info("\"Attempt to put item with to staging data.\"");%>
+		          
+		        <%  
 		        if (isMassInsert) {
+		        	if(addTaskID){
 		        %>
-		        	<%if(addTaskID){%>
 		        		taskIDs_<%=cid%>.add(<%=isCustom?taskID:inputConnName + "." + prevColumn%>); 
-		        	<%}%>
+		        <%}%>
 		          miList_<%=cid %>.add(item_<%=cid %>);
 		
 		          if (miList_<%=cid %>.size() >= <%=numMassInsert %>) {
@@ -266,7 +270,7 @@
 					    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
 					        
 					        String compositeId = "";
-					        for(String id:wspk2_<%=cid %>.getId()) {
+					        for(String id:wspk2_<%=cid %>.getIds()) {
 					           compositeId += id;
 					        }
 					        <% logUtil.debug("\"Add task id for item :\"+compositeId");%>

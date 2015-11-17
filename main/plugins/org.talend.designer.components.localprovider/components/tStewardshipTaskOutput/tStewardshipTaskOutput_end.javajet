@@ -44,7 +44,7 @@
 					}
 					if(tasks_<%=cid%>.getTaskCount()>=1){
 					
-					    <% logUtil.info("\"Uploading \"+ tasks_"+cid+".getTaskCount()+\"tasks...\"");%>
+					    <% logUtil.info("\"Uploading \"+ tasks_"+cid+".getTaskCount()+\" tasks...\"");%>
 						
 						String content = tasks_<%=cid%>.getTasksAndClear();
 						//System.out.println(content);
@@ -55,7 +55,7 @@
 							
 							System.err.println("An error occured while uploading tasks.");
 						} else{
-						    <% logUtil.info("\"Uploaded \"+ tasks_"+cid+".getTaskCount()+\"tasks successfully.\"");%>
+						    <% logUtil.info("\"Uploaded \"+ tasks_"+cid+".getTaskCount()+\" tasks successfully.\"");%>
 						}
 					}
 				<%

@@ -2770,7 +2770,12 @@ public class Node extends Element implements IGraphicalNode {
                     break;
                 case COMPONENT_LIST:
                     if (param != null) {
-                        String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                        String errorMessage;
+                        if (param.getValue() == null || "".equals(param.getValue())) { //$NON-NLS-1$
+                            errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                        } else {
+                            errorMessage = Messages.getString("Node.parameterNotExist", param.getDisplayName(), param.getValue()); //$NON-NLS-1$
+                        }
                         if (isUseExistedConnetion(this)) {
                             List<INode> list = (List<INode>) this.getProcess().getNodesOfType(param.getFilter());
                             if (list == null || list.size() == 0 || list.isEmpty()) {
@@ -3991,8 +3996,11 @@ public class Node extends Element implements IGraphicalNode {
             for (ICheckNodesService checkService : checkNodeServices) {
                 checkService.checkNode(this);
             }
-            if (externalNode != null) {
-                List<Problem> problems = externalNode.getProblems();
+
+            // init external node firstly by method getExternalNode
+            IExternalNode iExternalNode = getExternalNode();
+            if (iExternalNode != null) {
+                List<Problem> problems = iExternalNode.getProblems();
                 if (problems != null) {
                     for (Problem current : problems) {
                         current.setElement(this);

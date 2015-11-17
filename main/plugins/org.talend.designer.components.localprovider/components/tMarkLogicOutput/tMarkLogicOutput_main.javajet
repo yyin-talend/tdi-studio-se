@@ -100,6 +100,14 @@ imports="
                             docMgr_<%= cid %>.write(docId_<%= cid %>, strHandle_<%= cid %>);
                             nb_line_inserted_<%= cid %> ++;
                     <%
+                    }else if("UPDATE".equals(actionType)){
+                    %>
+                        docId_<%= cid %> = <%= connName %>.docId;
+                        docContent_<%= cid %> = <%= connName %>.docContent;
+                        com.marklogic.client.io.StringHandle strHandle_<%= cid %> = new com.marklogic.client.io.StringHandle(docContent_<%= cid %>);
+                        docMgr_<%= cid %>.patch(docId_<%= cid %>, strHandle_<%= cid %>);
+                        nb_line_updated_<%= cid %> ++;
+                    <%
                     }else{
                     %>
                        Compile Err: UNSUPPORTED_ACTION_TYPE <%= actionType %>
@@ -126,6 +134,7 @@ imports="
                            <%= rejectConnName %> = new <%= rejectConnName %>Struct();
                            <%= rejectConnName %>.docId = docId_<%= cid %>;
                            <%= rejectConnName %>.docContent = docContent_<%= cid %>;
+                           <%= rejectConnName %>.errMessage = e.getMessage();
                            nb_line_rejected_<%= cid %> ++;
                         <%
                         }
