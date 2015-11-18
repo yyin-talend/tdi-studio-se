@@ -67,6 +67,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
@@ -804,7 +805,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         fillUIBranches(project, false);
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        ExceptionHandler.process(e);                        
                     }
                     setRepositoryContextInContext();
                 }
@@ -1695,7 +1696,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     selectProject(project);
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
         }
@@ -1762,7 +1763,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                             projectBranches.addAll(loginHelper.getProjectBranches(currentProjectSettings));
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            ExceptionHandler.process(e);
                         }
                         return org.eclipse.core.runtime.Status.OK_STATUS;
                     }
@@ -1895,7 +1896,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 selectProject(newProject);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         } else if (ImportProjectAsAction.getInstance().isImportedSeveralProjects()) {
             resetProjectOperationSelectionWithBusyCursor();
@@ -1915,7 +1916,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 selectProject(newProject);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
         validateProject();
@@ -1975,7 +1976,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             MessageBoxExceptionHandler.process(e);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
