@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.talend.component.core.model.GenericElementParameter;
 import org.talend.components.api.properties.NameAndLabel;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.composite.ElementsSelectionComposite;
@@ -89,7 +90,10 @@ public class NameAndLabelsTreeController extends AbstractElementPropertySectionC
 
         };
         selectionComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        selectionComposite.setViewerData((List<NameAndLabel>) param.getValue());
+        if (param instanceof GenericElementParameter) {
+            List<NameAndLabel> possibleValues = (List<NameAndLabel>) ((GenericElementParameter) param).getPossibleValues();
+            selectionComposite.setViewerData(possibleValues);
+        }
         return parentComp;
     }
 

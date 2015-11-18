@@ -237,7 +237,9 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                     }
                     compService.afterFormFinish(form.getName(), form.getProperties());
                 }
-                GenericUpdateManager.updateGenericConnection(connectionItem);
+                if (!creation) {
+                    GenericUpdateManager.updateGenericConnection(connectionItem);
+                }
                 updateConnectionItem();
             } catch (Throwable e) {
                 new ErrorDialogWidthDetailArea(getShell(), IGenericConstants.PLUGIN_ID,
