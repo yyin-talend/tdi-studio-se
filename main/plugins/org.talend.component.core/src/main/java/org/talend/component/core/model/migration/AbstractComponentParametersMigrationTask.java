@@ -15,6 +15,7 @@ package org.talend.component.core.model.migration;
 import java.util.Date;
 import java.util.List;
 
+import org.talend.component.core.constants.IComponentConstants;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -103,6 +104,30 @@ public class AbstractComponentParametersMigrationTask extends AbstractJobMigrati
 
         public static void addParameterType(NodeType node, String field, String name, String value) {
             addParameterType(node, field, name, value, null);
+        }
+
+        /**
+         * for special parameter value Comment method "convertSpecialParameterValue".
+         * 
+         * @param oldParameterValue
+         * @return
+         */
+        public static String convertSpecialParameterValue(String oldParameterValue) {
+            if (oldParameterValue != null) {
+                if (IComponentConstants.ACTION_INSERT.equalsIgnoreCase(oldParameterValue)) {
+                    return IComponentConstants.ACTION_INSERT;
+                } else if (IComponentConstants.ACTION_UPDATE.equalsIgnoreCase(oldParameterValue)) {
+                    return IComponentConstants.ACTION_UPDATE;
+                } else if (IComponentConstants.ACTION_UPSERT.equalsIgnoreCase(oldParameterValue)) {
+                    return IComponentConstants.ACTION_UPSERT;
+                } else if (IComponentConstants.ACTION_DELETE.equalsIgnoreCase(oldParameterValue)) {
+                    return IComponentConstants.ACTION_DELETE;
+                } else if (IComponentConstants.LOGIN_OAUTH.equalsIgnoreCase(oldParameterValue)
+                        || (!oldParameterValue.equals("") && oldParameterValue.startsWith(IComponentConstants.LOGIN_OAUTH))) {//$NON-NLS-1$
+                    return IComponentConstants.LOGIN_OAUTH;
+                }
+            }
+            return oldParameterValue;
         }
     }
 

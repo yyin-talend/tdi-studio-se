@@ -29,7 +29,6 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.properties.Item;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -57,45 +56,39 @@ public class ChangeSalesforceComponentsParametersToSerializedMigrationTask exten
                 }
                 boolean modified = false;
                 ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(node.getComponentName());
-                EList listParamType = node.getElementParameter();
-                for (Object param : listParamType) {
-                    ElementParameterType paramType = (ElementParameterType) param;
-                    String paramName = paramType.getName();
-                    String fieldName = null;
+                List<String> propertyFieldNames = componentProperties.getPropertyFieldNames();
 
-                    if (EParameterName.UNIQUE_NAME.getName().equals(paramName)) {
-                        continue;
-                    }
-                    // moduleName
-                    if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)) {
-                        fieldName = "module";//$NON-NLS-1$
-                    }
-                    if (fieldName != null) {
-                        SchemaElement schemaElement = ComponentsUtils.getGenericSchemaElement(componentProperties, fieldName);
+                for (String propertyFieldName : propertyFieldNames) {
+                    //System.out.println(node.getComponentName() + IComponentConstants.EXP_SEPARATOR + propertyFieldName + "=");//$NON-NLS-1$
+                    if (propertyFieldName != null) {
+                        SchemaElement schemaElement = ComponentsUtils.getGenericSchemaElement(componentProperties,
+                                propertyFieldName);
                         if (schemaElement != null) {
-                            componentProperties.setValue(schemaElement, paramType.getValue());
-                            modified = true;
-                        }
-                    }
-                    List<String> propertyFieldNames = componentProperties.getPropertyFieldNames();
-                    for (String propertyFieldName : propertyFieldNames) {
-                        if (propertyFieldName != null && propertyFieldName.equalsIgnoreCase(paramName)) {
-                            SchemaElement schemaElement = ComponentsUtils.getGenericSchemaElement(componentProperties,
-                                    propertyFieldName);
-                            if (schemaElement != null) {
-                                componentProperties.setValue(schemaElement, paramType.getValue());
-                                modified = true;
+                            String oldParameterName = GenericParametersProvider.getString(node.getComponentName()
+                                    + IComponentConstants.EXP_SEPARATOR + propertyFieldName);
+                            EList listParamType = node.getElementParameter();
+                            for (Object param : listParamType) {
+                                ElementParameterType paramType = (ElementParameterType) param;
+                                String paramName = paramType.getName();
+                                if (paramName != null && paramName.equals(oldParameterName)) {
+                                    componentProperties.setValue(schemaElement,
+                                            ParameterUtilTool.convertSpecialParameterValue(paramType.getValue()));
+                                    // Only remove the ElementParameterType if contains in the component properties
+                                    listParamType.remove(processType);
+                                    modified = true;
+                                    break;
+                                }
                             }
-                            break;
                         }
                     }
                 }
+
                 if (modified) {
                     String serializedProperties = componentProperties.toSerialized();
                     if (serializedProperties != null) {
                         ElementParameterType pType = ParameterUtilTool.createParameterType(null,
                                 "PROPERTIES", serializedProperties); //$NON-NLS-1$
-                        listParamType.add(pType);
+                        node.getElementParameter().add(pType);
                     }
                 }
             }
