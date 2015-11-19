@@ -452,10 +452,18 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                                 ((IFile) resource).setContents(new ByteArrayInputStream(new byte[0]), IResource.KEEP_HISTORY,
                                         null);
                             } else {
-                                FilesUtils.deleteFile(resource.getLocation().toFile(), true);
+                                try {
+                                    org.talend.commons.utils.io.FilesUtils.removeExistedResources(null, resource, true, true);
+                                } catch (Exception e) {
+                                    throw new ProcessorException(e);
+                                }
                             }
                         } else {
-                            FilesUtils.deleteFile(resource.getLocation().toFile(), true);
+                            try {
+                                org.talend.commons.utils.io.FilesUtils.removeExistedResources(null, resource, true, true);
+                            } catch (Exception e) {
+                                throw new ProcessorException(e);
+                            }
                         }
                     }
                 }
@@ -615,8 +623,13 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             // Generating files
             IFile codeFile = this.getCodeProject().getFile(this.getSrcCodePath());
             if (!codeFile.exists()) {
-                // see bug 0003592, detele file with different case in windows
-                deleteFileIfExisted(codeFile);
+                // maybe have been removed in cleanBeforeGenerate. just confirm to remove the files with different case
+                // in win.
+                try {
+                    org.talend.commons.utils.io.FilesUtils.removeExistedResources(null, codeFile, true, true);
+                } catch (Exception e) {
+                    throw new ProcessorException(e);
+                }
                 IFolder parentFolder = (IFolder) codeFile.getParent();
                 if (!parentFolder.exists()) {
                     parentFolder.create(true, true, null);
@@ -1309,7 +1322,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String[] addVMArguments(String[] strings) {
         String[] vmargs = getJVMArgs();
-        
+
         if (vmargs != null && vmargs.length > 0) {
             String[] lines = new String[strings.length + vmargs.length];
             System.arraycopy(strings, 0, lines, 0, 1);
@@ -1340,7 +1353,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 asList.add(encodingFromIni);
             }
         }
-        //add args if using JMX.
+        // add args if using JMX.
         RunProcessContext runProcessContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         if (runProcessContext != null) {
             ITargetExecutionConfig config = runProcessContext.getSelectedTargetExecutionConfig();
@@ -1355,7 +1368,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 }
             }
         }
-        
+
         vmargs = asList.toArray(new String[0]);
         return vmargs;
     }

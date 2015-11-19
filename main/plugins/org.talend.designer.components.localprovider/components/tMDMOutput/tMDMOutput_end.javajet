@@ -39,6 +39,15 @@ if(!usePartialUpdate){
 		
 			int i2_<%=cid %> = 0;
 		    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
+<<<<<<< HEAD
+=======
+		        String compositeId = "";
+		        for(String id:wspk2_<%=cid %>.getIds()) {
+		          compositeId += id;
+		        }
+		        <% logUtil.debug("\"Add task id for item :\"+compositeId");%>
+		        
+>>>>>>> refs/heads/master
 		    	wspk2_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
 		    	service_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
 		    	i2_<%=cid %>++;
@@ -57,6 +66,16 @@ if(!usePartialUpdate){
 		
         	int i2_<%=cid %> = 0;
 		    for(org.talend.mdm.webservice.WSItemPK wspk2_<%=cid %> : wspks_<%=cid %>){
+<<<<<<< HEAD
+=======
+		        
+		        String compositeId = "";
+                for(String id:wspk2_<%=cid %>.getIds()) {
+                  compositeId += id;
+                }
+                <% logUtil.debug("\"Add task id for item :\"+compositeId");%>
+                
+>>>>>>> refs/heads/master
 		    	wspk2_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
 		    	service_<%=cid %>.updateItemMetadata(util_<%=cid%>.makeUpdateMeteItm(taskIDs_<%=cid%>.get(i2_<%=cid %>), wspk2_<%=cid %>));
 		    	i2_<%=cid %>++;

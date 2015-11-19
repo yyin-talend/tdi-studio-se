@@ -7263,6 +7263,33 @@
                  id="high-scale-lib-1.1.1.jar">
              </library>
         </libraryNeededGroup>
+        
+        <libraryNeededGroup
+                description="The lastest Hive hbase storage libraries of MAPR41X"
+                id="HIVE100-HBASE-LIB-MAPR41X_LASTEST"
+                name="HIVE100-HBASE-LIB-MAPR41X_LASTEST"  >
+             <library
+                 id="hive-hbase-handler-5.0.X-lastest">
+             </library>
+             <library
+                id="hbase-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="zookeeper-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="htrace-core-2.04.jar">
+             </library>
+             <library
+                 id="netty-3.6.6.Final.jar">
+             </library>
+             <library
+                id="mapr-hbase-4.1.X-lastest">
+             </library>
+             <library
+                 id="high-scale-lib-1.1.1.jar">
+             </library>
+        </libraryNeededGroup>
 
 	    <libraryNeededGroup
                 description="The libraries of Tez on HDP211"
