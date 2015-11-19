@@ -44,8 +44,6 @@ public interface IComponentConstants {
 
     public static final String QUERY_BULK = "Bulk";//$NON-NLS-1$  
 
-    public static final String OUTPUTACTION = "outputAction";//$NON-NLS-1$
-
     public static final String ACTION_INSERT = "INSERT";//$NON-NLS-1$
 
     public static final String ACTION_UPDATE = "UPDATE";//$NON-NLS-1$
@@ -53,4 +51,34 @@ public interface IComponentConstants {
     public static final String ACTION_UPSERT = "UPSERT";//$NON-NLS-1$
 
     public static final String ACTION_DELETE = "DELETE";//$NON-NLS-1$
+
+    /**
+     * output
+     */
+    public static final String OUTPUTACTION = "outputAction";//$NON-NLS-1$
+
+    public static final String UPSERTKEYCOLUMN = "upsertKeyColumn";//$NON-NLS-1$
+
+    public static final String EXTENDINSERT = "extendInsert";//$NON-NLS-1$
+
+    public static final String CEASEFORERROR = "ceaseForError";//$NON-NLS-1$
+
+    public static final String IGNORENULL = "ignoreNull";//$NON-NLS-1$
+
+    public static final String RETRIEVEINSERTID = "retrieveInsertId";//$NON-NLS-1$
+
+    public static final String COMMITLEVEL = "commitLevel";//$NON-NLS-1$
+
+    public static final String LOGFILENAME = "logFileName";//$NON-NLS-1$
+
+    public static final String UPSERTRELATION = "upsertRelation";//$NON-NLS-1$
+
+    public static final String SCHEMAFLOW = "schemaFlow";//$NON-NLS-1$
+
+    public static final String SCHEMAREJECT = "schemaReject";//$NON-NLS-1$
+
+    public static final String CONNECTION = "connection";//$NON-NLS-1$
+
+    public static final String MODULE = "module";//$NON-NLS-1$
+
 }
