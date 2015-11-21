@@ -7,6 +7,6 @@
     <version>6.1.1-SNAPSHOT</version>
     <relativePath>../../../</relativePath>
   </parent>
-  <artifactId>org.talend.sqlbuilder.jars</artifactId>
+  <artifactId>org.talend.libraries.sqlbuilder.jars</artifactId>
   <packaging>eclipse-plugin</packaging>
 </project>
