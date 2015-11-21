@@ -105,7 +105,6 @@
 		<module>main/plugins/org.talend.libraries.crm</module>
 		<module>main/plugins/org.talend.libraries.css</module>
 		<module>main/plugins/org.talend.libraries.custom</module>
-		<module>main/plugins/org.talend.libraries.ebcdic</module>
 		<module>main/plugins/org.talend.libraries.edifact</module>
 		<module>main/plugins/org.talend.libraries.ehcache</module>
 		<module>main/plugins/org.talend.libraries.excel</module>
