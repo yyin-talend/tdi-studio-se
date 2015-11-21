@@ -70,7 +70,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
-                genericElementParameter.callBefore();
+                genericElementParameter.callBeforePresent();
                 genericElementParameter.addPropertyChangeListener(this);
             }
         }
@@ -92,7 +92,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, section, props, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
-                ((GenericElementParameter) parameter).callBefore();
+                ((GenericElementParameter) parameter).callBeforePresent();
                 ((GenericElementParameter) parameter).addPropertyChangeListener(this);
             }
         }

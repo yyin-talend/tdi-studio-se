@@ -142,10 +142,22 @@ public class GenericElementParameter extends ElementParameter {
         }
     }
 
-    public boolean callBefore() {
-        if (widget.isCallBefore()) {
+    public boolean callBeforePresent() {
+        if (widget.isCallBeforePresent()) {
             try {
-                componentProperties = componentService.beforeProperty(getName(), componentProperties);
+                componentProperties = componentService.beforePropertyPresent(getName(), componentProperties);
+                return true;
+            } catch (Throwable e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return false;
+    }
+
+    public boolean callBeforeActivate() {
+        if (widget.isCallBeforeActivate()) {
+            try {
+                componentProperties = componentService.beforePropertyActivate(getName(), componentProperties);
                 return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
