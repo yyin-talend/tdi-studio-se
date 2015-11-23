@@ -225,6 +225,8 @@ public class BuildJobManager {
                 jobFileTarget = new File(destinationPath, jobZipFile.getName());
             }
             FilesUtils.copyFile(jobZipFile, jobFileTarget);
+        } else if (jobTargetFile != null) {
+            throw new Exception("Job was not built successfully, please check the logs for more details");
         }
         pMonitor.worked(scale);
         pMonitor.done();
