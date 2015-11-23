@@ -389,6 +389,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public void init(final IEditorSite site, IEditorInput editorInput) throws PartInitException {
         setSite(site);
         setInput(editorInput);
+        if (!(editorInput instanceof JobEditorInput)) {
+            return;
+        }
         site.setSelectionProvider(new MultiPageTalendSelectionProvider(this));
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 
@@ -1695,7 +1698,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             this.lockService.unregister();
         }
         super.dispose();
-        if (!getProcess().isReadOnly()) {
+        if (getProcess() != null && !getProcess().isReadOnly()) {
             if (isKeepPropertyLocked()) {
                 return;
             }
@@ -1726,8 +1729,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
         }
 
-        processEditorInput.dispose();
-        processEditorInput = null;
+        if (processEditorInput != null) {
+            processEditorInput.dispose();
+            processEditorInput = null;
+        }
         designerEditor = null;
         codeEditor = null;
         if (processor instanceof IJavaBreakpointListener) {
