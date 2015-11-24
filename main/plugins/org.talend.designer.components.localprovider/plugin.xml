@@ -1958,7 +1958,7 @@
 	   		context="plugin:org.talend.libraries.hadoop.cloudera.cdh5"
         	id="libthrift-0.9.0.cloudera.2.jar"
          	name="libthrift-0.9.0.cloudera.2.jar" mvn_uri="mvn:org.talend.libraries/libthrift-0.9.0.cloudera.2/6.0.0"
-         	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5/lib/libthrift-0.9.0.cloudera.2.jar">
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5.1/lib/libthrift-0.9.0.cloudera.2.jar">
     	</libraryNeeded>
 
     	<libraryNeeded
