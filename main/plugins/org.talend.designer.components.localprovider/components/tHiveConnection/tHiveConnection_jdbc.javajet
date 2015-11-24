@@ -219,6 +219,9 @@ imports="
 				// BEGIN IF03
 				if(configureFromClassPath){
 %>
+					String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";";
+					String secureSSLMode = ";sasl.qop=auth-conf";
+
 					// Add HADOOP_CONF_DIR to the classpath if it's present
 					String hadoopConfDir_<%=cid%> = System.getenv("HADOOP_CONF_DIR");
 					if(hadoopConfDir_<%=cid%> != null){
@@ -227,34 +230,52 @@ imports="
 						method.setAccessible(true);
 						method.invoke(sysloader,new Object[] { new java.io.File(hadoopConfDir_<%=cid%>).toURI().toURL() });
 					}
-					String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";";
-					String secureSSLMode = ";sasl.qop=auth-conf";
-					org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
+					org.apache.hadoop.conf.Configuration conf_<%=cid%> = new org.apache.hadoop.conf.Configuration();
+
 					// Adding any talend-site.xml files on the classpath
-					conf.addResource("talend-site.xml");
-					String tldHiveKerberosAuth = conf.get("talend.hive.kerberos.authentication", "");
-					String tldHiveKerberosKtPrincipal = conf.get("talend.hive.kerberos.keytab.principal", "");
-					String tldHiveKerberosKtPath = conf.get("talend.hive.kerberos.keytab.path", "");
-					String tldHiveEnc = conf.get("talend.hive.encryption", "");
-					String tldHiveSslTsPath = conf.get("talend.hive.ssl.trustStore.path", "");
-					String tldHiveSslTsPassword = conf.get("talend.hive.ssl.trustStore.password", "");
+					conf_<%=cid%>.addResource("talend-site.xml");
+					String tldHiveKerberosAuth = conf_<%=cid%>.get("talend.kerberos.authentication", "");
+					String tldHiveKerberosKtPrincipal = conf_<%=cid%>.get("talend.kerberos.keytab.principal", "");
+					String tldHiveKerberosKtPath = conf_<%=cid%>.get("talend.kerberos.keytab.path", "");
+					String tldHiveEnc = conf_<%=cid%>.get("talend.encryption", "");
+					String tldHiveSslTsPath = conf_<%=cid%>.get("talend.ssl.trustStore.path", "");
+					String tldHiveSslTsPassword = conf_<%=cid%>.get("talend.ssl.trustStore.password", "");
+
 					// Add configurations from hive-site.xml
-					conf.addResource("hive-site.xml");
+					conf_<%=cid%>.addResource("hive-site.xml");
+
 					// Add configurations from yarn-site.xml
-					conf.addResource("yarn-site.xml");
+					conf_<%=cid%>.addResource("yarn-site.xml");
+
+					// Add configurations from mapred-site.xml
+					conf_<%=cid%>.addResource("mapred-site.xml");
+
+					// Add configurations from mapred-site.xml
+					conf_<%=cid%>.addResource("hdfs-site.xml");
 <%
 					if(storeByHBase){
 %>
 						// Add configurations from hbase-site.xml
-						conf.addResource("hbase-site.xml");
+						conf_<%=cid%>.addResource("hbase-site.xml");
+<%
+					}
+					// log all loaded xxx-site.xml files and all of the key value pairs for debugging
+					if(isLog4jEnabled){
+%>
+						log.debug("CLASSPATH_CONFIGURATION Loaded " + conf_<%=cid%>);
+						log.debug("CLASSPATH_CONFIGURATION Configuration key value pairs : ");
+						java.util.Iterator<java.util.Map.Entry<String,String>> iterator = conf_<%=cid%>.iterator();
+						while(iterator.hasNext()){
+							java.util.Map.Entry<String,String> property = iterator.next();
+							log.debug("CLASSPATH_CONFIGURATION " + property.getKey() + " : " + property.getValue());
+						}
 <%
 					}
 %>
-
 					if(org.apache.hadoop.security.UserGroupInformation.isSecurityEnabled()){
 
 						
-						String hiveServer2KerberosPrincipal = conf.get("hive.server2.authentication.kerberos.principal", "");
+						String hiveServer2KerberosPrincipal = conf_<%=cid%>.get("hive.server2.authentication.kerberos.principal", "");
 						String urlKerberosParameter = "principal=" + hiveServer2KerberosPrincipal;
 
 						// Keytab configurations
