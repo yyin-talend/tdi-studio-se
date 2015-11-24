@@ -325,6 +325,18 @@ public final class Expression {
             }
         }
 
+        /*
+         * this only used to check is IPAAS Components are Loaded or not
+         */
+        if ("IS_STUDIO_IPAAS_VERSION".equals(variableName)) { //$NON-NLS-1$
+            boolean isIPaas = PluginChecker.isIPaasPluginLoaded();
+            if ("true".equals(variableValue)) { //$NON-NLS-1$
+                return isIPaas;
+            } else {
+                return !isIPaas;
+            }
+        }
+
         // 3 levels of variable name accepted maximum (ex: MY_VAR.TABLE.FIELD == 'test')
         String[] varNames;
         varNames = StringUtils.split(variableName, '.');
