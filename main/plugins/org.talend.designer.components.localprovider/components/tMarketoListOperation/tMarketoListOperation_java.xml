@@ -71,7 +71,7 @@
 		<COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
 		<COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
       </TABLE>
-      <TABLE READONLY="true" IF="(USE_SOAP_API == 'true') and (OPERATION=='ISMEMBEROFLIST') or (MUTIPLE_OPERATION=='false')">
+      <TABLE READONLY="true" IF="(USE_SOAP_API == 'true') and ((OPERATION=='ISMEMBEROFLIST') or (MUTIPLE_OPERATION=='false'))">
      	<COLUMN NAME="ListKeyType" TYPE="id_String" READONLY="true"/>
 		<COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
 		<COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
@@ -82,7 +82,7 @@
 	    <COLUMN NAME="ListId" TYPE="id_Integer" READONLY="true"/>
 	    <COLUMN NAME="LeadId" TYPE="id_Integer" READONLY="true"/>
       </TABLE>
-      <TABLE READONLY="true" IF="(USE_REST_API == 'true') and (OPERATION=='ISMEMBEROFLIST') or (MUTIPLE_OPERATION=='false')">
+      <TABLE READONLY="true" IF="(USE_REST_API == 'true') and ((OPERATION=='ISMEMBEROFLIST') or (MUTIPLE_OPERATION=='false'))">
 	    <COLUMN NAME="ListId" TYPE="id_Integer" READONLY="true"/>
 	    <COLUMN NAME="LeadId" TYPE="id_Integer" READONLY="true"/>
         <COLUMN NAME="Status" TYPE="id_String" READONLY="true"/>
@@ -169,8 +169,8 @@
         <IMPORT NAME="CXF-RT-FRONTEND-JAXRS" MODULE="cxf-rt-frontend-jaxrs-3.1.4.jar" MVN="mvn:org.talend.libraries/cxf-rt-frontend-jaxrs-3.1.4/6.1.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-frontend-jaxrs-3.1.4.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
         <IMPORT NAME="CXF-RT-RS-CLIENT" MODULE="cxf-rt-rs-client-3.1.4.jar" MVN="mvn:org.talend.libraries/cxf-rt-rs-client-3.1.4/6.1.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-rs-client-3.1.4.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
         <IMPORT NAME="CXF-RT-TRANSPORTS-HTTP" MODULE="cxf-rt-transports-http-3.1.4.jar" MVN="mvn:org.talend.libraries/cxf-rt-transports-http-3.1.4/6.1.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-transports-http-3.1.4.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
-        <IMPORT NAME="JAVAX-WS-RS-API" MODULE="javax.ws.rs-api-2.0.1.jar" MVN="mvn:org.talend.libraries/javax.ws.rs-api-2.0.1/6.1.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/javax.annotation-api-1.2.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
-        <IMPORT NAME="JAVAX-ANNOTATION-API" MODULE="javax.annotation-api-1.2.jar" MVN="mvn:org.talend.libraries/javax.annotation-api-1.2/6.1.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/javax.annotation-api-1.2.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
+        <IMPORT NAME="JAVAX-WS-RS-API" MODULE="javax.ws.rs-api-2.0.1.jar" MVN="mvn:org.talend.libraries/javax.ws.rs-api-2.0.1/6.1.0" REQUIRED_IF="(USE_REST_API == 'true')"/>
+        <IMPORT NAME="JAVAX-ANNOTATION-API" MODULE="javax.annotation-api-1.2.jar" MVN="mvn:org.talend.libraries/javax.annotation-api-1.2/6.1.0" REQUIRED_IF="(USE_REST_API == 'true')"/>
         <IMPORT NAME="STAX2-API" MODULE="stax2-api-3.1.4.jar" MVN="mvn:org.talend.libraries/stax2-api-3.1.4/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/stax2-api-3.1.4.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
         <IMPORT NAME="XMLSCHEMA-CORE" MODULE="xmlschema-core-2.2.1.jar" MVN="mvn:org.talend.libraries/xmlschema-core-2.2.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlschema-core-2.2.1.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
         <IMPORT NAME="WOODSTOX-CORE-ASL" MODULE="woodstox-core-asl-4.4.1.jar" MVN="mvn:org.talend.libraries/woodstox-core-asl-4.4.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/woodstox-core-asl-4.4.1.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
