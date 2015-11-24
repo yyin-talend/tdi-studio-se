@@ -32,11 +32,6 @@ public class TickDieOnError4tFileUnarchive extends AbstractJobMigrationTask {
                         Arrays.<IComponentConversion> asList(new IComponentConversion() {
 
                             public void transform(NodeType node) {
-                                if (ComponentUtilities.getNodeProperty(node, "INTEGRITY") == null) {
-                                    ComponentUtilities.addNodeProperty(node, "INTEGRITY", "CHECK");
-                                }
-                                ComponentUtilities.getNodeProperty(node, "INTEGRITY").setValue("true");
-                                
                                 if (ComponentUtilities.getNodeProperty(node, "DIE_ON_ERROR") == null) {
                                     ComponentUtilities.addNodeProperty(node, "DIE_ON_ERROR", "CHECK");
                                 }

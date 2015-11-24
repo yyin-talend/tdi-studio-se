@@ -20,7 +20,6 @@
 
     boolean checkArchiveIntegrity = "true".equals(ElementParameterParser.getValue(node, "__INTEGRITY__"));
     boolean dieWhenArchiveCorrupted = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
-            dieWhenArchiveCorrupted = checkArchiveIntegrity && dieWhenArchiveCorrupted;
     boolean isPasswordNeeded = "true".equals(ElementParameterParser.getValue(node, "__CHECKPASSWORD__"));
     boolean needPrintout = "true".equals(ElementParameterParser.getValue(node, "__PRINTOUT__"));
 
