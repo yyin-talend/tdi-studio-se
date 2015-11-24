@@ -646,6 +646,10 @@ public class CLASS {
             } else {
                 if(sourceKey.getJavaType().equals("long")) {
                     sourceKeyClass.append("hashCode = prime * hashCode + (new Long(" + sourceKey.getColumnName() + ")).hashCode();\r\n");
+                }else if(sourceKey.getJavaType().equals("double")) {
+                    sourceKeyClass.append("hashCode = prime * hashCode + (new Double(" + sourceKey.getColumnName() + ")).hashCode();\r\n");
+                }else if(sourceKey.getJavaType().equals("float")) {
+                    sourceKeyClass.append("hashCode = prime * hashCode + (new Float(" + sourceKey.getColumnName() + ")).hashCode();\r\n");
                 } else {
                     sourceKeyClass.append("hashCode = prime * hashCode + " + sourceKey.getColumnName() + ";\r\n");
                 }
