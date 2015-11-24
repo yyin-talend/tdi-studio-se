@@ -369,4 +369,21 @@ public class ComponentsUtils {
         }
         return obj;
     }
+
+    public static List<SchemaElement> getAllGenericSchemaElements(ComponentProperties componentProperties) {
+        List<SchemaElement> allGenericSchemaElements = new ArrayList<SchemaElement>();
+        if (componentProperties == null) {
+            return null;
+        }
+        List<SchemaElement> schemaElements = componentProperties.getProperties();
+        for (SchemaElement se : schemaElements) {
+            if (se instanceof ComponentProperties) {
+                ComponentProperties childComponentProperties = (ComponentProperties) se;
+                allGenericSchemaElements.addAll(getAllGenericSchemaElements(childComponentProperties));
+            } else {
+                allGenericSchemaElements.add(se);
+            }
+        }
+        return allGenericSchemaElements;
+    }
 }

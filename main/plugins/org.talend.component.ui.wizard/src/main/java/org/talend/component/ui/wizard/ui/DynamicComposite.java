@@ -105,8 +105,15 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                 if (oldParameter.getCategory() != null && oldParameter.getCategory().equals(parameter.getCategory())
                         && oldParameter.getName() != null && oldParameter.getName().equals(parameter.getName())) {
                     if (EParameterFieldType.SCHEMA_TYPE.equals(parameter.getFieldType())) {
-                        if (parameter.getChildParameters().size() == 0) {
-                            parameter.getChildParameters().putAll(oldParameter.getChildParameters());
+                        if (oldParameter instanceof GenericElementParameter && parameter instanceof GenericElementParameter) {
+                            ComponentProperties oldProperties = ((GenericElementParameter) oldParameter).getComponentProperties();
+                            ComponentProperties newProperties = ((GenericElementParameter) parameter).getComponentProperties();
+                            if (oldProperties != null && oldProperties.getName() != null && newProperties != null
+                                    && newProperties.getName() != null && oldProperties.getName().equals(newProperties.getName())) {
+                                if (parameter.getChildParameters().size() == 0) {
+                                    parameter.getChildParameters().putAll(oldParameter.getChildParameters());
+                                }
+                            }
                         }
                     }
                     // Repository

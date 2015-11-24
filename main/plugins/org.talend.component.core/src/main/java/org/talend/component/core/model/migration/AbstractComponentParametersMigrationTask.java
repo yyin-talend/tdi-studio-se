@@ -122,9 +122,15 @@ public class AbstractComponentParametersMigrationTask extends AbstractJobMigrati
                     return IComponentConstants.ACTION_UPSERT;
                 } else if (IComponentConstants.ACTION_DELETE.equalsIgnoreCase(oldParameterValue)) {
                     return IComponentConstants.ACTION_DELETE;
+                } else if (IComponentConstants.LOGIN_BASIC.equalsIgnoreCase(oldParameterValue)) {
+                    return IComponentConstants.LOGIN_BASIC;
                 } else if (IComponentConstants.LOGIN_OAUTH.equalsIgnoreCase(oldParameterValue)
                         || (!oldParameterValue.equals("") && oldParameterValue.startsWith(IComponentConstants.LOGIN_OAUTH))) {//$NON-NLS-1$
                     return IComponentConstants.LOGIN_OAUTH;
+                } else if (IComponentConstants.QUERY_QUERY.equalsIgnoreCase(oldParameterValue)) {
+                    return IComponentConstants.QUERY_QUERY;
+                } else if (IComponentConstants.QUERY_BULK.equalsIgnoreCase(oldParameterValue)) {
+                    return IComponentConstants.QUERY_BULK;
                 }
             }
             return oldParameterValue;
