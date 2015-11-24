@@ -249,7 +249,10 @@
                 );
                 com.amazonaws.services.redshift.model.Cluster cluster_<%=cid%> = result2_<%=cid%>.getClusters().get(0);
                 String status_<%=cid%> = cluster_<%=cid%>.getClusterStatus();
-                if ("available".equalsIgnoreCase(status_<%=cid%>)) {
+                
+                String restoreStatus_<%=cid%> = cluster_<%=cid%>.getRestoreStatus().getStatus();
+                
+                if ("available".equalsIgnoreCase(status_<%=cid%>) && ("completed".equalsIgnoreCase(restoreStatus_<%=cid%>) || "failed".equalsIgnoreCase(restoreStatus_<%=cid%>))) {
                     clusterReady_<%=cid%> = true;
                     globalMap.put("<%=cid %>_ENDPOINT", cluster_<%=cid%>.getEndpoint().getAddress());
                 } else {
