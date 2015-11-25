@@ -250,7 +250,7 @@ imports="
 					// Add configurations from mapred-site.xml
 					conf_<%=cid%>.addResource("mapred-site.xml");
 
-					// Add configurations from mapred-site.xml
+					// Add configurations from hdfs-site.xml
 					conf_<%=cid%>.addResource("hdfs-site.xml");
 <%
 					if(storeByHBase){
@@ -262,13 +262,13 @@ imports="
 					// log all loaded xxx-site.xml files and all of the key value pairs for debugging
 					if(isLog4jEnabled){
 %>
-						log.debug("CLASSPATH_CONFIGURATION Loaded " + conf_<%=cid%>);
-						log.debug("CLASSPATH_CONFIGURATION Configuration key value pairs : ");
-						java.util.Iterator<java.util.Map.Entry<String,String>> iterator = conf_<%=cid%>.iterator();
-						while(iterator.hasNext()){
-							java.util.Map.Entry<String,String> property = iterator.next();
-							log.debug("CLASSPATH_CONFIGURATION " + property.getKey() + " : " + property.getValue());
-						}
+						log.debug("CLASSPATH_CONFIGURATION_<%=cid%>" + " Loaded : " + conf_<%=cid%>);
+						log.debug("CLASSPATH_CONFIGURATION_<%=cid%>" + " key value pairs : ");
+						java.util.Iterator<java.util.Map.Entry<String,String>> iterator_log_<%=cid%> = conf_<%=cid%>.iterator();
+						while(iterator_log_<%=cid%>.hasNext()){
+						java.util.Map.Entry<String,String> property = iterator_log_<%=cid%>.next();
+						log.debug("CLASSPATH_CONFIGURATION_<%=cid%> " + property.getKey() + " : " + property.getValue());
+			}
 <%
 					}
 %>
