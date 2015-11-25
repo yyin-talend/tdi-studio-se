@@ -45,6 +45,8 @@
 	
 	String accesskey = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
 	
+	String availability_zone = ElementParameterParser.getValue(node, "__AVAILABILITY_ZONE__");
+	
 	boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
 	class ParameterUtil {
@@ -206,6 +208,10 @@
     			<%}%>
     			.withMasterInstanceType(<%=master_instance_type%>)
     			.withSlaveInstanceType(<%=slave_instance_type%>)
+    			
+    			<%if(parameterUtil.isValid(availability_zone)){%>
+    			.withPlacement(new com.amazonaws.services.elasticmapreduce.model.PlacementType().withAvailabilityZone(<%=availability_zone%>))
+    			<%}%>
     			
     			<%if(parameterUtil.isValid(master_security_group)){%>
     			.withEmrManagedMasterSecurityGroup(<%=master_security_group%>)
