@@ -2,6 +2,13 @@
 	<%
 	String operationType = ElementParameterParser.getValue(node,"__OPERATION_TYPE__");
 	String lookupField = ElementParameterParser.getValue(node,"__LOOKUP_FIELD__");
+	if(deDupenabled){
+		operationType = null;
+		lookupField = null;
+	}else{
+		operationType = "\""+operationType+"\"";
+		lookupField = "\""+lookupField+"\"";
+	}
 	List<IMetadataColumn> columns = metadata.getListColumns();
 	int sizeColumns = columns.size();
 	for (int i = 0; i < sizeColumns; i++) {
@@ -40,7 +47,7 @@
 		String marketoStatus_<%=cid%>=null;
 		while(true){
 			try{
-				org.talend.marketo.response.ResultSync syncLead_<%=cid%> = client_<%=cid%>.syncLead("<%=operationType%>","<%=lookupField%>",leadAllAttrList_<%=cid%>,false,null);
+				org.talend.marketo.response.ResultSync syncLead_<%=cid%> = client_<%=cid%>.syncLead(<%=operationType%>,<%=lookupField%>,leadAllAttrList_<%=cid%>,false,null);
 				globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
 				if(client_<%=cid%>.isAccessTokenExpired(syncLead_<%=cid%>.getErrors())){
 	            	client_<%=cid%>.refreshToken();
@@ -54,7 +61,6 @@
 						hasFault_<%=cid%> = false;
 						marketoId_<%=cid%> = status_<%=cid%>.getId();
 						marketoStatus_<%=cid%> = status_<%=cid%>.getStatus();
-						errorMsg_<%=cid%> = status_<%=cid%>.getReasons().toString();
 					}else{
 						hasFault_<%=cid%> = true;
 						marketoStatus_<%=cid%> = status_<%=cid%>.getStatus();
@@ -73,7 +79,6 @@
 					%>
 						errorMsg_<%=cid%> = ex_<%=cid%>.getMessage();
 						marketoId_<%=cid%> = <%=conn.getName() %>.id;
-						marketoStatus_<%=cid%> = marketoStatus_<%=cid%>;
 					<%
 					}else{
 					%>
@@ -93,13 +98,17 @@
 		if(leadRecordList_<%=cid%>.size()>=<%=batchSize%>){
 			while(true){
 				try{
-					org.talend.marketo.response.ResultSync syncLeads_<%=cid%> = client_<%=cid%>.syncMultipleLeads("<%=operationType%>","<%=lookupField%>",leadRecordList_<%=cid%>,false,null);
+					org.talend.marketo.response.ResultSync syncLeads_<%=cid%> = client_<%=cid%>.syncMultipleLeads(<%=operationType%>,<%=lookupField%>,leadRecordList_<%=cid%>,false,null);
 					globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
 					if(client_<%=cid%>.isAccessTokenExpired(syncLeads_<%=cid%>.getErrors())){
 	            		client_<%=cid%>.refreshToken();
 	            		continue;
 	            	}
-					statusList_<%=cid%>.add(syncLeads_<%=cid%>.getResult());
+	            	if(syncLeads_<%=cid%>.getErrors() == null){
+	            		statusList_<%=cid%>.add(syncLeads_<%=cid%>.getResult());
+	            	}else{
+	            		throw(new java.lang.Exception(syncLeads_<%=cid%>.getErrors().toString()));
+	            	}
 				 }catch(java.lang.Exception ex_<%=cid%>){
 					<%
 			        if (dieOnError) {

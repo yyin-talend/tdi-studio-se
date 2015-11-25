@@ -126,6 +126,7 @@ public class ConvertRepositoryNodeToProcessNode {
         // inital parameters command
         ChangeValuesFromRepository changeValueCommand = new ChangeValuesFromRepository(node, databaseConnection,
                 propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId); //$NON-NLS-1$
+        changeValueCommand.ignoreContextMode(true);
         cc.add(changeValueCommand);
 
         // change metadata command

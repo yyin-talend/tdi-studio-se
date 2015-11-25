@@ -83,19 +83,25 @@
 		<%}%>
 				<%=mainConnName%> = new <%=mainConnName%>Struct();
 				<%
-				for (IMetadataColumn column: metadata.getListColumns()) {
-					if(!isMutiple){
-						if("Status".equals(column.getLabel())){
-						%>
-							<%=mainConnName%>.Status = status<%=cid%>;
+				if(mainConn!=null){
+					IMetadataTable outTable = mainConn.getMetadataTable();
+					if(outTable!=null && outTable.getListColumns()!=null){
+						for (IMetadataColumn column: outTable.getListColumns()) {
+							if("Status".equals(column.getLabel())){
+								if(!isMutiple){
+								%>
+									<%=mainConnName%>.Status = status<%=cid%>;
+								<%
+								}
+								continue;
+							}
+							%>			
+				   			<%=mainConnName%>.<%=column.getLabel() %> = <%=conn.getName() %>.<%=column.getLabel() %>; 			
 						<%
 						}
 					}
-					%>			
-		   			<%=mainConnName%>.<%=column.getLabel() %> = <%=conn.getName() %>.<%=column.getLabel() %>; 			
-				<%
 				}
-				%>
+			%>
 		<%if(!isMutiple){%>
 			}
 		<%

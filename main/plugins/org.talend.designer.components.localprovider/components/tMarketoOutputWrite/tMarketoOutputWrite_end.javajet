@@ -56,18 +56,29 @@ imports="
 	if(useRestAPI){
 		String operationType = ElementParameterParser.getValue(node,"__OPERATION_TYPE__");
 		String lookupField = ElementParameterParser.getValue(node,"__LOOKUP_FIELD__");
+		if(deDupenabled){
+			operationType = null;
+			lookupField = null;
+		}else{
+			operationType = "\""+operationType+"\"";
+			lookupField = "\""+lookupField+"\"";
+		}
 		if("syncMultipleLeads".equals(operation)){
 		%>
 			if(leadRecordList_<%=cid%>.size()>0){
 				while(true){
 					try{
-						org.talend.marketo.response.ResultSync syncLeads_<%=cid%> = client_<%=cid%>.syncMultipleLeads("<%=operationType%>","<%=lookupField%>",leadRecordList_<%=cid%>,false,null);
+						org.talend.marketo.response.ResultSync syncLeads_<%=cid%> = client_<%=cid%>.syncMultipleLeads(<%=operationType%>,<%=lookupField%>,leadRecordList_<%=cid%>,false,null);
 						if(client_<%=cid%>.isAccessTokenExpired(syncLeads_<%=cid%>.getErrors())){
 		            		client_<%=cid%>.refreshToken();
 		            		globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
 		            		continue;
 		            	}
-						statusList_<%=cid%>.add(syncLeads_<%=cid%>.getResult());
+						if(syncLeads_<%=cid%>.getErrors() == null){
+		            		statusList_<%=cid%>.add(syncLeads_<%=cid%>.getResult());
+		            	}else{
+		            		throw(new java.lang.Exception(syncLeads_<%=cid%>.getErrors().toString()));
+		            	}
 					 }catch(java.lang.Exception ex_<%=cid%>){
 						<%
 				        if (dieOnError) {
