@@ -183,7 +183,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         }
         List<Form> forms = componentWizard.getForms();
         for (Form form : forms) {
-            ComponentProperties properties = form.getProperties();
+            ComponentProperties properties = form.getComponentProperties();
             // FIXME: Need to improve this part after.
             // When creating the wizard from component properties, component service only set the component properties
             // to the orignal form which doesn't created by it. So if you use this component properties to get forms, it
@@ -225,7 +225,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                     if (creation) {
                         factory.create(connectionItem, new Path("")); //$NON-NLS-1$
                     }
-                    compService.afterFormFinish(form.getName(), form.getProperties());
+                    compService.afterFormFinish(form.getName(), form.getComponentProperties());
                 }
                 if (!creation) {
                     GenericUpdateManager.updateGenericConnection(connectionItem);

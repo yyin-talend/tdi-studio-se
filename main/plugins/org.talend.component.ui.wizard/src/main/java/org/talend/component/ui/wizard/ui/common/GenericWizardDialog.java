@@ -38,7 +38,7 @@ public class GenericWizardDialog extends WizardDialog {
         Form form = getForm();
         if (form != null && form.isCallAfterFormNext()) {
             try {
-                compService.afterFormNext(form.getName(), form.getProperties());
+                compService.afterFormNext(form.getName(), form.getComponentProperties());
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
@@ -51,7 +51,7 @@ public class GenericWizardDialog extends WizardDialog {
         Form form = getForm();
         if (form != null && form.isCallAfterFormBack()) {
             try {
-                compService.afterFormBack(form.getName(), form.getProperties());
+                compService.afterFormBack(form.getName(), form.getComponentProperties());
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }

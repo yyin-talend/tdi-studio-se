@@ -139,7 +139,7 @@ public class ComponentsUtils {
         }
         ComponentProperties componentProperties = compProperties;
         if (componentProperties == null) {
-            componentProperties = form.getProperties();
+            componentProperties = form.getComponentProperties();
         }
         if (element instanceof INode) {
             INode node = (INode) element;
@@ -159,7 +159,7 @@ public class ComponentsUtils {
             String propertiesPath = getPropertiesPath(parentPropertiesPath);
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
-                ComponentProperties subProperties = subForm.getProperties();
+                ComponentProperties subProperties = subForm.getComponentProperties();
                 subProperties = (ComponentProperties) componentProperties.getProperty(subProperties.getClass());
                 elementParameters.addAll(getParametersFromForm(element, compCategory, subProperties, propertiesPath, subForm,
                         widget, lastRN));

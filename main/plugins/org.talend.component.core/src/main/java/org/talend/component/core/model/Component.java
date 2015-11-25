@@ -126,7 +126,7 @@ public class Component extends AbstractComponent {
      */
     @Override
     public String getOriginalFamilyName() {
-        String[] families = componentDefinition.getSupportedFamilies();
+        String[] families = componentDefinition.getFamilies();
         StringBuffer sb = new StringBuffer();
         for (String familyName : families) {
             if (sb.length() > 0) {
@@ -145,7 +145,7 @@ public class Component extends AbstractComponent {
      */
     @Override
     public String getTranslatedFamilyName() {
-        String[] families = componentDefinition.getSupportedFamilies();
+        String[] families = componentDefinition.getFamilies();
         StringBuffer sb = new StringBuffer();
         for (String familyName : families) {
             if (sb.length() > 0) {

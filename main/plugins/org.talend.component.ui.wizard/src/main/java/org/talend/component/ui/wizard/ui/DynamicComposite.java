@@ -78,7 +78,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             Connection connection = connectionItem.getConnection();
             if (connection instanceof GenericConnection) {
                 GenericConnection genericConnection = (GenericConnection) connection;
-                genericConnection.setCompProperties(form.getProperties().toSerialized());
+                genericConnection.setCompProperties(form.getComponentProperties().toSerialized());
             }
         }
     }
@@ -88,7 +88,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
-                genericElementParameter.callBeforePresent();
+                // genericElementParameter.callBeforePresent();
                 genericElementParameter.addPropertyChangeListener(this);
             }
         }

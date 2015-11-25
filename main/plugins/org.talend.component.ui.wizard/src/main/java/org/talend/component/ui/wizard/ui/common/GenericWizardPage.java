@@ -73,7 +73,7 @@ public abstract class GenericWizardPage extends WizardPage {
     private boolean callBefore() {
         if (form.isCallBeforeFormPresent()) {
             try {
-                compService.beforeFormPresent(form.getName(), form.getProperties());
+                compService.beforeFormPresent(form.getName(), form.getComponentProperties());
                 return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);

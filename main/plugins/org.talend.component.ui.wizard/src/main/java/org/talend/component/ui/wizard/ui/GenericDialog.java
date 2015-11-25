@@ -89,7 +89,7 @@ public class GenericDialog extends TitleAreaDialog {
     private void init() {
         if (form.isCallBeforeFormPresent()) {
             try {
-                componentService.beforeFormPresent(form.getName(), form.getProperties());
+                componentService.beforeFormPresent(form.getName(), form.getComponentProperties());
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
@@ -110,7 +110,7 @@ public class GenericDialog extends TitleAreaDialog {
     protected void okPressed() {
         if (form.isCallAfterFormFinish()) {
             try {
-                componentService.afterFormFinish(form.getName(), form.getProperties());
+                componentService.afterFormFinish(form.getName(), form.getComponentProperties());
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
