@@ -14,11 +14,11 @@ package org.talend.component.ui.wizard.persistence;
 
 import java.util.List;
 
+import org.talend.component.core.constants.IGenericConstants;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
 import org.talend.component.ui.model.genericMetadata.SubContainer;
-import org.talend.component.ui.wizard.constants.IGenericConstants;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.Repository;
 import org.talend.components.api.schema.Schema;
@@ -30,6 +30,7 @@ import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
+
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
 

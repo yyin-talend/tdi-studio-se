@@ -23,7 +23,9 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.constants.IElementParameterEventProperties;
+import org.talend.component.core.constants.IGenericConstants;
 import org.talend.components.api.NamedThing;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.PresentationItem;
@@ -47,6 +49,8 @@ public class GenericElementParameter extends ElementParameter {
     private ComponentService componentService;
 
     private List<?> possibleValues;
+
+    private boolean supportContext;
 
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -92,18 +96,22 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private void updateProperty(Object newValue) {
+        if (componentProperties == null) {
+            return;
+        }
         NamedThing[] widgetProperties = widget.getProperties();
         NamedThing widgetProperty = widgetProperties[0];
         if (widgetProperty instanceof SchemaElement) {
             SchemaElement se = (SchemaElement) widgetProperty;
-            if (componentProperties == null && newValue == null) {
-                return;
-            }
             SchemaElement originalElement = componentProperties.getProperty(se.getName());
             if (originalElement != null) {
                 se = originalElement;
             }
-            componentProperties.setValue(se, newValue);
+            Object oldValue = componentProperties.getValue(se);
+            if (newValue != null && !newValue.equals(oldValue)) {
+                componentProperties.setValue(se, newValue);
+                fireConnectionPropertyChangedEvent(newValue);
+            }
         } else if (widgetProperty instanceof PresentationItem) {
             PresentationItem pi = (PresentationItem) widgetProperty;
             Form formtoShow = pi.getFormtoShow();
@@ -133,6 +141,12 @@ public class GenericElementParameter extends ElementParameter {
                     return;
                 }
             }
+        }
+    }
+
+    private void fireConnectionPropertyChangedEvent(Object newPropertyName) {
+        if (IGenericConstants.NAME_PROPERTY.equalsIgnoreCase(getName()) && hasPropertyChangeListener()) {
+            this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_PROPERTY_NAME_CHANGED, null, newPropertyName);
         }
     }
 
@@ -173,13 +187,13 @@ public class GenericElementParameter extends ElementParameter {
 
                     @Override
                     protected void toDo() throws Throwable {
-                        componentProperties = componentService.validateProperty(getName(), componentProperties);
+                        componentProperties = componentService.validateProperty(getParameterName(), componentProperties);
                     };
 
                 }.run();
             } else {
                 try {
-                    componentProperties = componentService.validateProperty(getName(), componentProperties);
+                    componentProperties = componentService.validateProperty(getParameterName(), componentProperties);
                     return true;
                 } catch (Throwable e) {
                     ExceptionHandler.process(e);
@@ -192,13 +206,21 @@ public class GenericElementParameter extends ElementParameter {
     private boolean callAfter() {
         if (widget.isCallAfter()) {
             try {
-                componentProperties = componentService.afterProperty(getName(), componentProperties);
+                componentProperties = componentService.afterProperty(getParameterName(), componentProperties);
                 return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
         }
         return false;
+    }
+
+    private String getParameterName() {
+        String paramName = getName();
+        if (paramName.indexOf(IComponentConstants.UNDERLINE_SEPARATOR) != -1) {
+            paramName = paramName.substring(paramName.lastIndexOf(IComponentConstants.UNDERLINE_SEPARATOR) + 1);
+        }
+        return paramName;
     }
 
     abstract class RunWithProgress {
@@ -257,6 +279,14 @@ public class GenericElementParameter extends ElementParameter {
 
     public void setComponentProperties(ComponentProperties componentProperties) {
         this.componentProperties = componentProperties;
+    }
+
+    public boolean isSupportContext() {
+        return this.supportContext;
+    }
+
+    public void setSupportContext(boolean supportContext) {
+        this.supportContext = supportContext;
     }
 
 }

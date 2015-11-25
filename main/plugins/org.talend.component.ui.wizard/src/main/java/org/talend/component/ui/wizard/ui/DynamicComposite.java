@@ -15,9 +15,11 @@ package org.talend.component.ui.wizard.ui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Color;
@@ -26,17 +28,21 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
+import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.component.ui.wizard.model.FakeElement;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ValidationResult;
 import org.talend.components.api.properties.ValidationResult.Result;
 import org.talend.components.api.properties.presentation.Form;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.ui.check.Checker;
 import org.talend.core.ui.check.IChecker;
 import org.talend.designer.core.model.components.EParameterName;
@@ -57,12 +63,24 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     private IChecker checker;
 
+    private ConnectionItem connectionItem;
+
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
             boolean isCompactView, Color backgroundColor, Form form) {
         super(parentComposite, styles, section, element, isCompactView, backgroundColor);
         this.element = element;
         this.form = form;
         checker = new Checker();
+    }
+
+    private void setupComponentProperties() {
+        if (connectionItem != null) {
+            Connection connection = connectionItem.getConnection();
+            if (connection instanceof GenericConnection) {
+                GenericConnection genericConnection = (GenericConnection) connection;
+                genericConnection.setCompProperties(form.getProperties().toSerialized());
+            }
+        }
     }
 
     public List<ElementParameter> resetParameters() {
@@ -76,6 +94,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         }
         parameters.add(getUpdateParameter());
         element.setElementParameters(parameters);
+        setupComponentProperties();
         return parameters;
     }
 
@@ -89,7 +108,8 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                 props = node.getComponentProperties();
             }
         }
-        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, section, props, form, null, null);
+        List<ElementParameter> parameters = ComponentsUtils
+                .getParametersFromForm(element, section, props, null, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 ((GenericElementParameter) parameter).callBeforePresent();
@@ -154,6 +174,21 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         return newParameters;
     }
 
+    private void updateProperty(String newPropertyName) {
+        if (connectionItem == null) {
+            return;
+        }
+        Connection connection = connectionItem.getConnection();
+        Property connectionProperty = connectionItem.getProperty();
+        String propertyName = StringUtils.trimToNull(newPropertyName);
+        connectionProperty.setDisplayName(propertyName);
+        connectionProperty.setLabel(propertyName);
+        connectionProperty.setModificationDate(new Date());
+        connectionProperty.setLabel(propertyName);
+        connection.setName(propertyName);
+        connection.setLabel(propertyName);
+    }
+
     private ElementParameter getUpdateParameter() {
         ElementParameter param = new ElementParameter(element);
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
@@ -203,6 +238,9 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     refresh();
                 }
             });
+        } else if (IElementParameterEventProperties.EVENT_PROPERTY_NAME_CHANGED.equals(event.getPropertyName())) {
+            String newPropertyName = String.valueOf(event.getNewValue());
+            updateProperty(newPropertyName);
         } else if (IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE.equals(event.getPropertyName())) {
             Object newValue = event.getNewValue();
             if (newValue instanceof ValidationResult) {
@@ -229,6 +267,14 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             }
         }
         super.dispose();
+    }
+
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
+
+    public void setConnectionItem(ConnectionItem connectionItem) {
+        this.connectionItem = connectionItem;
     }
 
 }

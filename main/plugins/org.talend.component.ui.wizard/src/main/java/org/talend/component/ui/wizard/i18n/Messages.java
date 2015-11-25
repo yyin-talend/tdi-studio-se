@@ -15,7 +15,7 @@ package org.talend.component.ui.wizard.i18n;
 import java.util.ResourceBundle;
 
 import org.talend.commons.i18n.MessagesCore;
-import org.talend.component.ui.wizard.constants.IGenericConstants;
+import org.talend.component.core.constants.IGenericConstants;
 
 /**
  * 

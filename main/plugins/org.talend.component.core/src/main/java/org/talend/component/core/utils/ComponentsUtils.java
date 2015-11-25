@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -30,10 +31,10 @@ import org.talend.components.api.NamedThing;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.NameAndLabel;
-import org.talend.components.api.properties.PresentationItem;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.properties.presentation.Widget;
 import org.talend.components.api.schema.SchemaElement;
+import org.talend.components.api.schema.SchemaElement.Type;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -106,8 +107,8 @@ public class ComponentsUtils {
     }
 
     public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-            ElementParameter parentParam, AtomicInteger lastRowNum) {
-        return getParametersFromForm(element, category, null, form, parentParam, lastRowNum);
+            Widget parentWidget, AtomicInteger lastRowNum) {
+        return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
     }
 
     /**
@@ -122,71 +123,69 @@ public class ComponentsUtils {
      * @return parameters list
      */
     public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
-            ComponentProperties compProperties, Form form, ElementParameter parentParam, AtomicInteger lastRowNum) {
+            ComponentProperties compProperties, String parentPropertiesPath, Form form, Widget parentWidget,
+            AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
-        if (category == null) {
-            category = EComponentCategory.BASIC;
+        EComponentCategory compCategory = category;
+        if (compCategory == null) {
+            compCategory = EComponentCategory.BASIC;
         }
-        if (lastRowNum == null) {
-            lastRowNum = new AtomicInteger();
+        AtomicInteger lastRN = lastRowNum;
+        if (lastRN == null) {
+            lastRN = new AtomicInteger();
         }
         if (form == null) {
             return elementParameters;
         }
-        if (compProperties == null) {
-            compProperties = form.getProperties();
+        ComponentProperties componentProperties = compProperties;
+        if (componentProperties == null) {
+            componentProperties = form.getProperties();
         }
         if (element instanceof INode) {
             INode node = (INode) element;
             // Set the properties only one time to get the top-level properties object
             if (node.getComponentProperties() == null) {
-                node.setComponentProperties(compProperties);
+                node.setComponentProperties(componentProperties);
             }
         }
 
         // Have to initialize for the messages
-        compProperties.getProperties();
+        componentProperties.getProperties();
         List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
             NamedThing[] widgetProperties = widget.getProperties();
             NamedThing widgetProperty = widgetProperties[0];
-            GenericElementParameter param = new GenericElementParameter(element, compProperties, widget, getComponentService());
-            if (parentParam != null) {
-                param.setParentParameter(parentParam);
-            }
-            param.setCategory(category);
-            param.setRepositoryValue(widgetProperty.getName());
-            if (parentParam != null) {
-                // param.setGroup(form.getName());
-                // param.setGroupDisplayName(form.getDisplayName());
-            }
-            //
-            if (EComponentCategory.ADVANCED.equals(category) && param.getName() != null) {
-                if (IComponentConstants.USERID.equals(param.getName()) || IComponentConstants.PASSWORD.equals(param.getName())) {
-                    param.setName(EComponentCategory.ADVANCED.name().toLowerCase() + IComponentConstants.UNDERLINE_SEPARATOR
-                            + param.getName());
-                }
-            }
-            param.setShow(parentParam == null ? widget.isVisible() : parentParam.isShow(null) && widget.isVisible());
-            int rowNum = 0;
-            if (widget.getOrder() != 1) {
-                rowNum = lastRowNum.get();
-            } else {
-                rowNum = widget.getRow();
-                if (parentParam != null) {
-                    rowNum += parentParam.getNumRow();
-                }
-                rowNum = rowNum + lastRowNum.get();
-            }
-            param.setNumRow(rowNum);
-            lastRowNum.set(rowNum);
+
+            String propertiesPath = getPropertiesPath(parentPropertiesPath);
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
                 ComponentProperties subProperties = subForm.getProperties();
-                subProperties = (ComponentProperties) compProperties.getProperty(subProperties.getClass());
-                elementParameters.addAll(getParametersFromForm(element, category, subProperties, subForm, param, lastRowNum));
+                subProperties = (ComponentProperties) componentProperties.getProperty(subProperties.getClass());
+                elementParameters.addAll(getParametersFromForm(element, compCategory, subProperties, propertiesPath, subForm,
+                        widget, lastRN));
                 continue;
             }
+
+            GenericElementParameter param = new GenericElementParameter(element, componentProperties, widget,
+                    getComponentService());
+            String parameterName = propertiesPath.concat(param.getName());
+            param.setName(parameterName);
+            param.setCategory(compCategory);
+            param.setRepositoryValue(widgetProperty.getName());
+            param.setShow(parentWidget == null ? widget.isVisible() : parentWidget.isVisible() && widget.isVisible());
+            int rowNum = 0;
+            if (widget.getOrder() != 1) {
+                rowNum = lastRN.get();
+            } else {
+                rowNum = widget.getRow();
+                if (parentWidget != null) {
+                    rowNum += parentWidget.getRow();
+                }
+                rowNum = rowNum + lastRN.get();
+            }
+            param.setNumRow(rowNum);
+            lastRN.set(rowNum);
+            // handle form...
 
             SchemaElement se = null;
 
@@ -195,82 +194,15 @@ public class ComponentsUtils {
                 param.setContext("FLOW"); //$NON-NLS-1$
             }
 
-            EParameterFieldType fieldType = null;
-            switch (widget.getWidgetType()) {
-            case DEFAULT:
-                if (se == null) {
-                    fieldType = EParameterFieldType.LABEL;
-                    param.setValue(widgetProperty.getDisplayName());
-                    break;
-                }
-                switch (se.getType()) {
-                case BOOLEAN:
-                    fieldType = EParameterFieldType.CHECK;
-                    break;
-                case BYTE_ARRAY:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case DATE:
-                    fieldType = EParameterFieldType.DATE;
-                    break;
-                case DATETIME:
-                    fieldType = EParameterFieldType.DATE;
-                    break;
-                case DECIMAL:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case DOUBLE:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case DYNAMIC:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case ENUM:
-                    fieldType = EParameterFieldType.CLOSED_LIST;
-                    break;
-                case FLOAT:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case INT:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                case SCHEMA:
-                    fieldType = EParameterFieldType.SCHEMA_TYPE;
-                    break;
-                case STRING:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                default:
-                    fieldType = EParameterFieldType.TEXT;
-                    break;
-                }
-                break;
-            case BUTTON:
-                fieldType = EParameterFieldType.BUTTON;
-                break;
-            case COMPONENT_REFERENCE:
-                fieldType = EParameterFieldType.COMPONENT_REFERENCE;
-                break;
-            case NAME_SELECTION_AREA:
-                fieldType = EParameterFieldType.NAME_SELECTION_AREA;
-                break;
-            case NAME_SELECTION_REFERENCE:
-                fieldType = EParameterFieldType.NAME_SELECTION_REFERENCE;
-                break;
-            case SCHEMA_EDITOR:
-                break;
-            case SCHEMA_REFERENCE:
-                fieldType = EParameterFieldType.SCHEMA_TYPE;
-                break;
-            default:
-                break;
-            }
+            EParameterFieldType fieldType = getFieldType(widget, widgetProperty, se);
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
-            // FIXME - Column?
-            if (se != null) {
-                se = compProperties.getProperty(se.getName());
+            if (se == null) {
+                param.setValue(widgetProperty.getDisplayName());
+            } else {
+                se = componentProperties.getProperty(se.getName());
                 param.setRequired(se.isRequired());
-                param.setValue(compProperties.getValue(se));
+                param.setValue(componentProperties.getValue(se));
+                param.setSupportContext(true);
                 List<?> values = se.getPossibleValues();
                 if (values != null) {
                     param.setPossibleValues(values);
@@ -290,10 +222,10 @@ public class ComponentsUtils {
                     param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
                     param.setListItemsValue(possVals.toArray(new String[0]));
                 }
-            } else if (widgetProperty instanceof PresentationItem) {
-                param.setValue(null);
             }
-            // FIXME
+            // if (widgetProperty instanceof PresentationItem) {
+            // param.setValue(null);
+            // }
             param.setReadOnly(false);
             param.setSerialized(true);
             elementParameters.add(param);
@@ -301,71 +233,182 @@ public class ComponentsUtils {
         return elementParameters;
     }
 
-    public static ComponentProperties getCurrentComponentProperties(ComponentProperties componentProperties, String name) {
-        ComponentProperties currentComponentProperties = null;
-        if (componentProperties == null || name == null) {
-            return null;
+    private static String getPropertiesPath(String parentPropertiesPath) {
+        String propertiesPath = ""; //$NON-NLS-1$
+        if (StringUtils.isNotBlank(parentPropertiesPath)) {
+            propertiesPath = parentPropertiesPath.concat(IComponentConstants.UNDERLINE_SEPARATOR);
         }
-        List<SchemaElement> schemaElements = componentProperties.getProperties();
-        for (SchemaElement se : schemaElements) {
-            if (name.equals(se.getName())) {
-                currentComponentProperties = componentProperties;
-                break;
-            }
-            if (se instanceof ComponentProperties) {
-                ComponentProperties childComponentProperties = (ComponentProperties) se;
-                currentComponentProperties = getCurrentComponentProperties(childComponentProperties, name);
-            }
-            if (currentComponentProperties != null) {
-                break;
-            }
-        }
-        return currentComponentProperties;
+        return propertiesPath;
     }
 
-    public static SchemaElement getGenericSchemaElement(ComponentProperties componentProperties, String name) {
-        SchemaElement schemaElement = null;
-        if (componentProperties == null || name == null) {
-            return null;
-        }
-        List<SchemaElement> schemaElements = componentProperties.getProperties();
-        for (SchemaElement se : schemaElements) {
-            if (name.equals(se.getName())) {
-                schemaElement = se;
+    /**
+     * DOC ycbai Comment method "getFieldType".
+     * 
+     * @param widget
+     * @param widgetProperty
+     * @param param
+     * @param se
+     * @return
+     */
+    private static EParameterFieldType getFieldType(Widget widget, NamedThing widgetProperty, SchemaElement se) {
+        EParameterFieldType fieldType = null;
+        switch (widget.getWidgetType()) {
+        case DEFAULT:
+            if (se == null) {
+                fieldType = EParameterFieldType.LABEL;
                 break;
             }
-            if (se instanceof ComponentProperties) {
-                ComponentProperties childComponentProperties = (ComponentProperties) se;
-                schemaElement = getGenericSchemaElement(childComponentProperties, name);
+            switch (se.getType()) {
+            case BOOLEAN:
+                fieldType = EParameterFieldType.CHECK;
+                break;
+            case BYTE_ARRAY:
+                fieldType = EParameterFieldType.TEXT;
+                break;
+            case DATE:
+                fieldType = EParameterFieldType.DATE;
+                break;
+            case DATETIME:
+                fieldType = EParameterFieldType.DATE;
+                break;
+            case DECIMAL:
+                fieldType = EParameterFieldType.TEXT;
+                break;
+            case DOUBLE:
+                fieldType = EParameterFieldType.TEXT;
+                break;
+            case DYNAMIC:
+                fieldType = EParameterFieldType.TEXT;
+                break;
+            case ENUM:
+                fieldType = EParameterFieldType.CLOSED_LIST;
+                break;
+            case FLOAT:
+                fieldType = EParameterFieldType.TEXT;
+                break;
+            case INT:
+                fieldType = EParameterFieldType.TEXT;
+                break;
+            case SCHEMA:
+                fieldType = EParameterFieldType.SCHEMA_TYPE;
+                break;
+            case STRING:
+                fieldType = EParameterFieldType.TEXT;
+                break;
+            default:
+                fieldType = EParameterFieldType.TEXT;
+                break;
             }
-            if (schemaElement != null) {
+            break;
+        case BUTTON:
+            fieldType = EParameterFieldType.BUTTON;
+            break;
+        case COMPONENT_REFERENCE:
+            fieldType = EParameterFieldType.COMPONENT_REFERENCE;
+            break;
+        case NAME_SELECTION_AREA:
+            fieldType = EParameterFieldType.NAME_SELECTION_AREA;
+            break;
+        case NAME_SELECTION_REFERENCE:
+            fieldType = EParameterFieldType.NAME_SELECTION_REFERENCE;
+            break;
+        case SCHEMA_EDITOR:
+            break;
+        case SCHEMA_REFERENCE:
+            fieldType = EParameterFieldType.SCHEMA_TYPE;
+            break;
+        default:
+            break;
+        }
+        return fieldType;
+    }
+
+    public static ComponentProperties getCurrentComponentProperties(ComponentProperties componentProperties, String paramName) {
+        if (componentProperties == null || paramName == null) {
+            return null;
+        }
+        String compPropertiesPath = getPropertyPath(paramName);
+        return getComponentPropertiesByPath(componentProperties, compPropertiesPath);
+    }
+
+    /**
+     * DOC ycbai Comment method "getComponentPropertiesByPath".
+     * 
+     * <p>
+     * Get the ComponentProperties by ComponentProperties path. For example: if <code>cpPath</code> is
+     * "componentProperties1_componentProperties2_componentProperties3" will return componentProperties3.
+     * 
+     * @param componentProperties
+     * @param cpPath
+     * @return
+     */
+    private static ComponentProperties getComponentPropertiesByPath(ComponentProperties componentProperties, String cpPath) {
+        String[] cpNamesArray = cpPath.split(IComponentConstants.UNDERLINE_SEPARATOR);
+        ComponentProperties parentCompProperties = componentProperties;
+        ComponentProperties theCompProperties = componentProperties;
+        for (String compName : cpNamesArray) {
+            theCompProperties = getComponentProperties(parentCompProperties, compName);
+            if (theCompProperties == null) {
+                return null;
+            } else {
+                parentCompProperties = theCompProperties;
+            }
+        }
+        return theCompProperties;
+    }
+
+    private static ComponentProperties getComponentProperties(ComponentProperties componentProperties, String cpName) {
+        List<SchemaElement> properties = componentProperties.getProperties();
+        for (SchemaElement prop : properties) {
+            if (prop instanceof ComponentProperties && prop.getName().equals(cpName)) {
+                return (ComponentProperties) prop;
+            }
+        }
+        return null;
+    }
+
+    public static SchemaElement getGenericSchemaElement(ComponentProperties componentProperties, String paramName) {
+        SchemaElement schemaElement = null;
+        if (componentProperties == null || paramName == null) {
+            return null;
+        }
+        String propertyPath = getPropertyPath(paramName);
+        ComponentProperties compProperties = getComponentPropertiesByPath(componentProperties, propertyPath);
+        if (compProperties == null) {
+            return null;
+        }
+        String propertyName = getPropertyName(paramName);
+        List<SchemaElement> schemaElements = compProperties.getProperties();
+        for (SchemaElement se : schemaElements) {
+            if (propertyName.equals(se.getName())) {
+                schemaElement = se;
                 break;
             }
         }
         return schemaElement;
     }
 
-    public static Object getGenericPropertyValue(ComponentProperties componentProperties, String name) {
+    public static void setGenericPropertyValue(ComponentProperties componentProperties, String paramName, String paramValue) {
+        ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
+        if (currentComponentProperties != null) {
+            currentComponentProperties.setValue(getPropertyName(paramName), paramValue);
+        }
+    }
+
+    public static Object getGenericPropertyValue(ComponentProperties componentProperties, String paramName) {
         Object obj = null;
-        SchemaElement schemaElement = null;
-        if (componentProperties == null || name == null) {
+        if (componentProperties == null || paramName == null) {
             return null;
         }
-        List<SchemaElement> schemaElements = componentProperties.getProperties();
-        for (SchemaElement se : schemaElements) {
-            if (name.equals(se.getName())) {
-                schemaElement = se;
-                obj = componentProperties.getValue(schemaElement);
-                break;
-            }
-            if (se instanceof ComponentProperties) {
-                ComponentProperties childComponentProperties = (ComponentProperties) se;
-                schemaElement = getGenericSchemaElement(childComponentProperties, name);
-                obj = childComponentProperties.getValue(schemaElement);
-            }
-            if (schemaElement != null) {
-                break;
-            }
+        String propertyPath = getPropertyPath(paramName);
+        ComponentProperties compProperties = getComponentPropertiesByPath(componentProperties, propertyPath);
+        if (compProperties == null) {
+            return null;
+        }
+        String propertyName = getPropertyName(paramName);
+        SchemaElement schemaElement = compProperties.getProperty(propertyName);
+        if (schemaElement != null) {
+            obj = compProperties.getValue(schemaElement);
         }
         return obj;
     }
@@ -386,4 +429,39 @@ public class ComponentsUtils {
         }
         return allGenericSchemaElements;
     }
+
+    private static String getPropertyPath(String paramName) {
+        String propertyPath = ""; //$NON-NLS-1$
+        if (propertyPath.indexOf(IComponentConstants.UNDERLINE_SEPARATOR) != -1) {
+            propertyPath = paramName.substring(0, paramName.lastIndexOf(IComponentConstants.UNDERLINE_SEPARATOR));
+        }
+        return propertyPath;
+    }
+
+    private static String getPropertyName(String paramName) {
+        String propertyName = paramName;
+        if (propertyName.indexOf(IComponentConstants.UNDERLINE_SEPARATOR) != -1) {
+            propertyName = propertyName.substring(propertyName.lastIndexOf(IComponentConstants.UNDERLINE_SEPARATOR) + 1);
+        }
+        return propertyName;
+    }
+
+    public static boolean isSupportContext(SchemaElement schemaElement) {
+        Type type = schemaElement.getType();
+        switch (type) {
+        case STRING:
+        case INT:
+        case DATE:
+        case DATETIME:
+        case DECIMAL:
+        case FLOAT:
+        case DOUBLE:
+        case ENUM:
+            return true;
+        default:
+            break;
+        }
+        return false;
+    }
+
 }

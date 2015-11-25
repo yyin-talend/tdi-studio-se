@@ -971,7 +971,8 @@ public class Component extends AbstractComponent {
             props = node.getComponentProperties();
             form = props.getForm(advanced ? IComponentConstants.FORM_ADVANCED : IComponentConstants.FORM_MAIN);
         }
-        listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, node.getComponentProperties(), form, null, null));
+        listParam.addAll(ComponentsUtils.getParametersFromForm(node, category, node.getComponentProperties(), null, form, null,
+                null));
     }
 
     private void initializePropertyParameters(List<ElementParameter> listParam, final INode node) {

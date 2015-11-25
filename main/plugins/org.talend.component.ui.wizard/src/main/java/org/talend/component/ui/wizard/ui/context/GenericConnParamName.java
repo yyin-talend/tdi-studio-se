@@ -10,20 +10,24 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.component.ui.wizard.constants;
+package org.talend.component.ui.wizard.ui.context;
+
+import org.talend.metadata.managment.ui.model.IConnParamName;
 
 /**
- * created by ycbai on 2015年9月16日 Detailled comment
+ * created by ycbai on 2015年11月20日 Detailled comment
  *
  */
-public interface IGenericConstants {
+public class GenericConnParamName implements IConnParamName {
 
-    public static final String PLUGIN_ID = "org.talend.component.ui.wizard"; //$NON-NLS-1$
+    private String name;
 
-    public static final String COMPONENT_PROPERTIES_TAG = "component.json.serialized"; //$NON-NLS-1$
+    public String getName() {
+        return this.name;
+    }
 
-    public static final String REPOSITORY_LOCATION_SEPARATOR = "#"; //$NON-NLS-1$
-
-    public static final String NAME_PROPERTY = "name"; //$NON-NLS-1$
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

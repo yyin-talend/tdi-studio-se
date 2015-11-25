@@ -16,10 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
+import org.talend.component.ui.wizard.handler.IContextHandler;
+import org.talend.component.ui.wizard.ui.context.ContextComposite;
+import org.talend.component.ui.wizard.ui.context.handler.GenericContextHandler;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.properties.presentation.Widget;
 import org.talend.components.api.service.ComponentService;
@@ -48,6 +50,10 @@ public abstract class GenericWizardPage extends WizardPage {
     protected Form form;
 
     protected ComponentService compService;
+
+    protected boolean isSupportContext = true; // FIXME: will get the value from component contract later.
+
+    private IContextHandler contextHandler;
 
     public GenericWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames,
             boolean creation, Form form, ComponentService compService) {
@@ -86,13 +92,17 @@ public abstract class GenericWizardPage extends WizardPage {
         return false;
     }
 
-    protected FormData createFormData() {
-        FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        data.bottom = new FormAttachment(100, 0);
-        return data;
+    protected Composite addContextFields(Composite parentComposite) {
+        contextHandler = new GenericContextHandler();
+        contextHandler.setParameters(getParameters());
+        ContextComposite contextComp = new ContextComposite(parentComposite, connectionItem, contextHandler);
+        return contextComp;
+    }
+
+    protected void updateContextFields() {
+        if (contextHandler != null) {
+            contextHandler.setParameters(getParameters());
+        }
     }
 
     @Override

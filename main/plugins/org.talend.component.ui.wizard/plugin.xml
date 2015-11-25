@@ -156,4 +156,10 @@
          </importItemsHandler>
       </importItemsProvider>
    </extension>
+   <extension
+         point="org.talend.core.repository.repository_context">
+      <RepositoryContext
+            class="org.talend.component.ui.wizard.ui.context.handler.GenericRepositoryContextHandler">
+      </RepositoryContext>
+   </extension>
 </plugin>

@@ -13,17 +13,17 @@
 package org.talend.component.core.constants;
 
 /**
- * created by ycbai on 2015年9月24日 Detailled comment
+ * created by ycbai on 2015年9月16日 Detailled comment
  *
  */
-public interface IElementParameterEventProperties {
+public interface IGenericConstants {
 
-    public final static String EVENT_PROPERTY_VALUE_CHANGED = "EVENT_PROPERTY_VALUE_CHANGED"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "org.talend.component.ui.wizard"; //$NON-NLS-1$
 
-    public final static String EVENT_VALIDATE_RESULT_UPDATE = "EVENT_VALIDATE_RESULT_UPDATE"; //$NON-NLS-1$
+    public static final String COMPONENT_PROPERTIES_TAG = "component.json.serialized"; //$NON-NLS-1$
 
-    public final static String EVENT_SHOW_DIALOG = "EVENT_SHOW_DIALOG"; //$NON-NLS-1$
+    public static final String REPOSITORY_LOCATION_SEPARATOR = "#"; //$NON-NLS-1$
 
-    public final static String EVENT_PROPERTY_NAME_CHANGED = "EVENT_PROPERTY_NAME_CHANGED"; //$NON-NLS-1$
+    public static final String NAME_PROPERTY = "name"; //$NON-NLS-1$
 
 }

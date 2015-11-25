@@ -13,10 +13,8 @@
 package org.talend.component.ui.wizard.ui;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -29,10 +27,10 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.utils.VersionUtils;
+import org.talend.component.core.constants.IGenericConstants;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
-import org.talend.component.ui.wizard.constants.IGenericConstants;
 import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
 import org.talend.component.ui.wizard.internal.service.GenericWizardInternalService;
@@ -222,14 +220,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             }
             try {
                 final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                String propertyName = getPropertyName();
-                connectionProperty.setDisplayName(StringUtils.trimToNull(propertyName));
-                connectionProperty.setLabel(StringUtils.trimToNull(propertyName));
-                connectionProperty.setModificationDate(new Date());
-                String displayName = connectionProperty.getDisplayName();
-                connectionProperty.setLabel(displayName);
-                this.connection.setName(displayName);
-                this.connection.setLabel(displayName);
                 Form form = wizPage.getForm();
                 if (form.isCallAfterFormFinish()) {
                     if (creation) {
@@ -252,15 +242,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         } else {
             return false;
         }
-    }
-
-    private String getPropertyName() throws Exception {
-        for (ElementParameter parameter : parameters) {
-            if (IGenericConstants.NAME_PROPERTY.equalsIgnoreCase(parameter.getName())) {
-                return String.valueOf(parameter.getValue());
-            }
-        }
-        throw new Exception("Name property is required!");
     }
 
     @Override

@@ -13,8 +13,11 @@
 package org.talend.component.ui.wizard.ui;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.component.ui.wizard.model.FakeElement;
 import org.talend.component.ui.wizard.ui.common.GenericWizardPage;
@@ -48,8 +51,33 @@ public class GenericConnWizardPage extends GenericWizardPage {
         Element element = new FakeElement(form.getName());
         dynamicComposite = new DynamicComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
                 element, true, container.getBackground(), form);
-        dynamicComposite.setLayoutData(createFormData());
+        dynamicComposite.setLayoutData(createMainFormData());
+        dynamicComposite.setConnectionItem(connectionItem);
         addCheckListener(dynamicComposite.getChecker());
+
+        Composite contextParentComp = new Composite(container, SWT.NONE);
+        contextParentComp.setLayoutData(createFooterFormData(dynamicComposite));
+        contextParentComp.setLayout(new GridLayout());
+        Composite contextComp = addContextFields(contextParentComp);
+        contextComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    }
+
+    private FormData createMainFormData() {
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(85, 0);
+        return data;
+    }
+
+    private FormData createFooterFormData(Composite topComposite) {
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(topComposite, 0);
+        data.bottom = new FormAttachment(100, 0);
+        return data;
     }
 
     @Override
@@ -58,6 +86,7 @@ public class GenericConnWizardPage extends GenericWizardPage {
         if (visible) {
             parameters = dynamicComposite.resetParameters();
             dynamicComposite.refresh();
+            updateContextFields();
         }
     }
 

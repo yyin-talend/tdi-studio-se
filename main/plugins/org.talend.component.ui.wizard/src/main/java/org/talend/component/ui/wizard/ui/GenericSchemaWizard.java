@@ -22,7 +22,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
-import org.talend.component.ui.wizard.constants.IGenericConstants;
+import org.talend.component.core.constants.IGenericConstants;
 import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.component.ui.wizard.update.GenericUpdateManager;
 import org.talend.core.model.metadata.IMetadataTable;

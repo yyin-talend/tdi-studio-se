@@ -66,11 +66,13 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         List<NameAndLabel> nals = new ArrayList<>();
         if (curParameter instanceof GenericElementParameter) {
             GenericElementParameter gParam = (GenericElementParameter) curParameter;
-            List<?> possibleValues = gParam.getPossibleValues();
             if (gParam != null) {
-                for (Object object : possibleValues) {
-                    if (object instanceof NameAndLabel) {
-                        nals.add((NameAndLabel) object);
+                List<?> possibleValues = gParam.getPossibleValues();
+                if (possibleValues != null) {
+                    for (Object object : possibleValues) {
+                        if (object instanceof NameAndLabel) {
+                            nals.add((NameAndLabel) object);
+                        }
                     }
                 }
             }
@@ -112,7 +114,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         btnEdit.setLayoutData(data);
         btnEdit.setData(NAME, FILE);
         btnEdit.setData(PARAMETER_NAME, param.getName());
-        btnEdit.setEnabled(!param.isReadOnly());
+        // btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(new SelectionAdapter() {
 
             @Override
