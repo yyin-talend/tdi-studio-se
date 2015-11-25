@@ -1420,6 +1420,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
         // qli modified to fix the bug "7364".
 
         String dbName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName(), basePropertyParameter);
+        if (EDatabaseTypeName.EXASOL.getDisplayName().equals(connParameters.getDbType())) {
+            if (dbName.contains("\\\"")) {
+                dbName = dbName.replace("\\\"", "");
+            }
+            dbName = TextUtil.removeQuots(dbName);
+        }
         connParameters.setDbName(dbName);
         if (connParameters.getDbType().equals(EDatabaseTypeName.SQLITE.getXmlName())
                 || connParameters.getDbType().equals(EDatabaseTypeName.ACCESS.getXmlName())
@@ -1568,9 +1574,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 element = connectionNode;
             }
         }
-
-        connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context,
-                basePropertyParameter));
+        String dbName = getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context,
+                basePropertyParameter);
+        if (EDatabaseTypeName.EXASOL.getDisplayName().equals(dbType)) {
+            if (dbName.contains("\\\"")) {
+                dbName = dbName.replace("\\\"", "");
+            }
+            dbName = TextUtil.removeQuots(dbName);
+        }
+        connParameters.setDbName(dbName);
         connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context,
                 basePropertyParameter));
         connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context,

@@ -73,6 +73,7 @@ import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
+import org.talend.core.model.metadata.types.TypesManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -408,6 +409,11 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             }
                         }
                         oneColum.setTalendType(talendType);
+                        if (dbmsId != null) {
+                            if (!TypesManager.checkDBType(dbmsId, oneColum.getTalendType(), oneColum.getType())) {
+                                oneColum.setType(TypesManager.getDBTypeFromTalendType(dbmsId, oneColum.getTalendType()));
+                            }
+                        }
                         // oneColum.setTalendType(JavaTypesManager.STRING.getId());
 
                     } catch (Exception e) {
@@ -460,6 +466,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 }
 
                 tempMetatable.setListColumns(columns);
+                tempMetatable.setDbms(dbmsId);
                 MetadataDialog metaDialog = new MetadataDialog(composite.getShell(), tempMetatable, inputNode, getCommandStack());
                 if (metaDialog != null) {
                     metaDialog.setText(Messages.getString("SchemaController.schemaOf") + inputNode.getLabel()); //$NON-NLS-1$

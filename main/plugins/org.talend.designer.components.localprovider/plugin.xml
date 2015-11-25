@@ -1958,7 +1958,7 @@
 	   		context="plugin:org.talend.libraries.hadoop.cloudera.cdh5"
         	id="libthrift-0.9.0.cloudera.2.jar"
          	name="libthrift-0.9.0.cloudera.2.jar" mvn_uri="mvn:org.talend.libraries/libthrift-0.9.0.cloudera.2/6.0.0"
-         	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5/lib/libthrift-0.9.0.cloudera.2.jar">
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5.1/lib/libthrift-0.9.0.cloudera.2.jar">
     	</libraryNeeded>
 
     	<libraryNeeded
@@ -7841,6 +7841,9 @@
 	            id="hadoop-common-cdh5.4-lastest">
 	         </library>
 	         <library
+	            id="hadoop-auth-cdh5.4-lastest">
+	         </library>
+	         <library
 	             id="httpcore-4.2.5.jar">
 	         </library>
 	         <library
@@ -7848,6 +7851,12 @@
 	         </library>
 	         <library
 	             id="commons-logging-1.1.3.jar">
+	         </library>
+	         <library
+	             id="commons-collections-3.2.1.jar">
+	         </library>
+	         <library
+	             id="commons-configuration-1.6.jar">
 	         </library>
 	         <library
 	             id="guava-11.0.2.jar">

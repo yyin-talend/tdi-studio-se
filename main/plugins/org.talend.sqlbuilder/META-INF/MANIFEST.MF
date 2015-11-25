@@ -19,7 +19,8 @@ Require-Bundle: org.talend.core.repository,
  org.talend.metadata.managment.ui,
  org.eclipse.draw2d,
  org.eclipse.gef,
- org.talend.designer.core
+ org.talend.designer.core,
+ org.talend.libraries.sqlbuilder
 Eclipse-LazyStart: true
 Bundle-SymbolicName: org.talend.sqlbuilder; singleton:=true
 Export-Package: org.talend.sqlbuilder,
@@ -49,6 +50,4 @@ Export-Package: org.talend.sqlbuilder,
  org.talend.sqlbuilder.ui.progress,
  org.talend.sqlbuilder.ui.proposal,
  org.talend.sqlbuilder.util
-Bundle-ClassPath: lib/sqlexplorer.jar,
- lib/squirrel.jar,
- .
+Bundle-ClassPath: .

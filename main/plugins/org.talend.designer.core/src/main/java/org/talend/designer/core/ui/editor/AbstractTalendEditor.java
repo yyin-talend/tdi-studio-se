@@ -693,7 +693,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
 
         IProcess2 process = getProcess();
-        if (process.getProperty().getItem() instanceof ProcessItem) {
+        if (process != null && process.getProperty().getItem() instanceof ProcessItem) {
             currentJobResource.setJobInfo(new JobInfo((ProcessItem) process.getProperty().getItem(), process.getProperty(),
                     process.getContextManager().getDefaultContext().getName()));
             currentJobResource.setProjectName(projectName);

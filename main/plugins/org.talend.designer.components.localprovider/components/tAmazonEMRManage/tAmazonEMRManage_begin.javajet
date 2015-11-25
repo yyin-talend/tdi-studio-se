@@ -152,7 +152,15 @@
     		com.amazonaws.services.elasticmapreduce.model.ActionOnFailure.TERMINATE_JOB_FLOW
     	)
     	.withHadoopJarStep(stepFactory_<%=cid%>.newEnableDebuggingStep());
-	
+
+	<%
+	boolean setApps = cluster_version!=null && "\"emr-4.2.0\",\"emr-4.1.0\",\"emr-4.0.0\"".contains(cluster_version);
+	if(setApps) {
+	%>
+	<%@ include file="./app_mapping.javajet"%>
+	<%
+	}
+	%>
 	com.amazonaws.services.elasticmapreduce.model.RunJobFlowRequest request_<%=cid%> = new com.amazonaws.services.elasticmapreduce.model.RunJobFlowRequest()
     	.withName(<%=cluster_name%>)
     	<%if(enable_log){%>
@@ -170,6 +178,14 @@
     		.withReleaseLabel(<%=cluster_version%>)
     	<%
     		}
+    	}
+    	%>
+    	
+    	<%
+    	if(setApps) {
+    	%>
+    		.withApplications(apps_<%=cid%>)
+    	<%
     	}
     	%>
     	

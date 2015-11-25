@@ -30,10 +30,11 @@
         rejectConnName = rejectConn.getName();
     }
     
+    IConnection mainConn = null;
     String mainConnName = null;
     List<? extends IConnection> mainConns = node.getOutgoingConnections("OUTPUT_MAIN");
     if(mainConns != null && mainConns.size() > 0) {
-        IConnection mainConn = mainConns.get(0);
+        mainConn = mainConns.get(0);
         mainConnName = mainConn.getName();
     }
 	
