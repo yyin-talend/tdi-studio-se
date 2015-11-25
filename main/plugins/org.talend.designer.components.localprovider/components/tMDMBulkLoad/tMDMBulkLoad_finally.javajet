@@ -8,8 +8,8 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
-Object o = resourceMap.get("mdmBulkStream<%=cid %>");
-if(o != null){
-	org.talend.mdm.bulkload.client.InputStreamMerger stream = (org.talend.mdm.bulkload.client.InputStreamMerger)o;
+Object o<%=cid %> = resourceMap.get("mdmBulkStream<%=cid %>");
+if(o<%=cid %> != null){
+    org.talend.mdm.bulkload.client.InputStreamMerger stream = (org.talend.mdm.bulkload.client.InputStreamMerger)o<%=cid %>;
 	stream.clean();
 }
