@@ -71,6 +71,7 @@ import com.netsuite.webservices.platform.messages.AddResponse;
 import com.netsuite.webservices.platform.messages.DeleteRequest;
 import com.netsuite.webservices.platform.messages.DeleteResponse;
 import com.netsuite.webservices.platform.messages.GetDataCenterUrlsRequest;
+import com.netsuite.webservices.platform.messages.GetDataCenterUrlsResponse;
 import com.netsuite.webservices.platform.messages.GetRequest;
 import com.netsuite.webservices.platform.messages.GetResponse;
 import com.netsuite.webservices.platform.messages.LoginRequest;
@@ -174,11 +175,14 @@ public class NetsuiteManagement_CXF {
 		this.searchBasic = ((SearchRecord) constructor.newInstance(new Object[0]));
 	}
 	
-	public void initializeStub() throws JAXBException, UnexpectedErrorFault, ExceededRequestSizeFault, InvalidCredentialsFault, InvalidVersionFault, InsufficientPermissionFault, ExceededRequestLimitFault, InvalidAccountFault, MalformedURLException {
+	public void initializeStub() throws Exception {
 		URL wsdl_locationUrl = this.getClass().getResource("/wsdl/netsuite.wsdl");
 		QName serviceQname = new QName("urn:platform_2014_2.webservices.netsuite.com", "NetSuiteService");
 		NetSuiteService service = new NetSuiteService(wsdl_locationUrl, serviceQname);
 		NetSuitePortType port = service.getNetSuitePort();
+		BindingProvider provider = (BindingProvider) port;
+		Map<String, Object> requestContext = provider.getRequestContext();
+		requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, _url);
 		
 		Preferences preferences = new Preferences();
 		preferences.setDisableMandatoryCustomFieldValidation(Boolean.FALSE);
@@ -201,12 +205,17 @@ public class NetsuiteManagement_CXF {
 		// Get the webservices domain for your account
 		GetDataCenterUrlsRequest dataCenterRequest = new GetDataCenterUrlsRequest();
 		dataCenterRequest.setAccount(this._account);
-		DataCenterUrls urls = port.getDataCenterUrls(dataCenterRequest).getGetDataCenterUrlsResult().getDataCenterUrls();
+		DataCenterUrls urls = null;
+		GetDataCenterUrlsResponse  reponse = port.getDataCenterUrls(dataCenterRequest);
+		if(reponse != null && reponse.getGetDataCenterUrlsResult() !=null){
+			urls = reponse.getGetDataCenterUrlsResult().getDataCenterUrls();
+		}
+		if(urls == null){
+			throw new Exception("Can't get a correct webservice domain! Please check your configuration or try to run again.");
+		}
 		String wsDomain = urls.getWebservicesDomain();
 		String endpoint = wsDomain.concat(new URL(this._url).getPath());
 		
-		BindingProvider provider = (BindingProvider) port;
-		Map<String, Object> requestContext = provider.getRequestContext();
 		requestContext.put(BindingProvider.SESSION_MAINTAIN_PROPERTY, true);
 		requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpoint);
 
@@ -748,7 +757,7 @@ public class NetsuiteManagement_CXF {
 		}
 	}
 	
-	public Record get(String entitytype, String id) throws MalformedURLException, InvalidCredentialsFault, com.netsuite.webservices.platform.ExceededRecordCountFault, com.netsuite.webservices.platform.InvalidSessionFault, ExceededRequestLimitFault, com.netsuite.webservices.platform.ExceededUsageLimitFault, UnexpectedErrorFault, ExceededRequestSizeFault, JAXBException, InvalidVersionFault, InsufficientPermissionFault, InvalidAccountFault {
+	public Record get(String entitytype, String id) throws Exception {
 		String typeName = TalendComponentGenerator.toInitialLower(TalendComponentGenerator.getEntityClass(entitytype).getSimpleName());
 
 		RecordRef ref = new RecordRef();
@@ -767,7 +776,7 @@ public class NetsuiteManagement_CXF {
 		return null;
 	}
 	
-	public NetSuitePortType getPort() throws JAXBException, UnexpectedErrorFault, ExceededRequestSizeFault, MalformedURLException, InvalidCredentialsFault, InvalidVersionFault, InsufficientPermissionFault, ExceededRequestLimitFault, InvalidAccountFault {
+	public NetSuitePortType getPort() throws Exception {
 
 		if (this._port == null) {
 			initializeStub();
@@ -855,5 +864,6 @@ public class NetsuiteManagement_CXF {
 			nullFields.add(id);
 		}
 	}
+	
 
 }
