@@ -160,9 +160,8 @@ public class ComponentsUtils {
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
                 ComponentProperties subProperties = subForm.getComponentProperties();
-                subProperties = (ComponentProperties) componentProperties.getProperty(subProperties.getName());
                 propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
-                elementParameters.addAll(getParametersFromForm(element, compCategory, subProperties, propertiesPath, subForm,
+                elementParameters.addAll(getParametersFromForm(element, compCategory, null /*subProperties*/, propertiesPath, subForm,
                         widget, lastRN));
                 continue;
             }
