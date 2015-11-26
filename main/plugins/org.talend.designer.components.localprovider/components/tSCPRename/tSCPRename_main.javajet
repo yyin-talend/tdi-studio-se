@@ -17,9 +17,7 @@ imports="
 		
 	//initial the command
 	StringBuilder command_<%=cid %> = new StringBuilder();
-    command_<%=cid %>.append("mv " + (<%=fromName%>) + " " + (<%=toName%>));
-     
-   
+    command_<%=cid %>.append("mv \"").append(<%=fromName%>).append("\" \"").append(<%=toName%>).append("\"");
 	/* Create a session */
 	ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
 	

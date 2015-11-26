@@ -16,7 +16,7 @@ imports="
 		
 		//initial the command
 		StringBuilder command_<%=cid %> = new StringBuilder();
-        command_<%=cid %>.append("ls " +(<%=remoteDir %>) +"/"+ (<%=fileExists %>));
+        command_<%=cid %>.append("ls \"").append(<%=remoteDir %>).append("/").append(<%=fileExists %>).append("\"");
 		globalMap.put("<%=cid %>_FILENAME", <%=fileExists %>);
 		/* Create a session */
 		ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
