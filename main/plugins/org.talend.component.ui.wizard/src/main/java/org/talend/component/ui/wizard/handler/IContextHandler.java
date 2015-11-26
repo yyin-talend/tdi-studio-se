@@ -31,8 +31,6 @@ public interface IContextHandler {
 
     public boolean revertContext(ConnectionItem connectionItem);
 
-    public List<ElementParameter> getParameters();
-
     public void setParameters(List<ElementParameter> parameters);
 
 }

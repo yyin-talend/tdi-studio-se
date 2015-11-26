@@ -156,11 +156,12 @@ public class ComponentsUtils {
             NamedThing[] widgetProperties = widget.getProperties();
             NamedThing widgetProperty = widgetProperties[0];
 
-            String propertiesPath = getPropertiesPath(parentPropertiesPath);
+            String propertiesPath = getPropertiesPath(parentPropertiesPath, null);
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
                 ComponentProperties subProperties = subForm.getComponentProperties();
-                subProperties = (ComponentProperties) componentProperties.getProperty(subProperties.getClass());
+                subProperties = (ComponentProperties) componentProperties.getProperty(subProperties.getName());
+                propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
                 elementParameters.addAll(getParametersFromForm(element, compCategory, subProperties, propertiesPath, subForm,
                         widget, lastRN));
                 continue;
@@ -202,7 +203,7 @@ public class ComponentsUtils {
                 se = componentProperties.getProperty(se.getName());
                 param.setRequired(se.isRequired());
                 param.setValue(componentProperties.getValue(se));
-                param.setSupportContext(true);
+                param.setSupportContext(isSupportContext(se));
                 List<?> values = se.getPossibleValues();
                 if (values != null) {
                     param.setPossibleValues(values);
@@ -233,10 +234,13 @@ public class ComponentsUtils {
         return elementParameters;
     }
 
-    private static String getPropertiesPath(String parentPropertiesPath) {
+    private static String getPropertiesPath(String parentPropertiesPath, String currentPropertiesName) {
         String propertiesPath = ""; //$NON-NLS-1$
+        if (StringUtils.isNotBlank(currentPropertiesName)) {
+            propertiesPath = propertiesPath.concat(currentPropertiesName).concat(IComponentConstants.EXP_SEPARATOR);
+        }
         if (StringUtils.isNotBlank(parentPropertiesPath)) {
-            propertiesPath = parentPropertiesPath.concat(IComponentConstants.UNDERLINE_SEPARATOR);
+            propertiesPath = parentPropertiesPath.concat(propertiesPath);
         }
         return propertiesPath;
     }
@@ -328,71 +332,18 @@ public class ComponentsUtils {
             return null;
         }
         String compPropertiesPath = getPropertyPath(paramName);
-        return getComponentPropertiesByPath(componentProperties, compPropertiesPath);
-    }
-
-    /**
-     * DOC ycbai Comment method "getComponentPropertiesByPath".
-     * 
-     * <p>
-     * Get the ComponentProperties by ComponentProperties path. For example: if <code>cpPath</code> is
-     * "componentProperties1_componentProperties2_componentProperties3" will return componentProperties3.
-     * 
-     * @param componentProperties
-     * @param cpPath
-     * @return
-     */
-    private static ComponentProperties getComponentPropertiesByPath(ComponentProperties componentProperties, String cpPath) {
-        String[] cpNamesArray = cpPath.split(IComponentConstants.UNDERLINE_SEPARATOR);
-        ComponentProperties parentCompProperties = componentProperties;
-        ComponentProperties theCompProperties = componentProperties;
-        for (String compName : cpNamesArray) {
-            theCompProperties = getComponentProperties(parentCompProperties, compName);
-            if (theCompProperties == null) {
-                return null;
-            } else {
-                parentCompProperties = theCompProperties;
-            }
-        }
-        return theCompProperties;
-    }
-
-    private static ComponentProperties getComponentProperties(ComponentProperties componentProperties, String cpName) {
-        List<SchemaElement> properties = componentProperties.getProperties();
-        for (SchemaElement prop : properties) {
-            if (prop instanceof ComponentProperties && prop.getName().equals(cpName)) {
-                return (ComponentProperties) prop;
-            }
+        SchemaElement property = componentProperties.getProperty(compPropertiesPath);
+        if (property instanceof ComponentProperties) {
+            return (ComponentProperties) property;
         }
         return null;
     }
 
     public static SchemaElement getGenericSchemaElement(ComponentProperties componentProperties, String paramName) {
-        SchemaElement schemaElement = null;
         if (componentProperties == null || paramName == null) {
             return null;
         }
-        String propertyPath = getPropertyPath(paramName);
-        ComponentProperties compProperties = getComponentPropertiesByPath(componentProperties, propertyPath);
-        if (compProperties == null) {
-            return null;
-        }
-        String propertyName = getPropertyName(paramName);
-        List<SchemaElement> schemaElements = compProperties.getProperties();
-        for (SchemaElement se : schemaElements) {
-            if (propertyName.equals(se.getName())) {
-                schemaElement = se;
-                break;
-            }
-        }
-        return schemaElement;
-    }
-
-    public static void setGenericPropertyValue(ComponentProperties componentProperties, String paramName, String paramValue) {
-        ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
-        if (currentComponentProperties != null) {
-            currentComponentProperties.setValue(getPropertyName(paramName), paramValue);
-        }
+        return componentProperties.getProperty(paramName);
     }
 
     public static Object getGenericPropertyValue(ComponentProperties componentProperties, String paramName) {
@@ -400,15 +351,9 @@ public class ComponentsUtils {
         if (componentProperties == null || paramName == null) {
             return null;
         }
-        String propertyPath = getPropertyPath(paramName);
-        ComponentProperties compProperties = getComponentPropertiesByPath(componentProperties, propertyPath);
-        if (compProperties == null) {
-            return null;
-        }
-        String propertyName = getPropertyName(paramName);
-        SchemaElement schemaElement = compProperties.getProperty(propertyName);
+        SchemaElement schemaElement = componentProperties.getProperty(paramName);
         if (schemaElement != null) {
-            obj = compProperties.getValue(schemaElement);
+            obj = componentProperties.getValue(schemaElement);
         }
         return obj;
     }
@@ -432,18 +377,10 @@ public class ComponentsUtils {
 
     private static String getPropertyPath(String paramName) {
         String propertyPath = ""; //$NON-NLS-1$
-        if (propertyPath.indexOf(IComponentConstants.UNDERLINE_SEPARATOR) != -1) {
-            propertyPath = paramName.substring(0, paramName.lastIndexOf(IComponentConstants.UNDERLINE_SEPARATOR));
+        if (propertyPath.indexOf(IComponentConstants.EXP_SEPARATOR) != -1) {
+            propertyPath = paramName.substring(0, paramName.lastIndexOf(IComponentConstants.EXP_SEPARATOR));
         }
         return propertyPath;
-    }
-
-    private static String getPropertyName(String paramName) {
-        String propertyName = paramName;
-        if (propertyName.indexOf(IComponentConstants.UNDERLINE_SEPARATOR) != -1) {
-            propertyName = propertyName.substring(propertyName.lastIndexOf(IComponentConstants.UNDERLINE_SEPARATOR) + 1);
-        }
-        return propertyName;
     }
 
     public static boolean isSupportContext(SchemaElement schemaElement) {
@@ -456,7 +393,6 @@ public class ComponentsUtils {
         case DECIMAL:
         case FLOAT:
         case DOUBLE:
-        case ENUM:
             return true;
         default:
             break;

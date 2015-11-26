@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.talend.component.core.constants.IContextEventProperties;
 import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
@@ -73,7 +74,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         checker = new Checker();
     }
 
-    private void setupComponentProperties() {
+    private void resetComponentProperties() {
         if (connectionItem != null) {
             Connection connection = connectionItem.getConnection();
             if (connection instanceof GenericConnection) {
@@ -88,13 +89,12 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
-                // genericElementParameter.callBeforePresent();
+                genericElementParameter.callBeforePresent();
                 genericElementParameter.addPropertyChangeListener(this);
             }
         }
         parameters.add(getUpdateParameter());
         element.setElementParameters(parameters);
-        setupComponentProperties();
         return parameters;
     }
 
@@ -225,7 +225,8 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-        if (IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED.equals(event.getPropertyName())) {
+        String propertyName = event.getPropertyName();
+        if (IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED.equals(propertyName)) {
             if (element instanceof FakeElement) {
                 resetParameters();
             } else {
@@ -238,19 +239,21 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     refresh();
                 }
             });
-        } else if (IElementParameterEventProperties.EVENT_PROPERTY_NAME_CHANGED.equals(event.getPropertyName())) {
+        } else if (IElementParameterEventProperties.EVENT_PROPERTY_NAME_CHANGED.equals(propertyName)) {
             String newPropertyName = String.valueOf(event.getNewValue());
             updateProperty(newPropertyName);
-        } else if (IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE.equals(event.getPropertyName())) {
+        } else if (IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE.equals(propertyName)) {
             Object newValue = event.getNewValue();
             if (newValue instanceof ValidationResult) {
                 updateValidationStatus((ValidationResult) newValue);
             }
-        } else if (IElementParameterEventProperties.EVENT_SHOW_DIALOG.equals(event.getPropertyName())) {
+        } else if (IElementParameterEventProperties.EVENT_SHOW_DIALOG.equals(propertyName)) {
             Object newValue = event.getNewValue();
             if (newValue instanceof Form) {
                 new GenericDialog(getShell(), (Form) newValue).open();
             }
+        } else if (IContextEventProperties.EVENT_PROPERTY_EXPORT_CONTEXT.equals(propertyName)) {
+            resetComponentProperties();
         }
     }
 

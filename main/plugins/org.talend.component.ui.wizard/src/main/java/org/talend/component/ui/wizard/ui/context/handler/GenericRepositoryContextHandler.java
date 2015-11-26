@@ -158,8 +158,7 @@ public class GenericRepositoryContextHandler extends AbstractRepositoryContextHa
             String genericVariableName) {
         GenericConnParamName genericParam = (GenericConnParamName) param;
         String paramName = genericParam.getName();
-        ComponentsUtils.setGenericPropertyValue(componentProperties, paramName,
-                ContextParameterUtils.getNewScriptCode(genericVariableName, LANGUAGE));
+        componentProperties.setValue(paramName, ContextParameterUtils.getNewScriptCode(genericVariableName, LANGUAGE));
     }
 
     private void updateComponentProperties(GenericConnection conn, ComponentProperties componentProperties) {

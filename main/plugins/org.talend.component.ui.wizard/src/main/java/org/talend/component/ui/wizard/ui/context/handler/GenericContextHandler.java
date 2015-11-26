@@ -115,11 +115,6 @@ public class GenericContextHandler implements IContextHandler {
     }
 
     @Override
-    public List<ElementParameter> getParameters() {
-        return this.parameters;
-    }
-
-    @Override
     public void setParameters(List<ElementParameter> parameters) {
         this.parameters = parameters;
     }

@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.component.ui.wizard.model.FakeElement;
 import org.talend.component.ui.wizard.ui.common.GenericWizardPage;
+import org.talend.component.ui.wizard.ui.context.ContextComposite;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.process.EComponentCategory;
@@ -58,7 +59,8 @@ public class GenericConnWizardPage extends GenericWizardPage {
         Composite contextParentComp = new Composite(container, SWT.NONE);
         contextParentComp.setLayoutData(createFooterFormData(dynamicComposite));
         contextParentComp.setLayout(new GridLayout());
-        Composite contextComp = addContextFields(contextParentComp);
+        ContextComposite contextComp = addContextFields(contextParentComp);
+        contextComp.addPropertyChangeListener(dynamicComposite);
         contextComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     }
 

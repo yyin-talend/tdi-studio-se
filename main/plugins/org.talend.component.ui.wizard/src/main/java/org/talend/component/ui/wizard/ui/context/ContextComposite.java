@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.component.ui.wizard.ui.context;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -22,6 +25,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.component.core.constants.IContextEventProperties;
 import org.talend.component.ui.wizard.handler.IContextHandler;
 import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.core.model.properties.ConnectionItem;
@@ -41,6 +45,8 @@ public class ContextComposite extends Composite {
     private UtilsButton revertContextBtn;
 
     private ConnectionItem connectionItem;
+
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public ContextComposite(Composite parent, ConnectionItem connectionItem, IContextHandler contextHandler) {
         super(parent, SWT.NONE);
@@ -65,6 +71,7 @@ public class ContextComposite extends Composite {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 exportAsContext();
+                fireExportContextEvent();
             }
         });
         displayStr = Messages.getString("ContextComposite.revertContext"); //$NON-NLS-1$
@@ -85,6 +92,17 @@ public class ContextComposite extends Composite {
         exportComposite.setLayout(layout);
 
         refreshContextBtn();
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removeAllPropertyChangeListener() {
+        PropertyChangeListener[] propertyChangeListeners = this.pcs.getPropertyChangeListeners();
+        for (PropertyChangeListener listener : propertyChangeListeners) {
+            this.pcs.removePropertyChangeListener(listener);
+        }
     }
 
     private final boolean isContextMode() {
@@ -112,6 +130,16 @@ public class ContextComposite extends Composite {
         boolean isContextMode = isContextMode();
         exportContextBtn.setEnabled(!isContextMode);
         revertContextBtn.setEnabled(isContextMode);
+    }
+
+    private void fireExportContextEvent() {
+        this.pcs.firePropertyChange(IContextEventProperties.EVENT_PROPERTY_EXPORT_CONTEXT, null, null);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        removeAllPropertyChangeListener();
     }
 
 }

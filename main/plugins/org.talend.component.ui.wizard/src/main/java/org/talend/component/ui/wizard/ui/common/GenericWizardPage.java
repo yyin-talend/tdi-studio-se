@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.wizard.handler.IContextHandler;
 import org.talend.component.ui.wizard.ui.context.ContextComposite;
@@ -92,16 +93,16 @@ public abstract class GenericWizardPage extends WizardPage {
         return false;
     }
 
-    protected Composite addContextFields(Composite parentComposite) {
+    protected ContextComposite addContextFields(Composite parentComposite) {
         contextHandler = new GenericContextHandler();
-        contextHandler.setParameters(getParameters());
+        contextHandler.setParameters(getContextParameters());
         ContextComposite contextComp = new ContextComposite(parentComposite, connectionItem, contextHandler);
         return contextComp;
     }
 
     protected void updateContextFields() {
         if (contextHandler != null) {
-            contextHandler.setParameters(getParameters());
+            contextHandler.setParameters(getContextParameters());
         }
     }
 
@@ -144,6 +145,19 @@ public abstract class GenericWizardPage extends WizardPage {
 
     public List<ElementParameter> getParameters() {
         return this.parameters;
+    }
+
+    public List<ElementParameter> getContextParameters() {
+        List<ElementParameter> contextParameters = new ArrayList<>();
+        for (ElementParameter parameter : parameters) {
+            if (parameter instanceof GenericElementParameter) {
+                GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
+                if (genericElementParameter.isSupportContext() && genericElementParameter.isShow(parameters)) {
+                    contextParameters.add(parameter);
+                }
+            }
+        }
+        return contextParameters;
     }
 
     public GenericConnection getConnection() {
