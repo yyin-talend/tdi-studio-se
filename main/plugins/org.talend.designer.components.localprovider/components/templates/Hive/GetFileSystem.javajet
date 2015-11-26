@@ -53,6 +53,7 @@ class GetFileSystem{
         	
     	if(((hadoopVersion!=null && supportKrbVersionList.contains(hadoopVersion)) && useKrb && !isCustom) || (isCustom && useKrb)){
     	%>
+            username_<%=cid%> = null;
     		conf_<%=cid%>.set("dfs.namenode.kerberos.principal", <%=kerberosPrincipal%>);
     		<%
     		if(useKeytab){
