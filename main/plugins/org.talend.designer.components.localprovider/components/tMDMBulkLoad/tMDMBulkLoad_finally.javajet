@@ -10,10 +10,10 @@ imports="
 	LogUtil logUtil = new LogUtil(node);
 	String cid = node.getUniqueName();
 %>
-Object o = resourceMap.get("mdmBulkStream<%=cid %>");
-if(o != null){
+Object o<%=cid %> = resourceMap.get("mdmBulkStream<%=cid %>");
+if(o<%=cid %> != null){
     <% logUtil.info("\"Attempt to clean input stream.\"");%>
     
-	org.talend.mdm.bulkload.client.InputStreamMerger stream = (org.talend.mdm.bulkload.client.InputStreamMerger)o;
+	org.talend.mdm.bulkload.client.InputStreamMerger stream = (org.talend.mdm.bulkload.client.InputStreamMerger)o<%=cid %>;
 	stream.clean();
 }

@@ -84,7 +84,7 @@
 	}
 	if("gzip".equals(archiveFormat) || ("tgz".equals(archiveFormat))){
 	%>
-		zip_<%=cid%>.setSyncFlush(true);
+		zip_<%=cid%>.setSyncFlush(<%=isSyncFlush%>);
 	<%
 	}else if ("zip".equals(archiveFormat)) {
 	%>
