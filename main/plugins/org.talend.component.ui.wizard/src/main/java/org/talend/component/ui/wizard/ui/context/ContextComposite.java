@@ -70,8 +70,8 @@ public class ContextComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                exportAsContext();
                 fireExportContextEvent();
+                exportAsContext();
             }
         });
         displayStr = Messages.getString("ContextComposite.revertContext"); //$NON-NLS-1$

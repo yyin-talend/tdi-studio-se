@@ -332,6 +332,9 @@ public class ComponentsUtils {
             return null;
         }
         String compPropertiesPath = getPropertyPath(paramName);
+        if (StringUtils.isEmpty(compPropertiesPath)) {
+            return componentProperties;
+        }
         SchemaElement property = componentProperties.getProperty(compPropertiesPath);
         if (property instanceof ComponentProperties) {
             return (ComponentProperties) property;
@@ -351,9 +354,13 @@ public class ComponentsUtils {
         if (componentProperties == null || paramName == null) {
             return null;
         }
+        ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
+        if (currentComponentProperties == null) {
+            return null;
+        }
         SchemaElement schemaElement = componentProperties.getProperty(paramName);
         if (schemaElement != null) {
-            obj = componentProperties.getValue(schemaElement);
+            obj = currentComponentProperties.getValue(schemaElement);
         }
         return obj;
     }
@@ -377,7 +384,7 @@ public class ComponentsUtils {
 
     private static String getPropertyPath(String paramName) {
         String propertyPath = ""; //$NON-NLS-1$
-        if (propertyPath.indexOf(IComponentConstants.EXP_SEPARATOR) != -1) {
+        if (paramName.indexOf(IComponentConstants.EXP_SEPARATOR) != -1) {
             propertyPath = paramName.substring(0, paramName.lastIndexOf(IComponentConstants.EXP_SEPARATOR));
         }
         return propertyPath;
