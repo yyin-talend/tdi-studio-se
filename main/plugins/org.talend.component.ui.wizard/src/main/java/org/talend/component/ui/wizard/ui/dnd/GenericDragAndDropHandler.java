@@ -38,7 +38,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.IComponentName;
 import org.talend.core.repository.RepositoryComponentSetting;
-import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -188,13 +187,10 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
     }
 
     private void setGenericRepositoryValue(GenericConnection connection, INode node, IElementParameter param) {
-        if (connection != null) {
-            IComponent component = node.getComponent();
-            if (component != null && component instanceof AbstractComponent) {
-                // AbstractComponent comp = (AbstractComponent) component;
-                ((GenericElementParameter) param).getComponentProperties().fromSerialized(connection.getCompProperties());
-                // String compProperties = comp.genericToSerialized(param);
-                // connection.setCompProperties(compProperties);
+        if (connection != null && param != null && param instanceof GenericElementParameter) {
+            if (connection.getCompProperties() == null) {
+                GenericElementParameter genericParam = (GenericElementParameter) param;
+                connection.setCompProperties(genericParam.getComponentProperties().toSerialized());
             }
         }
     }

@@ -61,4 +61,8 @@ public interface IComponentConstants {
     public static final String CONCURRENCY_PARALLEL = "Parallel";//$NON-NLS-1$
 
     public static final String CONCURRENCY_SERIAL = "Serial";//$NON-NLS-1$
+
+    public static final String SCHEMA_FLOW = "schemaFlow";//$NON-NLS-1$
+
+    public static final String SCHEMA_REJECT = "schemaReject";//$NON-NLS-1$
 }

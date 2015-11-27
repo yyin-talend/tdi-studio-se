@@ -39,6 +39,7 @@ import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
@@ -161,8 +162,8 @@ public class ComponentsUtils {
                 Form subForm = (Form) widgetProperty;
                 ComponentProperties subProperties = subForm.getComponentProperties();
                 propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
-                elementParameters.addAll(getParametersFromForm(element, compCategory, null /*subProperties*/, propertiesPath, subForm,
-                        widget, lastRN));
+                elementParameters.addAll(getParametersFromForm(element, compCategory, null /* subProperties */, propertiesPath,
+                        subForm, widget, lastRN));
                 continue;
             }
 
@@ -171,7 +172,7 @@ public class ComponentsUtils {
             String parameterName = propertiesPath.concat(param.getName());
             param.setName(parameterName);
             param.setCategory(compCategory);
-            param.setRepositoryValue(widgetProperty.getName());
+            param.setRepositoryValue(parameterName);
             param.setShow(parentWidget == null ? widget.isVisible() : parentWidget.isVisible() && widget.isVisible());
             int rowNum = 0;
             if (widget.getOrder() != 1) {
@@ -191,7 +192,7 @@ public class ComponentsUtils {
 
             if (widgetProperty instanceof SchemaElement) {
                 se = (SchemaElement) widgetProperties[0];
-                param.setContext("FLOW"); //$NON-NLS-1$
+                param.setContext(EConnectionType.FLOW_MAIN.getName());
             }
 
             EParameterFieldType fieldType = getFieldType(widget, widgetProperty, se);
@@ -228,6 +229,15 @@ public class ComponentsUtils {
             // }
             param.setReadOnly(false);
             param.setSerialized(true);
+            // Set param context when multiple schema
+            if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
+                String propertyName = componentProperties.getName();
+                if (IComponentConstants.SCHEMA_FLOW.equals(propertyName)) {
+                    param.setContext(EConnectionType.FLOW_MAIN.getDefaultMenuName().toUpperCase());
+                } else if (IComponentConstants.SCHEMA_REJECT.equals(propertyName)) {
+                    param.setContext(EConnectionType.REJECT.getName());
+                }
+            }
             elementParameters.add(param);
         }
         return elementParameters;
