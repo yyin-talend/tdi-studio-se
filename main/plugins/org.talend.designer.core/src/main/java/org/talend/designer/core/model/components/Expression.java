@@ -648,8 +648,7 @@ public final class Expression {
                     break;
                 }
             }
-            if (currentParam != null
-                    && "INCOMING_LINK_TYPE".equals(variableName) && ("FS_DEFAULT_NAME".equals(currentParam.getName()) || "MAPRED_JOB_TRACKER".equals(currentParam.getName()))) {//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            if (currentParam != null && "INCOMING_LINK_TYPE".equals(variableName)) {//$NON-NLS-1$
                 IElement element = currentParam.getElement();
                 if (element != null && element instanceof INode) {
                     INode node = (INode) element;

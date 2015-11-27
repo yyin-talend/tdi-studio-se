@@ -28,7 +28,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.properties.Project;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -37,7 +36,6 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
-import org.talend.repository.ProjectManager;
 
 public class JobletContainer extends NodeContainer {
 
@@ -86,20 +84,10 @@ public class JobletContainer extends NodeContainer {
     private Double percentReduce = new Double(0);
 
     private JobletContainer mrStartContainer;
-    
-    private boolean fromRef = false;
 
     public JobletContainer(Node node) {
         super(node);
         this.node = node;
-        Project refProject = ProjectManager.getInstance().getProject(this.getProcess().getProperty().getItem());
-        if (!ProjectManager.getInstance().isInCurrentMainProject(refProject)) {
-            fromRef = true;
-        }
-    }
-
-    public boolean isFromRef() {
-        return fromRef;
     }
 
     /**
