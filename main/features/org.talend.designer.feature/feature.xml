@@ -30,6 +30,10 @@
          id="org.talend.m2e.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.talend.utils.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.talend.designer.core"
          download-size="0"
@@ -148,13 +152,6 @@
 
    <plugin
          id="org.talend.repository"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.utils"
          download-size="0"
          install-size="0"
          version="0.0.0"

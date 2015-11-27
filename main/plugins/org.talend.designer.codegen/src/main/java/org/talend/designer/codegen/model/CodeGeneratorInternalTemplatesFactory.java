@@ -30,6 +30,7 @@ import org.talend.designer.codegen.additionaljet.AbstractJetFileProvider;
 import org.talend.designer.codegen.additionaljet.CustomizeJetFilesProviderManager;
 import org.talend.designer.codegen.config.EInternalTemplate;
 import org.talend.designer.codegen.config.TemplateUtil;
+import org.talend.utils.files.FileUtils;
 
 /**
  * Create a list of Available templates in the application.
@@ -55,6 +56,23 @@ public class CodeGeneratorInternalTemplatesFactory {
     public void init() {
         templates = new ArrayList<TemplateUtil>();
 
+        File installationFolder = null;
+        URL url = FileLocator.find(Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID), new Path("resources"), null); //$NON-NLS-1$
+        try {
+            if (url != null) {
+                installationFolder = new File(FileLocator.toFileURL(url).getPath());
+                if (installationFolder.exists()) {
+                    org.talend.utils.io.FilesUtils.deleteFolder(installationFolder, true);
+                }
+            } else {
+                url = Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID).getEntry("/");
+                installationFolder = new File(FileLocator.toFileURL(url).getPath(), "resources");//$NON-NLS-1$
+            }
+            installationFolder.mkdirs();
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+
         // 0. clear the content of the "header_additional.javajet"
         copyStubAdditionalJetFile();
 
@@ -78,6 +96,7 @@ public class CodeGeneratorInternalTemplatesFactory {
             installationFolder = new File(FileLocator.toFileURL(url).getPath());
 
             final FileFilter sourceFolderFilter = new FileFilter() {
+
                 public boolean accept(File pathname) {
                     return false;
                 }
@@ -107,6 +126,7 @@ public class CodeGeneratorInternalTemplatesFactory {
             // Add all additional headers
             file = new File(FileLocator.toFileURL(url).getPath());
             for (File f : file.listFiles(new FileFilter() {
+
                 public boolean accept(File pathname) {
                     if (pathname.getName().contains(EInternalTemplate.HEADER_ADDITIONAL.toString()))
                         if (pathname.getName().contains(language.getExtension() + TemplateUtil.TEMPLATE_EXT))
@@ -115,8 +135,9 @@ public class CodeGeneratorInternalTemplatesFactory {
                 }
             })) {
                 if (f.exists()) {
-                    TemplateUtil template = new TemplateUtil(f.getName().substring(0,f.getName().lastIndexOf(".")),"0.0.1");
-                    if (!templates.contains(template)) templates.add(template);
+                    TemplateUtil template = new TemplateUtil(f.getName().substring(0, f.getName().lastIndexOf(".")), "0.0.1");
+                    if (!templates.contains(template))
+                        templates.add(template);
                 }
             }
         } catch (IOException e) {
