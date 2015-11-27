@@ -209,9 +209,9 @@
 				MVN="mvn:org.talend.libraries/jackson-databind-2.5.3/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/jackson-databind-2.5.3.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="jackson-annotations-2.5.0.jar" MODULE="jackson-annotations-2.5.0.jar"
-				MVN="mvn:org.talend.libraries/jackson-annotations-2.5.0/6.0.0"
-				UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/jackson-annotations-2.5.0.jar"
+			<IMPORT NAME="jackson-annotations-2.5.3.jar" MODULE="jackson-annotations-2.5.3.jar"
+				MVN="mvn:org.talend.libraries/jackson-annotations-2.5.3/6.0.0"
+				UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/jackson-annotations-2.5.3.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="httpcore-4.3.3.jar" MODULE="httpcore-4.3.3.jar"
 				MVN="mvn:org.talend.libraries/httpcore-4.3.3/6.0.0"

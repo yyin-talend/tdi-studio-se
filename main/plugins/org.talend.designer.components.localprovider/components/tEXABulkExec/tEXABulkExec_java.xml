@@ -2,11 +2,11 @@
 
   <HEADER PLATEFORM="ALL" 
 	SERIAL="" 
-	VERSION="1.0" 
+	VERSION="1.1" 
 	STATUS="ALPHA"
 	COMPATIBILITY="ALL" 
 	AUTHOR="Talend" 
-	RELEASE_DATE="20151112A"
+	RELEASE_DATE="20151118A"
     LOG4J_ENABLED="true"
 	STARTABLE="true">
 	<SIGNATURE />
@@ -172,6 +172,13 @@
 	      <DEFAULT>Note: Example for Additional JDBC Parameters: "parameterName1=value1;parameterName2=value2;"</DEFAULT>
 	    </PARAMETER>
 	    
+		<PARAMETER NAME="COLUMN_CONFIG" FIELD="TABLE" NUM_ROW="15" NB_LINES="5" >
+			<ITEMS BASED_ON_SCHEMA="true">
+				<ITEM NAME="HAS_GROUP_DELIMITERS" FIELD="CHECK" />
+				<ITEM NAME="FORMAT" FIELD="TEXT"/>
+			</ITEMS>
+		</PARAMETER>
+	    
 		<PARAMETER 
 			NAME="COLUMN_SEPARATOR" 
 			FIELD="TEXT" 
@@ -242,7 +249,7 @@
 			NAME="DEFAULT_TIMESTAMP_FORMAT" 
 			FIELD="TEXT" 
 			NUM_ROW="70">
-			<DEFAULT>"YYYY-MM-DD HH:MI:SS.ff3"</DEFAULT>
+			<DEFAULT>"YYYY-MM-DD HH24:MI:SS.FF3"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER 
@@ -263,7 +270,7 @@
 			NAME="ERROR_LIMIT" 
 			FIELD="TEXT" 
 			NUM_ROW="85">
-			<DEFAULT>10</DEFAULT>
+			<DEFAULT>0</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER 
@@ -284,7 +291,7 @@
 	        SHOW_IF="ERROR_LOG_DESTINATION == 'LOCAL_FILE'"
 			REQUIRED="true"
 		>
-			<DEFAULT></DEFAULT>
+			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/import_error.log"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER 
@@ -330,8 +337,8 @@
 
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-EXASolution" MODULE="exajdbc.jar" MVN="mvn:org.talend.libraries/exajdbc/6.0.0"  REQUIRED="true" />
-		<IMPORT NAME="Talend-DB-Exasol-Util" MODULE="talend-db-exasol-1.0.0.jar" MVN="mvn:org.talend.libraries/talend-db-exasol-1.0.0/6.0.0"  REQUIRED="true" />
+		<IMPORT NAME="Driver-EXASolution" MODULE="exajdbc-5.0.12.jar" MVN="mvn:org.talend.libraries/exajdbc-5.0.12/6.1.1"  REQUIRED="true" />
+		<IMPORT NAME="Talend-DB-Exasol-Util" MODULE="talend-db-exasol-1.0.0.jar" MVN="mvn:org.talend.libraries/talend-db-exasol-1.0.0/6.1.1"  REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

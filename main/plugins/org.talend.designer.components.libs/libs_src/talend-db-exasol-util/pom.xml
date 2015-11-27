@@ -6,8 +6,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.talend.libraries</groupId>
-	<artifactId>talend-db-exasol-1.0.0</artifactId>
-	<version>6.0.0-SNAPSHOT</version>
+	<artifactId>talend-db-exasol</artifactId>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>talend-db-exasol</name>
@@ -28,6 +28,14 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>exajdbc</groupId>
+			<artifactId>exajdbc</artifactId>
+			<version>5.0.12</version>
+			<scope>system</scope>
+			<!-- change to your own jdbc path -->
+			<systemPath>C:/Users/Talend/Desktop/jar-nexus/exajdbc-5.0.12.jar</systemPath>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -45,6 +53,9 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<outputDirectory>../../../org.talend.designer.components.localprovider/components/tEXABulkExec</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
