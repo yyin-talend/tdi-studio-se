@@ -34,20 +34,20 @@
     }
     
     List<INode> rootNodes = (List<INode>)v.get(1);
-	boolean containsTPartitioner = process.getNodesOfType("tPartitioner").size() > 0 ? true : false;
+    boolean containsTPartitioner = process.getNodesOfType("tPartitioner").size() > 0 ? true : false;
     boolean stats = codeGenArgument.isStatistics();
     boolean trace = codeGenArgument.isTrace();
     boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
     List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
     
-	String jobFolderName = "";
-	IProcess baseProcess = ProcessUtils.getTestContainerBaseProcess(process);
-	if (baseProcess != null) {
-		jobFolderName = JavaResourcesHelper.getJobFolderName(baseProcess.getName(), baseProcess.getVersion()) + '/';
-	}
-	jobFolderName = jobFolderName + JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
-	String jobClassPackageFolder = codeGenArgument.getCurrentProjectName().toLowerCase() + '/' + jobFolderName;
+    String jobFolderName = "";
+    IProcess baseProcess = ProcessUtils.getTestContainerBaseProcess(process);
+    if (baseProcess != null) {
+        jobFolderName = JavaResourcesHelper.getJobFolderName(baseProcess.getName(), baseProcess.getVersion()) + '/';
+    }
+    jobFolderName = jobFolderName + JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+    String jobClassPackageFolder = codeGenArgument.getCurrentProjectName().toLowerCase() + '/' + jobFolderName;
 
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 
@@ -130,7 +130,7 @@
         exist_tS3 = true;
     }
 
-	boolean exist_tLDAP = false;
+    boolean exist_tLDAP = false;
     List<INode> ldapComponentsList = (List<INode>)process.getNodesOfType("tLDAPConnection");
     if (ldapComponentsList.size() > 0) {
         exist_tLDAP = true;
@@ -268,9 +268,9 @@
 
         int exitCode = <%=className %>Class.runJobInTOS(args);
         <%if(isLog4jEnabled){%>
-	        if(exitCode==0){
-		        log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Done.");
-	        }
+            if(exitCode==0){
+                log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Done.");
+            }
         <%}%>
 
         System.exit(exitCode);
@@ -349,21 +349,21 @@
     }
 
     public boolean hastBufferOutputComponent() {
-		boolean hastBufferOutput = false;
-    	<%//For TDI-28558
-        	List<INode> tBufferNodesList = (List<INode>)process.getNodesOfType("tBufferOutput");
-        	if(tBufferNodesList != null && tBufferNodesList.size() > 0) {
-    	%>
-        		hastBufferOutput = true;
-    	<%
-        	}
-		%>
+        boolean hastBufferOutput = false;
+        <%//For TDI-28558
+            List<INode> tBufferNodesList = (List<INode>)process.getNodesOfType("tBufferOutput");
+            if(tBufferNodesList != null && tBufferNodesList.size() > 0) {
+        %>
+                hastBufferOutput = true;
+        <%
+            }
+        %>
         return hastBufferOutput;
     }
 
     public int runJobInTOS(String[] args) {
-	   	// reset status
-	   	status = "";
+        // reset status
+        status = "";
 
         String lastStr = "";
         for (String arg : args) {
@@ -378,26 +378,26 @@
         }
 
         <%if(isLog4jEnabled){%>
-	        if(!"".equals(log4jLevel)){
-				if("trace".equalsIgnoreCase(log4jLevel)){
-					log.setLevel(org.apache.log4j.Level.TRACE);
-				}else if("debug".equalsIgnoreCase(log4jLevel)){
-					log.setLevel(org.apache.log4j.Level.DEBUG);
-				}else if("info".equalsIgnoreCase(log4jLevel)){
-					log.setLevel(org.apache.log4j.Level.INFO);
-				}else if("warn".equalsIgnoreCase(log4jLevel)){
-					log.setLevel(org.apache.log4j.Level.WARN);
-				}else if("error".equalsIgnoreCase(log4jLevel)){
-					log.setLevel(org.apache.log4j.Level.ERROR);
-				}else if("fatal".equalsIgnoreCase(log4jLevel)){
-					log.setLevel(org.apache.log4j.Level.FATAL);
-				}else if ("off".equalsIgnoreCase(log4jLevel)){
-					log.setLevel(org.apache.log4j.Level.OFF);
-				}
-				org.apache.log4j.Logger.getRootLogger().setLevel(log.getLevel());
-    	    }
-        	log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Start.");
-    	<%}%>
+            if(!"".equals(log4jLevel)){
+                if("trace".equalsIgnoreCase(log4jLevel)){
+                    log.setLevel(org.apache.log4j.Level.TRACE);
+                }else if("debug".equalsIgnoreCase(log4jLevel)){
+                    log.setLevel(org.apache.log4j.Level.DEBUG);
+                }else if("info".equalsIgnoreCase(log4jLevel)){
+                    log.setLevel(org.apache.log4j.Level.INFO);
+                }else if("warn".equalsIgnoreCase(log4jLevel)){
+                    log.setLevel(org.apache.log4j.Level.WARN);
+                }else if("error".equalsIgnoreCase(log4jLevel)){
+                    log.setLevel(org.apache.log4j.Level.ERROR);
+                }else if("fatal".equalsIgnoreCase(log4jLevel)){
+                    log.setLevel(org.apache.log4j.Level.FATAL);
+                }else if ("off".equalsIgnoreCase(log4jLevel)){
+                    log.setLevel(org.apache.log4j.Level.OFF);
+                }
+                org.apache.log4j.Logger.getRootLogger().setLevel(log.getLevel());
+            }
+            log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Start.");
+        <%}%>
 
         if(clientHost == null) {
             clientHost = defaultClientHost;
@@ -455,25 +455,25 @@
             }
             <% for (IContextParameter ctxParam :params)
             {
-            	if (ctxParam.getType().equals("id_Password")) {
+                if (ctxParam.getType().equals("id_Password")) {
             %>
-            		String pwd_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
-            		context.<%=ctxParam.getName()%> = null;
-            		if(pwd_<%=ctxParam.getName()%>_value!=null) {
-            			if(context_param.containsKey("<%=ctxParam.getName()%>")) {//no need to decrypt if it come from program argument or parent job runtime
-            				context.<%=ctxParam.getName()%> = pwd_<%=ctxParam.getName()%>_value;
-            			} else if (!pwd_<%=ctxParam.getName()%>_value.isEmpty()) {
-            				try {
-            					context.<%=ctxParam.getName()%> = routines.system.PasswordEncryptUtil.decryptPassword(pwd_<%=ctxParam.getName()%>_value);
-            					context.put("<%=ctxParam.getName()%>",context.<%=ctxParam.getName()%>);
-            				} catch (java.lang.RuntimeException e) {
-            					//do nothing
-            				}
-            			}
-            		}
+                    String pwd_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
+                    context.<%=ctxParam.getName()%> = null;
+                    if(pwd_<%=ctxParam.getName()%>_value!=null) {
+                        if(context_param.containsKey("<%=ctxParam.getName()%>")) {//no need to decrypt if it come from program argument or parent job runtime
+                            context.<%=ctxParam.getName()%> = pwd_<%=ctxParam.getName()%>_value;
+                        } else if (!pwd_<%=ctxParam.getName()%>_value.isEmpty()) {
+                            try {
+                                context.<%=ctxParam.getName()%> = routines.system.PasswordEncryptUtil.decryptPassword(pwd_<%=ctxParam.getName()%>_value);
+                                context.put("<%=ctxParam.getName()%>",context.<%=ctxParam.getName()%>);
+                            } catch (java.lang.RuntimeException e) {
+                                //do nothing
+                            }
+                        }
+                    }
             <%
-            		continue;
-            	}
+                    continue;
+                }
                 String typeToGenerate ="String";
                 if( !(ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") ||ctxParam.getType().equals("id_List Of Value")))
                 {
@@ -549,13 +549,13 @@
         resumeUtil = new ResumeUtil(resuming_logs_dir_path, isChildJob, rootPid);
         resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
 
-		List<String> parametersToEncrypt = new java.util.ArrayList<String>();
-<% 		for(IContextParameter ctxParam :params) {
-        	if ("id_Password".equals(ctxParam.getType())) {
+        List<String> parametersToEncrypt = new java.util.ArrayList<String>();
+<%      for(IContextParameter ctxParam :params) {
+            if ("id_Password".equals(ctxParam.getType())) {
 %>
-			parametersToEncrypt.add("<%=ctxParam.getName()%>");
+            parametersToEncrypt.add("<%=ctxParam.getName()%>");
 <%
-        	}
+            }
         }
 %>
         //Resume: jobStart
@@ -592,10 +592,10 @@ if(execStat) {
 %>
 
 <%= ElementParameterParser.getValue(process, "__HEADER_CODE__")%>
-	<%//if(containsTPartitioner){//as tMatchGroupIn and tFuzzyUniqRow use this concurrentHashMap, so generate always%>
-	    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap = new java.util.concurrent.ConcurrentHashMap<Object, Object>();
-	    globalMap.put("concurrentHashMap", concurrentHashMap);
-	<%//}%>
+    <%//if(containsTPartitioner){//as tMatchGroupIn and tFuzzyUniqRow use this concurrentHashMap, so generate always%>
+        java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap = new java.util.concurrent.ConcurrentHashMap<Object, Object>();
+        globalMap.put("concurrentHashMap", concurrentHashMap);
+    <%//}%>
 
     long startUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     long endUsedMemory = 0;
@@ -977,33 +977,33 @@ if (execStat) {
     }
 <%   }//End if
 %>
-		
+        
 <%  if(exist_tHBase) { %>
     private void closeHBaseConnections() {
         try {
 <%  java.util.List<String> supportNewHbaseApiVersionList = java.util.Arrays.<String>asList(
-	"HDP_2_0","HDP_2_1","HDP_2_2","PIVOTAL_HD_2_0","Cloudera_CDH5","Cloudera_CDH5_1","Cloudera_CDH5_4","Cloudera_CDH5_1_MR1", "MAPR410"
+    "HDP_2_0","HDP_2_1","HDP_2_2","PIVOTAL_HD_2_0","Cloudera_CDH5","Cloudera_CDH5_1","Cloudera_CDH5_4","Cloudera_CDH5_1_MR1", "MAPR410"
 );  
-	for (INode hbaseComponent : hbaseComponentsList) {
+    for (INode hbaseComponent : hbaseComponentsList) {
 
-	    String hbaseVersion = ElementParameterParser.getValue(hbaseComponent, "__HBASE_VERSION__");
-		boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(hbaseComponent, "__DISTRIBUTION__"));
-	    boolean isHadoop2 = "HADOOP_2".equals(ElementParameterParser.getValue(hbaseComponent, "__HADOOP_CUSTOM_VERSION__"));%>
-   			org.apache.hadoop.conf.Configuration conn_<%=hbaseComponent.getUniqueName()%> =(org.apache.hadoop.conf.Configuration)globalMap.get("conn_<%=hbaseComponent.getUniqueName()%>");
-			if(conn_<%=hbaseComponent.getUniqueName()%> != null )
-	        {
-			<%
-				if((isCustom && isHadoop2) || (!isCustom && hbaseVersion!=null && supportNewHbaseApiVersionList.contains(hbaseVersion))) {%>
-		        org.apache.hadoop.hbase.client.HConnection hConnection_<%=hbaseComponent.getUniqueName() %> = org.apache.hadoop.hbase.client.HConnectionManager.getConnection(conn_<%=hbaseComponent.getUniqueName() %>);
-		        if ((hConnection_<%=hbaseComponent.getUniqueName() %> != null) && (!hConnection_<%=hbaseComponent.getUniqueName() %>.isClosed())) {
-				    hConnection_<%=hbaseComponent.getUniqueName() %>.close();
-			}
-			<%} else {%>
-				org.apache.hadoop.hbase.client.HConnectionManager.deleteConnection(conn_<%=hbaseComponent.getUniqueName() %>,true);
-			<%}%>
-			}
+        String hbaseVersion = ElementParameterParser.getValue(hbaseComponent, "__HBASE_VERSION__");
+        boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(hbaseComponent, "__DISTRIBUTION__"));
+        boolean isHadoop2 = "HADOOP_2".equals(ElementParameterParser.getValue(hbaseComponent, "__HADOOP_CUSTOM_VERSION__"));%>
+            org.apache.hadoop.conf.Configuration conn_<%=hbaseComponent.getUniqueName()%> =(org.apache.hadoop.conf.Configuration)globalMap.get("conn_<%=hbaseComponent.getUniqueName()%>");
+            if(conn_<%=hbaseComponent.getUniqueName()%> != null )
+            {
+            <%
+                if((isCustom && isHadoop2) || (!isCustom && hbaseVersion!=null && supportNewHbaseApiVersionList.contains(hbaseVersion))) {%>
+                org.apache.hadoop.hbase.client.HConnection hConnection_<%=hbaseComponent.getUniqueName() %> = org.apache.hadoop.hbase.client.HConnectionManager.getConnection(conn_<%=hbaseComponent.getUniqueName() %>);
+                if ((hConnection_<%=hbaseComponent.getUniqueName() %> != null) && (!hConnection_<%=hbaseComponent.getUniqueName() %>.isClosed())) {
+                    hConnection_<%=hbaseComponent.getUniqueName() %>.close();
+            }
+            <%} else {%>
+                org.apache.hadoop.hbase.client.HConnectionManager.deleteConnection(conn_<%=hbaseComponent.getUniqueName() %>,true);
+            <%}%>
+            }
       globalMap.remove("conn_<%=hbaseComponent.getUniqueName() %>");
-	<%}%>
+    <%}%>
         } catch (java.lang.Exception e) {
         }
     }
@@ -1042,10 +1042,10 @@ if (execStat) {
     private void closeS3Connections() {
         try {
 <%    for (INode s3Component : s3ComponentsList) { %>
-    	com.amazonaws.services.s3.AmazonS3Client conn_<%=s3Component.getUniqueName() %> = (com.amazonaws.services.s3.AmazonS3Client)globalMap.get("conn_<%=s3Component.getUniqueName() %>");
-	    if(conn_<%=s3Component.getUniqueName() %> !=null){
-			conn_<%=s3Component.getUniqueName() %>.shutdown();	
-		}
+        com.amazonaws.services.s3.AmazonS3Client conn_<%=s3Component.getUniqueName() %> = (com.amazonaws.services.s3.AmazonS3Client)globalMap.get("conn_<%=s3Component.getUniqueName() %>");
+        if(conn_<%=s3Component.getUniqueName() %> !=null){
+            conn_<%=s3Component.getUniqueName() %>.shutdown();  
+        }
 <%    } %>
         } catch (java.lang.Exception e) {
         }
@@ -1071,11 +1071,11 @@ if (execStat) {
     private void closeMDMConnections() {
         try {
 <%    for (INode mdmComponent : mdmComponentsList) { %>
-		org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=mdmComponent.getUniqueName() %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("TMDMService_<%=mdmComponent.getUniqueName() %>");
-		if(tmdmWS_<%=mdmComponent.getUniqueName() %> != null)
-		{
-			tmdmWS_<%=mdmComponent.getUniqueName() %>.logout(new org.talend.mdm.webservice.WSLogout());
-		}
+        org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=mdmComponent.getUniqueName() %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("TMDMService_<%=mdmComponent.getUniqueName() %>");
+        if(tmdmWS_<%=mdmComponent.getUniqueName() %> != null)
+        {
+            tmdmWS_<%=mdmComponent.getUniqueName() %>.logout(new org.talend.mdm.webservice.WSLogout());
+        }
 <%    } %>
         } catch (java.lang.Exception e) {
         }
@@ -1087,11 +1087,11 @@ if (execStat) {
     private void closePaloConnections() {
         try {
 <%    for (INode paloComponent : paloComponentsList) { %>
-    	org.talend.jpalo.paloconnection pConn_<%=paloComponent.getUniqueName()%> = (org.talend.jpalo.paloconnection)globalMap.get("pConn_<%=paloComponent.getUniqueName()%>");
-	    if(pConn_<%=paloComponent.getUniqueName()%> !=null){
-					pConn_<%=paloComponent.getUniqueName() %>.logout();
-	
-		}
+        org.talend.jpalo.paloconnection pConn_<%=paloComponent.getUniqueName()%> = (org.talend.jpalo.paloconnection)globalMap.get("pConn_<%=paloComponent.getUniqueName()%>");
+        if(pConn_<%=paloComponent.getUniqueName()%> !=null){
+                    pConn_<%=paloComponent.getUniqueName() %>.logout();
+    
+        }
 <%    } %>
         } catch (java.lang.Exception e) {
         }
@@ -1102,11 +1102,11 @@ if (execStat) {
     private void closeEXistConnections() {
         try {
 <%    for (INode existComponent : existComponentsList) { %>
-		org.xmldb.api.base.Collection col_<%=existComponent.getUniqueName()%> = (org.xmldb.api.base.Collection)globalMap.get("col_<%=existComponent.getUniqueName()%>");
-	    if(col_<%=existComponent.getUniqueName()%> !=null){
-					col_<%=existComponent.getUniqueName()%>.close();
-	
-		}
+        org.xmldb.api.base.Collection col_<%=existComponent.getUniqueName()%> = (org.xmldb.api.base.Collection)globalMap.get("col_<%=existComponent.getUniqueName()%>");
+        if(col_<%=existComponent.getUniqueName()%> !=null){
+                    col_<%=existComponent.getUniqueName()%>.close();
+    
+        }
 <%    } %>
         } catch (java.lang.Exception e) {
         }
@@ -1117,11 +1117,11 @@ if (execStat) {
     private void closeGSConnections() {
         try {
 <%    for (INode gsComponent : gsComponentsList) { %>
-		org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=gsComponent.getUniqueName()%> = 
-				(org.jets3t.service.impl.rest.httpclient.GoogleStorageService)globalMap.get("service_<%=gsComponent.getUniqueName()%>");
-		if(service_<%=gsComponent.getUniqueName()%> !=null){
-				service_<%=gsComponent.getUniqueName()%>.shutdown();
-	    }
+        org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=gsComponent.getUniqueName()%> = 
+                (org.jets3t.service.impl.rest.httpclient.GoogleStorageService)globalMap.get("service_<%=gsComponent.getUniqueName()%>");
+        if(service_<%=gsComponent.getUniqueName()%> !=null){
+                service_<%=gsComponent.getUniqueName()%>.shutdown();
+        }
 
 <%    } %>
         } catch (java.lang.Exception e) {
@@ -1191,7 +1191,7 @@ if (execStat) {
 <%        for (INode mdmNode : mdmComponentsList) {%>
             connections.put("TMDMService_<%=mdmNode.getUniqueName() %>", globalMap.get("TMDMService_<%=mdmNode.getUniqueName() %>"));
 <%          if( "false".equals(ElementParameterParser.getValue(mdmNode, "__AUTO_COMMIT__"))) {%>
-	            connections.put("mdmTransaction_<%=mdmNode.getUniqueName() %>", globalMap.get("mdmTransaction_<%=mdmNode.getUniqueName() %>"));
+                connections.put("mdmTransaction_<%=mdmNode.getUniqueName() %>", globalMap.get("mdmTransaction_<%=mdmNode.getUniqueName() %>"));
 <%            }
         } %>
 <%      for (INode paloNode : paloComponentsList) { %>
@@ -1257,7 +1257,7 @@ if (execStat) {
             }
         }else if (arg.startsWith("--log4jLevel=")) {
             log4jLevel = arg.substring(13);
-		}
+        }
 
     }
 
@@ -1267,32 +1267,32 @@ if (execStat) {
         };
     private String replaceEscapeChars (String keyValue) {
 
-		if (keyValue == null || ("").equals(keyValue.trim())) {
-			return keyValue;
-		}
+        if (keyValue == null || ("").equals(keyValue.trim())) {
+            return keyValue;
+        }
 
-		StringBuilder result = new StringBuilder();
-		int currIndex = 0;
-		while (currIndex < keyValue.length()) {
-			int index = -1;
-			// judege if the left string includes escape chars
-			for (String[] strArray : escapeChars) {
-				index = keyValue.indexOf(strArray[0],currIndex);
-				if (index>=0) {
+        StringBuilder result = new StringBuilder();
+        int currIndex = 0;
+        while (currIndex < keyValue.length()) {
+            int index = -1;
+            // judege if the left string includes escape chars
+            for (String[] strArray : escapeChars) {
+                index = keyValue.indexOf(strArray[0],currIndex);
+                if (index>=0) {
 
-					result.append(keyValue.substring(currIndex, index + strArray[0].length()).replace(strArray[0], strArray[1]));
-					currIndex = index + strArray[0].length();
-					break;
-				}
-			}
-			// if the left string doesn't include escape chars, append the left into the result
-			if (index < 0) {
-				result.append(keyValue.substring(currIndex));
-				currIndex = currIndex + keyValue.length();
-			}
-		}
+                    result.append(keyValue.substring(currIndex, index + strArray[0].length()).replace(strArray[0], strArray[1]));
+                    currIndex = index + strArray[0].length();
+                    break;
+                }
+            }
+            // if the left string doesn't include escape chars, append the left into the result
+            if (index < 0) {
+                result.append(keyValue.substring(currIndex));
+                currIndex = currIndex + keyValue.length();
+            }
+        }
 
-		return result.toString();
+        return result.toString();
     }
 
     public Integer getErrorCode() {
