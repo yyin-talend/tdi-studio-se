@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -390,7 +391,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
         final IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
 
         if (PluginChecker.isSVNProviderPluginLoaded() && (!sharedAdded.isEmpty() || !backAdded.isEmpty())) {
-            RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Commit new component") {
+            RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Update custom components") {
 
                 @Override
                 public void run() throws PersistenceException {
@@ -419,10 +420,17 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
 
                                 // delete share
                                 for (IComponent component : backAdded.keySet()) {
-                                    service.svnEclipseHandlerDelete(eclipseProject, pro,
-                                            targetRoot + File.separator + component.getName());
-                                    if (subMonitor != null) {
-                                        subMonitor.worked(10);
+                                    String componentFullPath = targetRoot + File.separator + component.getName();
+                                    if (service.isSVNProject(pro)) {
+                                        service.svnEclipseHandlerDelete(eclipseProject, pro, componentFullPath);
+                                        if (subMonitor != null) {
+                                            subMonitor.worked(10);
+                                        }
+                                    } else {
+                                        File file = new File(componentFullPath);
+                                        if (file != null && file.exists()) {
+                                            org.talend.utils.io.FilesUtils.deleteFolder(file, true);
+                                        }
                                     }
                                 }
                                 if (!backAdded.isEmpty()) {
