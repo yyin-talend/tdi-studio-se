@@ -561,7 +561,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private void createJobBundleBlueprintConfig(ProcessItem processItem, IProcess process, File targetFile) throws IOException {
         TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", //$NON-NLS-1$
-                collectJobInfo(processItem, process), targetFile, getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB));
+                collectJobInfo(processItem, process), targetFile, JobJavaScriptOSGIForESBManager.class.getClassLoader()
+                        .getResourceAsStream(TEMPLATE_BLUEPRINT_JOB));
     }
 
     private ExportFileResource genMetaInfoFolder(ExportFileResource libResource, ProcessItem processItem) throws IOException {
