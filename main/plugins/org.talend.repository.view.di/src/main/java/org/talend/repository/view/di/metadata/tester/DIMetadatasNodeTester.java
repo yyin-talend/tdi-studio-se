@@ -42,6 +42,8 @@ public class DIMetadatasNodeTester extends CoMetadataNodeTester {
 
     private static final String IS_LDAP = "isLDAP"; //$NON-NLS-1$
 
+    private static final String IS_SALESFORCE = "isSalesforce"; //$NON-NLS-1$
+
     private static final String IS_GENERIC_SCHEMA = "isGenericSchema"; //$NON-NLS-1$
 
     private static final String IS_WEB_SERVICE = "isWebService"; //$NON-NLS-1$
@@ -67,6 +69,8 @@ public class DIMetadatasNodeTester extends CoMetadataNodeTester {
                 return ERepositoryObjectType.METADATA_FILE_LDIF;
             } else if (IS_LDAP.equals(property)) {
                 return ERepositoryObjectType.METADATA_LDAP_SCHEMA;
+            } else if (IS_SALESFORCE.equals(property)) {
+                return ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA;
             } else if (IS_GENERIC_SCHEMA.equals(property)) {
                 return ERepositoryObjectType.METADATA_GENERIC_SCHEMA;
             } else if (IS_WEB_SERVICE.equals(property)) {
