@@ -68,10 +68,24 @@ boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getP
 int deletedCount_<%=cid%> = 0;
 int insertedCount_<%=cid%> = 0;
 // schema is mandatory
-String tableName_<%=cid%> = <%=dbschema%> + "." + <%=table%>;
+
+String dbschema_<%=cid%> = null;
+<%
+if(useExistingConnection) {
+%>
+    dbschema_<%=cid%> = (String)globalMap.get("schema_<%=connection%>");
+<%
+} else {
+%>
+    dbschema_<%=cid%> = <%=dbschema%>;
+<%
+}
+%>
+
+String tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%>;
 java.sql.Connection conn_<%=cid%> = null;
 <%	if (useExistingConnection) { %>
-conn_<%=cid%> = (java.sql.Connection) globalMap.get("conn_" + "<%=connection%>");
+conn_<%=cid%> = (java.sql.Connection) globalMap.get("conn_<%=connection%>");
 <% } else { %>
 try {
 	 java.lang.Class.forName("com.exasol.jdbc.EXADriver").newInstance();
