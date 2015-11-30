@@ -96,8 +96,9 @@ imports="
                 }
 <%
           }
-
-			if(hadoopProps.size() > 0){
+          	// When configuraing from the classpath we do not set the variables using System.setProperty
+          	// We set them directly on the Hadoop Configuration object
+			if((hadoopProps.size() > 0) && (!configureFromClassPath)) {
 				for(Map<String, String> item : hadoopProps){
 %>
 					System.setProperty(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
@@ -259,6 +260,16 @@ imports="
 						conf_<%=cid%>.addResource("hbase-site.xml");
 <%
 					}
+
+					// Set advanced hadoop properties
+					if(hadoopProps.size() > 0) {
+						for(Map<String, String> item : hadoopProps){
+%>
+						conf_<%=cid%>.set(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
+<%
+						}
+					}
+
 					// log all loaded xxx-site.xml files and all of the key value pairs for debugging
 					if(isLog4jEnabled){
 %>
@@ -266,9 +277,9 @@ imports="
 						log.debug("CLASSPATH_CONFIGURATION_<%=cid%>" + " key value pairs : ");
 						java.util.Iterator<java.util.Map.Entry<String,String>> iterator_log_<%=cid%> = conf_<%=cid%>.iterator();
 						while(iterator_log_<%=cid%>.hasNext()){
-						java.util.Map.Entry<String,String> property = iterator_log_<%=cid%>.next();
-						log.debug("CLASSPATH_CONFIGURATION_<%=cid%> " + property.getKey() + " : " + property.getValue());
-			}
+							java.util.Map.Entry<String,String> property = iterator_log_<%=cid%>.next();
+							log.debug("CLASSPATH_CONFIGURATION_<%=cid%> " + property.getKey() + " : " + property.getValue());
+						}
 <%
 					}
 %>
