@@ -60,6 +60,9 @@ imports="
 			String hivePrincipal = ElementParameterParser.getValue(node, "__HIVE_PRINCIPAL__");
 			boolean useSsl = "true".equals(ElementParameterParser.getValue(node, "__USE_SSL__"));
 			String sslTrustStore = ElementParameterParser.getValue(node, "__SSL_TRUST_STORE__");
+			boolean configureFromClassPath = "true".equals(ElementParameterParser.getValue(node, "__CONFIGURATIONS_FROM_CLASSPATH__"));
+			boolean storeByHBase = "true".equals(ElementParameterParser.getValue(node, "__STORE_BY_HBASE__"));
+
 
 			if(hiveServer!=null && !"".equals(hiveServer.trim()) && (this.isCustom || this.hiveDistrib.doSupportHive2())) {
 				hiveServer = hiveServer.toLowerCase();
@@ -93,8 +96,9 @@ imports="
                 }
 <%
           }
-
-			if(hadoopProps.size() > 0){
+          	// When configuraing from the classpath we do not set the variables using System.setProperty
+          	// We set them directly on the Hadoop Configuration object
+			if((hadoopProps.size() > 0) && (!configureFromClassPath)) {
 				for(Map<String, String> item : hadoopProps){
 %>
 					System.setProperty(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
@@ -154,14 +158,14 @@ imports="
 				}
 			}
 
-			if(((this.isCustom && !useYarn) || (!this.isCustom && this.hiveDistrib.isHadoop1())) && setMapredJT) {
+			if(((this.isCustom && !useYarn) || (!this.isCustom && this.hiveDistrib.isHadoop1())) && setMapredJT && !configureFromClassPath) {
 				String mapredJT = ElementParameterParser.getValue(node, "__MAPRED_JT__");
 %>
 				System.setProperty("mapred.job.tracker", <%=mapredJT%>);
 <%
 			}
 
-			if(setNamenode) {
+			if(setNamenode && !configureFromClassPath) {
 				String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
 %>
 				System.setProperty("<%=fsDefalutName%>", <%=namenode%>);
@@ -182,7 +186,7 @@ imports="
 			globalMap.put("HADOOP_USER_NAME_<%=cid%>", System.getProperty("HADOOP_USER_NAME"));
 			<%
 
-
+			// BEGIN IF01
 			if("EMBEDDED".equals(connectionMode) && (this.isCustom || this.hiveDistrib.doSupportEmbeddedMode())) {
 %>
 				System.setProperty("hive.metastore.local", "false");
@@ -203,51 +207,154 @@ imports="
 					}
 <%
 				}
+
+			// END IF01
+			// BEGIN IF02
 			} else if("STANDALONE".equals(connectionMode) && (this.isCustom || this.hiveDistrib.doSupportStandaloneMode())) {
-				if(securedStandaloneHive2) {
-					// using keytab with HiveServer2 in standalone mode
-					boolean useKeytab = "true".equals(ElementParameterParser.getValue(node, "__USE_KEYTAB__"));
-					String userPrincipal = ElementParameterParser.getValue(node, "__PRINCIPAL__");
-					String keytabPath = ElementParameterParser.getValue(node, "__KEYTAB_PATH__");
-					if(useKeytab) {
+				boolean useKeytab = "true".equals(ElementParameterParser.getValue(node, "__USE_KEYTAB__"));
+				String userPrincipal = ElementParameterParser.getValue(node, "__PRINCIPAL__");
+				String keytabPath = ElementParameterParser.getValue(node, "__KEYTAB_PATH__");
+				String sslStorepasswordFieldName = "__SSL_TRUST_STORE_PASSWORD__";
+				String additionalJdbcSettings = ElementParameterParser.getValue(node, "__HIVE_ADDITIONAL_JDBC__");
+				// User the classpath to infer Kerberos parameters
+				// BEGIN IF03
+				if(configureFromClassPath){
 %>
-						org.apache.hadoop.security.UserGroupInformation.loginUserFromKeytab(<%=userPrincipal%>, <%=keytabPath%>);
+					String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";";
+					String secureSSLMode = ";sasl.qop=auth-conf";
+
+					// Add HADOOP_CONF_DIR to the classpath if it's present
+					String hadoopConfDir_<%=cid%> = System.getenv("HADOOP_CONF_DIR");
+					if(hadoopConfDir_<%=cid%> != null){
+						java.net.URLClassLoader sysloader = (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
+						java.lang.reflect.Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { java.net.URL.class });
+						method.setAccessible(true);
+						method.invoke(sysloader,new Object[] { new java.io.File(hadoopConfDir_<%=cid%>).toURI().toURL() });
+					}
+					org.apache.hadoop.conf.Configuration conf_<%=cid%> = new org.apache.hadoop.conf.Configuration();
+
+					// Adding any talend-site.xml files on the classpath
+					conf_<%=cid%>.addResource("talend-site.xml");
+					String tldHiveKerberosAuth = conf_<%=cid%>.get("talend.kerberos.authentication", "");
+					String tldHiveKerberosKtPrincipal = conf_<%=cid%>.get("talend.kerberos.keytab.principal", "");
+					String tldHiveKerberosKtPath = conf_<%=cid%>.get("talend.kerberos.keytab.path", "");
+					String tldHiveEnc = conf_<%=cid%>.get("talend.encryption", "");
+					String tldHiveSslTsPath = conf_<%=cid%>.get("talend.ssl.trustStore.path", "");
+					String tldHiveSslTsPassword = conf_<%=cid%>.get("talend.ssl.trustStore.password", "");
+
+					// Add configurations from hive-site.xml
+					conf_<%=cid%>.addResource("hive-site.xml");
+
+					// Add configurations from yarn-site.xml
+					conf_<%=cid%>.addResource("yarn-site.xml");
+
+					// Add configurations from mapred-site.xml
+					conf_<%=cid%>.addResource("mapred-site.xml");
+
+					// Add configurations from hdfs-site.xml
+					conf_<%=cid%>.addResource("hdfs-site.xml");
+<%
+					if(storeByHBase){
+%>
+						// Add configurations from hbase-site.xml
+						conf_<%=cid%>.addResource("hbase-site.xml");
 <%
 					}
-					// Using SSL in Secure Mode
-					if(useSsl && this.hiveDistrib.doSupportSSL()){
+
+					// Set advanced hadoop properties
+					if(hadoopProps.size() > 0) {
+						for(Map<String, String> item : hadoopProps){
 %>
-						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>+";sasl.qop=auth-conf";
+						conf_<%=cid%>.set(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
 <%
+						}
+					}
+
+					// log all loaded xxx-site.xml files and all of the key value pairs for debugging
+					if(isLog4jEnabled){
+%>
+						log.debug("CLASSPATH_CONFIGURATION_<%=cid%>" + " Loaded : " + conf_<%=cid%>);
+						log.debug("CLASSPATH_CONFIGURATION_<%=cid%>" + " key value pairs : ");
+						java.util.Iterator<java.util.Map.Entry<String,String>> iterator_log_<%=cid%> = conf_<%=cid%>.iterator();
+						while(iterator_log_<%=cid%>.hasNext()){
+							java.util.Map.Entry<String,String> property = iterator_log_<%=cid%>.next();
+							log.debug("CLASSPATH_CONFIGURATION_<%=cid%> " + property.getKey() + " : " + property.getValue());
+						}
+<%
+					}
+%>
+					if(org.apache.hadoop.security.UserGroupInformation.isSecurityEnabled()){
+
+						
+						String hiveServer2KerberosPrincipal = conf_<%=cid%>.get("hive.server2.authentication.kerberos.principal", "");
+						String urlKerberosParameter = "principal=" + hiveServer2KerberosPrincipal;
+
+						// Keytab configurations
+						if(tldHiveKerberosAuth.equalsIgnoreCase("keytab")){
+							org.apache.hadoop.security.UserGroupInformation.loginUserFromKeytab(tldHiveKerberosKtPrincipal, tldHiveKerberosKtPath);
+						}
+
+						// SSL configurations
+						if(tldHiveEnc.equalsIgnoreCase("ssl")){
+							url_<%=cid%> += urlKerberosParameter + secureSSLMode;
+						} else {
+							url_<%=cid%> += urlKerberosParameter;
+						}
+
 					}else{
-%>
-						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>;
-<%
+
+						// SSL configurations
+						if(tldHiveEnc.equalsIgnoreCase("ssl")){
+							url_<%=cid%> += ";ssl=true" +";sslTrustStore=" + tldHiveSslTsPath + ";trustStorePassword=" + tldHiveSslTsPassword;
+						}
 					}
+<%
+				// END IF03
+				// BEGIN IF04
 				} else {
-					// Using SSL in non Secure Mode
-					if(useSsl && this.hiveDistrib.doSupportSSL()){
-						String sslStorepasswordFieldName = "__SSL_TRUST_STORE_PASSWORD__";
-						if (ElementParameterParser.canEncrypt(node, sslStorepasswordFieldName)) {
+				// BEGIN IF 06
+					if(securedStandaloneHive2) {
+						if(useKeytab) {
 %>
-							String decryptedSslStorePassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, sslStorepasswordFieldName)%>);
+							org.apache.hadoop.security.UserGroupInformation.loginUserFromKeytab(<%=userPrincipal%>, <%=keytabPath%>);
+<%
+						}
+						// Using SSL in Secure Mode
+						if(useSsl && this.hiveDistrib.doSupportSSL()){
+%>
+							String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>+";sasl.qop=auth-conf";
 <%
 						}else{
 %>
-							String decryptedSslStorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, sslStorepasswordFieldName)%>;
+							String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>;
 <%
 						}
+					// END IF06
+					// BEGIN IF07
+					} else {
+						// Using SSL in non Secure Mode
+						if(useSsl && this.hiveDistrib.doSupportSSL()){
+							if (ElementParameterParser.canEncrypt(node, sslStorepasswordFieldName)) {
 %>
-						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>+ ";ssl=true" +";sslTrustStore=" + <%=sslTrustStore%> + ";trustStorePassword=" + decryptedSslStorePassword_<%=cid%>;
+								String decryptedSslStorePassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, sslStorepasswordFieldName)%>);
 <%
-					}else{
+							}else{
 %>
-						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+								String decryptedSslStorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, sslStorepasswordFieldName)%>;
 <%
+							}
+%>
+							String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>+ ";ssl=true" +";sslTrustStore=" + <%=sslTrustStore%> + ";trustStorePassword=" + decryptedSslStorePassword_<%=cid%>;
+<%
+						}else{
+%>
+							String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%
+						}
+					// END IF07
 					}
+				// END IF04
 				}
-
-				String additionalJdbcSettings = ElementParameterParser.getValue(node, "__HIVE_ADDITIONAL_JDBC__");
 %>
 				String additionalJdbcSettings_<%=cid%> = <%=additionalJdbcSettings%>;
 				if(!"".equals(additionalJdbcSettings_<%=cid%>.trim())) {
@@ -257,6 +364,7 @@ imports="
 					url_<%=cid%> += additionalJdbcSettings_<%=cid%>;
 				}
 <%
+			// END IF02
 			}
 		}
 
@@ -310,6 +418,7 @@ imports="
 	boolean isKerberosAvailableHadoop2 = !isCustom && hiveDistrib.isHadoop2() && hiveDistrib.doSupportKerberos();
 	boolean isHadoop2 = !isCustom && hiveDistrib.isHadoop2();
 	boolean isKerberosAvailableHadoop1 = !isCustom && hiveDistrib.isHadoop1() && hiveDistrib.doSupportKerberos();
+	boolean configureFromClassPath = "true".equals(ElementParameterParser.getValue(node, "__CONFIGURATIONS_FROM_CLASSPATH__"));
 
 %>
 	globalMap.put("current_client_path_separator", System.getProperty("path.separator"));
@@ -317,7 +426,7 @@ imports="
 
 	java.sql.Statement init_<%=cid%> = conn_<%=cid%>.createStatement();
 <%
-    if(!isCustom && ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion))) {
+    if(!configureFromClassPath && !isCustom && ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion))) {
         String mapMemory = ElementParameterParser.getValue(node,"__MAPRED_JOB_MAP_MEMORY_MB__");
         String reduceMemory = ElementParameterParser.getValue(node,"__MAPRED_JOB_REDUCE_MEMORY_MB__");
 %>
@@ -347,7 +456,7 @@ imports="
 	}
 
 	if((isCustom && useYarn) || (!isCustom && isHadoop2)) {
-		if(setResourceManager) {
+		if(!configureFromClassPath && setResourceManager) {
 			String resourceManager = ElementParameterParser.getValue(node, "__RESOURCE_MANAGER__");
 %>
     		init_<%=cid%>.execute("SET mapreduce.framework.name=yarn");
@@ -356,7 +465,7 @@ imports="
 		}
 
 		boolean setJobHistoryAddress = "true".equals(ElementParameterParser.getValue(node, "__SET_JOBHISTORY_ADDRESS__"));
-		if(setJobHistoryAddress) {
+		if(!configureFromClassPath && setJobHistoryAddress) {
 			String jobHistoryAddress = ElementParameterParser.getValue(node,"__JOBHISTORY_ADDRESS__");
 			%>
 			init_<%=cid%>.execute("SET mapreduce.jobhistory.address=" + <%=jobHistoryAddress%>);
@@ -370,14 +479,14 @@ imports="
 		}
 
 		boolean setSchedulerAddress = "true".equals(ElementParameterParser.getValue(node, "__SET_SCHEDULER_ADDRESS__"));
-		if(setSchedulerAddress) {
+		if(!configureFromClassPath && setSchedulerAddress) {
 			String schedulerAddress = ElementParameterParser.getValue(node,"__RESOURCEMANAGER_SCHEDULER_ADDRESS__");
 %>
 			init_<%=cid%>.execute("SET yarn.resourcemanager.scheduler.address=" + <%=schedulerAddress%>);
 <%
 		}
 
-		if("true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"))) {
+		if(!configureFromClassPath && "true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"))) {
 			String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
 %>
 			init_<%=cid%>.execute("SET fs.default.name=" + <%=namenode%>);
@@ -441,19 +550,19 @@ imports="
 
 	<%if("true".equalsIgnoreCase(storeByHBase) && (isCustom || hiveDistrib.doSupportHBaseForHive())) {%>
 		java.sql.Statement statement_<%=cid%> = conn_<%=cid%>.createStatement();
-		<%if(zookeeperQuorumForHBase!=null && !"".equals(zookeeperQuorumForHBase) && !"\"\"".equals(zookeeperQuorumForHBase)) {%>
+		<%if(!configureFromClassPath && zookeeperQuorumForHBase!=null && !"".equals(zookeeperQuorumForHBase) && !"\"\"".equals(zookeeperQuorumForHBase)) {%>
 			statement_<%=cid%>.execute("SET hbase.zookeeper.quorum="+<%=zookeeperQuorumForHBase%>);
 		<%}%>
 
-		<%if(zookeeperClientPortForHBase!=null && !"".equals(zookeeperClientPortForHBase) && !"\"\"".equals(zookeeperClientPortForHBase)) {%>
+		<%if(!configureFromClassPath && zookeeperClientPortForHBase!=null && !"".equals(zookeeperClientPortForHBase) && !"\"\"".equals(zookeeperClientPortForHBase)) {%>
 			statement_<%=cid%>.execute("SET hbase.zookeeper.property.clientPort="+<%=zookeeperClientPortForHBase%>);
 		<%}%>
 
-		<%if(setZNodeParent && zNodeParent!=null && !"".equals(zNodeParent) && !"\"\"".equals(zNodeParent)) {%>
+		<%if(!configureFromClassPath && setZNodeParent && zNodeParent!=null && !"".equals(zNodeParent) && !"\"\"".equals(zNodeParent)) {%>
 			statement_<%=cid%>.execute("SET zookeeper.znode.parent="+<%=zNodeParent%>);
 		<%}%>
 
-		<%if(useKrb){%>
+		<%if(!configureFromClassPath && useKrb){%>
 			statement_<%=cid%>.execute("SET hbase.security.authentication=kerberos");
 			statement_<%=cid%>.execute("SET hbase.rpc.engine=org.apache.hadoop.hbase.ipc.SecureRpcEngine");
 
