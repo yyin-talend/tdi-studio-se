@@ -123,6 +123,24 @@ if (!isParallelize) {
 					}
 				}
 				rsTable_<%=cid%>.close();
+			<%
+            } else if(EXASOL.equalsIgnoreCase(dbmsId)) {
+            %>
+            	String tableForSearch_<%=cid%> = <%=table%>;
+            	if(tableForSearch_<%=cid%> != null){
+            		if(tableForSearch_<%=cid%>.startsWith("\"") && tableForSearch_<%=cid%>.endsWith("\"")){
+            			tableForSearch_<%=cid%> =  tableForSearch_<%=cid%>.substring(1,tableForSearch_<%=cid%>.length()-1);
+            		}else{
+            			tableForSearch_<%=cid%> =  tableForSearch_<%=cid%>.toUpperCase();
+            		}
+            	}
+                java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+                java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, conn_<%=cid%>.getSchema(), tableForSearch_<%=cid%>, new String[]{"TABLE"});
+                boolean whetherExist_<%=cid%> = false;
+               	if(rsTable_<%=cid%>.next()) {
+					whetherExist_<%=cid%> = true;
+				}
+                rsTable_<%=cid%>.close();
 			<%			
 			} else{
 			%>
