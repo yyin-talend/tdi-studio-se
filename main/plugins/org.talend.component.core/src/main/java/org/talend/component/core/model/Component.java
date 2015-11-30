@@ -1616,6 +1616,9 @@ public class Component extends AbstractComponent {
         if (property.getType() == SchemaElement.Type.ENUM) {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
+        if (property.getType() == SchemaElement.Type.SCHEMA) {
+            return "\"" + value.replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$
+        }
         return value;
     }
 
