@@ -76,9 +76,13 @@
 	            <%
 	            } else {
 					if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
-					%>
+						if(metadata.getColumn("id") != null){
+						%>
+							marketoId_<%=cid%> = <%=conn.getName() %>.id;
+						<%
+						}
+						%>
 						errorMsg_<%=cid%> = ex_<%=cid%>.getMessage();
-						marketoId_<%=cid%> = <%=conn.getName() %>.id;
 					<%
 					}else{
 					%>
