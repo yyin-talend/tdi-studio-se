@@ -1,0 +1,341 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
+		java.util.List
+		java.util.Map
+		"
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();    	
+log = new LogUtil(node);
+boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
+String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+
+String action = ElementParameterParser.getValue(node, "__ACTION__");
+String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
+
+String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__");
+
+boolean retreiveInsertID = ("true").equals(ElementParameterParser.getValue(node, "__RETREIVE_INSERT_ID__"));
+boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
+
+boolean ignoreNullValue = ("true").equals(ElementParameterParser.getValue(node, "__IGNORE_NULL__"));
+
+//var for upsert(contain upsert by relationship)
+String upsertkey = ElementParameterParser.getValue(node, "__UPSERT_KEY_COLUMN__");
+List<Map<String, String>> relationshipMappings = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__UPSERT_RELATION__");
+%>
+
+<%
+String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
+boolean useOAuth = "OAUTH".equals(loginType);
+if(!useOAuth && useProxy){
+    String passwordFieldName = "__PROXY_PASSWORD__";
+    if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+    %>
+    String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+    <%
+    } else {
+    %>
+    String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+    <%
+    }
+%>
+    java.util.Properties props_<%=cid%> = System.getProperties();
+    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
+    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
+    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
+    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>); 
+    
+<%
+}
+%>
+
+<%
+if ("CustomModule".equals(modulename)) {
+	//modulename = customModulename; 
+	modulename = customModulename;
+}else{
+	modulename = "\""+modulename+"\"";
+}
+
+boolean ceaseForError = ("true").equals(ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__"));
+
+List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+if(outgoingConns!=null){
+	for (int i=0;i<outgoingConns.size();i++) {
+    IConnection outgoingConn = outgoingConns.get(i);
+    	if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+
+	<%=outgoingConn.getName() %> = null;			
+<%
+    	}
+    }
+}
+    	
+List<? extends IConnection> connsSuccess = node.getOutgoingConnections("MAIN");
+List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	boolean hasDynamic = metadata.isDynamicSchema();
+    	boolean isExistIdColumn = false;
+    	String dynamicColName = hasDynamic?metadata.getDynamicColumn().getLabel():"";
+    	if(!"Id".equals(dynamicColName) && metadata.getColumn("Id")!=null && ("update".equals(action) || "delete".equals(action))){
+    		isExistIdColumn = true;
+    	}
+    	for (IConnection conn : conns) {//3
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+%>
+///////////////////////		
+
+
+Object[] resultMessageObj_<%=cid%> = null;
+<%log.debug(log.str("Prepare to " + action + " record "), "(nb_line_" + cid + " + 1)", log.str("."));%>
+<%
+ if ("insert".equals(action) || "update".equals(action) || "upsert".equals(action)) {//************
+%>
+
+<%  
+    			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+%>
+				java.util.List<org.apache.axiom.om.OMElement> list_<%=cid %> = new java.util.ArrayList<org.apache.axiom.om.OMElement>();
+				//the null value will be updated or inserted,so we can't treat it as key for updating(only Id can be the key) or upserting(Id,external id or indexed id)
+				java.util.List<String> nullList_<%=cid %> = new java.util.ArrayList<String>();				
+<%    			
+    			for (int i = 0; i < sizeColumns; i++) {//5  			
+
+  			        
+    				IMetadataColumn column = columns.get(i);
+    				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				
+    				if(column.getTalendType().equals("id_Dynamic")){
+    				%>
+    					sfDynamicUtils_<%=cid%>.extractDynamicColumn(<%=conn.getName() %>.<%=column.getLabel() %>, list_<%=cid %>,  nullList_<%=cid %>);
+    				<%
+    					continue;
+    				}
+    				
+    				boolean generateFinished = false;
+    				if("upsert".equals(action) && (relationshipMappings.size() > 0)) {//TD512
+    					int j = 0;
+						for(Map<String,String> row : relationshipMappings) {
+							String columnName = row.get("COLUMN_NAME");
+							if(columnName.equals(column.getLabel())) {
+								j++;
+								String loookupFieldName = row.get("LOOKUP_FIELD_NAME");
+								String externalIdFromLookupField = row.get("LOOKUP_FIELD_EXTERNAL_ID_NAME");
+								String moduleNameOfLookupField = row.get("LOOKUP_FIELD_MODULE_NAME");
+								generateFinished = true;
+%>
+								org.apache.axiom.om.OMElement reference_<%=cid%>_<%=i%>_<%=j%> = fac_<%=cid%>.createOMElement(<%=loookupFieldName%>, null);
+								reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement("type",<%=moduleNameOfLookupField%>));
+<%
+								if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+%>
+									if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
+										reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(<%=externalIdFromLookupField %>,FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) ));
+        								list_<%=cid %>.add(reference_<%=cid%>_<%=i%>_<%=j%>);
+									}
+<%
+								} else if (javaType == JavaTypesManager.BYTE_ARRAY) {
+%>
+									if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
+										reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(<%=externalIdFromLookupField %>,java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString() ));
+        								list_<%=cid %>.add(reference_<%=cid%>_<%=i%>_<%=j%>);
+									}
+<%
+								} else {//TD1024
+%>   				
+					    			<%if(!isPrimitive) {%>
+					    			if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
+					    			<%}else{%>
+					    			if(!"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
+					    			<%}%>
+										reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(<%=externalIdFromLookupField %>,String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>) ));
+    									list_<%=cid %>.add(reference_<%=cid%>_<%=i%>_<%=j%>);
+									}
+<%
+								}////TD1024
+							}
+						}
+    				}//TD512
+    				
+    				//make sure to filter the schema "Id", when updating (but not when upserting)
+  			        if(("Id".equals(column.getLabel()) && (!("upsert".equals(action)) || ("upsert".equals(action) && !"Id".equals(upsertkey)))) || generateFinished) continue;
+    				
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
+%>
+						if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
+							list_<%=cid %>.add(org.talend.salesforce.SforceManagementUtil.newOMElement("<%=column.getLabel() %>",FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) ));
+						}
+<%				
+					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
+%>
+						if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
+							list_<%=cid %>.add(org.talend.salesforce.SforceManagementUtil.newOMElement("<%=column.getLabel() %>",java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString() ));
+						}
+<%				
+					} else {//others
+						
+%>   				
+		    			<%if(!isPrimitive) {%>
+		    			if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
+		    			<%}else{%>
+		    			if(!"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
+		    			<%}%>
+							list_<%=cid %>.add(org.talend.salesforce.SforceManagementUtil.newOMElement("<%=column.getLabel() %>",String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>) ));
+						}
+<%				
+					}
+%>
+					<%if(!ignoreNullValue && !(("Id".equals(column.getLabel()) || upsertkey.equals(column.getLabel())) && ("upsert".equals(action)))){%>
+					    else{
+							nullList_<%=cid %>.add("<%=column.getLabel() %>");
+						}
+					<%}%>
+							
+ 			
+    			
+<%
+				}//5	
+%> 
+			
+<%
+ if ("insert".equals(action)) {//#######
+%>
+
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.insert(<%=modulename %>, (org.apache.axiom.om.OMElement[])list_<%=cid %>.toArray(new org.apache.axiom.om.OMElement[list_<%=cid %>.size()]));    			
+
+<%
+	} else if ("update".equals(action)) {//#######
+%>
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.update(<%=modulename %>, <%if(!hasDynamic || isExistIdColumn){%><%=conn.getName() %>.Id<%}else{%>String.valueOf(<%=conn.getName() %>.<%=dynamicColName %>.getColumnValue("Id"))<%}%>, 
+	(org.apache.axiom.om.OMElement[])list_<%=cid %>.toArray(new org.apache.axiom.om.OMElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
+
+<%
+    } else if ("upsert".equals(action)) {//#######
+%> 
+
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.upsert(<%=modulename %>, "<%=upsertkey%>", (org.apache.axiom.om.OMElement[])list_<%=cid %>.toArray(new org.apache.axiom.om.OMElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
+
+<%
+    }//#######
+%>
+    			
+<%
+	} else if ("delete".equals(action)) {//*************	
+%>
+
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%if(!hasDynamic || isExistIdColumn){%><%=conn.getName() %>.Id<%}else{%>String.valueOf(<%=conn.getName() %>.<%=dynamicColName %>.getColumnValue("Id"))<%}%>);    			
+
+<%
+  }//************
+%>     			
+    			
+			nb_line_<%=cid%>++;
+			<%
+			if(!extendedInsert){ 
+			%>
+				java.util.Map<String,String> resultMessage_<%=cid%> = sforceManagement_<%=cid %>.readResult(resultMessageObj_<%=cid%>);
+				if(resultMessage_<%=cid%>!=null){
+					if("true".equals(resultMessage_<%=cid%>.get("success"))){
+						nb_success_<%=cid %>++;
+						<%log.debug(log.str("Has " + logHelper.toPastTense(action) + " record "), log.var("nb_line"), log.str(" successfully."));%>
+						<%
+						if (connsSuccess != null && connsSuccess.size() == 1) {
+							IConnection connSuccess = connsSuccess.get(0);
+							if (connSuccess.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+							%>
+								<%=connSuccess.getName() %> = new <%=connSuccess.getName() %>Struct();
+								<%
+								if(retreiveInsertID&&"insert".equals(action)){
+								%>
+									<%=connSuccess.getName() %>.salesforce_id = resultMessage_<%=cid%>.get("id");
+								<%
+								}
+								%>
+								<%
+								for (IMetadataColumn column: metadata.getListColumns()) {
+								%>			
+		    						<%=connSuccess.getName() %>.<%=column.getLabel() %> = <%=conn.getName() %>.<%=column.getLabel() %>;			
+								<%					 
+								}
+							}
+						}
+						%>
+					}else{
+						nb_reject_<%=cid %>++;
+						<%log.debug(log.str("Failed to " + action + " record "), log.var("nb_line"), log.str("."));%>
+						<%
+						if (connsReject != null && connsReject.size() == 1) {
+							IConnection connReject = connsReject.get(0);
+							if (connReject.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+							%>
+								<%=connReject.getName() %> = new <%=connReject.getName() %>Struct();
+								<%=connReject.getName() %>.errorCode = resultMessage_<%=cid%>.get("StatusCode");
+								<%=connReject.getName() %>.errorFields = resultMessage_<%=cid%>.get("Fields");
+								<%=connReject.getName() %>.errorMessage = resultMessage_<%=cid%>.get("Message");
+								<%
+								for (IMetadataColumn column: metadata.getListColumns()) {
+								%>			
+		    						<%=connReject.getName() %>.<%=column.getLabel() %> = <%=conn.getName() %>.<%=column.getLabel() %>;			
+								<%					 
+								}
+							}
+						}
+						%>
+					}
+				}
+			<%
+			}else{//batch start
+			%>
+				nb_success_<%=cid %>++;
+				<%log.debug(log.str(logHelper.upperFirstChar(logHelper.toPastTense(action)) + " record "), log.var("nb_line"), log.str(" to batch."));%>
+				<%
+				if (connsSuccess != null && connsSuccess.size() == 1) {
+					IConnection connSuccess = connsSuccess.get(0);
+					if (connSuccess.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+					%>
+						<%=connSuccess.getName() %> = new <%=connSuccess.getName() %>Struct();
+						<%
+						for (IMetadataColumn column: metadata.getListColumns()) {
+						%>			
+		    				<%=connSuccess.getName() %>.<%=column.getLabel() %> = <%=conn.getName() %>.<%=column.getLabel() %>;			
+						<%					 
+						}
+					}
+				}
+				%>		 	
+			<%
+			}  //batch end
+			%>			    			
+///////////////////////    			
+<%
+    		}//4
+    	}//3
+    }//2
+}//1
+
+%>

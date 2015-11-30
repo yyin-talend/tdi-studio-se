@@ -1,0 +1,47 @@
+<%@ jet
+imports="
+    	org.talend.core.model.process.INode
+    	org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		java.util.List
+		"
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	log = new LogUtil(node);
+	String action = ElementParameterParser.getValue(node, "__ACTION__");
+	boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
+%>
+
+ 	sforceManagement_<%=cid%>.logout();
+
+ 	globalMap.put("<%=cid%>_NB_LINE",nb_line_<%=cid%>);
+ 	globalMap.put("<%=cid%>_NB_SUCCESS",nb_success_<%=cid%>);
+	globalMap.put("<%=cid%>_NB_REJECT",nb_reject_<%=cid%>);
+
+    <%log.info(log.str("Has " + logHelper.toPastTense(action) + " "), log.var("nb_success"), log.str(" records successfully."));%>
+
+    <%
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+        IMetadataTable metadata = metadatas.get(0);
+        if (metadata!=null) {//2
+        	List< ? extends IConnection> conns = node.getIncomingConnections();
+        	for (IConnection conn : conns) {//3
+        		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+    				if(!extendedInsert){
+    				%>
+    					<%log.info(log.str("Has rejected "), log.var("nb_reject"), log.str(" records."));%>
+    				<%
+    				}
+    			}
+    		}
+    	}
+    }
+    %>

@@ -1,0 +1,145 @@
+<%@ jet
+%>
+	<%
+	String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
+	String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");
+	%>
+	org.talend.salesforce.oauth.OAuthClient oauthClient_<%=cid%> = new org.talend.salesforce.oauth.OAuthClient();
+	org.talend.salesforce.oauth.Token token_<%=cid%>;
+	String endpointURL_<%=cid%> = null;
+	String accessToken_<%=cid%> = null;
+	oauthClient_<%=cid%>.setBaseOAuthURL(<%=endpoint%>);
+	oauthClient_<%=cid%>.setClientID(<%=oauthKey%>);
+	
+	<%
+	passwordFieldName = "__OAUTH_CLIENT_SECRET__";
+	if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+	%>
+		String decryptedQauthClientPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+	<%
+	} else {
+	%>
+		String decryptedQauthClientPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+	<%
+	}
+	%>
+	
+	oauthClient_<%=cid%>.setClientSecret(decryptedQauthClientPwd_<%=cid%>);
+	String refreshToken_<%=cid%> = null;
+	<%
+	String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
+	if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+	%>
+		// Attempt to load existing refresh token
+		String tokenFile_<%=cid%> = <%=tokenFile%>;
+		if(tokenFile_<%=cid%> != null){
+			java.util.Properties properties_<%=cid%> = new java.util.Properties();
+			try{
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Start to read refresh token file");
+				<%}%>
+				java.io.FileInputStream inputStream_<%=cid%> = new java.io.FileInputStream(tokenFile_<%=cid%>);
+				properties_<%=cid%>.load(inputStream_<%=cid%>);
+				inputStream_<%=cid%>.close();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Read refresh token file successful");
+				<%}%>
+			}catch(java.io.FileNotFoundException e_<%=cid%>){
+				<%if(isLog4jEnabled){%>
+					log.warn("<%=cid%> - Read refresh token file failed, reason is:" + e_<%=cid%>.getMessage());
+				<%}%>
+			}catch(java.io.IOException ee_<%=cid%>){
+				<%if(isLog4jEnabled){%>
+					log.warn("<%=cid%> - Read refresh token file failed, reason is:" + ee_<%=cid%>.getMessage());
+				<%}%>
+			}
+			String storedRefreshToken_<%=cid%> = (String) properties_<%=cid%>.get("refreshtoken");
+			
+			// Check to see if the an existing refresh token was loaded.
+			// If so, create a credential and call refreshToken() to get a new
+			// access token.
+			if(storedRefreshToken_<%=cid%> != null){
+				// Request a new Access token using the refresh token.
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Request a new Access token using the refresh token.");
+				<%}%>
+				token_<%=cid%> = oauthClient_<%=cid%>.refreshToken(storedRefreshToken_<%=cid%>);
+				<%
+				if(bulkConnection){
+				%>
+				endpointURL_<%=cid%> = oauthClient_<%=cid%>.getBulkEndpoint(token_<%=cid%>, <%=apiVersion%>);
+				<%
+				}else{
+				%>
+				endpointURL_<%=cid%> = oauthClient_<%=cid%>.getSOAPEndpoint(token_<%=cid%>, <%=apiVersion%>);
+				<%
+				}
+				%>
+				<%if(isLog4jEnabled){%>
+					log.debug("<%=cid%> - Get the endpoint: " + endpointURL_<%=cid%>);
+				<%}%>
+				accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Get new Access token.");
+					log.debug("<%=cid%> - new Access token:" + accessToken_<%=cid%>);
+				<%}%>
+				refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
+			}
+		}
+	<%
+	}
+	%>
+	if(accessToken_<%=cid%> == null || endpointURL_<%=cid%> == null){
+		<%
+		String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
+		String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
+		%>
+		oauthClient_<%=cid%>.setCallbackHost(<%=callbackHost%>);
+		oauthClient_<%=cid%>.setCallbackPort(<%=callbackPort%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Request a new Access token.");
+		<%}%>
+		token_<%=cid%> = oauthClient_<%=cid%>.getToken();
+		<%
+		if(bulkConnection){
+		%>
+			endpointURL_<%=cid%> = oauthClient_<%=cid%>.getBulkEndpoint(token_<%=cid%>, <%=apiVersion%>);
+		<%
+		}else{
+		%>
+			endpointURL_<%=cid%> = oauthClient_<%=cid%>.getSOAPEndpoint(token_<%=cid%>, <%=apiVersion%>);
+		<%
+		}
+		%>
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Get the endpoint: " + endpointURL_<%=cid%>);
+		<%}%>
+		accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Get new Access token.");
+			log.debug("<%=cid%> - new Access token:" + accessToken_<%=cid%>);
+		<%}%>
+		refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
+	}
+	<%
+	if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+	%>
+		if(tokenFile_<%=cid%> != null && refreshToken_<%=cid%> != null){
+			// Store the refresh token for future use.
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Store the refresh token for future use.");
+			<%}%>
+			java.util.Properties storeProperties_<%=cid%> = new java.util.Properties();
+			storeProperties_<%=cid%>.setProperty("refreshtoken", refreshToken_<%=cid%>);
+			java.io.FileOutputStream outputStream_<%=cid%> = new java.io.FileOutputStream(tokenFile_<%=cid%>);
+			storeProperties_<%=cid%>.store(outputStream_<%=cid%>, null);
+			if(outputStream_<%=cid%> != null){
+			    outputStream_<%=cid%>.close();
+			}
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Store the refresh token successful.");
+			<%}%>
+		}
+	<%
+	}	
+	%>
