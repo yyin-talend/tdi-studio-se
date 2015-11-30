@@ -245,7 +245,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 								    	dynamicMetadata.setDbName(dynamicMetadata.getName());
 								    	dynamicMetadata.setType("id_" + talendType);
 								    	if (sfType.equals("date")) {
-								            dynamicMetadata.setFormat("yyyy-MM-dd'T'HH:mm:ss");
+								            dynamicMetadata.setFormat("yyyy-MM-dd");
 								        } else if (sfType.equals("time")) {
 								            dynamicMetadata.setFormat("HH:mm:ss.SSS'Z'");
 								        } else if (sfType.equals("datetime")) {
