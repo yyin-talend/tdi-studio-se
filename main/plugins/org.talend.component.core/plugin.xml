@@ -10,6 +10,7 @@
    </extension>
    <extension
          point="org.talend.core.migrationTask">
+      <!-- need to put the old Salesforce Component back in because our new components are not complete enough to make it into this 6.1.1 release. disabled first 
         <projecttask
             beforeLogon="false"
             breaks="6.1.0"
@@ -28,6 +29,7 @@
             name="ChangeSalesforceComponentsParametersToSerializedMigrationTask"
             version="6.1.0">
         </projecttask>
+       -->
    </extension>
 
 </plugin>
