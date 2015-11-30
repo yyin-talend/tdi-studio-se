@@ -2396,6 +2396,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
 
         protected void unhookOutlineViewer() {
+            IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
+            tbm.remove(showOutlineAction.getId());
+            tbm.remove(showOverviewAction.getId());
+            getSite().getActionBars().updateActionBars();
             // getSelectionSynchronizer().removeViewer(getViewer());
             if (disposeListener != null && getEditor() != null && !getEditor().isDisposed()) {
                 getEditor().removeDisposeListener(disposeListener);
