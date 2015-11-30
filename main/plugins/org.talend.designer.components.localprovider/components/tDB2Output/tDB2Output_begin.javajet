@@ -96,10 +96,12 @@ if(columnList != null && columnList.size() > 0) {
 }
 
 List<Column> colStruct = new ArrayList();
-for(Column colStmt:stmtStructure) {
-	if(!colStmt.isReplaced()&&!colStmt.isAddCol()&&!colStmt.isDynamic()) {
-		colStruct.add(colStmt);
-	}
+if(stmtStructure!=null) {
+    for(Column colStmt:stmtStructure) {
+    	if(!colStmt.isReplaced()&&!colStmt.isAddCol()&&!colStmt.isDynamic()) {
+    		colStruct.add(colStmt);
+    	}
+    }
 }
 %>
 
