@@ -84,7 +84,7 @@
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>Amazon Aurora</DEFAULT>
+      <DEFAULT>MySQL</DEFAULT>
     </PARAMETER>
     <PARAMETER
       NAME="HOST"

@@ -86,15 +86,17 @@ public class JobletContainer extends NodeContainer {
     private Double percentReduce = new Double(0);
 
     private JobletContainer mrStartContainer;
-    
+
     private boolean fromRef = false;
 
     public JobletContainer(Node node) {
         super(node);
         this.node = node;
-        Project refProject = ProjectManager.getInstance().getProject(this.getProcess().getProperty().getItem());
-        if (!ProjectManager.getInstance().isInCurrentMainProject(refProject)) {
-            fromRef = true;
+        if (this.getProcess() != null) {
+            Project refProject = ProjectManager.getInstance().getProject(this.getProcess().getProperty().getItem());
+            if (!ProjectManager.getInstance().isInCurrentMainProject(refProject)) {
+                fromRef = true;
+            }
         }
     }
 
