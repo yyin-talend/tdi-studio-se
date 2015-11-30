@@ -182,7 +182,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             return;
         }
         List<Form> forms = componentWizard.getForms();
-        for (Form form : forms) {
+        for (int i = 0; i < forms.size(); i++) {
+            Form form = forms.get(i);
             ComponentProperties properties = form.getComponentProperties();
             // FIXME: Need to improve this part after.
             // When creating the wizard from component properties, component service only set the component properties
@@ -193,8 +194,12 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             if (rightForm != form) {
                 form = rightForm;
             }
+            boolean addContextSupport = false;
+            if (i == 0) {// Add context support in the first form.
+                addContextSupport = true;
+            }
             wizPage = new GenericConnWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames, creation, form,
-                    compService);
+                    compService, addContextSupport);
             if (wizPage != null) {
                 wizPage.setTitle(form.getTitle());
                 wizPage.setDescription(form.getSubtitle());

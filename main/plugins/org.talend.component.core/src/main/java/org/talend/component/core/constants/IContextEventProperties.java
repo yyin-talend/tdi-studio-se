@@ -21,4 +21,6 @@ public interface IContextEventProperties {
 
     public final static String EVENT_PROPERTY_EXPORT_CONTEXT = "EVENT_PROPERTY_EXPORT_CONTEXT"; //$NON-NLS-1$
 
+    public final static String EVENT_PROPERTY_REFRESH_UI = "EVENT_PROPERTY_REFRESH_UI"; //$NON-NLS-1$
+
 }

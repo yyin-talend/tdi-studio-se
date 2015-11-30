@@ -26,8 +26,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.component.core.constants.IContextEventProperties;
+import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.wizard.handler.IContextHandler;
 import org.talend.component.ui.wizard.i18n.Messages;
+import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentProperties.Deserialized;
 import org.talend.core.model.properties.ConnectionItem;
 
 /**
@@ -70,7 +73,6 @@ public class ContextComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                fireExportContextEvent();
                 exportAsContext();
             }
         });
@@ -113,9 +115,11 @@ public class ContextComposite extends Composite {
     }
 
     private void exportAsContext() {
+        fireExportContextEvent();
         boolean exported = contextHandler.exportContext(connectionItem);
         if (exported) {
             refreshContextBtn();
+            fireRefreshUIEvent();
         }
     }
 
@@ -123,6 +127,7 @@ public class ContextComposite extends Composite {
         boolean reverted = contextHandler.revertContext(connectionItem);
         if (reverted) {
             refreshContextBtn();
+            fireRefreshUIEvent();
         }
     }
 
@@ -134,6 +139,24 @@ public class ContextComposite extends Composite {
 
     private void fireExportContextEvent() {
         this.pcs.firePropertyChange(IContextEventProperties.EVENT_PROPERTY_EXPORT_CONTEXT, null, null);
+    }
+
+    private void fireRefreshUIEvent() {
+        this.pcs.firePropertyChange(IContextEventProperties.EVENT_PROPERTY_REFRESH_UI, null, getComponentProperties());
+    }
+
+    private ComponentProperties getComponentProperties() {
+        if (connectionItem != null) {
+            GenericConnection connection = (GenericConnection) connectionItem.getConnection();
+            String compPropertiesStr = connection.getCompProperties();
+            if (compPropertiesStr != null) {
+                Deserialized fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr);
+                if (fromSerialized != null) {
+                    return fromSerialized.properties;
+                }
+            }
+        }
+        return null;
     }
 
     @Override

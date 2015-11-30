@@ -289,4 +289,12 @@ public class GenericElementParameter extends ElementParameter {
         this.supportContext = supportContext;
     }
 
+    public ComponentService getComponentService() {
+        return this.componentService;
+    }
+
+    public void setComponentService(ComponentService componentService) {
+        this.componentService = componentService;
+    }
+
 }

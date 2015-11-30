@@ -19,9 +19,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.ui.PlatformUI;
+import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.ui.wizard.handler.IContextHandler;
-import org.talend.component.ui.wizard.ui.context.GenericConnParamName;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
@@ -32,6 +32,7 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.model.IConnParamName;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
+import org.talend.metadata.managment.ui.utils.GenericConnParamName;
 
 /**
  * created by ycbai on 2015年11月20日 Detailled comment
@@ -105,13 +106,19 @@ public class GenericContextHandler implements IContextHandler {
                     GenericElementParameter genericElementParameter = (GenericElementParameter) param;
                     if (genericElementParameter.isSupportContext()) {
                         GenericConnParamName connParamName = new GenericConnParamName();
-                        connParamName.setName(genericElementParameter.getName());
+                        String paramName = genericElementParameter.getName();
+                        connParamName.setName(paramName);
+                        connParamName.setContextVar(getValidContextVarName(paramName));
                         contextParams.add(connParamName);
                     }
                 }
             }
         }
         return contextParams;
+    }
+
+    private String getValidContextVarName(String paramName) {
+        return paramName.replace(IComponentConstants.EXP_SEPARATOR, IComponentConstants.UNDERLINE_SEPARATOR);
     }
 
     @Override

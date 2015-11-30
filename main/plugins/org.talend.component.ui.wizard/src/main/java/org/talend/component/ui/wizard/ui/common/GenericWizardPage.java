@@ -54,15 +54,18 @@ public abstract class GenericWizardPage extends WizardPage {
 
     protected boolean isSupportContext = true; // FIXME: will get the value from component contract later.
 
+    protected boolean addContextFields;
+
     private IContextHandler contextHandler;
 
     public GenericWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames,
-            boolean creation, Form form, ComponentService compService) {
+            boolean creation, Form form, ComponentService compService, boolean addContextFields) {
         this(connectionItem, isRepositoryObjectEditable);
         this.existingNames = existingNames;
         this.creation = creation;
         this.form = form;
         this.compService = compService;
+        this.addContextFields = addContextFields;
     }
 
     public GenericWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable) {

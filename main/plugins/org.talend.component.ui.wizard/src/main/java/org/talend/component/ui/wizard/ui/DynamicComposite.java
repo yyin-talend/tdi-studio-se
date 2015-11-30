@@ -30,7 +30,11 @@ import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
+import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.wizard.i18n.Messages;
+import org.talend.component.ui.wizard.internal.IGenericWizardInternalService;
+import org.talend.component.ui.wizard.internal.service.GenericComponentServiceImpl;
+import org.talend.component.ui.wizard.internal.service.GenericWizardInternalService;
 import org.talend.component.ui.wizard.model.FakeElement;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ValidationResult;
@@ -66,12 +70,15 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     private ConnectionItem connectionItem;
 
+    private IGenericWizardInternalService internalService;
+
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
             boolean isCompactView, Color backgroundColor, Form form) {
         super(parentComposite, styles, section, element, isCompactView, backgroundColor);
         this.element = element;
         this.form = form;
         checker = new Checker();
+        internalService = new GenericWizardInternalService();
     }
 
     private void resetComponentProperties() {
@@ -85,10 +92,13 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     }
 
     public List<ElementParameter> resetParameters() {
+        GenericComponentServiceImpl genericComponentService = new GenericComponentServiceImpl(
+                internalService.getComponentService(), (GenericConnectionItem) connectionItem);
         List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
+                genericElementParameter.setComponentService(genericComponentService);
                 genericElementParameter.callBeforePresent();
                 genericElementParameter.addPropertyChangeListener(this);
             }
@@ -227,18 +237,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     public void propertyChange(PropertyChangeEvent event) {
         String propertyName = event.getPropertyName();
         if (IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED.equals(propertyName)) {
-            if (element instanceof FakeElement) {
-                resetParameters();
-            } else {
-                resetElementParameters();
-            }
-            Display.getDefault().asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    refresh();
-                }
-            });
+            reset(true);
         } else if (IElementParameterEventProperties.EVENT_PROPERTY_NAME_CHANGED.equals(propertyName)) {
             String newPropertyName = String.valueOf(event.getNewValue());
             updateProperty(newPropertyName);
@@ -254,11 +253,35 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             }
         } else if (IContextEventProperties.EVENT_PROPERTY_EXPORT_CONTEXT.equals(propertyName)) {
             resetComponentProperties();
+        } else if (IContextEventProperties.EVENT_PROPERTY_REFRESH_UI.equals(propertyName)) {
+            Object newValue = event.getNewValue();
+            if (newValue instanceof ComponentProperties) {
+                ComponentProperties newComponentProperties = (ComponentProperties) newValue;
+                form.setComponentProperties(newComponentProperties);
+                reset(true);
+            }
         }
     }
 
     public IChecker getChecker() {
         return this.checker;
+    }
+
+    private void reset(boolean refresh) {
+        if (element instanceof FakeElement) {
+            resetParameters();
+        } else {
+            resetElementParameters();
+        }
+        if (refresh) {
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    refresh();
+                }
+            });
+        }
     }
 
     @Override

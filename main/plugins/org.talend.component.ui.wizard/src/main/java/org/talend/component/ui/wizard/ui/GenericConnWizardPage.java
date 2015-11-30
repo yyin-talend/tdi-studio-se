@@ -38,8 +38,8 @@ public class GenericConnWizardPage extends GenericWizardPage {
     private DynamicComposite dynamicComposite;
 
     public GenericConnWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames,
-            boolean creation, Form form, ComponentService compService) {
-        super(connectionItem, isRepositoryObjectEditable, existingNames, creation, form, compService);
+            boolean creation, Form form, ComponentService compService, boolean addContextFields) {
+        super(connectionItem, isRepositoryObjectEditable, existingNames, creation, form, compService, addContextFields);
     }
 
     @Override
@@ -52,24 +52,30 @@ public class GenericConnWizardPage extends GenericWizardPage {
         Element element = new FakeElement(form.getName());
         dynamicComposite = new DynamicComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
                 element, true, container.getBackground(), form);
-        dynamicComposite.setLayoutData(createMainFormData());
+        dynamicComposite.setLayoutData(createMainFormData(addContextFields));
         dynamicComposite.setConnectionItem(connectionItem);
         addCheckListener(dynamicComposite.getChecker());
 
-        Composite contextParentComp = new Composite(container, SWT.NONE);
-        contextParentComp.setLayoutData(createFooterFormData(dynamicComposite));
-        contextParentComp.setLayout(new GridLayout());
-        ContextComposite contextComp = addContextFields(contextParentComp);
-        contextComp.addPropertyChangeListener(dynamicComposite);
-        contextComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        if (addContextFields) {
+            Composite contextParentComp = new Composite(container, SWT.NONE);
+            contextParentComp.setLayoutData(createFooterFormData(dynamicComposite));
+            contextParentComp.setLayout(new GridLayout());
+            ContextComposite contextComp = addContextFields(contextParentComp);
+            contextComp.addPropertyChangeListener(dynamicComposite);
+            contextComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        }
     }
 
-    private FormData createMainFormData() {
+    private FormData createMainFormData(boolean addContextSupport) {
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, 0);
-        data.bottom = new FormAttachment(85, 0);
+        if (addContextSupport) {
+            data.bottom = new FormAttachment(85, 0);
+        } else {
+            data.bottom = new FormAttachment(100, 0);
+        }
         return data;
     }
 

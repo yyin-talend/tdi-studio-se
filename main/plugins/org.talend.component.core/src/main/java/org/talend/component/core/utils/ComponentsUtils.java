@@ -374,6 +374,17 @@ public class ComponentsUtils {
         return obj;
     }
 
+    public static void setGenericPropertyValue(ComponentProperties componentProperties, String paramName, Object value) {
+        if (componentProperties == null || paramName == null) {
+            return;
+        }
+        ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
+        if (currentComponentProperties == null) {
+            return;
+        }
+        currentComponentProperties.setValue(getPropertyName(paramName), value);
+    }
+
     public static List<SchemaElement> getAllGenericSchemaElements(ComponentProperties componentProperties) {
         List<SchemaElement> allGenericSchemaElements = new ArrayList<SchemaElement>();
         if (componentProperties == null) {
@@ -397,6 +408,14 @@ public class ComponentsUtils {
             propertyPath = paramName.substring(0, paramName.lastIndexOf(IComponentConstants.EXP_SEPARATOR));
         }
         return propertyPath;
+    }
+
+    private static String getPropertyName(String paramName) {
+        String propertyName = paramName;
+        if (propertyName.indexOf(IComponentConstants.EXP_SEPARATOR) != -1) {
+            propertyName = propertyName.substring(propertyName.lastIndexOf(IComponentConstants.EXP_SEPARATOR) + 1);
+        }
+        return propertyName;
     }
 
     public static boolean isSupportContext(SchemaElement schemaElement) {
