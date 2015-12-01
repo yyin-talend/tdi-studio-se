@@ -166,7 +166,7 @@ org.talend.database.exasol.EXABulkUtil <%=cid%> = new org.talend.database.exasol
 <% if (columnList != null && columnList.size() > 0) {
        int index = 0;
        for (IMetadataColumn column : columnList) {
-       	  String name = column.getLabel();
+       	  String name = column.getOriginalDbColumnName();
        	  String pattern = column.getPattern();
 	        if (pattern == null || pattern.trim().isEmpty()) {
       	 	 	pattern = "null";
