@@ -158,12 +158,18 @@ public class ComponentsUtils {
             NamedThing widgetProperty = widgetProperties[0];
 
             String propertiesPath = getPropertiesPath(parentPropertiesPath, null);
+            if (isSameComponentProperties(componentProperties, widgetProperty)) {
+                propertiesPath = null;
+            }
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
                 ComponentProperties subProperties = subForm.getComponentProperties();
-                propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
-                elementParameters.addAll(getParametersFromForm(element, compCategory, null /* subProperties */, propertiesPath,
-                        subForm, widget, lastRN));
+                // Reset properties path
+                if (!isSameComponentProperties(componentProperties, widgetProperty)) {
+                    propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
+                }
+                elementParameters.addAll(getParametersFromForm(element, compCategory, subProperties, propertiesPath, subForm,
+                        widget, lastRN));
                 continue;
             }
 
@@ -365,7 +371,12 @@ public class ComponentsUtils {
         }
         ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
         if (currentComponentProperties == null) {
-            return null;
+            if (paramName.startsWith(componentProperties.getName())) {
+                paramName = getPropertyName(paramName);
+                currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
+            } else {
+                return null;
+            }
         }
         SchemaElement schemaElement = componentProperties.getProperty(paramName);
         if (schemaElement != null) {
@@ -410,7 +421,7 @@ public class ComponentsUtils {
         return propertyPath;
     }
 
-    private static String getPropertyName(String paramName) {
+    public static String getPropertyName(String paramName) {
         String propertyName = paramName;
         if (propertyName.indexOf(IComponentConstants.EXP_SEPARATOR) != -1) {
             propertyName = propertyName.substring(propertyName.lastIndexOf(IComponentConstants.EXP_SEPARATOR) + 1);
@@ -435,4 +446,13 @@ public class ComponentsUtils {
         return false;
     }
 
+    public static boolean isSameComponentProperties(ComponentProperties componentProperties, NamedThing widgetProperty) {
+        if (componentProperties != null && widgetProperty instanceof Form) {
+            Form subForm = (Form) widgetProperty;
+            if (subForm != null) {
+                return componentProperties == subForm.getComponentProperties();
+            }
+        }
+        return false;
+    }
 }

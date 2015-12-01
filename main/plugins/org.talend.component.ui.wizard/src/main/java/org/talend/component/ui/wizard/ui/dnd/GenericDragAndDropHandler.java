@@ -82,32 +82,29 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             if (fromSerialized != null) {
                 ComponentProperties componentProperties = fromSerialized.properties;
                 String tableName = null;
-                if (IComponentConstants.SCHEMA.equals(value)) {
+                String paramName = ComponentsUtils.getPropertyName(value);
+                if (IComponentConstants.SCHEMA.equalsIgnoreCase(paramName)) {
                     if (table != null) {
                         tableName = table.getTableName();
                         if (tableName != null) {
                             // return table.getId() + " - " + tableName;//$NON-NLS-1$
                         }
                     }
-                } else if (IComponentConstants.MODULENAME.equals(value)) {
-                    if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
-                        return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-                    } else {
-                        if (table != null) {
-                            tableName = table.getTableName();
-                            if (tableName == null) {
-                                tableName = table.getLabel();
-                            }
-                            return tableName;
+                } else if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)) {
+                    if (table != null) {
+                        tableName = table.getTableName();
+                        if (tableName == null) {
+                            tableName = table.getLabel();
                         }
+                        return tableName;
                     }
-                } else if (IComponentConstants.QUERYMODE.equals(value)) {
+                } else if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)) {
                     if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
                         return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
                     } else {
                         return IComponentConstants.QUERY_QUERY;
                     }
-                } else if (IComponentConstants.OUTPUTACTION.equals(value)) {
+                } else if (IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
                     if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
                         return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
                     } else {
