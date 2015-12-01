@@ -33,7 +33,7 @@ public class OpenJobSelectionDialog extends RepositoryReviewDialog {
     private static final int SELECTINREPOSITORY = 99;
 
     public OpenJobSelectionDialog(Shell parentShell, List<ERepositoryObjectType> repObjectTypes) {
-        super(parentShell, repObjectTypes, null);
+        super(parentShell, repObjectTypes, null, true);
     }
 
     /*
