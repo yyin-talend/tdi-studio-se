@@ -848,9 +848,9 @@
 
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.hdp.2.3"
-            id="talend-spark-streaming-kafka-assembly-HDP_2_3"
-            name="talend-spark-streaming-kafka-assembly_2.10-1.4.1.2.3.2.0-2950.jar" 
-            mvn_uri="mvn:org.talend.libraries/talend-spark-streaming-kafka-assembly_2.10-1.4.1.2.3.2.0-2950/6.1.0">
+            id="spark-streaming-kafka-assembly-HDP_2_3"
+            name="spark-streaming-kafka-assembly_2.10-1.4.1.2.3.2.0-2950.jar" 
+            mvn_uri="mvn:org.talend.libraries/spark-streaming-kafka-assembly_2.10-1.4.1.2.3.2.0-2950/6.1.0">
         </libraryNeeded>
 
         <libraryNeeded
@@ -7888,7 +7888,7 @@
                 description="Spark Streaming Kafka libraries for HDP 2.3"
                 id="SPARK-STREAMING-KAFKA-LIB-HDP_2_3"
                 name="SPARK-STREAMING-KAFKA-LIB-HDP_2_3">
-            <library id="talend-spark-streaming-kafka-assembly-HDP_2_3"/>
+            <library id="spark-streaming-kafka-assembly-HDP_2_3"/>
         </libraryNeededGroup>
 
         <!-- Parquet libraries for HDP_2_3 -->
