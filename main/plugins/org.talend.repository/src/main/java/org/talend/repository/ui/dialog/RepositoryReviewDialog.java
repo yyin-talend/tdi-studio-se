@@ -112,6 +112,8 @@ public class RepositoryReviewDialog extends Dialog {
 
     private IElement elem;
 
+    private boolean showFilterText;
+
     protected RepositoryReviewDialog(Shell parentShell) {
         super(parentShell);
         setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
@@ -126,6 +128,11 @@ public class RepositoryReviewDialog extends Dialog {
     }
 
     public RepositoryReviewDialog(Shell parentShell, List<ERepositoryObjectType> repObjectTypes, String processId) {
+        this(parentShell, repObjectTypes, processId, false);
+    }
+
+    public RepositoryReviewDialog(Shell parentShell, List<ERepositoryObjectType> repObjectTypes, String processId,
+            boolean showFilterText) {
         this(parentShell);
         this.repObjectTypes = repObjectTypes;
         /*
@@ -134,6 +141,7 @@ public class RepositoryReviewDialog extends Dialog {
          * borrow the repositoryType to set the current process id here.
          */
         this.repositoryType = processId;
+        this.showFilterText = showFilterText;
         typeProcessor = createMultiTypesProcessor();
     }
 
@@ -467,7 +475,7 @@ public class RepositoryReviewDialog extends Dialog {
      */
     private void createFilterField(Composite container) {
 
-        if (type != ERepositoryObjectType.PROCESS) {
+        if (type != ERepositoryObjectType.PROCESS && !showFilterText) {
             return;
         }
 
@@ -593,6 +601,9 @@ class ViewerTextFilter extends ViewerFilter {
         }
         RepositoryNode node = (RepositoryNode) element;
         ENodeType nodeType = node.getType();
+        if (nodeType == ENodeType.STABLE_SYSTEM_FOLDER || nodeType == ENodeType.SYSTEM_FOLDER) {
+            return true;
+        }
         if (nodeType != ENodeType.REPOSITORY_ELEMENT) {
             List<IRepositoryNode> children = node.getChildren();
             if (children.isEmpty()) {
