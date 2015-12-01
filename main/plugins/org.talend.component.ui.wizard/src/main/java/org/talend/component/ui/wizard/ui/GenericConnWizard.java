@@ -184,16 +184,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         List<Form> forms = componentWizard.getForms();
         for (int i = 0; i < forms.size(); i++) {
             Form form = forms.get(i);
-            ComponentProperties properties = form.getComponentProperties();
-            // FIXME: Need to improve this part after.
-            // When creating the wizard from component properties, component service only set the component properties
-            // to the orignal form which doesn't created by it. So if you use this component properties to get forms, it
-            // will return the wrong ones. Now I just fix it in studio side. Maybe it will be better to fix this problem
-            // in component contract?
-            Form rightForm = properties.getForm(form.getName());
-            if (rightForm != form) {
-                form = rightForm;
-            }
             boolean addContextSupport = false;
             if (i == 0) {// Add context support in the first form.
                 addContextSupport = true;

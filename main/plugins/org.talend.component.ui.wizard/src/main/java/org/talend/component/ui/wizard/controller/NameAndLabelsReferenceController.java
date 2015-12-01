@@ -52,7 +52,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectA
  */
 public class NameAndLabelsReferenceController extends AbstractElementPropertySectionController {
 
-    private static final String FILE = "FILE"; //$NON-NLS-1$
+    private static final String MODULE = "MODULE"; //$NON-NLS-1$
 
     public NameAndLabelsReferenceController(IDynamicProperty dp) {
         super(dp);
@@ -112,7 +112,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         data.top = new FormAttachment(labelLabel, 0, SWT.CENTER);
         data.height = STANDARD_HEIGHT - 2;
         btnEdit.setLayoutData(data);
-        btnEdit.setData(NAME, FILE);
+        btnEdit.setData(NAME, MODULE);
         btnEdit.setData(PARAMETER_NAME, param.getName());
         // btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(new SelectionAdapter() {

@@ -72,25 +72,25 @@ public class GenericComponentServiceImpl implements ComponentService {
 
     @Override
     public ComponentProperties beforeFormPresent(String formName, ComponentProperties properties) throws Throwable {
-        componentService.beforeFormPresent(formName, properties);
+        componentService.beforeFormPresent(formName, getComponentPropertiesWithoutContext(properties));
         return properties;
     }
 
     @Override
     public ComponentProperties afterFormNext(String formName, ComponentProperties properties) throws Throwable {
-        componentService.afterFormNext(formName, properties);
+        componentService.afterFormNext(formName, getComponentPropertiesWithoutContext(properties));
         return properties;
     }
 
     @Override
     public ComponentProperties afterFormBack(String formName, ComponentProperties properties) throws Throwable {
-        componentService.afterFormBack(formName, properties);
+        componentService.afterFormBack(formName, getComponentPropertiesWithoutContext(properties));
         return properties;
     }
 
     @Override
     public ComponentProperties afterFormFinish(String formName, ComponentProperties properties) throws Throwable {
-        componentService.afterFormFinish(formName, properties);
+        componentService.afterFormFinish(formName, getComponentPropertiesWithoutContext(properties));
         return properties;
     }
 

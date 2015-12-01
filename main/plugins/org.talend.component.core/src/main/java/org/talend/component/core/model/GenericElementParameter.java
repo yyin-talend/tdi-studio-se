@@ -103,16 +103,13 @@ public class GenericElementParameter extends ElementParameter {
         NamedThing widgetProperty = widgetProperties[0];
         if (widgetProperty instanceof SchemaElement) {
             SchemaElement se = (SchemaElement) widgetProperty;
-            SchemaElement originalElement = componentProperties.getProperty(se.getName());
-            if (originalElement != null) {
-                se = originalElement;
-            }
             Object oldValue = componentProperties.getValue(se);
             if (newValue != null && !newValue.equals(oldValue)) {
                 componentProperties.setValue(se, newValue);
                 fireConnectionPropertyChangedEvent(newValue);
             }
         } else if (widgetProperty instanceof PresentationItem) {
+            callBeforeActivate();
             PresentationItem pi = (PresentationItem) widgetProperty;
             Form formtoShow = pi.getFormtoShow();
             if (formtoShow != null) {

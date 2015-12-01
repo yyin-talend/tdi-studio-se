@@ -12,9 +12,11 @@
 // ============================================================================
 package org.talend.component.ui.wizard.ui.common;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.properties.presentation.Form;
@@ -57,6 +59,24 @@ public class GenericWizardDialog extends WizardDialog {
             }
         }
         super.backPressed();
+    }
+
+    @Override
+    public void updateButtons() {
+        super.updateButtons();
+        Form form = getForm();
+        Button nextButton = getButton(IDialogConstants.NEXT_ID);
+        if (nextButton != null && nextButton.isEnabled()) {
+            nextButton.setEnabled(form.isAllowForward());
+        }
+        Button backButton = getButton(IDialogConstants.BACK_ID);
+        if (backButton != null && backButton.isEnabled()) {
+            backButton.setEnabled(form.isAllowBack());
+        }
+        Button finishButton = getButton(IDialogConstants.FINISH_ID);
+        if (finishButton != null && finishButton.isEnabled()) {
+            finishButton.setEnabled(form.isAllowFinish());
+        }
     }
 
     private Form getForm() {

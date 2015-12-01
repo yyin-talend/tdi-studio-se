@@ -40,6 +40,7 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ValidationResult;
 import org.talend.components.api.properties.ValidationResult.Result;
 import org.talend.components.api.properties.presentation.Form;
+import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -92,8 +93,8 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     }
 
     public List<ElementParameter> resetParameters() {
-        GenericComponentServiceImpl genericComponentService = new GenericComponentServiceImpl(
-                internalService.getComponentService(), (GenericConnectionItem) connectionItem);
+        ComponentService genericComponentService = new GenericComponentServiceImpl(internalService.getComponentService(),
+                (GenericConnectionItem) connectionItem);
         List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
@@ -257,7 +258,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             Object newValue = event.getNewValue();
             if (newValue instanceof ComponentProperties) {
                 ComponentProperties newComponentProperties = (ComponentProperties) newValue;
-                form.setComponentProperties(newComponentProperties);
+                form.getComponentProperties().copyValuesFrom(newComponentProperties);
                 reset(true);
             }
         }
