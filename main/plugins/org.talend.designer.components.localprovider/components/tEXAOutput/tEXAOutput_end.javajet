@@ -38,7 +38,7 @@ imports="
 
     boolean useBatch = useBatchSize && (rejectConnName == null)
                      && (
-                          ("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)
+                          ("INSERT").equals(dataAction) || ("DELETE").equals(dataAction)
                         );
 
     boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
