@@ -114,15 +114,20 @@
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 
+		<PARAMETER NAME="CONFIGURATIONS_FROM_CLASSPATH" REPOSITORY_VALUE="CONFIGURATIONS_FROM_CLASSPATH" FIELD="CHECK"
+			NUM_ROW="30" REQUIRED="true" GROUP="CONFIGURATIONS"
+			SHOW_IF="(HIVE_SERVER=='HIVE2' AND (!DISTRIB[DISTRIBUTION, HIVE_VERSION].isExecutedThroughWebHCat[]) AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportStandaloneMode[] AND CONNECTION_MODE=='STANDALONE')))">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
 
-		<PARAMETER NAME="USE_KRB" FIELD="CHECK" NUM_ROW="30"
+		<PARAMETER NAME="USE_KRB" FIELD="CHECK" NUM_ROW="31"
 			REQUIRED="true" REPOSITORY_VALUE="USE_KRB"
-			SHOW_IF="((DISTRIBUTION=='CUSTOM') OR (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportKerberos[] AND ((DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive1[] AND DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportEmbeddedMode[] AND HIVE_SERVER=='HIVE' AND CONNECTION_MODE=='EMBEDDED') OR (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive2[] AND HIVE_SERVER=='HIVE2'))))"
+			SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'false') AND ((DISTRIBUTION=='CUSTOM') OR (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportKerberos[] AND ((DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive1[] AND DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportEmbeddedMode[] AND HIVE_SERVER=='HIVE' AND CONNECTION_MODE=='EMBEDDED') OR (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive2[] AND HIVE_SERVER=='HIVE2'))))"
 			GROUP="AUTHENTICATION">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="HIVE_PRINCIPAL" FIELD="TEXT" NUM_ROW="31"
+		<PARAMETER NAME="HIVE_PRINCIPAL" FIELD="TEXT" NUM_ROW="32"
 			REQUIRED="true" REPOSITORY_VALUE="HIVE_PRINCIPAL" GROUP="AUTHENTICATION"
 			SHOW_IF="(isShow[USE_KRB]) AND USE_KRB=='true'">
 			<DEFAULT>"hive/_HOST@EXAMPLE.COM"</DEFAULT>
@@ -202,7 +207,7 @@
 
 		<PARAMETER NAME="USE_SSL" FIELD="CHECK" NUM_ROW="43"
 			REQUIRED="true"
-			SHOW_IF="((DISTRIBUTION=='CUSTOM' OR DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive2[]) AND HIVE_SERVER=='HIVE2') AND (DISTRIBUTION=='CUSTOM' OR DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportSSL[])"
+			SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'false') AND ((DISTRIBUTION=='CUSTOM' OR DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive2[]) AND HIVE_SERVER=='HIVE2') AND (DISTRIBUTION=='CUSTOM' OR DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportSSL[])"
 			GROUP="ENCRYPTION">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
@@ -221,7 +226,7 @@
 
 		<PARAMETER NAME="SET_MAPRED_JT" FIELD="CHECK" NUM_ROW="46"
 			REQUIRED="true"
-			SHOW_IF="(DISTRIBUTION=='CUSTOM' AND USE_YARN=='false') OR (DISTRIBUTION!='CUSTOM' AND !DISTRIB[DISTRIBUTION, HIVE_VERSION].isExecutedThroughWebHCat[] AND DISTRIB[DISTRIBUTION, HIVE_VERSION].isHadoop1[])"
+			SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'false') AND (DISTRIBUTION=='CUSTOM' AND USE_YARN=='false') OR (DISTRIBUTION!='CUSTOM' AND !DISTRIB[DISTRIBUTION, HIVE_VERSION].isExecutedThroughWebHCat[] AND DISTRIB[DISTRIBUTION, HIVE_VERSION].isHadoop1[])"
 			GROUP="HADOOP_PROPS">
 			<DEFAULT IF="(CONNECTION_MODE == 'STANDALONE')">false</DEFAULT>
 			<DEFAULT IF="(CONNECTION_MODE == 'EMBEDDED')">true</DEFAULT>
@@ -235,7 +240,7 @@
 		</PARAMETER>
 		<PARAMETER NAME="SET_RESOURCE_MANAGER" FIELD="CHECK"
 			NUM_ROW="46" REQUIRED="true"
-			SHOW_IF="(DISTRIBUTION=='CUSTOM' AND USE_YARN=='true') OR (DISTRIBUTION!='CUSTOM' AND !DISTRIB[DISTRIBUTION, HIVE_VERSION].isExecutedThroughWebHCat[] AND DISTRIB[DISTRIBUTION, HIVE_VERSION].isHadoop2[])"
+			SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'false') AND (DISTRIBUTION=='CUSTOM' AND USE_YARN=='true') OR (DISTRIBUTION!='CUSTOM' AND !DISTRIB[DISTRIBUTION, HIVE_VERSION].isExecutedThroughWebHCat[] AND DISTRIB[DISTRIBUTION, HIVE_VERSION].isHadoop2[])"
 			GROUP="HADOOP_PROPS">
 			<DEFAULT IF="(CONNECTION_MODE == 'STANDALONE')">false</DEFAULT>
 			<DEFAULT IF="(CONNECTION_MODE == 'EMBEDDED')">true</DEFAULT>
@@ -248,7 +253,7 @@
 			<DEFAULT>"localhost:8032"</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="SET_FS_DEFAULT_NAME" FIELD="CHECK" NUM_ROW="47"
-			SHOW_IF="!DISTRIB[DISTRIBUTION, HIVE_VERSION].isExecutedThroughWebHCat[]"
+			SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'false') AND !DISTRIB[DISTRIBUTION, HIVE_VERSION].isExecutedThroughWebHCat[]"
 			REQUIRED="true" GROUP="HADOOP_PROPS">
 			<DEFAULT IF="(CONNECTION_MODE == 'STANDALONE')">false</DEFAULT>
 			<DEFAULT IF="(CONNECTION_MODE == 'EMBEDDED')">true</DEFAULT>
@@ -262,7 +267,7 @@
 		</PARAMETER>
 
 		<PARAMETER NAME="SET_SCHEDULER_ADDRESS" FIELD="CHECK"
-			NUM_ROW="50" REQUIRED="true" SHOW_IF="isShow[SET_RESOURCE_MANAGER]"
+			NUM_ROW="50" REQUIRED="true" SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'false') AND isShow[SET_RESOURCE_MANAGER]"
 			GROUP="HADOOP_PROPS">
 			<DEFAULT IF="(PROPERTY == 'REPOSITORY')">true</DEFAULT>
 		</PARAMETER>
@@ -275,7 +280,7 @@
 		</PARAMETER>
 
 		<PARAMETER NAME="SET_JOBHISTORY_ADDRESS" FIELD="CHECK"
-			NUM_ROW="55" REQUIRED="true" SHOW_IF="isShow[SET_RESOURCE_MANAGER]"
+			NUM_ROW="55" REQUIRED="true" SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'false') AND isShow[SET_RESOURCE_MANAGER]"
 			GROUP="HADOOP_PROPS">
 			<DEFAULT IF="(PROPERTY == 'REPOSITORY')">true</DEFAULT>
 		</PARAMETER>
@@ -288,7 +293,7 @@
 		</PARAMETER>
 
 		<PARAMETER NAME="SET_HADOOP_USER" FIELD="CHECK" NUM_ROW="56"
-			REQUIRED="true" SHOW_IF="isShow[SET_RESOURCE_MANAGER]" GROUP="HADOOP_PROPS">
+			REQUIRED="true" SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'true') OR isShow[SET_RESOURCE_MANAGER]" GROUP="HADOOP_PROPS">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
@@ -298,10 +303,9 @@
 			<DEFAULT>"hadoop"</DEFAULT>
 		</PARAMETER>
 
-
 		<PARAMETER NAME="USE_DATANODE_HOSTNAME" FIELD="CHECK"
 			REPOSITORY_VALUE="USE_DATANODE_HOSTNAME" NUM_ROW="58" REQUIRED="true"
-			SHOW_IF="isShow[SET_RESOURCE_MANAGER]" GROUP="HADOOP_PROPS">
+			SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'true') OR isShow[SET_RESOURCE_MANAGER]" GROUP="HADOOP_PROPS">
 			<DEFAULT>true</DEFAULT>
 		</PARAMETER>
 
@@ -388,50 +392,50 @@
 
 		<PARAMETER NAME="STORE_BY_HBASE" FIELD="CHECK" NUM_ROW="70"
 			REQUIRED="true"
-			SHOW_IF="((CONNECTION_MODE != 'EMBEDDED' OR !DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportEmbeddedMode[]) AND DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHBaseForHive[])"
+			SHOW_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'true') OR ((CONNECTION_MODE != 'EMBEDDED' OR !DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportEmbeddedMode[]) AND DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHBaseForHive[])"
 			GROUP="HBASE_GROUP">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="ZOOKEEPER_QUORUM" FIELD="TEXT" NUM_ROW="80"
 			REQUIRED="true" GROUP="HBASE_GROUP"
-			SHOW_IF="(isShow[STORE_BY_HBASE]) AND STORE_BY_HBASE=='true'">
+			SHOW_IF="(isShow[STORE_BY_HBASE]) AND (STORE_BY_HBASE=='true') AND (CONFIGURATIONS_FROM_CLASSPATH == 'false')">
 			<DEFAULT>"localhost"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="ZOOKEEPER_CLIENT_PORT" FIELD="TEXT"
 			NUM_ROW="90" REQUIRED="true" GROUP="HBASE_GROUP"
-			SHOW_IF="(isShow[STORE_BY_HBASE]) AND STORE_BY_HBASE=='true'">
+			SHOW_IF="(isShow[STORE_BY_HBASE]) AND (STORE_BY_HBASE=='true') AND (CONFIGURATIONS_FROM_CLASSPATH == 'false')">
 			<DEFAULT>"2181"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="SET_ZNODE_PARENT" FIELD="CHECK" NUM_ROW="95"
 			REQUIRED="false" GROUP="HBASE_GROUP"
-			SHOW_IF="(isShow[STORE_BY_HBASE]) AND STORE_BY_HBASE=='true'">
+			SHOW_IF="(isShow[STORE_BY_HBASE]) AND (STORE_BY_HBASE=='true') AND (CONFIGURATIONS_FROM_CLASSPATH == 'false')">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="ZNODE_PARENT" FIELD="TEXT" NUM_ROW="95"
 			REQUIRED="false" GROUP="HBASE_GROUP"
-			SHOW_IF="(isShow[SET_ZNODE_PARENT]) AND SET_ZNODE_PARENT=='true'">
+			SHOW_IF="(isShow[STORE_BY_HBASE]) AND (STORE_BY_HBASE=='true') AND (CONFIGURATIONS_FROM_CLASSPATH == 'false')">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="HBASE_MASTER_PRINCIPAL" FIELD="TEXT"
 			NUM_ROW="96" REQUIRED="true" GROUP="HBASE_GROUP"
-			SHOW_IF="(isShow[STORE_BY_HBASE]) AND (STORE_BY_HBASE=='true') AND (isShow[USE_KRB]) AND (USE_KRB=='true')">
+			SHOW_IF="(isShow[STORE_BY_HBASE]) AND (STORE_BY_HBASE=='true') AND (isShow[USE_KRB]) AND (USE_KRB=='true') AND (CONFIGURATIONS_FROM_CLASSPATH == 'false')">
 			<DEFAULT>"hbase/_HOST@EXAMPLE.COM"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="HBASE_REGIONSERVER_PRINCIPAL" FIELD="TEXT"
 			NUM_ROW="97" REQUIRED="true" GROUP="HBASE_GROUP"
-			SHOW_IF="(isShow[STORE_BY_HBASE]) AND (STORE_BY_HBASE=='true') AND (isShow[USE_KRB]) AND (USE_KRB=='true')">
+			SHOW_IF="(isShow[STORE_BY_HBASE]) AND (STORE_BY_HBASE=='true') AND (isShow[USE_KRB]) AND (USE_KRB=='true') AND (CONFIGURATIONS_FROM_CLASSPATH == 'false')">
 			<DEFAULT>"hbase/_HOST@EXAMPLE.COM"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="DEFINE_REGISTER_JAR" FIELD="CHECK"
 			REQUIRED="true" NUM_ROW="100" GROUP="HBASE_GROUP"
-			SHOW_IF="(isShow[STORE_BY_HBASE]) AND STORE_BY_HBASE=='true'">
+			SHOW_IF="((isShow[STORE_BY_HBASE]) AND STORE_BY_HBASE=='true')">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
@@ -485,7 +489,7 @@
 			<DEFAULT
 				IF="(DISTRIBUTION == 'HORTONWORKS') AND (HIVE_VERSION == 'HDP_2_2')"><![CDATA[tez-api-0.5.2.2.2.0.0-2041.jar,tez-common-0.5.2.2.2.0.0-2041.jar,tez-dag-0.5.2.2.2.0.0-2041.jar,tez-mapreduce-0.5.2.2.2.0.0-2041.jar,tez-mbeans-resource-calculator-0.5.2.2.2.0.0-2041.jar,tez-runtime-internals-0.5.2.2.2.0.0-2041.jar,tez-runtime-library-0.5.2.2.2.0.0-2041.jar,tez-yarn-timeline-history-0.5.2.2.2.0.0-2041.jar,aopalliance-1.0.jar,apacheds-i18n-2.0.0-M15.jar,apacheds-kerberos-codec-2.0.0-M15.jar,api-asn1-api-1.0.0-M20.jar,api-util-1.0.0-M20.jar,asm-3.1.jar,avro-1.7.4.jar,commons-beanutils-1.7.0.jar,commons-beanutils-core-1.8.0.jar,commons-cli-1.2.jar,commons-codec-1.4.jar,commons-collections4-4.0.jar,commons-collections-3.2.1.jar,commons-compress-1.4.1.jar,commons-configuration-1.6.jar,commons-digester-1.8.jar,commons-io-2.4.jar,commons-lang-2.6.jar,commons-logging-1.1.3.jar,commons-math3-3.1.1.jar,commons-net-3.1.jar,curator-client-2.6.0.jar,curator-framework-2.6.0.jar,curator-recipes-2.6.0.jar,gson-2.2.4.jar,guice-3.0.jar,guice-servlet-3.0.jar,hadoop-annotations-2.6.0.2.2.0.0-2041.jar,hadoop-auth-2.6.0.2.2.0.0-2041.jar,hadoop-common-2.6.0.2.2.0.0-2041.jar,hadoop-hdfs-2.6.0.2.2.0.0-2041.jar,hadoop-mapreduce-client-common-2.6.0.2.2.0.0-2041.jar,hadoop-mapreduce-client-core-2.6.0.2.2.0.0-2041.jar,hadoop-yarn-api-2.6.0.2.2.0.0-2041.jar,hadoop-yarn-client-2.6.0.2.2.0.0-2041.jar,hadoop-yarn-common-2.6.0.2.2.0.0-2041.jar,htrace-core-3.0.4.jar,httpclient-4.2.5.jar,httpcore-4.2.4.jar,jackson-core-2.2.3.jar,jackson-core-asl-1.9.13.jar,jackson-jaxrs-1.9.13.jar,jackson-mapper-asl-1.9.13.jar,jackson-xc-1.9.13.jar,javax.inject-1.jar,jaxb-impl-2.2.3-1.jar,jersey-client-1.9.jar,jersey-core-1.9.jar,jersey-guice-1.9.jar,jersey-json-1.9.jar,jersey-server-1.9.jar,jettison-1.3.4.jar,jetty-util-6.1.26.hwx.jar,jsr305-2.0.3.jar,log4j-1.2.17.jar,microsoft-windowsazure-storage-sdk-0.6.0.jar,netty-3.6.2.Final.jar,paranamer-2.3.jar,protobuf-java-2.5.0.jar,servlet-api-2.5.jar,slf4j-api-1.7.5.jar,slf4j-log4j12-1.7.5.jar,snappy-java-1.0.4.1.jar,stax-api-1.0.1.jar,xercesImpl-2.9.1.jar,xml-apis-1.3.04.jar,xmlenc-0.52.jar,xz-1.0.jar,zookeeper-3.4.6.jar]]></DEFAULT>
 			<DEFAULT
-				IF="(DISTRIBUTION == 'HORTONWORKS') AND (HIVE_VERSION == 'HDP_2_3')"><![CDATA[aopalliance-1.0.jar,apacheds-i18n-2.0.0-M15.jar,apacheds-kerberos-codec-2.0.0-M15.jar,api-asn1-api-1.0.0-M20.jar,api-util-1.0.0-M20.jar,asm-3.2.jar,avro-1.7.5.jar,commons-beanutils-1.7.0.jar,commons-beanutils-core-1.8.0.jar,commons-cli-1.2.jar,commons-codec-1.4.jar,commons-collections-3.2.1.jar,commons-collections4-4.0.jar,commons-compress-1.4.1.jar,commons-configuration-1.6.jar,commons-digester-1.8.jar,commons-io-2.4.jar,commons-lang-2.6.jar,commons-logging-1.1.3.jar,commons-math3-3.1.1.jar,commons-net-3.1.jar,curator-client-2.7.1.jar,curator-framework-2.7.1.jar,curator-recipes-2.7.1.jar,gson-2.2.4.jar,guava-11.0.2.jar,guice-3.0.jar,guice-servlet-3.0.jar,hadoop-annotations-2.7.1.2.3.0.0-2557.jar,hadoop-auth-2.7.1.2.3.0.0-2557.jar,hadoop-common-2.7.1.2.3.0.0-2557.jar,hadoop-hdfs-2.7.1.2.3.0.0-2557.jar,hadoop-mapreduce-client-common-2.7.1.2.3.0.0-2557.jar,hadoop-mapreduce-client-core-2.7.1.2.3.0.0-2557.jar,hadoop-yarn-api-2.7.1.2.3.0.0-2557.jar,hadoop-yarn-client-2.7.1.2.3.0.0-2557.jar,hadoop-yarn-common-2.7.1.2.3.0.0-2557.jar,htrace-core-3.1.0-incubating.jar,httpclient-4.2.5.jar,httpcore-4.2.5.jar,jackson-core-2.2.3.jar,jackson-core-asl-1.9.13.jar,jackson-jaxrs-1.9.13.jar,jackson-mapper-asl-1.9.13.jar,jackson-xc-1.9.13.jar,javax.inject-1.jar,jaxb-impl-2.2.3-1.jar,jersey-client-1.9.jar,jersey-core-1.9.jar,jersey-guice-1.9.jar,jersey-json-1.9.jar,jersey-server-1.9.jar,jettison-1.3.4.jar,jetty-util-6.1.26.hwx.jar,jsr305-2.0.3.jar,log4j-1.2.17.jar,microsoft-windowsazure-storage-sdk-0.6.0.jar,netty-3.6.2.Final.jar,paranamer-2.3.jar,protobuf-java-2.5.0.jar,servlet-api-2.5.jar,slf4j-api-1.7.10.jar,slf4j-log4j12-1.7.10.jar,snappy-java-1.0.4.1.jar,stax-api-1.0-2.jar,tez-api-0.7.0.2.3.0.0-2557.jar,tez-common-0.7.0.2.3.0.0-2557.jar,tez-dag-0.7.0.2.3.0.0-2557.jar,tez-mapreduce-0.7.0.2.3.0.0-2557.jar,tez-mbeans-resource-calculator-0.7.0.2.3.0.0-2557.jar,tez-runtime-internals-0.7.0.2.3.0.0-2557.jar,tez-runtime-library-0.7.0.2.3.0.0-2557.jar,tez-yarn-timeline-history-0.7.0.2.3.0.0-2557.jar,xercesImpl-2.9.1.jar,xml-apis-1.3.04.jar,xmlenc-0.52.jar,xz-1.0.jar,zookeeper-3.4.6.2.3.0.0-2557.jar]]></DEFAULT>
+				IF="(DISTRIBUTION == 'HORTONWORKS') AND (HIVE_VERSION == 'HDP_2_3')"><![CDATA[aopalliance-1.0.jar,apacheds-i18n-2.0.0-M15.jar,apacheds-kerberos-codec-2.0.0-M15.jar,api-asn1-api-1.0.0-M20.jar,api-util-1.0.0-M20.jar,asm-3.2.jar,avro-1.7.5.jar,commons-beanutils-1.7.0.jar,commons-beanutils-core-1.8.0.jar,commons-cli-1.2.jar,commons-codec-1.4.jar,commons-collections-3.2.1.jar,commons-collections4-4.0.jar,commons-compress-1.4.1.jar,commons-configuration-1.6.jar,commons-digester-1.8.jar,commons-io-2.4.jar,commons-lang-2.6.jar,commons-logging-1.1.3.jar,commons-math3-3.1.1.jar,commons-net-3.1.jar,curator-client-2.7.1.jar,curator-framework-2.7.1.jar,curator-recipes-2.7.1.jar,gson-2.2.4.jar,guava-11.0.2.jar,guice-3.0.jar,guice-servlet-3.0.jar,hadoop-annotations-2.7.1.2.3.2.0-2950.jar,hadoop-auth-2.7.1.2.3.2.0-2950.jar,hadoop-common-2.7.1.2.3.2.0-2950.jar,hadoop-hdfs-2.7.1.2.3.2.0-2950.jar,hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar,hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar,hadoop-yarn-api-2.7.1.2.3.2.0-2950.jar,hadoop-yarn-client-2.7.1.2.3.2.0-2950.jar,hadoop-yarn-common-2.7.1.2.3.2.0-2950.jar,htrace-core-3.1.0-incubating.jar,httpclient-4.2.5.jar,httpcore-4.2.5.jar,jackson-core-2.2.3.jar,jackson-core-asl-1.9.13.jar,jackson-jaxrs-1.9.13.jar,jackson-mapper-asl-1.9.13.jar,jackson-xc-1.9.13.jar,javax.inject-1.jar,jaxb-impl-2.2.3-1.jar,jersey-client-1.9.jar,jersey-core-1.9.jar,jersey-guice-1.9.jar,jersey-json-1.9.jar,jersey-server-1.9.jar,jettison-1.3.4.jar,jetty-util-6.1.26.hwx.jar,jsr305-2.0.3.jar,log4j-1.2.17.jar,microsoft-windowsazure-storage-sdk-0.6.0.jar,netty-3.6.2.Final.jar,paranamer-2.3.jar,protobuf-java-2.5.0.jar,servlet-api-2.5.jar,slf4j-api-1.7.10.jar,slf4j-log4j12-1.7.10.jar,snappy-java-1.0.4.1.jar,stax-api-1.0-2.jar,tez-api-0.7.0.2.3.2.0-2950.jar,tez-common-0.7.0.2.3.2.0-2950.jar,tez-dag-0.7.0.2.3.2.0-2950.jar,tez-mapreduce-0.7.0.2.3.2.0-2950.jar,tez-runtime-internals-0.7.0.2.3.2.0-2950.jar,tez-runtime-library-0.7.0.2.3.2.0-2950.jar,tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar,xercesImpl-2.9.1.jar,xml-apis-1.3.04.jar,xmlenc-0.52.jar,xz-1.0.jar,zookeeper-3.4.6.2.3.2.0-2950.jar]]></DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="TEZ_LIB_PATH" FIELD="BOTH_HADOOP" NUM_ROW="1"
 			REQUIRED="true" SHOW_IF="(isShow[TEZ_LIB]) AND (TEZ_LIB == 'USE_EXIST')">
@@ -563,7 +567,7 @@
 				MVN="mvn:org.talend.libraries/hadoop-conf-kerberos/6.0.0"
 				UrlPath="platform:/plugin/org.talend.libraries.hadoop.mapr2/lib/hadoop-conf-kerberos.jar"
 				REQUIRED="false"
-				REQUIRED_IF="(DISTRIBUTION!='CUSTOM') AND (USE_KRB=='true') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportKerberos[] AND ((DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive1[] AND DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportEmbeddedMode[] AND HIVE_SERVER=='HIVE' AND CONNECTION_MODE=='EMBEDDED') OR (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive2[] AND HIVE_SERVER=='HIVE2')))" />
+				REQUIRED_IF="(CONFIGURATIONS_FROM_CLASSPATH == 'false') AND (DISTRIBUTION!='CUSTOM') AND (isShow[USE_KRB] AND USE_KRB=='true') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportKerberos[] AND ((DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive1[] AND DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportEmbeddedMode[] AND HIVE_SERVER=='HIVE' AND CONNECTION_MODE=='EMBEDDED') OR (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportHive2[] AND HIVE_SERVER=='HIVE2')))" />
 
 			<!-- MAPR2 -->
 			<IMPORT NAME="hadoop-0.20.2-dev-core-mapr2.jar" MODULE="hadoop-0.20.2-dev-core-mapr2.jar"

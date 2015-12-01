@@ -10,9 +10,11 @@ imports="
         java.util.List
 		" 
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	LogUtil logUtil = new LogUtil(node);
 	String cid = node.getUniqueName();
 	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
@@ -47,15 +49,17 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 				<%if(!useExistingConn){%>
 					try {
-						service_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
+					   <% logUtil.debug("\"Closing connection to MDM server.\"");%>
+						service_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());					   
 					} catch(java.lang.Exception e) {
-						<%if(dieOnError) {%>
-						throw e;
+					<% logUtil.error("\"Unexpected error:\"+e.getMessage()");%>
+						<%if(dieOnError) {%>						      
+						      throw e;
 						<% } else { %>
-						System.err.println(e.getMessage());
+						      System.err.println(e.getMessage());
 						<% } %>
 					}
-				<%}%>
+				<%}%>				
 				globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);   
 			<%
 			}

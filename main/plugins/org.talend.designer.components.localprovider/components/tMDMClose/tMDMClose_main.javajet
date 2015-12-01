@@ -5,19 +5,21 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
-
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-
+    LogUtil logUtil = new LogUtil(node);
     String cid = node.getUniqueName();
 
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 %>
-
+    
+    <% logUtil.debug("\"Closing connection to MDM server.\"");%>
+    
 	<%String conn = "TMDMService_" + connection;%>
 	org.talend.mdm.webservice.TMDMService service_<%=cid %> = (org.talend.mdm.webservice.TMDMService)globalMap.get("<%=conn%>");
 	if(service_<%=cid %> != null)
 	{
-		service_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
+		service_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());        
 	}
