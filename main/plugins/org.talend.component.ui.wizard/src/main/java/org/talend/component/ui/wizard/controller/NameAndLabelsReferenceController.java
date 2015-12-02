@@ -67,6 +67,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         if (curParameter instanceof GenericElementParameter) {
             GenericElementParameter gParam = (GenericElementParameter) curParameter;
             if (gParam != null) {
+                gParam.callBeforeActivate();
                 List<?> possibleValues = gParam.getPossibleValues();
                 if (possibleValues != null) {
                     for (Object object : possibleValues) {
@@ -79,9 +80,12 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         }
         NameAndLabelsDialog nameAndLabelsDialog = new NameAndLabelsDialog(composite.getShell(), nals);
         if (nameAndLabelsDialog.open() == IDialogConstants.OK_ID) {
-            curParameter.setValue(nameAndLabelsDialog.getResult());
+            String result = nameAndLabelsDialog.getResult();
+            curParameter.setValue(result);
+            String propertyName = (String) button.getData(PARAMETER_NAME);
+            Text moduleText = (Text) hashCurControls.get(propertyName);
+            moduleText.setText(result);
         }
-
         return null;
     }
 
@@ -138,16 +142,16 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         }
 
         Control cLayout = dField.getLayoutControl();
-        Text pathText = (Text) dField.getControl();
-        pathText.setData(PARAMETER_NAME, param.getName());
+        Text moduleText = (Text) dField.getControl();
+        moduleText.setData(PARAMETER_NAME, param.getName());
         cLayout.setBackground(subComposite.getBackground());
 
-        addDragAndDropTarget(pathText);
+        addDragAndDropTarget(moduleText);
         if (elem instanceof Node) {
-            pathText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+            moduleText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        hashCurControls.put(param.getName(), pathText);
+        hashCurControls.put(param.getName(), moduleText);
 
         data = new FormData();
         int currentLabelWidth = STANDARD_LABEL_WIDTH;
@@ -190,6 +194,26 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
 
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
+        final String name = param.getName();
+        Text labelText = (Text) hashCurControls.get(name);
+        Object value = param.getValue();
+        if (labelText == null || labelText.isDisposed()) {
+            return;
+        }
+
+        boolean valueChanged = false;
+        if (value == null) {
+            labelText.setText(""); //$NON-NLS-1$
+        } else {
+            if (!value.equals(labelText.getText())) {
+                labelText.setText((String) value);
+                valueChanged = true;
+            }
+        }
+        if (checkErrorsWhenViewRefreshed || valueChanged) {
+            checkErrorsForPropertiesOnly(labelText);
+        }
+        fixedCursorPosition(param, labelText, value, valueChanged);
     }
 
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
@@ -27,15 +28,25 @@ import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.component.core.constants.IGenericConstants;
 import org.talend.component.core.utils.ComponentsUtils;
+import org.talend.component.core.utils.SchemaUtils;
 import org.talend.components.api.NamedThing;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.PresentationItem;
 import org.talend.components.api.properties.presentation.Form;
 import org.talend.components.api.properties.presentation.Widget;
+import org.talend.components.api.schema.Schema;
 import org.talend.components.api.schema.SchemaElement;
 import org.talend.components.api.service.ComponentService;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * created by ycbai on 2015年9月24日 Detailled comment
@@ -110,7 +121,6 @@ public class GenericElementParameter extends ElementParameter {
                 fireConnectionPropertyChangedEvent(newValue);
             }
         } else if (widgetProperty instanceof PresentationItem) {
-            callBeforeActivate();
             PresentationItem pi = (PresentationItem) widgetProperty;
             Form formtoShow = pi.getFormtoShow();
             if (formtoShow != null) {
@@ -157,7 +167,7 @@ public class GenericElementParameter extends ElementParameter {
     public boolean callBeforePresent() {
         if (widget.isCallBeforePresent()) {
             try {
-                componentProperties = componentService.beforePropertyPresent(getName(), componentProperties);
+                componentProperties = componentService.beforePropertyPresent(getParameterName(), componentProperties);
                 return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
@@ -169,13 +179,26 @@ public class GenericElementParameter extends ElementParameter {
     public boolean callBeforeActivate() {
         if (widget.isCallBeforeActivate()) {
             try {
-                componentProperties = componentService.beforePropertyActivate(getName(), componentProperties);
+                componentProperties = componentService.beforePropertyActivate(getParameterName(), componentProperties);
+                update();
                 return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
         }
         return false;
+    }
+
+    private void update() {
+        NamedThing[] widgetProperties = widget.getProperties();
+        NamedThing widgetProperty = widgetProperties[0];
+        if (widgetProperty instanceof SchemaElement) {
+            SchemaElement se = (SchemaElement) widgetProperties[0];
+            List<?> values = se.getPossibleValues();
+            if (values != null) {
+                this.setPossibleValues(values);
+            }
+        }
     }
 
     private boolean callValidate() {
@@ -202,15 +225,41 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private boolean callAfter() {
-        if (widget.isCallAfter()) {
+        if (widget.isCallAfter() && hasPropertyChangeListener()) {
             try {
                 componentProperties = componentService.afterProperty(getParameterName(), componentProperties);
+                updateSchema();
                 return true;
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
         }
         return false;
+    }
+
+    private void updateSchema() {
+        Object schemaObj = ComponentsUtils.getGenericPropertyValue(componentProperties, "schema.schema"); //$NON-NLS-1$
+        if (schemaObj != null && schemaObj instanceof Schema) {
+            MetadataTable metadataTable = SchemaUtils
+                    .createSchema(String.valueOf(getValue()), componentProperties.toSerialized());
+            SchemaUtils.convertComponentSchemaIntoTalendSchema((Schema) schemaObj, metadataTable);
+            IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
+            IElement element = this.getElement();
+            if (element instanceof Node) {
+                Node node = (Node) element;
+                IMetadataTable oldTable = node.getMetadataList().get(0);
+                if (!newTable.sameMetadataAs(oldTable)) {
+                    IElementParameter schemaParameter = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, oldTable, newTable, null);
+                    IProcess process = node.getProcess();
+                    if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                        CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
+                                .getCommandStack();
+                        commandStack.execute(cmd);
+                    }
+                }
+            }
+        }
     }
 
     private String getParameterName() {

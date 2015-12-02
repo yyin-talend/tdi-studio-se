@@ -15,6 +15,7 @@ package org.talend.component.ui.wizard.persistence;
 import java.util.List;
 
 import org.talend.component.core.constants.IGenericConstants;
+import org.talend.component.core.utils.SchemaUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataFactory;
@@ -22,17 +23,11 @@ import org.talend.component.ui.model.genericMetadata.SubContainer;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.Repository;
 import org.talend.components.api.schema.Schema;
-import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.Item;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.cwm.helper.PackageHelper;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
-
-import orgomg.cwm.objectmodel.core.CoreFactory;
-import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
  * created by ycbai on 2015年9月29日 Detailled comment
@@ -64,7 +59,8 @@ public class GenericRepository implements Repository {
             }
             // if there is a schema then creates a Schema element
             if (schema != null) {
-                MetadataTable metadataTable = createSchema(subContainer, name, serializedProperties);
+                MetadataTable metadataTable = SchemaUtils.createSchema(name, serializedProperties);
+                subContainer.getOwnedElement().add(metadataTable);
                 SchemaUtils.convertComponentSchemaIntoTalendSchema(schema, metadataTable);
             }
             return repositoryLocation + IGenericConstants.REPOSITORY_LOCATION_SEPARATOR + name;
@@ -86,21 +82,6 @@ public class GenericRepository implements Repository {
         subContainer.setName(containerName);
         subContainer.setCompProperties(serializedProperties);
         return subContainer;
-    }
-
-    private MetadataTable createSchema(SubContainer container, String name, String serializedProperties) {
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-        metadataTable.setId(factory.getNextId());
-        metadataTable.setName(name);
-        metadataTable.setLabel(name);
-        metadataTable.setSourceName(name);
-        TaggedValue serializedProps = CoreFactory.eINSTANCE.createTaggedValue();
-        metadataTable.getTaggedValue().add(serializedProps);
-        serializedProps.setTag(IGenericConstants.COMPONENT_PROPERTIES_TAG);
-        serializedProps.setValue(serializedProperties);
-        container.getOwnedElement().add(metadataTable);
-        return metadataTable;
     }
 
     private SubContainer getContainer(GenericConnection connection, String repositoryLocation) {

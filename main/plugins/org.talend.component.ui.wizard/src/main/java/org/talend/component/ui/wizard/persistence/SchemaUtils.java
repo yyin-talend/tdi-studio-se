@@ -16,14 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.component.ui.model.genericMetadata.SubContainer;
-import org.talend.components.api.schema.Schema;
-import org.talend.components.api.schema.SchemaElement;
-import org.talend.components.api.schema.SchemaElement.Type;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
-import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.cwm.helper.PackageHelper;
 
 /**
@@ -53,54 +47,6 @@ public class SchemaUtils {
             }
         }
         return null;
-    }
-
-    public static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
-        SchemaElement root = schema.getRoot();
-        if (root != null) {
-            List<SchemaElement> schemaElements = root.getChildren();
-            for (SchemaElement schemaElement : schemaElements) {
-                MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                setupMetadataColumn(metadataColumn, schemaElement);
-                metadataTable.getColumns().add(metadataColumn);
-            }
-        }
-    }
-
-    private static void setupMetadataColumn(MetadataColumn metadataColumn, SchemaElement schemaElement) {
-        String talendType = JavaTypesManager.STRING.getId();
-        Type type = schemaElement.getType();
-        switch (type) {
-        case BOOLEAN:
-            talendType = JavaTypesManager.BOOLEAN.getId();
-            break;
-        case INT:
-            talendType = JavaTypesManager.INTEGER.getId();
-            break;
-        case DATE:
-            talendType = JavaTypesManager.DATE.getId();
-            break;
-        case DATETIME:
-            talendType = JavaTypesManager.DATE.getId();
-            break;
-        case DOUBLE:
-            talendType = JavaTypesManager.DOUBLE.getId();
-            break;
-        case DECIMAL:
-            talendType = JavaTypesManager.BIGDECIMAL.getId();
-            break;
-        default:
-            talendType = JavaTypesManager.STRING.getId();
-            break;
-        }
-        metadataColumn.setTalendType(talendType);
-        metadataColumn.setName(schemaElement.getName());
-        metadataColumn.setLabel(metadataColumn.getName());
-        metadataColumn.setPattern(schemaElement.getPattern());
-        metadataColumn.setNullable(schemaElement.isNullable());
-        metadataColumn.setLength(schemaElement.getSize());
-        metadataColumn.setPrecision(schemaElement.getPrecision());
-        metadataColumn.setDefaultValue(schemaElement.getDefaultValue());
     }
 
 }

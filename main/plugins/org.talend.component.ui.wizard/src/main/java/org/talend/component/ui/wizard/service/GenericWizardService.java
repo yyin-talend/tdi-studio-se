@@ -109,6 +109,9 @@ public class GenericWizardService implements IGenericWizardService {
     public Image getNodeImage(String typeName) {
         InputStream imageStream = internalService.getComponentService().getWizardPngImage(typeName,
                 WizardImageType.TREE_ICON_16X16);
+        if (imageStream == null) {
+            return null;
+        }
         // node image
         ImageData id = new ImageData(imageStream);
         Image image = new Image(null, id);

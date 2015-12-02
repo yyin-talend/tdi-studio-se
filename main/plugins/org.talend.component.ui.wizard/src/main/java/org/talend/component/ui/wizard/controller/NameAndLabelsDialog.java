@@ -48,6 +48,12 @@ public class NameAndLabelsDialog extends Dialog {
     }
 
     @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setSize(450, 550);
+    }
+
+    @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
         Composite comp = new Composite(composite, SWT.NONE);
