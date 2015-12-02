@@ -49,15 +49,15 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
 
     private static final String SALESFORCE = "salesforce"; //$NON-NLS-1$
 
-    public static final String COMPONENT_T_SALSEFORCE_CONNECTION = "tSalesforceConnection"; //$NON-NLS-1$
+    public static final String COMPONENT_T_SALSEFORCE_CONNECTION = "tSalesforceConnectionNew"; //$NON-NLS-1$
 
-    public static final String COMPONENT_T_SALSEFORCE_WAVE_BULK_EXEC = "tSalesforceWaveBulkExec"; //$NON-NLS-1$
+    public static final String COMPONENT_T_SALSEFORCE_WAVE_BULK_EXEC = "tSalesforceWaveBulkExecNew"; //$NON-NLS-1$
 
-    public static final String COMPONENT_T_SALSEFORCE_WAVE_OUTPUT_BULK_EXEC = "tSalesforceWaveOutputBulkExec"; //$NON-NLS-1$
+    public static final String COMPONENT_T_SALSEFORCE_WAVE_OUTPUT_BULK_EXEC = "tSalesforceWaveOutputBulkExecNew"; //$NON-NLS-1$
 
-    public static final String COMPONENT_T_SALSEFORCE_INPUT = "tSalesforceInput"; //$NON-NLS-1$
+    public static final String COMPONENT_T_SALSEFORCE_INPUT = "tSalesforceInputNew"; //$NON-NLS-1$
 
-    public static final String COMPONENT_T_SALSEFORCE_OUTPUT = "tSalesforceOutput"; //$NON-NLS-1$
+    public static final String COMPONENT_T_SALSEFORCE_OUTPUT = "tSalesforceOutputNew"; //$NON-NLS-1$
 
     @Override
     public boolean canHandle(Connection connection) {
@@ -128,7 +128,7 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
         Set<IComponent> components = service.getComponentsFactory().getComponents();
         for (IComponent component : components) {
             if (EComponentType.GENERIC.equals(component.getComponentType())) {
-                if (isValid(item, type, seletetedNode, component, SALESFORCE) && !neededComponents.contains(component)) {
+                if (isValid(item, type, seletetedNode, component, type.getType()) && !neededComponents.contains(component)) {
                     neededComponents.add(component);
                 }
             }
@@ -142,7 +142,12 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             return false;
         }
         String componentProductname = component.getRepositoryType();
-        if (componentProductname != null && componentProductname.contains(repositoryType)) {
+        String typeName = ""; //$NON-NLS-1$
+        if (item instanceof GenericConnectionItem) {
+            typeName = ((GenericConnectionItem) item).getTypeName();
+        }
+        if (componentProductname != null && componentProductname.contains(repositoryType)
+                || componentProductname.contains(typeName)) {
             String componentName = component.getName();
             if (ERepositoryObjectType.METADATA_SALESFORCE_MODULE == type || ERepositoryObjectType.METADATA_CON_TABLE == type
                     || ERepositoryObjectType.METADATA_CON_COLUMN == type) {
