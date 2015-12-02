@@ -58,6 +58,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
+import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
@@ -1290,7 +1291,7 @@ public class Component extends AbstractComponent {
             ImageData imageData = new ImageData(imageStream);
             return ImageDescriptor.createFromImageData(imageData.scaledTo(16, 16));
         }
-        return null;
+        return new DummyComponent("dummy").getIcon16();
     }
 
     @Override
@@ -1301,7 +1302,7 @@ public class Component extends AbstractComponent {
             ImageData imageData = new ImageData(imageStream);
             return ImageDescriptor.createFromImageData(imageData.scaledTo(24, 24));
         }
-        return null;
+        return new DummyComponent("dummy").getIcon24();
     }
 
     /**
@@ -1317,7 +1318,7 @@ public class Component extends AbstractComponent {
             ImageData imageData = new ImageData(imageStream);
             return ImageDescriptor.createFromImageData(imageData);
         }
-        return null;
+        return new DummyComponent("dummy").getIcon32();
     }
 
     @Override

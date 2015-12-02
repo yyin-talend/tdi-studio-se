@@ -111,7 +111,7 @@ if (component.canStart()) { // canStart
 				for (IMetadataColumn column : columnList) { // column
 					String columnName = column.getLabel();
 %>
-					value_<%=cid %> = row.get("<%=columnName %>");
+					value_<%=cid %> = row_<%=cid %>.get("<%=columnName %>");
 					if (value_<%=cid %> != null)
 						<%=outgoingConn.getName() %>.<%=columnName %> = value_<%=cid %>;
 <%
