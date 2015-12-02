@@ -22,6 +22,8 @@ public class TemplateUtil {
 
     public static final String RESOURCES_DIRECTORY = "resources"; //$NON-NLS-1$
 
+    public static final String JET_STUB_DIRECTORY = "jet_stub"; //$NON-NLS-1$
+
     // TODO SML Replace by File.separator
     public static final String DIR_SEP = "/"; //$NON-NLS-1$
 

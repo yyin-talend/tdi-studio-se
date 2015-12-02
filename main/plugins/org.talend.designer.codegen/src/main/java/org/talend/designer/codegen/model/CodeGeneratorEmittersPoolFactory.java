@@ -499,7 +499,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static void initGenericComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart,
             IComponent component) {
         if (component.getAvailableCodeParts().contains(codePart)) {
-            String templateURI = TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
+            String templateURI = TemplateUtil.JET_STUB_DIRECTORY + TemplateUtil.DIR_SEP
                     + TemplateUtil.RESOURCES_DIRECTORY_GENERIC + TemplateUtil.DIR_SEP + "component_" + codePart.getName()//$NON-NLS-1$ 
                     + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT;
             String componentsPath = "org.talend.designer.codegen";//$NON-NLS-1$ 
