@@ -26,6 +26,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.constants.IElementParameterEventProperties;
 import org.talend.component.core.constants.IGenericConstants;
+import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.components.api.NamedThing;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.PresentationItem;
@@ -216,6 +217,14 @@ public class GenericElementParameter extends ElementParameter {
         String paramName = getName();
         if (paramName.indexOf(IComponentConstants.UNDERLINE_SEPARATOR) != -1) {
             paramName = paramName.substring(paramName.lastIndexOf(IComponentConstants.UNDERLINE_SEPARATOR) + 1);
+        }
+        // Reset some param name
+        ComponentProperties currentComponentProperties = ComponentsUtils.getCurrentComponentProperties(componentProperties,
+                paramName);
+        if (currentComponentProperties == null) {
+            if (paramName.startsWith(componentProperties.getName())) {
+                paramName = ComponentsUtils.getPropertyName(paramName);
+            }
         }
         return paramName;
     }
