@@ -158,9 +158,6 @@ public class ComponentsUtils {
             NamedThing widgetProperty = widgetProperties[0];
 
             String propertiesPath = getPropertiesPath(parentPropertiesPath, null);
-            if (isSameComponentProperties(componentProperties, widgetProperty)) {
-                propertiesPath = null;
-            }
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
                 ComponentProperties subProperties = subForm.getComponentProperties();
@@ -351,10 +348,36 @@ public class ComponentsUtils {
             return componentProperties;
         }
         SchemaElement property = componentProperties.getProperty(compPropertiesPath);
+        if (property == null) {
+            return getCurrentComponentPropertiesSpecial(componentProperties, paramName);
+        }
         if (property instanceof ComponentProperties) {
             return (ComponentProperties) property;
         }
         return null;
+    }
+
+    public static ComponentProperties getCurrentComponentPropertiesSpecial(ComponentProperties componentProperties,
+            String paramName) {
+        ComponentProperties currentComponentProperties = null;
+        if (componentProperties == null || paramName == null) {
+            return null;
+        }
+        List<SchemaElement> schemaElements = componentProperties.getProperties();
+        for (SchemaElement se : schemaElements) {
+            if (paramName.equals(se.getName())) {
+                currentComponentProperties = componentProperties;
+                break;
+            }
+            if (se instanceof ComponentProperties) {
+                ComponentProperties childComponentProperties = (ComponentProperties) se;
+                currentComponentProperties = getCurrentComponentProperties(childComponentProperties, paramName);
+            }
+            if (currentComponentProperties != null) {
+                break;
+            }
+        }
+        return currentComponentProperties;
     }
 
     public static SchemaElement getGenericSchemaElement(ComponentProperties componentProperties, String paramName) {
@@ -371,12 +394,7 @@ public class ComponentsUtils {
         }
         ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
         if (currentComponentProperties == null) {
-            if (paramName.startsWith(componentProperties.getName())) {
-                paramName = getPropertyName(paramName);
-                currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
-            } else {
-                return null;
-            }
+            return null;
         }
         SchemaElement schemaElement = componentProperties.getProperty(paramName);
         if (schemaElement != null) {

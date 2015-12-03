@@ -83,6 +83,11 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                 ComponentProperties componentProperties = fromSerialized.properties;
                 String tableName = null;
                 String paramName = ComponentsUtils.getPropertyName(value);
+                if (value != null && value.startsWith(componentProperties.getName())) {
+                    if (value.indexOf(IComponentConstants.EXP_SEPARATOR) != -1) {
+                        value = value.substring(componentProperties.getName().length() + 1, value.length());
+                    }
+                }
                 if (IComponentConstants.SCHEMA.equalsIgnoreCase(paramName)) {
                     if (table != null) {
                         tableName = table.getTableName();
