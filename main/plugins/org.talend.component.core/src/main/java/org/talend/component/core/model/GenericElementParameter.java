@@ -237,7 +237,12 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private void updateSchema() {
-        Object schemaObj = ComponentsUtils.getGenericPropertyValue(componentProperties, "schema.schema"); //$NON-NLS-1$
+        Object schemaObj = null;
+        try {
+            schemaObj = ComponentsUtils.getGenericPropertyValue(componentProperties, "schema.schema"); //$NON-NLS-1$
+        } catch (Exception e) {
+            // do nothing
+        }
         if (schemaObj != null && schemaObj instanceof Schema) {
             MetadataTable metadataTable = SchemaUtils
                     .createSchema(String.valueOf(getValue()), componentProperties.toSerialized());
