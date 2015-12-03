@@ -73,11 +73,19 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     private IGenericWizardInternalService internalService;
 
+    private boolean isWizard;
+
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
             boolean isCompactView, Color backgroundColor, Form form) {
+        this(parentComposite, styles, section, element, isCompactView, backgroundColor, form, false);
+    }
+
+    public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
+            boolean isCompactView, Color backgroundColor, Form form, boolean isWizard) {
         super(parentComposite, styles, section, element, isCompactView, backgroundColor);
         this.element = element;
         this.form = form;
+        this.isWizard = isWizard;
         checker = new Checker();
         internalService = new GenericWizardInternalService();
     }
@@ -293,6 +301,10 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     public void setConnectionItem(ConnectionItem connectionItem) {
         this.connectionItem = connectionItem;
+    }
+
+    public boolean isWizard() {
+        return this.isWizard;
     }
 
 }

@@ -36,10 +36,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.component.core.model.GenericElementParameter;
+import org.talend.component.ui.wizard.ui.DynamicComposite;
 import org.talend.components.api.properties.NameAndLabel;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
@@ -54,8 +56,13 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
 
     private static final String MODULE = "MODULE"; //$NON-NLS-1$
 
+    private boolean isWizard;
+
     public NameAndLabelsReferenceController(IDynamicProperty dp) {
         super(dp);
+        if (dynamicProperty instanceof DynamicComposite) {
+            isWizard = ((DynamicComposite) dynamicProperty).isWizard();
+        }
     }
 
     public Command createCommand() {
@@ -82,6 +89,9 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         if (nameAndLabelsDialog.open() == IDialogConstants.OK_ID) {
             String propertyName = (String) button.getData(PARAMETER_NAME);
             String result = nameAndLabelsDialog.getResult();
+            if (!isWizard) {
+                result = TalendQuoteUtils.addQuotesIfNotExist(result);
+            }
             Text moduleText = (Text) hashCurControls.get(propertyName);
             moduleText.setText(result);
             curParameter.setValue(result);
