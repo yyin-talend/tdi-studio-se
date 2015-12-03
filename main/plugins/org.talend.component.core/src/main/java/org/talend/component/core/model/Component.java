@@ -568,6 +568,20 @@ public class Component extends AbstractComponent {
         param.setShow(false);
         listParam.add(param);
 
+        if (componentDefinition.isStartable()) {
+            param = new ElementParameter(node);
+            param.setName(EParameterName.START.getName());
+            param.setValue(new Boolean(false));
+            param.setDisplayName(EParameterName.START.getDisplayName());
+            param.setFieldType(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.TECHNICAL);
+            param.setNumRow(5);
+            param.setReadOnly(true);
+            param.setRequired(false);
+            param.setShow(false);
+            listParam.add(param);
+        }
+
         param = new ElementParameter(node);
         param.setName(EParameterName.STARTABLE.getName());
         param.setValue(new Boolean(canStart()));
@@ -653,6 +667,7 @@ public class Component extends AbstractComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
+
         //
         param = new ElementParameter(node);
         param.setName(EParameterName.IREPORT_PATH.getName());
