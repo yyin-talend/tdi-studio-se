@@ -37,16 +37,6 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
 
     public CreateGenericConnectionAction() {
         super();
-        if (repositoryNode == null) {
-            repositoryNode = getCurrentRepositoryNode();
-        }
-        repObjType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
-        this.setText(getCreateLabel());
-        this.setToolTipText(getEditLabel());
-        Image nodeImage = getNodeImage();
-        if (nodeImage != null) {
-            this.setImageDescriptor(ImageDescriptor.createFromImage(nodeImage));
-        }
     }
 
     @Override
@@ -66,6 +56,14 @@ public class CreateGenericConnectionAction extends AbstractCreateAction {
         if (!isGenericConnection(node)) {
             setEnabled(false);
             return;
+        }
+        repositoryNode = getCurrentRepositoryNode();
+        repObjType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+        this.setText(getCreateLabel());
+        this.setToolTipText(getEditLabel());
+        Image nodeImage = getNodeImage();
+        if (nodeImage != null) {
+            this.setImageDescriptor(ImageDescriptor.createFromImage(nodeImage));
         }
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         switch (node.getType()) {
