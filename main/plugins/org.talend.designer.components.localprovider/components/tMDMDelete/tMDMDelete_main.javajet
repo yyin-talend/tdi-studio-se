@@ -180,6 +180,4 @@ nb_line_<%=cid %>++;
 	}
 <%
 	}
-%>	}catch(java.lang.Exception e){
-		throw(e);
-		System.err.println(e.getMessage());
+%>
