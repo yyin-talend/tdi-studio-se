@@ -213,7 +213,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         if (checkErrorsWhenViewRefreshed || valueChanged) {
             checkErrorsForPropertiesOnly(labelText);
         }
-        // fixedCursorPosition(param, labelText, value, valueChanged);
+        fixedCursorPosition(param, labelText, value, valueChanged);
     }
 
 }
