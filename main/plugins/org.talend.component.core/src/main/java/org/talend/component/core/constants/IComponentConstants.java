@@ -54,6 +54,8 @@ public interface IComponentConstants {
 
     public static final String ACTION_DELETE = "DELETE";//$NON-NLS-1$
 
+    public static final String LOGIN_TYPE = "loginType";//$NON-NLS-1$
+
     public static final String LOGIN_BASIC = "Basic";//$NON-NLS-1$
 
     public static final String LOGIN_OAUTH = "OAuth";//$NON-NLS-1$

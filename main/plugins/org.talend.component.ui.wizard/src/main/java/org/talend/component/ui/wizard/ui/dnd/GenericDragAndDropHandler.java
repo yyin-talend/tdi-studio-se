@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.dnd.AbstractComponentDragAndDropHandler;
@@ -101,7 +102,7 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                         if (tableName == null) {
                             tableName = table.getLabel();
                         }
-                        return tableName;
+                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(tableName));
                     }
                 } else if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)) {
                     if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
@@ -115,7 +116,13 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                     } else {
                         return IComponentConstants.ACTION_INSERT;
                     }
+                } else if (IComponentConstants.LOGIN_TYPE.equalsIgnoreCase(paramName)) {
+                    return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
                 } else {
+                    Object object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+                    if (object != null && object instanceof String) {
+                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
+                    }
                     return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
                 }
             }
