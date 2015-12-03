@@ -117,6 +117,7 @@ public class GenericElementParameter extends ElementParameter {
             SchemaElement se = (SchemaElement) widgetProperty;
             Object oldValue = componentProperties.getValue(se);
             if (newValue != null && !newValue.equals(oldValue)) {
+                se = componentProperties.getProperty(se.getName());
                 componentProperties.setValue(se, newValue);
                 fireConnectionPropertyChangedEvent(newValue);
             }
@@ -190,11 +191,9 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private void update() {
-        NamedThing[] widgetProperties = widget.getProperties();
-        NamedThing widgetProperty = widgetProperties[0];
-        if (widgetProperty instanceof SchemaElement) {
-            SchemaElement se = (SchemaElement) widgetProperties[0];
-            List<?> values = se.getPossibleValues();
+        SchemaElement property = componentProperties.getProperty(getParameterName());
+        if (property != null) {
+            List<?> values = property.getPossibleValues();
             if (values != null) {
                 this.setPossibleValues(values);
             }
@@ -247,15 +246,18 @@ public class GenericElementParameter extends ElementParameter {
             IElement element = this.getElement();
             if (element instanceof Node) {
                 Node node = (Node) element;
-                IMetadataTable oldTable = node.getMetadataList().get(0);
-                if (!newTable.sameMetadataAs(oldTable)) {
-                    IElementParameter schemaParameter = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, oldTable, newTable, null);
-                    IProcess process = node.getProcess();
-                    if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
-                        CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
-                                .getCommandStack();
-                        commandStack.execute(cmd);
+                List<IMetadataTable> metadataList = node.getMetadataList();
+                if (metadataList.size() > 0) {
+                    IMetadataTable oldTable = metadataList.get(0);
+                    if (!newTable.sameMetadataAs(oldTable)) {
+                        IElementParameter schemaParameter = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, oldTable, newTable, null);
+                        IProcess process = node.getProcess();
+                        if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                            CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
+                                    .getCommandStack();
+                            commandStack.execute(cmd);
+                        }
                     }
                 }
             }

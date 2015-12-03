@@ -172,16 +172,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                 newParameters.add(oldParameter);
             }
         }
-        Display.getDefault().asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                if (newParameters.size() > 0) {
-                    element.setElementParameters(newParameters);
-                }
-            }
-        });
-
+        element.setElementParameters(newParameters);
         return newParameters;
     }
 

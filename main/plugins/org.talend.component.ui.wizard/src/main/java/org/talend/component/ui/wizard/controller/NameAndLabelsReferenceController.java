@@ -80,11 +80,11 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         }
         NameAndLabelsDialog nameAndLabelsDialog = new NameAndLabelsDialog(composite.getShell(), nals);
         if (nameAndLabelsDialog.open() == IDialogConstants.OK_ID) {
-            String result = nameAndLabelsDialog.getResult();
-            curParameter.setValue(result);
             String propertyName = (String) button.getData(PARAMETER_NAME);
+            String result = nameAndLabelsDialog.getResult();
             Text moduleText = (Text) hashCurControls.get(propertyName);
             moduleText.setText(result);
+            curParameter.setValue(result);
         }
         return null;
     }
@@ -213,7 +213,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         if (checkErrorsWhenViewRefreshed || valueChanged) {
             checkErrorsForPropertiesOnly(labelText);
         }
-        fixedCursorPosition(param, labelText, value, valueChanged);
+        // fixedCursorPosition(param, labelText, value, valueChanged);
     }
 
 }
