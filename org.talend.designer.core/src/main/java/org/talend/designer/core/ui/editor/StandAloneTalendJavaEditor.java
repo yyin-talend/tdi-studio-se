@@ -16,9 +16,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
@@ -55,16 +61,19 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingService;
@@ -74,6 +83,7 @@ import org.talend.designer.core.ui.action.SaveAsRoutineAction;
 import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerColorUtils;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
@@ -299,6 +309,27 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     }
 
+    public void resetItem() throws PersistenceException {
+        if (item.getProperty().eResource() == null || item.eResource() == null) {
+            IRepositoryService service = CoreRuntimePlugin.getInstance().getRepositoryService();
+            IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
+            //
+            // Property updated = factory.getUptodateProperty(getItem().getProperty());
+            Property updatedProperty = null;
+            try {
+                factory.initialize();
+                IRepositoryViewObject repositoryViewObject = factory.getLastVersion(new Project(ProjectManager.getInstance()
+                        .getProject(item.getProperty().getItem())), item.getProperty().getId());
+                if (repositoryViewObject != null) {
+                    updatedProperty = repositoryViewObject.getProperty();
+                    item = (FileItem) updatedProperty.getItem();
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+    }
+
     @Override
     public void doSave(final IProgressMonitor monitor) {
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
@@ -325,6 +356,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         super.doSave(monitor);
 
         try {
+            resetItem();
             ByteArray byteArray = item.getContent();
             byteArray.setInnerContentFromFile(((FileEditorInput) getEditorInput()).getFile());
             try {
@@ -343,8 +375,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                     refreshJobAndSave(repFactory);
                 }
             };
+            repositoryWorkUnit.setAvoidSvnUpdate(true);
+            repositoryWorkUnit.setAvoidUnloadResources(true);
             repFactory.executeRepositoryWorkUnit(repositoryWorkUnit);
-
+            repositoryWorkUnit.throwPersistenceExceptionIfAny();
             // for bug 11930: Unable to save Routines.* in db project
 
             // repFactory.save(item);
@@ -357,13 +391,47 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     }
 
-    private void refreshJobAndSave(final IProxyRepositoryFactory repFactory) {
+    private void refreshJobAndSave(final IProxyRepositoryFactory repFactory) throws PersistenceException {
+
+        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                try {
+                    repFactory.save(item);
+                } catch (PersistenceException e) {
+                    throw new CoreException(new Status(IStatus.ERROR, DesignerPlugin.ID, "Save Routine failed!", e));
+                }
+
+            };
+        };
+
+        IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                try {
+                    ISchedulingRule schedulingRule = workspace.getRoot();
+                    // the update the project files need to be done in the workspace runnable to avoid all
+                    // notification
+                    // of changes before the end of the modifications.
+                    workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
+                } catch (CoreException e) {
+                    throw new InvocationTargetException(e);
+                }
+
+            }
+        };
+
         try {
-            // cause it to update MaxInformationLevel
-            repFactory.save(item);
-        } catch (Exception e) {
+            PlatformUI.getWorkbench().getProgressService().run(false, false, iRunnableWithProgress);
+        } catch (InvocationTargetException e) {
+            throw new PersistenceException(e);
+        } catch (InterruptedException e) {
+            throw new PersistenceException(e);
         }
-        // update editor image
+
         setTitleImage(getTitleImage());
 
     }
