@@ -526,12 +526,6 @@
     	</libraryNeeded>
 
     	<!-- HDP_2_3 libraries -->
-        <libraryNeeded
-            context="plugin:org.talend.libraries.asm"
-            id="asm-3.2.jar"
-            name="asm-3.2.jar" mvn_uri="mvn:org.talend.libraries/asm-3.2/6.1.0"
-            uripath="platform:/plugin/org.talend.libraries.asm/lib/asm-3.2.jar">
-        </libraryNeeded>
 
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.hdp.2.3"
@@ -1854,6 +1848,13 @@
             uripath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-log4j12-1.7.5.jar"
             bundleID="" />
 
+	   	<libraryNeeded
+           context="plugin:org.talend.libraries.hadoop.cloudera.cdh5.1"
+           id="jersey-core-1.9.jar"
+           mvn_uri="mvn:org.talend.libraries/jersey-core-1.9/6.0.0"
+           name="jersey-core-1.9.jar"
+           required="true">
+    	</libraryNeeded>
 
     	<libraryNeeded
 	   		context="plugin:org.talend.libraries.jetty"
@@ -2559,12 +2560,6 @@
             uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.2/lib/tezServer/api-util-1.0.0-M20.jar">
         </libraryNeeded>
         <libraryNeeded
-            id="asm-3.1.jar"
-            name="asm-3.1.jar" mvn_uri="mvn:org.talend.libraries/asm-3.1/6.0.0"
-            context="plugin:org.talend.libraries.hadoop.hdp.2.2"
-            uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.2/lib/tezServer/asm-3.1.jar">
-        </libraryNeeded>
-        <libraryNeeded
             id="avro-1.7.4.jar"
             name="avro-1.7.4.jar" mvn_uri="mvn:org.talend.libraries/avro-1.7.4/6.0.0"
             context="plugin:org.talend.libraries.hadoop.hdp.2.2"
@@ -2773,14 +2768,6 @@
             name="jersey-server-1.9.jar" mvn_uri="mvn:org.talend.libraries/jersey-server-1.9/6.0.0"
             context="plugin:org.talend.libraries.hadoop.hdp.2.2"
             uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.2/lib/tezServer/jersey-server-1.9.jar">
-        </libraryNeeded>
-        <libraryNeeded
-              context="plugin:org.talend.libraries.apache.axis2"
-              id="activation-1.1.jar"
-              mvn_uri="mvn:org.talend.libraries/activation-1.1/6.0.0"
-              name="activation-1.1.jar"
-              required="true"
-              uripath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation-1.1.jar">
         </libraryNeeded>
         <libraryNeeded
             id="jetty-util-6.1.26.hwx.jar"
@@ -8035,7 +8022,7 @@
                 description="Spark Streaming Kafka libraries for HDP 2.3"
                 id="SPARK-STREAMING-KAFKA-LIB-HDP_2_3"
                 name="SPARK-STREAMING-KAFKA-LIB-HDP_2_3">
-            <library id="spark-streaming-kafka-assembly-HDP_2_3"/>
+            <library id="talend-spark-streaming-kafka-assembly-HDP_2_3"/>
         </libraryNeededGroup>
 
         <!-- Parquet libraries for HDP_2_3 -->
@@ -8166,7 +8153,8 @@
               id="jsr250-api-1.0.jar"
               mvn_uri="mvn:org.talend.libraries/jsr250-api-1.0/6.0.0"
               name="jsr250-api-1.0.jar"
-              required="true">
+              required="true"
+              uripath="platform:/plugin/org.talend.repository.hadoopcluster.configurator/lib/jsr250-api-1.0.jar">
         </libraryNeeded>
         <libraryNeeded
               context="plugin:org.talend.libraries.apache.axis2"
@@ -8266,6 +8254,14 @@
               mvn_uri="mvn:org.talend.libraries/jts-1.9/6.0.0"
               name="jts-1.9.jar"
               required="true">
+        </libraryNeeded>
+        <libraryNeeded
+              context="plugin:org.talend.libraries.apache.axis2"
+              id="activation-1.1.jar"
+              mvn_uri="mvn:org.talend.libraries/activation-1.1/6.0.0"
+              name="activation-1.1.jar"
+              required="true"
+              uripath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation-1.1.jar">
         </libraryNeeded>
 	</extension>
 
