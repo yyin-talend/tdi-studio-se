@@ -55,7 +55,7 @@ List<Component.CodegenPropInfo> propsToProcess = component.getCodegenPropInfos(c
 %>
 
 <%= componentProps.getClass().getName()%> props_<%=cid %> = (<%= componentProps.getClass().getName()%>) def_<%=cid %>.createProperties();
-props_<%=cid %>.init();
+props_<%=cid %>.setRuntimeOnly().init();
 <%
 
 for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
