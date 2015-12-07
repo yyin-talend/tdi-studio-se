@@ -19,6 +19,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.constants.IComponentConstants;
+import org.talend.component.core.constants.IGenericConstants;
 import org.talend.component.core.dnd.AbstractComponentDragAndDropHandler;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
@@ -26,12 +27,15 @@ import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ComponentProperties.Deserialized;
+import org.talend.components.api.schema.SchemaElement;
+import org.talend.components.api.schema.SchemaElement.Type;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsService;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -39,7 +43,9 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.IComponentName;
 import org.talend.core.repository.RepositoryComponentSetting;
+import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
+import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
  * 
@@ -97,12 +103,32 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                         }
                     }
                 } else if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)) {
-                    if (table != null) {
-                        tableName = table.getLabel();
-                        if (tableName == null) {
-                            tableName = table.getLabel();
+                    if (table != null && table instanceof MetadataTableRepositoryObject) {
+                        MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) table;
+                        MetadataTable metadataTable = metaTableRepObj.getTable();
+                        if (metadataTable != null && metadataTable.getTaggedValue() != null) {
+                            for (TaggedValue serializedProps : metadataTable.getTaggedValue()) {
+                                if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(serializedProps.getTag())) {
+                                    String serializedProperties = serializedProps.getValue();
+                                    if (serializedProperties != null) {
+                                        Deserialized fromSerializedProperties = ComponentProperties
+                                                .fromSerialized(serializedProperties);
+                                        if (fromSerializedProperties != null) {
+                                            ComponentProperties componentModuleProperties = fromSerializedProperties.properties;
+                                            SchemaElement moduleElement = componentModuleProperties.getProperty(paramName);
+                                            if (moduleElement != null) {
+                                                if (Type.STRING.equals(moduleElement.getType())) {
+                                                    return getRepositoryValueOfStringType(connection,
+                                                            StringUtils.trimToNull(table.getLabel()));
+                                                } else {
+                                                    return table.getLabel();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(tableName));
                     }
                 } else if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)) {
                     if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
