@@ -34,38 +34,6 @@ public class MetadataGenericContentProvider extends ProjectRepoDirectChildrenNod
 
     MetadataNodeTester metadataNodeTester = new MetadataNodeTester();
 
-    // private final class GenericNodeDirectChildrenNodeVisitor extends RunnableResourceVisitor {
-    //
-    // @Override
-    // protected boolean visit(IResourceDelta delta, Collection<Runnable> runnables) {
-    // VisitResourceHelper visitHelper = new VisitResourceHelper(delta);
-    // if (visitHelper.isIgnoredResource(delta)) {
-    // return false;
-    // }
-    // Set<RepositoryNode> topLevelNodes = getTopLevelNodes();
-    // if (topLevelNodes == null) {
-    // return false;
-    // }
-    // boolean visitChildren = true;
-    // for (final RepositoryNode repoNode : topLevelNodes) {
-    // if ((repoNode.getContentType() == ERepositoryObjectType.PROCESS)
-    // || (repoNode.getContentType() == ERepositoryObjectType.PROCESS_MR)) {
-    // visitChildren = false; // if valid, don't visit the children any more.
-    // if (viewer instanceof RepoViewCommonViewer) {
-    // runnables.add(new TopLevelNodeRunnable(repoNode) {
-    //
-    // @Override
-    // public void run() {
-    // refreshTopLevelNode(repoNode);
-    // }
-    // });
-    // }
-    // }
-    // }
-    // return visitChildren;
-    // }
-    // }
-
     private final class GenericNodeDirectChildrenNodeVisitor extends RunnableResourceVisitor {
 
         @Override
@@ -111,8 +79,9 @@ public class MetadataGenericContentProvider extends ProjectRepoDirectChildrenNod
             getTopLevelNodes().addAll(projectRepositoryNode.getGenericTopNodesMap().values());
             return getTopLevelNodes().toArray();
         }
-        if (getTopLevelNodes().contains(repoNode)) {
+        if (getTopLevelNodes().contains(repoNode) && !repoNode.isInitialized()) {
             projectRepositoryNode.initializeChildren(repoNode);
+            repoNode.setInitialized(true);
         }
         return repoNode.getChildren().toArray();
     }
@@ -145,6 +114,7 @@ public class MetadataGenericContentProvider extends ProjectRepoDirectChildrenNod
         return null;
     }
 
+    @Override
     public void dispose() {
         // visitor
         if (this.viewer != null && this.genericNodeVisitor != null && this.viewer instanceof RepoViewCommonViewer) {
