@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.talend.studio</groupId>
     <artifactId>tdi-studio-se</artifactId>
-    <version>6.1.1-SNAPSHOT</version>
+    <version>6.1.2-SNAPSHOT</version>
     <relativePath>../../../</relativePath>
   </parent>
   <artifactId>org.talend.designer.components.localprovider</artifactId>
@@ -55,7 +55,7 @@
                             <artifactItem>
                                 <groupId>org.talend.mdm</groupId>
                                 <artifactId>org.talend.mdm.bulkload.client</artifactId>
-                                <version>6.1.1-SNAPSHOT</version>
+                                <version>6.1.2-SNAPSHOT</version>
                                 <type>zip</type>
                                 <overWrite>true</overWrite>
                                 <outputDirectory>${bulkload.dir}</outputDirectory>
@@ -99,7 +99,7 @@
                             <fileset dir="${bulkload.dir}" includes="org.talend.mdm.bulkload.client*.jar" id="bulkloadpath_temp" />
                             <pathconvert property="bulkloadpath" refid="bulkloadpath_temp" />	
                             <echo>bulkloadpath=${bulkloadpath}</echo>
-                            <move file="${bulkloadpath}" tofile="${bulkload.dir}/bulkloadclient.jar"/>
+                            <move file="${bulkloadpath}" tofile="${bulkload.dir}/bulkloadclient.jar" />
                         </target>
                     </configuration>
                     <goals>
