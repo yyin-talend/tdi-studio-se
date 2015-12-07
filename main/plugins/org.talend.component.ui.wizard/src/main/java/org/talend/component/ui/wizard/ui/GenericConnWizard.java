@@ -16,7 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardContainer;
@@ -25,6 +34,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.component.core.constants.IGenericConstants;
@@ -214,11 +224,10 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                 }
             }
             try {
-                final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 Form form = wizPage.getForm();
                 if (form.isCallAfterFormFinish()) {
                     if (creation) {
-                        factory.create(connectionItem, new Path("")); //$NON-NLS-1$
+                        createConnectionItem();
                     }
                     compService.afterFormFinish(form.getName(), form.getComponentProperties());
                 }
@@ -237,6 +246,27 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         } else {
             return false;
         }
+    }
+
+    private void createConnectionItem() throws CoreException {
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IWorkspaceRunnable operation = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                try {
+                    factory.create(connectionItem, new Path("")); //$NON-NLS-1$;
+                } catch (PersistenceException e) {
+                    throw new CoreException(new Status(IStatus.ERROR, "org.talend.metadata.management.ui",
+                            "Error when create the connection", e));
+                }
+            }
+        };
+        ISchedulingRule schedulingRule = workspace.getRoot();
+        // the update the project files need to be done in the workspace runnable to avoid all
+        // notification of changes before the end of the modifications.
+        workspace.run(operation, schedulingRule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
     }
 
     @Override

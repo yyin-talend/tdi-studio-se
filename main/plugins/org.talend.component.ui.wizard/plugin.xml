@@ -162,4 +162,13 @@
             class="org.talend.component.ui.wizard.ui.context.handler.GenericRepositoryContextHandler">
       </RepositoryContext>
    </extension>
+   <extension
+         point="org.talend.core.repository.repository_node_provider">
+      <repositoryNode
+            class="org.talend.component.ui.wizard.model.FakeGenericExtendNode"
+            label="FakeGenericNode"
+            products="DI"
+            type="FakeGenericNodeType">
+      </repositoryNode>
+   </extension>
 </plugin>

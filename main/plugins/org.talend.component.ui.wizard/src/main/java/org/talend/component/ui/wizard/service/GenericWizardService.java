@@ -67,8 +67,10 @@ public class GenericWizardService implements IGenericWizardService {
             String folder = "metadata/" + name; //$NON-NLS-1$  //TODO: maybe need to retrieve it from component service?
             int ordinal = 100;
             ERepositoryObjectType repositoryType = internalService.createRepositoryType(name, displayName, name, folder, ordinal);
-            repNodes.add(internalService.createRepositoryNode(curParentNode, wizardDefinition.getDisplayName(), repositoryType,
-                    ENodeType.SYSTEM_FOLDER));
+            if (curParentNode != null) {
+                repNodes.add(internalService.createRepositoryNode(curParentNode, wizardDefinition.getDisplayName(),
+                        repositoryType, ENodeType.SYSTEM_FOLDER));
+            }
         }
         return repNodes;
     }
