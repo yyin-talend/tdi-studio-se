@@ -61,7 +61,8 @@ props_<%=cid %>.setRuntimeOnly().init();
 for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 	List<SchemaElement> properties = propInfo.props.getProperties();
 	for (SchemaElement property : properties) { // property
-		if (propInfo.props.getValue(property) != null) { // if
+		Object value = propInfo.props.getValue(property);
+		if (value != null && (!(value instanceof String) || !((String)value).equals(""))) { // if
 %>
 			props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>", 
 				<%=component.getCodegenValue(property, propInfo.props.getStringValue(property))%>);
