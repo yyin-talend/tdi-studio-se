@@ -81,7 +81,7 @@
             REPOSITORY_VALUE="ENDPOINT"
             SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
             GROUP="LOGIN">
-			<DEFAULT IF="LOGIN_TYPE == 'BASIC'">"https://login.salesforce.com/services/Soap/u/25.0"</DEFAULT>
+			<DEFAULT IF="LOGIN_TYPE == 'BASIC'">"https://login.salesforce.com/services/Soap/u/34.0"</DEFAULT>
             <DEFAULT IF="LOGIN_TYPE == 'OAUTH'">"https://login.salesforce.com/services/oauth2"</DEFAULT>
 		</PARAMETER>
 
@@ -93,7 +93,7 @@
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND ((LOGIN_TYPE == 'OAUTH') OR (API == 'bulk'))"
             REPOSITORY_VALUE="API_VERSION"
             GROUP="LOGIN">
-            <DEFAULT>"25.0"</DEFAULT>
+            <DEFAULT>"34.0"</DEFAULT>
         </PARAMETER>
 
 		<PARAMETER
@@ -2637,7 +2637,7 @@
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="salesforceCRM-management"
-				MODULE="salesforceCRMManagement.jar" MVN="mvn:org.talend.libraries/salesforceCRMManagement/6.0.1"  UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceCRMManagement.jar" REQUIRED_IF="API=='soap'"/>
+				MODULE="salesforceCRMManagement.jar" MVN="mvn:org.talend.libraries/salesforceCRMManagement/6.1.0"  UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceCRMManagement.jar" REQUIRED_IF="API=='soap'"/>
 			<IMPORT NAME="axiom-api"
 				MODULE="axiom-api-1.2.13.jar" MVN="mvn:org.talend.libraries/axiom-api-1.2.13/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-api-1.2.13.jar" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.13.jar" MVN="mvn:org.talend.libraries/axiom-impl-1.2.13/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-impl-1.2.13.jar" REQUIRED_IF="API=='soap'" />
@@ -2673,9 +2673,9 @@
 				REQUIRED_IF="API=='soap'" />
 
 			<IMPORT NAME="salesforceBulkAPI"
-				MODULE="salesforceBulkAPI.jar" MVN="mvn:org.talend.libraries/salesforceBulkAPI/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceBulkAPI.jar" REQUIRED_IF="API=='bulk'" />
-			<IMPORT NAME="partner" MODULE="partnerBulk.jar" MVN="mvn:org.talend.libraries/partnerBulk/6.0.0"  REQUIRED_IF="API=='bulk'"/>
-			<IMPORT NAME="wsc" MODULE="wsc.jar" MVN="mvn:org.talend.libraries/wsc/6.0.0"
+				MODULE="salesforceBulkAPI.jar" MVN="mvn:org.talend.libraries/salesforceBulkAPI/6.1.0"  UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceBulkAPI.jar" REQUIRED_IF="API=='bulk'" />
+			<IMPORT NAME="partner" MODULE="partnerBulk-34.jar" MVN="mvn:org.talend.libraries/partnerBulk-34/6.1.0"  REQUIRED_IF="API=='bulk'"/>
+			<IMPORT NAME="force-wsc-33.0.0.jar" MODULE="force-wsc-33.0.0.jar" MVN="mvn:org.talend.libraries/force-wsc-33.0.0/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/force-wsc-33.0.0.jar"
 				REQUIRED_IF="API=='bulk'"/>
 			<IMPORT NAME="CsvWriter" MODULE="talendcsv.jar" MVN="mvn:org.talend.libraries/talendcsv/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.csv/lib/talendcsv.jar" REQUIRED_IF="API=='bulk'"/>
 
