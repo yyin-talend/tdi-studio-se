@@ -16,6 +16,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+
+import java.net.Socket;
+
+import javax.net.ssl.SSLSocket;
+
 import org.talend.salesforce.oauth.OAuthClient;
 import org.talend.salesforce.oauth.Token;
 
@@ -109,6 +116,8 @@ public class SforceOAuthBulkConnection extends SforceBulkConnection {
     }
 
     private void init() throws Exception {
+    	initTLS();
+    	
         config = new ConnectorConfig();
         // This should only be false when doing debugging.
         config.setCompression(needCompression);
@@ -116,6 +125,31 @@ public class SforceOAuthBulkConnection extends SforceBulkConnection {
         config.setTraceMessage(needTraceMessage);
         renewSession();
         connection = new BulkConnection(config);
+    }
+    
+    private void initTLS() throws Exception {
+    	if(System.getProperty("https.protocols") != null) {
+    		return;
+    	}
+    	
+    	SSLContext context = SSLContext.getDefault();
+		SSLSocketFactory factory = (SSLSocketFactory)context.getSocketFactory();
+		SSLSocket socket = (SSLSocket)factory.createSocket();
+
+		String[] supportedProtocols = socket.getSupportedProtocols();
+		
+		for(String supportedProtocol : supportedProtocols) {
+			if("TLSv1.1".equalsIgnoreCase(supportedProtocol)) {
+				System.setProperty("https.protocols", "TLSv1.1");
+				continue;
+			}
+			
+			if("TLSv1.2".equalsIgnoreCase(supportedProtocol)) {
+				System.setProperty("https.protocols", "TLSv1.1,TLSv1.2");
+				break;
+			}
+		}
+    	
     }
 
     @Override
