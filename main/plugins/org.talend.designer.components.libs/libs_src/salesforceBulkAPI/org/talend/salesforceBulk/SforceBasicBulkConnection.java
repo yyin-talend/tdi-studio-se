@@ -120,12 +120,12 @@ public class SforceBasicBulkConnection extends SforceBulkConnection {
 		
 		for(String supportedProtocol : supportedProtocols) {
 			if("TLSv1.1".equalsIgnoreCase(supportedProtocol)) {
-				System.setProperty("https.protocols", "TLSv1.1");
+				System.setProperty("https.protocols", "SSLv3,TLSv1,TLSv1.1");
 				continue;
 			}
 			
 			if("TLSv1.2".equalsIgnoreCase(supportedProtocol)) {
-				System.setProperty("https.protocols", "TLSv1.1,TLSv1.2");
+				System.setProperty("https.protocols", "SSLv3,TLSv1,TLSv1.1,TLSv1.2");
 				break;
 			}
 		}
