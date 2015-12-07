@@ -56,6 +56,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.DummyComponent;
@@ -1633,7 +1634,8 @@ public class Component extends AbstractComponent {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
         if (property.getType() == SchemaElement.Type.SCHEMA) {
-            return "\"" + value.replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$
+        	// Handles embedded escaped quotes which might occur
+            return "\"" + value.replace("\\\"",	"\\\\\"").replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
         return value;
     }
