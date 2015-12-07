@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
 import org.talend.core.repository.model.ProjectRepositoryNode;
@@ -142,6 +143,22 @@ public class MetadataGenericContentProvider extends ProjectRepoDirectChildrenNod
     @Override
     protected RepositoryNode getTopLevelNodeFromProjectRepositoryNode(ProjectRepositoryNode projectNode) {
         return null;
+    }
+
+    public void dispose() {
+        // visitor
+        if (this.viewer != null && this.genericNodeVisitor != null && this.viewer instanceof RepoViewCommonViewer) {
+            final Control control = this.viewer.getControl();
+            if (control != null && !control.isDisposed()) {
+                CommonNavigator commonNavigator = ((RepoViewCommonViewer) this.viewer).getCommonNavigator();
+                if (commonNavigator instanceof RepoViewCommonNavigator) {
+                    ((RepoViewCommonNavigator) commonNavigator).removeVisitor(this.genericNodeVisitor);
+                }
+            }
+        }
+
+        super.dispose();
+
     }
 
 }
