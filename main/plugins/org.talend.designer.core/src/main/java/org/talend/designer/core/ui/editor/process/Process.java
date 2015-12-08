@@ -1207,12 +1207,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                         continue;
                                     }
                                     comp.initParamPropertiesFromSerialized(param, pTypeValue);
-                                    String value = null;
-                                    Object obj = comp.genericFromSerialized(pTypeValue, param.getName());
-                                    if (obj != null) {
-                                        value = obj.toString();
-                                    }
-                                    loadElementParameters(elemParam, pType, param, param.getName(), value, false);
+                                    Object object = comp.genericFromSerialized(pTypeValue, param.getName());
+                                    loadElementParameters(elemParam, pType, param, param.getName(), object, false);
                                 }
                             }
                         }
@@ -1279,12 +1275,16 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     private void loadElementParameters(Element elemParam, ElementParameterType pType, IElementParameter param, String key,
-            String value, boolean isJunitLoad) {
+            Object object, boolean isJunitLoad) {
         if (param != null) {
             if (pType.isSetContextMode()) {
                 param.setContextMode(pType.isContextMode());
             } else {
                 param.setContextMode(false);
+            }
+            String value = null;
+            if (object != null) {
+                value = object.toString();
             }
             if (param.getFieldType().equals(EParameterFieldType.CHECK) || param.getFieldType().equals(EParameterFieldType.RADIO)) {
                 if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -1417,6 +1417,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else {
                     elemParam.setPropertyValue(key, value);
                 }
+            } else if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                elemParam.setPropertyValue(key, object);
             }
         } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(key) //$NON-NLS-1$
                 && "true".equals(pType.getValue()) //$NON-NLS-1$
