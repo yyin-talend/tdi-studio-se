@@ -15,14 +15,18 @@ package org.talend.component.core.utils;
 import java.util.List;
 
 import org.talend.component.core.constants.IGenericConstants;
+import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentProperties.Deserialized;
 import org.talend.components.api.schema.Schema;
 import org.talend.components.api.schema.SchemaElement;
 import org.talend.components.api.schema.SchemaElement.Type;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
@@ -96,4 +100,24 @@ public class SchemaUtils {
         metadataColumn.setDefaultValue(schemaElement.getDefaultValue());
     }
 
+    public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {
+        if (table != null && table instanceof MetadataTableRepositoryObject) {
+            MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) table;
+            MetadataTable metadataTable = metaTableRepObj.getTable();
+            if (metadataTable != null && metadataTable.getTaggedValue() != null) {
+                for (TaggedValue serializedProps : metadataTable.getTaggedValue()) {
+                    if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(serializedProps.getTag())) {
+                        String serializedProperties = serializedProps.getValue();
+                        if (serializedProperties != null) {
+                            Deserialized fromSerializedProperties = ComponentProperties.fromSerialized(serializedProperties);
+                            if (fromSerializedProperties != null) {
+                                return fromSerializedProperties.properties;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }
