@@ -262,9 +262,11 @@ public class LoginHelper {
      */
     public static void setRepositoryContextInContext(ConnectionBean connBean, User user, Project project, String branch) {
         Context ctx = CoreRuntimePlugin.getInstance().getContext();
-        RepositoryContext repositoryContext = new RepositoryContext();
-        ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
-
+        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        if (repositoryContext == null) {
+            repositoryContext = new RepositoryContext();
+            ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+        }
         repositoryContext.setUser(user);
         repositoryContext.setProject(project);
         String password = ""; //$NON-NLS-1$
