@@ -158,7 +158,7 @@
 	        	for (int i = 0; i < keysReturn.size(); i++){
 	            	Map<String,String> map = keysReturn.get(i);
 	              	%>
-	              	<%=outConnName %>.<%=map.get("OUTPUT_COLUMN")%>= wspk_<%=cid%>.getIds(<%=i %>);
+	              	<%=outConnName %>.<%=map.get("OUTPUT_COLUMN")%>= wspk_<%=cid%>.getIds().get(<%=i %>);
 	            <%
 	            }
 	       	}
@@ -228,7 +228,7 @@
 		          for (int i = 0; i < keysReturn.size(); i++){
 		            Map<String,String> map = keysReturn.get(i);
 		            %>
-		            <%=outConnName %>.<%=map.get("OUTPUT_COLUMN")%>= wspk_<%=cid%>.getIds(<%=i %>);
+		            <%=outConnName %>.<%=map.get("OUTPUT_COLUMN")%>= wspk_<%=cid%>.getIds().get(<%=i %>);
 		          <%
 		          }
 		        }
@@ -293,7 +293,7 @@
 		            for (int i = 0; i < keysReturn.size(); i++){
 		              Map<String,String> map = keysReturn.get(i);
 		              %>
-		              <%=outConnName %>.<%=map.get("OUTPUT_COLUMN")%>= wspk_<%=cid%>.getIds(<%=i %>);
+		              <%=outConnName %>.<%=map.get("OUTPUT_COLUMN")%>= wspk_<%=cid%>.getIds().get(<%=i %>);
 		            <%
 		            }
 		          }
