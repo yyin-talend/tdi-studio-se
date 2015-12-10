@@ -56,7 +56,6 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
-import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.DummyComponent;
@@ -65,7 +64,6 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.model.components.NodeReturn;
-import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
 import org.talend.designer.core.model.utils.emf.component.ITEMSType;
 import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -204,7 +202,6 @@ public class Component extends AbstractComponent {
                 }
             }
 
-            String context = "FLOW"; //$NON-NLS-1$
             ElementParameter parentParam = new ElementParameter(node);
             parentParam.setName(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
             parentParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
@@ -213,7 +210,7 @@ public class Component extends AbstractComponent {
             parentParam.setNumRow(1);
             parentParam.setReadOnly(false);
             parentParam.setShow(false);
-            parentParam.setContext(context);
+            parentParam.setContext(IComponentConstants.CONTEXT);
             listParam.add(parentParam);
 
             ElementParameter newParam = new ElementParameter(node);
@@ -229,7 +226,7 @@ public class Component extends AbstractComponent {
             newParam.setShow(true);
             newParam.setReadOnly(true);
 
-            newParam.setContext(context);
+            newParam.setContext(IComponentConstants.CONTEXT);
             newParam.setParentParameter(parentParam);
 
             newParam = new ElementParameter(node);
@@ -243,7 +240,7 @@ public class Component extends AbstractComponent {
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
-            newParam.setContext(context);
+            newParam.setContext(IComponentConstants.CONTEXT);
             newParam.setParentParameter(parentParam);
         }
 
@@ -251,30 +248,15 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<NodeReturn> createReturns() {
-        List<NodeReturn> listReturn;
-        NodeReturn nodeRet;
-        listReturn = new ArrayList<NodeReturn>();
+        List<NodeReturn> listReturn = new ArrayList<NodeReturn>();
         // ****************** add standard returns ******************
-        nodeRet = new NodeReturn();
+        NodeReturn nodeRet = new NodeReturn();
         nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
         nodeRet.setType(STRING_TYPE);
         nodeRet.setVarName("ERROR_MESSAGE"); //$NON-NLS-1$
         nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
         nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
         listReturn.add(nodeRet);
-        // FIXME - add the REturns
-        // ****************** end of standard returns ******************
-        // Property[] propertys = componentDefinition.createProperties().getProperties();
-        // for (Property property : propertys) {
-        // nodeRet = new NodeReturn();
-        // nodeRet.setAvailability("");//$NON-NLS-1$
-        // nodeRet.setVarName("");//$NON-NLS-1$
-        // nodeRet.setDisplayName(property.getDisplayName());
-        // nodeRet.setName(property.getName());
-        // nodeRet.setType(property.getTypeName());
-        // nodeRet.setShowIf("");//$NON-NLS-1$
-        // listReturn.add(nodeRet);
-        // }
         return listReturn;
     }
 
@@ -328,7 +310,6 @@ public class Component extends AbstractComponent {
     }
 
     private ElementParameter addValidationRuleType(INode node, int rowNb) {
-        String context = "FLOW"; //$NON-NLS-1$
         ElementParameter parentParam = new ElementParameter(node);
         parentParam.setName(EParameterName.VALIDATION_RULE_TYPE.getName());
         parentParam.setDisplayName(EParameterName.VALIDATION_RULE_TYPE.getDisplayName());
@@ -338,7 +319,7 @@ public class Component extends AbstractComponent {
         parentParam.setReadOnly(false);
         parentParam.setShow(true);
         parentParam.setShowIf(EParameterName.VALIDATION_RULES.getName() + " == 'true'"); //$NON-NLS-1$
-        parentParam.setContext(context);
+        parentParam.setContext(IComponentConstants.CONTEXT);
         parentParam.setRepositoryValue(ERepositoryCategoryType.VALIDATIONRULES.getName());
         parentParam.setValue("");
 
@@ -355,7 +336,7 @@ public class Component extends AbstractComponent {
         newParam.setShow(true);
         newParam.setShowIf(parentParam.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         newParam.setReadOnly(false);
-        newParam.setContext(context);
+        newParam.setContext(IComponentConstants.CONTEXT);
         newParam.setParentParameter(parentParam);
 
         newParam = new ElementParameter(node);
@@ -369,7 +350,7 @@ public class Component extends AbstractComponent {
         newParam.setValue(""); //$NON-NLS-1$
         newParam.setShow(false);
         newParam.setRequired(true);
-        newParam.setContext(context);
+        newParam.setContext(IComponentConstants.CONTEXT);
         newParam.setParentParameter(parentParam);
         return parentParam;
     }
@@ -714,7 +695,6 @@ public class Component extends AbstractComponent {
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
 
-        String context = "FLOW"; //$NON-NLS-1$
         ElementParameter newParam = new ElementParameter(node);
         newParam.setCategory(EComponentCategory.BASIC);
         newParam.setName(EParameterName.PROPERTY_TYPE.getName());
@@ -729,7 +709,7 @@ public class Component extends AbstractComponent {
         newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         newParam.setReadOnly(param.isReadOnly());
         newParam.setNotShowIf(param.getNotShowIf());
-        newParam.setContext(context);
+        newParam.setContext(IComponentConstants.CONTEXT);
         newParam.setSerialized(true);
         newParam.setParentParameter(param);
 
@@ -747,7 +727,7 @@ public class Component extends AbstractComponent {
         newParam.setReadOnly(param.isReadOnly());
         newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$//$NON-NLS-2$
         newParam.setNotShowIf(param.getNotShowIf());
-        newParam.setContext(context);
+        newParam.setContext(IComponentConstants.CONTEXT);
         newParam.setSerialized(true);
         newParam.setParentParameter(param);
         listParam.add(param);
@@ -861,7 +841,6 @@ public class Component extends AbstractComponent {
         for (ElementParameter param : listParam) {
             if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                     || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
-                String context = "FLOW"; //$NON-NLS-1$
                 ElementParameter newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.BASIC);
                 newParam.setName(EParameterName.SCHEMA_TYPE.getName());
@@ -876,7 +855,7 @@ public class Component extends AbstractComponent {
                 newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$
                 newParam.setReadOnly(param.isReadOnly());
                 newParam.setNotShowIf(param.getNotShowIf());
-                newParam.setContext(context);
+                newParam.setContext(IComponentConstants.CONTEXT);
                 newParam.setSerialized(true);
                 newParam.setParentParameter(param);
 
@@ -894,7 +873,7 @@ public class Component extends AbstractComponent {
                 newParam.setReadOnly(param.isReadOnly());
                 newParam.setShowIf(param.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$//$NON-NLS-2$
                 newParam.setNotShowIf(param.getNotShowIf());
-                newParam.setContext(context);
+                newParam.setContext(IComponentConstants.CONTEXT);
                 newParam.setSerialized(true);
                 newParam.setParentParameter(param);
             }
@@ -1134,8 +1113,6 @@ public class Component extends AbstractComponent {
      */
     @Override
     public List<NodeConnector> createConnectors(INode parentNode) {
-        EList listConnType;
-        CONNECTORType connType;
         NodeConnector nodeConnector;
         List<NodeConnector> listConnector = new ArrayList<NodeConnector>();
         ComponentConnector[] listConnectors = componentDefinition.getConnectors();
@@ -1181,7 +1158,6 @@ public class Component extends AbstractComponent {
                 }
             }
             if (!exists) { // will add by default all connectors not defined in
-                // the xml files
                 nodeConnector = new NodeConnector(parentNode);
                 nodeConnector.setDefaultConnectionType(currentType);
                 nodeConnector.setName(currentType.getName());
@@ -1307,7 +1283,7 @@ public class Component extends AbstractComponent {
             ImageData imageData = new ImageData(imageStream);
             return ImageDescriptor.createFromImageData(imageData.scaledTo(16, 16));
         }
-        return new DummyComponent("dummy").getIcon16();
+        return new DummyComponent("dummy").getIcon16(); //$NON-NLS-1$
     }
 
     @Override
@@ -1318,7 +1294,7 @@ public class Component extends AbstractComponent {
             ImageData imageData = new ImageData(imageStream);
             return ImageDescriptor.createFromImageData(imageData.scaledTo(24, 24));
         }
-        return new DummyComponent("dummy").getIcon24();
+        return new DummyComponent("dummy").getIcon24();//$NON-NLS-1$
     }
 
     /**
@@ -1334,7 +1310,7 @@ public class Component extends AbstractComponent {
             ImageData imageData = new ImageData(imageStream);
             return ImageDescriptor.createFromImageData(imageData);
         }
-        return new DummyComponent("dummy").getIcon32();
+        return new DummyComponent("dummy").getIcon32();//$NON-NLS-1$
     }
 
     @Override
@@ -1634,8 +1610,8 @@ public class Component extends AbstractComponent {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
         if (property.getType() == SchemaElement.Type.SCHEMA) {
-        	// Handles embedded escaped quotes which might occur
-            return "\"" + value.replace("\\\"",	"\\\\\"").replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$
+            // Handles embedded escaped quotes which might occur
+            return "\"" + value.replace("\\\"", "\\\\\"").replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         }
         return value;
     }

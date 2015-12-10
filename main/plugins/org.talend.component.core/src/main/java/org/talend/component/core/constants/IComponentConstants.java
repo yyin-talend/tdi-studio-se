@@ -20,6 +20,8 @@ public interface IComponentConstants {
 
     public static final String PLUGIN_ID = "org.talend.component.core"; //$NON-NLS-1$
 
+    public static final String CONTEXT = "FLOW";//$NON-NLS-1$ 
+
     public static final String DIR_SEPARATOR = "/";//$NON-NLS-1$ 
 
     public static final String EXP_SEPARATOR = ".";//$NON-NLS-1$ 
